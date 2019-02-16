@@ -127,8 +127,28 @@ public class _interfaceTest extends TestCase {
                    "}");
         
         
+        System.out.println( _i.getMethod( "doIt" ));
+        _i.getMethod( "doIt" ).decompose().forEach((String a, Object b) -> {
+            if( b != null) {
+                System.out.println(a+" "+b.hashCode());
+            }else{
+                System.out.println(a+" null");
+            }
+        });
+        System.out.println( _interface.of( ComplexInterface.class ).getMethod( "doIt" ));
+        //this is how you can find out WHICH component is failing
+        _interface.of( ComplexInterface.class ).getMethod( "doIt" ).decompose().forEach((String a, Object b) -> {
+            if( b != null) {
+                System.out.println(a+" "+b.hashCode());
+            }else{
+                System.out.println(a+" null");
+            }
+        });
+        System.out.println( );
+        
         System.out.println( _i.getMethod( "doIt" ).hashCode());
         System.out.println( _interface.of( ComplexInterface.class ).getMethod( "doIt" ).hashCode());
+        //System.out.println( _interface.of( ComplexInterface.class ).getMethod( "doIt" ).hashCode() );
         assertEquals( _i.getMethod( "doIt" ), _interface.of( ComplexInterface.class ).getMethod( "doIt" ) );
         
         System.out.println( _i.getMethod( "getValue" ).hashCode());
