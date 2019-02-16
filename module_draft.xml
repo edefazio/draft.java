@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="module_draft" default="compile.module.draft">
+  <dirname property="module.draft.basedir" file="${ant.file.module_draft}"/>
+  
+  <property name="module.jdk.home.draft" value="${project.jdk.home}"/>
+  <property name="module.jdk.bin.draft" value="${project.jdk.bin}"/>
+  <property name="module.jdk.classpath.draft" value="${project.jdk.classpath}"/>
+  
+  <property name="compiler.args.draft" value="-encoding UTF-8 -source 8 -target 8 ${compiler.args}"/>
+  
+  <property name="draft.output.dir" value="${module.draft.basedir}/target/classes"/>
+  <property name="draft.testoutput.dir" value="${module.draft.basedir}/target/test-classes"/>
+  
+  <path id="draft.module.bootclasspath">
+    <!-- Paths to be included in compilation bootclasspath -->
+  </path>
+  
+  <path id="draft.module.production.classpath">
+    <path refid="${module.jdk.classpath.draft}"/>
+    <path refid="library.maven:_com.github.javaparser:javaparser-core:3.12.0.classpath"/>
+  </path>
+  
+  <path id="draft.runtime.production.module.classpath">
+    <pathelement location="${draft.output.dir}"/>
+    <path refid="library.maven:_com.github.javaparser:javaparser-core:3.12.0.classpath"/>
+  </path>
+  
+  <path id="draft.module.classpath">
+    <path refid="${module.jdk.classpath.draft}"/>
+    <pathelement location="${draft.output.dir}"/>
+    <path refid="library.maven:_com.github.javaparser:javaparser-core:3.12.0.classpath"/>
+    <path refid="library.maven:_junit:junit:4.12.classpath"/>
+    <path refid="library.maven:_org.hamcrest:hamcrest-core:1.3.classpath"/>
+  </path>
+  
+  <path id="draft.runtime.module.classpath">
+    <pathelement location="${draft.testoutput.dir}"/>
+    <pathelement location="${draft.output.dir}"/>
+    <path refid="library.maven:_com.github.javaparser:javaparser-core:3.12.0.classpath"/>
+    <path refid="library.maven:_junit:junit:4.12.classpath"/>
+    <path refid="library.maven:_org.hamcrest:hamcrest-core:1.3.classpath"/>
+  </path>
+  
+  
+  <patternset id="excluded.from.module.draft">
+    <patternset refid="ignored.files"/>
+  </patternset>
+  
+  <patternset id="excluded.from.compilation.draft">
+    <patternset refid="excluded.from.module.draft"/>
+  </patternset>
+  
+  <path id="draft.module.sourcepath">
+    <dirset dir="${module.draft.basedir}">
+      <include name="src/main/java"/>
+    </dirset>
+  </path>
+  
+  <path id="draft.module.test.sourcepath">
+    <dirset dir="${module.draft.basedir}">
+      <include name="src/test/java"/>
+    </dirset>
+  </path>
+  
+  
+  <target name="compile.module.draft" depends="compile.module.draft.production,compile.module.draft.tests" description="Compile module draft"/>
+  
+  <target name="compile.module.draft.production" depends="register.custom.compilers" description="Compile module draft; production classes">
+    <mkdir dir="${draft.output.dir}"/>
+    <javac2 destdir="${draft.output.dir}" debug="${compiler.debug}" nowarn="${compiler.generate.no.warnings}" memorymaximumsize="${compiler.max.memory}" fork="true" executable="${module.jdk.bin.draft}/javac">
+      <compilerarg line="${compiler.args.draft}"/>
+      <bootclasspath refid="draft.module.bootclasspath"/>
+      <classpath refid="draft.module.production.classpath"/>
+      <src refid="draft.module.sourcepath"/>
+      <patternset refid="excluded.from.compilation.draft"/>
+    </javac2>
+    
+    <copy todir="${draft.output.dir}">
+      <fileset dir="${module.draft.basedir}/src/main/java">
+        <patternset refid="compiler.resources"/>
+        <type type="file"/>
+      </fileset>
+    </copy>
+  </target>
+  
+  <target name="compile.module.draft.tests" depends="register.custom.compilers,compile.module.draft.production" description="compile module draft; test classes" unless="skip.tests">
+    <mkdir dir="${draft.testoutput.dir}"/>
+    <javac2 destdir="${draft.testoutput.dir}" debug="${compiler.debug}" nowarn="${compiler.generate.no.warnings}" memorymaximumsize="${compiler.max.memory}" fork="true" executable="${module.jdk.bin.draft}/javac">
+      <compilerarg line="${compiler.args.draft}"/>
+      <bootclasspath refid="draft.module.bootclasspath"/>
+      <classpath refid="draft.module.classpath"/>
+      <src refid="draft.module.test.sourcepath"/>
+      <patternset refid="excluded.from.compilation.draft"/>
+    </javac2>
+    
+    <copy todir="${draft.testoutput.dir}">
+      <fileset dir="${module.draft.basedir}/src/test/java">
+        <patternset refid="compiler.resources"/>
+        <type type="file"/>
+      </fileset>
+    </copy>
+  </target>
+  
+  <target name="clean.module.draft" description="cleanup module">
+    <delete dir="${draft.output.dir}"/>
+    <delete dir="${draft.testoutput.dir}"/>
+  </target>
+</project>

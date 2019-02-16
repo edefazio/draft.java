@@ -1,0 +1,955 @@
+package draft.java;
+
+import com.github.javaparser.JavaParser;
+import com.github.javaparser.ast.*;
+import com.github.javaparser.ast.body.*;
+import com.github.javaparser.ast.expr.Expression;
+import com.github.javaparser.ast.expr.ObjectCreationExpr;
+import com.github.javaparser.ast.stmt.BlockStmt;
+import com.github.javaparser.ast.type.ClassOrInterfaceType;
+import draft.DraftException;
+import draft.Text;
+import draft.java._anno.*;
+import draft.java.io._in;
+import draft.java.macro._macro;
+
+import java.io.InputStream;
+import java.util.*;
+import java.util.function.Consumer;
+import java.util.function.Function;
+import java.util.function.Predicate;
+import java.util.stream.Collectors;
+
+/**
+ * Logical Mutable Model of the source code representing a Java enum.<BR>
+ *
+ * Implemented as a "Logical Facade" on top of an AST
+ * ({@link EnumDeclaration}) for logical manipulation
+ *
+ * @author Eric
+ */
+public final class _enum implements _type<EnumDeclaration, _enum>,_method._hasMethods<_enum>,
+        _constructor._hasConstructors<_enum>, _staticBlock._hasStaticBlock<_enum>,
+        _type._hasImplements<_enum>{
+
+    public static _enum of( Class<? extends Enum> clazz ){
+        Node n = Ast.type( clazz );
+        if( n instanceof CompilationUnit ){
+            return of( (CompilationUnit)n);
+        } else{
+            return of( (EnumDeclaration)n);
+        }
+    }
+
+    public static _enum of( String...classDef ){
+        if( classDef.length == 1){
+            String[] strs = classDef[0].split(" ");
+            if( strs.length == 1 ){
+                //definately shortcut classes
+                String shortcutClass = strs[0];
+                String packageName = null;
+                int lastDotIndex = shortcutClass.lastIndexOf('.');
+                if( lastDotIndex >0 ){
+                    packageName = shortcutClass.substring(0, lastDotIndex );
+                    shortcutClass = shortcutClass.substring(lastDotIndex + 1);
+                    if(!shortcutClass.endsWith("}")){
+                        shortcutClass = shortcutClass + "{}";
+                    }
+                    return of( Ast.compilationUnit( "package "+packageName+";"+System.lineSeparator()+
+                            "public enum "+shortcutClass));
+                }
+                if(!shortcutClass.endsWith("}")){
+                    shortcutClass = shortcutClass + "{}";
+                }
+                return of( Ast.compilationUnit("public enum "+shortcutClass));
+            }
+        }
+        return of( Ast.compilationUnit( classDef ));
+    }
+
+    public static _enum of( CompilationUnit cu ){
+        if( cu.getPrimaryTypeName().isPresent() ){
+            return of(cu.getEnumByName( cu.getPrimaryTypeName().get() ).get() );
+        }
+        NodeList<TypeDeclaration<?>> tds = cu.getTypes();
+        if( tds.size() == 1 ){
+            return of( (EnumDeclaration)tds.get(0) );
+        }
+        throw new DraftException("Unable to locate EnumDeclaration in "+ cu);
+    }
+
+    public static _enum of( EnumDeclaration astClass ){
+        return new _enum( astClass );
+    }
+
+
+    public static _enum of(InputStream is){
+        return of( JavaParser.parse(is) );
+    }
+
+    public static _enum of( _in in ){
+        return of( in.getInputStream());
+    }
+
+    public static _enum of(String signature, Object anonymousBody, Function<_type,_type>... typeFns ){
+        StackTraceElement ste = Thread.currentThread().getStackTrace()[2];
+        _enum _e = _enum.of(signature);
+        ObjectCreationExpr oce = Expr.anonymousClass( ste );
+        if( oce.getAnonymousClassBody().isPresent()) {
+            NodeList<BodyDeclaration<?>> bds = oce.getAnonymousClassBody().get();
+            for(int i=0; i<bds.size(); i++) {
+                _e.astType().addMember(bds.get(i));
+            }
+        }
+        _e = _macro.to(anonymousBody.getClass(), _e);
+        for(int i=0;i<typeFns.length; i++){
+            _e = (_enum)typeFns[i].apply(_e);
+        }
+        return _e;
+    }
+
+
+    public _enum( EnumDeclaration astClass ){
+        this.astEnum = astClass;
+    }
+
+    /**
+     * the AST storing the state of the _class
+     * the _class is simply a facade into the state astClass
+     *
+     * the _class facade is a "Logical View" of the _class state stored in the
+     * AST and can interpret or manipulate the AST without:
+     * having to deal with syntax issues
+     */
+    private final EnumDeclaration astEnum;
+
+    @Override
+    public boolean isTopClass(){
+
+        return astEnum.isTopLevelType();
+    }
+
+    @Override
+    public EnumDeclaration astType(){
+        return astEnum;
+    }
+
+    @Override
+    public CompilationUnit findCompilationUnit(){
+        //it might be a member class
+        if( this.astEnum.findCompilationUnit().isPresent()){
+            return this.astEnum.findCompilationUnit().get();
+        }
+        return null; //its an orphan
+    }
+
+    @Override
+    public _annos getAnnos() {
+        return _annos.of(this.astEnum );
+    }
+
+    @Override
+    public boolean hasImplements(){
+        return !this.astEnum.getImplementedTypes().isEmpty();
+    }
+
+    @Override
+    public boolean isImplements( String str ){
+        try{
+            return isImplements( (ClassOrInterfaceType)Ast.typeRef( str ) );
+        }catch( Exception e){}
+        return false;
+    }
+
+    @Override
+    public boolean isImplements( ClassOrInterfaceType ct ){
+        return this.astEnum.getImplementedTypes().contains( ct );
+    }
+
+    @Override
+    public boolean isImplements( Class clazz ){
+        try{
+            return isImplements( (ClassOrInterfaceType)Ast.typeRef( clazz ) ) ||
+                    this.isImported( clazz ) && isImplements(clazz.getSimpleName() );
+        }catch( Exception e){ }
+        return false;
+    }
+
+    @Override
+    public NodeList<ClassOrInterfaceType> listImplements(){
+        return astEnum.getImplementedTypes();
+    }
+
+    @Override
+    public _enum implement( ClassOrInterfaceType... toImplement ){
+        Arrays.stream( toImplement ).forEach(i -> this.astEnum.addImplementedType( i ) );
+        return this;
+    }
+
+    @Override
+    public _enum implement( Class... toImplement ){
+        Arrays.stream( toImplement ).forEach(i -> this.astEnum.addImplementedType( i ) );
+        return this;
+    }
+
+    @Override
+    public _enum implement( String... toImplement ){
+        Arrays.stream( toImplement ).forEach(i -> this.astEnum.addImplementedType( i ) );
+        return this;
+    }
+
+    @Override
+    public boolean hasStaticBlock(){
+        return this.astEnum.getMembers().stream().anyMatch( m -> m instanceof InitializerDeclaration );
+    }
+
+    public _enum staticBlock(BlockStmt block){
+        BlockStmt bs = this.astEnum.addStaticInitializer();
+        bs.setStatements( block.getStatements());
+        return this;
+    }
+
+    @Override
+    public _enum staticBlock(String... content){
+        BlockStmt bs = this.astEnum.addStaticInitializer();
+        bs.setStatements( Ast.blockStmt( content ).getStatements());
+        return this;
+    }
+
+
+    public _enum removeConstructor( ConstructorDeclaration cd ){
+        this.astEnum.remove( cd );
+        return this;
+    }
+
+    public _enum removeConstructor( _constructor _ct){
+        this.astEnum.remove(_ct.ast() );
+        return this;
+    }
+
+    public _enum removeConstructors( Predicate<_constructor> ctorMatchFn){
+        listConstructors(ctorMatchFn).forEach(c -> removeConstructor(c));
+        return this;
+    }
+
+    @Override
+    public _staticBlock getStaticBlock(int index ){
+        NodeList<BodyDeclaration<?>> mems = this.astEnum.getMembers();
+        for( BodyDeclaration mem : mems ){
+            if( mem instanceof InitializerDeclaration){
+                if( index == 0 ){
+                    return new _staticBlock( (InitializerDeclaration)mem);
+                }
+                index --;
+            }
+        }
+        return null;
+    }
+
+    @Override
+    public _enum removeStaticBlock(_staticBlock _sb){
+        this.astEnum.remove(_sb.ast());
+        return this;
+    }
+
+    @Override
+    public _enum removeStaticBlock(InitializerDeclaration id){
+        this.astEnum.remove(id);
+        return this;
+    }
+
+    @Override
+    public List<_staticBlock> listStaticBlocks(){
+        List<_staticBlock> sbs = new ArrayList<>();
+        NodeList<BodyDeclaration<?>> mems = this.astEnum.getMembers();
+        for( BodyDeclaration mem : mems ){
+            if( mem instanceof InitializerDeclaration){
+                sbs.add(new _staticBlock( (InitializerDeclaration)mem));
+            }
+        }
+        return sbs;
+    }
+
+    @Override
+    public List<_method> listMethods() {
+        List<_method> _ms = new ArrayList<>();
+        astEnum.getMethods().forEach( m-> _ms.add(_method.of( m ) ) );
+        return _ms;
+    }
+
+    @Override
+    public List<_method> listMethods( String name ){
+        List<MethodDeclaration> mds = astEnum.getMethodsByName( name );
+        List<_method>ms = new ArrayList<>();
+        mds.forEach( m-> ms.add(_method.of(m)));
+        return ms;
+    }
+
+    @Override
+    public _method getMethod( String methodName ){
+        List<_method> ms = listMethods( methodName );
+        if( ms.isEmpty()){
+            return null;
+        }
+        return ms.get(0);
+    }
+
+    @Override
+    public _enum method( MethodDeclaration method ) {
+        astEnum.addMember( method );
+        return this;
+    }
+
+    @Override
+    public List<_constructor> listConstructors() {
+        List<_constructor> _cs = new ArrayList<>();
+        astEnum.getConstructors().forEach( c-> _cs.add( _constructor.of(c) ));
+        return _cs;
+    }
+
+    @Override
+    public _constructor getConstructor(int index){
+        return _constructor.of(astEnum.getConstructors().get( index ));
+    }
+
+    @Override
+    public _enum constructor( ConstructorDeclaration constructor ) {
+        constructor.setName(this.getName()); //set the constructor NAME
+        constructor.setPrivate(true);
+        constructor.setPublic(false);
+        constructor.setProtected(false);
+        //constructor.getModremove(Modifier.PUBLIC); //ALWAYS make enum constructor private
+        //constructor.getModifiers().remove(Modifier.PROTECTED);
+        //constructor.getModifiers().remove(Modifier.PRIVATE); //its inferred to be private
+        this.astEnum.addMember( constructor );
+        return this;
+    }
+
+    public _enum constants( String...onePerConstant ){
+        Arrays.stream(onePerConstant).forEach( c-> constant(c) );
+        return this;
+    }
+
+    public List<_constant> listConstants() {
+        List<_constant> _cs = new ArrayList<>();
+        astEnum.getEntries().forEach( c-> _cs.add( _constant.of(c) ));
+        return _cs;
+    }
+
+    public List<_constant> listConstants( Predicate<_constant> constantMatchFn ){
+        return listConstants().stream().filter( constantMatchFn ).collect( Collectors.toList());
+    }
+
+    public _enum forConstants( Consumer<_constant> constantConsumer ){
+        listConstants().forEach( constantConsumer );
+        return this;
+    }
+
+    public _enum forConstants( Predicate<_constant>constantMatchFn, Consumer<_constant> constantConsumer ){
+        listConstants( constantMatchFn).forEach( constantConsumer );
+        return this;
+    }
+
+    public _constant getConstant(String name){
+        Optional<EnumConstantDeclaration> ed =
+                astEnum.getEntries().stream().filter( e-> e.getNameAsString().equals( name ) ).findFirst();
+        if( ed.isPresent()){
+            return _constant.of(ed.get());
+        }
+        return null;
+    }
+
+    @Override
+    public _enum field( VariableDeclarator field ) {
+        if(! field.getParentNode().isPresent()){
+            throw new DraftException("cannot add Var without parent FieldDeclaration");
+        }
+        FieldDeclaration fd = (FieldDeclaration)field.getParentNode().get();
+        //we already added it to the parent
+        if( this.astEnum.getFields().contains( fd ) ){
+            if( !fd.containsWithin( field ) ){
+                fd.addVariable( field );
+            }
+            return this;
+        }
+        this.astEnum.addMember( fd );
+        return this;
+    }
+
+    public _enum constant ( String...constantDecl ) {
+        return constant( Ast.constant( constantDecl ));
+    }
+
+    /**
+     * Build a constant with the signature and add an anonymous BODY
+     * (And process any Annotation Macros that are within the anonymous BODY)
+     * <PRE>
+     *  _enum.of("E", new Object() { @_final int i; }, _autoConstructor.$)
+     *         .constant("G(2)", new Object(){
+     *                     @_final int ff =100;
+     *                     public String toString(){
+     *                         return ff+"";
+     *                     }
+     *                 });
+     *  //will create
+     *  public enum E{
+     *      G(2){
+     *          final int ff = 100;
+     *
+     *          public String toString(){
+     *              return ff+"";
+     *          }
+     *      }
+     *  }
+     * </PRE>
+     * @param signature
+     * @param anonymousBody
+     * @return
+     */
+    public _enum constant (String signature, Object anonymousBody ){
+        StackTraceElement ste = Thread.currentThread().getStackTrace()[2];
+        ObjectCreationExpr oce = Expr.anonymousClass(ste);
+        _constant _ct = _constant.of( Ast.constant(signature));
+        if( oce.getAnonymousClassBody().isPresent()){
+            // here, I'm putting the BODY into a temp _class, so that I can apply
+            // annotation macros to it
+            _class _c = _class.of("C");
+            NodeList<BodyDeclaration<?>> bds = oce.getAnonymousClassBody().get();
+            for(int i=0; i<bds.size();i++){
+                _c.astType().addMember(bds.get(i));
+            }
+            //apply macros to the constant BODY (here stored in a class)
+            _c = _macro.to(anonymousBody.getClass(), _c);
+            //the potentially modified BODY members are added
+            _ct.ast().setClassBody(_c.astType().getMembers());
+            //_ct.astConstant.setClassBody( oce.getAnonymousClassBody().get());
+        }
+        return constant(_ct.ast());
+    }
+
+
+    public _enum constant ( EnumConstantDeclaration constant ) {
+        this.astEnum.addEntry( constant );
+        return this;
+    }
+
+    @Override
+    public String toString(){
+        if( this.isTopClass() ){
+            return this.astEnum.findCompilationUnit().get().toString();
+        }
+        return this.astEnum.toString();
+    }
+
+    @Override
+    public boolean equals( Object obj ) {
+        if( this == obj ) {
+            return true;
+        }
+        if( obj == null ) {
+            return false;
+        }
+        if( getClass() != obj.getClass() ) {
+            return false;
+        }
+        final _enum other = (_enum)obj;
+
+        if( this.astEnum == other.astEnum ){
+            return true; //two _enum instances pointing to the same EnumDeclaration instance
+        }
+        if( !Objects.equals( this.getPackage(), other.getPackage() ) ) {
+            //System.out.println("package");
+            return false;
+        }
+        if( !Objects.equals( this.getAnnos(), other.getAnnos() ) ) {
+            //System.out.println("annos");
+            return false;
+        }
+        if( !Objects.equals( this.getJavadoc(), other.getJavadoc() ) ) {
+            //System.out.println("JAVADOC");
+            return false;
+        }
+        if( !Objects.equals( this.getModifiers(), other.getModifiers() ) ) {
+            //System.out.println("MODIFIERS");
+            return false;
+        }
+        if( !Objects.equals( this.getName(), other.getName() ) ) {
+            //System.out.println("NAME");
+            return false;
+        }
+        Set<_staticBlock>tsb = new HashSet<>();
+        Set<_staticBlock>osb = new HashSet<>();
+        tsb.addAll(listStaticBlocks());
+        osb.addAll(other.listStaticBlocks());
+        if( !Objects.equals( tsb, osb ) ) {
+            //System.out.println("STATIC_BLOCK");
+            return false;
+        }
+
+        if( !Ast.typesEqual( this.listImplements(), other.listImplements())){
+            return false;
+        }
+
+        if( ! Ast.importsEqual( astEnum, other.astEnum )){
+            return false;
+        }
+        /*
+        Set<ImportDeclaration> ti = new HashSet<>();
+        Set<ImportDeclaration> oi = new HashSet<>();
+        ti.addAll( this.listImports() );
+        oi.addAll( other.listImports());
+        if( !Objects.equals( ti, oi ) ) {
+            //System.out.println("imports");
+            return false;
+        }
+        */
+        Set<_constant> tc = new HashSet<>();
+        Set<_constant> oc = new HashSet<>();
+        tc.addAll( this.listConstants() );
+        oc.addAll( other.listConstants() );
+
+        if( !Objects.equals( tc, oc ) ) {
+            //System.out.println("CONSTANTS");
+            return false;
+        }
+
+        Set<_constructor> tct = new HashSet<>();
+        Set<_constructor> oct = new HashSet<>();
+        tct.addAll( this.listConstructors() );
+        oct.addAll( other.listConstructors() );
+
+        if( !Objects.equals( tct, oct ) ) {
+            //System.out.println("CONSTRUCTORS");
+            return false;
+        }
+
+        Set<_field> tf = new HashSet<>();
+        Set<_field> of = new HashSet<>();
+        tf.addAll( this.listFields() );
+        of.addAll( other.listFields() );
+
+        if( !Objects.equals( tf, of ) ) {
+            //System.out.println("FIELDS");
+            return false;
+        }
+
+        Set<_method> tm = new HashSet<>();
+        Set<_method> om = new HashSet<>();
+        tm.addAll( this.listMethods() );
+        om.addAll( other.listMethods() );
+
+        if( !Objects.equals( tm, om ) ) {
+            //System.out.println("METHODS");
+            return false;
+        }
+
+        Set<_type> tn = new HashSet<>();
+        Set<_type> on = new HashSet<>();
+        tn.addAll( this.listNests() );
+        on.addAll( other.listNests() );
+
+        if( !Objects.equals( tn, on ) ) {
+            //System.out.println("NESTS");
+            return false;
+        }
+        return true;
+    }
+
+    @Override
+    public List<_member> listMembers(){
+        List<_member> _mems = new ArrayList<>();
+        forFields( f-> _mems.add( f));
+        forMethods(m -> _mems.add(m));
+        forConstructors(c -> _mems.add(c));
+        forConstants(c-> _mems.add(c));
+        /*
+        if(this.hasStaticBlock() ){
+            _mems.add( this.getStaticBlock());
+        }
+        */
+        forNests(n -> _mems.add(n));
+        return _mems;
+    }
+
+    @Override
+    public _enum forMembers( Predicate<_member>_memberMatchFn, Consumer<_member> _memberActionFn){
+        listMembers(_memberMatchFn).forEach(m -> _memberActionFn.accept(m) );
+        return this;
+    }
+
+    public _enum removeFields( Predicate<_field> _fieldMatchFn){
+        List<_field> fs = listFields(_fieldMatchFn);
+        fs.forEach(f -> removeField(f));
+        return this;
+    }
+
+    public _enum removeField( _field _f ){
+        if( listFields().contains(_f) ){
+            if( _f.getFieldDeclaration().getVariables().size() == 1){
+                _f.getFieldDeclaration().remove();
+            } else{
+                _f.getFieldDeclaration().getVariables().removeIf( v-> v.getNameAsString().equals(_f.getName() ));
+            }
+        }
+        return this;
+    }
+
+    public _enum removeField( String fieldName ){
+        Optional<FieldDeclaration> ofd = this.astEnum.getFieldByName(fieldName );
+        if( ofd.isPresent() ){
+            FieldDeclaration fd = ofd.get();
+            if( fd.getVariables().size() == 1 ){
+                fd.remove();
+            } else{
+                fd.getVariables().removeIf( v-> v.getNameAsString().equals(fieldName));
+            }
+        }
+        return this;
+    }
+
+    public _enum removeImplements( ClassOrInterfaceType toRemove ){
+        this.astEnum.getImplementedTypes().remove( toRemove );
+        return this;
+    }
+
+    public _enum removeImplements( Class toRemove ){
+        this.astEnum.getImplementedTypes().removeIf( im -> im.getNameAsString().equals( toRemove.getSimpleName() ) ||
+                im.getNameAsString().equals(toRemove.getCanonicalName()) );
+        return this;
+    }
+
+    public _enum removeConstant( _constant _c ){
+        if( listConstants().contains(_c) ){
+            _c.ast().removeForced();
+        }
+        return this;
+    }
+
+    public _enum removeConstant( String name ){
+        _constant c = getConstant(name);
+        if( c != null ){
+            removeConstant( c );
+        }
+        return this;
+    }
+
+    @Override
+    public Map<_java.Part, Object> partsMap( ) {
+        Map<_java.Part, Object> parts = new HashMap<>();
+        parts.put( _java.Part.PACKAGE_NAME, this.getPackage() );
+        parts.put( _java.Part.IMPORTS, this.listImports() );
+        parts.put( _java.Part.ANNOTATIONS, this.listAnnos() );
+        parts.put( _java.Part.IMPLEMENTS, this.listImplements() );
+        parts.put( _java.Part.JAVADOC, this.getJavadoc() );
+        parts.put( _java.Part.CONSTANTS, this.listConstants());
+        parts.put( _java.Part.STATIC_BLOCKS, this.listStaticBlocks());
+        parts.put( _java.Part.NAME, this.getName() );
+        parts.put( _java.Part.MODIFIERS, this.getModifiers() );
+        parts.put( _java.Part.CONSTRUCTORS, this.listConstructors() );
+        parts.put( _java.Part.METHODS, this.listMethods() );
+        parts.put( _java.Part.FIELDS, this.listFields() );
+        parts.put( _java.Part.NESTS, this.listNests() );
+        return parts;
+    }
+
+    @Override
+    public int hashCode() {
+        int hash = 3;
+        Set<ImportDeclaration> ti = new HashSet<>();
+        ti.addAll( this.listImports() );
+
+        Set<_constant> tc = new HashSet<>();
+        tc.addAll( this.listConstants() );
+
+        Set<_constructor> tct = new HashSet<>();
+        tct.addAll( this.listConstructors() );
+
+        Set<_field> tf = new HashSet<>();
+        tf.addAll( this.listFields() );
+
+        Set<_method> tm = new HashSet<>();
+        tm.addAll( this.listMethods() );
+
+        Set<_type> tn = new HashSet<>();
+        tn.addAll( this.listNests() );
+
+        Set<_staticBlock> sbs = new HashSet<>();
+        sbs.addAll( this.listStaticBlocks() );
+
+
+        hash = 53 * hash + Objects.hash( this.getPackage(),
+                //this.getAnnos(),
+                Ast.annotationsHash( astEnum),
+                this.getJavadoc(), this.getModifiers(),
+                this.getName(), sbs,
+                Ast.importsHash( astEnum ),
+                Ast.typesHashCode( astEnum.getImplementedTypes()),
+                tc, tct, tf, tm, tn);
+
+        return hash;
+    }
+
+    /**
+     * individual constant within an _enum
+     * <PRE>
+     * //A, and B are CONSTANTS of _enum E
+     * enum E{
+     *    A(),
+     *    B('a');
+     * }
+     * </PRE>
+     */
+    public static final class _constant implements _javadoc._hasJavadoc<_constant>,
+            _anno._hasAnnos<_constant>,_method._hasMethods<_constant>, _field._hasFields<_constant>,
+            _member<EnumConstantDeclaration, _constant> {
+
+        public static _constant of( EnumConstantDeclaration ecd ){
+            return new _constant( ecd);
+        }
+
+        public _constant( EnumConstantDeclaration ecd ){
+            this.astConstant = ecd;
+        }
+
+        private final EnumConstantDeclaration astConstant;
+
+        @Override
+        public EnumConstantDeclaration ast(){
+            return astConstant;
+        }
+
+        @Override
+        public boolean hasJavadoc(){
+            return this.astConstant.getJavadocComment().isPresent();
+        }
+
+        @Override
+        public _javadoc getJavadoc() {
+            return _javadoc.of(this.astConstant);
+        }
+
+        @Override
+        public _constant removeJavadoc(){
+            this.astConstant.removeJavaDocComment();
+            return this;
+        }
+
+        public boolean hasArguments(){
+            return this.astConstant.getArguments().size() > 0;
+        }
+
+        @Override
+        public _constant name( String name ){
+            this.astConstant.setName( name );
+            return this;
+        }
+
+        public _constant addArgument( Expression e ){
+            this.astConstant.addArgument( e );
+            return this;
+        }
+
+        public _constant addArgument( String str ){
+            this.astConstant.addArgument( str );
+            return this;
+        }
+
+        public _constant clearArguments(){
+            this.astConstant.getArguments().clear();
+            return this;
+        }
+
+        public _constant setArgument( int index, Expression e){
+            this.astConstant.getArguments().set( index, e );
+            return this;
+        }
+
+        public _constant removeFields( Predicate<_field> _fieldMatchFn){
+            List<_field> fs = listFields(_fieldMatchFn);
+            fs.forEach(f -> removeField(f));
+            return this;
+        }
+
+        public _constant removeField( _field _f ){
+            if( listFields().contains(_f) ){
+                if( _f.getFieldDeclaration().getVariables().size() == 1){
+                    _f.getFieldDeclaration().remove();
+                } else{
+                    _f.getFieldDeclaration().getVariables().removeIf( v-> v.getNameAsString().equals(_f.getName() ));
+                }
+            }
+            return this;
+        }
+
+        public _constant removeField( String fieldName ){
+            Optional<BodyDeclaration<?>> ofd = this.astConstant.getClassBody().stream().filter(b -> {
+                if (b.isFieldDeclaration()) {
+                    NodeList<VariableDeclarator> vds = b.asFieldDeclaration().getVariables();
+                    return vds.stream().filter( v-> v.getNameAsString().equals(fieldName ) ).findFirst().isPresent();
+                }
+                return false;
+            }).findFirst();
+            if( ofd.isPresent() ){
+                FieldDeclaration fd = (FieldDeclaration)ofd.get();
+                if( fd.getVariables().size() == 1 ){
+                    fd.remove();
+                } else{
+                    fd.getVariables().removeIf( v-> v.getNameAsString().equals(fieldName));
+                }
+            }
+            return this;
+        }
+
+        public List<Expression> listArguments(){
+            return this.astConstant.getArguments();
+        }
+
+        public Expression getArgument( int index ){
+            return listArguments().get( index );
+        }
+
+        @Override
+        public _constant javadoc( String... content ) {
+            this.astConstant.setJavadocComment( Text.combine( content ) );
+            return this;
+        }
+
+        @Override
+        public _annos getAnnos() {
+            return _annos.of(this.astConstant );
+        }
+
+        @Override
+        public List<_method> listMethods() {
+            List<_method> ms = new ArrayList<>();
+            this.astConstant.getClassBody().stream().filter(b -> b instanceof MethodDeclaration).forEach( m -> ms.add(_method.of( (MethodDeclaration)m )) );
+            return ms;
+        }
+
+        @Override
+        public _constant method( MethodDeclaration method ) {
+            this.astConstant.getClassBody().add( method );
+            return this;
+        }
+
+        @Override
+        public _constant field( VariableDeclarator field ) {
+            if(! field.getParentNode().isPresent()){
+                throw new DraftException("cannot add Var without parent FieldDeclaration");
+            }
+            FieldDeclaration fd = (FieldDeclaration)field.getParentNode().get();
+            //we already added it to the parent
+            if( this.astConstant.getClassBody().contains( fd ) ){
+                if( !fd.containsWithin( field ) ){
+                    fd.addVariable( field );
+                }
+                return this;
+            }
+            this.astConstant.getClassBody().add( fd );
+            return this;
+        }
+
+        @Override
+        public List<_field> listFields() {
+            List<_field> ms = new ArrayList<>();
+            this.astConstant.getClassBody().stream().filter(b -> b instanceof FieldDeclaration)
+                    .forEach( f->{
+                        if( ((FieldDeclaration)f).getVariables().size() == 1 ){
+                            ms.add(_field.of( ((FieldDeclaration)f).getVariable( 0 ) ) );
+                        } else{
+                            for(int i=0;i<((FieldDeclaration)f).getVariables().size();i++){
+                                ms.add(_field.of( ((FieldDeclaration)f).getVariable( i ) ) );
+                            }
+                        }
+                    });
+            return ms;
+        }
+
+        @Override
+        public _constant fields( FieldDeclaration field ) {
+            this.astConstant.getClassBody().add( field );
+            return this;
+        }
+
+        @Override
+        public String getName(){
+            return this.astConstant.getNameAsString();
+        }
+
+        @Override
+        public boolean equals( Object obj ) {
+            if( this == obj ) {
+                return true;
+            }
+            if( obj == null ) {
+                return false;
+            }
+            if( getClass() != obj.getClass() ) {
+                return false;
+            }
+            final _constant other = (_constant)obj;
+            if( this.astConstant == other.astConstant){
+                return true; //two _constant pointing to the same AstEnumDeclaration
+            }
+            if( !Objects.equals( this.getAnnos(), other.getAnnos() ) ) {
+                //System.out.println("annos");
+                return false;
+            }
+            if( !Objects.equals( this.getJavadoc(), other.getJavadoc() ) ) {
+                //System.out.println("JAVADOC");
+                return false;
+            }
+            if( !Objects.equals( this.getName(), other.getName() ) ) {
+                //System.out.println("NAME");
+                return false;
+            }
+            if( !Objects.equals(this.listArguments(), other.listArguments() ) ) {
+                //System.out.println("args");
+                return false;
+            }
+            Set<_method> tms = new HashSet<>();
+            Set<_method> oms = new HashSet<>();
+            tms.addAll( this.listMethods());
+            oms.addAll( other.listMethods());
+
+            if( !Objects.equals( tms, oms ) ) {
+                return false;
+            }
+            Set<_field> tfs = new HashSet<>();
+            Set<_field> ofs = new HashSet<>();
+            tfs.addAll( this.listFields());
+            ofs.addAll( other.listFields());
+            if( !Objects.equals( tfs, ofs ) ) {
+                return false;
+            }
+            return true;
+        }
+
+        @Override
+        public Map<_java.Part, Object> partsMap( ) {
+            Map<_java.Part, Object> parts = new HashMap<>();
+            parts.put( _java.Part.ANNOTATIONS, this.listAnnos() );
+            parts.put( _java.Part.JAVADOC, this.getJavadoc() );
+            parts.put( _java.Part.NAME, this.getName());
+            parts.put( _java.Part.ARGUMENTS, this.listArguments());
+            parts.put( _java.Part.NAME, this.getName() );
+            parts.put( _java.Part.METHODS, this.listMethods() );
+            parts.put( _java.Part.FIELDS, this.listFields() );
+            return parts;
+        }
+
+        @Override
+        public int hashCode() {
+            int hash = 7;
+            Set<_method> tms = new HashSet<>();
+            tms.addAll( this.listMethods());
+
+            Set<_field> tfs = new HashSet<>();
+            tfs.addAll( this.listFields());
+
+            hash = 13 * hash + Objects.hash( tms, tfs, getAnnos(), getJavadoc(),
+                    getName(), listArguments() );
+            return hash;
+        }
+    }
+}
