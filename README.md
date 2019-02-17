@@ -7,7 +7,7 @@ code, you can build, navigate, add, change, and delete elements from code; then 
 within a program.</P>
 
 <TABLE>
-<TR><TH>draft code</TH><TH>source code</TH></TR>
+<TR><TH>draft.java code</TH><TH>source code</TH></TR>
 <TR><TD>_class.of(<span style="color: #a31515">&quot;Circle&quot;</span>).field(<span style="color: #a31515">&quot;int rad;&quot;</span>);
 </TD><TD><span style="color: #0000ff">public</span> <span style="color: #0000ff">class</span> <span style="color: #2b91af">Circle</span>{<span style="color: #2b91af">int</span> rad;}
 </TD></TR>     
