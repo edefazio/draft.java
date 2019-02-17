@@ -1,0 +1,283 @@
+package draft;
+
+import draft.Composite;
+import draft.DraftException;
+import draft.Named;
+import java.util.*;
+import java.util.stream.Collectors;
+
+/**
+ * Finding the differences in the components between two {@link Composite}s
+ * 
+ * @author Eric
+ */
+public enum Diff {
+    ;
+ 
+    /**
+     * Representation of a diff of components between two {@link Composite}s
+     * NOTE: left or right COULD be null
+     */    
+    public static class Entry{
+        public Entry(String name, Object left, Object right) {
+            this.name = name;
+            this.left = left;
+            this.right = right;
+        }
+
+        public Object left;
+        public Object right;
+        public String name;
+    }
+    
+    public static Entry of( String name, Object left, Object right ) {
+        return new Entry(name, left, right);
+    }
+    
+    /**
+     * Consumer for accepting a Diff for modularity
+     * (Although currently the diff method is private to minimize API bloat
+     */
+    private interface DiffConsumer{
+        public void onDiff( String key, Object left, Object right );
+    }
+    
+    /**
+     * Componentize and compare the components of 2 Composite entities
+     * 
+     * @param left
+     * @param right
+     * @return 
+     */
+    public static DiffList components( Composite left, Composite right ){
+        return components( left, right, new String[0]);
+    }
+    
+    /**
+     * 
+     * @param left
+     * @param right
+     * @param excludedNames Named entities( i.e. {@link draft.java._java.Part}
+     * @return 
+     */
+    public static DiffList components( Composite left, Composite right, Named...excludedNames){
+       Set<String> excluding = new HashSet<>();
+       Arrays.stream(excludedNames).forEach(n -> excluding.add(n.getName()) );
+       DiffList dl = new DiffList();            
+        
+        components(left, right, 
+            (String key, Object left1, Object right1) -> {
+                dl.add(key, left1, right1);
+            }, 
+            excluding);
+        return dl;    
+    }
+    
+    /**
+     * Shallow (1-level deep) diff of the individual properties
+     * on the two composite entities
+     * 
+     * @param left the left Composite to be componentized and compared
+     * @param right the right Composite to be componentized and compared
+     * @param excluding the names of components that are excluded from being compared
+     * @return a DiffList containing all differences between the left and right
+     */
+    public static DiffList components( 
+        Composite left, Composite right, String... excluding ){                
+        
+        DiffList dl = new DiffList();            
+        
+        components(left, right, 
+            (String key, Object left1, Object right1) -> {
+                dl.add(key, left1, right1);
+            }, 
+            excluding);
+        return dl;    
+    }
+    
+    /**
+     * Diff the Composite components of left and right... omitting components that
+     * are labeled by excluding (i.e. {@link draft.java._java.Part#JAVADOC#name} )
+     * 
+     * @param left the left component node to diff against the right node
+     * @param right the right component node to diff against the left
+     * @param excluding names of part types that are omitted (i.e. {@link draft.java._java.Part#JAVADOC#name})
+     * @return a DiffList Mapping Parts and their Objects that are different between left and right
+     */
+    private static void components( 
+        Composite left, Composite right, DiffConsumer diffConsumer, String... excluding ){                
+        
+        Set<String> omit = new HashSet<>();
+        Arrays.stream(excluding).forEach( n -> omit.add(n) );
+        final Set<String> excludedComponents = omit;
+        components(left, right, diffConsumer, excludedComponents);
+    }
+    
+    /**
+     * Diff the Composite components of left and right... omitting components that
+     * are labeled by excluding (i.e. {@link draft.java._java.Part#JAVADOC#name} )
+     * 
+     * @param left the left component node to diff against the right node
+     * @param right the right component node to diff against the left
+     * @param excluding names of part types that are omitted (i.e. {@link draft.java._java.Part#JAVADOC#name})
+     * @return a DiffList Mapping Parts and their Objects that are different between left and right
+     */
+    private static void components( 
+        Composite left, Composite right, DiffConsumer diffConsumer, Set<String> excludedComponents ){                    
+        Map<String,Object> ld = left.componentize();
+        Map<String,Object> rd = right.componentize();
+        //DiffList dl = new DiffList();
+        ld.forEach((leftKey,leftComponent) -> {
+            if( !excludedComponents.contains( leftKey ) ){
+                Object rightComponent = rd.get(leftKey);
+                if( !Objects.equals(leftComponent, rightComponent)){
+                    diffConsumer.onDiff(leftKey, leftComponent, rightComponent );
+                }
+            }
+        });        
+        //for "LIKE" things this will remove ALL
+        rd.keySet().removeAll( ld.keySet() );
+        
+        rd.forEach((rightKey,rightComponent) -> {
+            if( !excludedComponents.contains( rightKey ) ){
+                Object leftComponent = ld.get(rightKey);
+                if( !Objects.equals(leftComponent, rightComponent)){
+                    diffConsumer.onDiff(rightKey, leftComponent, rightComponent );
+                }
+            }
+        });
+    }    
+    
+   
+     /**
+     * Find the FIRST diff between the left and right composites and return it
+     * (or NULL if there are no differences)
+     *  the strategy is ... go through the left component keys and match against the
+     * values in right... If no diffs are found, remove all of lefts keys from right 
+     * and check the remaining keys
+     * 
+     * @param left the left component node to diff against the right node
+     * @param right the right component node to diff against the left
+     * @param excluding names of component types that are omitted (i.e. {@link draft.java._java.Part#JAVADOC#name} )
+     * @return a Diff between left and right, or null if no differences exist
+     */
+    public static Entry first( 
+        Composite left, Composite right, Named... excluding ){  
+        Set<String> excl = new HashSet<>();
+        Arrays.stream(excluding).forEach(e -> excl.add(e.getName()) );
+        return first(left, right, excl);
+    }
+    
+    /**
+     * Find the FIRST diff between the left and right composites and return it
+     * (or NULL if there are no differences)
+     *  the strategy is ... go through the left component keys and match against the
+     * values in right... If no diffs are found, remove all of lefts keys from right 
+     * and check the remaining keys
+     * 
+     * @param left the left component node to diff against the right node
+     * @param right the right component node to diff against the left
+     * @param excluding names of component types that are omitted (i.e. {@link draft.java._java.Part#JAVADOC#name} )
+     * @return a Diff between left and right, or null if no differences exist
+     */
+    public static Entry first( 
+        Composite left, Composite right, String... excluding ){                
+        
+        Set<String> omit = new HashSet<>();
+        Arrays.stream(excluding).forEach( n -> omit.add(n) );
+        //final Set<String> omitComponents = omit;
+        return first( left, right, omit );
+    }
+    
+    public static Entry first( Composite left, Composite right, Set<String> omitComponents ){                    
+        Map<String,Object> ld = left.componentize();
+        Map<String,Object> rd = right.componentize();
+        
+        Optional<String> firstDiffKey = ld.keySet().stream().filter((leftKey) -> {
+            if( !omitComponents.contains( leftKey ) ){
+                Object leftComponent = ld.get(leftKey);
+                Object rightComponent = rd.get(leftKey);
+                return !Objects.equals(leftComponent, rightComponent);
+            }
+            return false;
+        }).findFirst();
+        
+        if( firstDiffKey.isPresent() ){
+            return new Entry( firstDiffKey.get(), ld.get(firstDiffKey.get()), rd.get(firstDiffKey.get()) );
+        }
+        
+        rd.keySet().removeAll( ld.keySet() );
+        
+        firstDiffKey = ld.keySet().stream().filter((rightKey) -> {
+            if( !omitComponents.contains( rightKey ) ){
+                Object leftComponent = ld.get(rightKey);
+                Object rightComponent = rd.get(rightKey);
+                return !Objects.equals(leftComponent, rightComponent);                
+            }
+            return false;
+        }).findFirst();
+        
+        if( firstDiffKey.isPresent() ){
+            return new Entry( firstDiffKey.get(), ld.get(firstDiffKey.get()), rd.get(firstDiffKey.get()) );
+        }
+        return null;
+    }
+    
+    /**
+     * List of Diffs between two entities
+     */    
+    public static class DiffList{
+        public List<Entry> diffs = new ArrayList<>();
+        
+        public int size(){
+            return diffs.size();
+        }
+        
+        public boolean isEmpty(){
+            return size() == 0;
+        }
+        
+        public List<String>names(){
+            return diffs.stream().map(d -> d.name ).collect(Collectors.toList());
+        }
+        
+        public Object left( String name ){
+            Optional<Entry> od = this.diffs.stream().filter( d -> d.name.equals( name ) ).findFirst();
+            if(od.isPresent() ){
+                return od.get().left;
+            }
+            throw new DraftException("no diff for \""+ name+"\"");
+        }
+        
+        public Object right( String name ){
+            Optional<Entry> od = this.diffs.stream().filter( d -> d.name.equals( name ) ).findFirst();
+            if(od.isPresent() ){
+                return od.get().right;
+            }
+            throw new DraftException("no diff for \""+ name+"\"");
+        }
+        
+        public boolean containsNames( String ...names){
+            return Arrays.stream(names)
+                    .allMatch(n -> diffs.stream().filter(d -> d.name.equals(n)).findFirst().isPresent());
+        }
+        
+        public DiffList add( String name, Object left, Object right ){
+            diffs.add( Diff.of(name, left, right));
+            return this;
+        }
+        
+        @Override
+        public String toString(){
+            if( isEmpty() ){
+                return " - no diffs found -";
+            }
+            StringBuilder sb = new StringBuilder();
+            sb.append("(").append( diffs.size()).append(") diffs").append(System.lineSeparator());
+            this.diffs.forEach( d -> {
+                sb.append("    ").append( d.name ).append(System.lineSeparator() );
+                });
+            return sb.toString();
+        }
+    }
+}
