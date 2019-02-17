@@ -302,7 +302,7 @@ public final class $expr <T extends Expression>
 
 
     public T compose( _model._node model ){
-        return (T)compose(model.decompose());
+        return (T)compose(model.componentize());
     }
 
     public T compose( Translator t, Object...keyValues ){

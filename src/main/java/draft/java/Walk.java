@@ -743,6 +743,7 @@ public enum Walk {
      * @param targetClass the target Class to search for (can be a Node class, a _model class)
      * @param <A> the target TYPE
      * @param <M> the model entity (i.e. _class, _method, _constructor, _staticBlock)
+     * @param matchFn predicate for selecting nodes to collect
      * @return the list of
      */
     public static <A, M extends _model._node> List<A> list(
@@ -831,6 +832,7 @@ public enum Walk {
      * @param <A> the target Class TYPE ..we need this BECAUSE Node classes/interfaces dont have a common ancestor
      *           (Node is the base class for Ast Node entities, but NodeWithAnnotations, interfaces do not etc.
      * @param <N> the Node class (if the target class is a Node class)
+     * @param <R> the root Node type
      * @param <L> the logical class (if the target class is a _model class)
      * @param tt the Tree Traversal Strategy ({@link Node.TreeTraversal#POSTORDER}, {@link Node.TreeTraversal#PREORDER}, {@link Node.TreeTraversal#PARENTS}, {@link Node.TreeTraversal#BREADTHFIRST}}
      * @param astRootNode the root AST node to search
@@ -888,11 +890,12 @@ public enum Walk {
      * @param _modelMatchFn
      * @param _modelAction
      * @param <L>
+     * @param <R> the Root node type
      * @return
      */
     public static <L extends _model, R extends Node> R model(
             Node.TreeTraversal tt, R astRootNode, Class<L> _modelClass, Predicate<L> _modelMatchFn, Consumer<L> _modelAction ){
-        if( _java.ENTITY_TO_NODE_CLASSES.containsKey( _modelClass ) ) {
+        if( _java.MODEL_TO_NODE_CLASSES.containsKey( _modelClass ) ) {
             //System.out.println("Node Classes ");
             // _anno.class, AnnotationExpr.class
             // _annotation._element.class, AnnotationMemberDeclaration.class
@@ -913,7 +916,7 @@ public enum Walk {
             //class switch would be nice here
             Ast.walk( tt,
                     astRootNode,
-                    _java.ENTITY_TO_NODE_CLASSES.get( _modelClass ),
+                    _java.MODEL_TO_NODE_CLASSES.get( _modelClass ),
                     t ->true,
                     a -> {
                         L logical = (L)_java.of( a );

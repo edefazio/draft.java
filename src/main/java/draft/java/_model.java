@@ -5,6 +5,8 @@ import com.github.javaparser.ast.body.MethodDeclaration;
 import com.github.javaparser.ast.expr.AnnotationExpr;
 import com.github.javaparser.ast.type.Type;
 import com.github.javaparser.printer.PrettyPrinterConfiguration;
+import draft.Composite;
+import draft.Named;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -57,10 +59,12 @@ public interface _model {
      * <LI>{@link _typeParameter} {@link com.github.javaparser.ast.type.TypeParameter}</LI>
      * <LI>{@link _typeRef} {@link Type}</LI>
      * </UL>
+     * @see _java for mappings
+     * 
      * @param <N> ast node {@link MethodDeclaration}, {@link com.github.javaparser.ast.body.FieldDeclaration}
      */
     interface _node<N extends Node>
-            extends _model {
+            extends _model, Composite {
 
         /**
          * Decompose the entity into key-VALUE pairs
@@ -69,11 +73,12 @@ public interface _model {
         Map<_java.Part,Object> partsMap();
 
         /**
-         * Decompose the entity into smaller components
-         * returning a String name to the object part
-         * @return
+         * Decompose the entity into smaller named components
+         * returning a mapping between the name and the constituent part
+         * @return a Map with the names mapped to the corresponding components
          */
-        default Map<String,Object>decompose(){
+        @Override
+        default Map<String,Object>componentize(){
             Map<_java.Part, Object> parts = partsMap();
             Map<String,Object> mdd = new HashMap<>();
             parts.forEach( (p,o) -> {mdd.put( p.name, o);});
@@ -81,8 +86,10 @@ public interface _model {
         }
 
         /**
-         * @return the AST Node instance being manipulated
-         * by the _model facade
+         * @return the underlying AST Node instance being manipulated
+         * by the _model._node facade
+         * NOTE: the AST node contains physical information (i.e. location in
+         * the file (line numbers) and syntax related parent/child relationships
          */
         N ast();
 
@@ -122,10 +129,13 @@ public interface _model {
      *
      * NOTE:
      * <LI>{@link _staticBlock} {@link com.github.javaparser.ast.body.InitializerDeclaration}
-     * is NOT a member (primarily because it does not satisfy the {@link _named} interface
-     * (this generally maps to Accessible Java Member things (available via reflection at runtime)
+     * is NOT a member (primarily because it does not satisfy the {@link _named} 
+     * {@link _anno._hasAnnos} or {@link _javadoc._hasJavadoc} interfaces
+     * (this generally maps to Accessible Java Member things 
+     * (available via reflection at runtime)
      *
-     * @param <N>
+     * @param <N> the node type
+     * @param <T> the model type
      */
     interface _member<N extends Node, T extends _named & _anno._hasAnnos & _javadoc._hasJavadoc>
             extends _node<N>, _named<T>, _anno._hasAnnos<T>, _javadoc._hasJavadoc<T>{
@@ -137,7 +147,7 @@ public interface _model {
      * @author Eric
      * @param <T>
      */
-    interface _named <T extends _named> extends _model{
+    interface _named <T extends _named> extends _model, Named {
 
         /**
          * @param name
@@ -146,8 +156,10 @@ public interface _model {
         T name( String name );
 
         /**
-         * @return
+         * 
+         * @return the name of the entity
          */
+        @Override
         String getName();
     }
 

@@ -37,7 +37,7 @@ import java.util.regex.Pattern;
  *
  * @author Eric
  */
-public final class Stencil implements Template<String> {
+public final class Stencil implements Template<String>{
 
     /**
      * Keeps track of the blanks within the Stencils (Holes where data can be
@@ -523,6 +523,10 @@ public final class Stencil implements Template<String> {
         return this.textBlanks.getRegexPattern();
     }
 
+    public Tokens decompose( String composed ){
+        return decompose( new String[]{composed} );
+    }
+    
     public Tokens decompose(String... composed ) {
         List<String> valsInOrder = this.textBlanks.decompose( Text.combine( composed) );
         if( valsInOrder == null ) {

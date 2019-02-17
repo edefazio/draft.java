@@ -263,7 +263,7 @@ public final class $snip implements Template<List<Statement>>, $query<List<State
 
 
     public List<Statement> compose( _model._node model ){
-        return compose(model.decompose());
+        return compose(model.componentize());
     }
 
     public List<Statement> compose( Map<String,Object> tokens ){

@@ -135,7 +135,7 @@ public class $field
     }
 
     public _field compose(_model._node modelNode ){
-        return compose( Translator.DEFAULT_TRANSLATOR, modelNode.decompose() );
+        return compose( Translator.DEFAULT_TRANSLATOR, modelNode.componentize() );
     }
 
     @Override

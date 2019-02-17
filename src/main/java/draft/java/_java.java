@@ -2,13 +2,13 @@ package draft.java;
 
 import com.github.javaparser.ast.*;
 import com.github.javaparser.ast.body.*;
-//import com.github.javaparser.ast.body.Parameter;
 import com.github.javaparser.ast.comments.*;
 import com.github.javaparser.ast.expr.*;
 import com.github.javaparser.ast.nodeTypes.*;
 import com.github.javaparser.ast.stmt.BlockStmt;
 import com.github.javaparser.ast.type.*;
 import draft.DraftException;
+import draft.Named;
 import draft.Text;
 import draft.java._model.*;
 import java.util.*;
@@ -25,29 +25,29 @@ public enum _java {
     ;
 
     /** Map from the _model._node classes to the Ast Node equivalent */
-    public static final Map<Class<? extends _node>, Class<? extends Node>> ENTITY_TO_NODE_CLASSES = new HashMap<>();
+    public static final Map<Class<? extends _node>, Class<? extends Node>> MODEL_TO_NODE_CLASSES = new HashMap<>();
 
     static {
-        ENTITY_TO_NODE_CLASSES.put( _anno.class, AnnotationExpr.class );
-        ENTITY_TO_NODE_CLASSES.put( _annotation._element.class, AnnotationMemberDeclaration.class );
-        ENTITY_TO_NODE_CLASSES.put( _enum._constant.class, EnumConstantDeclaration.class );
-        ENTITY_TO_NODE_CLASSES.put( _constructor.class, ConstructorDeclaration.class );
-        ENTITY_TO_NODE_CLASSES.put( _field.class, VariableDeclarator.class );
-        ENTITY_TO_NODE_CLASSES.put( _method.class, MethodDeclaration.class );
-        ENTITY_TO_NODE_CLASSES.put( _parameter.class, Parameter.class );
-        ENTITY_TO_NODE_CLASSES.put( _receiverParameter.class, ReceiverParameter.class );
-        ENTITY_TO_NODE_CLASSES.put( _staticBlock.class, InitializerDeclaration.class );
-        ENTITY_TO_NODE_CLASSES.put( _typeParameter.class, TypeParameter.class );
-        ENTITY_TO_NODE_CLASSES.put( _typeRef.class, Type.class );
+        MODEL_TO_NODE_CLASSES.put( _anno.class, AnnotationExpr.class );
+        MODEL_TO_NODE_CLASSES.put( _annotation._element.class, AnnotationMemberDeclaration.class );
+        MODEL_TO_NODE_CLASSES.put( _enum._constant.class, EnumConstantDeclaration.class );
+        MODEL_TO_NODE_CLASSES.put( _constructor.class, ConstructorDeclaration.class );
+        MODEL_TO_NODE_CLASSES.put( _field.class, VariableDeclarator.class );
+        MODEL_TO_NODE_CLASSES.put( _method.class, MethodDeclaration.class );
+        MODEL_TO_NODE_CLASSES.put( _parameter.class, Parameter.class );
+        MODEL_TO_NODE_CLASSES.put( _receiverParameter.class, ReceiverParameter.class );
+        MODEL_TO_NODE_CLASSES.put( _staticBlock.class, InitializerDeclaration.class );
+        MODEL_TO_NODE_CLASSES.put( _typeParameter.class, TypeParameter.class );
+        MODEL_TO_NODE_CLASSES.put( _typeRef.class, Type.class );
 
-        ENTITY_TO_NODE_CLASSES.put( _type.class, TypeDeclaration.class );
-        ENTITY_TO_NODE_CLASSES.put( _annotation.class, AnnotationDeclaration.class );
-        ENTITY_TO_NODE_CLASSES.put( _class.class, ClassOrInterfaceDeclaration.class );
-        ENTITY_TO_NODE_CLASSES.put( _interface.class, ClassOrInterfaceDeclaration.class );
-        ENTITY_TO_NODE_CLASSES.put( _enum.class, EnumDeclaration.class );
+        MODEL_TO_NODE_CLASSES.put( _type.class, TypeDeclaration.class );
+        MODEL_TO_NODE_CLASSES.put( _annotation.class, AnnotationDeclaration.class );
+        MODEL_TO_NODE_CLASSES.put( _class.class, ClassOrInterfaceDeclaration.class );
+        MODEL_TO_NODE_CLASSES.put( _interface.class, ClassOrInterfaceDeclaration.class );
+        MODEL_TO_NODE_CLASSES.put( _enum.class, EnumDeclaration.class );
     }
 
-    /** Map from the _model._node classes to the Ast Node equivalent */
+    /** Map from the {@link _model._node} classes to the Ast {@link com.github.javaparser.ast.Node} equivalent */
     public static final Map<Class<? extends Node>, Class<? extends _node>> NODE_TO_MODEL_CLASSES = new HashMap<>();
 
     static {
@@ -89,7 +89,7 @@ public enum _java {
     }
 
     private static _node getLogicalParentNode(Node node ){
-        if( ENTITY_TO_NODE_CLASSES.containsValue(node.getClass()) ){
+        if( MODEL_TO_NODE_CLASSES.containsValue(node.getClass()) ){
             return (_node) of(node);
         }
         return getLogicalParentNode( node.getParentNode().get() );
@@ -248,7 +248,7 @@ public enum _java {
         throw new DraftException( "Unable to create logical entity from " + node );
     }
 
-    public enum Part{ //association
+    public enum Part implements Named { //association
         ANNOTATIONS("annotations", _anno._annos.class),
         BODY("body", _body.class),
         MODIFIERS("modifiers", List.class, Modifier.class ),
@@ -285,7 +285,7 @@ public enum _java {
 
         AST_TYPE ("astType", Type.class),
         ARRAY_LEVEL("arrayLevel", Integer.class), //_typeRef
-        ELEMENT_TYPE("elementType", Type.class);
+        ELEMENT_TYPE("elementType", Type.class); //typeRef
 
         public final String name;
         public final Class implementationClass;
@@ -303,10 +303,16 @@ public enum _java {
             this.elementClass = elementClass;
         }
 
+        @Override
         public String toString(){
             return name;
         }
 
+        @Override
+        public String getName(){
+            return name;
+        }
+        
         public static Part of( String name ){
             Optional<Part> op = Arrays.stream(Part.values()).filter( p ->p.name.equals(name) ).findFirst();
             if( op.isPresent()){

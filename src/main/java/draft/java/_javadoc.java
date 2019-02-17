@@ -28,13 +28,7 @@ public final class _javadoc
     }
 
     public _javadoc setContent( String... content ) {
-        //if( jdnode.getJavadocComment().isPresent() ) {
-        //    ((JavadocComment)jdnode.getJavadocComment().get())
-        //            .setContent( getContent( Text.combine( content ) ) );
-       // }
-        //else {
         jdnode.setJavadocComment( Text.combine( content ) );
-        //}
         return this;
     }
 
@@ -57,6 +51,7 @@ public final class _javadoc
         return null;
     }
 
+    @Override
     public String toString(){
         if( jdnode.getJavadocComment().isPresent() ) {
             return jdnode.getJavadocComment().get().toString();
@@ -94,6 +89,8 @@ public final class _javadoc
             return true; //two _javadoc instances pointing to the same NodeWithJavadoc
         }
         if( !Objects.equals( this.getContent(), other.getContent() ) ) {
+            System.out.println( "THIS  " + this.getContent() );
+            System.out.println( "OTHER " + other.getContent() );
             return false;
         }
         return true;

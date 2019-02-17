@@ -703,6 +703,10 @@ public final class _enum implements _type<EnumDeclaration, _enum>,_method._hasMe
             _anno._hasAnnos<_constant>,_method._hasMethods<_constant>, _field._hasFields<_constant>,
             _member<EnumConstantDeclaration, _constant> {
 
+        public static _constant of( String... ecd ){
+            return of(Ast.constant(ecd));
+        }
+        
         public static _constant of( EnumConstantDeclaration ecd ){
             return new _constant( ecd);
         }

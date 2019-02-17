@@ -171,7 +171,7 @@ public final class $method
     }
 
     public _method compose(_model._node model ){
-        return compose( model.decompose() );
+        return compose( model.componentize() );
     }
 
     @Override

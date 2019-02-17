@@ -84,6 +84,7 @@ public final class $constructor
         }
     }
 
+    @Override
     public List<String> list$Normalized(){
         List<String>normalized$ = new ArrayList<>();
         if( this.javadocStencil != null ){
@@ -101,6 +102,7 @@ public final class $constructor
         return normalized$;
     }
 
+    @Override
     public List<String> list$(){
         List<String>normalized$ = new ArrayList<>();
         if( this.javadocStencil != null) {
@@ -176,7 +178,7 @@ public final class $constructor
     }
 
     public _constructor compose( _model._node model ){
-        return compose(model.decompose());
+        return compose(model.componentize());
     }
 
     @Override
@@ -189,10 +191,12 @@ public final class $constructor
         return compose(translator, Tokens.of(keyValues));
     }
 
+    @Override
     public _constructor fill(Object...values){
         return fill( Translator.DEFAULT_TRANSLATOR, values );
     }
 
+    @Override
     public _constructor fill(Translator t, Object...values){
         List<String> keys = list$Normalized();
         if( values.length < keys.size() ){
@@ -245,6 +249,7 @@ public final class $constructor
         return null;
     }
 
+    @Override
     public String toString(){
         if( this.javadocStencil != null ){
             return this.javadocStencil.toString() +System.lineSeparator() + this.signatureStencil.toString()+System.lineSeparator()+
@@ -287,10 +292,12 @@ public final class $constructor
         return null; //the BODY or signature isnt the same or BODY / signature tokens were inconsistent
     }
 
+    @Override
     public List<_constructor> findAllIn(_model._node _t ){
         return findAllIn( _t.ast() );
     }
 
+    @Override
     public List<_constructor> findAllIn(Node rootNode ){
         List<_constructor> typesList = new ArrayList<>();
         rootNode.walk(ConstructorDeclaration.class, t->{
@@ -301,6 +308,7 @@ public final class $constructor
         return typesList;
     }
 
+    @Override
     public List<Select> selectAllIn(Node n){
         List<Select>sts = new ArrayList<>();
         n.walk(ConstructorDeclaration.class, c-> {
@@ -312,6 +320,7 @@ public final class $constructor
         return sts;
     }
 
+    @Override
     public List<Select> selectAllIn(_model._node _t){
         List<Select>sts = new ArrayList<>();
         Walk.in(_t, ConstructorDeclaration.class, c-> {
@@ -323,6 +332,7 @@ public final class $constructor
         return sts;
     }
 
+    @Override
     public <N extends Node> N forAllIn(N n, Consumer<_constructor> _constructorActionFn ){
         n.walk( ConstructorDeclaration.class, c-> {
             Select s = select( c );
@@ -333,6 +343,7 @@ public final class $constructor
         return n;
     }
 
+    @Override
     public <M extends _model._node> M forAllIn(M _t, Consumer<_constructor> _constructorActionFn ){
         Walk.in(_t, _constructor.class, c-> {
             Select s = select( c );
@@ -343,11 +354,13 @@ public final class $constructor
         return _t;
     }
 
+    @Override
     public <M extends _model._node> M removeIn(M _t ){
         selectAllIn(_t).forEach(s -> s.ctor.remove() );
         return _t;
     }
 
+    @Override
     public <N extends Node> N removeIn(N node ){
         selectAllIn(node).forEach(s -> s.ctor.remove() );
         return node;
@@ -384,6 +397,7 @@ public final class $constructor
             this.tokens = tokens;
         }
 
+        @Override
         public String toString(){
             return "$constructor.Select{"+ System.lineSeparator()+
                     Text.indent( ctor.toString() )+ System.lineSeparator()+

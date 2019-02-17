@@ -258,9 +258,9 @@ public final class $stmt<T extends Statement>
 
     public T compose( _model._node model ){
         if( this.commentStencil != null ){
-            return (T)Stmt.of( Stencil.of(commentStencil, stencil).compose(model.decompose()) );
+            return (T)Stmt.of( Stencil.of(commentStencil, stencil).compose(model.componentize()) );
         }
-        return (T)compose(model.decompose());
+        return (T)compose(model.componentize());
     }
 
     public T compose( Translator t, Object...keyValues ){
