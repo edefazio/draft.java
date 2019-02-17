@@ -73,7 +73,7 @@ public class _interfaceTest extends TestCase {
         assertEquals( _i1, _i2);
 
         _typeParameter tp = _i1.getTypeParameters().get(0);
-        System.out.println( tp.getTypeBound() );
+        //System.out.println( tp.getTypeBound() );
 
         //Walk.directChildren( tp, Node.class, ni -> System.out.println( ni+" " +ni.getClass() ) );
 
@@ -126,41 +126,38 @@ public class _interfaceTest extends TestCase {
                    " return null;",
                    "}");
         
-        
+        /*
         System.out.println( _i.getMethod( "doIt" ));
-        _i.getMethod( "doIt" ).decompose().forEach((String a, Object b) -> {
+        _i.getMethod( "doIt" ).componentize().forEach((String a, Object b) -> {
             if( b != null) {
                 System.out.println(a+" "+b.hashCode());
             }else{
                 System.out.println(a+" null");
             }
         });
-        System.out.println( _interface.of( ComplexInterface.class ).getMethod( "doIt" ));
+        */
+        //System.out.println( _interface.of( ComplexInterface.class ).getMethod( "doIt" ));
         //this is how you can find out WHICH component is failing
-        _interface.of( ComplexInterface.class ).getMethod( "doIt" ).decompose().forEach((String a, Object b) -> {
-            if( b != null) {
-                System.out.println(a+" "+b.hashCode());
-            }else{
-                System.out.println(a+" null");
-            }
-        });
-        System.out.println( );
+        //_interface.of( ComplexInterface.class ).getMethod( "doIt" ).componentize().forEach((String a, Object b) -> {
+        //    if( b != null) {
+        //        System.out.println(a+" "+b.hashCode());
+        //    }else{
+        //        System.out.println(a+" null");
+        //    }
+        //});
+        //System.out.println( );
         
-        System.out.println( _i.getMethod( "doIt" ).hashCode());
-        System.out.println( _interface.of( ComplexInterface.class ).getMethod( "doIt" ).hashCode());
+        //System.out.println( _i.getMethod( "doIt" ).hashCode());
+        //System.out.println( _interface.of( ComplexInterface.class ).getMethod( "doIt" ).hashCode());
         //System.out.println( _interface.of( ComplexInterface.class ).getMethod( "doIt" ).hashCode() );
-        assertEquals( _i.getMethod( "doIt" ), _interface.of( ComplexInterface.class ).getMethod( "doIt" ) );
+        assertEquals(_i.getMethod("doIt"), _interface.of(ComplexInterface.class).getMethod("doIt"));
         
-        System.out.println( _i.getMethod( "getValue" ).hashCode());
-        System.out.println( _interface.of( ComplexInterface.class ).getMethod( "getValue" ).hashCode());
-        assertEquals( _i.getMethod( "getValue" ), _interface.of( ComplexInterface.class ).getMethod( "getValue" ) );
-        //System.out.println( _i);
-        
-        //_interface.of( ComplexInterface.class ).getMethod
-        
-        assertEquals( _i, _interface.of( ComplexInterface.class ) );
-        
+        //System.out.println( _i.getMethod( "getValue" ).hashCode());
+        //System.out.println( _interface.of( ComplexInterface.class ).getMethod( "getValue" ).hashCode());
+        assertEquals(_i.getMethod("getValue"),_interface.of(ComplexInterface.class).getMethod("getValue"));        
+        assertEquals( _i, _interface.of( ComplexInterface.class ) );        
     }
+    
     public void testImport(){
         _interface _i = _interface.of( ComplexInterface.class );
         assertTrue(_i.hasPackage() );
