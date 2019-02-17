@@ -1363,13 +1363,11 @@ public enum Ast {
         if (td.isPresent()) {
             TypeDeclaration atd = td.get();
             if (jdc.size() > 0) {
-                // System.out.println( "SET JAVADOC");
                 atd.setComment(jdc.get(0));
             }
             atd.removeForced(); //disconnect
             return atd;
         }
-        //System.out.println( "FALLBACK");
         return td.orElseGet(() -> {
             TypeDeclaration tdd = cu.getType(0);
             return tdd;
@@ -1433,11 +1431,10 @@ public enum Ast {
     public static CatchClause catchClause(String... catchClause) {
 
         String res = Text.combine(catchClause).trim();
-        if (!res.startsWith("catch")) {
-            //throw new DraftException("catch clause must start with \"catch\"");
+        if(!res.startsWith("catch")){
             res = "catch " + res;
         }
-        if (!res.endsWith("}")) {
+        if(!res.endsWith("}")){
             res = res + "}";
         }
         Statement st = stmt(TRY_HARDCODED + res);
@@ -1598,7 +1595,7 @@ public enum Ast {
             if (configuration.isIgnoreComments()) {
                 return;
             }
-            String[] lines = n.getContent().split("\\R", -1);
+            String[] lines = n.getContent().split("\\r?\\n");
             StringBuilder sb = new StringBuilder();
             Arrays.stream(lines).forEach( con -> {
                 String tr = con.trim();
@@ -1610,14 +1607,14 @@ public enum Ast {
                     sb.append(con.trim()).append(System.lineSeparator());
                 }
             });
-            String con = sb.toString().trim(); //n.getContent();
+            String con = sb.toString().trim();
             printer.print(con);
         }
 
         @Override
         public void visit(final JavadocComment n, final Void arg) {
             if (configuration.isPrintComments() && configuration.isPrintJavadoc()) {
-                String[] lines = n.getContent().split(System.lineSeparator(), -1);
+                String[] lines = n.getContent().split("\\r?\\n");
 
                 StringBuilder sb = new StringBuilder();
                 Arrays.stream(lines).forEach( con -> {
@@ -1812,8 +1809,8 @@ public enum Ast {
      *
      * @param traversal the nodeTraversal strategy
      * @param astRootNode the starting node to start the walk
-     * @param targetNodeClass a particualr node class (or interface) to intercept when on the walk
-     * @param nodeMatchFn a predicate for mathcing particular nodes of the nodeClass when on the walk
+     * @param targetNodeClass a particular node class (or interface) to intercept when on the walk
+     * @param nodeMatchFn a predicate for matching particular nodes of the nodeClass when on the walk
      * @param nodeActionFn the action to take on the selected nodes
      * @param <N> the target node type (i.e. {@link Expression},{@link TypeDeclaration}, {@link NodeWithOptionalBlockStmt}
      * @param <R> the root node type
@@ -2011,7 +2008,7 @@ public enum Ast {
      * @return
      */
     public static String getContent( Comment astComment ) {
-        return astComment.toString(PRINT_RAW_COMMENTS );
+        return astComment.toString( PRINT_RAW_COMMENTS );
     }
 
     public static List<String> normalizeTypeParameter( TypeParameter tp ){
