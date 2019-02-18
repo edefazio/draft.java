@@ -180,6 +180,16 @@ public interface _type<AST extends TypeDeclaration, T extends _type>
         Arrays.stream(_members).forEach( _m -> this.astType().remove( _m.ast() ) );
         return (T)this;
     }
+    
+    /**
+     * Apply a single type Function to the type and return the modified _type
+     * @param typeFn the function on the type
+     * @return the modified type
+     */
+    default T apply( Function<_type, _type> typeFn ){
+        return (T)typeFn.apply(this);
+    }
+    
     /**
      * Apply each of the Macros and return the modified T
      * @param typeFn all of the macros to execute
@@ -232,6 +242,7 @@ public interface _type<AST extends TypeDeclaration, T extends _type>
      * @return the AST Node instance being manipulated this will return a {@link CompilationUnit} if the
      * _type is a top level TYPE, or a {@link TypeDeclaration} instance
      */
+    @Override
     default Node ast(){
         if( this.isTopClass() ){
             return this.findCompilationUnit();
