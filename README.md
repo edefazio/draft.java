@@ -1,10 +1,106 @@
 # draft.java
-<P>draft.java is a developer-friendly application programming interface (API) to <A HREF="#access">access</A>, <A HREF="#change">change</A>, 
-<A HREF="#compile">compile</A>, <A HREF="#load">load</A>, and <A HREF="#run">run</A> Java source code.
-
+<P>draft.java is a developer-friendly API to <A HREF="#build">build</A>, query, add, change, and delete elements from code; then compile and use/run the code from within a program. 
+  
 <P>Think of draft.java as having a <A HREF=https://www.w3.org/TR/DOM-Level-1/introduction.html">DOM</A> for Java
-code, you can build, navigate, add, change, and delete elements from code; then compile and use/run the code from
-within a program.</P>
+code</P>
+
+<P><A name="build">the most convenient way to <B>build</B> a DOM-like _draft model is
+  to pass in an existing Class (the .java source of the class is modeled)</A></P>
+
+```java
+class Point { @Deprecated int x, y; }
+_class _c = _class.of(Point.class);
+```
+
+<P>alternatively you may "manually" build a _draft model via the simple API</P>
+
+```java  
+assertEquals(_c, _class.of("Point").fields("@Deprecated int x,y;"));
+```
+
+<A name="access">_draft gives access to individual sub-elements (_field, _method,...)</A>
+
+```java
+_field _x = _c.getField("x");
+```  
+
+<A name="change">changes to sub-elements are reflected in the _class</A>
+
+```java  
+_x.init(0); //initialize value of x to be 0
+_c.getField("y").init(0); //initialize y to be 0
+```
+
+lambdas simplify access & modifications on sub-elements (forMethods, forConstructors...)
+
+```java  
+_c.forFields(f->f.setPrivate()); //set ALL _fields to be private
+_c.forFields(f->f.removeAnnos(Deprecated.class)); //remove Deprecated from ALL fields
+```
+<A name="add">_draft lets you add elements to the _class</A>
+
+```java  
+_c.field("public static final int ID = 1023;");
+_c.method("public int getX(){ return this.x; }");
+```
+the draft API optionally lets you "pass code around", (which is more developer/IDE friendly.)
+reading, debugging & maintaining Java source code as escaped / "encoded" plain text can be painful
+
+```java
+/* this method body is defined by a lambda body */
+_c.method("public int getY()", (Integer y)->{ return y; });
+
+/* the riseRun method is defined on an anonymous object & added to the _class */
+_c.method( new Object(){ int x, y;//these exist to avoid compiler errors
+   public double riseRun(){
+       return y * 1.0d / x * 1.0d;
+   }
+});
+```
+
+macros replace manual coding, one can easily create & use your own too 
+
+```java
+_c.apply(_autoSet.$); //adds setter methods for all non-static non-final fields (setX(), setY())
+_c.apply(_autoEquals.$,_autoHashCode.$); //build equals() and hashCode() methods
+
+/* the _class can always be toString()ed and written out to .java source code */
+System.out.println(_c);
+
+/** INSTANT FEEDBACK **/
+
+/* compile, load & create a new proxied instance based on the Java code at runtime */
+_proxy _p = _proxy.of(_c);
+
+/* _proxy simplifies accessing fields or getters on the proxied instance */
+assertEquals(1023,_p.get("ID")); //get static field value
+assertEquals(0,_p.get("x")); //call get method (note: x is private field)
+
+/* _proxy can call set methods on the object (note: x & y are private fields) */
+_p.set("x",100).set("y",200);
+
+/* _proxy can simplify calling instance methods on a new instance */
+assertEquals(200.0d / 100.0d,_p.call("riseRun"));
+
+/* the underlying instance is a public field on the _proxy */
+assertEquals("Point",_p.instance.getClass().getCanonicalName());
+
+/* we can create another instance */
+_proxy _p2 = _p._new().set("x",100).set("y",200);
+
+/* verify the macro generated equals() and hashcode() methods work */
+assertEquals(_p, _p2); //proxies delegate equals method to instance method
+assertEquals(_p.hashCode(), _p2.hashCode()); //proxies delegate hashCode method to instance method
+assertEquals(_p.instance, _p2.instance); //instance equality check
+assertEquals(_p.instance.hashCode(),_p2.instance.hashCode()); //instance hashcode call
+
+/* export & verify the file "Point.java" was written */
+assertTrue(_io.out("C:\\temp\\",_c).contains("C:\\temp\\Point.java"));
+
+/* export & verify the file "Point.class" was written */
+assertTrue(_io.out("C:\\temp\\",_p._classFile()).contains("C:\\temp\\Point.class"));
+```
+
 
 <TABLE>
 <TR><TH>draft.java code</TH><TH>source code</TH></TR>
