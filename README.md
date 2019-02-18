@@ -1,8 +1,9 @@
 # draft.java
-<P>draft.java is a developer-friendly API to <A HREF="#build">build</A>, <A HREF="#access">access</A>, <A HREF="#change">change</A>, <A HREF="#add">add</A>, <A HREF="#remove">remove</A>, <A HREF="#analyze">analyze</A>, elements from code; then <A HREF="#compile">compile</A>, <A HREF="#load">load</A> and <A HREF="#use">use/run</A> the code from within a program. It's a "code generator" and much much more.  <SMALL>(it's like having a <A HREF=https://www.w3.org/TR/DOM-Level-1/introduction.html">DOM</A> for Java source code)</SMALL></P>
+<P>draft.java is a developer-friendly API to <A HREF="#build">build</A>, <A HREF="#access">access</A>, <A HREF="#change">change</A>, <A HREF="#add">add</A>, <A HREF="#remove">remove</A>, and <A HREF="#analyze">analyze</A> .java source code; then optionally <A HREF="#compile">compile</A>, <A HREF="#load">load</A> and <A HREF="#use">use/run</A> the code from within a program. it's a "code generator", and much much more.  <SMALL>(it's like having a <A HREF=https://www.w3.org/TR/DOM-Level-1/introduction.html">DOM</A> for Java source code)</SMALL></P>
 
 <H3>requirements</H3>
-draft.java requires Java 8 or later, and the <A HREF="http://javaparser.org/">JavaParser</A> core (3.12.0 or later) for transforming Java source code into ASTs. draft.java can generate code for any version of Java (Java 1.0 to Java 12).  
+draft.java runs on Java 8 or later. 
+draft.java depends only on the <A HREF="http://javaparser.org/">JavaParser</A> core (3.12.0 or later) library for transforming Java source code into ASTs. draft.java can generate source code for any version of Java (Java 1.0 - 12).  
 
 ```xml
 <dependency>
@@ -19,9 +20,9 @@ draft.java requires Java 8 or later, and the <A HREF="http://javaparser.org/">Ja
 
 <H3>how to...</H3>
 
-<H4><A name="build">build a draft.java models (_class, _enum, _interface, _annotation)</A></H3>
-<P>the most convenient way to <B>build</B> a DOM-like draft.java model is by pass in an 
-  existing Class (the .java source of the class is modeled)</A></P>
+<H4><A name="build">building a draft.java `_type` (`_class`, `_enum`, `_interface`, `_annotation`)</A></H3>
+<P>the most convenient way to <B>build</B> a DOM-like draft.java `_type` is by pass in an 
+  existing Class (the .java source of the Class is modeled)</A></P>
 
 ```java
 public class Point { @Deprecated int x, y; }
@@ -37,9 +38,10 @@ public @interface Refresh{ int value() default 0; }
  _annotation _a = _annotation.of(Refresh.class); //_annotation _a represents the source of Refresh.java
 ```
 
-<P>alternatively you may "manually" build a draft.java model (_class, _enum, _interface, _annotation) via the simple API</P>
+<P>alternatively you may "manually" build a draft.java `_type` (`_class`, `_enum`, `_interface`, `_annotation`) via the simple API</P>
 
 ```java  
+//verify that building `_type`s via Class is eqwuivalent to building via component / Strings
 assertEquals(_c, _class.of("Point").fields("@Deprecated int x,y;"));
 assertEquals(_i, _interface.of("Drawable").method("public void draw();"));
 assertEquals(_e, _enum.of("State").constants("STABLE", "REDRAW"));
@@ -47,41 +49,85 @@ assertEquals(_a, _annotation.of("Refresh").element("int value() default 0;"));
 ```
 
 <H4><A name="access">access</A></H4>
-<A name="access">draft gives <B>access</B> to individual sub-elements (fields, methods,...)</A>
+<A name="access">each draft '_type` gives <B>access</B> to individual members via <B>`.getXXX(...)`</B></A>
 
 ```java
 _field _x = _c.getField("x");
+_method _m = _i.getMethod("draw");
 _enum._constant _ec = _e.getConstant("STABLE");
+_annotation._element _ae = _a.getElement("value");
 ```  
 
+<P><B>accessing</B> lists of like members of each `type` via <B>`.listXXX()`</B></P>
+
+```java
+List<_field> _fs = _c.listFields();                  //list all fields on _c
+List<_method> _ms = _i.listMethods();                //list all methods on _i 
+List<_enum._constant> _ecs = _e.listConstants();     //list all constants on _e
+List<_annotation._element> _aes = _a.listElements(); //list all elements on _a
+```
+
+<P>each `type` can <B>selectively list</B> members based on a lambda with <B>.`listXXX(Predicate)`</B></P>
+   
+```java   
+_fs = _c.listFields(f -> f.isPrivate());        //list all private fields   
+_ms = _i.listMethods(m -> m.isDefault());       //list all default methods
+_ecs = _e.listConstants(c -> c.hasArguments()); //list all constants with constructor arguments
+_aes = _a.listElements(e -> e.hasDefault());    //list all elements with defaults
+```
+
 <H4><A name="change">change</A></H4>
-<B>change</B>s to elements are reflected in the _class</A>
+<P><B>change</B>s can be applied to the _class or members are reflected in the source of the _class</P>
 
 ```java  
-_x.init(0); //initialize value of field x to be 0
+//apply changes to top level _type
+_c.implements(Serializable.class); //add Serializable import & implement Serializable to _c
+_i.packageName("graphics.draw");   //set Package Name on _i
+_e.annotate(Deprecated.class);     //add Deprecated import & add the @Deprecated annotation to _e
+_a.imports(Target.class,ElementType.class); //import (2) classes to _a
+_a.setTargetRuntime()
+  .setE
+
+//apply changes to individual members
+_x.init(0);               //initialize value of field x to be 0
 _c.getField("y").init(0); //initialize field y to be 0
 ```
 
-draft.java integrates lambdas to simplify <B>access</B> & <B>change</B>s on elements easily
+<P>draft.java integrates lambdas to simplify <B>iteration</B> over members with <B>`forXXX(Consumer)`</B></P>
 
 ```java  
-_c.forFields(f->f.setPrivate()); //set ALL _fields to be private
-_c.forFields(f->f.removeAnnos(Deprecated.class)); //remove Deprecated from ALL fields
+_c.forFields(f->f.setPrivate()); //set ALL _fields to be private on _c
+_c.forFields(f->f.removeAnnos(Deprecated.class)); //remove Deprecated annotation from ALL fields of _c
+_e.forConstants(c->c.addArgument(100)); //add constructor argument 100 for ALL constants of _e
+
+_i.forMembers(m -> m.annotate(Deprecated.class)); //apply @Deprecated to all member fields, methods, of _i 
+```
+
+<P>`type`s can also <B>selectively change</B> members easily with <B>`forXXX(Predicate, Consumer)`</B></P>
+
+```java
+_c.forFields(f->f.isStatic() && f.hasInit(), f->f.setFinal()); //select static initialized fields & set them as final
+_i.forMethods(m->m.isStatic(), m->m.setPublic()); //select all static methods & make them public
 ```
 
 <H4><A name="add">add</H4>
-   draft.java lets you directly <B>add</B> elements to the _class</A>
+each `type` lets you directly <B>add</B> members belonging to the type</A>
 
 ```java  
 _c.field("public static final int ID = 1023;");
 _c.method("public int getX(){ return this.x; }");
 
+_i.field("public static final int VERSION = 12;");
+_e.constant("INVALID(100);"); //add a new constant to _e
+_a.element("String name() default "";"); //add a new annotation element to _a
+
 _c.field("/** temp field */ public String temp;");
 _c.method("public String getTemp() { return temp; }");
 ```
 
-draft can "pass code around" via lambda bodies and anonymous objects. 
-(easier for a developer to read, modify and debug in an IDE than dreaded escaped plain text.)
+<P>draft can "pass code around" via lambda bodies and anonymous objects. 
+(this technique allows source code to be parsed checked and presented/colorized naturally by the IDE, 
+and not treated like escaped plain text... therefore much easier to read, debug, and modify.)</P>
 
 ```java
 /* this method body is defined by a lambda body */
@@ -96,29 +142,48 @@ _c.method( new Object(){ int x, y; //these exist to avoid compiler errors
 ```
 
 <H4><A name="remove">remove</A></H4>
-<P>draft also lets you manually remove elements to the _class</P>
+<P>remove members to the _class with <B>`removeXXX(...)`</B></P>
 
 ```java
-_c.removeField("temp"); //remove field named "temp"
-_c.removeMethods(m->m.getName().equals("getTemp")); //remove all methods with name "getTemp"
+_c.removeField("temp");                             //remove field named "temp" from _c
+_c.removeMethods(m->m.getName().equals("getTemp")); //remove all methods with name "getTemp" from _c
+_e.removeConstant("INVALID");                       //remove constant named "INVALID" from _e
+_i.removeFields(f-> f.isStatic());                  //remove all static fields on _i
 ```
 
 <H4>automate with macros</H4>
-<B>macros</B> can automate repetitive manual coding. <A HREF="https://github.com/edefazio/draft.java/tree/master/src/main/java/draft/java/macro">use the built in ones</A> -or- easily build your own
+<P><B>macros</B> can automate repetitive manual coding. <A HREF="https://github.com/edefazio/draft.java/tree/master/src/main/java/draft/java/macro">use the built in ones</A> -or- easily build your own</P>
 
 ```java
-_c.apply(_autoSet.$); //adds set methods for all non-static non-final fields (setX(), setY())
-_c.apply(_autoEquals.$,_autoHashCode.$); //build equals() and hashCode() methods
+_c.apply(_autoSet.$,_autoEquals.$,_autoHashCode.$); //adds set methods & equals, hashCode methods
+```
+
+<H4>the _type interface</h4>
+<P>to uniformly collect or operate on `_type`s, we use the `_type` interface.</P> 
+
+```java 
+List<_type> _ts = new ArrayList<>();
+_ts.add(_c);
+_ts.add(_i);
+_ts.add(_e);
+_ts.add(_a);
+
+//here we can operate on all types (_class _c, _enum _e, _interface _i, and _annotation _a) 
+_ts.forEach( t-> t.packageName("graphics.draw") ); //change the package name for ALL _types
 ```
 
 <H4>print the .java source</H4>
-<P>for testing and debugging support, you can always use toString() to get the .java source code for a draft.java model (_class)</P>
+<P>for testing and debugging support, you can always use `toString()` to get the .java source code for a `_type`</P>
 
 ```java
 System.out.println(_c);
 
 //PRINTS:
-public class Point {
+package graphics.draw;
+
+import java.io.Serializable;
+
+public class Point implements Serializable{
 
     private int x = 0, y = 0;
 
@@ -169,7 +234,7 @@ public class Point {
 }
 ```
 
-<h3>instant feedback</H3>
+<H3>instant feedback</H3>
 <P>draft.java doesn't stop at <I>just</i> building or modifying source code, it also provides
 "instant feedback" by compiling & loading the dynamically built
 code, and allowing the code to be loaded and used. <I>(This gives developers a tight feedback loop, to generate
@@ -179,16 +244,30 @@ build, compile and use or test code in a single program without a restart)</I></
 <P>to <B>compile</B> the .java code represented by one or more _class, _enum, _interface _types:</P>
 
 ```java
-_classFiles _cfs = _javac.of(_c);
+//we can verify the generated code is valid Java, call the javac compiler
+_classFiles _cfs = _javac.of(_c); //compile & return the _classFiles (bytecode) for _c _class
+_classFiles _allCfs = _javac.of(_c, _i, _a, _e); //compile & return _classFiles for all _types
 ```
 
-<H4><A NAME="load">compile & load</A> via _project</H4>
+<P> we can pass in options to the compiler via a builder <B>_javac.options().XXX</B></P>
+
+```java
+_classFiles _allCfs = _javac.of( 
+    _javac.options()
+        .parameterNamesStoredForRuntimeReflection() //https://stackoverflow.com/questions/44067477/drawbacks-of-javac-parameters-flag
+        .terminateOnWarning(), //strict compile: fail if any warning is found
+    _c, _i, _a, _e); //compile & return the _classFiles (bytecode) for _c _class
+```
+
+<H4><A NAME="load">compile & load</A> in one step via _project</H4>
 <P>to compile and <B>load</B> (in a new ClassLoader) the .java code represented by one or more _class, _enum, _interface... _types,
    use <B>_project</B>:</P>
 
 ```java
 _project _proj = _project.of(_c);
 List<Class> loadedClasses = _proj.listClasses(); //list all loaded classes
+// _project constructor optionally accepts _javac options
+_proj = _project.of( _javac.options().terminateOnWarning(), _c, _a, _i, _e);
 ```
 
 <P>_project gives you rudimentary access to individual Classes</P>
