@@ -1,5 +1,5 @@
 # draft.java
-<P>draft.java is a developer-friendly API to <A HREF="#build">build</A>, <A HREF="#access">access</A>, <A HREF="#change">change</A>, <A HREF="#add">add</A>, and <A HREF="#remove">remove</A>, <A HREF="#query">query</A>, elements from code; then <A HREF="#compile">compile</A>, <A HREF="#load">load</A> and <A HREF="#use">use/run</A> the code from within a program. It's a "code generator" and much much more.  <SMALL>(it's like having a <A HREF=https://www.w3.org/TR/DOM-Level-1/introduction.html">DOM</A> for Java source code)</SMALL>
+<P>draft.java is a developer-friendly API to <A HREF="#build">build</A>, <A HREF="#access">access</A>, <A HREF="#change">change</A>, <A HREF="#add">add</A>, <A HREF="#remove">remove</A>, <A HREF="#analyze">analyze</A>, elements from code; then <A HREF="#compile">compile</A>, <A HREF="#load">load</A> and <A HREF="#use">use/run</A> the code from within a program. It's a "code generator" and much much more.  <SMALL>(it's like having a <A HREF=https://www.w3.org/TR/DOM-Level-1/introduction.html">DOM</A> for Java source code)</SMALL></P>
 
 <H3>requirements</H3>
 draft.java requires Java 8 or later, and the <A HREF="http://javaparser.org/">JavaParser</A> core (3.12.0 or later) for transforming Java source code into ASTs. draft.java can generate code for any version of Java (Java 1.0 to Java 12).  
@@ -19,19 +19,31 @@ draft.java requires Java 8 or later, and the <A HREF="http://javaparser.org/">Ja
 
 <H3>how to...</H3>
 
-<H4><A name="build">build a draft.java model</A></H3>
-<P>the most convenient way to <B>build</B> a DOM-like draft.java model (_class) is by pass in an 
+<H4><A name="build">build a draft.java models (_class, _enum, _interface, _annotation)</A></H3>
+<P>the most convenient way to <B>build</B> a DOM-like draft.java model is by pass in an 
   existing Class (the .java source of the class is modeled)</A></P>
 
 ```java
-class Point { @Deprecated int x, y; }
-_class _c = _class.of(Point.class);
+public class Point { @Deprecated int x, y; }
+_class _c = _class.of(Point.class); //_class _c represents the source of Point.java
+
+public interface Drawable{ public void draw(); }
+_interface _i = _interface.of(Drawable.class); //_interface _i represents the source of Drawable.java
+
+public enum State{ STABLE, REDRAW; }
+_enum _e = _enum.of(State.class); //_enum _e represents the source of State.java
+
+public @interface Refresh{ int value() default 0; }
+ _annotation _a = _annotation.of(Refresh.class); //_annotation _a represents the source of Refresh.java
 ```
 
-<P>alternatively you may "manually" build a draft.java model (_class) via the simple API</P>
+<P>alternatively you may "manually" build a draft.java model (_class, _enum, _interface, _annotation) via the simple API</P>
 
 ```java  
 assertEquals(_c, _class.of("Point").fields("@Deprecated int x,y;"));
+assertEquals(_i, _interface.of("Drawable").method("public void draw();"));
+assertEquals(_e, _enum.of("State").constants("STABLE", "REDRAW"));
+assertEquals(_a, _annotation.of("Refresh").element("int value() default 0;"));
 ```
 
 <H4><A name="access">access</A></H4>
@@ -39,6 +51,7 @@ assertEquals(_c, _class.of("Point").fields("@Deprecated int x,y;"));
 
 ```java
 _field _x = _c.getField("x");
+_enum._constant _ec = _e.getConstant("STABLE");
 ```  
 
 <H4><A name="change">change</A></H4>
@@ -90,8 +103,8 @@ _c.removeField("temp"); //remove field named "temp"
 _c.removeMethods(m->m.getName().equals("getTemp")); //remove all methods with name "getTemp"
 ```
 
-<H4>macros</H4>
-<B>macros</B> can replace repetitive manual coding; <A HREF="https://github.com/edefazio/draft.java/tree/master/src/main/java/draft/java/macro">use the built in ones</A> -or- easily build your own
+<H4>automate with macros</H4>
+<B>macros</B> can automate repetitive manual coding. <A HREF="https://github.com/edefazio/draft.java/tree/master/src/main/java/draft/java/macro">use the built in ones</A> -or- easily build your own
 
 ```java
 _c.apply(_autoSet.$); //adds set methods for all non-static non-final fields (setX(), setY())
@@ -99,9 +112,9 @@ _c.apply(_autoEquals.$,_autoHashCode.$); //build equals() and hashCode() methods
 ```
 
 <H4>print the .java source</H4>
+<P>for testing and debugging support, you can always use toString() to get the .java source code for a draft.java model (_class)</P>
 
 ```java
-/* the _class can always be toString()ed and written out to .java source code */
 System.out.println(_c);
 
 //PRINTS:
@@ -162,32 +175,36 @@ public class Point {
 code, and allowing the code to be loaded and used. <I>(This gives developers a tight feedback loop, to generate
 build, compile and use or test code in a single program without a restart)</I></P>
 
-<H4><A NAME="#compile">compile</A> via _javac</H4>
+<H4><A NAME="compile">compile</A> via _javac</H4>
 <P>to <B>compile</B> the .java code represented by one or more _class, _enum, _interface _types:</P>
 
 ```java
 _classFiles _cfs = _javac.of(_c);
 ```
 
-<H4><A NAME="#load">compile & load</A> via _project</H4>
+<H4><A NAME="load">compile & load</A> via _project</H4>
 <P>to compile and <B>load</B> (in a new ClassLoader) the .java code represented by one or more _class, _enum, _interface... _types,
-   use _project:</P>
+   use <B>_project</B>:</P>
 
 ```java
-_project _pr = _project.of(_c);
-List<Class> loadedClasses = _pr.listClasses(); //list all loaded classes
-assertEquals(1023, _pr.get(_c, "ID")); //get a static field value from the Point.class
-Object aPoint = _pr._new(_c); //create a new instance of the Point.class
+_project _proj = _project.of(_c);
+List<Class> loadedClasses = _proj.listClasses(); //list all loaded classes
 ```
 
-<H4><A NAME="#proxy">_proxy instances</A> for using code</H4>   
-<P>a _proxy helps you simplify the construction of a new instance of a 
-dynamically built _class.</P>
+<P>_project gives you rudimentary access to individual Classes</P>
 
 ```java
-_proxy _p = _pr._proxy(_c );
+assertEquals(1023, _proj.get(_c, "ID")); //get the value of a static field value from the Point.class
+Object aPoint = _proj._new(_c); //create a new instance of the Point.class
 ```
-<P>...a _proxy simplifies access to fields or properties on the instance with .get(...).</P>
+
+<H4><A NAME="use">_proxy instances</A></H4>   
+<P>a <B>_proxy</B> simplifies the using dynamically built _class instances.</P>
+
+```java
+_proxy _p = _proj._proxy(_c ); //build a proxy from the Point.class created by _class _c
+```
+<P>field or property values on an instance can be retrieved with <B>.get(...)</B>.</P>
 
 ```java
 /* _proxy simplifies accessing fields or getters on the proxied instance */
@@ -195,50 +212,54 @@ assertEquals(1023,_p.get("ID")); //get static field value
 assertEquals(0,_p.get("x")); //call get method (note: x is private field)
 ```
 
-<P>...a _proxy simplifies updating fields or calling setters on an instance with .set(...).</P>
+<P>field or property values on an instance can be updated with <B>.set(...)</B>.</P>
 
 ```java
-/* _proxy can set fields or call set methods on the object (note: x & y are private fields) */
-_p.set("x",100).set("y",200);
+_p.set("x",100).set("y",200); //set(...) will call set methods since x, y are private
 ```
 
-<P>...a _proxy simplifies calling instance methods on a new instance with .call(...);</P>
+<P>static or instance methods can be invoked with <B>.call(...)</B></P>
 
 ```java
 assertEquals(200.0d / 100.0d, _p.call("riseRun"));
 ```
-<P>...the underlying instance wrapped by a _proxy is always available via .instance field</P>
+
+<P>the object instance wrapped by a _proxy is available via the <B>.instance</B> field</P>
    
 ```java
 assertEquals("Point", _p.instance.getClass().getCanonicalName());
 ```
 
-<P> a _proxy can create a new instance of the _class (in the same ClassLoader) with _new().</P>
+<P>a new instance of the _class can be created with <B>_new(...)</B> on the proxy, 
+   or we can create from the _project._proxy(...)</P>
 
 ```java
 _proxy _p2 = _p._new().set("x",100).set("y",200);
+assertEquals(_p2, _proj._proxy(_c).set("x",100).set("y",200));
 ```
 
-<P>we can use these (2) _proxy instances to verify the macro generated equals() and hashcode() methods work
-as expected on the instances:</P>
+<P>we can use these (2) _proxy instances (_p, _p2) to test the macro generated equals() and hashcode() methods</P>
 
 ```java
 assertEquals(_p.instance, _p2.instance); //instance equality check
-assertEquals(_p.instance.hashCode(),_p2.instance.hashCode()); //instance hashcode call
+assertEquals(_p.instance.hashCode(),_p2.instance.hashCode()); //instance hashCode equality check
 
-/* _proxy instances try to operate as "transparently" as they can */
-assertEquals(_p, _p2); // _proxy delegates equals() method to .instance method
-assertEquals(_p.hashCode(), _p2.hashCode()); //_proxy delegate hashCode() method to instance method
+/* _proxy instances try to operate as "transparently" as possible */
+assertEquals(_p, _p2); // _proxy delegates equals() method to the .instance method
+assertEquals(_p.hashCode(), _p2.hashCode()); //_proxy delegates the hashCode() method to instance hashCode() method
 ```
 
-<P>finally, when we are satisfied with the .java code and .class that was generated, we can export the .java code and compiled .class files to disk for other programs
+<P>when we are satisfied with the .java code and .class that was generated, we can export it</P>
 
 ```java
 /* export Point.java to a file & verify where it was written to */
 assertTrue(_io.out("C:\\temp\\",_c).contains("C:\\temp\\Point.java"));
 
-/* export Point.java & Point.class to files & verify where it was written to */
-assertTrue(_io.out("C:\\temp\\",_pr).contains("C:\\temp\\Point.class", "C:\\temp\\Point.java"));
+/* export Point.class to a file & verify where it was written to */
+assertTrue(_io.out("C:\\temp\\",_proj.classFiles()).contains("C:\\temp\\Point.class"));
+
+/* export Point.java & Point.class to files & verify where both files were written to */
+assertTrue(_io.out("C:\\temp\\",_proj).containsAll("C:\\temp\\Point.class", "C:\\temp\\Point.java"));
 ```
 
 <TABLE>
