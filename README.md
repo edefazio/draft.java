@@ -1,11 +1,27 @@
 # draft.java
-<P>draft.java is a developer-friendly API to <A HREF="#build">build</A>, query, add, change, and delete elements from code; then compile and use/run the code from within a program. 
-  
-<P>Think of draft.java as having a <A HREF=https://www.w3.org/TR/DOM-Level-1/introduction.html">DOM</A> for Java
-code</P>
+<P>draft.java is a developer-friendly API to <A HREF="#build">build</A>, <A HREF="#access">access</A>, <A HREF="#change">change</A>, <A HREF="#add">add</A>, and <A HREF="#delete">delete</A>, <A HREF="#query">query</A>, elements from code; then <A HREF="#compile">compile</A>, <A HREF="#load">load</A> and <A HREF="#use">use/run</A> the code from within a program. It's a "code generator" and much much more.  <SMALL>(it's like having a <A HREF=https://www.w3.org/TR/DOM-Level-1/introduction.html">DOM</A> for Java source code)</SMALL>
 
-<P><A name="build">the most convenient way to <B>build</B> a DOM-like _draft model is
-  to pass in an existing Class (the .java source of the class is modeled)</A></P>
+<H3>Requirements</H3>
+draft.java requires Java 8 or later, and the <A HREF="http://javaparser.org/">JavaParser</A> core (3.12.0 or later) for transforming Java source code into ASTs (Abstract Syntax Trees). draft.java can generate code for ANY version of Java (Java 1.0 to Java 12).  
+
+```xml
+<dependency>
+   <groupId>draft</groupId>
+   <artifactId>draft.java</artifactId>
+   <version>1.0</version>   
+</dependency>
+<dependency>
+    <groupId>com.github.javaparser</groupId>
+    <artifactId>javaparser-core</artifactId>
+    <version>3.12.0</version>
+</dependency>
+```          
+
+<H3>How to...</H3>
+
+<H4><A name="build">build</A></H3>
+<P>the most convenient way to <B>build</B> a DOM-like draft.java model is by pass in an 
+  existing Class (the .java source of the class is modeled)</A></P>
 
 ```java
 class Point { @Deprecated int x, y; }
@@ -18,51 +34,65 @@ _class _c = _class.of(Point.class);
 assertEquals(_c, _class.of("Point").fields("@Deprecated int x,y;"));
 ```
 
-<A name="access">_draft gives access to individual sub-elements (_field, _method,...)</A>
+<H4><A name="access">Access</A></H4>
+<A name="access">draft gives <B>access</B> to individual sub-elements (fields, methods,...)</A>
 
 ```java
 _field _x = _c.getField("x");
 ```  
 
-<A name="change">changes to sub-elements are reflected in the _class</A>
+<H4><A name="change">Change</A></H4>
+<B>change</B>s to elements are reflected in the _class</A>
 
 ```java  
-_x.init(0); //initialize value of x to be 0
-_c.getField("y").init(0); //initialize y to be 0
+_x.init(0); //initialize value of field x to be 0
+_c.getField("y").init(0); //initialize field y to be 0
 ```
 
-lambdas simplify access & modifications on sub-elements (forMethods, forConstructors...)
+draft integrates lambdas to simplify <B>access</B> & <B>change</B>s on elements easily
 
 ```java  
 _c.forFields(f->f.setPrivate()); //set ALL _fields to be private
 _c.forFields(f->f.removeAnnos(Deprecated.class)); //remove Deprecated from ALL fields
 ```
-<A name="add">_draft lets you add elements to the _class</A>
+
+<H4><A name="add">Add</H4>
+draft lets you directly add elements to the _class</A>
 
 ```java  
 _c.field("public static final int ID = 1023;");
 _c.method("public int getX(){ return this.x; }");
 ```
-the draft API optionally lets you "pass code around", (which is more developer/IDE friendly.)
-reading, debugging & maintaining Java source code as escaped / "encoded" plain text can be painful
+
+draft can "pass code around" via lambda bodies and anonymous objects. 
+(easier for a developer to read, modify and debug in an IDE than escaped plain text.)
 
 ```java
 /* this method body is defined by a lambda body */
 _c.method("public int getY()", (Integer y)->{ return y; });
 
 /* the riseRun method is defined on an anonymous object & added to the _class */
-_c.method( new Object(){ int x, y;//these exist to avoid compiler errors
+_c.method( new Object(){ int x, y; //these exist to avoid compiler errors
    public double riseRun(){
        return y * 1.0d / x * 1.0d;
    }
 });
 ```
 
-macros replace manual coding, one can easily create & use your own too 
+<H4><A name="delete">Delete</H4>
+draft also lets you manually remove elements to the _class</A>
+
+```java
+_c.removeField("ID");
+```
+
+<H4>macro</H4>
+macros replace manual coding; <A HREF="https://github.com/edefazio/draft.java/tree/master/src/main/java/draft/java/macro">use the built in ones</A> -or- easily build your own
 
 ```java
 _c.apply(_autoSet.$); //adds setter methods for all non-static non-final fields (setX(), setY())
 _c.apply(_autoEquals.$,_autoHashCode.$); //build equals() and hashCode() methods
+```
 
 /* the _class can always be toString()ed and written out to .java source code */
 System.out.println(_c);
