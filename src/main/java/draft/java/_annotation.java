@@ -319,12 +319,14 @@ public final class _annotation
         return listElements().stream().filter( _elementMatchFn ).collect(Collectors.toList());
     }
 
+    @Override
     public _annotation removeFields( Predicate<_field> _fieldMatchFn){
         List<_field> fs = listFields(_fieldMatchFn);
         fs.forEach(f -> removeField(f));
         return this;
     }
 
+    @Override
     public _annotation removeField( _field _f ){
         if( listFields().contains(_f) ){
             if( _f.getFieldDeclaration().getVariables().size() == 1){
