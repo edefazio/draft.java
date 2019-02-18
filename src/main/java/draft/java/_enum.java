@@ -203,6 +203,7 @@ public final class _enum implements _type<EnumDeclaration, _enum>,_method._hasMe
         return this.astEnum.getMembers().stream().anyMatch( m -> m instanceof InitializerDeclaration );
     }
 
+    @Override
     public _enum staticBlock(BlockStmt block){
         BlockStmt bs = this.astEnum.addStaticInitializer();
         bs.setStatements( block.getStatements());
@@ -217,16 +218,19 @@ public final class _enum implements _type<EnumDeclaration, _enum>,_method._hasMe
     }
 
 
+    @Override
     public _enum removeConstructor( ConstructorDeclaration cd ){
         this.astEnum.remove( cd );
         return this;
     }
 
+    @Override
     public _enum removeConstructor( _constructor _ct){
         this.astEnum.remove(_ct.ast() );
         return this;
     }
 
+    @Override
     public _enum removeConstructors( Predicate<_constructor> ctorMatchFn){
         listConstructors(ctorMatchFn).forEach(c -> removeConstructor(c));
         return this;
@@ -577,12 +581,14 @@ public final class _enum implements _type<EnumDeclaration, _enum>,_method._hasMe
         return this;
     }
 
+    @Override
     public _enum removeFields( Predicate<_field> _fieldMatchFn){
         List<_field> fs = listFields(_fieldMatchFn);
         fs.forEach(f -> removeField(f));
         return this;
     }
 
+    @Override
     public _enum removeField( _field _f ){
         if( listFields().contains(_f) ){
             if( _f.getFieldDeclaration().getVariables().size() == 1){
@@ -594,6 +600,7 @@ public final class _enum implements _type<EnumDeclaration, _enum>,_method._hasMe
         return this;
     }
 
+    @Override
     public _enum removeField( String fieldName ){
         Optional<FieldDeclaration> ofd = this.astEnum.getFieldByName(fieldName );
         if( ofd.isPresent() ){
@@ -607,11 +614,13 @@ public final class _enum implements _type<EnumDeclaration, _enum>,_method._hasMe
         return this;
     }
 
+    @Override
     public _enum removeImplements( ClassOrInterfaceType toRemove ){
         this.astEnum.getImplementedTypes().remove( toRemove );
         return this;
     }
 
+    @Override
     public _enum removeImplements( Class toRemove ){
         this.astEnum.getImplementedTypes().removeIf( im -> im.getNameAsString().equals( toRemove.getSimpleName() ) ||
                 im.getNameAsString().equals(toRemove.getCanonicalName()) );
@@ -630,6 +639,16 @@ public final class _enum implements _type<EnumDeclaration, _enum>,_method._hasMe
         if( c != null ){
             removeConstant( c );
         }
+        return this;
+    }
+    
+    /**
+     * Remove all constants that match the constantMatchFn
+     * @param _constantMatchFn
+     * @return  the modified _enum
+     */
+    public _enum removeConstants( Predicate<_constant> _constantMatchFn ){
+        listConstants(_constantMatchFn).forEach(c -> removeConstant(c) );
         return this;
     }
 
@@ -748,6 +767,30 @@ public final class _enum implements _type<EnumDeclaration, _enum>,_method._hasMe
             return this;
         }
 
+        public _constant addArgument( int i){
+            return addArgument( Expr.of(i) );
+        }
+        
+        public _constant addArgument( boolean b){
+            return addArgument( Expr.of(b) );
+        }
+        
+        public _constant addArgument( float f){
+            return addArgument( Expr.of(f) );
+        }
+        
+        public _constant addArgument( long l){
+            return addArgument( Expr.of(l) );
+        }
+        
+        public _constant addArgument( double d){
+            return addArgument( Expr.of(d) );
+        }
+        
+        public _constant addArgument( char c){
+            return addArgument( Expr.of(c) );
+        }
+        
         public _constant addArgument( Expression e ){
             this.astConstant.addArgument( e );
             return this;
@@ -767,13 +810,54 @@ public final class _enum implements _type<EnumDeclaration, _enum>,_method._hasMe
             this.astConstant.getArguments().set( index, e );
             return this;
         }
+        
+        public _constant setArgument( int index, boolean b){
+            return setArgument(index, Expr.of(b));
+        }
+        
+        public _constant setArgument( int index, int i){
+            return setArgument(index, Expr.of(i));
+        }
+        
+        public _constant setArgument( int index, char c){
+            return setArgument(index, Expr.of(c));
+        }
 
+        public _constant setArgument( int index, float f){
+            return setArgument(index, Expr.of(f));
+        }
+        
+        public _constant setArgument( int index, long l){
+            return setArgument(index, Expr.of(l));
+        }
+        
+        public _constant setArgument(int index, double d){
+            return setArgument(index, Expr.of(d));
+        }
+        
+        public _constant forArguments( Consumer<Expression> expressionAction ){
+            this.listArguments().forEach(expressionAction);
+            return this;
+        }
+        
+        public _constant forArguments( Predicate<Expression> expressionMatchFn, Consumer<Expression> expressionAction ){
+            this.listArguments(expressionMatchFn).forEach(expressionAction);
+            return this;
+        }
+        
+        public _constant removeArguments( Predicate<Expression> argumentMatchFn ){
+            listArguments(argumentMatchFn).forEach(e -> e.removeForced() );
+            return this;
+        }
+        
+        @Override
         public _constant removeFields( Predicate<_field> _fieldMatchFn){
             List<_field> fs = listFields(_fieldMatchFn);
             fs.forEach(f -> removeField(f));
             return this;
         }
 
+        @Override
         public _constant removeField( _field _f ){
             if( listFields().contains(_f) ){
                 if( _f.getFieldDeclaration().getVariables().size() == 1){
@@ -785,6 +869,7 @@ public final class _enum implements _type<EnumDeclaration, _enum>,_method._hasMe
             return this;
         }
 
+        @Override
         public _constant removeField( String fieldName ){
             Optional<BodyDeclaration<?>> ofd = this.astConstant.getClassBody().stream().filter(b -> {
                 if (b.isFieldDeclaration()) {
@@ -806,6 +891,10 @@ public final class _enum implements _type<EnumDeclaration, _enum>,_method._hasMe
 
         public List<Expression> listArguments(){
             return this.astConstant.getArguments();
+        }
+        
+        public List<Expression>listArguments(Predicate<Expression> expressionMatchFn){
+            return this.astConstant.getArguments().stream().filter( expressionMatchFn ).collect(Collectors.toList() );
         }
 
         public Expression getArgument( int index ){
