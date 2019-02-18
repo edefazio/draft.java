@@ -637,6 +637,46 @@ public final class _annotation
             return this.astAnnMember.getDefaultValue().isPresent();
         }
 
+        public _element removeDefaultValue(){
+            this.astAnnMember.removeDefaultValue();
+            return this;
+        }
+        
+        public _element setDefaultValue(int intValue ){
+            this.astAnnMember.setDefaultValue( Expr.of( intValue ) );
+            return this;
+        }
+        
+        public _element setDefaultValue(long longValue ){
+            this.astAnnMember.setDefaultValue( Expr.of( longValue ) );
+            return this;
+        }
+        
+        public _element setDefaultValue(char charValue ){
+            this.astAnnMember.setDefaultValue( Expr.of( charValue ) );
+            return this;
+        }
+        
+        public _element setDefaultValue(boolean booleanValue ){
+            this.astAnnMember.setDefaultValue( Expr.of( booleanValue ) );
+            return this;
+        }
+        
+        public _element setDefaultValueNull(){
+            this.astAnnMember.setDefaultValue( Expr.nullExpr() );
+            return this;
+        }
+        
+        public _element setDefaultValue(float floatValue ){
+            this.astAnnMember.setDefaultValue( Expr.of( floatValue ) );
+            return this;
+        }
+        
+        public _element setDefaultValue(double doubleValue ){
+            this.astAnnMember.setDefaultValue( Expr.of( doubleValue ) );
+            return this;
+        }
+        
         public _element setDefaultValue( String defaultValueExpression){
             this.astAnnMember.setDefaultValue( Ast.expr( defaultValueExpression) );
             return this;
@@ -720,6 +760,7 @@ public final class _annotation
             return true;
         }
 
+        @Override
         public Map<_java.Part, Object> partsMap( ) {
             Map<_java.Part, Object> parts = new HashMap<>();
             parts.put( _java.Part.ANNOTATIONS, this.listAnnos() );
@@ -745,7 +786,5 @@ public final class _annotation
         public String toString(){
             return this.astAnnMember.toString();
         }
-
-
     }
 }
