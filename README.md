@@ -158,9 +158,9 @@ public class Point {
 
 <h3>instant feedback</H3>
 <P>draft.java doesn't stop at <I>just</i> building or modifying source code, it also provides
-a means of giving the developer "instant feedback" by compiling & loading the dynamically built
-code, and also allowing the code to be loaded and used. <I>(This gives developers a tight feedback loop, to generate
-build, compile and use or test code in a single program)</I></P>
+"instant feedback" by compiling & loading the dynamically built
+code, and allowing the code to be loaded and used. <I>(This gives developers a tight feedback loop, to generate
+build, compile and use or test code in a single program without a restart)</I></P>
 
 <H4><A NAME="#compile">compile</A> via _javac</H4>
 <P>to <B>compile</B> the .java code represented by one or more _class, _enum, _interface _types:</P>
@@ -174,21 +174,20 @@ _classFiles _cfs = _javac.of(_c);
    use _project:</P>
 
 ```java
-_project _p = _project.of(_c);
+_project _pr = _project.of(_c);
 List<Class> loadedClasses = _pr.listClasses(); //list all loaded classes
-assertEquals(1023, _pr.get(_c, "ID"));//get a static field value from a class
+assertEquals(1023, _pr.get(_c, "ID")); //get a static field value from the Point.class
 Object aPoint = _pr._new(_c); //create a new instance of the Point.class
 ```
 
-<H4><A NAME="#proxy>_proxy instances</A> for using code</H4>
-   
+<H4><A NAME="#proxy">_proxy instances</A> for using code</H4>   
 <P>a _proxy helps you simplify the construction of a new instance of a 
 dynamically built _class.</P>
 
 ```java
 _proxy _p = _pr._proxy(_c );
 ```
-<P>...a _proxy simplifies access to fields or properties on the instance with ```.get(...)```.</P>
+<P>...a _proxy simplifies access to fields or properties on the instance with .get(...).</P>
 
 ```java
 /* _proxy simplifies accessing fields or getters on the proxied instance */
@@ -214,22 +213,33 @@ assertEquals(200.0d / 100.0d, _p.call("riseRun"));
 assertEquals("Point", _p.instance.getClass().getCanonicalName());
 ```
 
-/* we can create another instance */
-_proxy _p2 = _p._new().set("x",100).set("y",200);
+<P> a _proxy can create a new instance of the _class (in the same ClassLoader) with _new().</P>
 
-/* verify the macro generated equals() and hashcode() methods work */
-assertEquals(_p, _p2); //proxies delegate equals method to instance method
-assertEquals(_p.hashCode(), _p2.hashCode()); //proxies delegate hashCode method to instance method
+```java
+_proxy _p2 = _p._new().set("x",100).set("y",200);
+```
+
+<P>we can use these (2) _proxy instances to verify the macro generated equals() and hashcode() methods work
+as expected on the instances:</P>
+
+```java
 assertEquals(_p.instance, _p2.instance); //instance equality check
 assertEquals(_p.instance.hashCode(),_p2.instance.hashCode()); //instance hashcode call
 
-/* export & verify the file "Point.java" was written */
-assertTrue(_io.out("C:\\temp\\",_c).contains("C:\\temp\\Point.java"));
-
-/* export & verify the file "Point.class" was written */
-assertTrue(_io.out("C:\\temp\\",_p._classFile()).contains("C:\\temp\\Point.class"));
+/* _proxy instances try to operate as "transparently" as they can */
+assertEquals(_p, _p2); // _proxy delegates equals() method to .instance method
+assertEquals(_p.hashCode(), _p2.hashCode()); //_proxy delegate hashCode() method to instance method
 ```
 
+<P>finally, when we are satisfied with the .java code and .class that was generated, we can export the .java code and compiled .class files to disk for other programs
+
+```java
+/* export Point.java to a file & verify where it was written to */
+assertTrue(_io.out("C:\\temp\\",_c).contains("C:\\temp\\Point.java"));
+
+/* export Point.java & Point.class to files & verify where it was written to */
+assertTrue(_io.out("C:\\temp\\",_pr).contains("C:\\temp\\Point.class", "C:\\temp\\Point.java"));
+```
 
 <TABLE>
 <TR><TH>draft.java code</TH><TH>source code</TH></TR>
