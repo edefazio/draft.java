@@ -1417,6 +1417,36 @@ public enum Ast {
     public static Expression expr(String... code) {
         return Expr.of(code);
     }
+    
+    
+    public static NullLiteralExpr nullExpr(){
+        return Expr.nullExpr();
+    }
+    
+    public static IntegerLiteralExpr expr( int intValue ){
+        return Expr.of( intValue );
+    }
+    
+    public static BooleanLiteralExpr expr( boolean booleanValue ){
+        return Expr.of( booleanValue );
+    }
+    
+    public static CharLiteralExpr expr( char charValue ){
+        return Expr.of( charValue );
+    }
+    
+    public static LongLiteralExpr expr( long longValue ){
+        return Expr.of( longValue );
+    }
+    
+    public static DoubleLiteralExpr expr( float floatValue ){
+        return Expr.of( floatValue );
+    }
+    
+    public static DoubleLiteralExpr expr( double doubleValue ){
+        return Expr.of( doubleValue );
+    }
+    
 
     private static final String TRY_HARDCODED = "try{ assert(true); }";
 
