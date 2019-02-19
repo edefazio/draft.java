@@ -1,9 +1,9 @@
 # draft.java
-<P>draft.java is a developer-friendly API to <A HREF="#build">build</A>, <A HREF="#access">access</A>, <A HREF="#change">change</A>, <A HREF="#add">add</A>, <A HREF="#remove">remove</A>, and <A HREF="#analyze">analyze</A> .java source code; then optionally <A HREF="#compile">compile</A>, <A HREF="#load">load</A> and <A HREF="#use">use/run</A> the code from within a program. it's a "code generator", and much much more.  <SMALL>(it's like having a <A HREF=https://www.w3.org/TR/DOM-Level-1/introduction.html">DOM</A> for Java source code)</SMALL></P>
+<P>draft.java is a developer-friendly tool to <A HREF="#build">build</A>, <A HREF="#access">access</A>, <A HREF="#change">change</A>, <A HREF="#add">add</A>, <A HREF="#remove">remove</A>, and <A HREF="#analyze">analyze</A> .java source code; then optionally <A HREF="#compile">compile</A>, <A HREF="#load">load</A> and <A HREF="#use">use/run</A> the code from within a program. it's a "code generator", and much MUCH more.  <SMALL>(it's like having a <A HREF=https://www.w3.org/TR/DOM-Level-1/introduction.html">DOM</A> for Java source code)</SMALL></P>
 
 <H3>requirements</H3>
-draft.java runs on Java 8 or later. 
-draft.java depends only on the <A HREF="http://javaparser.org/">JavaParser</A> core (3.12.0 or later) library for transforming Java source code into ASTs. draft.java can generate source code for any version of Java (Java 1.0 - 12).  
+<P>draft.java runs on JDK 8 or later.<SUP>*(runtime compilation requires the JDK rather than the JRE)</SUP> 
+draft.java depends only on the (fantastic) <A HREF="http://javaparser.org/">JavaParser</A> core (3.12.0 or later) library for transforming Java source code into ASTs. draft.java also integrates well with the JShell environment for "live" code generation / modification and scripting.  draft.java can generate source code for ANY version of Java (Java 1.0 - 12).</P>  
 
 ```xml
 <dependency>
@@ -38,7 +38,7 @@ public @interface Refresh{ int value() default 0; }
  _annotation _a = _annotation.of(Refresh.class); //_annotation _a represents the source of Refresh.java
 ```
 
-<P>alternatively you may "manually" build a _type (_class, _enum, _interface, _annotation) via the simple API</P>
+<P>you can "manually" build a _type (_class, _enum, _interface, _annotation) via the simple API</P>
 
 ```java  
 //verify that building _types via Class is equivalent to building via component / Strings
@@ -58,7 +58,7 @@ _enum._constant _ec = _e.getConstant("STABLE");
 _annotation._element _ae = _a.getElement("value");
 ```  
 
-<P><B>accessing</B> lists of like members of each _type via <B>.listXXX()</B></P>
+<P><B>accessing</B> lists of like members of each _type with <B>.listXXX()</B></P>
 
 ```java
 List<_field> _fs = _c.listFields();                  //list all fields on _c
@@ -79,7 +79,7 @@ _aes = _a.listElements(e -> e.hasDefault());    //list all elements with default
 <P>we can also list all (generic) members with <B>.listMembers(Predicate)</B></P>
 
 ```java
-_annot = _c.listMembers(m -> m.hasAnnos());     //list all annotated members 
+List<_model._member>_mems = _c.listMembers(m -> m.hasAnnos()); //list all annotated members 
 ```
 
 <H4><A name="change">change</A> _types & members</H4>
@@ -89,14 +89,12 @@ _annot = _c.listMembers(m -> m.hasAnnos());     //list all annotated members
 //apply changes to top level _type
 _c.implements(Serializable.class); //add Serializable import & implement Serializable to _c
 _i.packageName("graphics.draw");   //set Package Name on _i
-_e.annotate(Deprecated.class);     //add Deprecated import & add the @Deprecated annotation to _e
-_a.imports(Target.class,ElementType.class); //import (2) classes to _a
-_a.setTargetRuntime()
-  .setE
 
-//apply changes to members
-_x.init(0);               //initialize value of field x to be 0
-_c.getField("y").init(0); //initialize field y to be 0
+_a.setTargetRuntime();  //add the @Target(ElementType.TYPE) annotation
+  
+//apply changes to individual members
+_c.getField("x").init(0); //initialize value of field x to be 0
+_c.getField("y").init(0); //initialize value of field y to be 0
 ```
 
 <P>_types allow lambdas to simplify <B>iteration</B> over members with <B>forXXX(Consumer)</B></P>
@@ -106,7 +104,7 @@ _c.forFields(f->f.setPrivate()); //set ALL _fields to be private on _c
 _c.forFields(f->f.removeAnnos(Deprecated.class)); //remove Deprecated annotation from ALL fields of _c
 _e.forConstants(c->c.addArgument(100)); //add constructor argument 100 for ALL constants of _e
 
-_i.forMembers(m -> m.annotate(Deprecated.class)); //apply @Deprecated to all member fields, methods, of _i 
+_i.forMembers(m -> m.annotate(Deprecated.class)); //apply @Deprecated to all members (fields, methods) of _i 
 ```
 
 <P>_types can also <B>selectively change</B> members easily with <B>forXXX(Predicate, Consumer)</B></P>
@@ -123,9 +121,11 @@ _i.forMethods(m->m.isStatic(), m->m.setPublic()); //select all static methods & 
 _c.field("public static final int ID = 1023;");
 _c.method("public int getX(){ return this.x; }");
 
+_e.field("final int count;"); //add a field to _enum _e
+
 _i.field("public static final int VERSION = 12;");
 _e.constant("INVALID(100);"); //add a new constant to _e
-_a.element("String name() default "";"); //add a new annotation element to _a
+_a.element("String name() default \"\";"); //add a new annotation element to _a
 
 _c.field("/** temp field */ public String temp;");
 _c.method("public String getTemp() { return temp; }");
@@ -147,8 +147,8 @@ _c.method( new Object(){ int x, y; //these exist to avoid compiler errors
 });
 ```
 
-<H4><A name="remove">removing</A> members from _types</H4>
-<P>remove members to the _class with <B>`removeXXX(...)`</B></P>
+<H4><A name="remove">removing</A> members</H4>
+<P>remove members to the _type with <B>removeXXX(...)</B></P>
 
 ```java
 _c.removeField("temp");                             //remove field named "temp" from _c
@@ -162,6 +162,7 @@ _i.removeFields(f-> f.isStatic());                  //remove all static fields o
 
 ```java
 _c.apply(_autoSet.$,_autoEquals.$,_autoHashCode.$); //adds set methods & equals, hashCode methods
+_e.apply(_autoConstructor.$); //generate the appropriate constructor for the enum based on fields
 ```
 
 <H4>the common _type interface</h4>
@@ -174,12 +175,12 @@ _ts.add(_i);
 _ts.add(_e);
 _ts.add(_a);
 
-//here we can operate on all types (_class _c, _enum _e, _interface _i, and _annotation _a) 
+//here we can operate on all _types (_class _c, _enum _e, _interface _i, and _annotation _a) 
 _ts.forEach( t-> t.packageName("graphics.draw") ); //change the package name for ALL _types
 ```
 
 <H4>print the .java source</H4>
-<P>for testing and debugging support, you can always use `toString()` to get the .java source code for a `_type`</P>
+<P>for testing and debugging support, you can always use toString() to get the .java source code for a _type</P>
 
 ```java
 System.out.println(_c);
