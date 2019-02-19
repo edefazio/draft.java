@@ -20,9 +20,9 @@ draft.java depends only on the <A HREF="http://javaparser.org/">JavaParser</A> c
 
 <H3>how to...</H3>
 
-<H4><A name="build">building a draft.java `_type` (`_class`, `_enum`, `_interface`, `_annotation`)</A></H3>
-<P>the most convenient way to <B>build</B> a DOM-like draft.java `_type` is by pass in an 
-  existing Class (the .java source of the Class is modeled)</A></P>
+<H4><A name="build">building a _type (_class, _enum, _interface, _annotation)</A></H3>
+<P>the most convenient way to <B>build</B> a DOM-like _type is by pass in an 
+  existing Class to the _type.of(Class) method (the .java source of the Class is modeled)</A></P>
 
 ```java
 public class Point { @Deprecated int x, y; }
@@ -38,18 +38,18 @@ public @interface Refresh{ int value() default 0; }
  _annotation _a = _annotation.of(Refresh.class); //_annotation _a represents the source of Refresh.java
 ```
 
-<P>alternatively you may "manually" build a draft.java `_type` (`_class`, `_enum`, `_interface`, `_annotation`) via the simple API</P>
+<P>alternatively you may "manually" build a _type (_class, _enum, _interface, _annotation) via the simple API</P>
 
 ```java  
-//verify that building `_type`s via Class is eqwuivalent to building via component / Strings
+//verify that building _types via Class is equivalent to building via component / Strings
 assertEquals(_c, _class.of("Point").fields("@Deprecated int x,y;"));
 assertEquals(_i, _interface.of("Drawable").method("public void draw();"));
 assertEquals(_e, _enum.of("State").constants("STABLE", "REDRAW"));
 assertEquals(_a, _annotation.of("Refresh").element("int value() default 0;"));
 ```
 
-<H4><A name="access">access</A></H4>
-<A name="access">each draft '_type` gives <B>access</B> to individual members via <B>`.getXXX(...)`</B></A>
+<H4><A name="access">access</A>ing members of _types</H4>
+<A name="access">each _type gives <B>access</B> to individual members via <B>.getXXX(...)</B></A>
 
 ```java
 _field _x = _c.getField("x");
@@ -58,7 +58,7 @@ _enum._constant _ec = _e.getConstant("STABLE");
 _annotation._element _ae = _a.getElement("value");
 ```  
 
-<P><B>accessing</B> lists of like members of each `type` via <B>`.listXXX()`</B></P>
+<P><B>accessing</B> lists of like members of each _type via <B>.listXXX()</B></P>
 
 ```java
 List<_field> _fs = _c.listFields();                  //list all fields on _c
@@ -67,17 +67,23 @@ List<_enum._constant> _ecs = _e.listConstants();     //list all constants on _e
 List<_annotation._element> _aes = _a.listElements(); //list all elements on _a
 ```
 
-<P>each `type` can <B>selectively list</B> members based on a lambda with <B>.`listXXX(Predicate)`</B></P>
+<P>each _type can <B>selectively list</B> members based on a lambda with <B>.listXXX(Predicate)</B></P>
    
 ```java   
-_fs = _c.listFields(f -> f.isPrivate());        //list all private fields   
-_ms = _i.listMethods(m -> m.isDefault());       //list all default methods
-_ecs = _e.listConstants(c -> c.hasArguments()); //list all constants with constructor arguments
-_aes = _a.listElements(e -> e.hasDefault());    //list all elements with defaults
+_fs = _c.listFields(f -> f.isPrivate());        //list all private fields on _c   
+_ms = _i.listMethods(m -> m.isDefault());       //list all default methods on _i
+_ecs = _e.listConstants(c -> c.hasArguments()); //list all constants with constructor arguments on _e
+_aes = _a.listElements(e -> e.hasDefault());    //list all elements with defaults on _a
 ```
 
-<H4><A name="change">change</A></H4>
-<P><B>change</B>s can be applied to the _class or members are reflected in the source of the _class</P>
+<P>we can also list all (generic) members with <B>.listMembers(Predicate)</B></P>
+
+```java
+_annot = _c.listMembers(m -> m.hasAnnos());     //list all annotated members 
+```
+
+<H4><A name="change">change</A> _types & members</H4>
+<P><B>change</B>s can be applied to the _type or members are reflected in the source of the _class</P>
 
 ```java  
 //apply changes to top level _type
@@ -88,12 +94,12 @@ _a.imports(Target.class,ElementType.class); //import (2) classes to _a
 _a.setTargetRuntime()
   .setE
 
-//apply changes to individual members
+//apply changes to members
 _x.init(0);               //initialize value of field x to be 0
 _c.getField("y").init(0); //initialize field y to be 0
 ```
 
-<P>draft.java integrates lambdas to simplify <B>iteration</B> over members with <B>`forXXX(Consumer)`</B></P>
+<P>_types allow lambdas to simplify <B>iteration</B> over members with <B>forXXX(Consumer)</B></P>
 
 ```java  
 _c.forFields(f->f.setPrivate()); //set ALL _fields to be private on _c
@@ -103,15 +109,15 @@ _e.forConstants(c->c.addArgument(100)); //add constructor argument 100 for ALL c
 _i.forMembers(m -> m.annotate(Deprecated.class)); //apply @Deprecated to all member fields, methods, of _i 
 ```
 
-<P>`type`s can also <B>selectively change</B> members easily with <B>`forXXX(Predicate, Consumer)`</B></P>
+<P>_types can also <B>selectively change</B> members easily with <B>forXXX(Predicate, Consumer)</B></P>
 
 ```java
-_c.forFields(f->f.isStatic() && f.hasInit(), f->f.setFinal()); //select static initialized fields & set them as final
+_c.forFields(f->f.isStatic() && f.hasInit(), f->f.setFinal()); //set all static initialized fields as final
 _i.forMethods(m->m.isStatic(), m->m.setPublic()); //select all static methods & make them public
 ```
 
-<H4><A name="add">add</H4>
-each `type` lets you directly <B>add</B> members belonging to the type</A>
+<H4><A name="add">adding members</A> to _types</H4>
+<P>each _type provides methods for <B>adding</B> members appropriate for the underlying _type</P>
 
 ```java  
 _c.field("public static final int ID = 1023;");
@@ -125,9 +131,9 @@ _c.field("/** temp field */ public String temp;");
 _c.method("public String getTemp() { return temp; }");
 ```
 
-<P>draft can "pass code around" via lambda bodies and anonymous objects. 
-(this technique allows source code to be parsed checked and presented/colorized naturally by the IDE, 
-and not treated like escaped plain text... therefore much easier to read, debug, and modify.)</P>
+<P>_types provide the ability to "pass code around" via lambda bodies and anonymous objects. 
+(this technique allows source code to be parsed / checked and presented/colorized in real time by the IDE, 
+and not treated like escaped plain text... much easier to read, debug, and modify.)</P>
 
 ```java
 /* this method body is defined by a lambda body */
@@ -141,7 +147,7 @@ _c.method( new Object(){ int x, y; //these exist to avoid compiler errors
 });
 ```
 
-<H4><A name="remove">remove</A></H4>
+<H4><A name="remove">removing</A> members from _types</H4>
 <P>remove members to the _class with <B>`removeXXX(...)`</B></P>
 
 ```java
@@ -152,14 +158,14 @@ _i.removeFields(f-> f.isStatic());                  //remove all static fields o
 ```
 
 <H4>automate with macros</H4>
-<P><B>macros</B> can automate repetitive manual coding. <A HREF="https://github.com/edefazio/draft.java/tree/master/src/main/java/draft/java/macro">use the built in ones</A> -or- easily build your own</P>
+<P><B>macros</B> can automate repetitive manual coding tasks when building _types. <A HREF="https://github.com/edefazio/draft.java/tree/master/src/main/java/draft/java/macro">use the built in ones</A> -or- easily build your own</P>
 
 ```java
 _c.apply(_autoSet.$,_autoEquals.$,_autoHashCode.$); //adds set methods & equals, hashCode methods
 ```
 
-<H4>the _type interface</h4>
-<P>to uniformly collect or operate on `_type`s, we use the `_type` interface.</P> 
+<H4>the common _type interface</h4>
+<P>to uniformly collect or operate on _types, we use the _type interface.</P> 
 
 ```java 
 List<_type> _ts = new ArrayList<>();
@@ -240,8 +246,8 @@ public class Point implements Serializable{
 code, and allowing the code to be loaded and used. <I>(This gives developers a tight feedback loop, to generate
 build, compile and use or test code in a single program without a restart)</I></P>
 
-<H4><A NAME="compile">compile</A> via _javac</H4>
-<P>to <B>compile</B> the .java code represented by one or more _class, _enum, _interface _types:</P>
+<H4><A NAME="compile">compiling</A> _types with _javac</H4>
+<P>to <B>compile</B> the .java code represented by one or more _type (_class, _enum, _interface, _annotation) use _javac.of(...):</P>
 
 ```java
 //we can verify the generated code is valid Java, call the javac compiler
@@ -249,14 +255,15 @@ _classFiles _cfs = _javac.of(_c); //compile & return the _classFiles (bytecode) 
 _classFiles _allCfs = _javac.of(_c, _i, _a, _e); //compile & return _classFiles for all _types
 ```
 
-<P> we can pass in options to the compiler via a builder <B>_javac.options().XXX</B></P>
+<P> we can pass in options to the javac compiler via a builder <B>_javac.options().XXX</B></P>
 
 ```java
 _classFiles _allCfs = _javac.of( 
     _javac.options()
-        .parameterNamesStoredForRuntimeReflection() //https://stackoverflow.com/questions/44067477/drawbacks-of-javac-parameters-flag
+        //https://stackoverflow.com/questions/44067477/drawbacks-of-javac-parameters-flag
+        .parameterNamesStoredForRuntimeReflection() 
         .terminateOnWarning(), //strict compile: fail if any warning is found
-    _c, _i, _a, _e); //compile & return the _classFiles (bytecode) for _c _class
+    _c, _i, _a, _e); //compile & return the _classFiles (bytecode) for the (_c, _i, _a, and _e) _types
 ```
 
 <H4><A NAME="load">compile & load</A> in one step via _project</H4>
@@ -264,7 +271,9 @@ _classFiles _allCfs = _javac.of(
    use <B>_project</B>:</P>
 
 ```java
+// we can create a _project of a single _type
 _project _proj = _project.of(_c);
+
 List<Class> loadedClasses = _proj.listClasses(); //list all loaded classes
 // _project constructor optionally accepts _javac options
 _proj = _project.of( _javac.options().terminateOnWarning(), _c, _a, _i, _e);
@@ -277,8 +286,8 @@ assertEquals(1023, _proj.get(_c, "ID")); //get the value of a static field value
 Object aPoint = _proj._new(_c); //create a new instance of the Point.class
 ```
 
-<H4><A NAME="use">_proxy instances</A></H4>   
-<P>a <B>_proxy</B> simplifies the using dynamically built _class instances.</P>
+<H4><A NAME="use">using a _proxy</A> to interact with dynamic instances</H4>   
+<P>a <B>_proxy</B> simplifies the using a _class instances.</P>
 
 ```java
 _proxy _p = _proj._proxy(_c ); //build a proxy from the Point.class created by _class _c
@@ -340,19 +349,3 @@ assertTrue(_io.out("C:\\temp\\",_proj.classFiles()).contains("C:\\temp\\Point.cl
 /* export Point.java & Point.class to files & verify where both files were written to */
 assertTrue(_io.out("C:\\temp\\",_proj).containsAll("C:\\temp\\Point.class", "C:\\temp\\Point.java"));
 ```
-
-<TABLE>
-<TR><TH>draft.java code</TH><TH>source code</TH></TR>
-<TR><TD>_class.of(<span style="color: #a31515">&quot;Circle&quot;</span>).field(<span style="color: #a31515">&quot;int rad;&quot;</span>);
-</TD><TD><span style="color: #0000ff">public</span> <span style="color: #0000ff">class</span> <span style="color: #2b91af">Circle</span>{<span style="color: #2b91af">int</span> rad;}
-</TD></TR>     
-<TR><TD>_field.of(<span style="color: #a31515">&quot;private static String ID;&quot;</span>);</TD><TD><span style="color: #0000ff">private</span> <span style="color: #0000ff">static</span> String ID;</TD></TR> 
-<TR><TD>_method.of(<span style="color: #a31515">&quot;public String toString(){return ID;}&quot;</span>);</TD><TD><span style="color: #0000ff">public</span> String toString(){<span style="color: #0000ff">return</span> ID;}</TD></TR>
-<TR><TD>_constructor.of(<span style="color: #a31515">&quot;Circle(int rad){this.rad=rad;}&quot;</span>);</TD><TD>Circle(<span style="color: #2b91af">int</span> rad){<span style="color: #0000ff">this</span>.rad=rad;}</TD></TR>                            
-<TR><TD>_staticBlock.of(<span style="color: #a31515">&quot;ID = UUID.randomUUID.toString();&quot;</span>);</TD>
-<TD><span style="color: #0000ff">static</span>{ID = UUID.randomUUID.toString();}</TD></TR>
-<TR><TD>_interface.of(<span style="color: #a31515">&quot;Drawable&quot;</span>).method(<span style="color: #a31515">&quot;void draw();&quot;</span>);</TD><TD><span style="color: #0000ff">public</span> <span style="color: #0000ff">interface</span> <span style="color: #2b91af">Drawable</span>{<span style="color: #2b91af">void</span> draw();}
-</TD></TR>           
-<TR><TD>_annotation.of(<span style="color: #a31515">&quot;Refresh&quot;</span>).element(<span style="color: #a31515">&quot;int value();&quot;</span>)</TD><TD><span style="color: #0000ff">public</span> @interface Refresh{<span style="color: #2b91af">int</span> value();}</TD></TR>
-<TR><TD>_enum.of(<span style="color: #a31515">&quot;State&quot;</span>).constants(<span style="color: #a31515">&quot;STABLE&quot;</span>,<span style="color: #a31515">&quot;REDRAW&quot;</span>);</TD><TD><span style="color: #0000ff">public</span> <span style="color: #0000ff">enum</span> State{STABLE,REDRAW;}</TD></TR>
-</TABLE>
