@@ -30,10 +30,11 @@ public final class _interface implements _type<ClassOrInterfaceDeclaration, _int
     public static _interface of( Class clazz ){
         Node n = Ast.type( clazz );
         if( n instanceof CompilationUnit ){
-            return of( (CompilationUnit)n);
-        } else{
-            return of( (ClassOrInterfaceDeclaration)n);
-        }
+            //_interface _i = ;
+            return _macro.to(clazz, of( (CompilationUnit)n));
+        } 
+        
+        return _macro.to(clazz, of((ClassOrInterfaceDeclaration)n));        
     }
 
     /**

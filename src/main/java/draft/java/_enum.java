@@ -35,10 +35,9 @@ public final class _enum implements _type<EnumDeclaration, _enum>,_method._hasMe
     public static _enum of( Class<? extends Enum> clazz ){
         Node n = Ast.type( clazz );
         if( n instanceof CompilationUnit ){
-            return of( (CompilationUnit)n);
-        } else{
-            return of( (EnumDeclaration)n);
+            return _macro.to(clazz, of( (CompilationUnit)n));
         }
+        return _macro.to(clazz, of( (EnumDeclaration)n));        
     }
 
     public static _enum of( String...classDef ){

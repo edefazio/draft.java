@@ -10,6 +10,7 @@ import draft.DraftException;
 import draft.Text;
 import draft.java._anno.*;
 import draft.java.io._in;
+import draft.java.macro._macro;
 
 import java.io.InputStream;
 import java.lang.annotation.*;
@@ -32,10 +33,9 @@ public final class _annotation
     public static _annotation of( Class<? extends Annotation> clazz ){
         Node n = Ast.type( clazz );
         if( n instanceof CompilationUnit ){
-            return of( (CompilationUnit)n);
-        } else{
-            return of( (AnnotationDeclaration)n);
+            return _macro.to(clazz, of( (CompilationUnit)n));
         }
+        return _macro.to(clazz, of( (AnnotationDeclaration)n));        
     }
 
     /**
