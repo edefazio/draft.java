@@ -776,6 +776,36 @@ public final class _javacOptions
     }
 
     /**
+     * Expects .java source files for Java version 11
+     *
+     * @return
+     */
+    public _javacOptions sourceVersion_java_11() {
+        data.sourceVersion = "11";
+        return this;
+    }
+    
+    /**
+     * Expects .java source files for Java version 11
+     *
+     * @return
+     */
+    public _javacOptions sourceVersion_java_12() {
+        data.sourceVersion = "12";
+        return this;
+    }
+    
+    /**
+     * Expects .java source files for Java version 13
+     *
+     * @return
+     */
+    public _javacOptions sourceVersion_java_13() {
+        data.sourceVersion = "13";
+        return this;
+    }
+    
+    /**
      * Specifies the source code path to search for class or interface
      * definitions. As with the user class path, source path entries are
      * separated by colons (:) on Oracle Solaris and semicolons on Windows and
@@ -920,15 +950,46 @@ public final class _javacOptions
     }
 
     /**
-     * Writes target class bytecode for the Java 10 JVM
+     * Writes target class bytecode for the Java 10  JVM
      *
      * @return
      */
-    public _javacOptions targetClassVersion_java_10() {
+    public _javacOptions targetClassVersion_java10() {
         data.targetClassVersion = "10";
         return this;
     }
+    
+    
+    /**
+     * Writes target class bytecode for the Java 11 JVM
+     *
+     * @return
+     */
+    public _javacOptions targetClassVersion_java11() {
+        data.targetClassVersion = "11";
+        return this;
+    }
+    
+    /**
+     * Writes target class bytecode for the Java 12 JVM
+     *
+     * @return
+     */
+    public _javacOptions targetClassVersion_java12() {
+        data.targetClassVersion = "12";
+        return this;
+    }
 
+    /**
+     * Writes target class bytecode for the Java 12 JVM
+     *
+     * @return
+     */
+    public _javacOptions targetClassVersion_java13() {
+        data.targetClassVersion = "13";
+        return this;
+    }
+    
     /** -Xprefer=source
      * When the compiler resolves a ".java" source file AND a ".class" file
      * that could be resolved as the class, choose the source file
