@@ -1,8 +1,5 @@
 package draft;
 
-import draft.Composite;
-import draft.DraftException;
-import draft.Named;
 import java.util.*;
 import java.util.stream.Collectors;
 
