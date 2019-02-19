@@ -13,6 +13,7 @@ import draft.Text;
 import draft.java._model.*;
 import draft.java.io._in;
 import draft.java.io._io;
+import draft.java.macro._macro;
 import draft.java.macro._remove;
 
 import java.io.InputStream;
@@ -107,13 +108,13 @@ public interface _type<AST extends TypeDeclaration, T extends _type>
         if( td instanceof ClassOrInterfaceDeclaration ){
             ClassOrInterfaceDeclaration coid = (ClassOrInterfaceDeclaration)td;
             if( coid.isInterface() ){
-                return _interface.of(coid);
+                return _macro.to(clazz, _interface.of(coid));
             }
-            return _class.of(coid);
+            return _macro.to(clazz,  _class.of(coid) );
         }else if( td instanceof EnumDeclaration){
-            return _enum.of( (EnumDeclaration)td);
+            return _macro.to(clazz, _enum.of( (EnumDeclaration)td));
         }
-        return _annotation.of( (AnnotationDeclaration)td);
+        return _macro.to(clazz, _annotation.of( (AnnotationDeclaration)td));
     }
 
     /**
