@@ -70,10 +70,10 @@ public final class _classLoader
      */
     public List<String> listResourceFileNames( boolean includeAncestorClassLoaders ) {
         if( includeAncestorClassLoaders ) {
-            Set<String> names = new HashSet<String>();
+            Set<String> names = new HashSet<>();
             List<_classLoader> ancestry = listAncestry( this );
             ancestry.forEach( cl -> names.addAll( cl._fileMan.resourceFiles.listNames() ) );
-            List<String> rnames = new ArrayList<String>();
+            List<String> rnames = new ArrayList<>();
             rnames.addAll( names );
             return rnames;
         }
@@ -210,11 +210,11 @@ public final class _classLoader
             //that are in the parent  _classLoader that may
             //not exist in the child _classLoader
             Map<String, _type> nameToType = mapNameTo_type( true );
-            List<_type> allTypesList = new ArrayList<_type>();
+            List<_type> allTypesList = new ArrayList<>();
             allTypesList.addAll( nameToType.values() );
             return allTypesList;
         }
-        List<_type> all = new ArrayList<_type>();
+        List<_type> all = new ArrayList<>();
         all.addAll( _fileMan.sourceJavaFiles.list() );
         all.addAll( _fileMan.generatedJavaFiles.list() );
         return all;
@@ -290,7 +290,7 @@ public final class _classLoader
         }
         nameTo_classFile.putAll(_fileMan.classFiles.mapNameTo_classFile());
 
-        List<_classFile>cfs = new ArrayList<_classFile>();
+        List<_classFile>cfs = new ArrayList<>();
         cfs.addAll(nameTo_classFile.values());
         return cfs;
     }
@@ -322,7 +322,7 @@ public final class _classLoader
     }
 
     public List<Class> listClasses( boolean includeAncestorClassLoaders ) {
-        List<Class> classes = new ArrayList<Class>();
+        List<Class> classes = new ArrayList<>();
         List<_type> _types;
         if( includeAncestorClassLoaders ) {
             _types = list_types( true );
@@ -338,7 +338,7 @@ public final class _classLoader
 
     protected Map<URL, _file> mapURLToResource_file(boolean includeAncestorClassLoaders ) {
 
-        Map<URL, _file> nameToResource = new HashMap<URL, _file>();
+        Map<URL, _file> nameToResource = new HashMap<>();
         if( includeAncestorClassLoaders ) {
             List<_classLoader> ancestry = listAncestry( this );
             for( int i = 0; i < ancestry.size(); i++ ) {
@@ -359,7 +359,7 @@ public final class _classLoader
      * @return a compose of names and types
      */
     protected Map<String, _type> mapNameTo_type( boolean includeAncestorClassLoaders ) {
-        Map<String, _type> nameToType = new HashMap<String, _type>();
+        Map<String, _type> nameToType = new HashMap<>();
         if( includeAncestorClassLoaders ) {
             List<_classLoader> ancestry = _classLoader.listAncestry( this );
             for( int i = 0; i < ancestry.size(); i++ ) {
@@ -392,7 +392,7 @@ public final class _classLoader
      * @return
      */
     public List<String> listClassNames( boolean includeAncestorClassLoaders ) {
-        List<String> names = new ArrayList<String>();
+        List<String> names = new ArrayList<>();
         if( includeAncestorClassLoaders ) {
             List<_classLoader> _ancestry = listAncestry( this );
             for( int i = 0; i < _ancestry.size(); i++ ) {
@@ -557,7 +557,7 @@ public final class _classLoader
     @Override
     public Enumeration<URL> findResources( String name ) throws IOException {
         List<_classLoader> ancestry = listAncestry( this );
-        ArrayList<URL> found = new ArrayList<URL>();
+        ArrayList<URL> found = new ArrayList<>();
         for( int i = 0; i < ancestry.size(); i++ ) {
             _file _resourceFile
                     = ancestry.get( i )._fileMan.resourceFiles.get( name );
@@ -585,7 +585,7 @@ public final class _classLoader
     }
 
     public List<Package> listPackages( boolean includeAncestorClassLoaders ) {
-        List<Package> allPackages = new ArrayList<Package>();
+        List<Package> allPackages = new ArrayList<>();
         if( includeAncestorClassLoaders ) {
             List<_classLoader> ancestry = listAncestry( this );
             for( int i = 0; i < ancestry.size(); i++ ) {
@@ -702,7 +702,7 @@ public final class _classLoader
     public List<Class> linkAllClasses() {
         List<_type> _classNames = list_types( false );
 
-        List<Class> linkedClasses = new ArrayList<Class>();
+        List<Class> linkedClasses = new ArrayList<>();
         for( int i = 0; i < _classNames.size(); i++ ) {
             try {
                 linkedClasses.add(
