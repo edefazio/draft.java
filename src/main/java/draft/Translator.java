@@ -15,9 +15,9 @@ import java.util.Collection;
  *
  * List<MyCustomBean> beanList = new ArrayList<MyCustomBean>();
  *
- * ...we can: 1) convert the listAt into an array (MyCustomBean[]) 2) iterate
- * over
- * each element in the array to a convert each instance to a String
+ * ...we can: 
+ * 1) convert the list into an array (MyCustomBean[]) 
+ * 2) iterate over each element in the array to a convert each instance to a String
  *
  * @author Eric
  */
