@@ -154,7 +154,7 @@ public class $stmtTest extends TestCase {
         assertEquals( Stmt.switchCaseStmt("case 1: System.out.println(1);").toString(),
                 $stmt.switchCaseStmt("case 1: System.out.println(1);").stencil.toString());
 
-        assertNotNull( Stencil.of("A").decompose("A"));
+        assertNotNull( Stencil.of("A").deconstruct("A"));
         assertTrue( $stmt.switchCaseStmt("case 1: System.out.println(1);")
                 .matches(Stmt.switchCaseStmt("case 1: System.out.println(1);")));
     }

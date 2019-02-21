@@ -25,12 +25,12 @@ import java.util.List;
 public class ExprTest extends TestCase {
 
     public void testRuntimeAnonymousClass(){
-        ObjectCreationExpr oce = Expr.anonymousClass( new Object(){
+        ObjectCreationExpr oce = Expr.anonymousObject( new Object(){
             int x,y,z;
         });
         assertTrue( oce.getAnonymousClassBody().get().get(0) instanceof FieldDeclaration );
 
-        oce = Expr.anonymousClass(
+        oce = Expr.anonymousObject(
                 /** INTENTIONALLY BLANK */
                 /** INTENTIONALLY BLANK */
                 /** INTENTIONALLY BLANK */

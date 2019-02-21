@@ -31,7 +31,7 @@ public class StencilTest
     public void testOnlyBlank(){
         Stencil s = Stencil.of("$name$");
         Tokens all =
-                s.decompose("The whole thing");
+                s.deconstruct("The whole thing");
         assertTrue( all.size() == 1);
         assertEquals( all.get("name"), "The whole thing" );
 
@@ -41,10 +41,10 @@ public class StencilTest
         Stencil s = Stencil.of("this is the first line", "$any$", "this is the last line");
 
         //make sure I can tokenize with exactly one line in between
-        Tokens kvs = s.decompose("this is the first line", "some data", "this is the last line");
+        Tokens kvs = s.deconstruct("this is the first line", "some data", "this is the last line");
         assertNotNull(kvs );
 
-        kvs = s.decompose("this is the first line", "some data", "more data", "this is the last line");
+        kvs = s.deconstruct("this is the first line", "some data", "more data", "this is the last line");
         assertNotNull( kvs );
         assertTrue( ((String)kvs.get("any" )).contains("some data"));
         assertTrue( ((String)kvs.get("any" )).contains("more data"));
@@ -64,8 +64,8 @@ public class StencilTest
 
     public void testStencilExtract(){
         Stencil s = Stencil.of( "$a$ and a $b$ of $c$;" );
-        List<String> strs = s.getTextBlanks().decompose("XXX and a YYY of ZZZ;");
-        assertEquals( Tokens.of("a", "XXX", "b", "YYY", "c", "ZZZ"), s.decompose("XXX and a YYY of ZZZ;"));
+        List<String> strs = s.getTextBlanks().deconstruct("XXX and a YYY of ZZZ;");
+        assertEquals( Tokens.of("a", "XXX", "b", "YYY", "c", "ZZZ"), s.deconstruct("XXX and a YYY of ZZZ;"));
 
     }
 
@@ -74,10 +74,10 @@ public class StencilTest
     public void testStencilRoundTripExtract(){
         Stencil s = Stencil.of( "return $any$;" );
         assertEquals( "return 3+4;", s.construct( "any", "3+4"));
-        assertEquals( Tokens.of("any", "3 + 4"), s.decompose("return 3 + 4;"));
+        assertEquals( Tokens.of("any", "3 + 4"), s.deconstruct("return 3 + 4;"));
 
         assertEquals( "return \";\";", s.construct( "any", "\";\""));
-        assertEquals( Tokens.of("any", "\";\"") , s.decompose("return \";\";"));
+        assertEquals( Tokens.of("any", "\";\"") , s.deconstruct("return \";\";"));
     }
 
 
@@ -110,7 +110,7 @@ public class StencilTest
         assertEquals( expect, str );
 
         //make sure we can tokenize the variables back out
-        assertEquals( Tokens.of("name", "x", "Name", "X", "type", "int" ), s.decompose( expect ));
+        assertEquals( Tokens.of("name", "x", "Name", "X", "type", "int" ), s.deconstruct( expect ));
 
     }
 
@@ -217,12 +217,12 @@ public class StencilTest
         assertEquals(3, segs.size());
 
         //the textBind will tokenize
-        List<String> vals = st.getTextBlanks().decompose(toExtract);
+        List<String> vals = st.getTextBlanks().deconstruct(toExtract);
         assertEquals("Eric", vals.get(0));
         assertEquals("math", vals.get(1));
         assertEquals("hard", vals.get(2));
 
-        Tokens extracted =  st.decompose(toExtract);
+        Tokens extracted =  st.deconstruct(toExtract);
 
         assertEquals( "Eric", extracted.get("a"));
         assertEquals( "math", extracted.get("b"));
@@ -233,13 +233,13 @@ public class StencilTest
         Stencil st2 = Stencil.of("public static final $type$ $paramName$ = $init$");
         String MyVAL = "public static final String STATIC = \"Eric\"";
 
-        List<String>vals = st2.getTextBlanks().decompose( MyVAL );
+        List<String>vals = st2.getTextBlanks().deconstruct( MyVAL );
 
         assertEquals( vals.get(0), "String");
         assertEquals( vals.get(1), "STATIC");
         assertEquals( vals.get(2), "\"Eric\"");
 
-        Tokens paramVals = st2.decompose( MyVAL );
+        Tokens paramVals = st2.deconstruct( MyVAL );
 
         assertEquals( paramVals.get("type"), "String");
         assertEquals( paramVals.get("paramName"), "STATIC");
@@ -248,9 +248,9 @@ public class StencilTest
 
     public void testExtractFail(){
         Stencil s = Stencil.of("this is $a$ problem");
-        assertNull( s.decompose("this is alright no") );
+        assertNull( s.deconstruct("this is alright no") );
 
         s = Stencil.of("this is $a$ $b$");
-        assertEquals( Tokens.of("a", "alright","b","no"), s.decompose("this is alright no") );
+        assertEquals( Tokens.of("a", "alright","b","no"), s.deconstruct("this is alright no") );
     }
 }
