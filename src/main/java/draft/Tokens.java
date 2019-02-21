@@ -34,6 +34,10 @@ public final class Tokens implements Map<String,Object>{
         return kvs.add(data);
     }
 
+    /**
+     * Create and return a copy/clone of the Tokens
+     * @return a copy of the Tokens
+     */
     public Tokens copy(){
         return of( this );
     }
@@ -84,7 +88,12 @@ public final class Tokens implements Map<String,Object>{
         return this.kvMap.containsKey(key);
     }
 
-    /** check that it has this this exact key VALUE combination*/
+    /** 
+     * check that it has this this exact key VALUE combination
+     * @param key     
+     * @param value     
+     * @return true if 
+     */
     public boolean has( String key, String value){
         Object val = this.get(key);
         if( val != null ){
@@ -94,9 +103,9 @@ public final class Tokens implements Map<String,Object>{
     }
 
     /**
-     * returns true is all keys are within the keyvalues
-     * @param keys all the keys that have
-     * @return true if the Tokens
+     * returns true is all keys are within the Tokens
+     * @param keys all the keys to find
+     * @return true if all keys are found in the Tokens
      */
     public boolean containsKeys( String...keys ){
         for( String key : keys ) {
