@@ -182,7 +182,7 @@ public final class _anno
     }
 
     @Override
-    public Map<_java.Component,Object> partsMap(){
+    public Map<_java.Component,Object> componentsMap(){
         Map<_java.Component,Object> m = new HashMap();
         m.put(_java.Component.NAME, this.getName() );
         if( this.annotationExpr instanceof NormalAnnotationExpr ){
@@ -700,7 +700,6 @@ public final class _anno
             getAnnos().remove( annosToRemove.toArray( new _anno[ 0 ] ) );
             return (T)this;
         }
-
     }
 
     /**

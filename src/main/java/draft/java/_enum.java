@@ -652,11 +652,11 @@ public final class _enum implements _type<EnumDeclaration, _enum>,_method._hasMe
     }
 
     @Override
-    public Map<_java.Component, Object> partsMap( ) {
+    public Map<_java.Component, Object> componentsMap( ) {
         Map<_java.Component, Object> parts = new HashMap<>();
         parts.put( _java.Component.PACKAGE_NAME, this.getPackage() );
         parts.put( _java.Component.IMPORTS, this.listImports() );
-        parts.put( _java.Component.ANNOTATIONS, this.listAnnos() );
+        parts.put(_java.Component.ANNOS, this.listAnnos() );
         parts.put( _java.Component.IMPLEMENTS, this.listImplements() );
         parts.put( _java.Component.JAVADOC, this.getJavadoc() );
         parts.put( _java.Component.CONSTANTS, this.listConstants());
@@ -1018,9 +1018,9 @@ public final class _enum implements _type<EnumDeclaration, _enum>,_method._hasMe
         }
 
         @Override
-        public Map<_java.Component, Object> partsMap( ) {
+        public Map<_java.Component, Object> componentsMap( ) {
             Map<_java.Component, Object> parts = new HashMap<>();
-            parts.put( _java.Component.ANNOTATIONS, this.listAnnos() );
+            parts.put(_java.Component.ANNOS, this.listAnnos() );
             parts.put( _java.Component.JAVADOC, this.getJavadoc() );
             parts.put( _java.Component.NAME, this.getName());
             parts.put( _java.Component.ARGUMENTS, this.listArguments());

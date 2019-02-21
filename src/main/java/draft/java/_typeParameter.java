@@ -89,7 +89,7 @@ public final class _typeParameter
 
 
 
-    public Map<_java.Component, Object> partsMap( ) {
+    public Map<_java.Component, Object> componentsMap( ) {
         Map<_java.Component, Object> parts = new HashMap<>();
         parts.put( _java.Component.TYPE_PARAMETER, this.typeParameter );
         return parts;

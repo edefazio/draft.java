@@ -256,10 +256,10 @@ public final class _parameter
         return this;
     }
 
-    public Map<_java.Component, Object> partsMap( ) {
+    public Map<_java.Component, Object> componentsMap( ) {
         Map<_java.Component, Object> parts = new HashMap<>();
         parts.put( _java.Component.FINAL, isFinal() );
-        parts.put( _java.Component.ANNOTATIONS, getAnnos() );
+        parts.put(_java.Component.ANNOS, getAnnos() );
         parts.put( _java.Component.TYPE, getType() );
         parts.put( _java.Component.NAME, getName() );
         parts.put( _java.Component.VAR_ARG, isVarArg() );

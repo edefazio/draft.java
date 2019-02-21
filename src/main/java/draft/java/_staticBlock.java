@@ -120,7 +120,7 @@ public final class _staticBlock
         return true;
     }
 
-    public Map<_java.Component, Object> partsMap( ) {
+    public Map<_java.Component, Object> componentsMap( ) {
         Map<_java.Component, Object> parts = new HashMap<>();
         parts.put( _java.Component.BODY, getBody() );
         return parts;

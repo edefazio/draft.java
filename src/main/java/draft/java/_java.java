@@ -33,7 +33,7 @@ import static draft.java.Ast.*;
 public enum _java {
     ;
 
-    /** Map from the _model._node classes to the Ast Node equivalent */
+   /** Map from the _model._node classes to the Ast Node equivalent */
     public static final Map<Class<? extends _node>, Class<? extends Node>> _JAVA_TO_AST_NODE_CLASSES = new HashMap<>();
 
     static {
@@ -265,9 +265,16 @@ public enum _java {
      * on a part by part basis)
      */
     public enum Component implements Named { 
-        ANNOTATIONS("annotations", _anno._annos.class),
+        ANNOS("annos", _anno._annos.class),
         //annotation
-        ANNOTATION("annotation", _anno.class),
+        ANNO("anno", _anno.class),
+        
+        CLASS("class", _class.class),
+        ENUM("enum", _enum.class),
+        INTERFACE("interface", _interface.class),
+        ANNOTATION("annotation", _annotation.class),
+        
+        
         
         BODY("body", _body.class),
         MODIFIERS("modifiers", List.class, Modifier.class ),

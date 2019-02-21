@@ -304,9 +304,9 @@ public final class _method
     }
 
     @Override
-    public Map<_java.Component, Object> partsMap() {
+    public Map<_java.Component, Object> componentsMap() {
         Map<_java.Component, Object> parts = new HashMap<>();
-        parts.put( _java.Component.ANNOTATIONS, getAnnos() );
+        parts.put(_java.Component.ANNOS, getAnnos() );
         parts.put( _java.Component.BODY, getBody() );
         parts.put( _java.Component.TYPE, getType() );
         parts.put( _java.Component.PARAMETERS, getParameters() );

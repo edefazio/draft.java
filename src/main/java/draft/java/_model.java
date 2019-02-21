@@ -1,12 +1,38 @@
 package draft.java;
 
 import com.github.javaparser.ast.Node;
+import com.github.javaparser.ast.body.AnnotationDeclaration;
+import com.github.javaparser.ast.body.AnnotationMemberDeclaration;
+import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
+import com.github.javaparser.ast.body.ConstructorDeclaration;
+import com.github.javaparser.ast.body.EnumConstantDeclaration;
+import com.github.javaparser.ast.body.EnumDeclaration;
+import com.github.javaparser.ast.body.FieldDeclaration;
+import com.github.javaparser.ast.body.InitializerDeclaration;
 import com.github.javaparser.ast.body.MethodDeclaration;
+import com.github.javaparser.ast.body.Parameter;
+import com.github.javaparser.ast.body.ReceiverParameter;
+import com.github.javaparser.ast.body.TypeDeclaration;
+import com.github.javaparser.ast.body.VariableDeclarator;
 import com.github.javaparser.ast.expr.AnnotationExpr;
+import com.github.javaparser.ast.expr.MarkerAnnotationExpr;
+import com.github.javaparser.ast.expr.NormalAnnotationExpr;
+import com.github.javaparser.ast.expr.SingleMemberAnnotationExpr;
+import com.github.javaparser.ast.type.ArrayType;
+import com.github.javaparser.ast.type.ClassOrInterfaceType;
+import com.github.javaparser.ast.type.IntersectionType;
+import com.github.javaparser.ast.type.PrimitiveType;
+import com.github.javaparser.ast.type.ReferenceType;
 import com.github.javaparser.ast.type.Type;
+import com.github.javaparser.ast.type.TypeParameter;
+import com.github.javaparser.ast.type.UnionType;
+import com.github.javaparser.ast.type.VarType;
+import com.github.javaparser.ast.type.VoidType;
+import com.github.javaparser.ast.type.WildcardType;
 import com.github.javaparser.printer.PrettyPrinterConfiguration;
 import draft.Composite;
 import draft.Named;
+import static draft.java._java.of;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -40,7 +66,8 @@ import java.util.function.Consumer;
  * @author Eric
  */
 public interface _model {
-
+    
+    
     /**
      * {@link _model} entity that maps directly to an AST {@link Node}
      * for example:
@@ -70,7 +97,7 @@ public interface _model {
          * Decompose the entity into key-VALUE pairs
          * @return a map of key values
          */
-        Map<_java.Component,Object> partsMap();
+        Map<_java.Component,Object> componentsMap();
 
         /**
          * Decompose the entity into smaller named components
@@ -79,7 +106,7 @@ public interface _model {
          */
         @Override
         default Map<String,Object>componentize(){
-            Map<_java.Component, Object> parts = partsMap();
+            Map<_java.Component, Object> parts = componentsMap();
             Map<String,Object> mdd = new HashMap<>();
             parts.forEach( (p,o) -> {mdd.put( p.name, o);});
             return mdd;
@@ -142,7 +169,7 @@ public interface _model {
     }
 
     /**
-     * Named entities
+     * Named java entities 
      *
      * @author Eric
      * @param <T>
@@ -150,13 +177,13 @@ public interface _model {
     interface _named <T extends _named> extends _model, Named {
 
         /**
-         * @param name
-         * @return
+         * @param name set the name on the entity and return the modified entity
+         * @return the modified entity
          */
         T name( String name );
 
         /**
-         * 
+         * gets the name of the entity
          * @return the name of the entity
          */
         @Override

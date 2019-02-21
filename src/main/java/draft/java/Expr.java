@@ -13,9 +13,11 @@ import java.util.*;
 import java.util.function.*;
 
 /**
- * Utility for converting free form Strings and Runtime entities (lambdas, anonymous Objects)
+ * Utility for converting free form Strings and Runtime entities (lambdas, Anonymous Objects)
  * into JavaParser AST {@link Expression} implementations.
- *
+ * 
+ * Simplify the mediation between different representations of the same thing.
+ * @author M. Eric DeFazio
  */
 public enum Expr {
     ;
@@ -113,7 +115,7 @@ public enum Expr {
         return lambda( ste );
     }
 
-     /**
+    /**
      * Resolves and returns the AST LambdaExpr representing the Runtime Lambda passed in
      * for example:
      * <PRE>
