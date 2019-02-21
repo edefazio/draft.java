@@ -95,7 +95,7 @@ public class $field
      */
     public Tokens decompose(FieldDeclaration astFieldDeclaration ){
         if( astFieldDeclaration.getVariables().size() == 1 ){
-            return stencil.decompose( astFieldDeclaration.toString(Ast.PRINT_NO_ANNOTATIONS_OR_COMMENTS ) );
+            return stencil.deconstruct( astFieldDeclaration.toString(Ast.PRINT_NO_ANNOTATIONS_OR_COMMENTS ) );
         }
 
         /** this is painful, but hopefully not too common */
@@ -116,7 +116,7 @@ public class $field
         }
         FieldDeclaration fd = (FieldDeclaration) varD.getParentNode().get();
         _field _f = _field.of( fd.getModifiers()+" "+varD+";" );
-        return this.stencil.decompose(_f.toString(Ast.PRINT_NO_ANNOTATIONS_OR_COMMENTS));
+        return this.stencil.deconstruct(_f.toString(Ast.PRINT_NO_ANNOTATIONS_OR_COMMENTS));
     }
 
     public String toString() {
@@ -372,7 +372,7 @@ public class $field
 
     public <M extends _model._node> M forAllIn(M m, Consumer<_field> _fieldActionFn){
         Walk.in( m, VariableDeclarator.class, e-> {
-            Tokens tokens = this.stencil.decompose( e.toString());
+            Tokens tokens = this.stencil.deconstruct( e.toString());
             if( tokens != null ){
                 _fieldActionFn.accept( _field.of(e) );
             }

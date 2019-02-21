@@ -350,7 +350,7 @@ public final class $expr <T extends Expression>
             if( expression instanceof DoubleLiteralExpr ){
                 DoubleLiteralExpr dle = (DoubleLiteralExpr)expression;
             }
-            return stencil.decompose( expression.toString() );
+            return stencil.deconstruct( expression.toString() );
         }
         return null;
     }
@@ -379,7 +379,7 @@ public final class $expr <T extends Expression>
 
     public <N extends Node> N forAllIn(N n, Consumer<T> expressionActionFn){
         n.walk(this.expressionClass, e-> {
-            Tokens tokens = this.stencil.decompose( e.toString());
+            Tokens tokens = this.stencil.deconstruct( e.toString());
             if( tokens != null ){
                 expressionActionFn.accept( e);
             }
@@ -389,7 +389,7 @@ public final class $expr <T extends Expression>
 
     public <M extends _model._node> M forAllIn(M _t, Consumer<T> expressionActionFn){
         Walk.in( _t, this.expressionClass, e -> {
-            Tokens tokens = this.stencil.decompose( e.toString());
+            Tokens tokens = this.stencil.deconstruct( e.toString());
             if( tokens != null ){
                 expressionActionFn.accept( e);
             }

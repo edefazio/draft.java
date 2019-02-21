@@ -160,7 +160,7 @@ public final class $typeRef<T extends Type>
      */
     public Tokens decompose( Type t ){
         if( typeClass.isAssignableFrom(t.getClass())){
-            return stencil.decompose( t.toString() );
+            return stencil.deconstruct( t.toString() );
         }
         return null;
     }
@@ -256,7 +256,7 @@ public final class $typeRef<T extends Type>
      */
     public <M extends _model._node> M replaceIn(M _t, $typeRef $replacementType){
         Walk.in(_t, this.typeClass, e -> {
-            Tokens tokens = this.stencil.decompose( e.toString());
+            Tokens tokens = this.stencil.deconstruct( e.toString());
             if( tokens != null ){
                 if( !e.replace($replacementType.construct(tokens))){
                     throw new DraftException("unable to replaceIn "+ e + " in "+ _t+" with "+$replacementType);
@@ -268,7 +268,7 @@ public final class $typeRef<T extends Type>
 
     public <N extends Node> N removeIn(N node ){
         node.walk(this.typeClass, e -> {
-            Tokens tokens = this.stencil.decompose( e.toString());
+            Tokens tokens = this.stencil.deconstruct( e.toString());
             if( tokens != null ){
                 e.removeForced();
             }
@@ -278,7 +278,7 @@ public final class $typeRef<T extends Type>
 
     public <M extends _model._node> M removeIn(M _t ){
         Walk.in( _t, this.typeClass, e -> {
-            Tokens tokens = this.stencil.decompose( e.toString());
+            Tokens tokens = this.stencil.deconstruct( e.toString());
             if( tokens != null ){
                 e.removeForced();
             }
@@ -288,7 +288,7 @@ public final class $typeRef<T extends Type>
 
     public <N extends Node> N forAllIn(N n, Consumer<T> expressionActionFn){
         n.walk(this.typeClass, e-> {
-            Tokens tokens = this.stencil.decompose( e.toString());
+            Tokens tokens = this.stencil.deconstruct( e.toString());
             if( tokens != null ){
                 expressionActionFn.accept( e);
             }
@@ -298,7 +298,7 @@ public final class $typeRef<T extends Type>
 
     public <M extends _model._node> M forAllIn(M _t, Consumer<T> expressionActionFn){
         Walk.in( _t, this.typeClass, e -> {
-            Tokens tokens = this.stencil.decompose( e.toString());
+            Tokens tokens = this.stencil.deconstruct( e.toString());
             if( tokens != null ){
                 expressionActionFn.accept( e);
             }

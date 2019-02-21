@@ -26,6 +26,6 @@ public interface Composite {
     * build a Map consisting of the Named components that make up the Composite
     * @return a map containing the named components of the composite
     */ 
-   public Map<String,Object> componentize();
+   Map<String,Object> componentize();
    
 }

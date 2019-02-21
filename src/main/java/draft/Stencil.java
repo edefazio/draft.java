@@ -510,12 +510,12 @@ public final class Stencil implements Template<String>{
         return fills;
     }
 
-    public boolean matches(String... composed ) {
-        return matches( Text.combine( composed ) );
+    public boolean matches(String... constructed ) {
+        return matches( Text.combine( constructed ) );
     }
 
-    public boolean matches(String composed ) {
-        List<String> valsInOrder = this.textBlanks.decompose( composed );
+    public boolean matches(String constructed ) {
+        List<String> valsInOrder = this.textBlanks.deconstruct( constructed );
         return (valsInOrder != null);
     }
 
@@ -523,12 +523,12 @@ public final class Stencil implements Template<String>{
         return this.textBlanks.getRegexPattern();
     }
 
-    public Tokens decompose( String composed ){
-        return decompose( new String[]{composed} );
+    public Tokens deconstruct(String constructed ){
+        return deconstruct( new String[]{constructed} );
     }
     
-    public Tokens decompose(String... composed ) {
-        List<String> valsInOrder = this.textBlanks.decompose( Text.combine( composed) );
+    public Tokens deconstruct(String... constructed ) {
+        List<String> valsInOrder = this.textBlanks.deconstruct( Text.combine( constructed) );
         if( valsInOrder == null ) {
             //System.out.println( "NO VALS");
             return null;

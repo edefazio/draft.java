@@ -54,12 +54,12 @@ public enum Diff {
      * 
      * @param left
      * @param right
-     * @param excludedNames Named entities( i.e. {@link draft.java._java.Part}
+     * @param excludeNames Named entities( i.e. {@link draft.java._java.Component}
      * @return 
      */
-    public static DiffList components( Composite left, Composite right, Named...excludedNames){
+    public static DiffList components( Composite left, Composite right, Named...excludeNames){
        Set<String> excluding = new HashSet<>();
-       Arrays.stream(excludedNames).forEach(n -> excluding.add(n.getName()) );
+       Arrays.stream(excludeNames).forEach(n -> excluding.add(n.getName()) );
        DiffList dl = new DiffList();            
         
         components(left, right, 
@@ -76,11 +76,11 @@ public enum Diff {
      * 
      * @param left the left Composite to be componentized and compared
      * @param right the right Composite to be componentized and compared
-     * @param excluding the names of components that are excluded from being compared
+     * @param excludeNames the names of components that are excluded from being compared
      * @return a DiffList containing all differences between the left and right
      */
     public static DiffList components( 
-        Composite left, Composite right, String... excluding ){                
+        Composite left, Composite right, String... excludeNames ){
         
         DiffList dl = new DiffList();            
         
@@ -88,44 +88,44 @@ public enum Diff {
             (String key, Object left1, Object right1) -> {
                 dl.add(key, left1, right1);
             }, 
-            excluding);
+            excludeNames);
         return dl;    
     }
     
     /**
      * Diff the Composite components of left and right... omitting components that
-     * are labeled by excluding (i.e. {@link draft.java._java.Part#JAVADOC#name} )
+     * are labeled by excluding (i.e. {@link draft.java._java.Component#JAVADOC#name} )
      * 
      * @param left the left component node to diff against the right node
      * @param right the right component node to diff against the left
-     * @param excluding names of part types that are omitted (i.e. {@link draft.java._java.Part#JAVADOC#name})
+     * @param excludeNames names of part types that are omitted (i.e. {@link draft.java._java.Component#JAVADOC#name})
      * @return a DiffList Mapping Parts and their Objects that are different between left and right
      */
     private static void components( 
-        Composite left, Composite right, DiffConsumer diffConsumer, String... excluding ){                
+        Composite left, Composite right, DiffConsumer diffConsumer, String... excludeNames ){
         
         Set<String> omit = new HashSet<>();
-        Arrays.stream(excluding).forEach( n -> omit.add(n) );
+        Arrays.stream(excludeNames).forEach( n -> omit.add(n) );
         final Set<String> excludedComponents = omit;
         components(left, right, diffConsumer, excludedComponents);
     }
     
     /**
      * Diff the Composite components of left and right... omitting components that
-     * are labeled by excluding (i.e. {@link draft.java._java.Part#JAVADOC#name} )
+     * are labeled by excluding (i.e. {@link draft.java._java.Component#JAVADOC#name} )
      * 
      * @param left the left component node to diff against the right node
      * @param right the right component node to diff against the left
-     * @param excluding names of part types that are omitted (i.e. {@link draft.java._java.Part#JAVADOC#name})
+     * @param excludeNames names of part types that are omitted (i.e. {@link draft.java._java.Component#JAVADOC#name})
      * @return a DiffList Mapping Parts and their Objects that are different between left and right
      */
     private static void components( 
-        Composite left, Composite right, DiffConsumer diffConsumer, Set<String> excludedComponents ){                    
+        Composite left, Composite right, DiffConsumer diffConsumer, Set<String> excludeNames ){
         Map<String,Object> ld = left.componentize();
         Map<String,Object> rd = right.componentize();
         //DiffList dl = new DiffList();
         ld.forEach((leftKey,leftComponent) -> {
-            if( !excludedComponents.contains( leftKey ) ){
+            if( !excludeNames.contains( leftKey ) ){
                 Object rightComponent = rd.get(leftKey);
                 if( !Objects.equals(leftComponent, rightComponent)){
                     diffConsumer.onDiff(leftKey, leftComponent, rightComponent );
@@ -136,7 +136,7 @@ public enum Diff {
         rd.keySet().removeAll( ld.keySet() );
         
         rd.forEach((rightKey,rightComponent) -> {
-            if( !excludedComponents.contains( rightKey ) ){
+            if( !excludeNames.contains( rightKey ) ){
                 Object leftComponent = ld.get(rightKey);
                 if( !Objects.equals(leftComponent, rightComponent)){
                     diffConsumer.onDiff(rightKey, leftComponent, rightComponent );
@@ -155,13 +155,13 @@ public enum Diff {
      * 
      * @param left the left component node to diff against the right node
      * @param right the right component node to diff against the left
-     * @param excluding names of component types that are omitted (i.e. {@link draft.java._java.Part#JAVADOC#name} )
+     * @param excludeNames names of component types that are omitted (i.e. {@link draft.java._java.Component#JAVADOC#name} )
      * @return a Diff between left and right, or null if no differences exist
      */
     public static Entry first( 
-        Composite left, Composite right, Named... excluding ){  
+        Composite left, Composite right, Named... excludeNames ){
         Set<String> excl = new HashSet<>();
-        Arrays.stream(excluding).forEach(e -> excl.add(e.getName()) );
+        Arrays.stream(excludeNames).forEach(e -> excl.add(e.getName()) );
         return first(left, right, excl);
     }
     
@@ -174,24 +174,24 @@ public enum Diff {
      * 
      * @param left the left component node to diff against the right node
      * @param right the right component node to diff against the left
-     * @param excluding names of component types that are omitted (i.e. {@link draft.java._java.Part#JAVADOC#name} )
+     * @param excludeNames names of component types that are omitted (i.e. {@link draft.java._java.Component#JAVADOC#name} )
      * @return a Diff between left and right, or null if no differences exist
      */
     public static Entry first( 
-        Composite left, Composite right, String... excluding ){                
+        Composite left, Composite right, String... excludeNames ){
         
-        Set<String> omit = new HashSet<>();
-        Arrays.stream(excluding).forEach( n -> omit.add(n) );
+        Set<String> exclude = new HashSet<>();
+        Arrays.stream(excludeNames).forEach( n -> exclude.add(n) );
         //final Set<String> omitComponents = omit;
-        return first( left, right, omit );
+        return first( left, right, exclude );
     }
     
-    public static Entry first( Composite left, Composite right, Set<String> omitComponents ){                    
+    public static Entry first( Composite left, Composite right, Set<String> excludeNames ){
         Map<String,Object> ld = left.componentize();
         Map<String,Object> rd = right.componentize();
         
         Optional<String> firstDiffKey = ld.keySet().stream().filter((leftKey) -> {
-            if( !omitComponents.contains( leftKey ) ){
+            if( !excludeNames.contains( leftKey ) ){
                 Object leftComponent = ld.get(leftKey);
                 Object rightComponent = rd.get(leftKey);
                 return !Objects.equals(leftComponent, rightComponent);
@@ -206,7 +206,7 @@ public enum Diff {
         rd.keySet().removeAll( ld.keySet() );
         
         firstDiffKey = ld.keySet().stream().filter((rightKey) -> {
-            if( !omitComponents.contains( rightKey ) ){
+            if( !excludeNames.contains( rightKey ) ){
                 Object leftComponent = ld.get(rightKey);
                 Object rightComponent = rd.get(rightKey);
                 return !Objects.equals(leftComponent, rightComponent);                

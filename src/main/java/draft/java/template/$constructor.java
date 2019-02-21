@@ -273,7 +273,7 @@ public final class $constructor
                     .removeComment() //removeIn any comments/JAVADOC from the clone
                     .toString();
 
-            Tokens tss = this.signatureStencil.decompose( signature );
+            Tokens tss = this.signatureStencil.deconstruct( signature );
             if( tss == null ){
                 return null;
             }

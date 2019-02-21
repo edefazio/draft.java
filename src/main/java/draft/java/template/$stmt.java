@@ -374,7 +374,7 @@ public final class $stmt<T extends Statement>
                 //System.out.println( "testing "+statement+" against "+stencil.getTextBlanks().getFixedText());
                 if( statement.getComment().isPresent() ){ //removeIn any comments before checking
                     //System.out.println("Static With Comments");
-                    Tokens tks = stencil.decompose( statement.toString());
+                    Tokens tks = stencil.deconstruct( statement.toString());
                     if( tks != null ){
                         return tks;
                     }
@@ -394,16 +394,16 @@ public final class $stmt<T extends Statement>
             if( !statement.getComment().isPresent() ) {
                 //System.out.println( "checking >>>"+ statement.toString()+"<<");
                 //System.out.println( "with     >>>"+ stencil.toString() +"<<");
-                return stencil.decompose(statement.toString().trim());
+                return stencil.deconstruct(statement.toString().trim());
             } else{
-                Tokens ts = stencil.decompose(statement.toString());
+                Tokens ts = stencil.deconstruct(statement.toString());
                 if( ts != null ){
                     return ts;
                 }
                 Statement cpy = statement.clone();
                 cpy.removeComment();
                 //System.out.println( "testing "+cpy+" against "+stencil.getTextBlanks().getFixedText());
-                ts = stencil.decompose(cpy.toString().trim());
+                ts = stencil.deconstruct(cpy.toString().trim());
                 return ts;
             }
             //System.out.println( "got "+ ts +"");
@@ -437,7 +437,7 @@ public final class $stmt<T extends Statement>
 
     public <N extends Node> N forAllIn(N n, Consumer<T> statementActionFn){
         n.walk(this.statementClass, e-> {
-            Tokens tokens = this.stencil.decompose( e.toString());
+            Tokens tokens = this.stencil.deconstruct( e.toString());
             if( tokens != null ){
                 statementActionFn.accept( e);
             }
@@ -447,7 +447,7 @@ public final class $stmt<T extends Statement>
 
     public <M extends _model._node> M forAllIn(M _le, Consumer<T> statementActionFn){
         Walk.in( _le, this.statementClass, e->{
-            Tokens tokens = this.stencil.decompose( e.toString());
+            Tokens tokens = this.stencil.deconstruct( e.toString());
             if( tokens != null ){
                 statementActionFn.accept( (T)e);
             }
@@ -478,7 +478,7 @@ public final class $stmt<T extends Statement>
     public List<Select<T>> selectAllIn(Node n ){
         List<Select<T>>sts = new ArrayList<>();
         n.walk(this.statementClass, st-> {
-            Tokens tokens = this.stencil.decompose( st.toString(NO_COMMENTS));
+            Tokens tokens = this.stencil.deconstruct( st.toString(NO_COMMENTS));
             if( tokens != null ){
                 sts.add( new Select( (T)st, tokens) );
             }
@@ -493,7 +493,7 @@ public final class $stmt<T extends Statement>
     public List<Select<T>> selectAllIn(_model._node _t ){
         List<Select<T>>sts = new ArrayList<>();
         Walk.in( _t, this.statementClass, st->{
-            Tokens tokens = this.stencil.decompose(st.toString(NO_COMMENTS));
+            Tokens tokens = this.stencil.deconstruct(st.toString(NO_COMMENTS));
             if (tokens != null) {
                 sts.add(new Select(st, tokens));
             }

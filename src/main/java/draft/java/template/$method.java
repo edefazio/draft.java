@@ -227,7 +227,7 @@ public final class $method
                         .removeComment() //removeIn any comments/JAVADOC from the clone
                         .toString();
                 //System.out.println( "STR "+str );
-                Tokens tss = this.signatureStencil.decompose( signature );
+                Tokens tss = this.signatureStencil.deconstruct( signature );
                 if( tss == null ){
                     return null;
                 }
@@ -249,7 +249,7 @@ public final class $method
             return null; //the target doesnt have a BODY , the template does
         }
         //just check the signature, (after removeing the JAVADOC) since there is no BODY
-        return this.signatureStencil.decompose( astTarget.clone().removeComment().toString() );
+        return this.signatureStencil.deconstruct( astTarget.clone().removeComment().toString() );
     }
 
     /**

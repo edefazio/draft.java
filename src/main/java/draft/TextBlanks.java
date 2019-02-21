@@ -8,6 +8,9 @@ import java.util.regex.Pattern;
  * Builds a "FillInTheBlanks"-TYPE text document containing static text
  * and "blanks" at certain character indexes which can be filled.
  *
+ * In general it's a simple "Form" made of static text and "blanks" where
+ * text can later be filled in.
+ *
  * <UL>
  * <LI>the {@code Builder} captures text and "blanks" ("indexes" where "blanks"
  * will be that may be filled in later) the <B>builder is not thread-safe</B>.
@@ -79,7 +82,7 @@ public final class TextBlanks{
      *
      *  "Mary had a  lamb,  lamb,  lamb" (transpose the indexes,
      *  "bmal  ,bmal  ,bmal  a dah yraM"
-     *   000001000000100000010000000000
+     *   000001000000100000010000000000 //1s for "blanks"
      *   ^                            ^
      *   |                            |
      *  [29]                         [0]
@@ -90,7 +93,7 @@ public final class TextBlanks{
     private Pattern pattern;
 
     /**
-     * Uses the Builder to _1_build a FillTemplate...
+     * Uses the Builder to _1_build a TextBlanks...
      *
      * Here is the BLANK Rules:
      * <OL>
@@ -477,6 +480,16 @@ public final class TextBlanks{
     }
 
 
+    /**
+     * Determines if the Template has (2) or more blanks immediately next to 
+     * each other
+     * 
+     * This presents problems if we try to use a regex pattern to match
+     * since there is no way of knowing where one blank ends and the next blank 
+     * starts since there are no delimiter(s) between two consecutive blanks
+     * @return true if this TextBlanks has one or more -- (blanks with no spaces/
+     * text/characters between)
+     */
     public boolean hasConsecutiveBlanks(){
         int setBit = -2;
         int nxtSetBit =  this.blankIndexes.nextSetBit(0);
@@ -491,21 +504,30 @@ public final class TextBlanks{
     }
 
     /**
-     * Given a String representing a filled-in stencil, partsMap the data that was used to
-     * fill in the blanks. (Or return null if the decomposition is unsucessful)
+     * Given a filled in "form" as a String, check that this form matches with the regexPattern
+     * derived from this TextBlanks, then return a List of Strings that represent the values at
+     * the filled the blanks. (Or return null if the decomposition is unsucessful)
+     * Given a String representing a filled-in textblanks, the data that was used to
+     * fill in the blanks.
      *
      * for example:
      * <PRE>
-     * TextBind tb = TextBind.of( null, " is ", null, " back from the ", null, "?");
-     * List<String> paramVals = tb.partsMap("Eric is Sally back from the store?");
-     * //paramVals = ("Eric", "Sally", "store")
-     * </PRE>
-     * There are some constraints:
+     * TextBlanks form =  TextBlanks.of(null," is ",null," back from the ",null,"?");
+     * String constructed =             "Eric is Sally back from the store?"
+     * List<String> deconstructed = tb.deconstruct(constructed);
+     * // tb represents the TextBlanks:
+     * //   ____ is _____ back from the _____?   //The TextBlanks form
+     * //  "Eric is Sally back from the store?"  //constructed
+     * // {"Eric", "Sally",             "store"} //the Deconstructed List
      *
-     * @param composed
-     * @return
+     * </PRE>
+     * NOTE: for this to work the TextBlanks CANNOT have consecutive blanks (two blanks with no characters between)
+     * otherwise we can never match
+     * @param constructed the constructed Text to deconstruct
+     * @return a List of Strings representing the values that exist where the blanks would be, in the order they are
+     * extracted from the constructed text
      */
-    public List<String> decompose(String composed){
+    public List<String> deconstruct( String constructed ){
 
         if( this.hasConsecutiveBlanks() ){
             //System.out.println("HAS consecutiveBlanks");
@@ -513,7 +535,7 @@ public final class TextBlanks{
         }
         Pattern pat = this.getRegexPattern();
         //System.out.println( "pattern "+ pattern );
-        Matcher matcher = pat.matcher( composed);
+        Matcher matcher = pat.matcher( constructed);
         if( !matcher.matches() ){
             //System.out.println( "Not Matches "+ pat);
             return null;
@@ -522,7 +544,7 @@ public final class TextBlanks{
         List<String> ext = new ArrayList<>();
         //if... the pattern is "anything" return the whole thing;
         if( pat.pattern().equals("(.*)") ){
-            ext.add(composed);
+            ext.add(constructed);
             return ext;
         }
         int startIndex = 1;
@@ -599,7 +621,7 @@ public final class TextBlanks{
         }
 
         /**
-         * ADDS text to the varcode and returns the updated builder
+         * ADDS text to the TextBlanks and returns the updated builder
          *
          * @param staticText text to accept
          * @return return the builder

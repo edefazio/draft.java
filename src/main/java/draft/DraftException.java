@@ -1,7 +1,7 @@
 package draft;
 
 /**
- * Base runtime exception for the draft tool
+ * Base RuntimeException for draft
  *
  * @author M. Eric DeFazio
  */

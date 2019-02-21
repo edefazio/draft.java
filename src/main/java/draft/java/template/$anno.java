@@ -57,11 +57,11 @@ public final class $anno
     }
 
     public boolean matches( AnnotationExpr expression ){
-        return annoStencil.decompose( expression.toString() ) != null;
+        return annoStencil.deconstruct( expression.toString() ) != null;
     }
 
     public boolean matches( _anno _a){
-        return annoStencil.decompose( _a.toString() ) != null;
+        return annoStencil.deconstruct( _a.toString() ) != null;
     }
 
     /**
@@ -71,7 +71,7 @@ public final class $anno
      * @return Tokens from the stencil, or null if the expression doesnt match
      */
     public Tokens decompose(_anno _a ){
-        return annoStencil.decompose( _a.toString() );
+        return annoStencil.deconstruct( _a.toString() );
     }
 
     /**
@@ -81,7 +81,7 @@ public final class $anno
      * @return Tokens from the stencil, or null if the expression doesnt match
      */
     public Tokens decompose(AnnotationExpr a ){
-        return annoStencil.decompose( a.toString() );
+        return annoStencil.deconstruct( a.toString() );
     }
 
 
@@ -307,7 +307,7 @@ public final class $anno
 
     public <N extends Node> N forAllIn(N node, Consumer<_anno> _annoActionFn){
         node.walk(AnnotationExpr.class, e-> {
-            Tokens tokens = this.annoStencil.decompose( e.toString());
+            Tokens tokens = this.annoStencil.deconstruct( e.toString());
             if( tokens != null ){
                 _annoActionFn.accept( _anno.of(e));
             }
@@ -317,7 +317,7 @@ public final class $anno
 
     public <M extends _model._node> M forAllIn(M _m, Consumer<_anno> _annoActionFn){
         Walk.in( _m, AnnotationExpr.class, e -> {
-            Tokens tokens = annoStencil.decompose( e.toString());
+            Tokens tokens = annoStencil.deconstruct( e.toString());
             if( tokens != null ){
                 _annoActionFn.accept( _anno.of(e) );
             }
