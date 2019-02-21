@@ -54,7 +54,7 @@ public final class $snip implements Template<List<Statement>>, $query<List<State
      */
     public static $snip of( Object anonymousObjectWithBody ){
         StackTraceElement ste = Thread.currentThread().getStackTrace()[2];
-        ObjectCreationExpr oce = Expr.anonymousClass(ste);
+        ObjectCreationExpr oce = Expr.anonymousObject(ste);
         //find the first method that doesnt have removeIn on it and has a BODY
         // to get it's contents
         MethodDeclaration theMethod = (MethodDeclaration)

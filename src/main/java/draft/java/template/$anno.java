@@ -36,7 +36,7 @@ public final class $anno
     
     public static $anno of( Object anonymousObjectWithAnnotation ){
         StackTraceElement ste = Thread.currentThread().getStackTrace()[2];
-        ObjectCreationExpr oce = Expr.anonymousClass( ste );
+        ObjectCreationExpr oce = Expr.anonymousObject( ste );
         NodeList<BodyDeclaration<?>> bds = oce.getAnonymousClassBody().get();
         BodyDeclaration bd = bds.stream().filter(b -> b.getAnnotations().isNonEmpty() ).findFirst().get();
         return of( _anno.of(bd.getAnnotation(0) ) );        

@@ -23,7 +23,7 @@ public class $field
 
     public static $field of( Object anonymousObject ){
         StackTraceElement ste = Thread.currentThread().getStackTrace()[2];
-        ObjectCreationExpr oce = Expr.anonymousClass(ste);
+        ObjectCreationExpr oce = Expr.anonymousObject(ste);
         FieldDeclaration fd = (FieldDeclaration)
                 oce.getAnonymousClassBody().get().stream().filter(m -> m.isFieldDeclaration() &&
                 !m.getAnnotationByClass(_remove.class).isPresent()).findFirst().get();

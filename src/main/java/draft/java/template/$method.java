@@ -32,7 +32,7 @@ public final class $method
      */
     public static $method of( Object anonymousObjectContainingMethod ){
         StackTraceElement ste = Thread.currentThread().getStackTrace()[2];
-        ObjectCreationExpr oce = Expr.anonymousClass( ste );
+        ObjectCreationExpr oce = Expr.anonymousObject( ste );
         MethodDeclaration theMethod = (MethodDeclaration)
                 oce.getAnonymousClassBody().get().stream().filter(m -> m instanceof MethodDeclaration &&
                 !m.isAnnotationPresent(_remove.class) ).findFirst().get();

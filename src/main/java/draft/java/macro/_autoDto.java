@@ -52,7 +52,7 @@ public @interface _autoDto {
          */
         public static _class of(String signature, Object body ){
             StackTraceElement ste = Thread.currentThread().getStackTrace()[2];
-            ObjectCreationExpr oce = Expr.anonymousClass( ste );
+            ObjectCreationExpr oce = Expr.anonymousObject( ste );
             _class _c = _class.of(signature);
             oce.getAnonymousClassBody().get().forEach( b-> _c.astType().addMember(b));
             // Todo implement or extend

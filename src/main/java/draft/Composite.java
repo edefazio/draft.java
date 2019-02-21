@@ -14,9 +14,8 @@ import java.util.Map;
  * </PRE>
  * 
  * @see draft.java._class#componentize() for an example 
- * Assembler
- * 
- * Disassembler
+ * Construct
+ * Deconstruct
  * 
  * @author Eric
  */

@@ -110,7 +110,7 @@ public final class _class implements _type<ClassOrInterfaceDeclaration, _class>,
      */
     public static _class of( Object anonymousClassWithLocalClass, Function<_type, _type>...macroFunctions ){
         StackTraceElement ste = Thread.currentThread().getStackTrace()[2];
-        ObjectCreationExpr anon = Expr.anonymousClass(ste);
+        ObjectCreationExpr anon = Expr.anonymousObject(ste);
         if( anon.getAnonymousClassBody().isPresent() ){
             NodeList<BodyDeclaration<?>> bdy = anon.getAnonymousClassBody().get();
             Optional<BodyDeclaration<?>> obd = bdy.stream().filter( b -> b instanceof ClassOrInterfaceDeclaration
@@ -249,7 +249,7 @@ public final class _class implements _type<ClassOrInterfaceDeclaration, _class>,
             _c.extend(theClass.getSuperclass());
         }
 
-        ObjectCreationExpr oce = Expr.anonymousClass(ste);
+        ObjectCreationExpr oce = Expr.anonymousObject(ste);
         if( oce.getAnonymousClassBody().isPresent() ) {
             NodeList<BodyDeclaration<?>> bds = oce.getAnonymousClassBody().get();
             for (int i = 0; i <bds.size(); i++){
@@ -295,7 +295,7 @@ public final class _class implements _type<ClassOrInterfaceDeclaration, _class>,
             implement( new Class[]{anonymousImplementation.getClass().getInterfaces()[i]} );
             imports( new Class[]{anonymousImplementation.getClass().getInterfaces()[i]});
         }
-        ObjectCreationExpr oce = Expr.anonymousClass(ste);
+        ObjectCreationExpr oce = Expr.anonymousObject(ste);
         if( oce.getAnonymousClassBody().isPresent()){
             oce.getAnonymousClassBody().get().forEach( m->this.astType().addMember(m) );
         }
@@ -360,7 +360,7 @@ public final class _class implements _type<ClassOrInterfaceDeclaration, _class>,
         Class sup = anonymousImplementationBody.getClass().getSuperclass();
         extend(sup);
         imports( new Class[]{sup} );
-        ObjectCreationExpr oce = Expr.anonymousClass(ste);
+        ObjectCreationExpr oce = Expr.anonymousObject(ste);
         if( oce.getAnonymousClassBody().isPresent()){
             oce.getAnonymousClassBody().get().forEach( m->this.astType().addMember(m) );
         }
@@ -400,7 +400,7 @@ public final class _class implements _type<ClassOrInterfaceDeclaration, _class>,
      */
     public _class body(Object anonymousClassBody ){
         StackTraceElement ste = Thread.currentThread().getStackTrace()[2];
-        ObjectCreationExpr oce = Expr.anonymousClass(ste);
+        ObjectCreationExpr oce = Expr.anonymousObject(ste);
 
         //create a temp _class to add these to so I can run _macro ANNOTATIONS on them
         _class _temp = _class.of("temp");

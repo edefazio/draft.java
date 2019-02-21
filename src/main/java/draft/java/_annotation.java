@@ -50,7 +50,7 @@ public final class _annotation
     public static _annotation of( String signature, Object anonymousObjectBody ){
         StackTraceElement ste = Thread.currentThread().getStackTrace()[2];
         _annotation _a = of( signature );
-        ObjectCreationExpr oce = Expr.anonymousClass(ste);
+        ObjectCreationExpr oce = Expr.anonymousObject(ste);
         NodeList<BodyDeclaration<?>> bds = oce.getAnonymousClassBody().get();
 
         //each field REALLY represents

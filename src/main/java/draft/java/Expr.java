@@ -8,13 +8,13 @@ import draft.DraftException;
 import draft.Text;
 import draft.java.io._in;
 import draft.java.io._io;
+import draft.java.io._ioException;
 import java.util.*;
 import java.util.function.*;
 
 /**
- * Utility for converting free form Strings and Runtime entities (lambdas)
- * into JavaParser {@link Expression} implementations and accepting runtime entities
- * (Lambda Expressions, and Anonymous Objects) and retrieving the source code for them
+ * Utility for converting free form Strings and Runtime entities (lambdas, anonymous Objects)
+ * into JavaParser AST {@link Expression} implementations.
  *
  */
 public enum Expr {
@@ -23,16 +23,19 @@ public enum Expr {
     /**
      * Functional interface for no input, no return lambda function
      * (Used when we pass in Lambdas to the {@link Expr#lambda(Command)} operation
+     * in order to get the LamdbaExpr AST from the Runtime to a 
+     * {@link com.github.javaparser.ast.expr.LambdaExpr}
      */
     @FunctionalInterface
     public interface Command{
         void consume();
     }
 
-
     /**
      * Functional interface for (3) input, (1) return lambda function
-     * (Used when we pass in Lambdas to the {@link Expr#lambda(TriFunction)}  operation
+     * (Used when we pass in Lambdas to the {@link Expr#lambda(TriFunction)}  
+     * operation
+     * {@link com.github.javaparser.ast.expr.LambdaExpr}
      */
     @FunctionalInterface
     public interface TriFunction<A,B,C,D>{
@@ -41,7 +44,9 @@ public enum Expr {
 
     /**
      * Functional interface for (4) input PARAMETERS, (1) return lambda function
-     * (Used when we pass in Lambdas to the {@link Expr#lambda(QuadFunction)} operation)
+     * (Used when we pass in Lambdas to the {@link Expr#lambda(QuadFunction)} 
+     * operation)
+     * {@link com.github.javaparser.ast.expr.LambdaExpr}
      */
     @FunctionalInterface
     public interface QuadFunction<A,B,C,D,E>{
@@ -50,7 +55,9 @@ public enum Expr {
 
     /**
      * Functional interface for (3) input PARAMETERS, no return lambda function
-     * (Used when we pass in Lambdas to the {@link Expr#lambda(TriConsumer)} operation)
+     * (Used when we pass in Lambdas to the {@link Expr#lambda(TriConsumer)} 
+     * operation)
+     * {@link com.github.javaparser.ast.expr.LambdaExpr}
      */
     @FunctionalInterface
     public interface TriConsumer<T,U,V>{
@@ -59,102 +66,223 @@ public enum Expr {
 
      /**
      * Functional interface for (4) input PARAMETERS, no return lambda function
-     * (Used when we pass in Lambdas to the {@link Expr#lambda(QuadConsumer)} operation
+     * (Used when we pass in Lambdas to the {@link Expr#lambda(QuadConsumer)} 
+     * operation
+     * {@link com.github.javaparser.ast.expr.LambdaExpr}
      */
     @FunctionalInterface
     public interface QuadConsumer<T,U,V,Z>{
         void consume(T t, U u, V v, Z z);
     }
 
+    /**
+     * Resolves and returns the AST LambdaExpr representing the Runtime Lambda passed in
+     * for example:
+     * <PRE>
+     * LambdaExpr le = Expr.of( ()-> System.out.println(1) );
+     * assertEquals( Stmt.of("System.out.println(1);"), le.getBody().getStatement(0) );
+     * </PRE>
+     * NOTE: the source of the calling method must be resolveable via draft
+     * @see draft.java.io._io#addInFilePath(java.lang.String) 
+     * @see draft.java.io._io#addInProject(java.lang.String) 
+     * @param <T>
+     * @param c the runtime Lambda Expression
+     * @return the AST LambdaExpr representation for the runtime Command
+     */
     public static <T extends Object> LambdaExpr of( Expr.Command c ){
         StackTraceElement ste = Thread.currentThread().getStackTrace()[2];
         return lambda( ste );
     }
 
+     /**
+     * Resolves and returns the AST LambdaExpr representing the Runtime Lambda passed in
+     * for example:
+     * <PRE>
+     * LambdaExpr le = Expr.of( ()-> System.out.println(1) );
+     * assertEquals( Stmt.of("System.out.println(1);"), le.getBody().getStatement(0) );
+     * </PRE>
+     * NOTE: the source of the calling method must be resolveable via draft
+     * @see draft.java.io._io#addInFilePath(java.lang.String) 
+     * @see draft.java.io._io#addInProject(java.lang.String) 
+     * @param <T>
+     * @param c the runtime Lambda Expression
+     * @return the AST LambdaExpr representation for the runtime Command
+     */
     public static <T extends Object> LambdaExpr of( Consumer<T> c ){
         StackTraceElement ste = Thread.currentThread().getStackTrace()[2];
         return lambda( ste );
     }
 
+     /**
+     * Resolves and returns the AST LambdaExpr representing the Runtime Lambda passed in
+     * for example:
+     * <PRE>
+     * LambdaExpr le = Expr.of( ()-> System.out.println(1) );
+     * assertEquals( Stmt.of("System.out.println(1);"), le.getBody().getStatement(0) );
+     * </PRE>
+     * NOTE: the source of the calling method must be resolveable via draft
+     * @see draft.java.io._io#addInFilePath(java.lang.String) 
+     * @see draft.java.io._io#addInProject(java.lang.String) 
+     * @param <T>
+     * @param c the runtime Lambda Expression
+     * @return the AST LambdaExpr representation for the runtime Command
+     */
     public static <T extends Object, U extends Object> LambdaExpr of( BiConsumer<T, U> c ){
         StackTraceElement ste = Thread.currentThread().getStackTrace()[2];
         return lambda( ste );
     }
 
+     /**
+     * Resolves and returns the AST LambdaExpr representing the Runtime Lambda passed in
+     * for example:
+     * <PRE>
+     * LambdaExpr le = Expr.of( ()-> System.out.println(1) );
+     * assertEquals( Stmt.of("System.out.println(1);"), le.getBody().getStatement(0) );
+     * </PRE>
+     * NOTE: the source of the calling method must be resolveable via draft
+     * @see draft.java.io._io#addInFilePath(java.lang.String) 
+     * @see draft.java.io._io#addInProject(java.lang.String) 
+     * @param <T>
+     * @param c the runtime Lambda Expression
+     * @return the AST LambdaExpr representation for the runtime Command
+     */
     public static <T extends Object, U extends Object, V extends Object> LambdaExpr of( TriConsumer<T, U, V> c ){
         StackTraceElement ste = Thread.currentThread().getStackTrace()[2];
         return lambda( ste );
     }
 
+     /**
+     * Resolves and returns the AST LambdaExpr representing the Runtime Lambda passed in
+     * for example:
+     * <PRE>
+     * LambdaExpr le = Expr.of( ()-> System.out.println(1) );
+     * assertEquals( Stmt.of("System.out.println(1);"), le.getBody().getStatement(0) );
+     * </PRE>
+     * NOTE: the source of the calling method must be resolveable via draft
+     * @see draft.java.io._io#addInFilePath(java.lang.String) 
+     * @see draft.java.io._io#addInProject(java.lang.String) 
+     * @param <T>
+     * @param c the runtime Lambda Expression
+     * @return the AST LambdaExpr representation for the runtime Command
+     */
     public static <T extends Object, U extends Object> LambdaExpr of( Function<T, U> c ){
         StackTraceElement ste = Thread.currentThread().getStackTrace()[2];
         return lambda( ste );
     }
 
+     /**
+     * Resolves and returns the AST LambdaExpr representing the Runtime Lambda passed in
+     * for example:
+     * <PRE>
+     * LambdaExpr le = Expr.of( ()-> System.out.println(1) );
+     * assertEquals( Stmt.of("System.out.println(1);"), le.getBody().getStatement(0) );
+     * </PRE>
+     * NOTE: the source of the calling method must be resolveable via draft
+     * @see draft.java.io._io#addInFilePath(java.lang.String) 
+     * @see draft.java.io._io#addInProject(java.lang.String) 
+     * @param <T>
+     * @param c the runtime Lambda Expression
+     * @return the AST LambdaExpr representation for the runtime Command
+     */
     public static <T extends Object, U extends Object, V extends Object> LambdaExpr of( BiFunction<T, U, V> c ){
         StackTraceElement ste = Thread.currentThread().getStackTrace()[2];
         return lambda( ste );
     }
 
+     /**
+     * Resolves and returns the AST LambdaExpr representing the Runtime Lambda passed in
+     * for example:
+     * <PRE>
+     * LambdaExpr le = Expr.of( ()-> System.out.println(1) );
+     * assertEquals( Stmt.of("System.out.println(1);"), le.getBody().getStatement(0) );
+     * </PRE>
+     * NOTE: the source of the calling method must be resolveable via draft
+     * @see draft.java.io._io#addInFilePath(java.lang.String) 
+     * @see draft.java.io._io#addInProject(java.lang.String) 
+     * @param <T>
+     * @param c the runtime Lambda Expression
+     * @return the AST LambdaExpr representation for the runtime Command
+     */
     public static <T extends Object, U extends Object, V extends Object, Z extends Object> LambdaExpr of( TriFunction<T, U, V, Z> c ){
         StackTraceElement ste = Thread.currentThread().getStackTrace()[2];
         return lambda( ste );
     }
 
+     /**
+     * Resolves and returns the AST LambdaExpr representing the Runtime Lambda passed in
+     * for example:
+     * <PRE>
+     * LambdaExpr le = Expr.of( ()-> System.out.println(1) );
+     * assertEquals( Stmt.of("System.out.println(1);"), le.getBody().getStatement(0) );
+     * </PRE>
+     * NOTE: the source of the calling method must be resolveable via draft
+     * @see draft.java.io._io#addInFilePath(java.lang.String) 
+     * @see draft.java.io._io#addInProject(java.lang.String) 
+     * @param <T>
+     * @param c the runtime Lambda Expression
+     * @return the AST LambdaExpr representation for the runtime Command
+     */
     public static <A extends Object, B extends Object, C extends Object, D extends Object> LambdaExpr of( QuadConsumer<A,B,C,D> c ){
         StackTraceElement ste = Thread.currentThread().getStackTrace()[2];
         return lambda( ste );
     }
 
-    /**
-     * Given the stack trace, find the source code, and extract the AST LambdaExpr
-     * from the AST that was passed in and return the AST LambdaExpr
-     * (NOTE: this only works if the Lambda expression is INLINED, and not referenced
-     * as a Variable in the source)
-     *
-     * this works if there is ONE and ONLY ONE lambda expression on the line
-     *
-     * @param ste
-     * @return
-
-    public static LambdaExpr oldlambda(StackTraceElement ste ){
-        try {
-            //System.out.println( ste.toString() );
-            Class clazz = Class.forName(ste.getClassName());
-            _type _t = _type.of(clazz);
-            int lineNumber = ste.getLineNumber();
-            List<LambdaExpr> le = new ArrayList<>();
-            //TokenRange tr = _t.ast().getTokenRange().get();
-
-            _t.ast().walk(LambdaExpr.class, l -> {
-                if (l.getBegin().get().line == lineNumber) {
-                    le.add(l);
-                }
-                if (l.getBegin().get().line == lineNumber +1) { //sometimes they start on the NEXT line
-                    le.add(l);
-                }
-            });
-            if (!le.isEmpty()) {
-                return le.get(0);
-            }
-        }catch(Exception e){
-            throw new DraftException("no .java source for Runtime Class \""+ste.getClassName()+"\" "+System.lineSeparator()+
-                    _io.describe(), e ); //print out the input config to help
-        }
-        throw new DraftException("unable to find in lambda at ("+ste.getFileName()+":"+ste.getLineNumber()+")");
-    }
-    */
-
-
+     /**
+     * Resolves and returns the AST LambdaExpr representing lambda expression 
+     * that is referenced from this stackTraceElement line
+     * for example:
+     * <PRE>
+     * //call the method f with a lambdaExpression
+     * f( (String s) -> System.out.println(s) );
+     * //...
+     * 
+     * //the method f() accepts a Lambda expression, but we WANT the actual
+     * // AST (we dont "use" the runtime lambda expression for anything other
+     * // than to represent the AST
+     * void f( Consumer c ){
+     *      StackTraceElement ste = Thread.currentThread().getStackTrace[2];
+     *      LambdaExpr le = Expr.lambda( ste );
+     *      assertEquals( Stmt.of("System.out.println(1);"), le.getBody().getStatement(0) );
+     * }
+     * </PRE>
+     * NOTE: the source of the calling method StackTraceELement 
+     * must be resolveable via draft
+     * @see draft.java.io._io#addInFilePath(java.lang.String) 
+     * @see draft.java.io._io#addInProject(java.lang.String) 
+     * 
+     * @param ste the stack trace Element line containing the code to draw from  
+     * @return the AST LambdaExpr representation for the runtime Command
+     */
     public static LambdaExpr lambda( StackTraceElement ste ) {
         return lambda(ste, _io.IN_DEFAULT );
     }
 
-    /**
-     *
-     * @param ste
-     * @param resolver
-     * @return
+ /**
+     * Resolves and returns the AST LambdaExpr representing lambda expression 
+     * that is referenced from this stackTraceElement line
+     * for example:
+     * <PRE>
+     * //call the method f with a lambdaExpression
+     * f( (String s) -> System.out.println(s) );
+     * //...
+     * 
+     * //the method f() accepts a Lambda expression, but we WANT the actual
+     * // AST (we dont "use" the runtime lambda expression for anything other
+     * // than to represent the AST
+     * void f( Consumer c ){
+     *      StackTraceElement ste = Thread.currentThread().getStackTrace[2];
+     *      LambdaExpr le = Expr.lambda( ste );
+     *      assertEquals( Stmt.of("System.out.println(1);"), le.getBody().getStatement(0) );
+     * }
+     * </PRE>
+     * NOTE: the source of the calling method StackTraceELement 
+     * must be resolveable via draft
+     * @see draft.java.io._io#addInFilePath(java.lang.String) 
+     * @see draft.java.io._io#addInProject(java.lang.String) 
+     * 
+     * @param ste the stack trace Element line containing the code to draw from  
+     * @param resolver the resolver for finding the source referenced in the StackTraceElement line
+     * @return the AST LambdaExpr representation for the runtime Command
      */
     public static LambdaExpr lambda(StackTraceElement ste, _in._resolver resolver ){
         _type _t = null;
@@ -186,72 +314,176 @@ public enum Expr {
         // grouping of statements
         for(int i=ln.size()-1;i>=0;i--){
             //System.out.println("TRYING ("+i+" of "+ln.size()+") "+ ln.get(i).getClass().getSimpleName()+ " " + ln.get(i) );
-            Optional<Node> on = ln.get(i).stream().filter(n -> n instanceof LambdaExpr
-                    //&& n.getRange().get().begin.line <= ste.getLineNumber()
-                    //&& n.getRange().get().end.line >= ste.getLineNumber()
-            ).findFirst();
+            Optional<Node> on = ln.get(i).stream().filter(n -> n instanceof LambdaExpr).findFirst();
             if( on.isPresent() ){
                 return (LambdaExpr)on.get();
             }
         }
-        throw new DraftException("unable to find in lambda at (" + ste.getFileName() + ":" + ste.getLineNumber() + ")"+System.lineSeparator()+ _io.describe());
+        throw new _ioException("unable to find in lambda at (" + ste.getFileName() + ":" + ste.getLineNumber() + ")"+System.lineSeparator()+ _io.describe());
     }
 
     /**
-     *
-     * @param oce
-     * @return
+     * Return the AST (ObjectCreationExpr) for the .java SOURCE code 
+     * of the Anonymous Runtime Object passed in.
+     * 
+     * for instance:
+     * <PRE>
+     * //return the ObjectCreationExpr (the AST for the Runtime Object passed in)
+     * ObjectCreationExpr oce = Expr.anonymousObject( new Object(){ int x,y;} );
+     * NodeList<BodyExpression<?>> body =  oce.getBody().get();
+     * //do something with the AST
+     * </PRE>
+     * 
+     * NOTE: there are important implications here: 
+     * 
+     * 1) THE Object passed in MUST BE an anonymous Object
+     * 2) The .java Source for the code calling this method MUST be locateable by draft 
+     * either
+     * <UL>
+     *  <LI>on the classpath
+     *  <LI>in user.dir System property ( this is by default for most IDES like
+     *      Eclipse, NetBeans, IntelliJ
+     *  <LI>on one of the manually configured in.paths 
+     * {@link draft.java.io._io._config#inFilesPath(java.lang.String)} 
+     * {@link draft.java.io._io._config#inProjectsPath(java.lang.String)}    
+     * </UL>
+     * 
+     * alternatively, you can use the {@link #anonymousObject(java.lang.Object, draft.java.io._in._resolver) }
+     * method and pass in an _in.resolver to locate the code manually
+     * 
+     * @see draft.java.io._io._config#inFilesPath(java.lang.String)
+     * @see draft.java.io._io._config#inProjectsPath(java.lang.String)
+     * @param anonymousObject an anonymous Object
+     * @return the ObjectCreationExpr AST representation of the anonymousObject passed in
      */
-    public static ObjectCreationExpr anonymousClass ( Object oce ){
+    public static ObjectCreationExpr anonymousObject ( Object anonymousObject ){
         StackTraceElement ste = Thread.currentThread().getStackTrace()[2];
-        return anonymousClass(ste, _io.IN_DEFAULT);
+        return anonymousObject(ste, _io.IN_DEFAULT);
     }
 
     /**
-     *
-     * @param oce
-     * @param resolver the resolver
-     * @return
+     * Return the AST (ObjectCreationExpr) for the .java SOURCE code 
+     * of the Runtime Anonymous Object passed in.
+     * 
+     * for instance:
+     * <PRE>
+     * //return the ObjectCreationExpr (the AST for the Runtime Object passed in)
+     * ObjectCreationExpr oce = Expr.anonymousObject( new Object(){ int x,y;} );
+     * NodeList<BodyExpression<?>> body =  oce.getBody().get();
+     * //do something with the AST
+     * </PRE>
+     * 
+     * NOTE: there are important implications here: 
+     * 
+     * 1) THE Object passed in MUST BE an anonymous Object
+     * 2) The .java Source for the code calling this method MUST be locateable by draft 
+     * either
+     * <UL>
+     *  <LI>on the classpath
+     *  <LI>in user.dir System property ( this is by default for most IDES like
+     *      Eclipse, NetBeans, IntelliJ
+     *  <LI>on one of the manually configured in.paths 
+     * {@link draft.java.io._io._config#inFilesPath(java.lang.String)} 
+     * {@link draft.java.io._io._config#inProjectsPath(java.lang.String)}    
+     * </UL>
+     * 
+     * 
+     * @see draft.java.io._io._config#inFilesPath(java.lang.String)
+     * @see draft.java.io._io._config#inProjectsPath(java.lang.String)
+     * @param anonymousObject an anonymous Object of which we want the AST ObjectCreationExpr
+     * representation of the source
+     * @param resolver a resolver to use for looking up the source for the calling
+     * code
+     * @return the ObjectCreationExpr AST representation of the anonymousObject passed in
      */
-    public static ObjectCreationExpr anonymousClass ( Object oce, _in._resolver resolver ){
+    public static ObjectCreationExpr anonymousObject(Object anonymousObject, _in._resolver resolver){
         StackTraceElement ste = Thread.currentThread().getStackTrace()[2];
-        return anonymousClass(ste, resolver);
+        return anonymousObject(ste, resolver);
     }
 
     /**
-     *
-     * @param ste
-     * @return
+     * Return the AST (ObjectCreationExpr) for the .java SOURCE code 
+     * of the Runtime Anonymous Object passed in.
+     * 
+     * for instance:
+     * <PRE>
+     * //return the ObjectCreationExpr (the AST for the Runtime Object passed in)
+     * ObjectCreationExpr oce = Expr.anonymousObject( new Object(){ int x,y;} );
+     * NodeList<BodyExpression<?>> body =  oce.getBody().get();
+     * //do something with the AST
+     * </PRE>
+     * 
+     * NOTE: there are important implications here: 
+     * 
+     * 1) THE Object passed in MUST BE an anonymous Object
+     * 2) The .java Source for the code calling this method MUST be locateable by draft 
+     * either
+     * <UL>
+     *  <LI>on the classpath
+     *  <LI>in user.dir System property ( this is by default for most IDES like
+     *      Eclipse, NetBeans, IntelliJ
+     *  <LI>on one of the manually configured in.paths 
+     * {@link draft.java.io._io._config#inFilesPath(java.lang.String)} 
+     * {@link draft.java.io._io._config#inProjectsPath(java.lang.String)}    
+     * </UL>
+     * 
+     * @see draft.java.io._io._config#inFilesPath(java.lang.String)
+     * @see draft.java.io._io._config#inProjectsPath(java.lang.String)
+     * @param ste the stackTraceElement line referring to the lone of code where the
+     * 
+     * @return the ObjectCreationExpr AST representation of the anonymousObject passed in
+     * @throws _ioException if unable to resolve the Source of the anonymousObject
      */
-    public static ObjectCreationExpr anonymousClass( StackTraceElement ste){
-         return anonymousClass(ste, _io.IN_DEFAULT );
+    public static ObjectCreationExpr anonymousObject( StackTraceElement ste ){
+         return anonymousObject(ste, _io.IN_DEFAULT );
     }
 
     /**
-     * Given a StackTraceElement for a specific line
-     * find the corresponding Anonymous class definition CODE
-     * (which is an ObjectCreationExpr with an anonymousClassBody)
-     * and return the Expression
-     *
-     * /// NEED TO REVISE
-     * 1) find the Statement at the stackTraceElement line number
-     * 2) Walk it until I find the ObjectCreationExpr I am looking for
-     *
-     * @param ste the stackTraceElement containing the location of the anonymousClass declaration
-     * @param resolver  resolver for resolving the .java source for the Class containing the code
-     * @return an ObjectCreationExpr of an anonymous Object created
+     * Return the AST (ObjectCreationExpr) for the .java SOURCE code 
+     * of the Runtime Anonymous Object passed in.
+     * 
+     * for instance:
+     * <PRE>
+     * //return the ObjectCreationExpr (the AST for the Runtime Object passed in)
+     * ObjectCreationExpr oce = Expr.anonymousObject( new Object(){ int x,y;} );
+     * NodeList<BodyExpression<?>> body =  oce.getBody().get();
+     * //do something with the AST
+     * </PRE>
+     * 
+     * NOTE: there are important implications here: 
+     * 
+     * 1) THE Object passed in MUST BE an anonymous Object
+     * 2) The .java Source for the code calling this method MUST be locateable by draft 
+     * either
+     * <UL>
+     *  <LI>on the classpath
+     *  <LI>in user.dir System property ( this is by default for most IDES like
+     *      Eclipse, NetBeans, IntelliJ
+     *  <LI>on one of the manually configured in.paths 
+     * {@link draft.java.io._io._config#inFilesPath(java.lang.String)} 
+     * {@link draft.java.io._io._config#inProjectsPath(java.lang.String)}    
+     * </UL>
+     * 
+     * @see draft.java.io._io._config#inFilesPath(java.lang.String)
+     * @see draft.java.io._io._config#inProjectsPath(java.lang.String)
+     * @param ste the stackTraceElement line referring to the lone of code where the
+     * 
+     * @return the ObjectCreationExpr AST representation of the anonymousObject 
+     * referred to from the StackTraceElement passed in
+     * @throws _ioException if unable to resolve the Source of the anonymousObject
      */
-    public static ObjectCreationExpr anonymousClass( StackTraceElement ste, _in._resolver resolver ){
+    public static ObjectCreationExpr anonymousObject( StackTraceElement ste, _in._resolver resolver ){
         _type _t = null;
         try {
-            //System.out.println( ste.toString() );
             Class clazz = Class.forName(ste.getClassName());
             _t = _type.of(clazz, resolver);
         } catch (Exception e) {
-            throw new DraftException("no .java source for Runtime Class \"" + ste.getClassName() + "\" " + System.lineSeparator() +
+            throw new _ioException("no .java source for Runtime Class \"" + ste.getClassName() + "\" " + System.lineSeparator() +
                     resolver.describe(), e); //print out the input config to help
         }
 
+        //find all of the potential method calls that could be the call 
+        //mentioned in the stack trace based on the line numbers 
         List<MethodCallExpr> mces = Walk.list(
                 Ast.WALK_POST_ORDER,
                 _t.astType(),
@@ -261,96 +493,20 @@ public enum Expr {
                         mce.getArguments().stream().filter( e-> e.isObjectCreationExpr() && e.asObjectCreationExpr().getAnonymousClassBody().isPresent() ).findFirst().isPresent()
                         //Ast.first(Ast.WALK_DIRECT_CHILDREN, mce, Ast.OBJECT_CREATION_EXPR, oce-> oce.getAnonymousClassBody().isPresent()) != null
         );
-
-        /*
-        if( mces.size() == 1 ){
-            List<ObjectCreationExpr> ocs = Ast.listAll( mces.get(0),
-                     Ast.OBJECT_CREATION_EXPR, oce-> oce.getAnonymousClassBody().isPresent() );
-            if( ocs.size() == 1 ){
-                return ocs.get(0);
-            }
-        }
-        */
-
-        //for(int i=mces.size()-1;i>=0;i--){
         for(int i=0; i<mces.size();i++ ){
-            // System.out.println("TRYING ("+i+" of "+mces.size()+") "+ mces.get(i).getClass().getSimpleName()+ " " + mces.get(i) +" AT LINE : "+ ste.getLineNumber() );
-            //mces.get(i).stream().filter(n -> n instanceof ObjectCreationExpr).forEach(oce -> System.out.println( oce.getClass() +" "+ oce+ " from: "+oce.getRange().get().begin+ " to: "+oce.getRange().get().end+ " "));
-
+            //find the particular methodCall containing the anonymous Object being created
+            //
             Optional<Expression> on =
                     mces.get(i).getArguments().stream().filter( a -> a instanceof ObjectCreationExpr
                             && a.asObjectCreationExpr().getAnonymousClassBody().isPresent()).findFirst();
-            /*
-            Optional<Node> on = mces.get(i).stream().filter(n -> n instanceof ObjectCreationExpr &&
-                    ((ObjectCreationExpr)n).getAnonymousClassBody().isPresent()
-                            //&& Math.abs(n.getRange().get().begin.line - ste.getLineNumber()) < 1 &&
-                    //n.getRange().get().end.line >= ste.getLineNumber()
-            ).findFirst();
-            */
             if( on.isPresent() ){
                 return (ObjectCreationExpr)on.get();
             }
         }
-
-        throw new DraftException("unable to find in anonymous class at (" + ste.getFileName() + ":"
+        throw new _ioException("unable to find in anonymous object at (" + ste.getFileName() + ":"
                 + ste.getLineNumber() + ")" + System.lineSeparator() + resolver.describe());
 
-        //List<ObjectCreationExpr> le = Walk.list( _t, ObjectCreationExpr.class, oce -> oce.getAnonymousClassBody().isPresent()
-        //        && oce.getBegin().get().line == ste.getLineNumber()
-        //        || oce.getBegin().get().line == ste.getLineNumber() + 1
-        //        || oce.getBegin().get().line == ste.getLineNumber() + 2);
-
     }
-
-    /**
-     * Given a StackTraceElement for a specific line
-     * find the corresponding Anonymous class definition CODE
-     * (which is an ObjectCreationExpr with an anonymousClassBody)
-     * and return the Expression
-     *
-     * /// NEED TO REVISE
-     * 1) find the Statement at the stackTraceElement line number
-     * 2) Walk it until I find the ObjectCreationExpr I am looking for
-     *
-     * @param ste the stackTraceElement containing the location of the anonymousClass declaration
-     * @param resolver  resolver for resolving the .java source for the Class containing the code
-     * @return an ObjectCreationExpr of an anonymous Object created
-
-    public static ObjectCreationExpr oldanonymousClass( StackTraceElement ste, _in._resolver resolver ){
-        try {
-            //System.out.println( "IN ANONY " + ste +" "+ste.getClassName() +" "+ ste.getFileName()+" ");
-
-            String tfn = ste.getFileName().substring(0, ste.getFileName().length() - ".java".length() );
-            String pn = ste.getClassName().substring(0, ste.getClassName().lastIndexOf('.') );
-            //try {
-
-            //}catch (Exception e){
-            //    System.out.println( e );
-            //}
-            Class clazz = Class.forName(pn + "."+ tfn );
-            _type _t = _type.of(clazz, resolver);
-            //System.out.println( "Got TYPE of "+ _t.getName() );
-            //Walk.in( _t, ObjectCreationExpr.class, oce -> System.out.println( oce.getBegin().get().line + " :: "+ ste.getLineNumber()) );
-            List<ObjectCreationExpr> le = Walk.list( _t, ObjectCreationExpr.class, oce -> oce.getAnonymousClassBody().isPresent()
-                    && oce.getBegin().get().line == ste.getLineNumber()
-                    || oce.getBegin().get().line == ste.getLineNumber() + 1
-                    || oce.getBegin().get().line == ste.getLineNumber() + 2);
-            if (!le.isEmpty()) {
-                return le.get(0);
-            }
-            //return null;
-            throw new DraftException("unable to find anonymous class in : ("+ste.getFileName()+ ":"+ ste.getLineNumber()+")"
-                    + System.lineSeparator()+ resolver.describe());
-        }catch(Exception e){
-            //return null;
-            if( e instanceof DraftException ){
-                throw (DraftException)e;
-            }
-            throw new DraftException("unable to in .java source for \""+ste.getClassName()+"\""+ System.lineSeparator()
-                    + resolver.describe(), e );
-        }
-    }
-    */
 
     /**
      * convert the String code into a single AST Expression nod

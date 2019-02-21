@@ -93,7 +93,7 @@ public final class _enum implements _type<EnumDeclaration, _enum>,_method._hasMe
     public static _enum of(String signature, Object anonymousBody, Function<_type,_type>... typeFns ){
         StackTraceElement ste = Thread.currentThread().getStackTrace()[2];
         _enum _e = _enum.of(signature);
-        ObjectCreationExpr oce = Expr.anonymousClass( ste );
+        ObjectCreationExpr oce = Expr.anonymousObject( ste );
         if( oce.getAnonymousClassBody().isPresent()) {
             NodeList<BodyDeclaration<?>> bds = oce.getAnonymousClassBody().get();
             for(int i=0; i<bds.size(); i++) {
@@ -411,7 +411,7 @@ public final class _enum implements _type<EnumDeclaration, _enum>,_method._hasMe
      */
     public _enum constant (String signature, Object anonymousBody ){
         StackTraceElement ste = Thread.currentThread().getStackTrace()[2];
-        ObjectCreationExpr oce = Expr.anonymousClass(ste);
+        ObjectCreationExpr oce = Expr.anonymousObject(ste);
         _constant _ct = _constant.of( Ast.constant(signature));
         if( oce.getAnonymousClassBody().isPresent()){
             // here, I'm putting the BODY into a temp _class, so that I can apply
