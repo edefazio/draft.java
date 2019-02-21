@@ -118,7 +118,7 @@ public @interface _autoHashCode {
          public static $stmt $simplePrimitive = $stmt.of( (Byte $name$) -> hash = hash * prime + $name$ );
          */
 
-         public static Statement composeStmt(_field _f){
+         public static Statement constructStmt(_field _f){
             if( _f.getType().isArray() ){
                 if( _f.getType().getElementType().isPrimitiveType()){
                     return $arrayOfPrimitives.construct(_f);
@@ -163,8 +163,8 @@ public @interface _autoHashCode {
                     tokens.put("callSuperHashCode", true); /** print the code at "callSuperEquals" in {@link #$HASHCODE} */
                 }
                 BlockStmt body = new BlockStmt();
-                //compose Statements for all FIELDS into the BODY BlockStmt
-                _c.forFields(HASH_CODE_FIELD_MATCH_FN, f-> body.addStatement(_fieldToStatement.composeStmt(f)));
+                //construct Statements for all FIELDS into the BODY BlockStmt
+                _c.forFields(HASH_CODE_FIELD_MATCH_FN, f-> body.addStatement(_fieldToStatement.constructStmt(f)));
                 tokens.put("body", body); //the body:{} will be replaced with the code in the BlockStmt
                 _c.method($HASHCODE.construct(tokens));
             }

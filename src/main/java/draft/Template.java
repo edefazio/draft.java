@@ -11,7 +11,7 @@ import java.util.Map;
  * or
  * T can be an entity (_field, _method, _anno)
  *
- * @param <T> the entity being composed or modeled where the Template
+ * @param <T> the entity being constructed or modeled where the Template
  * (i.e. a String, or entity or an AST Node entity
  *
  * @author Eric
@@ -19,28 +19,28 @@ import java.util.Map;
 public interface Template<T> {
 
     /**
-     * Compose and return the T given the {@link Translator}
+     * Construct and return the T given the {@link Translator}
      * (for converting objects to text) and a map of key VALUE pairs
      *
      * @param translator converts objects to text within the composition
      * @param keyValues a map of key-VALUE data ELEMENTS used in composing the
      * text
-     * @return a composed T entity
+     * @return a constructed T entity
      */
     T construct( Translator translator, Map<String, Object> keyValues );
 
     /**
-     * Compose and return the T using the default the {@link Translator}
+     * Construct and return the T using the default the {@link Translator}
      * (for converting objects to text) and a map of key VALUE pairs
      *
      * @param keyValues a map of key-VALUE data ELEMENTS used in composing the
      * text
-     * @return a composed T entity
+     * @return a constructed T entity
      */
     T construct( Map<String, Object> keyValues );
 
     /**
-     * compose and return a new T given the tokens
+     * construct and return a new T given the tokens
      *
      * @param keyValues alternating key, and values
      * @return
@@ -48,7 +48,7 @@ public interface Template<T> {
     T construct( Object... keyValues );
 
     /**
-     * compose and return a new T given the tokens and translator
+     * construct and return a new T given the tokens and translator
      *
      * @param translator converts values from Objects to Strings when composing
      * @param keyValues alternating key, and values
@@ -74,7 +74,7 @@ public interface Template<T> {
      *     assertEquals( "1 f 2 F 3 f", st.fill("f"));
      * </PRE>
      * @param values data to populate the template
-     * @return the composed T (i.e. _method, _field, _ctor)
+     * @return the constructed T (i.e. _method, _field, _ctor)
      */
     T fill( Object... values );
 
@@ -98,7 +98,7 @@ public interface Template<T> {
      *
      * @param translator translates Objects to text within the t
      * @param values data to populate the template
-     * @return the composed T (i.e. _method, _field, _ctor)
+     * @return the constructed T (i.e. _method, _field, _ctor)
      */
     T fill( Translator translator, Object... values );
 
@@ -118,10 +118,10 @@ public interface Template<T> {
      * assertEquals(st, Stencil.of("Today is $day$, the $dayOfWeek$ day of the week"));
      * assertTrue(
      *
-     * //we can compose or fill the post parameters
-     * String tues = st.compose("Tuesday", "2nd");
+     * //we can construct or fill the post parameters
+     * String tues = st.construct("Tuesday", "2nd");
      * //tues =  "Today is Tuesday, the 2nd day of the week"
-     * String wed = st.compose("Wednesday", "3rd");
+     * String wed = st.construct("Wednesday", "3rd");
      * //wed =  "Today is Wednesday, the 3rd day of the week"
      * </PRE>
      *

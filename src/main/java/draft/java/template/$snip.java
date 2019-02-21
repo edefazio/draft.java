@@ -21,12 +21,7 @@ import java.util.function.Function;
  * Template of a Java code snippet (one or more {@link Statement}s
  *
  * NOTE: although this does not implement the Template<> and $query<> interfaces
- * it follows the same nameing conventions
- *
- * composed
- * match
- * select
- * decomposed
+ * it follows the same naming conventions
  */
 public final class $snip implements Template<List<Statement>>, $query<List<Statement>> {
 
@@ -47,7 +42,7 @@ public final class $snip implements Template<List<Statement>>, $query<List<State
      *
      *     }
      * });
-     * System.out.println( $s.compose( _field.of("int x;") ));
+     * System.out.println( $s.construct( _field.of("int x;") ));
      * </PRE>
      * @param anonymousObjectWithBody
      * @return the dynamic code snippet
@@ -312,7 +307,7 @@ public final class $snip implements Template<List<Statement>>, $query<List<State
                     sts.add( Stmt.of((String)val));
                 }
                 else if( val != null && val != Boolean.FALSE ){
-                    //compose the statement (it
+                    //construct the statement (it
                     LabeledStmt ls = (LabeledStmt)stmt.construct(t, tokens);
                     Statement st = ls.getStatement();
                     if( st instanceof BlockStmt ) {
@@ -489,7 +484,7 @@ public final class $snip implements Template<List<Statement>>, $query<List<State
         n.walk(this.$sts.get(0).statementClass, st-> {
             Select sel = select( (Statement)st );
             if( sel != null ){
-                //compose the replacement snippet
+                //constrct the replacement snippet
                 List<Statement> replacements = $repl.construct( sel.tokens );
                 Statement firstStmt = sel.statements.get(0);
                 Node par = firstStmt.getParentNode().get();
@@ -541,7 +536,7 @@ public final class $snip implements Template<List<Statement>>, $query<List<State
         //_le.walk( this.$sts.get(0).statementClass, st-> {
             Select sel = select( (Statement)st );
             if( sel != null ){
-                //compose the replacement snippet
+                //construct the replacement snippet
                 List<Statement> replacements = $repl.construct( sel.tokens );
                 Statement firstStmt = sel.statements.get(0);
                 Node par = firstStmt.getParentNode().get();

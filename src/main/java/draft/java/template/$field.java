@@ -78,7 +78,7 @@ public class $field
     }
 
     /**
-     * Decompose the expression into tokens, or return null if the field doesnt match
+     * Deconstruct the expression into tokens, or return null if the field doesnt match
      *
      * @param _f
      * @return Tokens from the stencil, or null if the expression doesnt match
@@ -88,7 +88,7 @@ public class $field
     }
 
     /**
-     * Decompose the expression into tokens, or return null if the field doesnt match
+     * Deconstruct the expression into tokens, or return null if the field doesnt match
      *
      * @param astFieldDeclaration 
      * @return Tokens from the stencil, or null if the expression doesnt match

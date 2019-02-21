@@ -83,7 +83,7 @@ public interface $query<Q> {
 
     /**
      * Replace all occurences of the template in the code with the replacement
-     * (composing the replacement from the decomposed tokens in the source)
+     * (composing the replacement from the Deconstruct tokens in the source)
      *
      * @return
 

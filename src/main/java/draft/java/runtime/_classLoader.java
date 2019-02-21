@@ -356,7 +356,7 @@ public final class _classLoader
      * returned)
      *
      * @param includeAncestorClassLoaders look thorough parent classLoaders
-     * @return a compose of names and types
+     * @return a map of names and types
      */
     protected Map<String, _type> mapNameTo_type( boolean includeAncestorClassLoaders ) {
         Map<String, _type> nameToType = new HashMap<>();

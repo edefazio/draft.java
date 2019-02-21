@@ -82,7 +82,7 @@ public final class _typeRef<T extends Type>
 
     @Override
     public int hashCode() {
-        return Decomposed.of(this.astType.toString() ).normalize().hashCode();
+        return Deconstructed.of(this.astType.toString() ).normalize().hashCode();
     }
 
 
@@ -131,13 +131,13 @@ public final class _typeRef<T extends Type>
         if( this.isPrimitive() && other.isPrimitive() ) {
             return Objects.equals(this.astType, other.astType );
         }
-        Decomposed td = Decomposed.of(this.astType.toString() );
-        Decomposed od = Decomposed.of(other.astType.toString() );
+        Deconstructed td = Deconstructed.of(this.astType.toString() );
+        Deconstructed od = Deconstructed.of(other.astType.toString() );
         return td.equals( od );
     }
 
     /** we "partsMap" the TYPE into symbols and tokens to check for equality */
-    private static class Decomposed {
+    private static class Deconstructed {
 
         /**
          * When we create a Local Class and ask for it's name, it will have
@@ -155,7 +155,7 @@ public final class _typeRef<T extends Type>
         public List<String> tokens;
 
 
-        public static Decomposed of( String str ) {
+        public static Deconstructed of( String str ) {
             List<Character> symbols = new ArrayList<>();
             List<String> tokens = new ArrayList<>();
 
@@ -185,11 +185,11 @@ public final class _typeRef<T extends Type>
             if( sb.length() > 0 ) {
                 tokens.add( sb.toString() );
             }
-            return new Decomposed( symbols, tokens );
+            return new Deconstructed( symbols, tokens );
         }
 
         /** normalize fully qualified names used as tokens to Simple Names */
-        public Decomposed normalize(){
+        public Deconstructed normalize(){
             for(int i=0;i<tokens.size();i++){
                 tokens.set( i, normalize(tokens.get(i)) );
             }
@@ -211,7 +211,7 @@ public final class _typeRef<T extends Type>
             return s.substring( idx + 1 );
         }
 
-        public Decomposed( List<Character> symbols, List<String> tokens ) {
+        public Deconstructed( List<Character> symbols, List<String> tokens ) {
             this.symbols = symbols;
             this.tokens = tokens;
         }
@@ -237,11 +237,11 @@ public final class _typeRef<T extends Type>
             if( getClass() != obj.getClass() ) {
                 return false;
             }
-            final Decomposed other = (Decomposed)obj;
+            final Deconstructed other = (Deconstructed)obj;
             return equals( other );
         }
 
-        public boolean equals( Decomposed od ) {
+        public boolean equals( Deconstructed od ) {
             //the broken up symbols must be the same
             if( !this.symbols.equals( od.symbols ) ) {
                 return false;

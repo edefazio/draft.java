@@ -263,7 +263,7 @@ public final class $constructor
         return deconstruct( _ctor.ast() );
     }
     
-    // NOTE we dont check the Javadoc for compose
+    // NOTE we dont check the Javadoc for deconstruct
     public Tokens deconstruct( ConstructorDeclaration astTarget ){
         Tokens ts = null;
         if( astTarget.getBody().isEmpty() ){

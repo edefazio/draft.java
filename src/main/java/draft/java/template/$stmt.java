@@ -16,11 +16,6 @@ import java.util.function.Consumer;
 
 /**
  * Template of a Java {@link Statement} that can be
- * filled,
- * composed,
- * matched
- * decomposed
- * selected
  *
  * @param <T>
  */
@@ -189,7 +184,7 @@ public final class $stmt<T extends Statement>
 
     /**
      * IF the statement has a comment, it is stored separately, because,
-     * in situations where we are composing the statement, we want to compose the
+     * in situations where we are composing the statement, we want to construct the
      *
      */
     public Stencil commentStencil;
@@ -368,7 +363,7 @@ public final class $stmt<T extends Statement>
     }
 
     /**
-     * Decompose the statement into tokens, or return null if the statement doesnt match
+     * Deconstruct the statement into tokens, or return null if the statement doesnt match
      *
      *
      * @param statement the statement to partsMap
@@ -538,7 +533,7 @@ public final class $stmt<T extends Statement>
         Walk.in( _le, this.statementClass, st->{
             $stmt.Select sel = select( st );
             if( sel != null ){
-                //compose the replacement snippet
+                //construct the replacement snippet
                 List<Statement> replacements = $repl.construct( sel.tokens );
 
                 //Statement firstStmt = sel.statements.get(0);

@@ -18,8 +18,8 @@ import java.util.regex.Pattern;
  *     "We would like to keep our customers happy, so if you have any questions",
  *     "or comments, please contact $repName$ at $repContact$");
  *
- * //this will compose the key/VALUE pairs to the Stencil
- * String letter = st.compose( "salutation", "Mr.",
+ * //this will construct the key/VALUE pairs to the Stencil
+ * String letter = st.construct( "salutation", "Mr.",
  *     "lastName", "DeFazio",
  *     "widget", "$250.00",
  *     "repName", "Ted Fergeson",
@@ -565,7 +565,7 @@ public final class Stencil implements Template<String>{
      * <CODE>
      * Stencil s = $Markup.of("$name$, thanks for buying $product$");
      *
-     * s.compose("product", "toaster", "NAME","Eric")//"Eric, thanks for buying toaster"
+     * s.construct("product", "toaster", "NAME","Eric")//"Eric, thanks for buying toaster"
      * s.fill("Eric", "toaster") //"Eric, thanks for buying toaster"
      * </CODE>
      */

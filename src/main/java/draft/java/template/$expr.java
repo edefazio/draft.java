@@ -343,7 +343,7 @@ public final class $expr <T extends Expression>
     }
 
     /**
-     * Decompose the expression into tokens, or return null if the statement doesnt match
+     * Deconstruct the expression into tokens, or return null if the statement doesnt match
      *
      * @param expression expression
      * @return Tokens from the stencil, or null if the expression doesnt match

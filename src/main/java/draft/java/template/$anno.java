@@ -64,7 +64,7 @@ public final class $anno
     }
 
     /**
-     * Decompose the expression into tokens, or return null if the statement doesnt match
+     * Deconstruct the expression into tokens, or return null if the statement doesnt match
      *
      * @param _a
      * @return Tokens from the stencil, or null if the expression doesnt match
@@ -74,7 +74,7 @@ public final class $anno
     }
 
     /**
-     * Decompose the expression into tokens, or return null if the statement doesnt match
+     * Deconstruct the expression into tokens, or return null if the statement doesnt match
      *
      * @param a
      * @return Tokens from the stencil, or null if the expression doesnt match
@@ -261,11 +261,11 @@ public final class $anno
     }
 
     /**
-     * Replace all occurences of the template in the code with the replacement
-     * (composing the replacement from the decomposed tokens in the source)
+     * Replace all occurrences of the template in the code with the replacement
+     * (composing the replacement from the constructed tokens in the source)
      *
      * @param _m the model to find replacements
-     * @param $a the template to be composed as the replacement
+     * @param $a the template to be constructed as the replacement
      * @param <M> the TYPE of model
      * @return
      */
