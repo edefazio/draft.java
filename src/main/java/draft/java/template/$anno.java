@@ -9,7 +9,6 @@ import draft.*;
 import draft.java.Expr;
 import draft.java.Walk;
 import draft.java._anno;
-import static draft.java._anno.of;
 import draft.java._model;
 
 import java.util.ArrayList;
@@ -70,7 +69,7 @@ public final class $anno
      * @param _a
      * @return Tokens from the stencil, or null if the expression doesnt match
      */
-    public Tokens decompose(_anno _a ){
+    public Tokens deconstruct(_anno _a ){
         return annoStencil.deconstruct( _a.toString() );
     }
 
@@ -80,12 +79,11 @@ public final class $anno
      * @param a
      * @return Tokens from the stencil, or null if the expression doesnt match
      */
-    public Tokens decompose(AnnotationExpr a ){
+    public Tokens deconstruct(AnnotationExpr a ){
         return annoStencil.deconstruct( a.toString() );
     }
 
-
-
+    @Override
     public String toString() {
         return "($anno) : \"" + this.annoStencil + "\"";
     }
@@ -180,17 +178,19 @@ public final class $anno
     }
 
     public Select select(AnnotationExpr e){
-        Tokens ts = this.decompose(e);
+        Tokens ts = this.deconstruct(e);
         if( ts != null){
             return new Select( e, ts );
         }
         return null;
     }
 
+    @Override
     public List<_anno> findAllIn(_model._node _t ){
         return findAllIn( _t.ast() );
     }
 
+    @Override
     public List<_anno> findAllIn(Node rootNode ){
         List<_anno> typesList = new ArrayList<>();
         rootNode.walk(AnnotationExpr.class, t->{
@@ -201,6 +201,7 @@ public final class $anno
         return typesList;
     }
 
+    @Override
     public List<Select> selectAllIn(Node n ){
         List<Select>sts = new ArrayList<>();
         n.walk(AnnotationExpr.class, e-> {
@@ -212,6 +213,7 @@ public final class $anno
         return sts;
     }
 
+    @Override
     public List<Select> selectAllIn(_model._node _m ){
         List<Select>sts = new ArrayList<>();
         Walk.in( _m, AnnotationExpr.class, e -> {
@@ -230,6 +232,7 @@ public final class $anno
      * @param <N> the input node TYPE
      * @return the modified node
      */
+    @Override
     public <N extends Node> N removeIn(N node ){
         node.walk( AnnotationExpr.class, e-> {
             Select sel = select( e );
@@ -246,6 +249,7 @@ public final class $anno
      * @param <M> the TYPE of model node
      * @return the modified model node
      */
+    @Override
     public <M extends _model._node> M removeIn(M _m ){
         Walk.in( _m, AnnotationExpr.class, e-> {
             Select sel = select( e );
@@ -305,6 +309,7 @@ public final class $anno
         return node;
     }
 
+    @Override
     public <N extends Node> N forAllIn(N node, Consumer<_anno> _annoActionFn){
         node.walk(AnnotationExpr.class, e-> {
             Tokens tokens = this.annoStencil.deconstruct( e.toString());
@@ -315,6 +320,7 @@ public final class $anno
         return node;
     }
 
+    @Override
     public <M extends _model._node> M forAllIn(M _m, Consumer<_anno> _annoActionFn){
         Walk.in( _m, AnnotationExpr.class, e -> {
             Tokens tokens = annoStencil.deconstruct( e.toString());
@@ -333,6 +339,7 @@ public final class $anno
             this.expression = expression;
             this.tokens = tokens;
         }
+        @Override
         public String toString(){
             return "$anno.Select {"+ System.lineSeparator()+
                     Text.indent( expression.toString() )+ System.lineSeparator()+

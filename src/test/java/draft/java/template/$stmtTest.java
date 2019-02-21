@@ -102,15 +102,15 @@ public class $stmtTest extends TestCase {
 
     public void testMatchWithComments(){
         $stmt $s = $stmt.of( ()-> System.out.println(1) );
-        Tokens tokens = $s.decompose(Stmt.of( ()-> System.out.println(1) ));
+        Tokens tokens = $s.deconstruct(Stmt.of( ()-> System.out.println(1) ));
         assertNotNull( tokens );
 
         $s = $stmt.of( ($any$)-> System.out.println($any$) );
-        tokens = $s.decompose(Stmt.of( ()-> System.out.println(1) ));
+        tokens = $s.deconstruct(Stmt.of( ()-> System.out.println(1) ));
         assertNotNull( tokens );
         assertTrue( tokens.has("any", "1"));
 
-        tokens = $s.decompose(Stmt.of( ()-> /** Comment */ System.out.println(1) ));
+        tokens = $s.deconstruct(Stmt.of( ()-> /** Comment */ System.out.println(1) ));
         assertNotNull( tokens );
         assertTrue( tokens.has("any", "1"));
     }
@@ -142,7 +142,7 @@ public class $stmtTest extends TestCase {
         assertTrue( $s.matches(st));
 
         //verify we can partsMap the Statement and return the 1 (the filled parameter)
-        assertTrue( $s.decompose(st).has("any", "1") );
+        assertTrue( $s.deconstruct(st).has("any", "1") );
     }
 
     /*

@@ -2,7 +2,27 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="b8cbbe52-04a5-46b7-ae38-dbae2e46d7e1" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/src/main/java/draft/java/_type.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/draft/java/_type.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/draft/Composite.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/draft/Composite.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/draft/java/Expr.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/draft/java/Expr.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/draft/java/_anno.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/draft/java/_anno.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/draft/java/_annotation.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/draft/java/_annotation.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/draft/java/_class.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/draft/java/_class.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/draft/java/_constructor.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/draft/java/_constructor.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/draft/java/_enum.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/draft/java/_enum.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/draft/java/_field.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/draft/java/_field.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/draft/java/_interface.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/draft/java/_interface.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/draft/java/_method.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/draft/java/_method.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/draft/java/macro/_autoDto.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/draft/java/macro/_autoDto.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/draft/java/template/$anno.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/draft/java/template/$anno.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/draft/java/template/$constructor.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/draft/java/template/$constructor.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/draft/java/template/$field.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/draft/java/template/$field.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/draft/java/template/$method.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/draft/java/template/$method.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/draft/java/template/$snip.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/draft/java/template/$snip.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/java/draft/StencilTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/draft/StencilTest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/java/draft/TextBlanksTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/draft/TextBlanksTest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/java/draft/java/ExprTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/draft/java/ExprTest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/java/draft/java/template/$stmtTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/draft/java/template/$stmtTest.java" afterDir="false" />
     </list>
     <ignored path="$PROJECT_DIR$/target/" />
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
@@ -11,13 +31,95 @@
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
     <option name="LAST_RESOLUTION" value="IGNORE" />
   </component>
+  <component name="FileEditorManager">
+    <leaf>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/main/java/draft/TextBlanks.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="-8518">
+              <caret line="95" column="48" selection-start-line="95" selection-start-column="48" selection-end-line="95" selection-end-column="48" />
+              <folding>
+                <element signature="imports" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/main/java/draft/Template.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="-1684">
+              <caret line="18" column="17" selection-start-line="18" selection-start-column="17" selection-end-line="18" selection-end-column="17" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/main/java/draft/Stencil.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="8364">
+              <caret line="512" column="48" selection-start-line="512" selection-start-column="48" selection-end-line="512" selection-end-column="48" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/main/java/draft/Named.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="187">
+              <caret line="11" column="43" selection-start-line="11" selection-start-column="43" selection-end-line="11" selection-end-column="43" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/main/java/draft/DraftException.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="51">
+              <caret line="3" column="9" selection-start-line="3" selection-start-column="9" selection-end-line="3" selection-end-column="9" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/src/main/java/draft/Diff.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="2431">
+              <caret line="182" column="27" selection-start-line="182" selection-start-column="27" selection-end-line="182" selection-end-column="27" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/main/java/draft/Composite.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="289">
+              <caret line="17" column="14" selection-start-line="17" selection-start-column="14" selection-end-line="17" selection-end-column="14" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+    </leaf>
+  </component>
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
+  <component name="IdeDocumentHistory">
+    <option name="CHANGED_PATHS">
+      <list>
+        <option value="$PROJECT_DIR$/src/main/java/draft/TextBlanks.java" />
+        <option value="$PROJECT_DIR$/src/main/java/draft/Stencil.java" />
+        <option value="$PROJECT_DIR$/src/main/java/draft/Named.java" />
+        <option value="$PROJECT_DIR$/src/main/java/draft/DraftException.java" />
+        <option value="$PROJECT_DIR$/src/main/java/draft/Diff.java" />
+        <option value="$PROJECT_DIR$/src/main/java/draft/Composite.java" />
+      </list>
+    </option>
+  </component>
   <component name="ProjectFrameBounds">
-    <option name="x" value="81" />
-    <option name="y" value="130" />
-    <option name="width" value="979" />
+    <option name="x" value="249" />
+    <option name="y" value="189" />
+    <option name="width" value="1385" />
     <option name="height" value="809" />
   </component>
   <component name="ProjectView">
@@ -62,11 +164,12 @@
           <select />
         </subPane>
       </pane>
-      <pane id="Scope" />
       <pane id="PackagesPane" />
+      <pane id="Scope" />
     </panes>
   </component>
   <component name="PropertiesComponent">
+    <property name="com.android.tools.idea.instantapp.provision.ProvisionBeforeRunTaskProvider.myTimeStamp" value="1550770582254" />
     <property name="last_opened_file_path" value="$PROJECT_DIR$" />
   </component>
   <component name="RunDashboard">
@@ -95,33 +198,89 @@
     <servers />
   </component>
   <component name="ToolWindowManager">
-    <frame x="81" y="130" width="979" height="809" extended-state="0" />
+    <frame x="249" y="189" width="1385" height="809" extended-state="0" />
+    <editor active="true" />
     <layout>
-      <window_info id="Image Layers" />
-      <window_info id="Designer" />
-      <window_info id="UI Designer" />
-      <window_info id="Capture Tool" />
-      <window_info id="Favorites" side_tool="true" />
-      <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.2491839" />
+      <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.17660378" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
-      <window_info anchor="bottom" id="Version Control" />
-      <window_info anchor="bottom" id="Terminal" />
-      <window_info anchor="bottom" id="Event Log" side_tool="true" />
+      <window_info id="Image Layers" order="2" />
+      <window_info id="Designer" order="3" />
+      <window_info id="UI Designer" order="4" />
+      <window_info id="Capture Tool" order="5" />
+      <window_info id="Favorites" order="6" side_tool="true" />
+      <window_info anchor="bottom" id="Messages" weight="0.32988167" />
       <window_info anchor="bottom" id="Message" order="0" />
-      <window_info anchor="bottom" id="Find" order="1" />
+      <window_info anchor="bottom" id="Find" order="1" weight="0.32988167" />
       <window_info anchor="bottom" id="Run" order="2" />
       <window_info anchor="bottom" id="Debug" order="3" weight="0.4" />
       <window_info anchor="bottom" id="Cvs" order="4" weight="0.25" />
       <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
       <window_info anchor="bottom" id="TODO" order="6" />
-      <window_info anchor="right" id="Palette" />
-      <window_info anchor="right" id="Theme Preview" />
-      <window_info anchor="right" id="Maven" />
-      <window_info anchor="right" id="Capture Analysis" />
-      <window_info anchor="right" id="Palette&#9;" />
+      <window_info anchor="bottom" id="Terminal" order="7" />
+      <window_info anchor="bottom" id="Event Log" order="8" side_tool="true" />
+      <window_info anchor="bottom" id="Version Control" order="9" />
       <window_info anchor="right" id="Commander" internal_type="SLIDING" order="0" type="SLIDING" weight="0.4" />
       <window_info anchor="right" id="Ant Build" order="1" weight="0.25" />
       <window_info anchor="right" content_ui="combo" id="Hierarchy" order="2" weight="0.25" />
+      <window_info anchor="right" id="Palette" order="3" />
+      <window_info anchor="right" id="Maven" order="4" />
+      <window_info anchor="right" id="Theme Preview" order="5" />
+      <window_info anchor="right" id="Capture Analysis" order="6" />
+      <window_info anchor="right" id="Palette&#9;" order="7" />
     </layout>
+  </component>
+  <component name="editorHistoryManager">
+    <entry file="file://$PROJECT_DIR$/src/main/java/draft/TextBlanks.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-8518">
+          <caret line="95" column="48" selection-start-line="95" selection-start-column="48" selection-end-line="95" selection-end-column="48" />
+          <folding>
+            <element signature="imports" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/draft/Template.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-1684">
+          <caret line="18" column="17" selection-start-line="18" selection-start-column="17" selection-end-line="18" selection-end-column="17" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/draft/Stencil.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="8364">
+          <caret line="512" column="48" selection-start-line="512" selection-start-column="48" selection-end-line="512" selection-end-column="48" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/draft/Named.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="187">
+          <caret line="11" column="43" selection-start-line="11" selection-start-column="43" selection-end-line="11" selection-end-column="43" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/draft/DraftException.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="51">
+          <caret line="3" column="9" selection-start-line="3" selection-start-column="9" selection-end-line="3" selection-end-column="9" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/draft/Composite.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="289">
+          <caret line="17" column="14" selection-start-line="17" selection-start-column="14" selection-end-line="17" selection-end-column="14" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/draft/Diff.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="2431">
+          <caret line="182" column="27" selection-start-line="182" selection-start-column="27" selection-end-line="182" selection-end-column="27" />
+        </state>
+      </provider>
+    </entry>
   </component>
 </project>

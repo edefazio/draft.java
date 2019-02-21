@@ -174,21 +174,21 @@ public final class $constructor
 
     @Override
     public _constructor construct(Map<String, Object> keyValues) {
-        return construct( Translator.DEFAULT_TRANSLATOR, keyValues );
+        return $constructor.this.construct( Translator.DEFAULT_TRANSLATOR, keyValues );
     }
 
-    public _constructor compose( _model._node model ){
-        return construct(model.componentize());
+    public _constructor construct( _model._node model ){
+        return $constructor.this.construct(model.componentize());
     }
 
     @Override
     public _constructor construct(Object... keyValues) {
-        return construct( Translator.DEFAULT_TRANSLATOR, keyValues );
+        return $constructor.this.construct( Translator.DEFAULT_TRANSLATOR, keyValues );
     }
 
     @Override
     public _constructor construct(Translator translator, Object... keyValues) {
-        return construct(translator, Tokens.of(keyValues));
+        return $constructor.this.construct(translator, Tokens.of(keyValues));
     }
 
     @Override
@@ -206,7 +206,7 @@ public final class $constructor
         for(int i=0;i<values.length;i++){
             kvs.put( keys.get(i), values[i]);
         }
-        return construct( t, kvs );
+        return $constructor.this.construct( t, kvs );
     }
 
     @Override
@@ -230,11 +230,11 @@ public final class $constructor
     }
 
     public boolean matches( _constructor _m ){
-        return decompose( _m.ast() ) != null;
+        return deconstruct( _m.ast() ) != null;
     }
 
     public boolean matches(ConstructorDeclaration astM ){
-        return decompose( astM ) != null;
+        return deconstruct( astM ) != null;
     }
 
     public Select select( _constructor _c){
@@ -242,7 +242,7 @@ public final class $constructor
     }
 
     public Select select( ConstructorDeclaration astCtor){
-        Tokens ts = decompose( astCtor );
+        Tokens ts = deconstruct( astCtor );
         if( ts != null ){
             return new Select( astCtor, ts );
         }
@@ -257,13 +257,19 @@ public final class $constructor
         }
         return this.signatureStencil.toString()+System.lineSeparator()+ this.$body.toString();
     }
+    
+    
+    public Tokens deconstruct( _constructor _ctor ){
+        return deconstruct( _ctor.ast() );
+    }
+    
     // NOTE we dont check the Javadoc for compose
-    public Tokens decompose( ConstructorDeclaration astTarget ){
+    public Tokens deconstruct( ConstructorDeclaration astTarget ){
         Tokens ts = null;
         if( astTarget.getBody().isEmpty() ){
             ts = new Tokens();
         } else {
-            ts = this.$body.decompose(astTarget.getBody().getStatement(0));
+            ts = this.$body.deconstruct(astTarget.getBody().getStatement(0));
         }
         if( ts != null ){
             //final Tokens tdd = ts;

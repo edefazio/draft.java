@@ -132,6 +132,7 @@ public final class $method
         }
     }
 
+    @Override
     public List<String> list$Normalized(){
         List<String>normalized$ = new ArrayList<>();
         normalized$.addAll( this.signatureStencil.list$Normalized() );
@@ -145,6 +146,7 @@ public final class $method
         return normalized$;
     }
 
+    @Override
     public List<String> list$(){
         List<String>normalized$ = new ArrayList<>();
         normalized$.addAll( this.signatureStencil.list$Normalized() );
@@ -167,27 +169,29 @@ public final class $method
 
     @Override
     public _method construct(Map<String, Object> keyValues) {
-        return construct( Translator.DEFAULT_TRANSLATOR, keyValues );
+        return $method.this.construct( Translator.DEFAULT_TRANSLATOR, keyValues );
     }
 
-    public _method compose(_model._node model ){
-        return construct( model.componentize() );
+    public _method construct(_model._node model ){
+        return $method.this.construct( model.componentize() );
     }
 
     @Override
     public _method construct(Object... keyValues) {
-        return construct( Translator.DEFAULT_TRANSLATOR, keyValues );
+        return $method.this.construct( Translator.DEFAULT_TRANSLATOR, keyValues );
     }
 
     @Override
     public _method construct(Translator translator, Object... keyValues) {
-        return construct(translator, Tokens.of(keyValues));
+        return $method.this.construct(translator, Tokens.of(keyValues));
     }
 
+    @Override
     public _method fill(Object...values){
         return fill( Translator.DEFAULT_TRANSLATOR, values );
     }
 
+    @Override
     public _method fill(Translator t, Object...values){
         //List<Statement>sts = new ArrayList<>();
         List<String> keys = list$Normalized();
@@ -198,12 +202,16 @@ public final class $method
         for(int i=0;i<values.length;i++){
             kvs.put( keys.get(i), values[i]);
         }
-        return construct( t, kvs );
+        return $method.this.construct( t, kvs );
     }
 
     public static final BlockStmt EMPTY = Stmt.block("{}");
 
-    public Tokens decompose( MethodDeclaration astTarget ){
+    public Tokens deconstruct( _method _m ){
+        return deconstruct(_m.ast() );
+    }
+    
+    public Tokens deconstruct( MethodDeclaration astTarget ){
         if( astTarget.getBody().isPresent()){
             if( this.$body == null) {
                 return null; //the target has a BODY, the template doesnt
@@ -213,7 +221,7 @@ public final class $method
                 ts = new Tokens();
             } else {
                 //we check this first because we dont want to clone unless we need to
-                ts = this.$body.decompose(astTarget.getBody().get().getStatement(0));
+                ts = this.$body.deconstruct(astTarget.getBody().get().getStatement(0));
             }
 
             if( ts != null ){
@@ -306,11 +314,11 @@ public final class $method
     }
 
     public boolean matches( _method _m ){
-        return decompose( _m.ast() ) != null;
+        return deconstruct( _m.ast() ) != null;
     }
 
     public boolean matches( MethodDeclaration astM ){
-        return decompose( astM ) != null;
+        return deconstruct( astM ) != null;
     }
 
     public Select select( _method _m){
@@ -318,7 +326,7 @@ public final class $method
     }
 
     public Select select( MethodDeclaration astMethod){
-        Tokens ts = decompose( astMethod );
+        Tokens ts = deconstruct( astMethod );
         if( ts != null ){
             return new Select( astMethod, ts );
         }
@@ -367,8 +375,8 @@ public final class $method
     }
 
     public <M extends _model._node> M removeIn(M _m ){
-        Walk.in( _m, MethodDeclaration.class, e-> {
-            Tokens tokens = this.decompose( e );
+        Walk.in(_m, MethodDeclaration.class, e-> {
+            Tokens tokens = this.deconstruct( e );
             if( tokens != null ){
                 e.removeForced();
             }
@@ -378,7 +386,7 @@ public final class $method
 
     public <N extends Node> N removeIn(N n ){
         n.walk(MethodDeclaration.class, e-> {
-            Tokens tokens = this.decompose( e );
+            Tokens tokens = this.deconstruct( e );
             if( tokens != null ){
                 e.removeForced();
             }
@@ -388,7 +396,7 @@ public final class $method
 
     public <N extends Node> N forAllIn(N n, Consumer<_method> _methodActionFn){
         n.walk(MethodDeclaration.class, e-> {
-            Tokens tokens = this.decompose( e );
+            Tokens tokens = this.deconstruct( e );
             if( tokens != null ){
                 _methodActionFn.accept( _method.of(e) );
             }
@@ -397,8 +405,8 @@ public final class $method
     }
 
     public  <T extends _model._node> T forAllIn(T _t, Consumer<_method> _methodActionFn){
-        Walk.in( _t, MethodDeclaration.class, e -> {
-            Tokens tokens = this.decompose( e );
+        Walk.in(_t, MethodDeclaration.class, e -> {
+            Tokens tokens = this.deconstruct( e );
             if( tokens != null ){
                 _methodActionFn.accept( _method.of(e) );
             }

@@ -121,26 +121,26 @@ public @interface _autoHashCode {
          public static Statement composeStmt(_field _f){
             if( _f.getType().isArray() ){
                 if( _f.getType().getElementType().isPrimitiveType()){
-                    return $arrayOfPrimitives.compose(_f);
+                    return $arrayOfPrimitives.construct(_f);
                 }
-                return $arrayOfObject.compose(_f);
+                return $arrayOfObject.construct(_f);
             }
             if( _f.getType().isPrimitive()){
                 if( _f.isType(boolean.class)){
-                    return $boolean.compose(_f);
+                    return $boolean.construct(_f);
                 }
                 if( _f.isType(double.class)){
-                    return $double.compose(_f);
+                    return $double.construct(_f);
                 }
                 if( _f.isType(float.class)){
-                    return $float.compose(_f);
+                    return $float.construct(_f);
                 }
                 if( _f.isType(long.class)){
-                    return $long.compose(_f);
+                    return $long.construct(_f);
                 }
-                return $simplePrimitive.compose(_f);
+                return $simplePrimitive.construct(_f);
             }
-            return $default.compose(_f);
+            return $default.construct(_f);
         }
     }
 

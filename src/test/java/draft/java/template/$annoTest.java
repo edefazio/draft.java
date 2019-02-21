@@ -40,7 +40,7 @@ public class $annoTest extends TestCase {
 
         assertTrue( $a.select(_anno.of("@name(prefix=\"1\")") ).tokens.is("any", "\"1\"") );
 
-        assertTrue($a.decompose(_anno.of("@name(prefix=\"ABCD\")")).is("any", "\"ABCD\""));
+        assertTrue($a.deconstruct(_anno.of("@name(prefix=\"ABCD\")")).is("any", "\"ABCD\""));
         assertTrue( $a.list$().contains("any"));
 
 

@@ -57,11 +57,13 @@ public final class $typeRef<T extends Type>
         this.stencil = Stencil.of(stencil);
     }
 
+    @Override
     public T fill(Object...values){
         String str = stencil.fill(Translator.DEFAULT_TRANSLATOR, values);
         return (T)Ast.typeRef( str );
     }
 
+    @Override
     public $typeRef $(String target, String $name ) {
         this.stencil = this.stencil.$(target, $name);
         return this;
@@ -112,42 +114,49 @@ public final class $typeRef<T extends Type>
     }
 
 
+    @Override
     public T fill(Translator t, Object...values){
         return (T)Ast.typeRef( stencil.fill(t, values));
     }
 
+    @Override
     public T construct( Object...keyValues ){
         return (T)Ast.typeRef( stencil.construct( Tokens.of(keyValues)));
     }
 
-    public T compose( _model._node model ){
-        return (T)construct(model.componentize());
+    public T construct( _model._node model ){
+        return (T)$typeRef.this.construct(model.componentize());
     }
 
+    @Override
     public T construct( Translator t, Object...keyValues ){
         return (T)Ast.typeRef( stencil.construct( t, Tokens.of(keyValues) ));
     }
 
+    @Override
     public T construct( Map<String,Object> tokens ){
         return (T)Ast.typeRef(stencil.construct( Translator.DEFAULT_TRANSLATOR, tokens ));
     }
 
+    @Override
     public T construct( Translator t, Map<String,Object> tokens ){
         return (T)Ast.typeRef(stencil.construct( t, tokens ));
     }
 
     public boolean matches( String type ){
-        return decompose( Ast.typeRef(type)) != null;
+        return deconstruct( Ast.typeRef(type)) != null;
     }
 
     public boolean matches( Type type ){
-        return decompose(type) != null;
+        return deconstruct(type) != null;
     }
 
+    @Override
     public List<String> list$(){
         return this.stencil.list$();
     }
 
+    @Override
     public List<String> list$Normalized(){
         return this.stencil.list$Normalized();
     }
@@ -158,7 +167,7 @@ public final class $typeRef<T extends Type>
      * @param t TYPE instance
      * @return Tokens from the stencil, or null if the expression doesnt match
      */
-    public Tokens decompose( Type t ){
+    public Tokens deconstruct( Type t ){
         if( typeClass.isAssignableFrom(t.getClass())){
             return stencil.deconstruct( t.toString() );
         }
@@ -166,13 +175,14 @@ public final class $typeRef<T extends Type>
     }
 
     public Select select( Type t){
-        Tokens ts = this.decompose(t);
+        Tokens ts = this.deconstruct(t);
         if( ts != null){
             return new Select( t, ts );
         }
         return null;
     }
 
+    @Override
     public List<Select<T>> selectAllIn(Node n ){
         List<Select<T>>sts = new ArrayList<>();
         n.walk(this.typeClass, e-> {
@@ -184,6 +194,7 @@ public final class $typeRef<T extends Type>
         return sts;
     }
 
+    @Override
     public List<Select<T>> selectAllIn(_model._node _t ){
         return selectAllIn( _t.ast() );
     }
@@ -208,10 +219,12 @@ public final class $typeRef<T extends Type>
         return n;
     }
 
+    @Override
     public List<T> findAllIn(_model._node _t ){
         return findAllIn( _t.ast() );
     }
 
+    @Override
     public List<T> findAllIn(Node rootNode ){
         List<T> typesList = new ArrayList<>();
         rootNode.walk(this.typeClass, t->{
@@ -221,8 +234,6 @@ public final class $typeRef<T extends Type>
         } );
         return typesList;
     }
-
-
 
     public <M extends _model._node> M replaceIn(M _t, Class replacementType){
         return replaceIn( _t, $typeRef.of(replacementType));
@@ -266,6 +277,7 @@ public final class $typeRef<T extends Type>
         return _t;
     }
 
+    @Override
     public <N extends Node> N removeIn(N node ){
         node.walk(this.typeClass, e -> {
             Tokens tokens = this.stencil.deconstruct( e.toString());
@@ -276,6 +288,7 @@ public final class $typeRef<T extends Type>
         return node;
     }
 
+    @Override
     public <M extends _model._node> M removeIn(M _t ){
         Walk.in( _t, this.typeClass, e -> {
             Tokens tokens = this.stencil.deconstruct( e.toString());
@@ -286,6 +299,7 @@ public final class $typeRef<T extends Type>
         return _t;
     }
 
+    @Override
     public <N extends Node> N forAllIn(N n, Consumer<T> expressionActionFn){
         n.walk(this.typeClass, e-> {
             Tokens tokens = this.stencil.deconstruct( e.toString());
@@ -296,6 +310,7 @@ public final class $typeRef<T extends Type>
         return n;
     }
 
+    @Override
     public <M extends _model._node> M forAllIn(M _t, Consumer<T> expressionActionFn){
         Walk.in( _t, this.typeClass, e -> {
             Tokens tokens = this.stencil.deconstruct( e.toString());
@@ -306,6 +321,7 @@ public final class $typeRef<T extends Type>
         return _t;
     }
 
+    @Override
     public String toString() {
         return "(" + this.typeClass.getSimpleName() + ") : \"" + this.stencil + "\"";
     }
@@ -318,6 +334,7 @@ public final class $typeRef<T extends Type>
             this.type = type;
             this.tokens = tokens;
         }
+        @Override
         public String toString(){
             return "$typeRef.Select {"+ System.lineSeparator()+
                     Text.indent( type.toString() )+ System.lineSeparator()+

@@ -12,8 +12,8 @@ public class $typeRefTest extends TestCase {
         $typeRef $t = $typeRef.intType;
         assertEquals(Ast.INT_TYPE, $t.construct());
 
-        assertNotNull( $t.decompose(Ast.INT_TYPE));
-        assertNull( $t.decompose(Ast.FLOAT_TYPE));
+        assertNotNull( $t.deconstruct(Ast.INT_TYPE));
+        assertNull( $t.deconstruct(Ast.FLOAT_TYPE));
         class F{
             int a;
             public F( int b ){

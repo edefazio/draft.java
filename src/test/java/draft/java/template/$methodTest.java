@@ -32,7 +32,7 @@ public class $methodTest extends TestCase {
                 return this.$name$;
             }
         });
-        System.out.println( $m.compose( _field.of("int count;")) );
+        System.out.println( $m.construct( _field.of("int count;")) );
 
         //verify that the ANNOTATIONS and JAVADOC are transposed
         //
@@ -43,7 +43,7 @@ public class $methodTest extends TestCase {
                 " * @return ",
                 " */",
                 "@Deprecated",
-                "public int getCount(){ return this.count; }"), $m.compose(_field.of("int count;") ));
+                "public int getCount(){ return this.count; }"), $m.construct(_field.of("int count;") ));
     }
 
     public void testGetterSetter(){

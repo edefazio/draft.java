@@ -156,11 +156,13 @@ public final class $snip implements Template<List<Statement>>, $query<List<State
         return this;
     }
 
+    @Override
     public $snip $(String target, String paramName){
         this.$sts.forEach(s -> s.$(target, paramName));
         return this;
     }
 
+    @Override
     public List<String> list$Normalized(){
         List<String>normalized$ = new ArrayList<>();
         $sts.forEach(s -> {
@@ -174,6 +176,7 @@ public final class $snip implements Template<List<Statement>>, $query<List<State
         return normalized$;
     }
 
+    @Override
     public List<String> list$(){
         List<String>$s = new ArrayList<>();
         $sts.forEach(s -> {
@@ -236,10 +239,12 @@ public final class $snip implements Template<List<Statement>>, $query<List<State
      * @param values
      * @return
      */
+    @Override
     public List<Statement> fill(Object...values){
         return fill( Translator.DEFAULT_TRANSLATOR, values );
     }
 
+    @Override
     public List<Statement> fill(Translator t, Object...values){
         List<Statement>sts = new ArrayList<>();
         List<String> keys = list$Normalized();
@@ -250,30 +255,34 @@ public final class $snip implements Template<List<Statement>>, $query<List<State
         for(int i=0;i<values.length;i++){
             kvs.put( keys.get(i), values[i]);
         }
-        return construct( t, kvs );
+        return $snip.this.construct( t, kvs );
     }
 
+    @Override
     public List<Statement> construct( Object...keyValues ){
-        return compose( Tokens.of(keyValues));
+        return $snip.this.construct( Tokens.of(keyValues));
     }
 
-    public List<Statement> compose( Tokens tokens ){
-        return construct( Translator.DEFAULT_TRANSLATOR, tokens.map());
+    public List<Statement> construct( Tokens tokens ){
+        return $snip.this.construct( Translator.DEFAULT_TRANSLATOR, tokens.map());
     }
 
 
-    public List<Statement> compose( _model._node model ){
-        return construct(model.componentize());
+    public List<Statement> construct( _model._node model ){
+        return $snip.this.construct(model.componentize());
     }
 
+    @Override
     public List<Statement> construct( Map<String,Object> tokens ){
-       return construct( Translator.DEFAULT_TRANSLATOR, tokens );
+       return $snip.this.construct( Translator.DEFAULT_TRANSLATOR, tokens );
     }
 
+    @Override
     public List<Statement> construct( Translator t, Object...keyValues ){
-        return construct( t, Tokens.of(keyValues ) );
+        return $snip.this.construct( t, Tokens.of(keyValues ) );
     }
 
+    @Override
     public List<Statement> construct( Translator t, Map<String,Object> tokens ){
         List<Statement>sts = new ArrayList<>();
         $sts.forEach(stmt -> {
@@ -346,7 +355,7 @@ public final class $snip implements Template<List<Statement>>, $query<List<State
         //check if we can partsMap the first one
         Tokens all = new Tokens();
         for(int i = 0; i< this.$sts.size(); i++) {
-            Tokens ts = this.$sts.get(i).decompose(ss.get(i));
+            Tokens ts = this.$sts.get(i).deconstruct(ss.get(i));
             if (ts == null) {
                 //System.out.println( "NO Match with >"+ this.$sts.get(i)+ "< against >"+ss.get(i)+"< tokens");
                 return null;
@@ -364,12 +373,13 @@ public final class $snip implements Template<List<Statement>>, $query<List<State
     }
 
     /**
-     * Decompose the statement(s) into tokens, or return null if the statement doesnt match
+     * Deconstruct the statement(s) into tokens, or return null if the statement 
+     * doesnt match
      *
      * @param statement the statement to partsMap
      * @return Tokens from the stencil, or null if the statement doesnt match
      */
-    public Tokens decompose( Statement statement ){
+    public Tokens deconstruct( Statement statement ){
         Select s  = select( statement );
         if( s != null ){
             return s.tokens;
@@ -382,9 +392,10 @@ public final class $snip implements Template<List<Statement>>, $query<List<State
     }
 
     public boolean matches( Statement statement ){
-        return decompose(statement) != null;
+        return deconstruct(statement) != null;
     }
 
+    @Override
     public List<List<Statement>> findAllIn(Node node ){
         List<List<Statement>>sts = new ArrayList<>();
         node.walk(this.$sts.get(0).statementClass, st -> {
@@ -396,6 +407,7 @@ public final class $snip implements Template<List<Statement>>, $query<List<State
         return sts;
     }
 
+    @Override
     public List<List<Statement>> findAllIn(_model._node _le ){
         List<List<Statement>>sts = new ArrayList<>();
         Walk.in( _le, this.$sts.get(0).statementClass, st -> {
@@ -407,6 +419,7 @@ public final class $snip implements Template<List<Statement>>, $query<List<State
         return sts;
     }
 
+    @Override
     public <M extends _model._node> M forAllIn(M _le, Consumer<List<Statement>> statementsConsumer ){
         Walk.in( _le, this.$sts.get(0).statementClass, st -> {
             Select sel = select( (Statement)st );
@@ -417,6 +430,7 @@ public final class $snip implements Template<List<Statement>>, $query<List<State
         return _le;
     }
 
+    @Override
     public <N extends Node> N forAllIn(N node, Consumer<List<Statement>> statementsConsumer ){
         node.walk(this.$sts.get(0).statementClass, st -> {
             Select sel = select( (Statement)st );
@@ -428,6 +442,7 @@ public final class $snip implements Template<List<Statement>>, $query<List<State
     }
 
 
+    @Override
     public List<Select> selectAllIn(_model._node _le ){
         List<Select>sts = new ArrayList<>();
         Walk.in( _le, this.$sts.get(0).statementClass, st -> {
@@ -439,6 +454,7 @@ public final class $snip implements Template<List<Statement>>, $query<List<State
         return sts;
     }
 
+    @Override
     public List<Select> selectAllIn(Node node ){
         List<Select>sts = new ArrayList<>();
         node.walk(this.$sts.get(0).statementClass, st -> {
@@ -450,11 +466,13 @@ public final class $snip implements Template<List<Statement>>, $query<List<State
         return sts;
     }
 
+    @Override
     public <N extends Node> N removeIn( N node ){
         selectAllIn( node ).forEach(s -> s.statements.forEach(st-> st.removeForced()));
         return node;
     }
 
+    @Override
     public <M extends _model._node> M removeIn( M _m ){
         selectAllIn( _m ).forEach(s -> s.statements.forEach(st-> st.removeForced()));
         return _m;
@@ -468,11 +486,11 @@ public final class $snip implements Template<List<Statement>>, $query<List<State
     public <N extends Node> N replaceAllIn(N n, $snip $repl ){
         AtomicInteger ai = new AtomicInteger(0);
 
-        n.walk( this.$sts.get(0).statementClass, st-> {
+        n.walk(this.$sts.get(0).statementClass, st-> {
             Select sel = select( (Statement)st );
             if( sel != null ){
                 //compose the replacement snippet
-                List<Statement> replacements = $repl.compose( sel.tokens );
+                List<Statement> replacements = $repl.construct( sel.tokens );
                 Statement firstStmt = sel.statements.get(0);
                 Node par = firstStmt.getParentNode().get();
                 NodeWithStatements parentNode = (NodeWithStatements)par;
@@ -519,12 +537,12 @@ public final class $snip implements Template<List<Statement>>, $query<List<State
     public <M extends _model._node> M replaceAllIn(M _le, $snip $repl ){
         AtomicInteger ai = new AtomicInteger(0);
 
-        Walk.in( _le, this.$sts.get(0).statementClass, st-> {
+        Walk.in(_le, this.$sts.get(0).statementClass, st-> {
         //_le.walk( this.$sts.get(0).statementClass, st-> {
             Select sel = select( (Statement)st );
             if( sel != null ){
                 //compose the replacement snippet
-                List<Statement> replacements = $repl.compose( sel.tokens );
+                List<Statement> replacements = $repl.construct( sel.tokens );
                 Statement firstStmt = sel.statements.get(0);
                 Node par = firstStmt.getParentNode().get();
                 NodeWithStatements parentNode = (NodeWithStatements)par;
@@ -581,6 +599,7 @@ public final class $snip implements Template<List<Statement>>, $query<List<State
         return _hb;
     }
 
+    @Override
     public String toString(){
         StringBuilder sb = new StringBuilder();
         this.$sts.forEach(s -> sb.append(s).append( System.lineSeparator() ));
@@ -596,6 +615,7 @@ public final class $snip implements Template<List<Statement>>, $query<List<State
             this.tokens = tokens;
         }
 
+        @Override
         public String toString(){
             StringBuilder sb = new StringBuilder();
             this.statements.forEach( s -> sb.append(s).append( System.lineSeparator()) );

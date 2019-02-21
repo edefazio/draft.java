@@ -19,7 +19,7 @@ import java.util.function.Consumer;
  *
  */
 public class $field
-        implements Template<_field>, $query<_field> {
+    implements Template<_field>, $query<_field> {
 
     public static $field of( Object anonymousObject ){
         StackTraceElement ste = Thread.currentThread().getStackTrace()[2];
@@ -66,34 +66,34 @@ public class $field
     }
 
     public boolean matches( FieldDeclaration expression ){
-        return decompose( expression ) != null;
+        return $field.this.deconstruct( expression ) != null;
     }
 
     public boolean matches( VariableDeclarator var ){
-        return decompose( var ) != null;
+        return deconstruct( var ) != null;
     }
 
     public boolean matches( _field _f){
-        return decompose(_f.ast() ) != null;
+        return deconstruct(_f.ast() ) != null;
     }
 
     /**
-     * Decompose the expression into tokens, or return null if the statement doesnt match
+     * Decompose the expression into tokens, or return null if the field doesnt match
      *
      * @param _f
      * @return Tokens from the stencil, or null if the expression doesnt match
      */
-    public Tokens decompose(_field _f ){
-        return decompose( _f.ast() );
+    public Tokens deconstruct(_field _f ){
+        return deconstruct( _f.ast() );
     }
 
     /**
-     * Decompose the expression into tokens, or return null if the statement doesnt match
+     * Decompose the expression into tokens, or return null if the field doesnt match
      *
-     * @param
+     * @param astFieldDeclaration 
      * @return Tokens from the stencil, or null if the expression doesnt match
      */
-    public Tokens decompose(FieldDeclaration astFieldDeclaration ){
+    public Tokens deconstruct(FieldDeclaration astFieldDeclaration ){
         if( astFieldDeclaration.getVariables().size() == 1 ){
             return stencil.deconstruct( astFieldDeclaration.toString(Ast.PRINT_NO_ANNOTATIONS_OR_COMMENTS ) );
         }
@@ -101,16 +101,15 @@ public class $field
         /** this is painful, but hopefully not too common */
         for(int i=0; i< astFieldDeclaration.getVariables().size();i++){
             //I need to build separate FieldDeclarations
-            Tokens tks = decompose( _field.of( astFieldDeclaration.getModifiers()+" "+astFieldDeclaration.getVariable( i ) +";").getFieldDeclaration() );
+            Tokens tks = $field.this.deconstruct( _field.of( astFieldDeclaration.getModifiers()+" "+astFieldDeclaration.getVariable( i ) +";").getFieldDeclaration() );
             if( tks != null ){
                 return tks;
             }
         }
         return null;
-        //return stencil.partsMap( a.toString() );
     }
 
-    public Tokens decompose(VariableDeclarator varD ){
+    public Tokens deconstruct(VariableDeclarator varD ){
         if( !varD.getParentNode().isPresent()){
             throw new DraftException("cannot check Field Variable "+varD+" :: no parent FieldDeclaration");
         }
@@ -119,6 +118,7 @@ public class $field
         return this.stencil.deconstruct(_f.toString(Ast.PRINT_NO_ANNOTATIONS_OR_COMMENTS));
     }
 
+    @Override
     public String toString() {
         if( commentStencil != null ){
             return "($field) : \"" + this.commentStencil + System.lineSeparator() + this.stencil + "\"";
@@ -134,23 +134,23 @@ public class $field
         return _field.of(stencil.construct(translator, keyValues));
     }
 
-    public _field compose(_model._node modelNode ){
-        return construct( Translator.DEFAULT_TRANSLATOR, modelNode.componentize() );
+    public _field construct(_model._node modelNode ){
+        return $field.this.construct( Translator.DEFAULT_TRANSLATOR, modelNode.componentize() );
     }
 
     @Override
     public _field construct(Map<String, Object> keyValues) {
-        return construct( Translator.DEFAULT_TRANSLATOR, keyValues);
+        return $field.this.construct( Translator.DEFAULT_TRANSLATOR, keyValues);
     }
 
     @Override
     public _field construct(Object... keyValues) {
-        return construct( Translator.DEFAULT_TRANSLATOR, Tokens.of(keyValues));
+        return $field.this.construct( Translator.DEFAULT_TRANSLATOR, Tokens.of(keyValues));
     }
 
     @Override
     public _field construct(Translator translator, Object... keyValues) {
-        return construct( translator, Tokens.of(keyValues));
+        return $field.this.construct( translator, Tokens.of(keyValues));
     }
 
     @Override
@@ -237,7 +237,7 @@ public class $field
     }
 
     public Select select(_field _f){
-        Tokens ts = decompose(_f.ast() );
+        Tokens ts = deconstruct(_f.ast() );
         if( ts != null ){
             return new Select(_f, ts);
         }
@@ -256,17 +256,19 @@ public class $field
     }
 
     public Select select(VariableDeclarator v){
-        Tokens ts = this.decompose(v);
+        Tokens ts = this.deconstruct(v);
         if( ts != null){
             return new Select( _field.of(v), ts );
         }
         return null;
     }
 
+    @Override
     public List<_field> findAllIn(_model._node _t ){
         return findAllIn( _t.ast() );
     }
 
+    @Override
     public List<_field> findAllIn(Node rootNode ){
         List<_field> fieldsList = new ArrayList<>();
         rootNode.walk(VariableDeclarator.class, v->{
@@ -277,6 +279,7 @@ public class $field
         return fieldsList;
     }
 
+    @Override
     public List<Select> selectAllIn(Node n ){
         List<Select>sts = new ArrayList<>();
         n.walk(VariableDeclarator.class, e-> {
@@ -288,6 +291,7 @@ public class $field
         return sts;
     }
 
+    @Override
     public List<Select> selectAllIn(_model._node _t ){
         List<Select>sts = new ArrayList<>();
         Walk.in( _t, VariableDeclarator.class, e -> {
@@ -299,6 +303,7 @@ public class $field
         return sts;
     }
 
+    @Override
     public <N extends Node> N removeIn(N node ){
         node.walk(VariableDeclarator.class, e-> {
             Select sel = select( e );
@@ -309,6 +314,7 @@ public class $field
         return node;
     }
 
+    @Override
     public <M extends _model._node> M removeIn(M _m ){
         Walk.in( _m, VariableDeclarator.class, e-> {
             Select sel = select( e );
@@ -359,6 +365,7 @@ public class $field
         return n;
     }
 
+    @Override
     public <N extends Node> N forAllIn(N n, Consumer<_field> _fieldActionFn){
         n.walk(VariableDeclarator.class, e-> {
             //Tokens tokens = this.stencil.partsMap( e.toString());
@@ -370,6 +377,7 @@ public class $field
         return n;
     }
 
+    @Override
     public <M extends _model._node> M forAllIn(M m, Consumer<_field> _fieldActionFn){
         Walk.in( m, VariableDeclarator.class, e-> {
             Tokens tokens = this.stencil.deconstruct( e.toString());
@@ -388,6 +396,8 @@ public class $field
             this._f = _f;
             this.tokens = tokens;
         }
+        
+        @Override
         public String toString(){
             return "$field.Select{"+ System.lineSeparator()+
                     Text.indent( _f.toString() )+ System.lineSeparator()+

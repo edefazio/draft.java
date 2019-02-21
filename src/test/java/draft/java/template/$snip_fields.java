@@ -35,12 +35,12 @@ public class $snip_fields{
     public List<Statement> compose(_field _f, Object...keyValuePairs){
         Tokens ts = Tokens.of(keyValuePairs);
         decomposeField(_f, ts);
-        return find$snipFor_field(_f).compose( ts );
+        return find$snipFor_field(_f).construct( ts );
     }
 
     public List<Statement> compose( _field _f, Tokens ts ){
         decomposeField(_f, ts);
-        return find$snipFor_field(_f).compose( ts );
+        return find$snipFor_field(_f).construct( ts );
     }
 
     public List<Statement> compose( List<_field> _fs, Tokens ts ){
@@ -49,7 +49,7 @@ public class $snip_fields{
 
         acceptedFields.forEach( f -> {
             decomposeField(f, ts);
-            sts.addAll( find$snipFor_field(f).compose( ts ) );
+            sts.addAll( find$snipFor_field(f).construct( ts ) );
         });
         return sts;
     }

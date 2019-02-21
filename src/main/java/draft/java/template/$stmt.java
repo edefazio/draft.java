@@ -220,6 +220,7 @@ public final class $stmt<T extends Statement>
     }
     */
 
+    @Override
     public T fill(Object...values){
         if( this.commentStencil != null ){
             return (T)Stmt.of(
@@ -229,6 +230,7 @@ public final class $stmt<T extends Statement>
         return (T)Stmt.of( str);
     }
 
+    @Override
     public $stmt $(String target, String $name ) {
         if( this.commentStencil != null ) {
             this.commentStencil = this.commentStencil.$(target, $name);
@@ -242,6 +244,7 @@ public final class $stmt<T extends Statement>
         return $(exprString, $name);
     }
 
+    @Override
     public T fill(Translator t, Object...values){
         if( this.commentStencil != null ){
             return (T)Stmt.of( Stencil.of(commentStencil, stencil).fill(t, values) );
@@ -249,6 +252,7 @@ public final class $stmt<T extends Statement>
         return (T)Stmt.of( stencil.fill(t, values));
     }
 
+    @Override
     public T construct( Object...keyValues ){
         if( this.commentStencil != null ){
             return (T)Stmt.of(Stencil.of(commentStencil, stencil).construct( keyValues) );
@@ -256,13 +260,14 @@ public final class $stmt<T extends Statement>
         return (T)Stmt.of( stencil.construct( Tokens.of(keyValues)));
     }
 
-    public T compose( _model._node model ){
+    public T construct( _model._node model ){
         if( this.commentStencil != null ){
             return (T)Stmt.of( Stencil.of(commentStencil, stencil).construct(model.componentize()) );
         }
-        return (T)construct(model.componentize());
+        return (T)$stmt.this.construct(model.componentize());
     }
 
+    @Override
     public T construct( Translator t, Object...keyValues ){
         if( this.commentStencil != null ){
             return (T)Stmt.of( Stencil.of(commentStencil, stencil).construct(t, Tokens.of(keyValues) ) );
@@ -270,6 +275,7 @@ public final class $stmt<T extends Statement>
         return (T)Stmt.of( stencil.construct( t, Tokens.of(keyValues) ));
     }
 
+    @Override
     public T construct( Map<String,Object> tokens ){
         if( this.commentStencil != null ){
             return (T)Stmt.of( Stencil.of(commentStencil, stencil).construct( Translator.DEFAULT_TRANSLATOR, tokens ));
@@ -277,6 +283,7 @@ public final class $stmt<T extends Statement>
         return (T)Stmt.of( stencil.construct( Translator.DEFAULT_TRANSLATOR, tokens ));
     }
 
+    @Override
     public T construct( Translator t, Map<String,Object> tokens ){
         if( this.commentStencil != null ){
             return (T)Stmt.of(Stencil.of(commentStencil, stencil).construct( t, tokens ));
@@ -289,9 +296,10 @@ public final class $stmt<T extends Statement>
     }
 
     public boolean matches( Statement statement ){
-        return decompose(statement) != null;
+        return deconstruct(statement) != null;
     }
 
+    @Override
     public List<String> list$(){
         if( this.commentStencil != null ){
             return Stencil.of( commentStencil, stencil).list$();
@@ -299,6 +307,7 @@ public final class $stmt<T extends Statement>
         return this.stencil.list$();
     }
 
+    @Override
     public List<String> list$Normalized(){
         if( this.commentStencil != null ){
             return Stencil.of( commentStencil, stencil).list$Normalized();
@@ -351,7 +360,7 @@ public final class $stmt<T extends Statement>
     }
 
     public Select<T> select( Statement st ){
-        Tokens ts = decompose( st );
+        Tokens ts = deconstruct( st );
         if( ts != null ){
             return new Select( st, ts );
         }
@@ -365,7 +374,7 @@ public final class $stmt<T extends Statement>
      * @param statement the statement to partsMap
      * @return Tokens from the stencil, or null if the statement doesnt match
      */
-    public Tokens decompose( Statement statement ){
+    public Tokens deconstruct( Statement statement ){
         //System.out.println("Here");
         if( statementClass.isAssignableFrom(statement.getClass())){
             //System.out.println("Same stmt");
@@ -412,6 +421,7 @@ public final class $stmt<T extends Statement>
         return null;
     }
 
+    @Override
     public List<T> findAllIn(Node n){
         List<T>sts = new ArrayList<>();
         n.walk( this.statementClass,
@@ -424,6 +434,7 @@ public final class $stmt<T extends Statement>
         return sts;
     }
 
+    @Override
     public List<T> findAllIn(_model._node _le ){
         List<T>sts = new ArrayList<>();
         Walk.in( _le, this.statementClass, st->{
@@ -435,6 +446,7 @@ public final class $stmt<T extends Statement>
         return sts;
     }
 
+    @Override
     public <N extends Node> N forAllIn(N n, Consumer<T> statementActionFn){
         n.walk(this.statementClass, e-> {
             Tokens tokens = this.stencil.deconstruct( e.toString());
@@ -445,6 +457,7 @@ public final class $stmt<T extends Statement>
         return n;
     }
 
+    @Override
     public <M extends _model._node> M forAllIn(M _le, Consumer<T> statementActionFn){
         Walk.in( _le, this.statementClass, e->{
             Tokens tokens = this.stencil.deconstruct( e.toString());
@@ -475,6 +488,7 @@ public final class $stmt<T extends Statement>
         return _le;
     }
 
+    @Override
     public List<Select<T>> selectAllIn(Node n ){
         List<Select<T>>sts = new ArrayList<>();
         n.walk(this.statementClass, st-> {
@@ -490,6 +504,7 @@ public final class $stmt<T extends Statement>
     public static final PrettyPrinterConfiguration NO_COMMENTS = new PrettyPrinterConfiguration()
             .setPrintComments(false).setPrintJavadoc(false);
 
+    @Override
     public List<Select<T>> selectAllIn(_model._node _t ){
         List<Select<T>>sts = new ArrayList<>();
         Walk.in( _t, this.statementClass, st->{
@@ -501,11 +516,13 @@ public final class $stmt<T extends Statement>
         return sts;
     }
 
+    @Override
     public <T extends _model._node> T removeIn(T _e ){
         this.selectAllIn(_e).forEach(s-> s.statement.removeForced() );
         return _e;
     }
 
+    @Override
     public <N extends Node> N removeIn(N node ){
         this.selectAllIn(node).forEach(s-> s.statement.removeForced() );
         return node;
@@ -522,7 +539,7 @@ public final class $stmt<T extends Statement>
             $stmt.Select sel = select( st );
             if( sel != null ){
                 //compose the replacement snippet
-                List<Statement> replacements = $repl.compose( sel.tokens );
+                List<Statement> replacements = $repl.construct( sel.tokens );
 
                 //Statement firstStmt = sel.statements.get(0);
                 //Node par = firstStmt.getParentNode().get();
@@ -557,6 +574,7 @@ public final class $stmt<T extends Statement>
         }
         return (T)_le;
     }
+    @Override
     public String toString(){
         return "("+this.statementClass.getSimpleName()+") : \""+ this.stencil+"\"";
     }
@@ -570,6 +588,7 @@ public final class $stmt<T extends Statement>
             this.tokens = tokens;
         }
 
+        @Override
         public String toString(){
             return "$stmt{"+ System.lineSeparator()+
                     Text.indent( statement.toString() )+ System.lineSeparator()+

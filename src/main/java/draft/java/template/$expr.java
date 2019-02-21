@@ -238,11 +238,13 @@ public final class $expr <T extends Expression>
         this.stencil = Stencil.of(stencil);
     }
 
+    @Override
     public T fill(Object...values){
         String str = stencil.fill(Translator.DEFAULT_TRANSLATOR, values);
         return (T)Expr.of( str);
     }
 
+    @Override
     public $expr<T> $(String target, String $name ) {
         this.stencil = this.stencil.$(target, $name);
         return this;
@@ -292,43 +294,50 @@ public final class $expr <T extends Expression>
         return this;
     }
 
+    @Override
     public T fill(Translator t, Object...values){
         return (T)Expr.of( stencil.fill(t, values));
     }
 
+    @Override
     public T construct( Object...keyValues ){
         return (T)Expr.of( stencil.construct( Tokens.of(keyValues)));
     }
 
 
-    public T compose( _model._node model ){
-        return (T)construct(model.componentize());
+    public T construct( _model._node model ){
+        return (T)$expr.this.construct(model.componentize());
     }
 
+    @Override
     public T construct( Translator t, Object...keyValues ){
         return (T)Expr.of( stencil.construct( t, Tokens.of(keyValues) ));
     }
 
+    @Override
     public T construct( Map<String,Object> tokens ){
         return (T)Expr.of( stencil.construct( Translator.DEFAULT_TRANSLATOR, tokens ));
     }
 
+    @Override
     public T construct( Translator t, Map<String,Object> tokens ){
         return (T)Expr.of(stencil.construct( t, tokens ));
     }
 
     public boolean matches( String...expression ){
-        return decompose( Expr.of(expression)) != null;
+        return deconstruct( Expr.of(expression)) != null;
     }
 
     public boolean matches( Expression expression ){
-        return decompose(expression) != null;
+        return deconstruct(expression) != null;
     }
 
+    @Override
     public List<String> list$(){
         return this.stencil.list$();
     }
 
+    @Override
     public List<String> list$Normalized(){
         return this.stencil.list$Normalized();
     }
@@ -339,7 +348,7 @@ public final class $expr <T extends Expression>
      * @param expression expression
      * @return Tokens from the stencil, or null if the expression doesnt match
      */
-    public Tokens decompose( Expression expression ){
+    public Tokens deconstruct( Expression expression ){
         if( expressionClass.isAssignableFrom(expression.getClass())){
             //slight modification..
             if( expression instanceof LiteralStringValueExpr ) {
@@ -356,17 +365,19 @@ public final class $expr <T extends Expression>
     }
 
     public Select select( Expression e){
-        Tokens ts = this.decompose(e);
+        Tokens ts = this.deconstruct(e);
         if( ts != null){
             return new Select( e, ts );
         }
         return null;
     }
 
+    @Override
     public List<T> findAllIn(_model._node _t ){
         return findAllIn( _t.ast() );
     }
 
+    @Override
     public List<T> findAllIn(Node rootNode ){
         List<T> typesList = new ArrayList<>();
         rootNode.walk(this.expressionClass, t->{
@@ -377,6 +388,7 @@ public final class $expr <T extends Expression>
         return typesList;
     }
 
+    @Override
     public <N extends Node> N forAllIn(N n, Consumer<T> expressionActionFn){
         n.walk(this.expressionClass, e-> {
             Tokens tokens = this.stencil.deconstruct( e.toString());
@@ -387,6 +399,7 @@ public final class $expr <T extends Expression>
         return n;
     }
 
+    @Override
     public <M extends _model._node> M forAllIn(M _t, Consumer<T> expressionActionFn){
         Walk.in( _t, this.expressionClass, e -> {
             Tokens tokens = this.stencil.deconstruct( e.toString());
@@ -397,6 +410,7 @@ public final class $expr <T extends Expression>
         return _t;
     }
 
+    @Override
     public List<Select<T>> selectAllIn(Node n ){
         List<Select<T>>sts = new ArrayList<>();
         n.walk(this.expressionClass, e-> {
@@ -408,6 +422,7 @@ public final class $expr <T extends Expression>
         return sts;
     }
 
+    @Override
     public List<Select<T>> selectAllIn(_model._node _t ){
         List<Select<T>>sts = new ArrayList<>();
         Walk.in( _t, this.expressionClass, e -> {
@@ -419,6 +434,7 @@ public final class $expr <T extends Expression>
         return sts;
     }
 
+    @Override
     public <N extends Node> N removeIn(N node){
         node.walk( this.expressionClass, e-> {
             Select sel = select( e );
@@ -429,6 +445,7 @@ public final class $expr <T extends Expression>
         return node;
     }
 
+    @Override
     public <M extends _model._node> M removeIn(M _model){
         Walk.in( _model, this.expressionClass, e-> {
             Select sel = select( e );
@@ -479,6 +496,7 @@ public final class $expr <T extends Expression>
         return n;
     }
 
+    @Override
     public String toString() {
         return "(" + this.expressionClass.getSimpleName() + ") : \"" + this.stencil + "\"";
     }
@@ -491,6 +509,8 @@ public final class $expr <T extends Expression>
             this.expression = expression;
             this.tokens = tokens;
         }
+        
+        @Override
         public String toString(){
             return "$expr.Select{"+ System.lineSeparator()+
                     Text.indent( expression.toString() )+ System.lineSeparator()+
