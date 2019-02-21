@@ -249,39 +249,39 @@ public final class $stmt<T extends Statement>
         return (T)Stmt.of( stencil.fill(t, values));
     }
 
-    public T compose( Object...keyValues ){
+    public T construct( Object...keyValues ){
         if( this.commentStencil != null ){
-            return (T)Stmt.of( Stencil.of(commentStencil, stencil).compose( keyValues) );
+            return (T)Stmt.of(Stencil.of(commentStencil, stencil).construct( keyValues) );
         }
-        return (T)Stmt.of( stencil.compose( Tokens.of(keyValues)));
+        return (T)Stmt.of( stencil.construct( Tokens.of(keyValues)));
     }
 
     public T compose( _model._node model ){
         if( this.commentStencil != null ){
-            return (T)Stmt.of( Stencil.of(commentStencil, stencil).compose(model.componentize()) );
+            return (T)Stmt.of( Stencil.of(commentStencil, stencil).construct(model.componentize()) );
         }
-        return (T)compose(model.componentize());
+        return (T)construct(model.componentize());
     }
 
-    public T compose( Translator t, Object...keyValues ){
+    public T construct( Translator t, Object...keyValues ){
         if( this.commentStencil != null ){
-            return (T)Stmt.of( Stencil.of(commentStencil, stencil).compose(t, Tokens.of(keyValues) ) );
+            return (T)Stmt.of( Stencil.of(commentStencil, stencil).construct(t, Tokens.of(keyValues) ) );
         }
-        return (T)Stmt.of( stencil.compose( t, Tokens.of(keyValues) ));
+        return (T)Stmt.of( stencil.construct( t, Tokens.of(keyValues) ));
     }
 
-    public T compose( Map<String,Object> tokens ){
+    public T construct( Map<String,Object> tokens ){
         if( this.commentStencil != null ){
-            return (T)Stmt.of( Stencil.of(commentStencil, stencil).compose( Translator.DEFAULT_TRANSLATOR, tokens ));
+            return (T)Stmt.of( Stencil.of(commentStencil, stencil).construct( Translator.DEFAULT_TRANSLATOR, tokens ));
         }
-        return (T)Stmt.of( stencil.compose( Translator.DEFAULT_TRANSLATOR, tokens ));
+        return (T)Stmt.of( stencil.construct( Translator.DEFAULT_TRANSLATOR, tokens ));
     }
 
-    public T compose( Translator t, Map<String,Object> tokens ){
+    public T construct( Translator t, Map<String,Object> tokens ){
         if( this.commentStencil != null ){
-            return (T)Stmt.of( Stencil.of(commentStencil, stencil).compose( t, tokens ));
+            return (T)Stmt.of(Stencil.of(commentStencil, stencil).construct( t, tokens ));
         }
-        return (T)Stmt.of( stencil.compose( t, tokens ));
+        return (T)Stmt.of(stencil.construct( t, tokens ));
     }
 
     public boolean matches( String...stmt ){

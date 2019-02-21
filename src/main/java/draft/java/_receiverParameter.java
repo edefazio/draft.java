@@ -115,11 +115,11 @@ public final class _receiverParameter
         return true;
     }
 
-    public Map<_java.Part, Object> partsMap( ) {
-        Map<_java.Part, Object> parts = new HashMap<>();
-        parts.put( _java.Part.ANNOTATIONS, getAnnos() );
-        parts.put( _java.Part.TYPE, getType() );
-        parts.put( _java.Part.NAME, getName() );
+    public Map<_java.Component, Object> partsMap( ) {
+        Map<_java.Component, Object> parts = new HashMap<>();
+        parts.put( _java.Component.ANNOTATIONS, getAnnos() );
+        parts.put( _java.Component.TYPE, getType() );
+        parts.put( _java.Component.NAME, getName() );
         return parts;
     }
 

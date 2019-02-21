@@ -14,7 +14,7 @@ public class _removeTest extends TestCase {
             @_remove class IN{ } //nested TYPE
         }
 
-        _class _c = _macro._class(D.class);
+        _class _c = _class.of(D.class);
         assertEquals(0, _c.listMethods().size());
         assertEquals(0, _c.listFields().size());
         assertEquals(0, _c.listConstructors().size());

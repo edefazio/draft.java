@@ -47,7 +47,7 @@ public class _astFeatures extends TestCase {
             }
         }
         _io.out( _io.config().outProjectDir("C:/dev/orig"),
-                _project.of(_macro._class(C.class)));
+                _project.of(_class.of(C.class)));
     }
 
     public void testMonster1(){

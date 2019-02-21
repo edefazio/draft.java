@@ -455,20 +455,20 @@ public final class _interface implements _type<ClassOrInterfaceDeclaration, _int
         return this;
     }
 
-    public Map<_java.Part, Object> partsMap( ) {
-        Map<_java.Part, Object> parts = new HashMap<>();
-        parts.put( _java.Part.PACKAGE_NAME, this.getPackage() );
-        parts.put( _java.Part.IMPORTS, this.listImports() );
-        parts.put( _java.Part.ANNOTATIONS, this.listAnnos() );
-        parts.put( _java.Part.JAVADOC, this.getJavadoc() );
-        parts.put( _java.Part.EXTENDS, this.listExtends() );
-        parts.put( _java.Part.NAME, this.getName() );
+    public Map<_java.Component, Object> partsMap( ) {
+        Map<_java.Component, Object> parts = new HashMap<>();
+        parts.put( _java.Component.PACKAGE_NAME, this.getPackage() );
+        parts.put( _java.Component.IMPORTS, this.listImports() );
+        parts.put( _java.Component.ANNOTATIONS, this.listAnnos() );
+        parts.put( _java.Component.JAVADOC, this.getJavadoc() );
+        parts.put( _java.Component.EXTENDS, this.listExtends() );
+        parts.put( _java.Component.NAME, this.getName() );
 
-        parts.put( _java.Part.MODIFIERS, this.getModifiers() );
-        parts.put( _java.Part.TYPE_PARAMETERS, this.getTypeParameters() );
-        parts.put( _java.Part.FIELDS, this.listFields() );
-        parts.put( _java.Part.METHODS, this.listMethods() );
-        parts.put( _java.Part.NESTS, this.listNests() );
+        parts.put( _java.Component.MODIFIERS, this.getModifiers() );
+        parts.put( _java.Component.TYPE_PARAMETERS, this.getTypeParameters() );
+        parts.put( _java.Component.FIELDS, this.listFields() );
+        parts.put( _java.Component.METHODS, this.listMethods() );
+        parts.put( _java.Component.NESTS, this.listNests() );
         return parts;
     }
 

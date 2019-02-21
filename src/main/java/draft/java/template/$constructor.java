@@ -157,38 +157,38 @@ public final class $constructor
     }
 
     @Override
-    public _constructor compose(Translator translator, Map<String, Object> keyValues) {
+    public _constructor construct(Translator translator, Map<String, Object> keyValues) {
         //_1_build the signature
-        _constructor _c = _constructor.of( this.signatureStencil.compose(translator, keyValues ));
+        _constructor _c = _constructor.of(this.signatureStencil.construct(translator, keyValues ));
 
         if( this.$body != null) {
             //_1_build the BODY
-            List<Statement> sts = $body.compose(translator, keyValues);
+            List<Statement> sts = $body.construct(translator, keyValues);
             sts.forEach( s -> _c.add( s ) );
         }
         if( this.javadocStencil != null ){
-            _c.javadoc( this.javadocStencil.compose(translator, keyValues));
+            _c.javadoc(this.javadocStencil.construct(translator, keyValues));
         }
         return _c;
     }
 
     @Override
-    public _constructor compose(Map<String, Object> keyValues) {
-        return compose( Translator.DEFAULT_TRANSLATOR, keyValues );
+    public _constructor construct(Map<String, Object> keyValues) {
+        return construct( Translator.DEFAULT_TRANSLATOR, keyValues );
     }
 
     public _constructor compose( _model._node model ){
-        return compose(model.componentize());
+        return construct(model.componentize());
     }
 
     @Override
-    public _constructor compose(Object... keyValues) {
-        return compose( Translator.DEFAULT_TRANSLATOR, keyValues );
+    public _constructor construct(Object... keyValues) {
+        return construct( Translator.DEFAULT_TRANSLATOR, keyValues );
     }
 
     @Override
-    public _constructor compose(Translator translator, Object... keyValues) {
-        return compose(translator, Tokens.of(keyValues));
+    public _constructor construct(Translator translator, Object... keyValues) {
+        return construct(translator, Tokens.of(keyValues));
     }
 
     @Override
@@ -206,7 +206,7 @@ public final class $constructor
         for(int i=0;i<values.length;i++){
             kvs.put( keys.get(i), values[i]);
         }
-        return compose( t, kvs );
+        return construct( t, kvs );
     }
 
     @Override

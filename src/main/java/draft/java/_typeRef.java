@@ -104,11 +104,12 @@ public final class _typeRef<T extends Type>
         }
     }
 
-    public Map<_java.Part, Object> partsMap( ) {
-        Map<_java.Part, Object> parts = new HashMap<>();
-        parts.put( _java.Part.AST_TYPE, this.astType);
-        parts.put( _java.Part.ARRAY_LEVEL, this.astType.getArrayLevel());
-        parts.put( _java.Part.ELEMENT_TYPE, this.astType.getElementType());
+    @Override
+    public Map<_java.Component, Object> partsMap( ) {
+        Map<_java.Component, Object> parts = new HashMap<>();
+        parts.put( _java.Component.AST_TYPE, this.astType);
+        parts.put( _java.Component.ARRAY_LEVEL, this.astType.getArrayLevel());
+        parts.put( _java.Component.ELEMENT_TYPE, this.astType.getElementType());
         return parts;
     }
 

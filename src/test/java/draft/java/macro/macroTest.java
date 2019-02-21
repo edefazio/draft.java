@@ -38,7 +38,7 @@ public class macroTest extends TestCase {
     public void testAnnotationFieldAsMacro(){
         @U class F{
         }
-        _class _c = _macro.to(F.class);
+        _class _c = _class.of(F.class);
         assertTrue( _c.isImported(UUID.class));
         assertFalse(_c.hasAnno(U.class));
     }
@@ -58,7 +58,7 @@ public class macroTest extends TestCase {
             int i;
             int x, y, z;
         }
-        _c = _macro.to(D.class);
+        _c = _class.of(D.class);
         assertTrue(_c.getConstructor(0).getParameter(0).isType(int.class));
         assertNotNull(_c.getMethod("equals"));
         assertNotNull(_c.getMethod("hashCode"));
@@ -77,7 +77,7 @@ public class macroTest extends TestCase {
             boolean[] ba;
             UUID[] uuids;
         }
-        _class _c = _macro.to(E.class);
+        _class _c = _class.of(E.class);
         assertNotNull( _c.getMethod("equals") );
         assertEquals(1, _autoEquals.Macro.$primitive.selectAllIn(_c).size());  //int a;
         assertEquals(1, _autoEquals.Macro.$float.selectAllIn(_c).size());      //float f
@@ -94,7 +94,7 @@ public class macroTest extends TestCase {
             String g;
             static final int r = 100; //no getter
         }
-        _class _c = _macro.to(A.class);
+        _class _c = _class.of(A.class);
         assertTrue( _c.getMethod("getX").isType(int.class));
         assertTrue( _c.getMethod("getG").isType(String.class));
         assertNull( _c.getMethod("getR") );
@@ -108,7 +108,7 @@ public class macroTest extends TestCase {
             String g;
             static final int r = 100; //no setter
         }
-        _class _c = _macro.to(A.class);
+        _class _c = _class.of(A.class);
         assertTrue( _c.getMethod("setX").getParameter(0).isType(int.class));
         assertTrue( _c.getMethod("setG").getParameter(0).isType(String.class));
         assertNull( _c.getMethod("setFin") );
@@ -123,7 +123,7 @@ public class macroTest extends TestCase {
             String g;
             static final int r = 100; //no setter
         }
-        _class _c = _macro.to(C.class);
+        _class _c = _class.of(C.class);
         assertTrue( _c.getMethod("setX").getParameter(0).isType(int.class));
         assertTrue( _c.getMethod("setG").getParameter(0).isType(String.class));
         assertTrue( _c.getMethod("setG").isType(C.class));
@@ -139,7 +139,7 @@ public class macroTest extends TestCase {
             boolean[] ba;
             UUID[] uuids;
         }
-        _class _c = _macro.to(E.class);
+        _class _c = _class.of(E.class);
         assertNotNull( _c.getMethod("toString") );
         assertEquals(1, _autoToString.Macro.$simple.selectAllIn(_c).size());  //String s;
         assertEquals(1, _autoToString.Macro.$arrayOfObjects.selectAllIn(_c).size());      //uuids f
@@ -163,7 +163,7 @@ public class macroTest extends TestCase {
     }
 
     public void testExtend(){
-        _interface _i = _macro.to(D.class);
+        _interface _i = _interface.of(D.class);
         System.out.println( _i );
 
         assertTrue( _i.isExtends(Serializable.class));
@@ -179,7 +179,7 @@ public class macroTest extends TestCase {
 
             }
         }
-        _class _c = _macro.to(C.class);
+        _class _c = _class.of(C.class);
         assertTrue( _c.isFinal());
         assertTrue( _c.getField("a").isFinal());
         assertTrue( _c.getMethod("m").isFinal());
@@ -191,7 +191,7 @@ public class macroTest extends TestCase {
         class C{
         }
 
-        _class _c = _macro.to(C.class);
+        _class _c = _class.of(C.class);
         System.out.println( _c );
         assertTrue( _c.isImplements(Serializable.class));
         assertTrue( _c.isImplements(Externalizable.class));
@@ -203,7 +203,7 @@ public class macroTest extends TestCase {
         class C{
 
         }
-        _class _c = _macro.to(C.class);
+        _class _c = _class.of(C.class);
         assertTrue( _c.isImported(Map.class));
     }
 
@@ -214,7 +214,7 @@ public class macroTest extends TestCase {
     }
 
     public void testNonStatic(){
-        _class _c = _macro.to(VV.class);
+        _class _c = _class.of(VV.class);
         assertTrue( !_c.isStatic());
         assertTrue( !_c.getField("f").isStatic());
         assertTrue( !_c.getMethod("getF").isStatic());
@@ -225,7 +225,7 @@ public class macroTest extends TestCase {
         class C{
 
         }
-        assertEquals( "aaaa.bbbb.cccc", _macro.to(C.class).getPackage());
+        assertEquals( "aaaa.bbbb.cccc", _class.of(C.class).getPackage());
     }
 
     public void testPrivate(){
@@ -238,7 +238,7 @@ public class macroTest extends TestCase {
 
             }
         }
-        _class _c = _macro.to(C.class);
+        _class _c = _class.of(C.class);
         assertTrue( _c.isPrivate());
         assertTrue( _c.getField("f").isPrivate());
         assertTrue( _c.getMethod("m").isPrivate());
@@ -258,10 +258,10 @@ public class macroTest extends TestCase {
     @interface GF{ }
 
     public void testPromote(){
-        assertEquals( "aaaa.ffff", _macro.to(IF.class).getPackage());
-        assertEquals( "aaaa.ffff", _macro.to(FF.class).getPackage());
-        assertEquals( "aaaa.ffff", _macro.to(R.class).getPackage());
-        assertEquals( "aaaa.ffff", _macro.to(GF.class).getPackage());
+        assertEquals( "aaaa.ffff", _interface.of(IF.class).getPackage());
+        assertEquals( "aaaa.ffff", _class.of(FF.class).getPackage());
+        assertEquals( "aaaa.ffff", _enum.of(R.class).getPackage());
+        assertEquals( "aaaa.ffff", _annotation.of(GF.class).getPackage());
     }
 
     public void testProtected(){
@@ -269,7 +269,7 @@ public class macroTest extends TestCase {
             @_protected int g;
             @_protected void m() {}
         }
-        _class _c = _macro.to(O.class);
+        _class _c = _class.of(O.class);
         assertTrue( _c.isProtected() );
         assertTrue( _c.getField("g").isProtected() );
         assertTrue( _c.getMethod("m").isProtected() );
@@ -277,7 +277,7 @@ public class macroTest extends TestCase {
 
     public void testPublic(){
         @_public class T{}
-        assertTrue( _macro.to(T.class).isPublic() );
+        assertTrue( _class.of(T.class).isPublic() );
     }
 
     public void testRemove(){
@@ -288,7 +288,7 @@ public class macroTest extends TestCase {
 
             @_remove class G{ }
         }
-        _class _c = _macro.to(T.class);
+        _class _c = _class.of(T.class);
         assertEquals( 0, _c.listFields().size() );
         assertEquals( 0, _c.listMethods().size() );
         assertEquals( 0, _c.listConstructors().size() );
@@ -306,7 +306,7 @@ public class macroTest extends TestCase {
         }
         //_class _c = _class.of(T.class);
         //_c.ast().walk(ClassOrInterfaceDeclaration.class, c-> System.out.println( "PARENT " + c.getParentNode().isPresent() ) );
-        _class _c = _macro.to(T.class);
+        _class _c = _class.of(T.class);
 
         System.out.println( _c );
         assertTrue( _c.getField("f").isType("String"));
@@ -322,7 +322,7 @@ public class macroTest extends TestCase {
             @_static int f;
             @_static void m(){}
         }
-        _class _c = _macro.to(F.class);
+        _class _c = _class.of(F.class);
 
         assertTrue(_c.isStatic());
         assertTrue(_c.getField("f").isStatic());
@@ -333,7 +333,7 @@ public class macroTest extends TestCase {
         class C{
             @_transient int f;
         }
-        _class _c = _macro.to(C.class);
+        _class _c = _class.of(C.class);
         assertTrue( _c.getField("f").isTransient());
     }
 
@@ -341,7 +341,7 @@ public class macroTest extends TestCase {
         class C{
             @_volatile int f;
         }
-        _class _c = _macro.to(C.class);
+        _class _c = _class.of(C.class);
         assertTrue( _c.getField("f").isVolatile());
     }
 

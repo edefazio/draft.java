@@ -49,7 +49,7 @@ public final class _project {
         _javaFiles _jfs = _javaFiles.of( );
         for(int i=0;i<classes.length;i++){
             //System.out.println(" adding "+ classes[i]);
-            _type _t = _macro.to(classes[i]);
+            _type _t = _type.of(classes[i]);
             _jfs.add( _t );
         }
         //Arrays.stream(classes).forEach(c-> _jfs.add( $$.to(c) ) );

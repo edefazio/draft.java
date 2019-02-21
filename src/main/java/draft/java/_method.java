@@ -304,18 +304,18 @@ public final class _method
     }
 
     @Override
-    public Map<_java.Part, Object> partsMap() {
-        Map<_java.Part, Object> parts = new HashMap<>();
-        parts.put( _java.Part.ANNOTATIONS, getAnnos() );
-        parts.put( _java.Part.BODY, getBody() );
-        parts.put( _java.Part.TYPE, getType() );
-        parts.put( _java.Part.PARAMETERS, getParameters() );
-        parts.put( _java.Part.MODIFIERS, getModifiers() );
-        parts.put( _java.Part.JAVADOC, getJavadoc() );
-        parts.put( _java.Part.RECEIVER_PARAMETER, getReceiverParameter() );
-        parts.put( _java.Part.TYPE_PARAMETERS, getTypeParameters() );
-        parts.put( _java.Part.THROWS, getThrows() );
-        parts.put( _java.Part.NAME, getName() );
+    public Map<_java.Component, Object> partsMap() {
+        Map<_java.Component, Object> parts = new HashMap<>();
+        parts.put( _java.Component.ANNOTATIONS, getAnnos() );
+        parts.put( _java.Component.BODY, getBody() );
+        parts.put( _java.Component.TYPE, getType() );
+        parts.put( _java.Component.PARAMETERS, getParameters() );
+        parts.put( _java.Component.MODIFIERS, getModifiers() );
+        parts.put( _java.Component.JAVADOC, getJavadoc() );
+        parts.put( _java.Component.RECEIVER_PARAMETER, getReceiverParameter() );
+        parts.put( _java.Component.TYPE_PARAMETERS, getTypeParameters() );
+        parts.put( _java.Component.THROWS, getThrows() );
+        parts.put( _java.Component.NAME, getName() );
         return parts;
     }
 
@@ -414,6 +414,37 @@ public final class _method
     }
     */
 
+    
+    
+    public boolean hasParametersOf(java.lang.reflect.Method m){
+        java.lang.reflect.Type[] genericParameterTypes = m.getGenericParameterTypes();
+        List<_parameter> pl = this.listParameters();
+        if (genericParameterTypes.length != pl.size()) {
+            return false;
+        }
+        for (int i = 0; i < genericParameterTypes.length; i++) {
+            System.out.println( "PARAM "+ genericParameterTypes[i]);
+            _typeRef _t = _typeRef.of(genericParameterTypes[i]);
+            if (!pl.get(i).isType(_t)) {
+                if (m.isVarArgs()
+                        && //if last parameter and varargs
+                        Ast.typesEqual(pl.get(i).getType().getElementType(),
+                                _t.getElementType())) {
+
+                } else {
+                    System.out.println("Failed at " + _t + " =/= " + pl.get(i).getType());
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
+    
+    /** TODO REMOVE THIS IT DOESNT WORK (ESPECIALLY FOR VARARGS
+     * 
+     * @param genericParameterTypes
+     * @return 
+     */
     public boolean hasParametersOfType(java.lang.reflect.Type...genericParameterTypes){
         //receiver parameters?
         if( genericParameterTypes.length != this.listParameters().size() ){
@@ -425,6 +456,8 @@ public final class _method
             _typeRef _t = _typeRef.of( genericParameterTypes[i].getTypeName() );
             if( !pl.get(i).isType( _t ) ){
                 //System.out.println( "Failed at "+ _t+" =/= "+ pl.get(i).getType() );
+                //if the last one is a varargs
+                
                 return false;
             }
         }

@@ -22,7 +22,7 @@ public class _privateTest extends TestCase {
             @_private void b(){}
 
         }
-        _class _c = _macro.to(F.class);
+        _class _c = _class.of(F.class);
         //assertTrue( _c.isPrivate() );
         assertTrue( _c.getConstructor(0).isPrivate());
         assertTrue( _c.getField("g").isPrivate());

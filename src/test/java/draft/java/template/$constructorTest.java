@@ -62,10 +62,10 @@ public class $constructorTest extends TestCase {
         );
 
         System.out.println( $ct.signatureStencil );
-        System.out.println( $ct.compose() );
+        System.out.println( $ct.construct() );
 
         assertTrue(
-                $ct.compose().is("public ct(int a, String name){",
+                $ct.construct().is("public ct(int a, String name){",
                 "this.a = a;",
                 "this.name = name;",
                 "}"));
@@ -80,7 +80,7 @@ public class $constructorTest extends TestCase {
                 this.s = "Some S";
             }
         });
-        _constructor _ct = $ct.compose();
+        _constructor _ct = $ct.construct();
         //verify that the ANNOTATIONS and JAVADOC are transposed
         assertTrue( _ct.hasAnno(Deprecated.class));
         assertTrue( _ct.getJavadoc().getContent().contains("Some Javadoc"));
@@ -94,8 +94,8 @@ public class $constructorTest extends TestCase {
             }
         });
 
-        assertTrue($c.compose().getBody().isEmpty());
-        assertEquals($c.compose("label", true).getBody().getStatement(0),
+        assertTrue($c.construct().getBody().isEmpty());
+        assertEquals($c.construct("label", true).getBody().getStatement(0),
                 Stmt.of("System.out.println(12);"));
     }
     public void testCtorLabelForAddingCode(){
@@ -105,17 +105,17 @@ public class $constructorTest extends TestCase {
             }
         });
 
-        assertTrue($c.compose().getBody().isEmpty());
+        assertTrue($c.construct().getBody().isEmpty());
         assertEquals( Stmt.of("System.out.println(1);"),
-                $c.compose("label", "System.out.println(1);").getBody().getStatement(0));
+                $c.construct("label", "System.out.println(1);").getBody().getStatement(0));
 
         //
         assertEquals( Stmt.of("System.out.println(1);"),
-                $c.compose("label", Stmt.of("System.out.println(1);")).getBody().getStatement(0));
+                $c.construct("label", Stmt.of("System.out.println(1);")).getBody().getStatement(0));
 
         //block Statement
         assertEquals( Stmt.of("System.out.println(1);"),
-                $c.compose("label", Stmt.block("{ System.out.println(1); }")).getBody().getStatement(0));
+                $c.construct("label", Stmt.block("{ System.out.println(1); }")).getBody().getStatement(0));
 
 
 

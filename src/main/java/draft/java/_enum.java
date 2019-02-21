@@ -652,21 +652,21 @@ public final class _enum implements _type<EnumDeclaration, _enum>,_method._hasMe
     }
 
     @Override
-    public Map<_java.Part, Object> partsMap( ) {
-        Map<_java.Part, Object> parts = new HashMap<>();
-        parts.put( _java.Part.PACKAGE_NAME, this.getPackage() );
-        parts.put( _java.Part.IMPORTS, this.listImports() );
-        parts.put( _java.Part.ANNOTATIONS, this.listAnnos() );
-        parts.put( _java.Part.IMPLEMENTS, this.listImplements() );
-        parts.put( _java.Part.JAVADOC, this.getJavadoc() );
-        parts.put( _java.Part.CONSTANTS, this.listConstants());
-        parts.put( _java.Part.STATIC_BLOCKS, this.listStaticBlocks());
-        parts.put( _java.Part.NAME, this.getName() );
-        parts.put( _java.Part.MODIFIERS, this.getModifiers() );
-        parts.put( _java.Part.CONSTRUCTORS, this.listConstructors() );
-        parts.put( _java.Part.METHODS, this.listMethods() );
-        parts.put( _java.Part.FIELDS, this.listFields() );
-        parts.put( _java.Part.NESTS, this.listNests() );
+    public Map<_java.Component, Object> partsMap( ) {
+        Map<_java.Component, Object> parts = new HashMap<>();
+        parts.put( _java.Component.PACKAGE_NAME, this.getPackage() );
+        parts.put( _java.Component.IMPORTS, this.listImports() );
+        parts.put( _java.Component.ANNOTATIONS, this.listAnnos() );
+        parts.put( _java.Component.IMPLEMENTS, this.listImplements() );
+        parts.put( _java.Component.JAVADOC, this.getJavadoc() );
+        parts.put( _java.Component.CONSTANTS, this.listConstants());
+        parts.put( _java.Component.STATIC_BLOCKS, this.listStaticBlocks());
+        parts.put( _java.Component.NAME, this.getName() );
+        parts.put( _java.Component.MODIFIERS, this.getModifiers() );
+        parts.put( _java.Component.CONSTRUCTORS, this.listConstructors() );
+        parts.put( _java.Component.METHODS, this.listMethods() );
+        parts.put( _java.Component.FIELDS, this.listFields() );
+        parts.put( _java.Component.NESTS, this.listNests() );
         return parts;
     }
 
@@ -1018,15 +1018,15 @@ public final class _enum implements _type<EnumDeclaration, _enum>,_method._hasMe
         }
 
         @Override
-        public Map<_java.Part, Object> partsMap( ) {
-            Map<_java.Part, Object> parts = new HashMap<>();
-            parts.put( _java.Part.ANNOTATIONS, this.listAnnos() );
-            parts.put( _java.Part.JAVADOC, this.getJavadoc() );
-            parts.put( _java.Part.NAME, this.getName());
-            parts.put( _java.Part.ARGUMENTS, this.listArguments());
-            parts.put( _java.Part.NAME, this.getName() );
-            parts.put( _java.Part.METHODS, this.listMethods() );
-            parts.put( _java.Part.FIELDS, this.listFields() );
+        public Map<_java.Component, Object> partsMap( ) {
+            Map<_java.Component, Object> parts = new HashMap<>();
+            parts.put( _java.Component.ANNOTATIONS, this.listAnnos() );
+            parts.put( _java.Component.JAVADOC, this.getJavadoc() );
+            parts.put( _java.Component.NAME, this.getName());
+            parts.put( _java.Component.ARGUMENTS, this.listArguments());
+            parts.put( _java.Component.NAME, this.getName() );
+            parts.put( _java.Component.METHODS, this.listMethods() );
+            parts.put( _java.Component.FIELDS, this.listFields() );
             return parts;
         }
 

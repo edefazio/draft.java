@@ -10,7 +10,7 @@ public class _abstractTest extends TestCase {
              @_abstract void getR(){}
          }
 
-         _class _c = _macro.to(C.class);
+         _class _c = _class.of(C.class);
 
          System.out.println( _c );
     }

@@ -127,30 +127,30 @@ public class $field
     }
 
     @Override
-    public _field compose(Translator translator, Map<String, Object> keyValues) {
+    public _field construct(Translator translator, Map<String, Object> keyValues) {
         if( this.commentStencil != null ){
-            return _field.of(Stencil.of(this.commentStencil, this.stencil ).compose(translator, keyValues));
+            return _field.of(Stencil.of(this.commentStencil, this.stencil ).construct(translator, keyValues));
         }
-        return _field.of( stencil.compose(translator, keyValues));
+        return _field.of(stencil.construct(translator, keyValues));
     }
 
     public _field compose(_model._node modelNode ){
-        return compose( Translator.DEFAULT_TRANSLATOR, modelNode.componentize() );
+        return construct( Translator.DEFAULT_TRANSLATOR, modelNode.componentize() );
     }
 
     @Override
-    public _field compose(Map<String, Object> keyValues) {
-        return compose( Translator.DEFAULT_TRANSLATOR, keyValues);
+    public _field construct(Map<String, Object> keyValues) {
+        return construct( Translator.DEFAULT_TRANSLATOR, keyValues);
     }
 
     @Override
-    public _field compose(Object... keyValues) {
-        return compose( Translator.DEFAULT_TRANSLATOR, Tokens.of(keyValues));
+    public _field construct(Object... keyValues) {
+        return construct( Translator.DEFAULT_TRANSLATOR, Tokens.of(keyValues));
     }
 
     @Override
-    public _field compose(Translator translator, Object... keyValues) {
-        return compose( translator, Tokens.of(keyValues));
+    public _field construct(Translator translator, Object... keyValues) {
+        return construct( translator, Tokens.of(keyValues));
     }
 
     @Override
@@ -323,17 +323,17 @@ public class $field
         node.walk(VariableDeclarator.class, e-> {
             Select sel = select( e );
             if( sel != null ){
-                sel._f.ast().replace( $a.compose(sel.tokens).ast() );
+                sel._f.ast().replace($a.construct(sel.tokens).ast() );
             }
         });
         return node;
     }
 
     public <M extends _model._node> M replaceIn(M _le, $field $a ){
-        Walk.in( _le, VariableDeclarator.class, e-> {
+        Walk.in(_le, VariableDeclarator.class, e-> {
             Select sel = select( e );
             if( sel != null ){
-                sel._f.ast().replace( $a.compose(sel.tokens).ast() );
+                sel._f.ast().replace($a.construct(sel.tokens).ast() );
             }
         });
         return _le;

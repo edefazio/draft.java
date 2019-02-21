@@ -10,7 +10,7 @@ public class _autoSetTest extends TestCase {
         class C{
 
         }
-        _class _c = _macro._class(C.class);
+        _class _c = _class.of(C.class);
         assertTrue( _c.listAnnos(_autoSet.class).isEmpty());
         assertTrue(_c.listMethods().isEmpty());
 
@@ -18,7 +18,7 @@ public class _autoSetTest extends TestCase {
         class D{
             final int f = 100;
         }
-        _c = _macro._class(D.class);
+        _c = _class.of(D.class);
         assertTrue( _c.listAnnos(_autoSet.class).isEmpty());
         assertTrue(_c.listMethods().isEmpty());
     }
@@ -29,7 +29,7 @@ public class _autoSetTest extends TestCase {
         class G{
             int a;
         }
-        _class _c = _macro._class(G.class);
+        _class _c = _class.of(G.class);
         assertTrue( _c.listAnnos(_autoSet.class).isEmpty());
         assertTrue( _c.getMethod("setA").isVoid());
         assertTrue( _c.getMethod("setA").getParameter(0).isType(int.class));
@@ -43,7 +43,7 @@ public class _autoSetTest extends TestCase {
             final String name = "Blah";
         }
 
-        _class _c = _macro._class(G.class);
+        _class _c = _class.of(G.class);
         assertTrue( _c.listAnnos(_autoSet.class).isEmpty());
         assertTrue( _c.getMethod("setA").isVoid());
         assertTrue( _c.getMethod("setA").getParameter(0).isType(int.class));

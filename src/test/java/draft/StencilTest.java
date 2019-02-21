@@ -73,10 +73,10 @@ public class StencilTest
 
     public void testStencilRoundTripExtract(){
         Stencil s = Stencil.of( "return $any$;" );
-        assertEquals( "return 3+4;", s.compose( "any", "3+4"));
+        assertEquals( "return 3+4;", s.construct( "any", "3+4"));
         assertEquals( Tokens.of("any", "3 + 4"), s.decompose("return 3 + 4;"));
 
-        assertEquals( "return \";\";", s.compose( "any", "\";\""));
+        assertEquals( "return \";\";", s.construct( "any", "\";\""));
         assertEquals( Tokens.of("any", "\";\"") , s.decompose("return \";\";"));
     }
 
@@ -84,7 +84,7 @@ public class StencilTest
     public void testStencilToString() {
         Stencil s = Stencil.of( "hello $a$ this is $b$" );
         assertEquals( "hello $$a$$ this is $$b$$", s.toString() );
-        assertEquals("hello 1 this is 2", s.compose("a", 1, "b", 2));
+        assertEquals("hello 1 this is 2", s.construct("a", 1, "b", 2));
         assertEquals("hello 1 this is 2", s.fill(1,2));
     }
 
@@ -121,7 +121,7 @@ public class StencilTest
         Stencil st = Stencil.of("Hi $name$!");
 
         //compose($nameValues...) populates the NAME-VALUE pairs into the template based on the $NAME
-        assertEquals("Hi eric!", st.compose("name", "eric"));
+        assertEquals("Hi eric!", st.construct("name", "eric"));
 
         //fill(values...) populates the values based on the order in the template
         assertEquals("Hi eric!", st.fill("eric"));
@@ -129,13 +129,13 @@ public class StencilTest
         //a $variable$ with the first letter capitalized will ensure the parameter VALUE has its first letter in caps
         st = Stencil.of("Hi $Name$!");
 
-        assertEquals("Hi Eric!", st.compose("name", "eric"));
+        assertEquals("Hi Eric!", st.construct("name", "eric"));
         assertEquals("Hi Eric!", st.fill("eric"));
 
         //variables that are ALL CAPS like NAME will _2_template the values toDir be ALL CAPS
         st = Stencil.of("Hi $NAME$!");
 
-        assertEquals("Hi ERIC!", st.compose("name", "eric"));
+        assertEquals("Hi ERIC!", st.construct("name", "eric"));
         assertEquals("Hi ERIC!", st.fill("eric"));
 
         //heres a more concrete example, creating a getter
@@ -172,8 +172,8 @@ public class StencilTest
         //now that we know our translator does what we want,
         // we can pass the translator in as the FIRST parameter toDir either compose or fill and it will populate things
         Stencil arrClasses = Stencil.of( "Class[] cs = { $classes$ };" );
-        assertEquals( "Class[] cs = { int.class };", arrClasses.compose( classCanonName, "classes", int.class ));
-        assertEquals( "Class[] cs = { java.util.Map.class };", arrClasses.compose( classCanonName, "classes", Map.class ));
+        assertEquals( "Class[] cs = { int.class };", arrClasses.construct( classCanonName, "classes", int.class ));
+        assertEquals( "Class[] cs = { java.util.Map.class };", arrClasses.construct( classCanonName, "classes", Map.class ));
         assertEquals( "Class[] cs = { int.class };", arrClasses.fill( classCanonName, int.class ));
         assertEquals( "Class[] cs = { java.util.Map.class };", arrClasses.fill( classCanonName, Map.class ));
 
@@ -195,7 +195,7 @@ public class StencilTest
                 arrClasses.fill(rt, (Object)new Class[]{Map.class, int.class} ));
 
         assertEquals( "Class[] cs = { java.util.Map.class, int.class };",
-                arrClasses.compose(rt, "classes", (Object)new Class[]{Map.class, int.class} ));
+                arrClasses.construct(rt, "classes", (Object)new Class[]{Map.class, int.class} ));
 
     }
 

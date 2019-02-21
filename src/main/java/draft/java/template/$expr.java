@@ -296,25 +296,25 @@ public final class $expr <T extends Expression>
         return (T)Expr.of( stencil.fill(t, values));
     }
 
-    public T compose( Object...keyValues ){
-        return (T)Expr.of( stencil.compose( Tokens.of(keyValues)));
+    public T construct( Object...keyValues ){
+        return (T)Expr.of( stencil.construct( Tokens.of(keyValues)));
     }
 
 
     public T compose( _model._node model ){
-        return (T)compose(model.componentize());
+        return (T)construct(model.componentize());
     }
 
-    public T compose( Translator t, Object...keyValues ){
-        return (T)Expr.of( stencil.compose( t, Tokens.of(keyValues) ));
+    public T construct( Translator t, Object...keyValues ){
+        return (T)Expr.of( stencil.construct( t, Tokens.of(keyValues) ));
     }
 
-    public T compose( Map<String,Object> tokens ){
-        return (T)Expr.of( stencil.compose( Translator.DEFAULT_TRANSLATOR, tokens ));
+    public T construct( Map<String,Object> tokens ){
+        return (T)Expr.of( stencil.construct( Translator.DEFAULT_TRANSLATOR, tokens ));
     }
 
-    public T compose( Translator t, Map<String,Object> tokens ){
-        return (T)Expr.of( stencil.compose( t, tokens ));
+    public T construct( Translator t, Map<String,Object> tokens ){
+        return (T)Expr.of(stencil.construct( t, tokens ));
     }
 
     public boolean matches( String...expression ){
@@ -450,10 +450,10 @@ public final class $expr <T extends Expression>
     }
 
     public <M extends _model._node> M replaceIn(M _le, $expr $repl ){
-        Walk.in( _le, this.expressionClass, e-> {
+        Walk.in(_le, this.expressionClass, e-> {
             Select sel = select( e );
             if( sel != null ){
-                sel.expression.replace( $repl.compose(sel.tokens));
+                sel.expression.replace($repl.construct(sel.tokens));
             }
         });
         return _le;

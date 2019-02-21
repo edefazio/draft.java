@@ -182,15 +182,15 @@ public final class _anno
     }
 
     @Override
-    public Map<_java.Part,Object> partsMap(){
-        Map<_java.Part,Object> m = new HashMap();
-        m.put(_java.Part.NAME, this.getName() );
+    public Map<_java.Component,Object> partsMap(){
+        Map<_java.Component,Object> m = new HashMap();
+        m.put(_java.Component.NAME, this.getName() );
         if( this.annotationExpr instanceof NormalAnnotationExpr ){
             NormalAnnotationExpr nae = (NormalAnnotationExpr)this.annotationExpr;
-            m.put(_java.Part.KEY_VALUES, nae.getPairs() );
+            m.put(_java.Component.KEY_VALUES, nae.getPairs() );
         } else if( this.annotationExpr instanceof SingleMemberAnnotationExpr){
             SingleMemberAnnotationExpr se = (SingleMemberAnnotationExpr)this.annotationExpr;
-            m.put(_java.Part.VALUE, se.getMemberValue());
+            m.put(_java.Component.VALUE, se.getMemberValue());
         }
         return m;
     }

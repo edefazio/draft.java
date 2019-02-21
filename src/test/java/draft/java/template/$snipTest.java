@@ -20,10 +20,10 @@ public class $snipTest extends TestCase {
 
         String str = "if($name$.isLoggable(Level.FINER)){ $name$.fine($any$ + \"\"); }";
         $stmt $st = $stmt.of( str);
-        System.out.println ( $st.compose("NAME", "LOG", "any", "\"message\"") );
+        System.out.println ( $st.construct("NAME", "LOG", "any", "\"message\"") );
 
         $snip $s = $snip.of( str );
-        $s.compose("NAME", "LOG", "any", "\"message\"");
+        $s.construct("NAME", "LOG", "any", "\"message\"");
 
     }
 
@@ -35,16 +35,16 @@ public class $snipTest extends TestCase {
            }
         });
 
-        assertEquals(1, $s.compose("any", 1).size());
-        assertEquals(2, $s.compose("any", 1, "$label", true).size());
+        assertEquals(1, $s.construct("any", 1).size());
+        assertEquals(2, $s.construct("any", 1, "$label", true).size());
 
         $s = $snip.of( ()->{
            label: System.out.println(1);
         });
 
-        System.out.println( $s.compose( "label", false));
-        assertEquals( 1, $s.compose("label", true).size());
-        assertEquals( 0, $s.compose("label", false).size());
+        System.out.println( $s.construct( "label", false));
+        assertEquals( 1, $s.construct("label", true).size());
+        assertEquals( 0, $s.construct("label", false).size());
     }
 
     public void testFillLabelWithSingleStatement(){
@@ -53,7 +53,7 @@ public class $snipTest extends TestCase {
             System.out.println("Hello");
         });
 
-        List<Statement> sts = $s.compose("$body", Stmt.of(()->System.out.println(1) ));
+        List<Statement> sts = $s.construct("$body", Stmt.of(()->System.out.println(1) ));
         assertEquals(2, sts.size());
         assertEquals( Stmt.of( ()->System.out.println(1) ), sts.get(0));
         assertEquals( Stmt.of( ()->System.out.println("Hello") ), sts.get(1));
@@ -65,7 +65,7 @@ public class $snipTest extends TestCase {
             System.out.println("Hello");
         });
 
-        List<Statement> sts = $s.compose("$body", Stmt.of(()->{
+        List<Statement> sts = $s.construct("$body", Stmt.of(()->{
             System.out.println(1);
             System.out.println(2);
         } ));
@@ -91,7 +91,7 @@ public class $snipTest extends TestCase {
         //System.out.println(sts);
         assertEquals(0, sts.size());
 
-        sts = $s.compose("$doThis", true);
+        sts = $s.construct("$doThis", true);
         assertEquals(1, sts.size());
         assertEquals(Stmt.of(() -> System.out.println("Hello")), sts.get(0));
     }
@@ -106,7 +106,7 @@ public class $snipTest extends TestCase {
             System.out.println($name$);
         });
 
-        List<Statement> sts = $s.compose( "NAME", "e", "i", 3, "$label", true);
+        List<Statement> sts = $s.construct( "NAME", "e", "i", 3, "$label", true);
         assertEquals( 4, sts.size());
 
         //I need to make $label for fill
@@ -177,8 +177,8 @@ public class $snipTest extends TestCase {
         _class _c = _class.of(L.class);
         $s.forSelectedIn( _c, ($snip.Select s) -> {
             //rearrage the order of the statements, first the println then the assert
-            s.statements.get(0).replace( $s.$sts.get(1).compose(s.tokens) );
-            s.statements.get(1).replace( $s.$sts.get(0).compose(s.tokens) );
+            s.statements.get(0).replace( $s.$sts.get(1).construct(s.tokens) );
+            s.statements.get(1).replace( $s.$sts.get(0).construct(s.tokens) );
         });
         assertTrue( _c.getMethod("m").getBody().getStatement(1) instanceof ExpressionStmt );
         assertTrue( _c.getMethod("m").getBody().getStatement(2) instanceof AssertStmt);

@@ -58,15 +58,23 @@ public final class _class implements _type<ClassOrInterfaceDeclaration, _class>,
      */
     public static _class of( Class clazz, Function<_type, _type>...typeFns  ){
         Node n = Ast.type( clazz );
-        if( n instanceof CompilationUnit ){
+        if( n instanceof CompilationUnit ){            
             _class _c = of( (CompilationUnit)n);
+            
+            _macro.to(clazz, _c);
+            
             for(int i=0; i< typeFns.length; i++){
                 _c = (_class)typeFns[i].apply(_c);
             }
             return _c;
         } else if( n instanceof ClassOrInterfaceDeclaration){
             _class _c = of( (ClassOrInterfaceDeclaration)n);
-            Arrays.stream(typeFns).forEach( t$ -> t$.apply( _c) );
+            
+            _c = _macro.to(clazz, _c); //run annotation macros on the class
+            for(int i=0; i< typeFns.length; i++){
+                _c = (_class)typeFns[i].apply(_c);
+            }
+            //Arrays.stream(typeFns).forEach( t$ -> t$.apply( _c) );
             return _c;
         } else if( n instanceof LocalClassDeclarationStmt){
             //System.out.println( "LOCAL CLASS "+ n );
@@ -75,7 +83,11 @@ public final class _class implements _type<ClassOrInterfaceDeclaration, _class>,
             if( loc.getComment().isPresent() ){
                 _c.astType().setComment( loc.getComment().get());
             }
-            Arrays.stream(typeFns).forEach( t$ -> t$.apply( _c) );
+            _c = _macro.to(clazz, _c);
+            for(int i=0; i< typeFns.length; i++){
+                _c = (_class)typeFns[i].apply(_c);
+            }
+            //Arrays.stream(typeFns).forEach( t$ -> t$.apply( _c) );
             return _c;
         }
         throw new DraftException("Abstract or synthetic classes are not supported"+ clazz);
@@ -93,6 +105,7 @@ public final class _class implements _type<ClassOrInterfaceDeclaration, _class>,
     /**
      * i.e.
      * @param anonymousClassWithLocalClass
+     * @param macroFunctions
      * @return
      */
     public static _class of( Object anonymousClassWithLocalClass, Function<_type, _type>...macroFunctions ){
@@ -184,6 +197,14 @@ public final class _class implements _type<ClassOrInterfaceDeclaration, _class>,
         return of( Ast.compilationUnit( classDef ));
     }
 
+    public static _class of( TypeDeclaration td ){
+        if( td instanceof ClassOrInterfaceDeclaration && !td.asClassOrInterfaceDeclaration().isInterface() ) {
+            System.out.println( "GOt HEre in TypeDecl");
+            return new _class( (ClassOrInterfaceDeclaration)td);
+        }
+        throw new DraftException("Expected AST ClassOrInterfaceDeclaration as Class, got "+ td.getClass() );        
+    }
+    
     public static _class of( CompilationUnit cu ){
         if( cu.getPrimaryTypeName().isPresent() ){
             return of( cu.getClassByName( cu.getPrimaryTypeName().get() ).get() );
@@ -942,22 +963,22 @@ public final class _class implements _type<ClassOrInterfaceDeclaration, _class>,
         return true;
     }
 
-    public Map<_java.Part, Object> partsMap( ) {
-        Map<_java.Part, Object> parts = new HashMap<>();
-        parts.put( _java.Part.PACKAGE_NAME, this.getPackage() );
-        parts.put( _java.Part.IMPORTS, this.listImports() );
-        parts.put( _java.Part.ANNOTATIONS, this.listAnnos() );
-        parts.put( _java.Part.EXTENDS, this.getExtends() );
-        parts.put( _java.Part.IMPLEMENTS, this.listImplements() );
-        parts.put( _java.Part.JAVADOC, this.getJavadoc() );
-        parts.put( _java.Part.TYPE_PARAMETERS, this.getTypeParameters() );
-        parts.put( _java.Part.STATIC_BLOCKS, this.listStaticBlocks());
-        parts.put( _java.Part.NAME, this.getName() );
-        parts.put( _java.Part.MODIFIERS, this.getModifiers() );
-        parts.put( _java.Part.CONSTRUCTORS, this.listConstructors() );
-        parts.put( _java.Part.METHODS, this.listMethods() );
-        parts.put( _java.Part.FIELDS, this.listFields() );
-        parts.put( _java.Part.NESTS, this.listNests() );
+    public Map<_java.Component, Object> partsMap( ) {
+        Map<_java.Component, Object> parts = new HashMap<>();
+        parts.put( _java.Component.PACKAGE_NAME, this.getPackage() );
+        parts.put( _java.Component.IMPORTS, this.listImports() );
+        parts.put( _java.Component.ANNOTATIONS, this.listAnnos() );
+        parts.put( _java.Component.EXTENDS, this.getExtends() );
+        parts.put( _java.Component.IMPLEMENTS, this.listImplements() );
+        parts.put( _java.Component.JAVADOC, this.getJavadoc() );
+        parts.put( _java.Component.TYPE_PARAMETERS, this.getTypeParameters() );
+        parts.put( _java.Component.STATIC_BLOCKS, this.listStaticBlocks());
+        parts.put( _java.Component.NAME, this.getName() );
+        parts.put( _java.Component.MODIFIERS, this.getModifiers() );
+        parts.put( _java.Component.CONSTRUCTORS, this.listConstructors() );
+        parts.put( _java.Component.METHODS, this.listMethods() );
+        parts.put( _java.Component.FIELDS, this.listFields() );
+        parts.put( _java.Component.NESTS, this.listNests() );
         return parts;
     }
 

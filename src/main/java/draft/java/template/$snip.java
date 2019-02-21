@@ -250,31 +250,31 @@ public final class $snip implements Template<List<Statement>>, $query<List<State
         for(int i=0;i<values.length;i++){
             kvs.put( keys.get(i), values[i]);
         }
-        return compose( t, kvs );
+        return construct( t, kvs );
     }
 
-    public List<Statement> compose( Object...keyValues ){
+    public List<Statement> construct( Object...keyValues ){
         return compose( Tokens.of(keyValues));
     }
 
     public List<Statement> compose( Tokens tokens ){
-        return compose( Translator.DEFAULT_TRANSLATOR, tokens.map());
+        return construct( Translator.DEFAULT_TRANSLATOR, tokens.map());
     }
 
 
     public List<Statement> compose( _model._node model ){
-        return compose(model.componentize());
+        return construct(model.componentize());
     }
 
-    public List<Statement> compose( Map<String,Object> tokens ){
-       return compose( Translator.DEFAULT_TRANSLATOR, tokens );
+    public List<Statement> construct( Map<String,Object> tokens ){
+       return construct( Translator.DEFAULT_TRANSLATOR, tokens );
     }
 
-    public List<Statement> compose( Translator t, Object...keyValues ){
-        return compose( t, Tokens.of(keyValues ) );
+    public List<Statement> construct( Translator t, Object...keyValues ){
+        return construct( t, Tokens.of(keyValues ) );
     }
 
-    public List<Statement> compose( Translator t, Map<String,Object> tokens ){
+    public List<Statement> construct( Translator t, Map<String,Object> tokens ){
         List<Statement>sts = new ArrayList<>();
         $sts.forEach(stmt -> {
             if( stmt.statementClass == LabeledStmt.class &&
@@ -304,7 +304,7 @@ public final class $snip implements Template<List<Statement>>, $query<List<State
                 }
                 else if( val != null && val != Boolean.FALSE ){
                     //compose the statement (it
-                    LabeledStmt ls = (LabeledStmt)stmt.compose(t, tokens);
+                    LabeledStmt ls = (LabeledStmt)stmt.construct(t, tokens);
                     Statement st = ls.getStatement();
                     if( st instanceof BlockStmt ) {
                         //add each of the statements
@@ -314,7 +314,7 @@ public final class $snip implements Template<List<Statement>>, $query<List<State
                     }
                 }
             } else { //it is NOT a dymanically labeled Statement, so just process normally
-                sts.add(stmt.compose(t, tokens));
+                sts.add(stmt.construct(t, tokens));
             }
         });
         return sts;

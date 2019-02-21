@@ -10,7 +10,7 @@ public class _autoConstructorTest extends TestCase {
         class F{
 
         }
-        _class _c =  _macro._class(F.class);
+        _class _c =  _class.of(F.class);
         //verify I created a constructor AND it has no PARAMETERS
         assertTrue( _c.getConstructor(0).getParameters().isEmpty() );
 
@@ -19,7 +19,7 @@ public class _autoConstructorTest extends TestCase {
             int a,b,c;
             String s;
         }
-        _c =  _macro._class(G.class);
+        _c = _class.of(G.class);
         //verify I created a constructor AND it has no PARAMETERS (no final FIELDS)
         assertTrue( _c.getConstructor(0).getParameters().isEmpty() );
     }
@@ -30,7 +30,7 @@ public class _autoConstructorTest extends TestCase {
     }
 
     public void testCtorSingleArg(){
-        _class _c = _macro._class(S.class);
+        _class _c = _class.of(S.class);
         assertTrue( _c.getConstructor(0).getParameter(0).isType(int.class));
     }
 

@@ -96,7 +96,7 @@ public @interface _autoToString {
                     body.addStatement( $simple.fill(_f.getName()) );
                 }
             });
-            _method _m = $TO_STRING.compose("className", _t.getName(), "$body", body );
+            _method _m = $TO_STRING.construct("className", _t.getName(), "$body", body );
             ((_method._hasMethods)_t).method(_m);
             return _t;
         }

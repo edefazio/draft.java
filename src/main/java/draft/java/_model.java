@@ -70,7 +70,7 @@ public interface _model {
          * Decompose the entity into key-VALUE pairs
          * @return a map of key values
          */
-        Map<_java.Part,Object> partsMap();
+        Map<_java.Component,Object> partsMap();
 
         /**
          * Decompose the entity into smaller named components
@@ -79,7 +79,7 @@ public interface _model {
          */
         @Override
         default Map<String,Object>componentize(){
-            Map<_java.Part, Object> parts = partsMap();
+            Map<_java.Component, Object> parts = partsMap();
             Map<String,Object> mdd = new HashMap<>();
             parts.forEach( (p,o) -> {mdd.put( p.name, o);});
             return mdd;

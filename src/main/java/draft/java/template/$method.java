@@ -153,35 +153,35 @@ public final class $method
     }
 
     @Override
-    public _method compose(Translator translator, Map<String, Object> keyValues) {
+    public _method construct(Translator translator, Map<String, Object> keyValues) {
         //_1_build the signature
-        _method _m = _method.of( this.signatureStencil.compose(translator, keyValues ));
+        _method _m = _method.of(this.signatureStencil.construct(translator, keyValues ));
 
         if( this.$body != null) {
             //_1_build the BODY
-            List<Statement> sts = $body.compose(translator, keyValues);
+            List<Statement> sts = $body.construct(translator, keyValues);
             sts.forEach( s -> _m.add(s) );
         }
         return _m;
     }
 
     @Override
-    public _method compose(Map<String, Object> keyValues) {
-        return compose( Translator.DEFAULT_TRANSLATOR, keyValues );
+    public _method construct(Map<String, Object> keyValues) {
+        return construct( Translator.DEFAULT_TRANSLATOR, keyValues );
     }
 
     public _method compose(_model._node model ){
-        return compose( model.componentize() );
+        return construct( model.componentize() );
     }
 
     @Override
-    public _method compose(Object... keyValues) {
-        return compose( Translator.DEFAULT_TRANSLATOR, keyValues );
+    public _method construct(Object... keyValues) {
+        return construct( Translator.DEFAULT_TRANSLATOR, keyValues );
     }
 
     @Override
-    public _method compose(Translator translator, Object... keyValues) {
-        return compose(translator, Tokens.of(keyValues));
+    public _method construct(Translator translator, Object... keyValues) {
+        return construct(translator, Tokens.of(keyValues));
     }
 
     public _method fill(Object...values){
@@ -198,7 +198,7 @@ public final class $method
         for(int i=0;i<values.length;i++){
             kvs.put( keys.get(i), values[i]);
         }
-        return compose( t, kvs );
+        return construct( t, kvs );
     }
 
     public static final BlockStmt EMPTY = Stmt.block("{}");

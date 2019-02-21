@@ -256,13 +256,13 @@ public final class _parameter
         return this;
     }
 
-    public Map<_java.Part, Object> partsMap( ) {
-        Map<_java.Part, Object> parts = new HashMap<>();
-        parts.put( _java.Part.FINAL, isFinal() );
-        parts.put( _java.Part.ANNOTATIONS, getAnnos() );
-        parts.put( _java.Part.TYPE, getType() );
-        parts.put( _java.Part.NAME, getName() );
-        parts.put( _java.Part.VAR_ARG, isVarArg() );
+    public Map<_java.Component, Object> partsMap( ) {
+        Map<_java.Component, Object> parts = new HashMap<>();
+        parts.put( _java.Component.FINAL, isFinal() );
+        parts.put( _java.Component.ANNOTATIONS, getAnnos() );
+        parts.put( _java.Component.TYPE, getType() );
+        parts.put( _java.Component.NAME, getName() );
+        parts.put( _java.Component.VAR_ARG, isVarArg() );
         return parts;
     }
 

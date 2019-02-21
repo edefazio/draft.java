@@ -8,6 +8,7 @@ import com.github.javaparser.ast.expr.ObjectCreationExpr;
 import com.github.javaparser.ast.stmt.BlockStmt;
 import com.github.javaparser.ast.stmt.Statement;
 import com.github.javaparser.ast.type.ReferenceType;
+import com.github.javaparser.ast.type.Type;
 
 import draft.Text;
 import draft.java._model.*;
@@ -186,17 +187,18 @@ public final class _constructor implements _anno._hasAnnos<_constructor>, _javad
         return true;
     }
 
-    public Map<_java.Part, Object> partsMap() {
-        Map<_java.Part, Object> parts = new HashMap<>();
-        parts.put( _java.Part.ANNOTATIONS, getAnnos() );
-        parts.put( _java.Part.BODY, getBody() );
-        parts.put( _java.Part.MODIFIERS, getModifiers() );
-        parts.put( _java.Part.JAVADOC, getJavadoc() );
-        parts.put( _java.Part.PARAMETERS, getParameters() );
-        parts.put( _java.Part.RECEIVER_PARAMETER, getReceiverParameter() );
-        parts.put( _java.Part.TYPE_PARAMETERS, getTypeParameters() );
-        parts.put( _java.Part.THROWS, getThrows() );
-        parts.put( _java.Part.NAME, getName() );
+    @Override
+    public Map<_java.Component, Object> partsMap() {
+        Map<_java.Component, Object> parts = new HashMap<>();
+        parts.put( _java.Component.ANNOTATIONS, getAnnos() );
+        parts.put( _java.Component.BODY, getBody() );
+        parts.put( _java.Component.MODIFIERS, getModifiers() );
+        parts.put( _java.Component.JAVADOC, getJavadoc() );
+        parts.put( _java.Component.PARAMETERS, getParameters() );
+        parts.put( _java.Component.RECEIVER_PARAMETER, getReceiverParameter() );
+        parts.put( _java.Component.TYPE_PARAMETERS, getTypeParameters() );
+        parts.put( _java.Component.THROWS, getThrows() );
+        parts.put( _java.Component.NAME, getName() );
         return parts;
     }
 
@@ -262,22 +264,79 @@ public final class _constructor implements _anno._hasAnnos<_constructor>, _javad
         return this.astCtor.getTypeParameters().isNonEmpty();
     }
 
+    public boolean hasParametersOf( java.lang.reflect.Constructor ctor ){
+        
+        java.lang.reflect.Type[] genericParameterTypes = ctor.getGenericParameterTypes();
+        List<_parameter> pl = this.listParameters();
+        int delta = 0;
+        if( genericParameterTypes.length != pl.size() ){
+            //System.out.println( "DIFFERENT NUMBER OF CTOR ARGS ");
+            if( genericParameterTypes.length == pl.size() + 1 && ctor.getDeclaringClass().isLocalClass()){
+                //System.out.println( "THE FIRST ARG IS "+ genericParameterTypes[0] );
+                //System.out.println( "THE DECLARING CLASS DEFINING "+ctor.getDeclaringClass() );
+                if( ctor.getDeclaringClass().isLocalClass() ){
+                    //System.out.println("Declaring Class is a Local Class");
+                    delta = 1;
+                }
+                //System.out.println( "THE D DECLARING CLASS DEFINING "+ctor.getDeclaringClass().getDeclaringClass() );
+            } else{
+                return false;
+            }            
+        }
+        for(int i=0;i<pl.size(); i++){
+            _typeRef _t = _typeRef.of(genericParameterTypes[i+delta]);
+            //System.out.println( "CHECKING "+ _t);
+            if( !pl.get(i).isType( _t ) ){ 
+                if( ctor.isVarArgs() &&  //if last parameter and varargs
+                        Ast.typesEqual( pl.get(i).getType().getElementType(), 
+                                _t.getElementType())  ){
+                    
+                } else{
+                    System.out.println( "Failed at "+ _t+" =/= "+ pl.get(i).getType() );                
+                    return false;
+                }
+            }
+        }
+        /*
+        for(int i=0;i<genericParameterTypes.length; i++){
+            _typeRef _t = _typeRef.of(genericParameterTypes[i]);
+            if( !pl.get(i).isType( _t ) ){ 
+                if( ctor.isVarArgs() &&  //if last parameter and varargs
+                        Ast.typesEqual( pl.get(i).getType().getElementType(), 
+                                _t.getElementType())  ){
+                    
+                } else{
+                    System.out.println( "Failed at "+ _t+" =/= "+ pl.get(i).getType() );                
+                    return false;
+                }
+            }
+        }
+        */
+        return true;        
+    }
+    
+    //NOTE: THIS FAILS FOR VARARGS, I SHOULD GET RID OF THE API ENTIRELY
     @Override
     public boolean hasParametersOfType(java.lang.reflect.Type...genericParameterTypes){
         if( genericParameterTypes.length != this.listParameters().size() ){
+            
+            //System.out.println( "Failed NOT SAME SIZE" );
+            
             return false;
         }
         List<_parameter> pl = this.listParameters();
         for(int i=0;i<genericParameterTypes.length; i++){
             _typeRef _t = _typeRef.of(genericParameterTypes[i]);
             if( !pl.get(i).isType( _t ) ){
+                
                 //System.out.println( "Failed at "+ _t+" =/= "+ pl.get(i).getType() );
+                
                 return false;
             }
         }
         return true;
     }
-
+    
     /*
     @Override
     public boolean hasParametersOfType(Class<?>... paramTypes) {

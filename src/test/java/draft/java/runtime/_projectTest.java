@@ -95,7 +95,7 @@ public class _projectTest extends TestCase {
                 return a + x + y + z;
             }
         }
-        _project _p = _project.of(_macro._class( L.class));
+        _project _p = _project.of(_class.of( L.class));
 
         _proxy _pr = _p._proxy("aaaa.gggg.L");
 

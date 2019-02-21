@@ -49,7 +49,7 @@ public final class _proxy extends _new {
 
     public static _proxy of( Class clazz, Object...ctorArgs ){
         //return of( _type._class( clazz ), ctorArgs );
-        return of( _macro._class( clazz ), ctorArgs );
+        return of( _class.of( clazz ), ctorArgs );
     }
 
     public static _proxy of(Processor annotationProcessor, _type _c, Object...ctorArgs ){
@@ -67,7 +67,7 @@ public final class _proxy extends _new {
     public static _proxy of( Class clazz ){
         //_class _c = _class.of( clazz );
         //return of(_type.ProcessRuntimeAnnotations.process(clazz, _c));
-        return of(_macro._class(clazz ));
+        return of(_class.of(clazz ));
     }
 
     public static _proxy of(_type _c, Object... ctorArgs ) {

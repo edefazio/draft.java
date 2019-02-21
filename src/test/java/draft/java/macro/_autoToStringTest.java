@@ -18,7 +18,7 @@ public class _autoToStringTest extends TestCase {
             public UUID blah = UUID.randomUUID();
         }
 
-        _class _c  = _macro._class(V.class);
+        _class _c  = _class.of(V.class);
 
         assertTrue(_c.getMethod("toString").isType(String.class) );
 

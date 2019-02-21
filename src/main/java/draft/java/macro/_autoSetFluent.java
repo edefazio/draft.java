@@ -38,7 +38,7 @@ public @interface _autoSetFluent {
             List<_field> _fs = t.listFields(SET_REQUIRED);
             if (t instanceof _method._hasMethods) {
                 _fs.forEach(f -> {
-                    _method _m = $SET_FLUENT.compose( "className", t.getName(), "name", f.getName(),"type", f.getType());
+                    _method _m = $SET_FLUENT.construct( "className", t.getName(), "name", f.getName(),"type", f.getType());
                     ((_method._hasMethods) t).method(_m);
                 });
             }

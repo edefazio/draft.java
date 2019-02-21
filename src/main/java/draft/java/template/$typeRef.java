@@ -116,24 +116,24 @@ public final class $typeRef<T extends Type>
         return (T)Ast.typeRef( stencil.fill(t, values));
     }
 
-    public T compose( Object...keyValues ){
-        return (T)Ast.typeRef( stencil.compose( Tokens.of(keyValues)));
+    public T construct( Object...keyValues ){
+        return (T)Ast.typeRef( stencil.construct( Tokens.of(keyValues)));
     }
 
     public T compose( _model._node model ){
-        return (T)compose(model.componentize());
+        return (T)construct(model.componentize());
     }
 
-    public T compose( Translator t, Object...keyValues ){
-        return (T)Ast.typeRef( stencil.compose( t, Tokens.of(keyValues) ));
+    public T construct( Translator t, Object...keyValues ){
+        return (T)Ast.typeRef( stencil.construct( t, Tokens.of(keyValues) ));
     }
 
-    public T compose( Map<String,Object> tokens ){
-        return (T)Ast.typeRef(stencil.compose( Translator.DEFAULT_TRANSLATOR, tokens ));
+    public T construct( Map<String,Object> tokens ){
+        return (T)Ast.typeRef(stencil.construct( Translator.DEFAULT_TRANSLATOR, tokens ));
     }
 
-    public T compose( Translator t, Map<String,Object> tokens ){
-        return (T)Ast.typeRef( stencil.compose( t, tokens ));
+    public T construct( Translator t, Map<String,Object> tokens ){
+        return (T)Ast.typeRef(stencil.construct( t, tokens ));
     }
 
     public boolean matches( String type ){
@@ -255,10 +255,10 @@ public final class $typeRef<T extends Type>
      * @return
      */
     public <M extends _model._node> M replaceIn(M _t, $typeRef $replacementType){
-        Walk.in( _t, this.typeClass, e -> {
+        Walk.in(_t, this.typeClass, e -> {
             Tokens tokens = this.stencil.decompose( e.toString());
             if( tokens != null ){
-                if( !e.replace($replacementType.compose(tokens))){
+                if( !e.replace($replacementType.construct(tokens))){
                     throw new DraftException("unable to replaceIn "+ e + " in "+ _t+" with "+$replacementType);
                 }
             }

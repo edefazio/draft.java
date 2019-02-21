@@ -337,14 +337,14 @@ public final class _field
     }
 
     @Override
-    public Map<_java.Part, Object> partsMap() {
-        Map<_java.Part, Object> parts = new HashMap<>();
-        parts.put( _java.Part.NAME, getName() );
-        parts.put( _java.Part.TYPE, getType() );
-        parts.put( _java.Part.MODIFIERS, getModifiers() );
-        parts.put( _java.Part.JAVADOC, getJavadoc() );
-        parts.put( _java.Part.ANNOTATIONS, getAnnos() );
-        parts.put( _java.Part.INIT, getInit() );
+    public Map<_java.Component, Object> partsMap() {
+        Map<_java.Component, Object> parts = new HashMap<>();
+        parts.put( _java.Component.NAME, getName() );
+        parts.put( _java.Component.TYPE, getType() );
+        parts.put( _java.Component.MODIFIERS, getModifiers() );
+        parts.put( _java.Component.JAVADOC, getJavadoc() );
+        parts.put( _java.Component.ANNOTATIONS, getAnnos() );
+        parts.put( _java.Component.INIT, getInit() );
         return parts;
     }
 

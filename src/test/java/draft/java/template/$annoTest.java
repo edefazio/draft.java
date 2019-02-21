@@ -17,7 +17,7 @@ public class $annoTest extends TestCase {
 
     public void testStatic$anno(){
         $anno $a = $anno.of("@name");
-        assertEquals( _anno.of("@name"), $a.compose());
+        assertEquals( _anno.of("@name"), $a.construct());
         assertTrue( $a.matches(_anno.of("@name")));
 
         @name
@@ -57,7 +57,7 @@ public class $annoTest extends TestCase {
         $a.replaceIn(_c, $anno.of("@name2(string=$any$)") );
         System.out.println(_c );
 
-        _anno _a = $a.compose("any", "\"Some String\"");
+        _anno _a = $a.construct("any", "\"Some String\"");
         assertEquals( _anno.of("@name(prefix=\"Some String\")"), _a );
     }
 

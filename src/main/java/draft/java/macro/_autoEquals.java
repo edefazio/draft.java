@@ -122,7 +122,7 @@ public @interface _autoEquals {
                 });
 
                 ts.put("$BODY", body);
-                _c.method( $equals.compose(ts) );
+                _c.method( $equals.construct(ts) );
             }
             return _t;
         }

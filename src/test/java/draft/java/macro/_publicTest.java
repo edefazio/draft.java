@@ -22,7 +22,7 @@ public class _publicTest extends TestCase {
             @_public void b(){}
 
         }
-        _class _c = _macro.to(F.class);
+        _class _c = _class.of(F.class);
         assertTrue( _c.isPublic() );
         assertTrue( _c.getConstructor(0).isPublic());
         assertTrue( _c.getField("g").isPublic());

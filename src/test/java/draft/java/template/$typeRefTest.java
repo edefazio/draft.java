@@ -10,7 +10,7 @@ public class $typeRefTest extends TestCase {
 
     public void testSimple(){
         $typeRef $t = $typeRef.intType;
-        assertEquals(Ast.INT_TYPE, $t.compose());
+        assertEquals(Ast.INT_TYPE, $t.construct());
 
         assertNotNull( $t.decompose(Ast.INT_TYPE));
         assertNull( $t.decompose(Ast.FLOAT_TYPE));

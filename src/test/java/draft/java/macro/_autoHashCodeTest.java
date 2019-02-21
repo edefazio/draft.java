@@ -29,7 +29,7 @@ public class _autoHashCodeTest extends TestCase {
         /** 4) annotate with @_autoHashCode & call annotation Macro processor {@link $$#to(T t)} */
 
         @_replace({"B", "A"}) @_autoHashCode class B{ int x,y,z;}
-        _class _4 = _macro.to(B.class);
+        _class _4 = _class.of(B.class);
 
         assertEquals( _1, _2);
         assertEquals( _2, _3);
@@ -39,8 +39,8 @@ public class _autoHashCodeTest extends TestCase {
     public void test$HashCode(){
         //test the "outer" HashCode template
         assertEquals( 3, _autoHashCode.$HASHCODE.fill(1, 2).getBody().getStatements().size() );
-        assertEquals( 4, _autoHashCode.$HASHCODE.compose("seed", 1,"prime", 2, "callSuperHashCode", true, "body", false).getBody().getStatements().size() );
-        assertEquals( 5, _autoHashCode.$HASHCODE.compose("seed", 1,"prime", 2, "callSuperHashCode", true, "body", Stmt.of("System.out.println(1);")).getBody().getStatements().size() );
+        assertEquals( 4, _autoHashCode.$HASHCODE.construct("seed", 1,"prime", 2, "callSuperHashCode", true, "body", false).getBody().getStatements().size() );
+        assertEquals( 5, _autoHashCode.$HASHCODE.construct("seed", 1,"prime", 2, "callSuperHashCode", true, "body", Stmt.of("System.out.println(1);")).getBody().getStatements().size() );
     }
 
     public void testR(){
@@ -60,7 +60,7 @@ public class _autoHashCodeTest extends TestCase {
             String str;
             UUID[] uuids;
         }
-        _class _c = _macro._class(K.class);
+        _class _c = _class.of(K.class);
         System.out.println( _c );
 
         _autoHashCode.Macro.to(_c);
@@ -106,8 +106,8 @@ public class _autoHashCodeTest extends TestCase {
             public boolean b = true;
         }
 
-        _class _a = _macro._class( A.class);
-        _class _b = _macro._class( B.class);
+        _class _a = _class.of( A.class);
+        _class _b = _class.of( B.class);
 
         //compile the classes
         _project _ab = _project.of(_a, _b);

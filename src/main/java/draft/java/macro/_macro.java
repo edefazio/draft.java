@@ -130,7 +130,7 @@ public interface _macro<M extends _anno._hasAnnos>
      * Given Class clazz, _1_build the {@link _class} model and update it with all {@link _macro} ANNOTATIONS
      * @param clazz
      * @return
-     */
+     
     static _class _class(Class clazz ){
         return (_class)to( clazz );
     }
@@ -146,13 +146,15 @@ public interface _macro<M extends _anno._hasAnnos>
     static _annotation _annotation(Class clazz ){
         return (_annotation)to(clazz );
     }
-
+    */ 
+/*
     static <T extends _type> T to(Class clazz ){
         return (T)to( clazz, _type.of(clazz));
     }
+    */
 
     static Object _new( Class clazz, Object...ctorArgs ){
-        return _new.of(_class(clazz), ctorArgs);
+        return _new.of(_type.of(clazz), ctorArgs);
     }
 
     /**
@@ -175,19 +177,51 @@ public interface _macro<M extends _anno._hasAnnos>
     }
 
     static _method to( Class clazz, _method _mm ){
+        
+        if( !_mm.hasAnnos()){
+            return _mm;
+        }
         Method mm = null;
         List<Method> ms = Arrays.stream(clazz.getDeclaredMethods())
                 .filter(m -> m.getName().equals(_mm.getName())).collect(Collectors.toList());
+        System.out.println( "TOTOAL METHODS "+ ms.size());
         for (int i = 0; i < ms.size(); i++) {
-            //System.out.println( "TRYING METHOD "+ ms.get(i)+" for ");
+            System.out.println( "TRYING METHOD "+ ms.get(i)+" for ");
+            if( _mm.hasParametersOf(ms.get(i))) {
+                mm = ms.get(i);
+            }
+            /*
+            System.out.println( "TRYING METHOD "+ ms.get(i)+" for ");
             if (_mm.hasParametersOfType( ms.get(i).getGenericParameterTypes() )) {
                 mm = ms.get(i);
                 break;
             }
+            */
         }
         if( mm == null){
+            //TBH if I cant find it... and they dont have any annotations... who cares
+            
             //return _mm;
+            
+            //I have a theory that this happens ALWAYS TO member classes
+            if( clazz.isAnonymousClass() ){
+                //System.out.println( "<<<<<<<<<<<<<<<<<<<<<<<< Anon Class");
+                throw new DraftException("Could not find method "+ _mm +" on ANONYMOUS class "+ clazz );
+            }
+            if( clazz.isLocalClass() ){
+                //System.out.println( "<<<<<<<<<<<<<<<<<<<<<<<< Local Class");
+                throw new DraftException("Could not find method "+ _mm +" on LOCAL class "+ clazz );
+            }
+            if( clazz.isMemberClass() ){
+                //System.out.println( "<<<<<<<<<<<<<<<<<<<<<<<< MEMBER Class");
+                throw new DraftException("Could not find method "+ _mm +" on MEMBER class "+ clazz );
+            }
+            if( clazz.isSynthetic() ){
+                throw new DraftException("Could not find method "+ _mm +" on SYNTHETIC class "+ clazz );
+            }
+            
             throw new DraftException("Could not find method "+ _mm +" on class "+ clazz );
+            
         }
         Parameter[] ps = mm.getParameters();
         for(int i=0;i<ps.length; i++){
@@ -277,23 +311,60 @@ public interface _macro<M extends _anno._hasAnnos>
     }
 
     static _constructor to(Class clazz, _constructor _c ) {
+        if( !_c.hasAnnos() ){
+            return _c;
+        }
         List<Constructor> cs = Arrays.stream(clazz.getDeclaredConstructors()).collect(Collectors.toList());
         if (clazz.isEnum()) {
+            
             // enums have (2) implied params NAME and ordinal that are not explicit in the signature
-            for (int i = 0; i < cs.size(); i++) {
-                Class[] co = Arrays.copyOfRange(cs.get(i).getParameterTypes(), 2, cs.get(i).getParameterCount());
-                if (_c.hasParametersOfType(co)) { //I found the constructor
-                    Parameter[] ps = cs.get(i).getParameters();
-                    ps = Arrays.copyOfRange(ps, 2, ps.length); //disreguard the first (2) PARAMETERS
-                    for (int j = 0; j < ps.length; j++) { //process annotation macros on PARAMETERS first
-                        applyAllAnnotationMacros(_c.getParameter(j), ps[j]);
+            //System.out.println( "LOOKING FOR " + _c );
+            System.out.println( "*****ENUM CTOR ");
+            for (int i = 0; i < cs.size(); i++) {    
+                
+                Constructor ct = cs.get(i);
+                if( _c.hasParametersOf( ct ) ){
+                    Parameter[] ps = ct.getParameters();
+                    int delta = ps.length - _c.getParameters().count();
+                    for(int j =0; j< _c.getParameters().count();j++ ){
+                        applyAllAnnotationMacros(_c.getParameter(j), ps[j+delta]);
                     }
-                    return applyAllAnnotationMacros(_c, cs.get(i)); //process the constructor
+                    return applyAllAnnotationMacros(_c, ct); //process the constructor
                 }
+                /*
+                System.out.println( "ENUM CT " + ct );                
+                if( ct.getParameterCount() >= 2 ){ 
+                    System.out.println( "COPY PARAMS 2, "+ct.getParameterCount() );
+                    System.out.println( "COPY PARAMS 2, "+ct.getGenericParameterTypes().length );
+                    Type[] co = Arrays.copyOfRange(ct.getGenericParameterTypes(), 2, ct.getParameterCount());
+                    for(int j=0;j<co.length; j++){
+                        System.out.println( "    "+co[j] );
+                    }
+                    if (_c.hasParametersOfType(co)) { //I found the constructor
+                        Parameter[] ps = cs.get(i).getParameters();
+                        ps = Arrays.copyOfRange(ps, 2, ps.length); //disreguard the first (2) PARAMETERS
+                        for (int j = 0; j < ps.length; j++) { //process annotation macros on PARAMETERS first
+                            applyAllAnnotationMacros(_c.getParameter(j), ps[j]);
+                        }
+                        return applyAllAnnotationMacros(_c, cs.get(i)); //process the constructor
+                    }
+                }
+                */   
             }
         } else {
             for (int i = 0; i < cs.size(); i++) {
                 Constructor ct = cs.get(i);
+                //Constructor ct = cs.get(i);
+                if( _c.hasParametersOf( ct ) ){
+                    Parameter[] ps = ct.getParameters();
+                    int delta = ps.length - _c.getParameters().count();
+                    for(int j =0; j< _c.getParameters().count();j++ ){
+                        applyAllAnnotationMacros(_c.getParameter(j), ps[j+delta]);
+                    }
+                    return applyAllAnnotationMacros(_c, ct); //process the constructor
+                }
+                /*
+                System.out.println( ct );
                 //member classes have implicit declaration class as first parameter
                 if (ct.getParameterCount() > 0 && ct.getParameterTypes()[0] == ct.getDeclaringClass().getEnclosingClass()) {
                     Class[] co = Arrays.copyOfRange(ct.getParameterTypes(), 1, ct.getParameterCount());
@@ -312,8 +383,20 @@ public interface _macro<M extends _anno._hasAnnos>
                     }
                     return applyAllAnnotationMacros(_c, ct); //process the constructor _macro ANNOTATIONS
                 }
+             */       
             }
         }
+        
+        //TODO REMOVE THIS AFTER FIX
+        if( clazz.isAnonymousClass() ){
+            throw new DraftException("Could not find constructor for ANONYMOUS class" + _c);
+        }
+        if( clazz.isLocalClass() ){
+            throw new DraftException("Could not find constructor for LOCAL class" + _c);
+        }
+        if( clazz.isMemberClass() ){
+            throw new DraftException("Could not find constructor for MEMBER class" + _c);
+        }        
         throw new DraftException("Could not find constructor for " + _c);
     }
 }

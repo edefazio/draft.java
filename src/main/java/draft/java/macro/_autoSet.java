@@ -37,7 +37,7 @@ public @interface _autoSet {
             if (t instanceof _method._hasMethods) {
                 List<_field> _fs = t.listFields(SET_FIELDS);
                 _fs.forEach(f ->
-                        ((_method._hasMethods) t).method($SET.compose("name", f.getName(), "type", f.getType()))
+                        ((_method._hasMethods) t).method($SET.construct("name", f.getName(), "type", f.getType()))
                 );
             }
             return t;

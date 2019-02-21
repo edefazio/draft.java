@@ -30,6 +30,7 @@ import java.util.function.Consumer;
 import java.util.function.Predicate;
 
 import static com.github.javaparser.utils.Utils.normalizeEolInTextBlock;
+import java.util.regex.Pattern;
 
 /**
  * Translator for Converting from a String or Java reflective classes to AST Nodes
@@ -1170,9 +1171,30 @@ public enum Ast {
         return typeRef(at.getType().toString());
     }
 
+    /**
+         * When we create a Local Class and ask for it's name, it will have
+         * this weird "$#$" qualifier, where # is some number...
+         * Here is an example:
+         * <PRE>
+         * draft.java._classTest$1$Hoverboard
+         * </PRE>
+         * ...well we want to identify these patterns and convert them into dots
+         * draft.java._classTest.Hoverboard
+         */
+    public static final String LOCAL_CLASS_NAME_PACKAGE_PATTERN = "\\$?\\d+\\$";
+        
+    public static final Pattern PATTERN_LOCAL_CLASS = Pattern.compile( LOCAL_CLASS_NAME_PACKAGE_PATTERN );
+    
     public static Type typeRef(java.lang.reflect.Type t) {
         //System.out.println( "TYPE NAME " + t.getTypeName().replace('$', '.') );
-        return typeRef(t.getTypeName().replace('$', '.'));
+        String str = t.getTypeName();
+        if( PATTERN_LOCAL_CLASS.matcher(str).find() ){
+            //lets remove all the local stuff... return a type without package
+            str = str.replaceAll(LOCAL_CLASS_NAME_PACKAGE_PATTERN, ".");
+            return typeRef( str.substring(str.lastIndexOf('.') +1) );
+        }
+        String name = str.replace('$', '.');        
+        return typeRef(name);
     }
 
     public static Type typeRef(Class clazz) {

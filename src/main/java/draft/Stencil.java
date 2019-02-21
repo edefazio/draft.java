@@ -411,18 +411,18 @@ public final class Stencil implements Template<String>{
                 }
             }
         }
-        return compose( translator, m );
+        return construct( translator, m );
     }
 
     @Override
-    public String compose( Object... $nameValues ) {
-        return compose( Translator.DEFAULT_TRANSLATOR, $nameValues );
+    public String construct( Object... $nameValues ) {
+        return construct( Translator.DEFAULT_TRANSLATOR, $nameValues );
     }
 
     @Override
-    public String compose( Translator translator, Object... $nameValues ) {
+    public String construct( Translator translator, Object... $nameValues ) {
         if( $nameValues.length == 1 && $nameValues[ 0 ] instanceof Tokens) {
-            return compose( translator, (Tokens)$nameValues[ 0 ] );
+            return construct( translator, (Tokens)$nameValues[ 0 ] );
         }
         Map<String, Object> paramMap = new HashMap<>();
         if( $nameValues.length % 2 != 0 ) {
@@ -432,16 +432,16 @@ public final class Stencil implements Template<String>{
         for( int i = 0; i < $nameValues.length; i += 2 ) {
             paramMap.put( $nameValues[ i ].toString(), $nameValues[ i + 1 ] );
         }
-        return compose( translator, paramMap );
+        return construct( translator, paramMap );
     }
 
     @Override
-    public String compose( Map<String, Object> $nameValues ) {
-        return compose( Translator.DEFAULT_TRANSLATOR, $nameValues );
+    public String construct( Map<String, Object> $nameValues ) {
+        return construct( Translator.DEFAULT_TRANSLATOR, $nameValues );
     }
 
     @Override
-    public String compose(Translator translator, Map<String, Object> $nameValues ){
+    public String construct(Translator translator, Map<String, Object> $nameValues ){
 
         Map<String, Object> combinedParams = new HashMap<>($nameValues);
 

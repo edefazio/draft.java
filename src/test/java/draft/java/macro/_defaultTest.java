@@ -10,7 +10,7 @@ public class _defaultTest extends TestCase {
         @_default static int getY(){ return 1; }
     }
     public void test_default(){
-        _interface _i = _macro.to(I.class);
+        _interface _i = _interface.of(I.class);
         //System.out.println( _i);
 
         assertTrue( _i.getMethod("getY").isDefault());

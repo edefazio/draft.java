@@ -122,15 +122,21 @@ public class _javaTest extends TestCase {
         }
         //creating a class this way DOES NOT process the ANNOTATIONS
         _class _c = _class.of(OldName.class);
+        
+        assertFalse( _c.getAnnos().contains(_promote.class));
+        assertFalse( _c.getAnnos().contains(_final.class));
+        
+        _class _c2 = _class.of( Ast.type( OldName.class) );
 
-        assertTrue( _c.getAnnos().contains(_promote.class));
-        assertTrue( _c.getAnnos().contains(_final.class));
+        assertTrue( _c2.getAnnos().contains(_promote.class));
+        assertTrue( _c2.getAnnos().contains(_final.class));
+        
         //assertTrue( _c.getAnnos().contains(_static.class));
 
         _c.getField("Message").getAnnos().contains(_final.class);
 
         //calling this way WILL PROCESS the ANNOTATIONS
-        _c = _macro._class(OldName.class);
+        _c = _class.of(OldName.class);
 
         System.out.println( _c );
 
@@ -152,7 +158,7 @@ public class _javaTest extends TestCase {
             //@_final
             int x,y,z;
         }
-        _class _c = _macro._class(C.class);
+        _class _c = _class.of(C.class);
 
         System.out.println(_c);
     }
@@ -163,7 +169,7 @@ public class _javaTest extends TestCase {
         class C{
             int x,y,z;
         }
-        _class _c = _macro._class(C.class);
+        _class _c = _class.of(C.class);
         System.out.println(_c);
     }
 
@@ -175,7 +181,7 @@ public class _javaTest extends TestCase {
         class C{
             @_public int x,y,z;
         }
-        _class _c = _macro._class(C.class);
+        _class _c = _class.of(C.class);
         System.out.println(_c);
     }
 
@@ -192,17 +198,27 @@ public class _javaTest extends TestCase {
             @_replace({"Hello", "Goodbye"})
             public String Message = "Hello";
         }
-        //creating a class this way DOES NOT process the ANNOTATIONS
+        //creating a class this way DOES process the ANNOTATIONS
         _class _c = _class.of(C.class);
+        
+        //alternatively to NOT process the annotations, build the AST first
+        TypeDeclaration td = Ast.type(C.class);
+        System.out.println("GOT THE TYPE" + td );
+        
+        _class _c2 = _class.of( Ast.type(C.class) );
 
-        assertTrue( _c.getAnnos().contains(_promote.class));
-        assertTrue( _c.getAnnos().contains(_final.class));
+        assertTrue( _c2.hasAnno(_promote.class));
+        assertTrue( _c2.hasAnno(_final.class));
+        
+        //I Process the annotations
+        assertFalse( _c.hasAnno(_promote.class));
+        assertFalse( _c.hasAnno(_final.class));
         //assertTrue( _c.getAnnos().contains(_static.class));
 
         _c.getField("Message").getAnnos().contains(_final.class);
 
         //calling this way WILL PROCESS the ANNOTATIONS
-        _c = _macro._class(C.class);
+        _c = _class.of(C.class);
 
         assertTrue( _c.getModifiers().is("public",  "final"));
         _c.isImplements(Serializable.class);

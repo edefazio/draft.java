@@ -19,7 +19,7 @@ public class _autoDtoTest extends TestCase {
         class AD{
 
         }
-        _class _c = _macro._class(AD.class);
+        _class _c = _class.of(AD.class);
         //even though this class is
         assertTrue( _c.getConstructor(0).getParameters().isEmpty() ); //no arg constructor
         assertTrue( _c.getMethod("toString").isType(String.class) ); //a toString method

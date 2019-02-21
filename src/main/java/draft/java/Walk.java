@@ -895,7 +895,7 @@ public enum Walk {
      */
     public static <L extends _model, R extends Node> R model(
             Node.TreeTraversal tt, R astRootNode, Class<L> _modelClass, Predicate<L> _modelMatchFn, Consumer<L> _modelAction ){
-        if( _java.MODEL_TO_NODE_CLASSES.containsKey( _modelClass ) ) {
+        if( _java._JAVA_TO_AST_NODE_CLASSES.containsKey( _modelClass ) ) {
             //System.out.println("Node Classes ");
             // _anno.class, AnnotationExpr.class
             // _annotation._element.class, AnnotationMemberDeclaration.class
@@ -916,7 +916,7 @@ public enum Walk {
             //class switch would be nice here
             Ast.walk( tt,
                     astRootNode,
-                    _java.MODEL_TO_NODE_CLASSES.get( _modelClass ),
+                    _java._JAVA_TO_AST_NODE_CLASSES.get( _modelClass ),
                     t ->true,
                     a -> {
                         L logical = (L)_java.of( a );

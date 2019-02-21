@@ -16,7 +16,7 @@ public class RuntimeAnnotationsTest extends TestCase {
             UUID u = UUID.randomUUID();
         }
 
-        _class _c = _macro._class(C.class);
+        _class _c = _class.of(C.class);
         assertTrue(_c.isImported(UUID.class));
         assertTrue(_c.isImported(Map.class));
         _project.of( _c );
@@ -26,7 +26,7 @@ public class RuntimeAnnotationsTest extends TestCase {
         class C{
             @_public @_static @_final int d = 100;
         }
-        _class _c = _macro._class(C.class);
+        _class _c = _class.of(C.class);
         assertTrue(_c.getField("d").isStatic());
         assertTrue(_c.getField("d").isFinal());
         assertTrue(_c.getField("d").isPublic());

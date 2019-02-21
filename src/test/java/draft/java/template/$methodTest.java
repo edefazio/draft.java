@@ -15,7 +15,7 @@ public class $methodTest extends TestCase {
         $method $m = $method.of(new Object(){
             @_static void a(){ System.out.println(1); }
         });
-        _method _m = $m.compose();
+        _method _m = $m.construct();
         assertTrue( _m.isStatic() );
     }
     public void testAnonymousBody(){

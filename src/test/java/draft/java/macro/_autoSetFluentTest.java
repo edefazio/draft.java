@@ -11,7 +11,7 @@ public class _autoSetFluentTest extends TestCase {
         class C{
 
         }
-        _class _c = _macro._class(C.class);
+        _class _c = _class.of(C.class);
         assertTrue( _c.listAnnos(_autoSetFluent.class).isEmpty());
         assertTrue(_c.listMethods().isEmpty());
 
@@ -19,7 +19,7 @@ public class _autoSetFluentTest extends TestCase {
         class D{
             final int f = 100;
         }
-        _c = _macro._class(D.class);
+        _c = _class.of(D.class);
         assertTrue( _c.listAnnos(_autoSetFluent.class).isEmpty());
         assertTrue(_c.listMethods().isEmpty());
     }
@@ -30,7 +30,7 @@ public class _autoSetFluentTest extends TestCase {
         class G{
             int a;
         }
-        _class _c = _macro._class(G.class);
+        _class _c = _class.of(G.class);
         System.out.println( _c );
         assertTrue( _c.listAnnos(_autoSetFluent.class).isEmpty());
         assertTrue( _c.getMethod("setA").isType(G.class));
@@ -45,7 +45,7 @@ public class _autoSetFluentTest extends TestCase {
             final String name = "Blah";
         }
 
-        _class _c = _macro._class(G.class);
+        _class _c = _class.of(G.class);
         assertTrue( _c.listAnnos(_autoSetFluent.class).isEmpty());
         assertTrue( _c.getMethod("setA").isType(G.class));
         assertTrue( _c.getMethod("setA").getParameter(0).isType(int.class));

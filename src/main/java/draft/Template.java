@@ -27,7 +27,7 @@ public interface Template<T> {
      * text
      * @return a composed T entity
      */
-    T compose( Translator translator, Map<String, Object> keyValues );
+    T construct( Translator translator, Map<String, Object> keyValues );
 
     /**
      * Compose and return the T using the default the {@link Translator}
@@ -37,7 +37,7 @@ public interface Template<T> {
      * text
      * @return a composed T entity
      */
-    T compose( Map<String, Object> keyValues );
+    T construct( Map<String, Object> keyValues );
 
     /**
      * compose and return a new T given the tokens
@@ -45,7 +45,7 @@ public interface Template<T> {
      * @param keyValues alternating key, and values
      * @return
      */
-    T compose( Object... keyValues );
+    T construct( Object... keyValues );
 
     /**
      * compose and return a new T given the tokens and translator
@@ -54,7 +54,7 @@ public interface Template<T> {
      * @param keyValues alternating key, and values
      * @return
      */
-    T compose( Translator translator, Object... keyValues );
+    T construct( Translator translator, Object... keyValues );
 
     /**
      * fill in the values of the Template sequentially

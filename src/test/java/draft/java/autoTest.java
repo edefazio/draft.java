@@ -37,7 +37,7 @@ public class autoTest extends TestCase {
         _class _c = _class.of( Internal.class );
         System.out.println("NOT PROCESSED" + _c );
 
-        _c = _macro._class(Internal.class);
+        _c = _class.of(Internal.class);
         System.out.println("PROCESSED" + _c );
     }
 }

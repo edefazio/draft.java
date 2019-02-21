@@ -23,7 +23,7 @@ public class $stmtTest extends TestCase {
 
     public void testLabelStmt(){
         $stmt $s = $stmt.of( ($any$)-> {label: System.out.println($any$);} );
-        Statement s = $s.compose( "$any$" , 100);
+        Statement s = $s.construct( "$any$" , 100);
 
         assertEquals( Stmt.of( "label: System.out.println(100);"), s );
     }
@@ -132,7 +132,7 @@ public class $stmtTest extends TestCase {
 
         //specialize a prototype via fill or compose
         Statement st = $s.fill(1);
-        Statement st2 = $s.compose("any", 1);
+        Statement st2 = $s.construct("any", 1);
         assertEquals(st, st2);
 
         //verify we get what we expect

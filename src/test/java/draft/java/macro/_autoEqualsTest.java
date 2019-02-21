@@ -23,7 +23,7 @@ public class _autoEqualsTest extends TestCase {
             public UUID blah = UUID.randomUUID();
         }
 
-        System.out.println( _macro._class(V.class) );
+        System.out.println( _class.of(V.class) );
     }
 
 
@@ -43,11 +43,11 @@ public class _autoEqualsTest extends TestCase {
             public boolean b = true;
         }
 
-        _class _a = _macro.to(A.class);
+        _class _a = _class.of(A.class);
 
         //_class _a = _java._class( A.class);
         System.out.println(_a );
-        _class _b = _macro.to(B.class);
+        _class _b = _class.of(B.class);
         //_class _b = _java._class( B.class);
         System.out.println(_b );
 

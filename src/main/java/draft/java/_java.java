@@ -16,8 +16,17 @@ import java.util.*;
 import static draft.java.Ast.*;
 
 /**
- * Translates from AST {@link Node} entities to {@link _model} entities
- * and implementations of edge "walking" {@link _model} and {@link Node} entities
+ * Translates between AST {@link Node} entities to {@link _model} runtime entities
+ * deals with Runtime Java Classes.
+ * 
+ * This attempts to hel[p unify the many AST /_java models and model types
+ * so we can convert/ translate between :
+ * <UL>
+ *  <LI>a Plain Text String representation of a Java Method
+ *  <LI>a runtime Reflective entity (java.lang.reflect.Method)
+ *  <LI>an AST entity( com.github.javaparser.ast.body.MethodDeclaration)
+ *  <LI>a draft _java (draft.java._method) representation
+ * </UL> 
  *
  * @author Eric
  */
@@ -25,71 +34,71 @@ public enum _java {
     ;
 
     /** Map from the _model._node classes to the Ast Node equivalent */
-    public static final Map<Class<? extends _node>, Class<? extends Node>> MODEL_TO_NODE_CLASSES = new HashMap<>();
+    public static final Map<Class<? extends _node>, Class<? extends Node>> _JAVA_TO_AST_NODE_CLASSES = new HashMap<>();
 
     static {
-        MODEL_TO_NODE_CLASSES.put( _anno.class, AnnotationExpr.class );
-        MODEL_TO_NODE_CLASSES.put( _annotation._element.class, AnnotationMemberDeclaration.class );
-        MODEL_TO_NODE_CLASSES.put( _enum._constant.class, EnumConstantDeclaration.class );
-        MODEL_TO_NODE_CLASSES.put( _constructor.class, ConstructorDeclaration.class );
-        MODEL_TO_NODE_CLASSES.put( _field.class, VariableDeclarator.class );
-        MODEL_TO_NODE_CLASSES.put( _method.class, MethodDeclaration.class );
-        MODEL_TO_NODE_CLASSES.put( _parameter.class, Parameter.class );
-        MODEL_TO_NODE_CLASSES.put( _receiverParameter.class, ReceiverParameter.class );
-        MODEL_TO_NODE_CLASSES.put( _staticBlock.class, InitializerDeclaration.class );
-        MODEL_TO_NODE_CLASSES.put( _typeParameter.class, TypeParameter.class );
-        MODEL_TO_NODE_CLASSES.put( _typeRef.class, Type.class );
+        _JAVA_TO_AST_NODE_CLASSES.put( _anno.class, AnnotationExpr.class );
+        _JAVA_TO_AST_NODE_CLASSES.put( _annotation._element.class, AnnotationMemberDeclaration.class );
+        _JAVA_TO_AST_NODE_CLASSES.put( _enum._constant.class, EnumConstantDeclaration.class );
+        _JAVA_TO_AST_NODE_CLASSES.put( _constructor.class, ConstructorDeclaration.class );
+        _JAVA_TO_AST_NODE_CLASSES.put( _field.class, VariableDeclarator.class );
+        _JAVA_TO_AST_NODE_CLASSES.put( _method.class, MethodDeclaration.class );
+        _JAVA_TO_AST_NODE_CLASSES.put( _parameter.class, Parameter.class );
+        _JAVA_TO_AST_NODE_CLASSES.put( _receiverParameter.class, ReceiverParameter.class );
+        _JAVA_TO_AST_NODE_CLASSES.put( _staticBlock.class, InitializerDeclaration.class );
+        _JAVA_TO_AST_NODE_CLASSES.put( _typeParameter.class, TypeParameter.class );
+        _JAVA_TO_AST_NODE_CLASSES.put( _typeRef.class, Type.class );
 
-        MODEL_TO_NODE_CLASSES.put( _type.class, TypeDeclaration.class );
-        MODEL_TO_NODE_CLASSES.put( _annotation.class, AnnotationDeclaration.class );
-        MODEL_TO_NODE_CLASSES.put( _class.class, ClassOrInterfaceDeclaration.class );
-        MODEL_TO_NODE_CLASSES.put( _interface.class, ClassOrInterfaceDeclaration.class );
-        MODEL_TO_NODE_CLASSES.put( _enum.class, EnumDeclaration.class );
+        _JAVA_TO_AST_NODE_CLASSES.put( _type.class, TypeDeclaration.class );
+        _JAVA_TO_AST_NODE_CLASSES.put( _annotation.class, AnnotationDeclaration.class );
+        _JAVA_TO_AST_NODE_CLASSES.put( _class.class, ClassOrInterfaceDeclaration.class );
+        _JAVA_TO_AST_NODE_CLASSES.put( _interface.class, ClassOrInterfaceDeclaration.class );
+        _JAVA_TO_AST_NODE_CLASSES.put( _enum.class, EnumDeclaration.class );
     }
 
     /** Map from the {@link _model._node} classes to the Ast {@link com.github.javaparser.ast.Node} equivalent */
-    public static final Map<Class<? extends Node>, Class<? extends _node>> NODE_TO_MODEL_CLASSES = new HashMap<>();
+    public static final Map<Class<? extends Node>, Class<? extends _node>> AST_NODE_TO_JAVA_CLASSES = new HashMap<>();
 
     static {
-        NODE_TO_MODEL_CLASSES.put( AnnotationExpr.class, _anno.class ); //base
-        NODE_TO_MODEL_CLASSES.put( NormalAnnotationExpr.class, _anno.class ); //impl
-        NODE_TO_MODEL_CLASSES.put( MarkerAnnotationExpr.class, _anno.class );
-        NODE_TO_MODEL_CLASSES.put( SingleMemberAnnotationExpr.class, _anno.class );
+        AST_NODE_TO_JAVA_CLASSES.put( AnnotationExpr.class, _anno.class ); //base
+        AST_NODE_TO_JAVA_CLASSES.put( NormalAnnotationExpr.class, _anno.class ); //impl
+        AST_NODE_TO_JAVA_CLASSES.put( MarkerAnnotationExpr.class, _anno.class );
+        AST_NODE_TO_JAVA_CLASSES.put( SingleMemberAnnotationExpr.class, _anno.class );
 
-        NODE_TO_MODEL_CLASSES.put( AnnotationMemberDeclaration.class,_annotation._element.class );
-        NODE_TO_MODEL_CLASSES.put( EnumConstantDeclaration.class, _enum._constant.class );
-        NODE_TO_MODEL_CLASSES.put( ConstructorDeclaration.class, _constructor.class );
+        AST_NODE_TO_JAVA_CLASSES.put( AnnotationMemberDeclaration.class,_annotation._element.class );
+        AST_NODE_TO_JAVA_CLASSES.put( EnumConstantDeclaration.class, _enum._constant.class );
+        AST_NODE_TO_JAVA_CLASSES.put( ConstructorDeclaration.class, _constructor.class );
 
-        NODE_TO_MODEL_CLASSES.put( VariableDeclarator.class, _field.class );
-        NODE_TO_MODEL_CLASSES.put( FieldDeclaration.class, _field.class );
+        AST_NODE_TO_JAVA_CLASSES.put( VariableDeclarator.class, _field.class );
+        AST_NODE_TO_JAVA_CLASSES.put( FieldDeclaration.class, _field.class );
 
-        NODE_TO_MODEL_CLASSES.put( MethodDeclaration.class, _method.class );
-        NODE_TO_MODEL_CLASSES.put( Parameter.class, _parameter.class );
-        NODE_TO_MODEL_CLASSES.put( ReceiverParameter.class, _receiverParameter.class );
-        NODE_TO_MODEL_CLASSES.put( InitializerDeclaration.class, _staticBlock.class );
-        NODE_TO_MODEL_CLASSES.put( TypeParameter.class , _typeParameter.class );
+        AST_NODE_TO_JAVA_CLASSES.put( MethodDeclaration.class, _method.class );
+        AST_NODE_TO_JAVA_CLASSES.put( Parameter.class, _parameter.class );
+        AST_NODE_TO_JAVA_CLASSES.put( ReceiverParameter.class, _receiverParameter.class );
+        AST_NODE_TO_JAVA_CLASSES.put( InitializerDeclaration.class, _staticBlock.class );
+        AST_NODE_TO_JAVA_CLASSES.put( TypeParameter.class , _typeParameter.class );
 
-        NODE_TO_MODEL_CLASSES.put( Type.class, _typeRef.class );
-        NODE_TO_MODEL_CLASSES.put( ArrayType.class, _typeRef.class);
-        NODE_TO_MODEL_CLASSES.put( ClassOrInterfaceType.class, _typeRef.class);
-        NODE_TO_MODEL_CLASSES.put( IntersectionType.class, _typeRef.class);
-        NODE_TO_MODEL_CLASSES.put( PrimitiveType.class, _typeRef.class);
-        NODE_TO_MODEL_CLASSES.put( ReferenceType.class, _typeRef.class);
-        NODE_TO_MODEL_CLASSES.put( UnionType.class, _typeRef.class);
-        NODE_TO_MODEL_CLASSES.put( VarType.class, _typeRef.class);
-        NODE_TO_MODEL_CLASSES.put( VoidType.class, _typeRef.class);
-        NODE_TO_MODEL_CLASSES.put( WildcardType.class, _typeRef.class);
+        AST_NODE_TO_JAVA_CLASSES.put( Type.class, _typeRef.class );
+        AST_NODE_TO_JAVA_CLASSES.put( ArrayType.class, _typeRef.class);
+        AST_NODE_TO_JAVA_CLASSES.put( ClassOrInterfaceType.class, _typeRef.class);
+        AST_NODE_TO_JAVA_CLASSES.put( IntersectionType.class, _typeRef.class);
+        AST_NODE_TO_JAVA_CLASSES.put( PrimitiveType.class, _typeRef.class);
+        AST_NODE_TO_JAVA_CLASSES.put( ReferenceType.class, _typeRef.class);
+        AST_NODE_TO_JAVA_CLASSES.put( UnionType.class, _typeRef.class);
+        AST_NODE_TO_JAVA_CLASSES.put( VarType.class, _typeRef.class);
+        AST_NODE_TO_JAVA_CLASSES.put( VoidType.class, _typeRef.class);
+        AST_NODE_TO_JAVA_CLASSES.put( WildcardType.class, _typeRef.class);
 
-        NODE_TO_MODEL_CLASSES.put( TypeDeclaration.class, _type.class );
-        NODE_TO_MODEL_CLASSES.put( ClassOrInterfaceDeclaration.class, _type.class );
-        NODE_TO_MODEL_CLASSES.put( EnumDeclaration.class, _enum.class );
-        NODE_TO_MODEL_CLASSES.put( AnnotationDeclaration.class, _annotation.class );
+        AST_NODE_TO_JAVA_CLASSES.put( TypeDeclaration.class, _type.class );
+        AST_NODE_TO_JAVA_CLASSES.put( ClassOrInterfaceDeclaration.class, _type.class );
+        AST_NODE_TO_JAVA_CLASSES.put( EnumDeclaration.class, _enum.class );
+        AST_NODE_TO_JAVA_CLASSES.put( AnnotationDeclaration.class, _annotation.class );
 
-        NODE_TO_MODEL_CLASSES.put( AnnotationDeclaration.class, _annotation.class );
+        //AST_NODE_TO_JAVA_CLASSES.put( AnnotationDeclaration.class, _annotation.class );
     }
 
     private static _node getLogicalParentNode(Node node ){
-        if( MODEL_TO_NODE_CLASSES.containsValue(node.getClass()) ){
+        if( _JAVA_TO_AST_NODE_CLASSES.containsValue(node.getClass()) ){
             return (_node) of(node);
         }
         return getLogicalParentNode( node.getParentNode().get() );
@@ -248,23 +257,44 @@ public enum _java {
         throw new DraftException( "Unable to create logical entity from " + node );
     }
 
-    public enum Part implements Named { //association
+    /** 
+     * A Way to consistently name things when we construct and deconstruct
+     * Components of Java programs (external tools for building & matching
+     * & diffing can be more valuable having the opportunity to compare
+     * like for like (by componentizing things out and comparing or matching
+     * on a part by part basis)
+     */
+    public enum Component implements Named { 
         ANNOTATIONS("annotations", _anno._annos.class),
+        //annotation
+        ANNOTATION("annotation", _anno.class),
+        
         BODY("body", _body.class),
         MODIFIERS("modifiers", List.class, Modifier.class ),
         JAVADOC( "javadoc",_javadoc.class ),
         PARAMETERS( "parameters", _parameter._parameters.class ),
+        //parameter
+        PARAMETER("parameter", _parameter.class),
+        
         RECEIVER_PARAMETER( "receiverParameter", _receiverParameter.class),
         TYPE_PARAMETERS("typeParameters",_typeParameter._typeParameters.class),
         TYPE_PARAMETER("typeParameter", TypeParameter.class), //_typeParameter.class
         THROWS("throws", _throws.class),
         NAME("name", String.class),
         KEY_VALUES("keyValues", List.class, MemberValuePair.class ), //anno
+        //KeyValue
+        KEY_VALUE("keyValue", MemberValuePair.class), //anno
         VALUE("value", Expression.class), //anno
         PACKAGE_NAME("package", PackageDeclaration.class ),
         IMPORTS("imports", List.class, ImportDeclaration.class),
+        //IMPORT
+        IMPORT("import", ImportDeclaration.class),
         ELEMENTS("elements", List.class, _annotation._element.class), //_annotation
+        //ELEMENT
+        ELEMENT("element", _annotation._element.class), //annotation
         FIELDS("fields", List.class, _field.class),
+        //FIELD
+        FIELD("field", _field.class),
         NESTS("nests", List.class, _type.class),
 
         TYPE( "type", _typeRef.class), //annotation.element
@@ -272,18 +302,25 @@ public enum _java {
 
         EXTENDS("extends", List.class, ClassOrInterfaceType.class), //_class, //_interface
         IMPLEMENTS("implements", List.class, ClassOrInterfaceType.class), //_class, _enum
-        STATIC_BLOCKS( "staticBlocks",List.class, _staticBlock.class), //class
+        STATIC_BLOCKS( "staticBlocks", List.class, _staticBlock.class), //class
         CONSTRUCTORS("constructors", List.class, _constructor.class), //class, _enum
-        METHODS("methods", List.class, _method.class), //class
-
+        //CONSTRUCTOR
+        CONSTRUCTOR("constructor", _constructor.class),
+        
+        METHODS("methods", List.class, _method.class), //class, _enum, _interface, _enum._constant
+        //METHOD
+        METHOD("method", _method.class),
+        
         CONSTANTS("constants",List.class, _enum._constant.class),
+        //CONSTANT
+        CONSTANT("constant", _enum._constant.class), //_enum
         ARGUMENTS("arguments",List.class, Expression.class),     //_enum._constant
 
-        INIT("init", Expression.class),
+        INIT("init", Expression.class), //field
         FINAL("final", Boolean.class ), //_parameter
         VAR_ARG("varArg", Boolean.class), //parameter
 
-        AST_TYPE ("astType", Type.class),
+        AST_TYPE ("astType", Type.class), //typeRef
         ARRAY_LEVEL("arrayLevel", Integer.class), //_typeRef
         ELEMENT_TYPE("elementType", Type.class); //typeRef
 
@@ -291,13 +328,13 @@ public enum _java {
         public final Class implementationClass;
         public final Class elementClass;
 
-        Part(String name, Class implementationClass){
+        Component(String name, Class implementationClass){
             this.name = name;
             this.implementationClass = implementationClass;
             this.elementClass = null;
         }
 
-        Part(String name, Class containerClass, Class elementClass){
+        Component(String name, Class containerClass, Class elementClass){
             this.name = name;
             this.implementationClass = containerClass;
             this.elementClass = elementClass;
@@ -313,8 +350,8 @@ public enum _java {
             return name;
         }
         
-        public static Part of( String name ){
-            Optional<Part> op = Arrays.stream(Part.values()).filter( p ->p.name.equals(name) ).findFirst();
+        public static Component of( String name ){
+            Optional<Component> op = Arrays.stream(Component.values()).filter( p ->p.name.equals(name) ).findFirst();
             if( op.isPresent()){
                 return op.get();
             }

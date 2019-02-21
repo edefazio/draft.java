@@ -1,10 +1,15 @@
 package draft.java.template;
 
 import com.github.javaparser.ast.Node;
+import com.github.javaparser.ast.NodeList;
+import com.github.javaparser.ast.body.BodyDeclaration;
 import com.github.javaparser.ast.expr.AnnotationExpr;
+import com.github.javaparser.ast.expr.ObjectCreationExpr;
 import draft.*;
+import draft.java.Expr;
 import draft.java.Walk;
 import draft.java._anno;
+import static draft.java._anno.of;
 import draft.java._model;
 
 import java.util.ArrayList;
@@ -19,11 +24,24 @@ import java.util.function.Consumer;
 public final class $anno
         implements Template<_anno>, $query<_anno> {
 
+    public static $anno of( String code){
+        return of( new String[]{code} );
+    }
+    
     public static $anno of( String...code){
         _anno _a = _anno.of( code );
         return new $anno( _a.toString().trim() ); //, _a.ast().getClass() );
     }
 
+    
+    public static $anno of( Object anonymousObjectWithAnnotation ){
+        StackTraceElement ste = Thread.currentThread().getStackTrace()[2];
+        ObjectCreationExpr oce = Expr.anonymousClass( ste );
+        NodeList<BodyDeclaration<?>> bds = oce.getAnonymousClassBody().get();
+        BodyDeclaration bd = bds.stream().filter(b -> b.getAnnotations().isNonEmpty() ).findFirst().get();
+        return of( _anno.of(bd.getAnnotation(0) ) );        
+    }
+    
     public static $anno of( _anno _a){
         return new $anno( _a.toString() ); //, _a.ast().getClass() );
     }
@@ -73,23 +91,23 @@ public final class $anno
     }
 
     @Override
-    public _anno compose(Translator translator, Map<String, Object> keyValues) {
-        return _anno.of( annoStencil.compose(translator, keyValues));
+    public _anno construct(Translator translator, Map<String, Object> keyValues) {
+        return _anno.of(annoStencil.construct(translator, keyValues));
     }
 
     @Override
-    public _anno compose(Map<String, Object> keyValues) {
-        return _anno.of( annoStencil.compose(Translator.DEFAULT_TRANSLATOR, keyValues));
+    public _anno construct(Map<String, Object> keyValues) {
+        return _anno.of(annoStencil.construct(Translator.DEFAULT_TRANSLATOR, keyValues));
     }
 
     @Override
-    public _anno compose(Object... keyValues) {
-        return _anno.of( annoStencil.compose(Translator.DEFAULT_TRANSLATOR, keyValues));
+    public _anno construct(Object... keyValues) {
+        return _anno.of( annoStencil.construct(Translator.DEFAULT_TRANSLATOR, keyValues));
     }
 
     @Override
-    public _anno compose(Translator translator, Object... keyValues) {
-        return _anno.of( annoStencil.compose(translator, keyValues));
+    public _anno construct(Translator translator, Object... keyValues) {
+        return _anno.of(annoStencil.construct(translator, keyValues));
     }
 
     @Override
@@ -248,10 +266,10 @@ public final class $anno
      * @return
      */
     public <M extends _model._node> M replaceIn(M _m, $anno $a ){
-        Walk.in( _m, AnnotationExpr.class, e-> {
+        Walk.in(_m, AnnotationExpr.class, e-> {
             Select sel = select( e );
             if( sel != null ){
-                sel.expression.replace( $a.compose(sel.tokens).ast() );
+                sel.expression.replace($a.construct(sel.tokens).ast() );
             }
         });
         return _m;
@@ -261,7 +279,7 @@ public final class $anno
         node.walk(AnnotationExpr.class, e-> {
             Select sel = select( e );
             if( sel != null ){
-                sel.expression.replace( $a.compose(sel.tokens).ast() );
+                sel.expression.replace($a.construct(sel.tokens).ast() );
             }
         });
         return node;
