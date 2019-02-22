@@ -2390,8 +2390,13 @@ public enum Ast {
         if( md == null ){
             return null;
         }
-        if( !md.getParentNode().isPresent()){
-            return null;
+        if( !md.getParentNode().isPresent()){            
+            // we have a single rule that applies for a method with no parent 
+            // ...in the absense of a method body i.e. "void m();" (body is NULL)
+            // it is implied that the method is public & abstract
+            if( !md.getBody().isPresent() ){
+                return NodeList.nodeList( Modifier.publicModifier(), Modifier.abstractModifier());            
+            }
         }
         Node parent = md.getParentNode().get();
         if( parent instanceof ClassOrInterfaceDeclaration){
@@ -2405,13 +2410,19 @@ public enum Ast {
                 return NodeList.nodeList( Modifier.publicModifier());
                 //return EnumSet.of( Modifier.PUBLIC );
             }
+            if( !md.getBody().isPresent()){
+                return NodeList.nodeList( Modifier.publicModifier(), Modifier.abstractModifier());
+            }
             return new NodeList<>();
             //return EnumSet.noneOf(Modifier.class); //nothing for a _class
         }
-        if( parent instanceof AnnotationDeclaration ){
+        if( parent instanceof AnnotationDeclaration ){ //annotation methods 
             AnnotationDeclaration ad = (AnnotationDeclaration)parent;
             return NodeList.nodeList(Modifier.publicModifier(), Modifier.abstractModifier());
             //return EnumSet.of(Modifier.PUBLIC, Modifier.ABSTRACT);
+        }
+        if( !md.getBody().isPresent()){ //No body, must be public abstract
+            return NodeList.nodeList( Modifier.publicModifier(), Modifier.abstractModifier());
         }
         return new NodeList<>();
         //return EnumSet.noneOf(Modifier.class); //nothing for a _class

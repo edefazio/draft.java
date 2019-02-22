@@ -12,6 +12,7 @@ import draft.Text;
 import draft.java._parameter.*;
 import draft.java._anno.*;
 import draft.java._typeParameter._typeParameters;
+import draft.java.macro._macro;
 import draft.java.macro._remove;
 
 import java.util.*;
@@ -94,7 +95,7 @@ public final class _method
         bds.removeIf( b -> b.isAnnotationPresent(_remove.class) || (! (b instanceof MethodDeclaration)) );
         //there should be only (1) method left, if > 1 take the first method
         MethodDeclaration md = (MethodDeclaration)bds.get(0);
-        return of( md );
+        return _macro.to(anonymousObjectBody.getClass(), of( md ));        
     }
 
     public static <T extends Object> _method of( String signature, Supplier<T> body){
@@ -526,6 +527,7 @@ public final class _method
 
 
 
+    @Override
     public NodeList<Modifier> getEffectiveModifiers(){
         NodeList<Modifier> ims = Ast.getImpliedModifiers( this.astMethod );
         if( ims == null ){
@@ -651,9 +653,6 @@ public final class _method
         this.astMethod.setPrivate(false);
         this.astMethod.setProtected(false);
         this.astMethod.setPublic(true);
-        //this.astMethod.getModifiers().add( Modifier.PUBLIC );
-        //this.astMethod.getModifiers().remove( Modifier.PRIVATE );
-        //this.astMethod.getModifiers().remove( Modifier.PROTECTED );
         return this;
     }
 
@@ -668,10 +667,6 @@ public final class _method
         this.astMethod.setPrivate(true);
         this.astMethod.setProtected(false);
         this.astMethod.setPublic(false);
-
-        //this.astMethod.getModifiers().remove( Modifier.PUBLIC );
-        //this.astMethod.getModifiers().add( Modifier.PRIVATE );
-        //this.astMethod.getModifiers().remove( Modifier.PROTECTED );
         return this;
     }
 
@@ -679,9 +674,6 @@ public final class _method
         this.astMethod.setPrivate(false);
         this.astMethod.setProtected(false);
         this.astMethod.setPublic(false);
-        //this.astMethod.getModifiers().remove( Modifier.PUBLIC );
-        //this.astMethod.getModifiers().remove( Modifier.PRIVATE );
-        //this.astMethod.getModifiers().remove( Modifier.PROTECTED );
         return this;
     }
 
