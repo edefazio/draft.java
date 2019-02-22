@@ -9,6 +9,7 @@ import draft.java.macro._abstract;
 import draft.java.macro._default;
 import draft.java.macro._remove;
 import draft.java.macro._static;
+import java.util.Objects;
 import junit.framework.TestCase;
 import test.ComplexInterface;
 import test.subpkg.MarkerInterface;
@@ -181,9 +182,37 @@ public class _interfaceTest extends TestCase {
             "static final int VALUE = 120;"));
         
         _method _m = _i.getMethod( "getValue" );
+        
+        _m.componentize().forEach( (s,o)->{
+            System.out.println( s+" "+o+" : "+ Objects.hashCode(o) );
+        });
+        
+        _method _m2 = _method.of("@ann2(v=12345,k='F') @ann", //NOTE: i intentionally out of order
+            "static int getValue(){",
+            "return 12345;",
+            "}");
+        
+        _m2.componentize().forEach( (s,o)->{
+            System.out.println( s+" "+o+" : "+ Objects.hashCode(o) );
+        });
         assertTrue( _m.is("@ann2(v=12345,k='F') @ann", //NOTE: i intentionally out of order
             "static int getValue(){",
             "return 12345;",
             "}") );        
     }    
+    
+    public interface I{
+        static int a(){
+            return 1;
+        }
+        public static int b(){
+            return 2;
+        }
+    }
+    
+    public void testInterfaceStaticMethod() throws NoSuchMethodException {
+        //the modifiers for a static method SHOUL be public
+        assertEquals(I.class.getMethod("b", new Class[0]).getModifiers(), 
+                I.class.getMethod("a", new Class[0]).getModifiers() );
+    }
 }

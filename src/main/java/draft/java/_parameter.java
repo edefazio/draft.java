@@ -292,9 +292,10 @@ public final class _parameter
          *
          * @param genericParameterTypes
          * @return
-         */
+         
         boolean hasParametersOfType(java.lang.reflect.Type...genericParameterTypes );
-
+        */
+        
         //NOTE: this is removed becayuse it gives BAD results for Generic Parameters
         // List<String>, etc.
         //boolean hasParametersOfType( Class<?>... clazz );

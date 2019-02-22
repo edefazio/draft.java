@@ -210,7 +210,17 @@ public final class _method
 
     public boolean is( String... methodDecl ) {
         try {
-            return of( methodDecl ).equals( this );
+            _method _mm = of( methodDecl );
+            //System.out.println("IS "+ _mm );
+            
+            //because we DONT know the context of the method (on interface, etc.)
+            // lets add all of the implied modifiers to the _mm temp model
+            NodeList<Modifier> mms = Ast.getImpliedModifiers(this.astMethod);
+            mms.forEach(mmm-> { _mm.ast().addModifier(mmm.getKeyword()); } );
+            //System.out.println("ADDING" + mmm ); } );
+            //_mm.ast().addModifier(newModifiers)                    
+            //System.out.println("TRYING "+ _mm +" AGAINST "+ this );
+            return _mm.equals( this );
         }
         catch( Exception e ) {
         }
@@ -307,11 +317,11 @@ public final class _method
     @Override
     public Map<_java.Component, Object> componentsMap() {
         Map<_java.Component, Object> parts = new HashMap<>();
-        parts.put(_java.Component.ANNOS, getAnnos() );
+        parts.put( _java.Component.ANNOS, getAnnos() );
         parts.put( _java.Component.BODY, getBody() );
         parts.put( _java.Component.TYPE, getType() );
         parts.put( _java.Component.PARAMETERS, getParameters() );
-        parts.put( _java.Component.MODIFIERS, getModifiers() );
+        parts.put( _java.Component.MODIFIERS, getEffectiveModifiers()  );
         parts.put( _java.Component.JAVADOC, getJavadoc() );
         parts.put( _java.Component.RECEIVER_PARAMETER, getReceiverParameter() );
         parts.put( _java.Component.TYPE_PARAMETERS, getTypeParameters() );
@@ -323,6 +333,7 @@ public final class _method
     @Override
     public int hashCode() {
         int hash = 3;
+        
         hash = 23 * hash + Objects.hash(
                 Ast.annotationsHash(astMethod),
                 this.getBody(),
@@ -330,7 +341,8 @@ public final class _method
                 this.getEffectiveModifiers(), //this.getModifiers(),
                 this.getName(),
                 this.getParameters(),
-                Ast.typesHashCode( astMethod.getThrownExceptions()), this.getTypeParameters(),
+                Ast.typesHashCode( astMethod.getThrownExceptions()), 
+                this.getTypeParameters(),
                 this.getReceiverParameter(),
                 Ast.typeHash(astMethod.getType()) );
         return hash;
@@ -384,6 +396,7 @@ public final class _method
         return this.getThrows().contains( rt );
     }
 
+    @Override
     public _method typeParameters( String typeParameters ) {
         this.astMethod.setTypeParameters( Ast.typeParameters( typeParameters ) );
         return this;
@@ -403,20 +416,13 @@ public final class _method
     public boolean hasParameters() {
         return this.astMethod.getParameters().isNonEmpty();
     }
-
-    /*
-    NOTE: We're removing this because it's giving the wrong results for
-    generic parameters i.e. List<String>... use hashParametersOfType(Type....)
-    instead
-
-    @Override
-    public boolean hasParametersOfType(Class<?>... paramTypes) {
-        return this.ast().hasParametersOfType(paramTypes);
-    }
-    */
-
     
-    
+    /**
+     * Match the reflective java.lang.reflect.Method to this _method's parameters
+     * 
+     * @param m the method
+     * @return 
+     */
     public boolean hasParametersOf(java.lang.reflect.Method m){
         java.lang.reflect.Type[] genericParameterTypes = m.getGenericParameterTypes();
         List<_parameter> pl = this.listParameters();
@@ -424,7 +430,7 @@ public final class _method
             return false;
         }
         for (int i = 0; i < genericParameterTypes.length; i++) {
-            System.out.println( "PARAM "+ genericParameterTypes[i]);
+            //System.out.println( "PARAM "+ genericParameterTypes[i]);
             _typeRef _t = _typeRef.of(genericParameterTypes[i]);
             if (!pl.get(i).isType(_t)) {
                 if (m.isVarArgs()
@@ -441,11 +447,13 @@ public final class _method
         return true;
     }
     
-    /** TODO REMOVE THIS IT DOESNT WORK (ESPECIALLY FOR VARARGS
+    /** 
+     * TODO REMOVE THIS IT DOESNT WORK (ESPECIALLY FOR VARARGS)
      * 
      * @param genericParameterTypes
      * @return 
-     */
+     
+    @Override
     public boolean hasParametersOfType(java.lang.reflect.Type...genericParameterTypes){
         //receiver parameters?
         if( genericParameterTypes.length != this.listParameters().size() ){
@@ -470,8 +478,9 @@ public final class _method
         System.out.println( this.getParameters() );
 
         return this.ast().hasParametersOfType(paramTypes.toArray(new String[0]));
-        */
+        
     }
+    */ 
 
     @Override
     public _method addThrows( String... throwExceptions ) {
@@ -525,15 +534,20 @@ public final class _method
         return _modifiers.of( this.astMethod );
     }
 
-
-
     @Override
     public NodeList<Modifier> getEffectiveModifiers(){
         NodeList<Modifier> ims = Ast.getImpliedModifiers( this.astMethod );
+        
         if( ims == null ){
             return this.astMethod.getModifiers();
         }
-        ims.addAll(this.astMethod.getModifiers());
+        NodeList<Modifier> mms = this.astMethod.getModifiers();
+        mms.forEach(m -> {
+            if( !ims.contains( m )){
+                ims.add(m);
+            } 
+        });
+        //ims.addAll(this.astMethod.getModifiers());
         return ims;
     }
 

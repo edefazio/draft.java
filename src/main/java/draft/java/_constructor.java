@@ -315,6 +315,7 @@ public final class _constructor implements _anno._hasAnnos<_constructor>, _javad
         return true;        
     }
     
+    /*
     //NOTE: THIS FAILS FOR VARARGS, I SHOULD GET RID OF THE API ENTIRELY
     @Override
     public boolean hasParametersOfType(java.lang.reflect.Type...genericParameterTypes){
@@ -336,6 +337,7 @@ public final class _constructor implements _anno._hasAnnos<_constructor>, _javad
         }
         return true;
     }
+    */
     
     /*
     @Override

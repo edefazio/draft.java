@@ -135,7 +135,7 @@ public class _methodTest extends TestCase {
                 () -> System.out.println("Hello World!"));
         _m.findFirst(Node.class);
         _m.findFirst(Node.class, n-> n.getComment().isPresent()); //find first commented node
-        assertTrue(_m.hasParametersOfType());
+        //assertTrue(_m.hasParametersOfType());
 
         assertNotNull( _m.findFirst(StringLiteralExpr.class) );
         //assertNotNull( _m.findFirst(_anno.class) );
@@ -568,7 +568,7 @@ public class _methodTest extends TestCase {
             "String...varArg");
         _m.addThrows("A", "B");
         _m.setBody("//comment", "System.out.println(1);", "return null;" );
-        System.out.println( _m );
+        //System.out.println( _m );
         
         _method _test = _method.of( 
             "/** JAVADOC */",

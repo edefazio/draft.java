@@ -184,9 +184,9 @@ public interface _macro<M extends _anno._hasAnnos>
         Method mm = null;
         List<Method> ms = Arrays.stream(clazz.getDeclaredMethods())
                 .filter(m -> m.getName().equals(_mm.getName())).collect(Collectors.toList());
-        System.out.println( "TOTOAL METHODS "+ ms.size());
+        //System.out.println( "TOTOAL METHODS "+ ms.size());
         for (int i = 0; i < ms.size(); i++) {
-            System.out.println( "TRYING METHOD "+ ms.get(i)+" for ");
+            //System.out.println( "TRYING METHOD "+ ms.get(i)+" for ");
             if( _mm.hasParametersOf(ms.get(i))) {
                 mm = ms.get(i);
             }

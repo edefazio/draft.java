@@ -33,6 +33,30 @@ import java.util.function.Consumer;
  */
 public class AstTest extends TestCase {
 
+    public static class F{
+        
+        static int a(){
+            return 1;
+        }
+        public static int b(){
+            return 2;
+        }
+    }
+    
+    public void testImpliedModifiers() throws NoSuchMethodException{
+        Class FF = F.class;
+        System.out.println("A MODIFIERS " + F.class.getDeclaredMethod("a", new Class[0]).getModifiers());
+        System.out.println("B MODIFIERS " + F.class.getDeclaredMethod("b", new Class[0]).getModifiers());
+        _class _c = _class.of( F.class );
+        
+        _method _m1 = _c.getMethod("a");
+        _method _m2 = _c.getMethod("b");
+        
+        System.out.println( _m1.getEffectiveModifiers() );
+        System.out.println( _m2.getEffectiveModifiers() );
+        
+    }
+    
     public void testTypeEquals(){
         Ast.typesEqual( Ast.typeRef("java.util.List<java.lang.String>"),
                 Ast.typeRef("List<String>") );

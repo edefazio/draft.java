@@ -2397,6 +2397,7 @@ public enum Ast {
             if( !md.getBody().isPresent() ){
                 return NodeList.nodeList( Modifier.publicModifier(), Modifier.abstractModifier());            
             }
+            return new NodeList();
         }
         Node parent = md.getParentNode().get();
         if( parent instanceof ClassOrInterfaceDeclaration){
@@ -2410,6 +2411,7 @@ public enum Ast {
                 return NodeList.nodeList( Modifier.publicModifier());
                 //return EnumSet.of( Modifier.PUBLIC );
             }
+            
             if( !md.getBody().isPresent()){
                 return NodeList.nodeList( Modifier.publicModifier(), Modifier.abstractModifier());
             }
