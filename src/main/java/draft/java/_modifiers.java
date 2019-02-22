@@ -106,17 +106,6 @@ public final class _modifiers
         node.setModifier( mod.getKeyword(), true );
         return this;
     }
-    /*
-    public _modifiers set( com.github.javaparser.ast.Modifier mod ) {
-        if( mod == Modifier.publicModifier() || mod == Modifier.PRIVATE || mod == Modifier.PROTECTED ) {
-            node.removeModifier(Modifier.PUBLIC);
-            node.removeModifier(Modifier.PRIVATE);
-            node.removeModifier(Modifier.PROTECTED);
-        }
-        node.setModifier( mod, true );
-        return this;
-    }
-    */
 
     public _modifiers unset( com.github.javaparser.ast.Modifier mod ) {
         //if( mod == Modifier.PUBLIC || mod == Modifier.PRIVATE || mod == Modifier.PROTECTED || mod == Modifier.DEFAULT ) {
@@ -189,8 +178,6 @@ public final class _modifiers
      */
     public _modifiers setDefault() {
         this.node.setModifier(Modifier.Keyword.DEFAULT, true );
-        //NodeList<Modifier> ms = this.node.getModifiers();
-        //ms.add( Modifier.Keyword.DEFAULT );
         return this;
     }
 
@@ -198,9 +185,6 @@ public final class _modifiers
         NodeList<Modifier> ms = this.node.getModifiers();
         this.node.removeModifier( Modifier.Keyword.PUBLIC, Modifier.Keyword.PROTECTED, Modifier.Keyword.PRIVATE);
 
-        //ms.remove( Modifier.publicModifier() );
-        //ms.remove( Modifier.privateModifier() );
-        //ms.remove( Modifier.protectedModifier() );
         return this;
     }
 
@@ -239,9 +223,6 @@ public final class _modifiers
     public _modifiers setPublic() {
         this.setDefaultAccess().set( Modifier.Keyword.PUBLIC );
         return this;
-        //this.unset(Modifier.PRIVATE);
-        //this.unset(Modifier.PROTECTED);
-        //return this.set( Modifier.PUBLIC );
     }
 
     public _modifiers setProtected() {
@@ -480,80 +461,7 @@ public final class _modifiers
         //BIT_TO_ENUM_MAP.put( 1 << 12, com.github.javaparser.ast.Modifier );
         //KEYWORD_TO_ENUM_MAP.put( "default", com.github.javaparser.ast.Modifier.DEFAULT );
     }
-    /*
-    static {
-        KEYWORD_TO_BIT_MAP.put( "public", java.lang.reflect.Modifier.PUBLIC );
-        BIT_TO_KEYWORD_MAP.put( java.lang.reflect.Modifier.PUBLIC, "public" );
-        BIT_TO_ENUM_MAP.put( java.lang.reflect.Modifier.PUBLIC, com.github.javaparser.ast.Modifier.PUBLIC );
-        ENUM_TO_KEYWORD_MAP.put( com.github.javaparser.ast.Modifier.PUBLIC, "public" );
-        KEYWORD_TO_ENUM_MAP.put( "public", com.github.javaparser.ast.Modifier.PUBLIC );
-
-        KEYWORD_TO_BIT_MAP.put( "protected", java.lang.reflect.Modifier.PROTECTED );
-        BIT_TO_KEYWORD_MAP.put( java.lang.reflect.Modifier.PROTECTED, "protected" );
-        BIT_TO_ENUM_MAP.put( java.lang.reflect.Modifier.PROTECTED, com.github.javaparser.ast.Modifier.PROTECTED );
-        ENUM_TO_KEYWORD_MAP.put( com.github.javaparser.ast.Modifier.PROTECTED, "protected" );
-        KEYWORD_TO_ENUM_MAP.put( "protected", com.github.javaparser.ast.Modifier.PROTECTED );
-
-        KEYWORD_TO_BIT_MAP.put( "private", java.lang.reflect.Modifier.PRIVATE );
-        BIT_TO_KEYWORD_MAP.put( java.lang.reflect.Modifier.PRIVATE, "private" );
-        BIT_TO_ENUM_MAP.put( java.lang.reflect.Modifier.PRIVATE, com.github.javaparser.ast.Modifier.PRIVATE );
-        KEYWORD_TO_ENUM_MAP.put( "private", com.github.javaparser.ast.Modifier.PRIVATE );
-        ENUM_TO_KEYWORD_MAP.put( com.github.javaparser.ast.Modifier.PRIVATE, "private" );
-
-        KEYWORD_TO_BIT_MAP.put( "static", java.lang.reflect.Modifier.STATIC );
-        BIT_TO_KEYWORD_MAP.put( java.lang.reflect.Modifier.STATIC, "static" );
-        BIT_TO_ENUM_MAP.put( java.lang.reflect.Modifier.STATIC, com.github.javaparser.ast.Modifier.STATIC );
-        KEYWORD_TO_ENUM_MAP.put( "static", com.github.javaparser.ast.Modifier.STATIC );
-        ENUM_TO_KEYWORD_MAP.put( com.github.javaparser.ast.Modifier.STATIC, "static" );
-
-        KEYWORD_TO_BIT_MAP.put( "synchronized", java.lang.reflect.Modifier.SYNCHRONIZED );
-        BIT_TO_KEYWORD_MAP.put( java.lang.reflect.Modifier.SYNCHRONIZED, "synchronized" );
-        BIT_TO_ENUM_MAP.put( java.lang.reflect.Modifier.SYNCHRONIZED, com.github.javaparser.ast.Modifier.SYNCHRONIZED );
-        KEYWORD_TO_ENUM_MAP.put( "synchronized", com.github.javaparser.ast.Modifier.SYNCHRONIZED );
-        ENUM_TO_KEYWORD_MAP.put( com.github.javaparser.ast.Modifier.SYNCHRONIZED, "synchronized" );
-
-        KEYWORD_TO_BIT_MAP.put( "abstract", java.lang.reflect.Modifier.ABSTRACT );
-        BIT_TO_KEYWORD_MAP.put( java.lang.reflect.Modifier.ABSTRACT, "abstract" );
-        BIT_TO_ENUM_MAP.put( java.lang.reflect.Modifier.ABSTRACT, com.github.javaparser.ast.Modifier.ABSTRACT );
-        KEYWORD_TO_ENUM_MAP.put( "abstract", com.github.javaparser.ast.Modifier.ABSTRACT );
-        ENUM_TO_KEYWORD_MAP.put( com.github.javaparser.ast.Modifier.ABSTRACT, "abstract" );
-
-        KEYWORD_TO_BIT_MAP.put( "final", java.lang.reflect.Modifier.FINAL );
-        BIT_TO_KEYWORD_MAP.put( java.lang.reflect.Modifier.FINAL, "final" );
-        BIT_TO_ENUM_MAP.put( java.lang.reflect.Modifier.FINAL, com.github.javaparser.ast.Modifier.FINAL );
-        KEYWORD_TO_ENUM_MAP.put( "final", com.github.javaparser.ast.Modifier.FINAL );
-        ENUM_TO_KEYWORD_MAP.put( com.github.javaparser.ast.Modifier.FINAL, "final" );
-
-        KEYWORD_TO_BIT_MAP.put( "native", java.lang.reflect.Modifier.NATIVE );
-        BIT_TO_KEYWORD_MAP.put( java.lang.reflect.Modifier.NATIVE, "native" );
-        BIT_TO_ENUM_MAP.put( java.lang.reflect.Modifier.NATIVE, com.github.javaparser.ast.Modifier.NATIVE );
-        KEYWORD_TO_ENUM_MAP.put( "native", com.github.javaparser.ast.Modifier.NATIVE );
-        ENUM_TO_KEYWORD_MAP.put( com.github.javaparser.ast.Modifier.NATIVE, "native" );
-
-        KEYWORD_TO_BIT_MAP.put( "transient", java.lang.reflect.Modifier.TRANSIENT );
-        BIT_TO_KEYWORD_MAP.put( java.lang.reflect.Modifier.TRANSIENT, "transient" );
-        BIT_TO_ENUM_MAP.put( java.lang.reflect.Modifier.TRANSIENT, com.github.javaparser.ast.Modifier.TRANSIENT );
-        KEYWORD_TO_ENUM_MAP.put( "transient", com.github.javaparser.ast.Modifier.TRANSIENT );
-        ENUM_TO_KEYWORD_MAP.put( com.github.javaparser.ast.Modifier.TRANSIENT, "transient" );
-
-        KEYWORD_TO_BIT_MAP.put( "volatile", java.lang.reflect.Modifier.VOLATILE );
-        BIT_TO_KEYWORD_MAP.put( java.lang.reflect.Modifier.VOLATILE, "volatile" );
-        BIT_TO_ENUM_MAP.put( java.lang.reflect.Modifier.VOLATILE, com.github.javaparser.ast.Modifier.VOLATILE );
-        KEYWORD_TO_ENUM_MAP.put( "volatile", com.github.javaparser.ast.Modifier.VOLATILE );
-
-        KEYWORD_TO_BIT_MAP.put( "strictfp", java.lang.reflect.Modifier.STRICT );
-        BIT_TO_KEYWORD_MAP.put( java.lang.reflect.Modifier.STRICT, "strictfp" );
-        BIT_TO_ENUM_MAP.put( java.lang.reflect.Modifier.STRICT, com.github.javaparser.ast.Modifier.STRICTFP );
-        KEYWORD_TO_ENUM_MAP.put( "strictfp", com.github.javaparser.ast.Modifier.STRICTFP );
-        ENUM_TO_KEYWORD_MAP.put( com.github.javaparser.ast.Modifier.STRICTFP, "strictfp" );
-
-        //ANY_FOR DEFAULT INTERFACES
-        KEYWORD_TO_BIT_MAP.put( "default", 1 << 12 );
-        BIT_TO_KEYWORD_MAP.put( 1 << 12, "default" );
-        BIT_TO_ENUM_MAP.put( 1 << 12, com.github.javaparser.ast.Modifier.DEFAULT );
-        KEYWORD_TO_ENUM_MAP.put( "default", com.github.javaparser.ast.Modifier.DEFAULT );
-    }
-    */
+    
     /**
      *
      * @author Eric
@@ -595,10 +503,10 @@ public final class _modifiers
          *
          * // because an initialized field (a) on an interface
          * // has implied modifiers of "public static final"
-         * // but they can be ommitted...
+         * // but they can be omitted...
          * // we need to calculate the implied modifiers on entities to
          * // test (at the model level) whether two entities are in fact
-         * // semantically equal when they arent syntactically equal
+         * // semantically equal when they aren't syntactically equal
          * </PRE>
          *
          * we can verify this is true by running this test :
