@@ -10,6 +10,7 @@ import java.util.function.Supplier;
 import com.github.javaparser.ast.expr.MethodCallExpr;
 import com.github.javaparser.ast.expr.StringLiteralExpr;
 import com.github.javaparser.ast.stmt.ExpressionStmt;
+import draft.java.macro._abstract;
 import junit.framework.TestCase;
 
 /**
@@ -18,6 +19,20 @@ import junit.framework.TestCase;
  */
 public class _methodTest extends TestCase {
 
+    /**
+     * Verify that if I have macro annotations on an Anonymous Object that
+     * I pass into a 
+     */
+    public void testAnonymousObjectWithMacroAnnotations(){
+        _method _m = _method.of( new Object(){
+           @_abstract public void m(){} 
+        });
+        
+        assertTrue( _m.isAbstract() ); //modifier is set
+        assertTrue( !_m.ast().getBody().isPresent()); //body is removed
+        assertTrue( !_m.hasAnno(_abstract.class)); //no annotation left
+    }
+    
     interface I{
         int m();
         default int n(){
