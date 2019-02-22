@@ -884,6 +884,33 @@ public final class _method
         return this;
     }
 
+    public static final _java.Semantic<Collection<_method>> EQIVALENT_METHODS = (o1, o2)->{
+         if( o1 == null){
+                return o2 == null;
+            }
+            if( o2 == null ){
+                return false;
+            }
+            if( o1.size() != o2.size()){
+                return false;
+            }
+            Set<_method> tm = new HashSet<>();
+            Set<_method> om = new HashSet<>();
+            tm.addAll(o1);
+            om.addAll(o2);
+            return Objects.equals(tm, om);        
+    };
+    
+    /** 
+     * Are these (2) collections of methods equivalent ?
+     * @param left
+     * @param right
+     * @return true if these collections are semantically equivalent
+     */
+    public static boolean equivalent( Collection<_method> left, Collection<_method> right ){
+        return EQIVALENT_METHODS.equivalent(left, right);
+    }
+    
     /**
      *
      * @author Eric

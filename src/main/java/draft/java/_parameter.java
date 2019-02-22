@@ -352,6 +352,7 @@ public final class _parameter
         }
     }
 
+    
     /**
      *
      * Parameter is the AST node TYPE (the syntax and storage TYPE in the AST)
@@ -364,6 +365,7 @@ public final class _parameter
     public static final class _parameters
             implements _model {
 
+        
         public static _parameters of( String... strs ) {
             //we need a holder for the Nodes
             StringBuilder params = new StringBuilder();
@@ -553,20 +555,7 @@ public final class _parameter
 
                 if( ! Objects.equals(t, o)){
                     return false;
-                }
-                /*
-                if( !_parameter.typesEqual( t, o ) ) {
-                    return false;
-                }
-                */
-                /*
-                Parameter t = this.astNodeWithParams.getParameter( i );
-                Parameter o = other.astNodeWithParams.getParameter( i );
-
-                if( !_parameter.typesEqual( t, o ) ) {
-                    return false;
-                }
-                */
+                }                
             }
             return true;
         }

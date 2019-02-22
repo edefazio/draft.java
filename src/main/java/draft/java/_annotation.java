@@ -338,6 +338,7 @@ public final class _annotation
         return this;
     }
 
+    @Override
     public _annotation removeField( String fieldName ){
         Optional<FieldDeclaration> ofd = this.astAnnotation.getFieldByName(fieldName );
         if( ofd.isPresent() ){
@@ -476,11 +477,12 @@ public final class _annotation
         return this;
     }
 
+    @Override
     public Map<_java.Component, Object> componentsMap( ) {
         Map<_java.Component, Object> parts = new HashMap<>();
         parts.put( _java.Component.PACKAGE_NAME, this.getPackage() );
         parts.put( _java.Component.IMPORTS, this.listImports() );
-        parts.put(_java.Component.ANNOS, this.listAnnos() );
+        parts.put( _java.Component.ANNOS, this.listAnnos() );
         parts.put( _java.Component.JAVADOC, this.getJavadoc() );
         parts.put( _java.Component.NAME, this.getName() );
         parts.put( _java.Component.MODIFIERS, this.getModifiers() );
@@ -788,5 +790,27 @@ public final class _annotation
         public String toString(){
             return this.astAnnMember.toString();
         }
+    }
+    
+    /**
+     * Verify that one list of _element is equivalent to another list of _element
+     */
+    public static _java.Semantic<Collection<_element>> EQIVALENT_ELEMENTS_LIST = 
+            (Collection<_element> o1, Collection<_element> o2) -> {
+        if( o1 == null ){
+            return o2 == null;
+        }
+        if( o1.size() != o2.size()){
+            return false;
+        }
+        Set<_element> tm = new HashSet<>();
+        Set<_element> om = new HashSet<>();
+        tm.addAll(o1);
+        om.addAll(o2);
+        return Objects.equals(tm, om);
+    };
+    
+    public static boolean equivalent( Collection<_element> left, Collection<_element> right){
+        return EQIVALENT_ELEMENTS_LIST.equivalent(left, right);
     }
 }

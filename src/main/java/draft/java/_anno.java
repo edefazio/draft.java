@@ -703,6 +703,28 @@ public final class _anno
     }
 
     /**
+     * Verify that one list of _anno is equivalent to another list of _anno
+     */
+    public static _java.Semantic<Collection<_anno>> EQIVALENT_ANNOS_LIST = 
+            (Collection<_anno> o1, Collection<_anno> o2) -> {
+        if( o1 == null ){
+            return o2 == null;
+        }
+        if( o1.size() != o2.size()){
+            return false;
+        }
+        Set<_anno> tm = new HashSet<>();
+        Set<_anno> om = new HashSet<>();
+        tm.addAll(o1);
+        om.addAll(o2);
+        return Objects.equals(tm, om);
+    };
+    
+    public static boolean equivalent( Collection<_anno> left, Collection<_anno> right){
+        return EQIVALENT_ANNOS_LIST.equivalent(left, right);
+    }
+    
+    /**
      * Grouping of _anno (s) expressions ({@link AnnotationExpr})
      * annotating a Class, Field, Method, Enum Constant, etc.
      *

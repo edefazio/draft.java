@@ -1044,4 +1044,26 @@ public final class _enum implements _type<EnumDeclaration, _enum>,_method._hasMe
             return hash;
         }
     }
+    
+    /**
+     * Verify that one list of _constant is equivalent to another list of _constant
+     */
+    public static _java.Semantic<Collection<_constant>> EQIVALENT_CONSTANTS_LIST = 
+            (Collection<_constant> o1, Collection<_constant> o2) -> {
+        if( o1 == null ){
+            return o2 == null;
+        }
+        if( o1.size() != o2.size()){
+            return false;
+        }
+        Set<_constant> tm = new HashSet<>();
+        Set<_constant> om = new HashSet<>();
+        tm.addAll(o1);
+        om.addAll(o2);
+        return Objects.equals(tm, om);
+    };
+    
+    public static boolean equivalent( Collection<_constant> left, Collection<_constant> right){
+        return EQIVALENT_CONSTANTS_LIST.equivalent(left, right);
+    }
 }

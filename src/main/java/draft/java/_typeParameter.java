@@ -4,6 +4,7 @@ import com.github.javaparser.ast.NodeList;
 import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
 import com.github.javaparser.ast.nodeTypes.NodeWithTypeParameters;
 import com.github.javaparser.ast.type.ClassOrInterfaceType;
+import com.github.javaparser.ast.type.ReferenceType;
 import com.github.javaparser.ast.type.TypeParameter;
 import draft.Text;
 import draft.java._model.*;
@@ -279,6 +280,32 @@ public final class _typeParameter
         }
     }
 
+        public static final _java.Semantic<Collection<_typeParameter>> EQIVALENT_TYPE_PARAMETERS = (o1, o2)->{
+         if( o1 == null){
+                return o2 == null;
+            }
+            if( o2 == null ){
+                return false;
+            }
+            if( o1.size() != o2.size()){
+                return false;
+            }
+            Set<_typeParameter> tm = new HashSet<>();
+            Set<_typeParameter> om = new HashSet<>();
+            tm.addAll(o1);
+            om.addAll(o2);
+            return Objects.equals(tm, om);        
+    };
+    
+    /** 
+     * Are these (2) collections of throws equivalent ?
+     * @param left
+     * @param right
+     * @return true if these collections are semantically equivalent
+     */
+    public static boolean equivalent( Collection<_typeParameter> left, Collection<_typeParameter> right ){
+        return EQIVALENT_TYPE_PARAMETERS.equivalent(left, right);
+    }
     /**
      *
      * @author Eric

@@ -6,11 +6,14 @@ import com.github.javaparser.ast.stmt.BlockStmt;
 import com.github.javaparser.ast.stmt.Statement;
 import draft.Text;
 import draft.java._model.*;
+import java.util.Collection;
 
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Set;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
@@ -272,5 +275,34 @@ public final class _staticBlock
         /** remove the static block from the _type and return the _type */
         T removeStaticBlock( InitializerDeclaration id );
         
+    }
+    
+    
+    
+    public static final _java.Semantic<Collection<_staticBlock>> EQIVALENT_STATIC_BLOCKS = (o1, o2)->{
+         if( o1 == null){
+                return o2 == null;
+            }
+            if( o2 == null ){
+                return false;
+            }
+            if( o1.size() != o2.size()){
+                return false;
+            }
+            Set<_staticBlock> tm = new HashSet<>();
+            Set<_staticBlock> om = new HashSet<>();
+            tm.addAll(o1);
+            om.addAll(o2);
+            return Objects.equals(tm, om);        
+    };
+    
+    /** 
+     * Are these (2) collections of methods equivalent ?
+     * @param left
+     * @param right
+     * @return true if these collections are semantically equivalent
+     */
+    public static boolean equivalent( Collection<_staticBlock> left, Collection<_staticBlock> right ){
+        return EQIVALENT_STATIC_BLOCKS.equivalent(left, right);
     }
 }

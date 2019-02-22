@@ -915,7 +915,7 @@ public final class _class implements _type<ClassOrInterfaceDeclaration, _class>,
         if( ! Ast.importsEqual(this.listImports(), other.listImports())){
             return false;
         }
-        if( ! Ast.typesEqual( this.listImplements(), other.listImplements())){
+        if( !Ast.typesEqual( this.listImplements(), other.listImplements())){
             return false;
         }
         Set<_staticBlock> tsb = new HashSet<>();

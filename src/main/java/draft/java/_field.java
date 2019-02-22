@@ -9,6 +9,7 @@ import draft.java._model.*;
 import draft.DraftException;
 import draft.Text;
 import draft.java._anno.*;
+import draft.java._java.Semantic;
 import draft.java.macro._macro;
 import draft.java.macro._remove;
 
@@ -564,6 +565,28 @@ public final class _field
         return this;
     }
 
+    /**
+     * Verify that one list of _fields is equivalent to another list of _fields
+     * Here we put the _fields in a HashSet and verify the HashSets are equal
+     */
+    public static Semantic<Collection<_field>> EQIVALENT_FIELDS_LIST = (Collection<_field> o1, Collection<_field> o2) -> {
+        if( o1 == null ){
+            return o2 == null;
+        }
+        if( o1.size() != o2.size()){
+            return false;
+        }
+        Set<_field> tm = new HashSet<>();
+        Set<_field> om = new HashSet<>();
+        tm.addAll(o1);
+        om.addAll(o2);
+        return Objects.equals(tm, om);
+    };
+    
+    public static boolean equivalent( Collection<_field> left, Collection<_field> right){
+        return EQIVALENT_FIELDS_LIST.equivalent(left, right);
+    }
+    
     /**
      *
      * @author Eric

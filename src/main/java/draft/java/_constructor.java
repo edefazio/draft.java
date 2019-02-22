@@ -8,7 +8,6 @@ import com.github.javaparser.ast.expr.ObjectCreationExpr;
 import com.github.javaparser.ast.stmt.BlockStmt;
 import com.github.javaparser.ast.stmt.Statement;
 import com.github.javaparser.ast.type.ReferenceType;
-import com.github.javaparser.ast.type.Type;
 
 import draft.Text;
 import draft.java._model.*;
@@ -22,7 +21,8 @@ import java.util.function.*;
 import java.util.stream.Collectors;
 
 /**
- *
+ * Model of a java constructor
+ * 
  * @author Eric
  */
 public final class _constructor implements _anno._hasAnnos<_constructor>, _javadoc._hasJavadoc<_constructor>,
@@ -578,6 +578,28 @@ public final class _constructor implements _anno._hasAnnos<_constructor>, _javad
         return this;
     }
 
+    /**
+     * Verify that one list of _constructor is equivalent to another list of _constructor
+     */
+    public static _java.Semantic<Collection<_constructor>> EQIVALENT_CTORS_LIST = 
+            (Collection<_constructor> o1, Collection<_constructor> o2) -> {
+        if( o1 == null ){
+            return o2 == null;
+        }
+        if( o1.size() != o2.size()){
+            return false;
+        }
+        Set<_constructor> tm = new HashSet<>();
+        Set<_constructor> om = new HashSet<>();
+        tm.addAll(o1);
+        om.addAll(o2);
+        return Objects.equals(tm, om);
+    };
+    
+    public static boolean equivalent( Collection<_constructor> left, Collection<_constructor> right){
+        return EQIVALENT_CTORS_LIST.equivalent(left, right);
+    }
+    
     /**
      *
      * @author Eric

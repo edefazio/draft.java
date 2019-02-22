@@ -218,6 +218,33 @@ public final class _throws
         return this.astNodeWithThrows.getThrownExceptions().indexOf( (ReferenceType)element.ast() );
     }
 
+    public static final _java.Semantic<Collection<ReferenceType>> EQIVALENT_THROWS = (o1, o2)->{
+         if( o1 == null){
+                return o2 == null;
+            }
+            if( o2 == null ){
+                return false;
+            }
+            if( o1.size() != o2.size()){
+                return false;
+            }
+            Set<ReferenceType> tm = new HashSet<>();
+            Set<ReferenceType> om = new HashSet<>();
+            tm.addAll(o1);
+            om.addAll(o2);
+            return Objects.equals(tm, om);        
+    };
+    
+    /** 
+     * Are these (2) collections of throws equivalent ?
+     * @param left
+     * @param right
+     * @return true if these collections are semantically equivalent
+     */
+    public static boolean equivalent( Collection<ReferenceType> left, Collection<ReferenceType> right ){
+        return EQIVALENT_THROWS.equivalent(left, right);
+    }
+    
     /**
      * examples:
      * {@link _method}
