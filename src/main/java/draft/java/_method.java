@@ -609,7 +609,7 @@ public final class _method
     }
 
     public boolean isPublic() {
-        return this.astMethod.isPublic();
+        return this.astMethod.isPublic() || getEffectiveModifiers().contains(Modifier.publicModifier());
     }
 
     public boolean isProtected() {
