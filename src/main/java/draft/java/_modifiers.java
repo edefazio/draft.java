@@ -471,11 +471,24 @@ public final class _modifiers
             extends _model {
 
         /**
-         * gets the explicilty set modifiers for the node
+         * gets the explicitly set modifiers for the node
          * @return the explicitly set modifiers
          */
         _modifiers getModifiers();
 
+        /**
+         * Returns the Effective Modifiers as a bitMask
+         * @return an int representing the BitMask of the modifiers
+         */
+        default int modifiersAsBitMask(){
+            NodeList<Modifier> effective = getEffectiveModifiers();
+            int bitMask = 0;
+            for(int i=0;i<effective.size();i++){
+                bitMask |= KEYWORD_TO_BIT_MAP.get( effective.get(i).getKeyword().asString() );
+            }
+            return bitMask;            
+        } 
+        
         /**
          * Set the modifiers based on the keywords passed in
          * @param mods

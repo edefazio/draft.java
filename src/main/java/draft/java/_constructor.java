@@ -67,9 +67,6 @@ public final class _constructor implements _anno._hasAnnos<_constructor>, _javad
         //I need to do shortcut CONSTRUCTORS
         if( ctorDecl.length == 1 ){
             String[] toks = ctorDecl[0].split(" ");
-            //C
-            //C()
-            //C(){}
             if( toks.length == 1){
                 String token = toks[0];
                 if( token.endsWith("}")){
@@ -105,8 +102,6 @@ public final class _constructor implements _anno._hasAnnos<_constructor>, _javad
             return this.astCtor.getModifiers();
         }
         return Ast.merge( em, this.astCtor.getModifiers());
-        //em.addAll(this.astCtor.getModifiers());
-        //return em;
     }
 
     @Override
@@ -135,53 +130,34 @@ public final class _constructor implements _anno._hasAnnos<_constructor>, _javad
         if( this.astCtor == other.astCtor ) {
             return true; //two _constructor instances pointing to same ConstructorDeclaration instance
         }
-        //this.getAnnos(), this.getBody(), this.getJavadoc(), this.getModifiers(), this.getName(), this.getParameters(), this.getThrownExeptions(), this.getTypeParameters(), this.getType()
         if( !Ast.annotationsEqual( this.astCtor, other.astCtor)) {
             return false;
         }
-        //if( !Objects.equals( this.getAnnos(), other.getAnnos() ) ) {
-            //System.out.println("annos");
-        //    return false;
-        //}
         if( !Objects.equals( this.getBody(), other.getBody() ) ) {
-            //System.out.println("BODY");
             return false;
         }
         if( this.hasJavadoc() != other.hasJavadoc() ) {
             return false;
         }
         if( this.hasJavadoc() && !Objects.equals( this.getJavadoc().getContent().trim(), other.getJavadoc().getContent().trim() ) ) {
-            //System.out.println("JAVADOC >" + this.getJavadoc().getContent() +"< >"+other.getJavadoc().getContent());
             return false;
         }
         if( !Ast.modifiersEqual(this.astCtor, other.astCtor) ){
             return false;
-        }
-        //if( !Objects.equals( this.getModifiers(), other.getModifiers() ) ) {
-            //System.out.println("MODIFIERS");
-        //    return false;
-       // }
+        }       
         if( !Objects.equals( this.getName(), other.getName() ) ) {
-            //System.out.println("NAME");
             return false;
         }
         if( !Objects.equals( this.getParameters(), other.getParameters() ) ) {
-            //System.out.println("PARAMETERS");
             return false;
         }
         if( !Ast.typesEqual( this.astCtor.getThrownExceptions(), other.astCtor.getThrownExceptions()) ){
             return false;
-        }
-        //if( !Objects.equals( this.getThrows(), other.getThrows() ) ) {
-            //System.out.println("thrownExpcet");
-        //    return false;
-        //}
+        }        
         if( !Objects.equals( this.getTypeParameters(), other.getTypeParameters() ) ) {
-            //System.out.println("TYPE params");
             return false;
         }
         if( !Objects.equals( this.getReceiverParameter(), other.getReceiverParameter() ) ) {
-            //System.out.println("receiver params");
             return false;
         }
         return true;
@@ -190,7 +166,7 @@ public final class _constructor implements _anno._hasAnnos<_constructor>, _javad
     @Override
     public Map<_java.Component, Object> componentsMap() {
         Map<_java.Component, Object> parts = new HashMap<>();
-        parts.put(_java.Component.ANNOS, getAnnos() );
+        parts.put( _java.Component.ANNOS, getAnnos() );
         parts.put( _java.Component.BODY, getBody() );
         parts.put( _java.Component.MODIFIERS, getModifiers() );
         parts.put( _java.Component.JAVADOC, getJavadoc() );
@@ -206,10 +182,15 @@ public final class _constructor implements _anno._hasAnnos<_constructor>, _javad
     public int hashCode() {
         int hash = 7;
         hash = 79 * hash + Objects.hash(
-                Ast.annotationsHash( astCtor ), this.getBody(), this.getJavadoc(),
+                Ast.annotationsHash( astCtor ), 
+                this.getBody(), 
+                this.getJavadoc(),
                 this.getEffectiveModifiers(),
-                this.getName(), this.getParameters(),
-                Ast.typesHashCode( astCtor.getThrownExceptions()  ), this.getTypeParameters(), this.getReceiverParameter() );
+                this.getName(), 
+                this.getParameters(),
+                Ast.typesHashCode( astCtor.getThrownExceptions()), 
+                this.getTypeParameters(), 
+                this.getReceiverParameter() );
         return hash;
     }
 
@@ -270,81 +251,29 @@ public final class _constructor implements _anno._hasAnnos<_constructor>, _javad
         List<_parameter> pl = this.listParameters();
         int delta = 0;
         if( genericParameterTypes.length != pl.size() ){
-            //System.out.println( "DIFFERENT NUMBER OF CTOR ARGS ");
             if( genericParameterTypes.length == pl.size() + 1 && ctor.getDeclaringClass().isLocalClass()){
-                //System.out.println( "THE FIRST ARG IS "+ genericParameterTypes[0] );
-                //System.out.println( "THE DECLARING CLASS DEFINING "+ctor.getDeclaringClass() );
                 if( ctor.getDeclaringClass().isLocalClass() ){
-                    //System.out.println("Declaring Class is a Local Class");
                     delta = 1;
                 }
-                //System.out.println( "THE D DECLARING CLASS DEFINING "+ctor.getDeclaringClass().getDeclaringClass() );
             } else{
                 return false;
             }            
         }
         for(int i=0;i<pl.size(); i++){
             _typeRef _t = _typeRef.of(genericParameterTypes[i+delta]);
-            //System.out.println( "CHECKING "+ _t);
             if( !pl.get(i).isType( _t ) ){ 
                 if( ctor.isVarArgs() &&  //if last parameter and varargs
-                        Ast.typesEqual( pl.get(i).getType().getElementType(), 
-                                _t.getElementType())  ){
-                    
+                    Ast.typesEqual( pl.get(i).getType().getElementType(), 
+                        _t.getElementType())  ){                    
                 } else{
                     System.out.println( "Failed at "+ _t+" =/= "+ pl.get(i).getType() );                
                     return false;
                 }
             }
-        }
-        /*
-        for(int i=0;i<genericParameterTypes.length; i++){
-            _typeRef _t = _typeRef.of(genericParameterTypes[i]);
-            if( !pl.get(i).isType( _t ) ){ 
-                if( ctor.isVarArgs() &&  //if last parameter and varargs
-                        Ast.typesEqual( pl.get(i).getType().getElementType(), 
-                                _t.getElementType())  ){
-                    
-                } else{
-                    System.out.println( "Failed at "+ _t+" =/= "+ pl.get(i).getType() );                
-                    return false;
-                }
-            }
-        }
-        */
+        }        
         return true;        
     }
-    
-    /*
-    //NOTE: THIS FAILS FOR VARARGS, I SHOULD GET RID OF THE API ENTIRELY
-    @Override
-    public boolean hasParametersOfType(java.lang.reflect.Type...genericParameterTypes){
-        if( genericParameterTypes.length != this.listParameters().size() ){
-            
-            //System.out.println( "Failed NOT SAME SIZE" );
-            
-            return false;
-        }
-        List<_parameter> pl = this.listParameters();
-        for(int i=0;i<genericParameterTypes.length; i++){
-            _typeRef _t = _typeRef.of(genericParameterTypes[i]);
-            if( !pl.get(i).isType( _t ) ){
-                
-                //System.out.println( "Failed at "+ _t+" =/= "+ pl.get(i).getType() );
-                
-                return false;
-            }
-        }
-        return true;
-    }
-    */
-    
-    /*
-    @Override
-    public boolean hasParametersOfType(Class<?>... paramTypes) {
-        return this.ast().hasParametersOfType(paramTypes);
-    }
-    */
+   
 
     @Override
     public boolean hasParameters() {
@@ -390,6 +319,7 @@ public final class _constructor implements _anno._hasAnnos<_constructor>, _javad
     public boolean is( String...constructorDeclaration ){
         try {
             _constructor _ct = of(constructorDeclaration);
+            _ct.astCtor.setModifiers( Ast.merge(_ct.ast().getModifiers(), Ast.getImpliedModifiers( this.astCtor ) ) );
             return equals(_ct);
         }
         catch(Exception e){
@@ -464,7 +394,7 @@ public final class _constructor implements _anno._hasAnnos<_constructor>, _javad
     }
 
     public boolean isPrivate() {
-        return this.astCtor.isPrivate();
+        return this.astCtor.isPrivate() || this.getEffectiveModifiers().contains(Modifier.privateModifier());
     }
 
     public boolean isStrictFp() {

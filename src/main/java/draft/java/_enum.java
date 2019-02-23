@@ -461,23 +461,18 @@ public final class _enum implements _type<EnumDeclaration, _enum>,_method._hasMe
             return true; //two _enum instances pointing to the same EnumDeclaration instance
         }
         if( !Objects.equals( this.getPackage(), other.getPackage() ) ) {
-            //System.out.println("package");
             return false;
         }
         if( !Objects.equals( this.getAnnos(), other.getAnnos() ) ) {
-            //System.out.println("annos");
             return false;
         }
         if( !Objects.equals( this.getJavadoc(), other.getJavadoc() ) ) {
-            //System.out.println("JAVADOC");
             return false;
         }
-        if( !Objects.equals( this.getModifiers(), other.getModifiers() ) ) {
-            //System.out.println("MODIFIERS");
+        if( !Ast.modifiersEqual(astEnum, other.astEnum)){
             return false;
         }
         if( !Objects.equals( this.getName(), other.getName() ) ) {
-            //System.out.println("NAME");
             return false;
         }
         Set<_staticBlock>tsb = new HashSet<>();
@@ -485,7 +480,6 @@ public final class _enum implements _type<EnumDeclaration, _enum>,_method._hasMe
         tsb.addAll(listStaticBlocks());
         osb.addAll(other.listStaticBlocks());
         if( !Objects.equals( tsb, osb ) ) {
-            //System.out.println("STATIC_BLOCK");
             return false;
         }
 
@@ -496,23 +490,12 @@ public final class _enum implements _type<EnumDeclaration, _enum>,_method._hasMe
         if( ! Ast.importsEqual( astEnum, other.astEnum )){
             return false;
         }
-        /*
-        Set<ImportDeclaration> ti = new HashSet<>();
-        Set<ImportDeclaration> oi = new HashSet<>();
-        ti.addAll( this.listImports() );
-        oi.addAll( other.listImports());
-        if( !Objects.equals( ti, oi ) ) {
-            //System.out.println("imports");
-            return false;
-        }
-        */
         Set<_constant> tc = new HashSet<>();
         Set<_constant> oc = new HashSet<>();
         tc.addAll( this.listConstants() );
         oc.addAll( other.listConstants() );
 
         if( !Objects.equals( tc, oc ) ) {
-            //System.out.println("CONSTANTS");
             return false;
         }
 
@@ -522,7 +505,6 @@ public final class _enum implements _type<EnumDeclaration, _enum>,_method._hasMe
         oct.addAll( other.listConstructors() );
 
         if( !Objects.equals( tct, oct ) ) {
-            //System.out.println("CONSTRUCTORS");
             return false;
         }
 
@@ -532,7 +514,6 @@ public final class _enum implements _type<EnumDeclaration, _enum>,_method._hasMe
         of.addAll( other.listFields() );
 
         if( !Objects.equals( tf, of ) ) {
-            //System.out.println("FIELDS");
             return false;
         }
 
@@ -542,7 +523,6 @@ public final class _enum implements _type<EnumDeclaration, _enum>,_method._hasMe
         om.addAll( other.listMethods() );
 
         if( !Objects.equals( tm, om ) ) {
-            //System.out.println("METHODS");
             return false;
         }
 
@@ -552,7 +532,6 @@ public final class _enum implements _type<EnumDeclaration, _enum>,_method._hasMe
         on.addAll( other.listNests() );
 
         if( !Objects.equals( tn, on ) ) {
-            //System.out.println("NESTS");
             return false;
         }
         return true;
@@ -565,11 +544,6 @@ public final class _enum implements _type<EnumDeclaration, _enum>,_method._hasMe
         forMethods(m -> _mems.add(m));
         forConstructors(c -> _mems.add(c));
         forConstants(c-> _mems.add(c));
-        /*
-        if(this.hasStaticBlock() ){
-            _mems.add( this.getStaticBlock());
-        }
-        */
         forNests(n -> _mems.add(n));
         return _mems;
     }
@@ -696,10 +670,11 @@ public final class _enum implements _type<EnumDeclaration, _enum>,_method._hasMe
 
 
         hash = 53 * hash + Objects.hash( this.getPackage(),
-                //this.getAnnos(),
                 Ast.annotationsHash( astEnum),
-                this.getJavadoc(), this.getModifiers(),
-                this.getName(), sbs,
+                this.getJavadoc(), 
+                this.getEffectiveModifiers(),
+                this.getName(), 
+                sbs,
                 Ast.importsHash( astEnum ),
                 Ast.typesHashCode( astEnum.getImplementedTypes()),
                 tc, tct, tf, tm, tn);

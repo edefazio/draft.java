@@ -368,29 +368,18 @@ public final class _annotation
             return true; //short circuit... two _annotations refer to the same AnnotationDeclaration
         }
         if( !Objects.equals( this.getPackage(), other.getPackage())){
-            //System.out.println( "PACKAGE");
             return false;
         }
-        if( !Objects.equals( this.getModifiers(), other.getModifiers())){
-            //System.out.println( "MODIFIERS");
+        if( !Ast.modifiersEqual(astAnnotation, astAnnotation) ){
             return false;
         }
         if( !Objects.equals( this.getJavadoc(), other.getJavadoc()) ){
-            //System.out.println( "JAVADOC");
             return false;
         }
         if( !Ast.annotationsEqual( astAnnotation, other.astAnnotation)){
-            //System.out.println( "ANNOS");
             return false;
         }
-        /*
-        if( !Objects.equals( this.getAnnos(), other.getAnnos()) ){
-
-            return false;
-        }
-        */
         if( !Objects.equals( this.getName(), other.getName()) ){
-            //System.out.println( "NAME");
             return false;
         }
         if( this.isTopClass() ){
@@ -497,15 +486,10 @@ public final class _annotation
         int hash = 5;
 
         hash = 13 * hash + Objects.hashCode( this.getPackage() );
-
-        //organize these the same to force order
-        //Set<ImportDeclaration> imports = new HashSet<>();
-        //imports.addAll( this.listImports() );
-        //hash = 13 * hash + Objects.hashCode( imports );
-
         hash = 13 * hash + Ast.importsHash( astAnnotation  );
 
-        //hash = 13 * hash + Objects.hashCode( imports );
+        //FIXED... for some reason... I never had modifiers in hashCode
+        hash = 13 * hash + Objects.hashCode( this.getEffectiveModifiers() );
 
         hash = 13 * hash + Objects.hashCode( this.getJavadoc() );
         //hash = 13 * hash * Objects.hashCode( this.getAnnos() );

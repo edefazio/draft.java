@@ -2367,22 +2367,18 @@ public enum Ast {
     }
 
     public static NodeList<Modifier> getImpliedModifiers( ClassOrInterfaceDeclaration coid ){
-        //Modifier.DEFAULT;
         if( coid.isInterface() ){
             return NodeList.nodeList(Modifier.abstractModifier());
-            //return EnumSet.of(Modifier.ABSTRACT); //interfaces are always abstract
         }
         return new NodeList<>();
-        //return EnumSet.noneOf(Modifier.class);
     }
 
     public static NodeList<Modifier> getImpliedModifiers( EnumDeclaration ed ){
-        return NodeList.nodeList(Modifier.staticModifier());
-        //return EnumSet.of(Modifier.STATIC );
+        return NodeList.nodeList(Modifier.staticModifier(), Modifier.finalModifier());
     }
 
     public static NodeList<Modifier> getImpliedModifiers( AnnotationDeclaration ad ){
-        return NodeList.nodeList(Modifier.staticModifier());
+        return NodeList.nodeList(Modifier.abstractModifier(), Modifier.staticModifier() );
         //return EnumSet.of(Modifier.STATIC );
     }
 
@@ -2419,15 +2415,12 @@ public enum Ast {
             //return EnumSet.noneOf(Modifier.class); //nothing for a _class
         }
         if( parent instanceof AnnotationDeclaration ){ //annotation methods 
-            AnnotationDeclaration ad = (AnnotationDeclaration)parent;
             return NodeList.nodeList(Modifier.publicModifier(), Modifier.abstractModifier());
-            //return EnumSet.of(Modifier.PUBLIC, Modifier.ABSTRACT);
         }
         if( !md.getBody().isPresent()){ //No body, must be public abstract
             return NodeList.nodeList( Modifier.publicModifier(), Modifier.abstractModifier());
         }
         return new NodeList<>();
-        //return EnumSet.noneOf(Modifier.class); //nothing for a _class
     }
 
     public static NodeList<Modifier> getImpliedModifiers( ConstructorDeclaration cd ){

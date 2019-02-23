@@ -49,8 +49,8 @@ public final class _field
         StackTraceElement ste = Thread.currentThread().getStackTrace()[2];
         ObjectCreationExpr oce = Expr.anonymousObject(ste);
         FieldDeclaration fd = (FieldDeclaration)
-                oce.getAnonymousClassBody().get().stream().filter(bd -> bd instanceof FieldDeclaration
-                        && !bd.getAnnotationByClass(_remove.class).isPresent() ).findFirst().get();
+            oce.getAnonymousClassBody().get().stream().filter(bd -> bd instanceof FieldDeclaration
+                && !bd.getAnnotationByClass(_remove.class).isPresent() ).findFirst().get();
 
         //add the field to a class so I can run
         _class _c = _class.of("Temp").add( _field.of( fd.clone().getVariable(0)) );
@@ -100,17 +100,18 @@ public final class _field
      * derived from the context
      * @return an enumSet of the modifiers that are effective on this _field
      */
+    @Override
     public NodeList<Modifier> getEffectiveModifiers(){
         if( this.getFieldDeclaration() == null ){
             return new NodeList<>();
-            //return EnumSet.noneOf(Modifier.class);
         }
 
         NodeList<Modifier> implied = Ast.getImpliedModifiers(getFieldDeclaration());
         if( implied == null ){
             return getFieldDeclaration().getModifiers();
         }
-        implied.addAll(getFieldDeclaration().getModifiers());
+        //implied.addAll(getFieldDeclaration().getModifiers());
+        implied = Ast.merge(implied, getFieldDeclaration().getModifiers());
         return implied;
     }
 
@@ -127,7 +128,8 @@ public final class _field
     }
 
     public boolean is(FieldDeclaration fd ){
-        return of(fd).equals(this);
+        return of(fd.getVariable(0))
+                .equals(this);
     }
 
     public boolean initIs( Predicate<Expression> expressionPredicate ){
@@ -319,15 +321,9 @@ public final class _field
         if( !Ast.modifiersEqual( getFieldDeclaration(), other.getFieldDeclaration() )){
             return false;
         }
-        //if( !Objects.equals( getModifiers(), other.getModifiers() ) ) {
-        //    return false;
-        //}
         if( ! Ast.annotationsEqual( getFieldDeclaration(), other.getFieldDeclaration())){
             return false;
         }
-        //if( !Objects.equals( getAnnos(), other.getAnnos() ) ) {
-        //    return false;
-        //}
         if( !Objects.equals( getJavadoc(), other.getJavadoc() ) ) {
             return false;
         }
@@ -365,7 +361,7 @@ public final class _field
     }
 
     public boolean isPublic() {
-        return getFieldDeclaration().isPublic();
+        return getFieldDeclaration().isPublic() || getEffectiveModifiers().contains(Modifier.publicModifier());
     }
 
     public boolean isDefaultAccess() {
@@ -383,13 +379,13 @@ public final class _field
     }
 
     @Override
-    public boolean isStatic() {
-        return this.getFieldDeclaration().isStatic();
+    public boolean isStatic() {        
+        return this.getFieldDeclaration().isStatic() || getEffectiveModifiers().contains(Modifier.staticModifier());
     }
 
     @Override
     public boolean isFinal() {
-        return this.getFieldDeclaration().isFinal();
+        return this.getFieldDeclaration().isFinal()  || getEffectiveModifiers().contains(Modifier.finalModifier());
     }
 
     @Override
@@ -426,10 +422,6 @@ public final class _field
             this.getFieldDeclaration().setProtected(false);
             this.getFieldDeclaration().setPublic(false);
         }
-
-        //this.getFieldDeclaration().getModifiers().remove( Modifier.PUBLIC );
-        //this.getFieldDeclaration().getModifiers().add( Modifier.PRIVATE );
-        //this.getFieldDeclaration().getModifiers().remove( Modifier.PROTECTED );
         return this;
     }
 
@@ -439,9 +431,6 @@ public final class _field
             this.getFieldDeclaration().setProtected(false);
             this.getFieldDeclaration().setPublic(false);
         }
-        //this.getFieldDeclaration().getModifiers().remove( Modifier.PUBLIC );
-        //this.getFieldDeclaration().getModifiers().remove( Modifier.PRIVATE );
-        //this.getFieldDeclaration().getModifiers().remove( Modifier.PROTECTED );
         return this;
     }
 

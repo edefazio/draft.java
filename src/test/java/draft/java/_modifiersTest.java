@@ -52,7 +52,7 @@ public class _modifiersTest extends TestCase {
         }
     }
 
-    public static final void main(String[] args)
+    public void testM()
             throws NoSuchFieldException, NoSuchMethodException {
 
         System.out.println( I.class.getDeclaredField("a").getModifiers()+ " " +
