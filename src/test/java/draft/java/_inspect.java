@@ -9,11 +9,15 @@ import draft.ObjectDiff;
 import draft.ObjectDiff.DiffList;
 import static draft.java.Ast.typesEqual;
 import draft.java._parameter._parameters;
+import draft.java._typeParameter._typeParameters;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import name.fraser.neil.plaintext.diff_match_patch;
+import name.fraser.neil.plaintext.diff_match_patch.Diff;
 
 /**
  *
@@ -39,8 +43,8 @@ public interface _inspect<T> {
     
     /** Given the component, return the inspector 
     public static _inspect of( _java.Component component ){
-        parts.put( _java.Component.ANNOS, getAnnos() );
-        parts.put( _java.Component.BODY, getBody() );
+        //parts.put( _java.Component.ANNOS, getAnnos() );
+        //parts.put( _java.Component.BODY, getBody() );
         //parts.put( _java.Component.TYPE, getType() );
         //parts.put( _java.Component.PARAMETERS, getParameters() );
         //parts.put( _java.Component.MODIFIERS, getEffectiveModifiers()  );
@@ -52,17 +56,54 @@ public interface _inspect<T> {
     }
     **/ 
 
+    public static final _methodInspect INSPECT_METHOD = new _methodInspect();
+    public static class _methodInspect implements _inspect<_method>{
+
+        @Override
+        public boolean equivalent(_method left, _method right) {
+            return Objects.equals(left, right);
+        }
+
+        @Override
+        public DiffList diff(String path, DiffList dl, _method left, _method right) {
+            if( left == null){
+                if( right == null){
+                    return dl;
+                }
+                dl.add( path+_java.Component.METHOD, null, right);
+                return dl;
+            }
+            if( right == null){
+                dl.add( path+_java.Component.METHOD, left, null);
+                return dl;
+            }
+            INSPECT_JAVADOC.diff(path, dl, left.getJavadoc(), right.getJavadoc());
+            INSPECT_ANNOS.diff( path, dl, left.getAnnos(), right.getAnnos());
+            INSPECT_MODIFIERS.diff(path, dl, left.getModifiers(), right.getModifiers());
+            INSPECT_TYPE_REF.diff(path, dl, left.getType(), right.getType());
+            INSPECT_NAME.diff( path, dl, left.getName(), right.getName());            
+            INSPECT_RECEIVER_PARAMETER.diff(path, dl, left.getReceiverParameter(), right.getReceiverParameter());
+            INSPECT_PARAMETERS.diff(path, dl, left.getParameters(), right.getParameters());
+            INSPECT_TYPE_PARAMETERS.diff(path, dl, left.getTypeParameters(), right.getTypeParameters());
+            INSPECT_THROWS.diff( path, dl, left.getThrows(), right.getThrows());            
+            INSPECT_BODY.diff(path, dl, left.getBody(), right.getBody());            
+            return dl;
+        }
+        
+    }
+    
     public static final _bodyInspect INSPECT_BODY =
         new _bodyInspect();
 
     public static class _bodyInspect implements _inspect<_body>{
 
+        private static final diff_match_patch plainTextDiff = new diff_match_patch();
+        
         @Override
         public boolean equivalent(_body left, _body right) {
             return Objects.equals(left, right);
         }
 
-        //I dunno if I want to go to the statement level
         @Override
         public DiffList diff(String path, DiffList dl, _body left, _body right) {
             if(!left.isPresent() ){
@@ -71,11 +112,21 @@ public interface _inspect<T> {
                 }
                 else{
                     dl.add(path+_java.Component.BODY.getName(), left, right);
+                    return dl;
                 }
             }
             if( !right.isPresent()) {
                 dl.add(path+_java.Component.BODY.getName(), left, right);
+                return dl;
             }
+            String leftSer = left.toString(Ast.PRINT_NO_COMMENTS);
+            String rightSer = right.toString(Ast.PRINT_NO_COMMENTS);
+            if( !Objects.equals( leftSer, rightSer )){
+                //ok. we no diff (other than comments) are in the text
+                // lets diff the originals WITH comments
+                LinkedList<Diff> diffs = plainTextDiff.diff_main(left.toString(), right.toString());
+                dl.add(path+_java.Component.BODY.getName(), diffs, diffs);                
+            }            
             return dl;
         }
         
@@ -176,15 +227,15 @@ public interface _inspect<T> {
                     dl.add(path+name, left, null);
                     return dl;
                 }                
-                NAME_INSPECTOR.diff(path+name+".", dl, left.getName(), right.getName());
-                TYPE_REF_INSPECTOR.diff(path+name+".", dl, left.getType(), right.getType());
-                ANNOS_INSPECTOR.diff(path+name+".", left.getAnnos(), right.getAnnos());
+                INSPECT_NAME.diff(path+name+".", dl, left.getName(), right.getName());
+                INSPECT_TYPE_REF.diff(path+name+".", dl, left.getType(), right.getType());
+                INSPECT_ANNOS.diff(path+name+".", left.getAnnos(), right.getAnnos());
             }
             return dl;
         }        
     }
     
-    public static final AnnosInspect ANNOS_INSPECTOR = 
+    public static final AnnosInspect INSPECT_ANNOS = 
             new AnnosInspect();
     
     public static class AnnosInspect
@@ -224,7 +275,7 @@ public interface _inspect<T> {
         }        
     }
     
-    public static final TypeRefInspect TYPE_REF_INSPECTOR = 
+    public static final TypeRefInspect INSPECT_TYPE_REF = 
         new TypeRefInspect();
     
     public static class TypeRefInspect
@@ -254,19 +305,26 @@ public interface _inspect<T> {
         new TypeParametersInspect();
     
     public static class TypeParametersInspect
-        implements _inspect<NodeList<TypeParameter>> {
+        implements _inspect<_typeParameters> {
 
         String name = _java.Component.TYPE_PARAMETERS.getName();
         
         public TypeParametersInspect(){ 
         }
-        
         @Override
+        public boolean equivalent(_typeParameters left, _typeParameters right) {            
+            return Objects.equals( left, right );
+        }
+
+        @Override
+        public DiffList diff(String path, DiffList dl, _typeParameters left, _typeParameters right) {
+            return diff(path, dl, left.ast(), right.ast());
+        }
+        
         public boolean equivalent(NodeList<TypeParameter>left, NodeList<TypeParameter> right) {            
             return Ast.typesEqual(left, right);
         }
 
-        @Override
         public DiffList diff(String path, DiffList dl, NodeList<TypeParameter> left, NodeList<TypeParameter> right) {
             
             List<ObjectDiff.Entry> des = new ArrayList<>();
@@ -287,12 +345,11 @@ public interface _inspect<T> {
         }        
     }
     
-    
     public static final ThrowsInspect INSPECT_THROWS = 
             new ThrowsInspect();
     
     public static class ThrowsInspect
-        implements _inspect<NodeList<ReferenceType>> {
+        implements _inspect<_throws> {
 
         String name = _java.Component.THROWS.getName();
         
@@ -300,11 +357,33 @@ public interface _inspect<T> {
         }
         
         @Override
+        public boolean equivalent(_throws left, _throws right) {
+            return Objects.equals(left, right);
+        }
+
+        @Override
+        public DiffList diff(String path, DiffList dl, _throws left, _throws right) {
+            
+            List<ObjectDiff.Entry> des = new ArrayList<>();
+            for(int i=0; i<left.count();i++){
+                ReferenceType cit = left.get(i);
+                if( ! right.ast().stream().filter( c-> typesEqual(c, cit) ).findFirst().isPresent()){
+                    des.add(new ObjectDiff.Entry( path + name, cit, null) );
+                }
+            }
+            for(int i=0; i<right.count();i++){
+                ReferenceType cit = right.get(i);
+                if( ! left.ast().stream().filter( c-> typesEqual(c, cit) ).findFirst().isPresent()){
+                    des.add(new ObjectDiff.Entry( path + name, null, cit) );
+                }
+            }
+            return dl.addList(des);
+        }        
+
         public boolean equivalent(NodeList<ReferenceType>left, NodeList<ReferenceType> right) {            
             return Ast.typesEqual(left, right);
         }
 
-        @Override
         public DiffList diff(String path, DiffList dl, NodeList<ReferenceType> left, NodeList<ReferenceType> right) {
             
             List<ObjectDiff.Entry> des = new ArrayList<>();
@@ -324,7 +403,24 @@ public interface _inspect<T> {
         }        
     }
     
-    public static final StringInspect NAME_INSPECTOR = new StringInspect(_java.Component.NAME.getName());
+    /*
+    public static final ThrowsInspect INSPECT_THROWS = 
+            new ThrowsInspect();
+    
+    public static class ThrowsInspect
+        implements _inspect<NodeList<ReferenceType>> {
+
+        String name = _java.Component.THROWS.getName();
+        
+        public ThrowsInspect(){ 
+        }
+        
+        @Override
+        
+    }
+    */
+    
+    public static final StringInspect INSPECT_NAME = new StringInspect(_java.Component.NAME.getName());
     
     public static class StringInspect 
             implements _inspect<String>{
@@ -353,7 +449,7 @@ public interface _inspect<T> {
         
     }
 */
-    
+    /*
     public static class _methodInspect 
         implements _inspect<_method>{
         
@@ -375,6 +471,7 @@ public interface _inspect<T> {
         }
         
     }
+    */
     
     
     /*
