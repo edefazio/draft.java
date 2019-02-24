@@ -13,7 +13,9 @@ import java.util.*;
 import java.util.function.Predicate;
 
 /**
- * container for code( AST {@link Statement}s made from {@link com.github.javaparser.ast.expr.Expression}s
+ * The "body" part of methods, constructors, and static blocks 
+ * (i.e. {@link Statement}s getting stuff done)
+ * 
  * @author Eric
  */
 public final class _body implements _model {

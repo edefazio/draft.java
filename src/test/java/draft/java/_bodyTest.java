@@ -1,6 +1,7 @@
 
 package draft.java;
 
+import draft.java.macro._abstract;
 import junit.framework.TestCase;
 
 /**
@@ -9,6 +10,34 @@ import junit.framework.TestCase;
  */
 public class _bodyTest extends TestCase {
 
+    public void testBodyCommentEqualsHashCode(){
+        class C{
+            @_abstract void noBody(){}
+            @_abstract void noBodyComment(){ /*comment*/ }
+            
+            void withComment(){
+                //a comment
+                System.out.println(1);
+            }
+            void withoutComment(){
+                System.out.println(1);
+            }            
+        }
+        _class _c = _class.of(C.class);
+        _body _wComment = _c.getMethod("withComment").getBody();
+        _body _woComment = _c.getMethod("withoutComment").getBody();
+        
+        assertEquals( _wComment, _woComment);
+        assertEquals( _wComment.hashCode(), _woComment.hashCode());
+        
+        _body _noBody = _c.getMethod("noBody").getBody();
+        _body _noBodyComment = _c.getMethod("noBodyComment").getBody();
+        
+        assertEquals( _noBody, _noBodyComment);
+        assertEquals( _noBody.hashCode(), _noBodyComment.hashCode());
+        
+    }
+    
     public void testBodyAddComment(){
         class C{
             public void f(){

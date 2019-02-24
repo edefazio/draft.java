@@ -8,8 +8,8 @@ import com.github.javaparser.ast.type.TypeParameter;
 import draft.Diff;
 import draft.Diff.DiffList;
 import static draft.java.Ast.typesEqual;
+import draft.java._parameter._parameters;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -41,17 +41,106 @@ public interface _inspect<T> {
     public static _inspect of( _java.Component component ){
         parts.put( _java.Component.ANNOS, getAnnos() );
         parts.put( _java.Component.BODY, getBody() );
-        parts.put( _java.Component.TYPE, getType() );
-        parts.put( _java.Component.PARAMETERS, getParameters() );
-        parts.put( _java.Component.MODIFIERS, getEffectiveModifiers()  );
-        parts.put( _java.Component.JAVADOC, getJavadoc() );
-        parts.put( _java.Component.RECEIVER_PARAMETER, getReceiverParameter() );
+        //parts.put( _java.Component.TYPE, getType() );
+        //parts.put( _java.Component.PARAMETERS, getParameters() );
+        //parts.put( _java.Component.MODIFIERS, getEffectiveModifiers()  );
+        //parts.put( _java.Component.JAVADOC, getJavadoc() );
+        //parts.put( _java.Component.RECEIVER_PARAMETER, getReceiverParameter() );
         //parts.put( _java.Component.TYPE_PARAMETERS, getTypeParameters() );
         //parts.put( _java.Component.THROWS, getThrows() );
         //parts.put( _java.Component.NAME, getName() );
     }
     **/ 
 
+    public static final _bodyInspect INSPECT_BODY =
+        new _bodyInspect();
+
+    public static class _bodyInspect implements _inspect<_body>{
+
+        @Override
+        public boolean equivalent(_body left, _body right) {
+            return Objects.equals(left, right);
+        }
+
+        //I dunno if I want to go to the statement level
+        @Override
+        public DiffList diff(String path, DiffList dl, _body left, _body right) {
+            return dl;
+        }
+        
+    }   
+    
+    public static final _parametersInspect INSPECT_PARAMETERS = 
+        new _parametersInspect();
+
+    public static class _parametersInspect 
+            implements _inspect<_parameters>{
+
+        @Override
+        public boolean equivalent(_parameters left, _parameters right) {
+            return Objects.equals(left, right);
+        }
+
+        @Override
+        public DiffList diff(String path, DiffList dl, _parameters left, _parameters right) {
+            for(int i=0;i<left.count();i++){
+                _parameter _l = left.get(i);
+                _parameter _r = null;
+                if( i < right.count() ){
+                    _r = right.get(i);
+                }
+                if( !Objects.equals(left, right) ){
+                    dl.add(path+_java.Component.PARAMETER+"["+i+"]", _l, _r);
+                }                
+            }
+            if( right.count() > left.count() ){
+                for(int i=left.count(); i<right.count(); i++){
+                    _parameter _r = right.get(i);
+                    dl.add(path+_java.Component.PARAMETER+"["+i+"]", null, _r);
+                }
+            }
+            return dl;
+        }        
+    }   
+    
+    public static final _modifiersInspect INSPECT_MODIFIERS = 
+        new _modifiersInspect();
+    
+    public static class _modifiersInspect implements _inspect<_modifiers>{
+       
+        @Override
+        public boolean equivalent(_modifiers left, _modifiers right) {
+            return Objects.equals(left, right);
+        }
+
+        @Override
+        public DiffList diff(String path, DiffList dl, _modifiers left, _modifiers right) {
+            if( !equivalent( left, right)){
+                dl.add(path+_java.Component.MODIFIERS.getName(), left, right);
+            }
+            return dl;
+        }        
+    }
+    
+    public static final _javadocInspect INSPECT_JAVADOC = 
+        new _javadocInspect();
+    
+    public static class _javadocInspect implements _inspect<_javadoc>{
+       
+        @Override
+        public boolean equivalent(_javadoc left, _javadoc right) {
+            return Objects.equals(left, right);
+        }
+
+        @Override
+        public DiffList diff(String path, DiffList dl, _javadoc left, _javadoc right) {
+            if( !equivalent( left, right)){
+                dl.add(path+_java.Component.JAVADOC.getName(), left, right);
+            }
+            return dl;
+        }        
+    }
+    
     public static final ReceiverParameterInspect INSPECT_RECEIVER_PARAMETER = 
         new ReceiverParameterInspect();
     

@@ -421,12 +421,9 @@ public final class _anno
             return Objects.hash( name, 
                     this.annotationExpr.asSingleMemberAnnotationExpr().getMemberValue() );
         }        
-        Set<MemberValuePair> mvp = new HashSet<MemberValuePair>();
-        this.annotationExpr.asNormalAnnotationExpr().getPairs().forEach(p -> mvp.add(p) );
-        
-        return Objects.hash(name, mvp );
-        
-        //return Objects.hashCode( this.annotationExpr );
+        Set<MemberValuePair> mvp = new HashSet<>();
+        this.annotationExpr.asNormalAnnotationExpr().getPairs().forEach(p -> mvp.add(p) );        
+        return Objects.hash(name, mvp );        
     }
 
     @Override

@@ -4,6 +4,7 @@ import com.github.javaparser.ast.type.Type;
 import draft.Diff.DiffList;
 import draft.java._anno._annos;
 import draft.java._inspect.StringInspect;
+import draft.java._parameter._parameters;
 import draft.java._typeParameter._typeParameters;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -95,8 +96,6 @@ public class _inspectTest extends TestCase {
         assertTrue( _inspect.INSPECT_TYPE_PARAMETERS.diff("type.", _ntp.ast(), _tp22.ast() ).size() == 2 );                
     }
     
-    
-    
     public @interface A{}    
     public @interface B{}
     
@@ -128,8 +127,41 @@ public class _inspectTest extends TestCase {
         System.out.println( _inspect.ANNOS_INSPECTOR.diff(c, e) );
         
         assertTrue(_inspect.ANNOS_INSPECTOR.equivalent(c, e));
-        assertTrue(_inspect.ANNOS_INSPECTOR.equivalent(ab, ba));
-        
+        assertTrue(_inspect.ANNOS_INSPECTOR.equivalent(ab, ba));        
     }
     
+    
+    public void testParameters(){
+        class C{
+            void no(){}
+            void oneString(String one){}
+            void twoStrings(String one, String two){}
+            void oneInt(int one){}
+            void twoInt(int one, int two){}
+        }
+        _class _c = _class.of(C.class);
+        assertTrue( _inspect.INSPECT_PARAMETERS.equivalent(
+                _parameters.of(""), _parameters.of("()") ) );
+        
+        assertTrue( _inspect.INSPECT_PARAMETERS.equivalent(
+                _parameters.of("String one"), _parameters.of("(String one)") ) );
+        
+        assertTrue( _inspect.INSPECT_PARAMETERS.equivalent(
+                _parameters.of("()"), _parameters.of("()") ) );
+        
+        assertTrue( _inspect.INSPECT_PARAMETERS.diff(
+                _parameters.of("()"), _parameters.of("(int i)") ).containsNames("parameter[0]") );
+        
+        assertTrue( _inspect.INSPECT_PARAMETERS.diff(
+                _parameters.of("(int i)"), _parameters.of("()") ).containsNames("parameter[0]") );
+        
+        assertTrue( _inspect.INSPECT_PARAMETERS.diff(
+                _parameters.of("(int i)"), _parameters.of("(String i)") ).containsNames("parameter[0]") );
+        
+        assertTrue( _inspect.INSPECT_PARAMETERS.diff(
+                _parameters.of("(int i)"), _parameters.of("(int i, String s)") ).containsNames("parameter[1]") );
+        
+        assertTrue( _inspect.INSPECT_PARAMETERS.diff(
+                _parameters.of("(int i, String s)"), _parameters.of("(int i)") ).containsNames("parameter[1]") );        
+    }
 }
