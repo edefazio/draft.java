@@ -5,7 +5,7 @@
  */
 package draft;
 
-import draft.Diff.DiffList;
+import draft.ObjectDiff.DiffList;
 import draft.java.Expr;
 import draft.java.*;
 import junit.framework.TestCase;
@@ -26,19 +26,19 @@ import static junit.framework.TestCase.assertTrue;
 public class DiffTest extends TestCase {
  
     public void testEqual(){
-        assertTrue(Diff.components(_class.of("C"),_class.of("C")).isEmpty());
-        assertTrue(Diff.components(_interface.of("I"),_interface.of("I")).isEmpty());
-        assertTrue(Diff.components(_enum.of("E"),_enum.of("E")).isEmpty());
-        assertTrue(Diff.components(_annotation.of("A"),_annotation.of("A")).isEmpty());
-        assertTrue(Diff.components(_method.of("void m();"),_method.of("void m();")).isEmpty());
-        assertTrue(Diff.components(_field.of("int x;"),_field.of("int x;")).isEmpty());
-        assertTrue(Diff.components(_parameter.of("int x"),_parameter.of("int x") ).isEmpty());
-        assertTrue(Diff.components(_typeRef.of("List<String>"),_typeRef.of("List<String>")).isEmpty());
-        assertTrue(Diff.components(_anno.of("A"),_anno.of("A")).isEmpty());
-        assertTrue(Diff.components(_constructor.of("Ct(){}"),_constructor.of("Ct(){}")).isEmpty());
-        assertTrue(Diff.components(_anno.of("A"),_anno.of("A")).isEmpty());
-        assertTrue(Diff.components(_enum._constant.of("A"),_enum._constant.of("A")).isEmpty());
-        assertTrue(Diff.components(_annotation._element.of("int value();"),_annotation._element.of("int value();")).isEmpty());
+        assertTrue(ObjectDiff.components(_class.of("C"),_class.of("C")).isEmpty());
+        assertTrue(ObjectDiff.components(_interface.of("I"),_interface.of("I")).isEmpty());
+        assertTrue(ObjectDiff.components(_enum.of("E"),_enum.of("E")).isEmpty());
+        assertTrue(ObjectDiff.components(_annotation.of("A"),_annotation.of("A")).isEmpty());
+        assertTrue(ObjectDiff.components(_method.of("void m();"),_method.of("void m();")).isEmpty());
+        assertTrue(ObjectDiff.components(_field.of("int x;"),_field.of("int x;")).isEmpty());
+        assertTrue(ObjectDiff.components(_parameter.of("int x"),_parameter.of("int x") ).isEmpty());
+        assertTrue(ObjectDiff.components(_typeRef.of("List<String>"),_typeRef.of("List<String>")).isEmpty());
+        assertTrue(ObjectDiff.components(_anno.of("A"),_anno.of("A")).isEmpty());
+        assertTrue(ObjectDiff.components(_constructor.of("Ct(){}"),_constructor.of("Ct(){}")).isEmpty());
+        assertTrue(ObjectDiff.components(_anno.of("A"),_anno.of("A")).isEmpty());
+        assertTrue(ObjectDiff.components(_enum._constant.of("A"),_enum._constant.of("A")).isEmpty());
+        assertTrue(ObjectDiff.components(_annotation._element.of("int value();"),_annotation._element.of("int value();")).isEmpty());
     }
     
     public void testDiffProperties(){
@@ -46,29 +46,29 @@ public class DiffTest extends TestCase {
         _field _right = _field.of("int x;");
         
         //System.out.println( Diff.diff(_left, _right) );
-        assertTrue( Diff.components(_left, _right).isEmpty() );
+        assertTrue( ObjectDiff.components(_left, _right).isEmpty() );
         
         //change right to make sure we get a simple diff
         _right.name("y");        
-        assertTrue( Diff.components(_left, _right).containsNames("name") );
-        assertEquals( 1, Diff.components(_left, _right).size() );        
+        assertTrue( ObjectDiff.components(_left, _right).containsNames("name") );
+        assertEquals( 1, ObjectDiff.components(_left, _right).size() );        
     }
     
     public void testNullDiffProperties(){
         _field _f1 = _field.of("public static final int x = 100;");
         _field _f2 = _field.of("public static final int x;");
         
-        DiffList dl = Diff.components(_f1, _f2); 
+        DiffList dl = ObjectDiff.components(_f1, _f2); 
         assertTrue( dl.containsNames("init") );
         assertEquals( dl.left("init"), Expr.of(100) );
-        assertTrue( Diff.components(_f2, _f1).containsNames("init") );
+        assertTrue( ObjectDiff.components(_f2, _f1).containsNames("init") );
     }
     
     public void testDiffPropertiesNotMonotonic(){        
         //we 
         _field _f = _field.of("int x;");
         _method _m = _method.of("int x(){}"); //the name and type are the same
-        DiffList dl = Diff.components(_f, _m);
+        DiffList dl = ObjectDiff.components(_f, _m);
         assertTrue(dl.containsNames("body", "throws", "typeParameters", "parameters"));
         
         //System.out.println(Diff.components(_f, _m) );        

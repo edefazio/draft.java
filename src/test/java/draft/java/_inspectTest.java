@@ -1,7 +1,7 @@
 package draft.java;
 
 import com.github.javaparser.ast.type.Type;
-import draft.Diff.DiffList;
+import draft.ObjectDiff.DiffList;
 import draft.java._anno._annos;
 import draft.java._inspect.StringInspect;
 import draft.java._parameter._parameters;
@@ -130,7 +130,6 @@ public class _inspectTest extends TestCase {
         assertTrue(_inspect.ANNOS_INSPECTOR.equivalent(ab, ba));        
     }
     
-    
     public void testParameters(){
         class C{
             void no(){}
@@ -163,5 +162,16 @@ public class _inspectTest extends TestCase {
         
         assertTrue( _inspect.INSPECT_PARAMETERS.diff(
                 _parameters.of("(int i, String s)"), _parameters.of("(int i)") ).containsNames("parameter[1]") );        
+    }
+    
+    public void testBody(){
+        class C{
+            void noBody(){}
+            void noBoddyComment() {/*comment*/}
+            
+            void oneStatement(){ System.out.println(1); }
+            void oneStatementComment(){ /*comment*/ System.out.println(1); }
+        }
+        
     }
 }

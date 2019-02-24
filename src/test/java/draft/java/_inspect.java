@@ -5,8 +5,8 @@ import com.github.javaparser.ast.expr.AnnotationExpr;
 import com.github.javaparser.ast.type.ReferenceType;
 import com.github.javaparser.ast.type.Type;
 import com.github.javaparser.ast.type.TypeParameter;
-import draft.Diff;
-import draft.Diff.DiffList;
+import draft.ObjectDiff;
+import draft.ObjectDiff.DiffList;
 import static draft.java.Ast.typesEqual;
 import draft.java._parameter._parameters;
 import java.util.ArrayList;
@@ -65,6 +65,17 @@ public interface _inspect<T> {
         //I dunno if I want to go to the statement level
         @Override
         public DiffList diff(String path, DiffList dl, _body left, _body right) {
+            if(!left.isPresent() ){
+                if( ! right.isPresent() ){
+                    return dl;
+                }
+                else{
+                    dl.add(path+_java.Component.BODY.getName(), left, right);
+                }
+            }
+            if( !right.isPresent()) {
+                dl.add(path+_java.Component.BODY.getName(), left, right);
+            }
             return dl;
         }
         
@@ -258,18 +269,18 @@ public interface _inspect<T> {
         @Override
         public DiffList diff(String path, DiffList dl, NodeList<TypeParameter> left, NodeList<TypeParameter> right) {
             
-            List<Diff.Entry> des = new ArrayList<>();
+            List<ObjectDiff.Entry> des = new ArrayList<>();
             for(int i=0; i<left.size();i++){
                 Type cit = left.get(i);
                 
                 if( ! right.stream().filter( c-> typesEqual(c, cit) ).findFirst().isPresent()){
-                    des.add(new Diff.Entry( path + name, cit, null) );
+                    des.add(new ObjectDiff.Entry( path + name, cit, null) );
                 }
             }
             for(int i=0; i<right.size();i++){
                 Type cit = right.get(i);
                 if( ! left.stream().filter( c-> typesEqual(c, cit) ).findFirst().isPresent()){
-                    des.add(new Diff.Entry( path + name, null, cit) );
+                    des.add(new ObjectDiff.Entry( path + name, null, cit) );
                 }
             }
             return dl.addList(des);
@@ -296,17 +307,17 @@ public interface _inspect<T> {
         @Override
         public DiffList diff(String path, DiffList dl, NodeList<ReferenceType> left, NodeList<ReferenceType> right) {
             
-            List<Diff.Entry> des = new ArrayList<>();
+            List<ObjectDiff.Entry> des = new ArrayList<>();
             for(int i=0; i<left.size();i++){
                 Type cit = left.get(i);
                 if( ! right.stream().filter( c-> typesEqual(c, cit) ).findFirst().isPresent()){
-                    des.add(new Diff.Entry( path + name, cit, null) );
+                    des.add(new ObjectDiff.Entry( path + name, cit, null) );
                 }
             }
             for(int i=0; i<right.size();i++){
                 Type cit = right.get(i);
                 if( ! left.stream().filter( c-> typesEqual(c, cit) ).findFirst().isPresent()){
-                    des.add(new Diff.Entry( path + name, null, cit) );
+                    des.add(new ObjectDiff.Entry( path + name, null, cit) );
                 }
             }
             return dl.addList(des);

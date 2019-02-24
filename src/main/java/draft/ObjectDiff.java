@@ -5,10 +5,14 @@ import java.util.stream.Collectors;
 
 /**
  * Finding the differences in the components between two {@link Composite}s
+ * NOTE: changed name from Diff to ObjectDiff to avoid name conflicts with 
+ * {@link name.fraser.neil.plaintext.Diff} which is a plaintext diff tool 
+ * 
+ * "ObjectDiff" is Object Diffing
  * 
  * @author Eric
  */
-public enum Diff {
+public enum ObjectDiff {
     ;
  
     /**
@@ -35,7 +39,7 @@ public enum Diff {
      * Consumer for accepting a Diff for modularity
      * (Although currently the diff method is private to minimize API bloat
      */
-    private interface DiffConsumer{
+    private interface ObjectDiffConsumer{
         public void onDiff( String key, Object left, Object right );
     }
     
@@ -102,7 +106,7 @@ public enum Diff {
      * @return a DiffList Mapping Parts and their Objects that are different between left and right
      */
     private static void components( 
-        Composite left, Composite right, DiffConsumer diffConsumer, String... excludeNames ){
+        Composite left, Composite right, ObjectDiffConsumer diffConsumer, String... excludeNames ){
         
         Set<String> omit = new HashSet<>();
         Arrays.stream(excludeNames).forEach( n -> omit.add(n) );
@@ -120,7 +124,7 @@ public enum Diff {
      * @return a DiffList Mapping Parts and their Objects that are different between left and right
      */
     private static void components( 
-        Composite left, Composite right, DiffConsumer diffConsumer, Set<String> excludeNames ){
+        Composite left, Composite right, ObjectDiffConsumer diffConsumer, Set<String> excludeNames ){
         Map<String,Object> ld = left.componentize();
         Map<String,Object> rd = right.componentize();
         //DiffList dl = new DiffList();
@@ -260,11 +264,11 @@ public enum Diff {
         }
         
         public DiffList add( String name, Object left, Object right ){
-            diffs.add( Diff.of(name, left, right));
+            diffs.add(ObjectDiff.of(name, left, right));
             return this;
         }
         
-        public DiffList addList( List<Diff.Entry> des ){
+        public DiffList addList( List<ObjectDiff.Entry> des ){
             for(int i=0; i< des.size();i++){
                 diffs.add( des.get(i));
             }            

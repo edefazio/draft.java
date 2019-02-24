@@ -7,6 +7,7 @@ import com.github.javaparser.ast.nodeTypes.NodeWithBlockStmt;
 import com.github.javaparser.ast.nodeTypes.NodeWithOptionalBlockStmt;
 import com.github.javaparser.ast.nodeTypes.NodeWithStatements;
 import com.github.javaparser.ast.stmt.*;
+import com.github.javaparser.printer.PrettyPrinterConfiguration;
 import draft.DraftException;
 
 import java.util.*;
@@ -137,6 +138,22 @@ public final class _body implements _model {
         return hash;
     }
 
+    /**
+     * Prints out the body using the pretty printer configuration provided
+     * 
+     * For an EXAMPLE on how to create a PreetyPrinterConfiguration, see:
+     * {@link draft.java.Ast#PRINT_NO_COMMENTS}
+     * 
+     * @param ppc
+     * @return 
+     */
+    public String toString(PrettyPrinterConfiguration ppc ){
+        if( !isPresent() ){
+            return "";
+        }
+        return ast().toString(ppc);
+    }
+    
     @Override
     public String toString() {
         if( !isPresent() ) {
