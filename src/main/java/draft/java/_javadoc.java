@@ -46,7 +46,6 @@ public final class _javadoc
     public String getContent() {
         if( jdnode.getJavadocComment().isPresent() ) {
             return Ast.getContent( (Comment)jdnode.getJavadocComment().get() );
-            //return getContent( ((JavadocComment)jdnode.getJavadocComment().get()) );
         }
         return null;
     }
@@ -58,20 +57,6 @@ public final class _javadoc
         }
         return null;
     }
-
-    /*
-    public static String getContent( JavadocComment astBc ) {
-        String content = astBc.toString().trim();
-        return getContent( content );
-    }
-
-    public static String getContent( Comment anyComment ){
-        if( anyComment instanceof JavadocComment ){
-            return getContent( (JavadocComment)anyComment );
-        }
-        return anyComment.getContent();
-    }
-    */
 
     @Override
     public boolean equals( Object obj ) {
@@ -89,8 +74,6 @@ public final class _javadoc
             return true; //two _javadoc instances pointing to the same NodeWithJavadoc
         }
         if( !Objects.equals( this.getContent(), other.getContent() ) ) {
-            System.out.println( "THIS  " + this.getContent() );
-            System.out.println( "OTHER " + other.getContent() );
             return false;
         }
         return true;
@@ -102,46 +85,6 @@ public final class _javadoc
         hash = 41 * hash + Objects.hashCode( this.getContent() );
         return hash;
     }
-
-    /*
-    public static String getContent( String content ) {
-        if( content.startsWith( "/**" + System.lineSeparator() ) ) {
-            content = content.replace( "/**" + System.lineSeparator(), "" );
-        }
-        else {
-            content = content.substring( 2 );
-            /* inline block
-        }
-        if( content.endsWith( "*"+"/" + System.lineSeparator() ) ) {
-            content = content.replace( "*"+"/" + System.lineSeparator(), "" );
-        }
-        else {
-            content = content.substring( 0, content.length() - 2 );
-        }
-        //now go line where line, trim, the "*" and tabs
-        String lines[] = content.split( "\\r?\\n" );
-        StringBuilder sb = new StringBuilder();
-        boolean started = false;
-        for( int i = 0; i < lines.length; i++ ) {
-            lines[ i ] = lines[ i ].trim();
-            if( lines[ i ].startsWith( "* " ) ) {
-                lines[ i ] = lines[ i ].substring( 2 );
-            }
-            else if( lines[ i ].startsWith( "*" ) ) {
-                lines[ i ] = lines[ i ].substring( 1 );
-            }
-            if( lines[ i ].length() == 0 && !started ) {
-
-            }
-            else {
-                started = true;
-                sb.append( lines[ i ] );
-                sb.append( System.lineSeparator() );
-            }
-        }
-        return sb.toString().trim();
-    }
-    */
 
     /**
      * Model entity that optionally has a Javadoc Comment attributed to it
