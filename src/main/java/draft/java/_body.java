@@ -123,34 +123,15 @@ public final class _body implements _model {
             //System.out.println( "STMT COUNT");
             return false;
         }
-
-        for( int i = 0; i < ts.size(); i++ ) {
-            if( !ts.get( i ).equals( os.get( i ) ) ) {
-                //things get tricky with comments
-                if( ts.get( i ).getComment().isPresent() || os.get( i ).getComment().isPresent() ) {
-                    String tss = ts.toString();
-                    String oss = os.toString();
-                    if( !tss.equals( oss ) ) {
-                        return false;
-                    }
-                }
-                else {
-                    //System.out.println( ts.get(i ) + " =/= "+ os.get(i) );
-                    return false;
-                }
-            }
-        }
-        return true;
+        String tnc = t.toString( Ast.PRINT_NO_COMMENTS );
+        String onc = o.toString( Ast.PRINT_NO_COMMENTS );
+        return tnc.equals(onc);
     }
 
     @Override
     public int hashCode() {
-
-        /**
-         * TODO THIS IS WRONG need to account for statements with comments
-         */
         int hash = 7;
-        hash = 53 * hash + Objects.hashCode( ast() );
+        hash = 53 * hash + Objects.hashCode( ast().toString(Ast.PRINT_NO_COMMENTS) );
         return hash;
     }
 
