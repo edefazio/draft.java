@@ -149,7 +149,7 @@ public final class _parameter
         if( right == null ) {
             return false;
         }
-        if( left.getNameAsString() != right.getNameAsString()){
+        if( !left.getNameAsString().equals( right.getNameAsString())){
             return false;
         }
         if( left.isVarArgs() != right.isVarArgs()){
@@ -165,37 +165,6 @@ public final class _parameter
             return false;
         }
         return true;
-        //if( left.getAnnotations().size() != right.getAnnotations().size() ) {
-        //    return false;
-        //}
-        //if( left.getAnnotations().isEmpty() ) { //with no annos, compare the ast
-        //    return Objects.equals( left, right );
-        //}
-        //WITH ANNOTATIONS, we need to manually check semantic equality
-        //because syntactically the KEY_VALUES of a SINGLE annotation could be
-        // out of order:
-
-        //   @a(k=1,v=2)int v  @a(v=2,k=1)int v
-        // and even though they are SEMANTICALLY equal the Annotations are not
-        // syntactically equal
-        //or the order of the ANNOTATIONS could be rearraged
-        //(like below where the 2 ANNOTATIONS are same but different order)
-        //  @a(1) @b(2)int x   @b(2) @a(1)int x
-        //_annos _left = _annos.of( left );
-        //_annos _right = _annos.of( right );
-        //if( !_left.equals( _right ) ) {
-        //    return false;
-        //}
-        //with the ANNOTATIONS a=out of the way, lets check the types
-        //NAME, final and varargs
-        // NOTE we convert to _typeRef, since we want fully qualified types
-        // like "java.util.Map" to be equal to "Map"
-        /*
-        return _typeRef.of( left.getType() ).equals( _typeRef.of( right.getType() ) )
-                && left.isFinal() == right.isFinal()
-                && left.isVarArgs() == right.isVarArgs()
-                && left.getNameAsString().equals( right.getNameAsString() );
-                */
     }
 
     @Override
@@ -376,7 +345,14 @@ public final class _parameter
                 }
                 params.append( strs[ i ] );
             }
-            return of( Ast.method( "void $$(" + params.toString() + ");" ) );
+            String ps = params.toString();
+            if( ps.startsWith("(") ){
+                ps = ps.substring(1);
+            }
+            if( ps.endsWith(")")){
+                ps = ps.substring(0, ps.length() -1);
+            }
+            return of( Ast.method( "void $$(" + ps + ");" ) );
         }
 
         public static _parameters of( NodeWithParameters np ) {
