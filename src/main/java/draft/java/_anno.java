@@ -425,8 +425,6 @@ public final class _anno
         return Ast.annotationEqual( this.annotationExpr, other.annotationExpr );
     }
 
-
-
     @Override
     public AnnotationExpr ast() {
         return this.annotationExpr;
@@ -742,7 +740,8 @@ public final class _anno
         public static _annos of( String... anns ) {
             String f = Text.combine( anns ) + System.lineSeparator() + "NOT_A_REAL_FIELD AST_ANNO_HOLDER;";
             FieldDeclaration fd = field( f );
-            return new _annos( fd );
+            _annos _as = new _annos( fd );
+            return _as;
         }
 
         public static _annos of( NodeWithAnnotations astAnns ) {

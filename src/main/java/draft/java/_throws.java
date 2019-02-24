@@ -171,13 +171,11 @@ public final class _throws
         if( this.astNodeWithThrows == other.astNodeWithThrows ) {
             return true; //two _throws pointing to the same NodeWithThrownException
         }
-        if( ! Ast.typesEqual( astNodeWithThrows.getThrownExceptions(), other.astNodeWithThrows.getThrownExceptions())){
+        if( !Ast.typesEqual( astNodeWithThrows.getThrownExceptions(), other.astNodeWithThrows.getThrownExceptions())){
             return false;
         }
         return true;
     }
-
-
 
     @Override
     public int hashCode() {
@@ -219,20 +217,20 @@ public final class _throws
     }
 
     public static final _java.Semantic<Collection<ReferenceType>> EQIVALENT_THROWS = (o1, o2)->{
-         if( o1 == null){
-                return o2 == null;
-            }
-            if( o2 == null ){
-                return false;
-            }
-            if( o1.size() != o2.size()){
-                return false;
-            }
-            Set<ReferenceType> tm = new HashSet<>();
-            Set<ReferenceType> om = new HashSet<>();
-            tm.addAll(o1);
-            om.addAll(o2);
-            return Objects.equals(tm, om);        
+        if( o1 == null){
+            return o2 == null;
+        }
+        if( o2 == null ){
+            return false;
+        }
+        if( o1.size() != o2.size()){
+            return false;
+        }
+        Set<ReferenceType> tm = new HashSet<>();
+        Set<ReferenceType> om = new HashSet<>();
+        tm.addAll(o1);
+        om.addAll(o2);
+        return Objects.equals(tm, om);        
     };
     
     /** 

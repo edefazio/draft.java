@@ -2162,6 +2162,7 @@ public enum Ast {
      * //thiw will work / return true... even though order, and types fully qualified or not
      * assertTrue( Ast.typesEqual ( _a.listImplements(), _b.listImplements() ) );
      * </PRE>
+     * @param <T> the Ast Type
      * @param lt1
      * @param lt2
      * @return
@@ -2440,6 +2441,9 @@ public enum Ast {
         //return EnumSet.noneOf(Modifier.class); //nothing for a _class
     }
 
+    private static boolean isFullyQualified( String s){
+        return s.indexOf('.') > 0;
+    }
     /**
      * Here we test for equivalency of two AST AnnotationExpr s
      * note: if we check equality between the following two AnnotationExprs:
@@ -2470,10 +2474,29 @@ public enum Ast {
         if( left.getClass() != right.getClass() ) {
             return false;
         }
-        //same NAME
-        if( !left.getName().equals( right.getName() ) ) {
-            return false;
+        //if EITHER (NOT BOTH, or NEITHER) are fully qualified
+        if( isFullyQualified(left.getNameAsString()) ^ 
+                isFullyQualified(right.getNameAsString())) {
+            String leftSimple = left.getNameAsString();
+            String rightSimple = right.getNameAsString();
+            if( leftSimple.indexOf('.') > 0 ){
+                leftSimple = leftSimple.substring(leftSimple.lastIndexOf('.')+1);
+            }
+            if( rightSimple.indexOf('.') > 0 ){
+                rightSimple = rightSimple.substring(rightSimple.lastIndexOf('.')+1);
+            }
+            return Objects.equals(leftSimple, rightSimple);
+        } else{
+            if( !left.getName().equals( right.getName() ) ) {
+                return false;
+            }
         }
+        //same NAME
+        //if( !left.getName().equals( right.getName() ) ) {
+        //    return false;
+        //}
+        
+        
         //same values (Need to check if they are out of order in NormalAnnotationExpr
         // i.e. @a(x=1,y=2) == @a(y=2,x=1) same contents, out of order
         if( left instanceof NormalAnnotationExpr ) {
@@ -2487,11 +2510,24 @@ public enum Ast {
             //if so, they are unequal
             return !ta.getPairs().stream().filter( m -> !oa.getPairs().contains( m ) ).findFirst().isPresent();
         }
-        else {
+        else { //marker annotation
             return left.equals( right );
         }
     }
 
+    /**
+     * Test the member value pairs of an NormalAnnotationExpr to determine if they are equal
+     * @param ta
+     * @param oa
+     * @return 
+     */
+    public boolean memberValuePairsEqual( NodeList<MemberValuePair> ta,NodeList<MemberValuePair> oa ){
+        if( ta.size() != oa.size() ){
+            return false;
+        }
+        return !ta.stream().filter( m -> !oa.contains( m ) ).findFirst().isPresent();
+    }
+    
     public static String normalizeName(String name){
         int idx = name.lastIndexOf('.');
         if( idx < 0){

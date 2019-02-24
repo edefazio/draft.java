@@ -264,6 +264,13 @@ public enum Diff {
             return this;
         }
         
+        public DiffList addList( List<Diff.Entry> des ){
+            for(int i=0; i< des.size();i++){
+                diffs.add( des.get(i));
+            }            
+            return this;
+        }
+        
         @Override
         public String toString(){
             if( isEmpty() ){

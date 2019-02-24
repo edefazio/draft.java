@@ -115,9 +115,10 @@ public final class _receiverParameter
         return true;
     }
 
+    @Override
     public Map<_java.Component, Object> componentsMap( ) {
         Map<_java.Component, Object> parts = new HashMap<>();
-        parts.put(_java.Component.ANNOS, getAnnos() );
+        parts.put( _java.Component.ANNOS, getAnnos() );
         parts.put( _java.Component.TYPE, getType() );
         parts.put( _java.Component.NAME, getName() );
         return parts;
