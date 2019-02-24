@@ -838,10 +838,11 @@ public final class _method
      * _method.of( "public static final void print", ()->{ System.out.println(1); });
      *
      * @return
-     */
+     
     public <T extends Object, U extends Object> _method setBody( Function<T,U> parametersAndBody){
         return setBody( Stmt.block(Thread.currentThread().getStackTrace()[2]));
     }
+    */ 
 
     /**
      * _method.of( "public static final void print", ()->{ System.out.println(1); });

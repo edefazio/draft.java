@@ -122,10 +122,17 @@ public interface _inspect<T> {
             String leftSer = left.toString(Ast.PRINT_NO_COMMENTS);
             String rightSer = right.toString(Ast.PRINT_NO_COMMENTS);
             if( !Objects.equals( leftSer, rightSer )){
-                //ok. we no diff (other than comments) are in the text
+                //ok. we know at least one diff (other than comments) are in the text
                 // lets diff the originals WITH comments
                 LinkedList<Diff> diffs = plainTextDiff.diff_main(left.toString(), right.toString());
-                dl.add(path+_java.Component.BODY.getName(), diffs, diffs);                
+                _textDiff td = new _textDiff(diffs);
+                // NOTE: we treat code DIFFERENTLY than other objects that are diffedbecause 
+                // diffs in code can cross object boundaries and it's not as "clean"
+                // as simply having members with properties because of the nature of code
+                // instead we have a _textDiff which encapsulates the apparent changes
+                // the text has to undergo to get from LEFT, to RIGHT
+                
+                dl.add(path+_java.Component.BODY.getName(), td, td);                
             }            
             return dl;
         }
@@ -553,4 +560,52 @@ public interface _inspect<T> {
     }
     */
     
+    
+    /**
+     * This represents a Textual Diff, it wraps/hides the 
+     * underlying _diff_match_patch nuances and tried to make it
+     * 
+     * NOTE: we use the Concept LEFT and RIGHT to represent the two separate
+     * pieces of text, rather than ASSUME the left is a previous and the right
+     * is the current with a Patch Applied.
+     * 
+     */
+    public static class _textDiff{
+        
+        /* the diff_match_patch derived diffs */
+        public final LinkedList<Diff>diffs;
+        
+        public _textDiff(LinkedList<Diff> diffs ){
+            this.diffs = diffs;
+        }
+        
+        /**
+         * Return the ENTIRE LEFT document as a String
+         * @return 
+         */
+        public String left(){
+            StringBuilder sb = new StringBuilder();
+            diffs.forEach(s -> {
+                if(s.operation != diff_match_patch.Operation.INSERT){
+                    sb.append(s.text);
+                }
+            });
+            return sb.toString();
+        }
+        
+        /** 
+         * return the entire RIGHT document as a String
+         * 
+         * @return the right document
+         */
+        public String right(){
+            StringBuilder sb = new StringBuilder();
+            diffs.forEach(s -> {
+                if(s.operation != diff_match_patch.Operation.DELETE){
+                    sb.append(s.text);
+                }
+            });
+            return sb.toString();
+        }
+    }
 }

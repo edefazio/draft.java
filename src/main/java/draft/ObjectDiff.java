@@ -6,7 +6,8 @@ import java.util.stream.Collectors;
 /**
  * Finding the differences in the components between two {@link Composite}s
  * NOTE: changed name from Diff to ObjectDiff to avoid name conflicts with 
- * {@link name.fraser.neil.plaintext.Diff} which is a plaintext diff tool 
+ * {@link name.fraser.neil.plaintext.diff_match_patch} which is a plain text 
+ * diff tool 
  * 
  * "ObjectDiff" is Object Diffing
  * 
@@ -242,6 +243,10 @@ public enum ObjectDiff {
             return diffs.stream().map(d -> d.name ).collect(Collectors.toList());
         }
         
+        public Object left (Named named ){
+            return left( named.getName());
+        }
+        
         public Object left( String name ){
             Optional<Entry> od = this.diffs.stream().filter( d -> d.name.equals( name ) ).findFirst();
             if(od.isPresent() ){
@@ -258,7 +263,12 @@ public enum ObjectDiff {
             throw new DraftException("no diff for \""+ name+"\"");
         }
         
-        public boolean containsNames( String ...names){
+        public boolean hasDiff( Named ...nameds){
+            return Arrays.stream(nameds)
+                    .allMatch(n -> diffs.stream().filter(d -> d.name.equals(n.getName())).findFirst().isPresent());
+        }
+        
+        public boolean hasDiff( String ...names){
             return Arrays.stream(names)
                     .allMatch(n -> diffs.stream().filter(d -> d.name.equals(n)).findFirst().isPresent());
         }

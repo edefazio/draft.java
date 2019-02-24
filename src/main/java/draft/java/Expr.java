@@ -87,11 +87,10 @@ public enum Expr {
      * NOTE: the source of the calling method must be resolveable via draft
      * @see draft.java.io._io#addInFilePath(java.lang.String) 
      * @see draft.java.io._io#addInProject(java.lang.String) 
-     * @param <T>
      * @param c the runtime Lambda Expression
      * @return the AST LambdaExpr representation for the runtime Command
      */
-    public static <T extends Object> LambdaExpr of( Expr.Command c ){
+    public static LambdaExpr of( Expr.Command c ){
         StackTraceElement ste = Thread.currentThread().getStackTrace()[2];
         return lambda( ste );
     }
@@ -106,7 +105,6 @@ public enum Expr {
      * NOTE: the source of the calling method must be resolveable via draft
      * @see draft.java.io._io#addInFilePath(java.lang.String) 
      * @see draft.java.io._io#addInProject(java.lang.String) 
-     * @param <T>
      * @param c the runtime Lambda Expression
      * @return the AST LambdaExpr representation for the runtime Command
      */
@@ -122,10 +120,11 @@ public enum Expr {
      * LambdaExpr le = Expr.of( ()-> System.out.println(1) );
      * assertEquals( Stmt.of("System.out.println(1);"), le.getBody().getStatement(0) );
      * </PRE>
-     * NOTE: the source of the calling method must be resolveable via draft
+     * NOTE: the source of the calling method must be resolveable via draft     
      * @see draft.java.io._io#addInFilePath(java.lang.String) 
      * @see draft.java.io._io#addInProject(java.lang.String) 
      * @param <T>
+     * @param <U>
      * @param c the runtime Lambda Expression
      * @return the AST LambdaExpr representation for the runtime Command
      */
@@ -145,6 +144,8 @@ public enum Expr {
      * @see draft.java.io._io#addInFilePath(java.lang.String) 
      * @see draft.java.io._io#addInProject(java.lang.String) 
      * @param <T>
+     * @param <U>
+     * @param <V>
      * @param c the runtime Lambda Expression
      * @return the AST LambdaExpr representation for the runtime Command
      */
@@ -163,6 +164,7 @@ public enum Expr {
      * NOTE: the source of the calling method must be resolveable via draft
      * @see draft.java.io._io#addInFilePath(java.lang.String) 
      * @see draft.java.io._io#addInProject(java.lang.String) 
+     * @param <U>
      * @param <T>
      * @param c the runtime Lambda Expression
      * @return the AST LambdaExpr representation for the runtime Command
@@ -183,6 +185,8 @@ public enum Expr {
      * @see draft.java.io._io#addInFilePath(java.lang.String) 
      * @see draft.java.io._io#addInProject(java.lang.String) 
      * @param <T>
+     * @param <U>
+     * @param <V>
      * @param c the runtime Lambda Expression
      * @return the AST LambdaExpr representation for the runtime Command
      */
@@ -202,6 +206,9 @@ public enum Expr {
      * @see draft.java.io._io#addInFilePath(java.lang.String) 
      * @see draft.java.io._io#addInProject(java.lang.String) 
      * @param <T>
+     * @param <U>
+     * @param <V>
+     * @param <Z>
      * @param c the runtime Lambda Expression
      * @return the AST LambdaExpr representation for the runtime Command
      */
@@ -220,7 +227,10 @@ public enum Expr {
      * NOTE: the source of the calling method must be resolveable via draft
      * @see draft.java.io._io#addInFilePath(java.lang.String) 
      * @see draft.java.io._io#addInProject(java.lang.String) 
-     * @param <T>
+     * @param <A>
+     * @param <B>
+     * @param <C>
+     * @param <D>
      * @param c the runtime Lambda Expression
      * @return the AST LambdaExpr representation for the runtime Command
      */

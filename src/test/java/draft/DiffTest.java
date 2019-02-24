@@ -50,7 +50,7 @@ public class DiffTest extends TestCase {
         
         //change right to make sure we get a simple diff
         _right.name("y");        
-        assertTrue( ObjectDiff.components(_left, _right).containsNames("name") );
+        assertTrue( ObjectDiff.components(_left, _right).hasDiff("name") );
         assertEquals( 1, ObjectDiff.components(_left, _right).size() );        
     }
     
@@ -59,9 +59,9 @@ public class DiffTest extends TestCase {
         _field _f2 = _field.of("public static final int x;");
         
         DiffList dl = ObjectDiff.components(_f1, _f2); 
-        assertTrue( dl.containsNames("init") );
+        assertTrue( dl.hasDiff("init") );
         assertEquals( dl.left("init"), Expr.of(100) );
-        assertTrue( ObjectDiff.components(_f2, _f1).containsNames("init") );
+        assertTrue( ObjectDiff.components(_f2, _f1).hasDiff("init") );
     }
     
     public void testDiffPropertiesNotMonotonic(){        
@@ -69,7 +69,7 @@ public class DiffTest extends TestCase {
         _field _f = _field.of("int x;");
         _method _m = _method.of("int x(){}"); //the name and type are the same
         DiffList dl = ObjectDiff.components(_f, _m);
-        assertTrue(dl.containsNames("body", "throws", "typeParameters", "parameters"));
+        assertTrue(dl.hasDiff("body", "throws", "typeParameters", "parameters"));
         
         //System.out.println(Diff.components(_f, _m) );        
     }

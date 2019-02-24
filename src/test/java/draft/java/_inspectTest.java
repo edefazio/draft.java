@@ -1,22 +1,47 @@
 package draft.java;
 
-import com.github.javaparser.ast.type.Type;
 import draft.ObjectDiff.DiffList;
 import draft.java._anno._annos;
 import draft.java._inspect.StringInspect;
+import draft.java._inspect._textDiff;
 import draft.java._parameter._parameters;
 import draft.java._typeParameter._typeParameters;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.Serializable;
-import java.util.List;
 import junit.framework.TestCase;
 
 /**
- *
+ * TODO, I COULD make it that I get a TextDiff for a change in javadoc
  * @author Eric
  */
 public class _inspectTest extends TestCase {
+    
+    public void testInspectMethod(){
+        _method _m1 = _method.of(new Object(){ 
+            void a(){}
+        });
+        _method _m2 = _method.of(new Object(){ 
+            void a(){}
+        });
+        
+        assertTrue(_inspect.INSPECT_METHOD.diff(_m1, _m2).isEmpty());
+        _m1.name("b");
+        System.out.println( _inspect.INSPECT_METHOD.diff(_m1, _m2) );
+        
+        assertTrue(_inspect.INSPECT_METHOD.diff(_m1, _m2).hasDiff(_java.Component.NAME));
+        _m1.setBody( ()-> System.out.println(1) );
+        
+        DiffList dl = _inspect.INSPECT_METHOD.diff(_m1, _m2);
+        assertTrue(dl.hasDiff(_java.Component.NAME, _java.Component.BODY));
+        
+        _textDiff dmp = (_textDiff)dl.left(_java.Component.BODY);
+        System.out.println( dmp );
+        System.out.println( dmp.left() );
+        System.out.println( dmp.right() );
+        
+        //_m1.setBody( (a,b)-> System.out.println(1) );
+    }
     
     public void testInspectStringBase(){
         StringInspect si = new StringInspect("Name");
@@ -24,13 +49,13 @@ public class _inspectTest extends TestCase {
         assertFalse( si.equivalent("A", "a") );
         
         assertTrue( si.diff("a", "a").isEmpty() );
-        assertTrue( si.diff("a", "b").containsNames("Name") );        
+        assertTrue( si.diff("a", "b").hasDiff("Name") );        
     }
     
     public void testInspectStringParamAtPath(){
         StringInspect si = new StringInspect("name");
         assertTrue( si.diff("parameter[0].", "a", "a").isEmpty() );
-        assertTrue( si.diff("parameter[0].", "b", "a").containsNames("parameter[0].name") );        
+        assertTrue( si.diff("parameter[0].", "b", "a").hasDiff("parameter[0].name") );        
     }
     
     interface C{
@@ -45,29 +70,29 @@ public class _inspectTest extends TestCase {
         _interface _i = _interface.of( C.class );
         
         assertTrue( _inspect.INSPECT_THROWS.equivalent( 
-            _i.getMethod("t").getThrows().ast(),
-            _i.getMethod("t2").getThrows().ast()));
+            _i.getMethod("t").getThrows(),
+            _i.getMethod("t2").getThrows() ));
         
         assertFalse( _inspect.INSPECT_THROWS.equivalent( 
-            _i.getMethod("t").getThrows().ast(),
-            _i.getMethod("t3").getThrows().ast()));
+            _i.getMethod("t").getThrows(),
+            _i.getMethod("t3").getThrows()));
         
         assertFalse( _inspect.INSPECT_THROWS.equivalent( 
-            _i.getMethod("t3").getThrows().ast(),
-            _i.getMethod("t4").getThrows().ast()));
+            _i.getMethod("t3").getThrows(),
+            _i.getMethod("t4").getThrows()));
         
         
         assertTrue( _inspect.INSPECT_THROWS.diff( 
-            _i.getMethod("t").getThrows().ast(),
-            _i.getMethod("t2").getThrows().ast()).isEmpty() );
+            _i.getMethod("t").getThrows(),
+            _i.getMethod("t2").getThrows()).isEmpty() );
         
         assertTrue( _inspect.INSPECT_THROWS.diff( 
-            _i.getMethod("t").getThrows().ast(),
-            _i.getMethod("t3").getThrows().ast()).containsNames("throws") );
+            _i.getMethod("t").getThrows(),
+            _i.getMethod("t3").getThrows()).hasDiff("throws") );
         
         assertTrue( _inspect.INSPECT_THROWS.diff( 
-            _i.getMethod("t3").getThrows().ast(),
-            _i.getMethod("t4").getThrows().ast()).size() == 2 );        
+            _i.getMethod("t3").getThrows(),
+            _i.getMethod("t4").getThrows()).size() == 2 );        
     }
     
     class NTP{}
@@ -92,8 +117,8 @@ public class _inspectTest extends TestCase {
         assertTrue( _inspect.INSPECT_TYPE_PARAMETERS.equivalent(_tpe.ast(), _tpe2.ast()) ); //one fully qual other not        
         assertTrue( _inspect.INSPECT_TYPE_PARAMETERS.equivalent(_tp21.ast(), _tp22.ast()) ); //out of order one fully qualified other not
         
-        assertTrue( _inspect.INSPECT_TYPE_PARAMETERS.diff("type.", _ntp.ast(), _tp22.ast() ).containsNames("type.typeParameters") );
-        assertTrue( _inspect.INSPECT_TYPE_PARAMETERS.diff("type.", _ntp.ast(), _tp22.ast() ).size() == 2 );                
+        assertTrue( _inspect.INSPECT_TYPE_PARAMETERS.diff("type.", _ntp, _tp22 ).hasDiff("type.typeParameters") );
+        assertTrue( _inspect.INSPECT_TYPE_PARAMETERS.diff("type.", _ntp, _tp22 ).size() == 2 );                
     }
     
     public @interface A{}    
@@ -124,10 +149,10 @@ public class _inspectTest extends TestCase {
         assertEquals( ab.hashCode(), ba.hashCode() );
         assertEquals( ab,ba );
         
-        System.out.println( _inspect.ANNOS_INSPECTOR.diff(c, e) );
+        System.out.println( _inspect.INSPECT_ANNOS.diff(c, e) );
         
-        assertTrue(_inspect.ANNOS_INSPECTOR.equivalent(c, e));
-        assertTrue(_inspect.ANNOS_INSPECTOR.equivalent(ab, ba));        
+        assertTrue(_inspect.INSPECT_ANNOS.equivalent(c, e));
+        assertTrue(_inspect.INSPECT_ANNOS.equivalent(ab, ba));        
     }
     
     public void testParameters(){
@@ -149,19 +174,19 @@ public class _inspectTest extends TestCase {
                 _parameters.of("()"), _parameters.of("()") ) );
         
         assertTrue( _inspect.INSPECT_PARAMETERS.diff(
-                _parameters.of("()"), _parameters.of("(int i)") ).containsNames("parameter[0]") );
+                _parameters.of("()"), _parameters.of("(int i)") ).hasDiff("parameter[0]") );
         
         assertTrue( _inspect.INSPECT_PARAMETERS.diff(
-                _parameters.of("(int i)"), _parameters.of("()") ).containsNames("parameter[0]") );
+                _parameters.of("(int i)"), _parameters.of("()") ).hasDiff("parameter[0]") );
         
         assertTrue( _inspect.INSPECT_PARAMETERS.diff(
-                _parameters.of("(int i)"), _parameters.of("(String i)") ).containsNames("parameter[0]") );
+                _parameters.of("(int i)"), _parameters.of("(String i)") ).hasDiff("parameter[0]") );
         
         assertTrue( _inspect.INSPECT_PARAMETERS.diff(
-                _parameters.of("(int i)"), _parameters.of("(int i, String s)") ).containsNames("parameter[1]") );
+                _parameters.of("(int i)"), _parameters.of("(int i, String s)") ).hasDiff("parameter[1]") );
         
         assertTrue( _inspect.INSPECT_PARAMETERS.diff(
-                _parameters.of("(int i, String s)"), _parameters.of("(int i)") ).containsNames("parameter[1]") );        
+                _parameters.of("(int i, String s)"), _parameters.of("(int i)") ).hasDiff("parameter[1]") );        
     }
     
     public void testBody(){

@@ -113,6 +113,7 @@ public class ExprTest extends TestCase {
         assertEquals( "String", le.getParameters().get(0).getTypeAsString());
 
         //multiple args
+        //le = Expr.of( (Integer i, String s, Boolean b)->System.out.println(s + " "+ i +" "+ b) );
         le = Expr.of( (Integer i, String s, Boolean b)->System.out.println(s + " "+ i +" "+ b) );
 
         assertTrue( le.getParameters().get(0).getType().isClassOrInterfaceType() );
@@ -129,7 +130,8 @@ public class ExprTest extends TestCase {
         assertEquals( "Boolean", le.getParameters().get(2).getTypeAsString());
 
         //multiple statements (block Stmt)
-        le = Expr.of( (Integer i)->{
+        //le = Expr.of( (Integer i)->{
+        le = Expr.of( (Integer i)->{    
             assert i > 1;
             System.out.println(i);
         } );

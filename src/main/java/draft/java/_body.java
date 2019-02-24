@@ -3,6 +3,7 @@ package draft.java;
 import com.github.javaparser.ast.Node;
 import com.github.javaparser.ast.NodeList;
 import com.github.javaparser.ast.comments.Comment;
+import com.github.javaparser.ast.expr.LambdaExpr;
 import com.github.javaparser.ast.nodeTypes.NodeWithBlockStmt;
 import com.github.javaparser.ast.nodeTypes.NodeWithOptionalBlockStmt;
 import com.github.javaparser.ast.nodeTypes.NodeWithStatements;
@@ -11,6 +12,7 @@ import com.github.javaparser.printer.PrettyPrinterConfiguration;
 import draft.DraftException;
 
 import java.util.*;
+import java.util.function.Function;
 import java.util.function.Predicate;
 
 /**
@@ -176,17 +178,19 @@ public final class _body implements _model {
             extends _model {
 
         /**
-         * @return gets the code block
+         * @return gets the body
          */
         _body getBody();
 
         /**
-         *
+         * Replace the entire _body with the body passed in
+         * 
          * @param body the new BODY
          * @return
          */
         T setBody( BlockStmt body );
 
+        /** @return return true if the member has a body */
         default boolean hasBody() {
             return getBody().isPresent();
         }
@@ -207,8 +211,35 @@ public final class _body implements _model {
          */
         default T setBody( String... body ) {
             return setBody( Ast.blockStmt( body ) );
-        }
+        } 
 
+        default T setBody( Statement st ){
+            if( st.isBlockStmt() ){
+                return setBody( st.asBlockStmt() );
+            }
+            BlockStmt bs = new BlockStmt();
+            bs.addStatement(st);
+            return setBody( bs );            
+        }
+        
+        /**
+         * Sets the body to be the body of the Lambda
+         * 
+         * @param c the lambda containing the lambda body to set as the body of the member
+         * @return the modified member
+         */
+        default T setBody( Expr.Command c ){
+            StackTraceElement ste = Thread.currentThread().getStackTrace()[2];
+            LambdaExpr le = Expr.lambda(ste);
+            return setBody( le.getBody() );
+        }
+        
+        default T setBody( Function c){
+            StackTraceElement ste = Thread.currentThread().getStackTrace()[2];
+            LambdaExpr le = Expr.lambda(ste);
+            return setBody( le.getBody() );
+        }
+        
         /**
          * clear the contents of the BODY (the statements)
          *
@@ -277,7 +308,12 @@ public final class _body implements _model {
             return add( statementStartIndex, bs.getStatements().toArray( new Statement[ 0 ] ) );
         }
 
-        /** Adds Statements to the end of the labeled Statement with NAME "labelName" */
+        /** 
+         * Adds Statements to the end of the labeled Statement with NAME "labelName" 
+         * @param labelName the label to populate with the statements
+         * @param statements the statements to add
+         * @return the modified T
+         */
         default T addAt( String labelName, String...statements ){
             Optional<LabeledStmt> ols =
                     this.getBody().ast().findFirst(LabeledStmt.class, ls-> ls.getLabel().toString().equals(labelName));

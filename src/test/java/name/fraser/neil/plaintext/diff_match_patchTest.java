@@ -38,5 +38,19 @@ public class diff_match_patchTest extends TestCase {
         
         
     }
-    
+    static diff_match_patch dmp = new diff_match_patch();
+    public void testNoDiff(){
+        LinkedList<Diff> dd = dmp.diff_main("A", "A");        
+        System.out.println(  dd  );
+        System.out.println(  dd.size() );
+        dd = dmp.diff_main("A", "B");
+        System.out.println(  dd  );
+        System.out.println(  dd.size() );
+        
+        if( dd.stream().filter(d -> d.operation != Operation.EQUAL).findFirst().isPresent() ){
+            System.out.println( "DIFFS");
+        } else{
+            System.out.println( "DIFFS");
+        }
+    }
 }
