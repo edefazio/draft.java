@@ -406,7 +406,27 @@ public final class _anno
     @Override
     public int hashCode() {
         //if the annotation is the
-        return Objects.hashCode( this.annotationExpr );
+        if( this.annotationExpr == null){
+            return 0;
+        }
+        String name = this.annotationExpr.getNameAsString();
+        int idx = name.indexOf('.');
+        if( idx > 0){
+            name = name.substring(name.lastIndexOf('.')+1);
+        }
+        if( this.annotationExpr instanceof MarkerAnnotationExpr ){
+            return 31 * name.hashCode() + 15;
+        }
+        if( this.annotationExpr instanceof SingleMemberAnnotationExpr){
+            return Objects.hash( name, 
+                    this.annotationExpr.asSingleMemberAnnotationExpr().getMemberValue() );
+        }        
+        Set<MemberValuePair> mvp = new HashSet<MemberValuePair>();
+        this.annotationExpr.asNormalAnnotationExpr().getPairs().forEach(p -> mvp.add(p) );
+        
+        return Objects.hash(name, mvp );
+        
+        //return Objects.hashCode( this.annotationExpr );
     }
 
     @Override
@@ -964,11 +984,14 @@ public final class _anno
 
         @Override
         public int hashCode() {
-            Set<AnnotationExpr> s = new HashSet<>();
+            
             if( this.astAnnNode == null ){
                 return 0;
             }
-            this.astAnnNode.getAnnotations().forEach( a -> s.add( (AnnotationExpr)a ) ); //add each of the exprs to the set for order
+            Set<_anno> s = new HashSet<>();
+            this.astAnnNode.getAnnotations().forEach( a -> s.add( _anno.of((AnnotationExpr)a) ) ); //add each of the exprs to the set for order
+            //this.astAnnNode.getAnnotations().forEach( a -> s.add( (AnnotationExpr)a ) ); //add each of the exprs to the set for order
+            
             return s.hashCode();
         }
 

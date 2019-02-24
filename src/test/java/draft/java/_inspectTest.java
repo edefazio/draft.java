@@ -121,11 +121,15 @@ public class _inspectTest extends TestCase {
         _annos ab = _c.getField("ab").getAnnos();
         _annos ba = _c.getField("ba").getAnnos();
         
-        System.out.println( _inspect.ANNOS_INSPECTOR.diff(c, e) );
+        //hashcode should be the same
+        assertEquals( ab.hashCode(), ba.hashCode() );
+        assertEquals( ab,ba );
         
+        System.out.println( _inspect.ANNOS_INSPECTOR.diff(c, e) );
         
         assertTrue(_inspect.ANNOS_INSPECTOR.equivalent(c, e));
         assertTrue(_inspect.ANNOS_INSPECTOR.equivalent(ab, ba));
+        
     }
     
 }
