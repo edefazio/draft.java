@@ -333,6 +333,7 @@ public enum _java {
         ANNOTATION("annotation", _annotation.class),
         BODY("body", _body.class),
         MODIFIERS("modifiers", List.class, Modifier.class),
+        MODIFIER("modifier", Modifier.class),
         JAVADOC("javadoc", _javadoc.class),
         PARAMETERS("parameters", _parameter._parameters.class),
         //parameter
