@@ -1,7 +1,6 @@
 package draft.java;
 
 import com.github.javaparser.ast.Node;
-import com.github.javaparser.ast.Node.TreeTraversal;
 import com.github.javaparser.ast.NodeList;
 import com.github.javaparser.ast.comments.Comment;
 import com.github.javaparser.ast.nodeTypes.NodeWithBlockStmt;
@@ -117,10 +116,8 @@ public final class _body implements _model {
         NodeList<Statement> ts = t.getStatements();
         NodeList<Statement> os = o.getStatements();
 
-        //TODO I SHOULD SIMULTANEOUSLY WALK EACH STATEMENT INSTEAD
-        //THIS IS BAD ONLY WALKS THE TOP LEVEL STATEMENTS
         if( ts.size() != os.size() ) {
-            //System.out.println( "STMT COUNT");
+            //if we can avoid printing, we should
             return false;
         }
         String tnc = t.toString( Ast.PRINT_NO_COMMENTS );
@@ -131,6 +128,9 @@ public final class _body implements _model {
     @Override
     public int hashCode() {
         int hash = 7;
+        if( !isPresent() ){
+            return 0;
+        }
         hash = 53 * hash + Objects.hashCode( ast().toString(Ast.PRINT_NO_COMMENTS) );
         return hash;
     }
@@ -145,80 +145,6 @@ public final class _body implements _model {
 
     public boolean isEmpty() {
         return !isPresent() || ast().isEmpty();
-    }
-
-    /**
-     * This is a
-     *
-     * @param t
-     * @param o
-     * @return
-     */
-    public static boolean isEqual( BlockStmt t, BlockStmt o ) {
-
-        //statements without comments
-        List<Statement> ts = new ArrayList<>();
-        List<Statement> os = new ArrayList<>();
-        t.walk( TreeTraversal.POSTORDER,
-                s -> {
-                    if( s instanceof Statement && !s.getComment().isPresent() ) {
-                        ts.add( (Statement)s );
-                    }
-                } );
-        o.walk( TreeTraversal.POSTORDER,
-                s -> {
-                    if( s instanceof Statement && !s.getComment().isPresent() ) {
-                        os.add( (Statement)s );
-                    }
-                } );
-        if( !Objects.equals( ts, os ) ) {
-            return false;
-        }
-        //now clear
-        ts.clear();
-        os.clear();
-
-        //now walk all statements that HAVE comments
-        //and check for equality
-        t.walk( TreeTraversal.POSTORDER,
-                s -> {
-                    if( s instanceof Statement && s.getComment().isPresent() ) {
-                        ts.add( (Statement)s );
-                    }
-                } );
-        o.walk( TreeTraversal.POSTORDER,
-                s -> {
-                    if( s instanceof Statement && s.getComment().isPresent() ) {
-                        os.add( (Statement)s );
-                    }
-                } );
-        //we have
-
-        //NodeList<Statement> ts = t.getStatements();
-        //NodeList<Statement> os = o.getStatements();
-        //TODO I SHOULD SIMULTANEOUSLY WALK EACH STATEMENT INSTEAD
-        //THIS IS BAD ONLY WALKS THE TOP LEVEL STATEMENTS
-        if( ts.size() != os.size() ) {
-            return false;
-        }
-
-        for( int i = 0; i < ts.size(); i++ ) {
-            if( !ts.get( i ).equals( os.get( i ) ) ) {
-                //things get tricky with comments
-                if( ts.get( i ).getComment().isPresent() || os.get( i ).getComment().isPresent() ) {
-                    String tss = ts.toString();
-                    String oss = os.toString();
-                    if( !tss.equals( oss ) ) {
-                        return false;
-                    }
-                }
-                else {
-                    //System.out.println( ts.get(i ) + " =/= "+ os.get(i) );
-                    return false;
-                }
-            }
-        }
-        return true;
     }
 
     /**
