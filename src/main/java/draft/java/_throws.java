@@ -202,6 +202,10 @@ public final class _throws
         return this.astNodeWithThrows;
     }
 
+    public ReferenceType get(int index){
+        return this.astNodeWithThrows.getThrownException(index);       
+    }
+    
     public _throws add( _typeRef<ReferenceType>... elements ) {
         Arrays.stream( elements ).forEach( t -> this.astNodeWithThrows.addThrownException( (ReferenceType)t.ast() ) );
         return this;
