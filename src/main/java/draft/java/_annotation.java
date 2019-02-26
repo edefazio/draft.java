@@ -538,7 +538,10 @@ public final class _annotation
         }
     }
 
-    /** is the AnnotationDeclaration equal this class */
+    /** 
+     * is the AnnotationDeclaration equal this class
+     * @param ad 
+     */
     public boolean is( AnnotationDeclaration ad ){
         try{
             _annotation _a = of( ad);
@@ -751,13 +754,14 @@ public final class _annotation
         @Override
         public Map<_java.Component, Object> componentsMap( ) {
             Map<_java.Component, Object> parts = new HashMap<>();
-            parts.put(_java.Component.ANNOS, this.listAnnos() );
+            parts.put( _java.Component.ANNOS, this.listAnnos() );
             parts.put( _java.Component.JAVADOC, this.getJavadoc() );
             parts.put( _java.Component.NAME, this.getName() );
             parts.put( _java.Component.TYPE, this.getType() );
             parts.put( _java.Component.DEFAULT, this.getDefaultValue() );
             return parts;
         }
+        
         @Override
         public int hashCode() {
             int hash = 7;

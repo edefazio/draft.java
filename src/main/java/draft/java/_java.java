@@ -363,7 +363,8 @@ public enum _java {
 
         EXTENDS("extends", List.class, ClassOrInterfaceType.class), //_class, //_interface
         IMPLEMENTS("implements", List.class, ClassOrInterfaceType.class), //_class, _enum
-        STATIC_BLOCKS("staticBlocks", List.class, _staticBlock.class), //class
+        STATIC_BLOCKS("staticBlocks", List.class, _staticBlock.class), //class, _enum
+        STATIC_BLOCK("staticBlocks", _staticBlock.class), //class, _enum
         CONSTRUCTORS("constructors", List.class, _constructor.class), //class, _enum
         //CONSTRUCTOR
         CONSTRUCTOR("constructor", _constructor.class),
@@ -373,6 +374,8 @@ public enum _java {
         CONSTANTS("constants", List.class, _enum._constant.class),
         //CONSTANT
         CONSTANT("constant", _enum._constant.class), //_enum
+        
+        ARGUMENT("argument", Expression.class), //_enum._constant
         ARGUMENTS("arguments", List.class, Expression.class), //_enum._constant
 
         INIT("init", Expression.class), //field

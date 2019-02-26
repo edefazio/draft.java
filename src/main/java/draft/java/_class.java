@@ -101,14 +101,30 @@ public final class _class implements _type<ClassOrInterfaceDeclaration, _class>,
         return(_class)_type.of(is);
     }
 
-
     /**
+     * 
+     * <PRE>
      * i.e.
-     * @param anonymousClassWithLocalClass
+     * _class _c = _class.of( new Object(){
+     *     @_public @_static class F{
+     *          int x;
+     *     }
+     * }, _autoGet.$);
+     * //produces:
+     * 
+     * public static class F{
+     *    int x;
+     *    
+     *    public int getX(){
+     *       return this.x;
+     *    }
+     * }
+     * </PRE>
+     * @param anonymousObjectWithLocalClass
      * @param macroFunctions
      * @return
      */
-    public static _class of( Object anonymousClassWithLocalClass, Function<_type, _type>...macroFunctions ){
+    public static _class of( Object anonymousObjectWithLocalClass, Function<_type, _type>...macroFunctions ){
         StackTraceElement ste = Thread.currentThread().getStackTrace()[2];
         ObjectCreationExpr anon = Expr.anonymousObject(ste);
         if( anon.getAnonymousClassBody().isPresent() ){
@@ -123,7 +139,7 @@ public final class _class implements _type<ClassOrInterfaceDeclaration, _class>,
             ClassOrInterfaceDeclaration coid = (ClassOrInterfaceDeclaration)obd.get();
             //get the class
             Class clazz =
-                    Arrays.stream(anonymousClassWithLocalClass.getClass().getDeclaredClasses())
+                    Arrays.stream(anonymousObjectWithLocalClass.getClass().getDeclaredClasses())
                             .filter( c -> {
                                 //System.out.println( "TRYING "+ c.getName()+" FOR "+ coid.getNameAsString() );
                                 //NOTE: the name is a mess with $1$ nonsense for Anonymous Local class
@@ -221,12 +237,30 @@ public final class _class implements _type<ClassOrInterfaceDeclaration, _class>,
     }
 
     /**
-     * //add ANNOTATIONS to the thing
-     * new _class("aaaa.bbbb.ccc"){
-     *
+     * builds a class with the signature and the anonymous class body
+     * applies any macro annotations to the Object Body
+     * then apply the typeFunctions in order
+     * for example:
+     * <PRE>
+     * _class.of("aaaa.bbb.C", new Object(){ @_init("100") int x,y }, @_autoGetter.$);
+     * //produces
+     * package aaaa.bbb;
+     * 
+     * public class C{
+     *   int x =100, y = 100;
+     * 
+     *   public int getX(){
+     *       return x;
+     *   }
+     * 
+     *   public int getY(){
+     *       return y;
+     *   }
      * }
-     * new prototype("aaaa.bbbb.C", Macro.)
-     *
+     * </PRE>
+     * @param signature
+     * @param anonymousClassBody
+     * @param typeFn
      * @return
      */
     public static _class of( String signature, Object anonymousClassBody, Function<_type, _type>...typeFn){
@@ -302,31 +336,32 @@ public final class _class implements _type<ClassOrInterfaceDeclaration, _class>,
         return this;
     }
 
-
     /** Make sure to route this to the correct (default method) */
     public _class implement ( String classToImplement ){
         return implement( new String[]{classToImplement});
     }
 
+    @Override
     public _class removeImplements( Class toRemove ){
         this.astClass.getImplementedTypes().removeIf( im -> im.getNameAsString().equals( toRemove.getSimpleName() ) ||
                 im.getNameAsString().equals(toRemove.getCanonicalName()) );
         return this;
     }
 
+    @Override
     public _class removeExtends( Class toRemove ){
         this.astClass.getExtendedTypes().removeIf( im -> im.getNameAsString().equals( toRemove.getSimpleName() ) ||
                 im.getNameAsString().equals(toRemove.getCanonicalName()) );
         return this;
     }
 
+    @Override
     public _class removeImplements( ClassOrInterfaceType toRemove ){
         this.astClass.getImplementedTypes().remove( toRemove );
         return this;
     }
 
-
-
+    @Override
     public _class removeExtends( ClassOrInterfaceType toRemove ){
         this.astClass.getExtendedTypes().remove( toRemove );
         return this;
@@ -535,7 +570,6 @@ public final class _class implements _type<ClassOrInterfaceDeclaration, _class>,
         return this;
     }
 
-
     @Override
     public _class implement( String... toImplement ){
         Arrays.stream( toImplement ).forEach( i -> this.astClass.addImplementedType( i ) );
@@ -573,24 +607,11 @@ public final class _class implements _type<ClassOrInterfaceDeclaration, _class>,
         return this;
     }
 
-
+    @Override
     public _class removeStaticBlock( InitializerDeclaration astSb ){
         this.astClass.remove(astSb);
         return this;
     }
-
-    /*
-    @Override
-    public _staticBlock getStaticBlock(){
-        NodeList<BodyDeclaration<?>> mems = this.astClass.getMembers();
-        for( BodyDeclaration mem : mems ){
-            if( mem instanceof InitializerDeclaration){
-                return new _staticBlock( (InitializerDeclaration)mem);
-            }
-        }
-        return null;
-    }
-    */
 
     @Override
     public List<_member> listMembers(){
@@ -642,14 +663,14 @@ public final class _class implements _type<ClassOrInterfaceDeclaration, _class>,
         return this;
     }
 
-
-
+    @Override
     public _class removeFields( Predicate<_field> _fieldMatchFn){
         List<_field> fs = listFields(_fieldMatchFn);
         fs.forEach(f -> removeField(f));
         return this;
     }
 
+    @Override
     public _class removeField( _field _f ){
         if( listFields().contains(_f) ){
             if( _f.getFieldDeclaration().getVariables().size() == 1){
@@ -661,6 +682,7 @@ public final class _class implements _type<ClassOrInterfaceDeclaration, _class>,
         return this;
     }
 
+    @Override
     public _class removeField( String fieldName ){
         Optional<FieldDeclaration> ofd = this.astClass.getFieldByName(fieldName );
         if( ofd.isPresent() ){
@@ -694,16 +716,19 @@ public final class _class implements _type<ClassOrInterfaceDeclaration, _class>,
     }
 
 
+    @Override
     public _class removeConstructor( ConstructorDeclaration cd ){
         this.astClass.remove( cd );
         return this;
     }
 
+    @Override
     public _class removeConstructor( _constructor _ct){
         this.astClass.remove(_ct.ast() );
         return this;
     }
 
+    @Override
     public _class removeConstructors( Predicate<_constructor> ctorMatchFn){
         listConstructors(ctorMatchFn).forEach(c -> removeConstructor(c));
         return this;
@@ -912,7 +937,7 @@ public final class _class implements _type<ClassOrInterfaceDeclaration, _class>,
         if( !Ast.typesEqual(this.getExtends(), other.getExtends()) ){
             return false;
         }
-        if( ! Ast.importsEqual(this.listImports(), other.listImports())){
+        if( !Ast.importsEqual(this.listImports(), other.listImports())){
             return false;
         }
         if( !Ast.typesEqual( this.listImplements(), other.listImplements())){
@@ -963,12 +988,13 @@ public final class _class implements _type<ClassOrInterfaceDeclaration, _class>,
         return true;
     }
 
+    @Override
     public Map<_java.Component, Object> componentsMap( ) {
         Map<_java.Component, Object> parts = new HashMap<>();
         parts.put( _java.Component.PACKAGE_NAME, this.getPackage() );
         parts.put( _java.Component.IMPORTS, this.listImports() );
-        parts.put(_java.Component.ANNOS, this.listAnnos() );
-        parts.put( _java.Component.EXTENDS, this.getExtends() );
+        parts.put( _java.Component.ANNOS, this.listAnnos() );
+        parts.put( _java.Component.EXTENDS, this.astClass.getExtendedTypes() );        
         parts.put( _java.Component.IMPLEMENTS, this.listImplements() );
         parts.put( _java.Component.JAVADOC, this.getJavadoc() );
         parts.put( _java.Component.TYPE_PARAMETERS, this.getTypeParameters() );

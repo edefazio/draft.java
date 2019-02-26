@@ -8,19 +8,19 @@ import draft.Text;
 import draft.java._model.*;
 import java.util.Collection;
 
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Set;
+import java.util.*;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 /**
- * Model of a Java statio initializer block
+ * Model of a Java static initializer block
+ * static { ... }
+ * 
+ * There can be one or more static initializer block in each {@link _class} or 
+ * {@link _enum}
+ * 
  * @author Eric
  */
 public final class _staticBlock
@@ -123,6 +123,7 @@ public final class _staticBlock
         return true;
     }
 
+    @Override
     public Map<_java.Component, Object> componentsMap( ) {
         Map<_java.Component, Object> parts = new HashMap<>();
         parts.put( _java.Component.BODY, getBody() );
@@ -165,6 +166,7 @@ public final class _staticBlock
     /**
      * {@_type}s that may contain one or more static initializer blocks
      * @author Eric
+     * @param <T>
      */
     public interface _hasStaticBlock<T extends _hasStaticBlock & _type>
             extends _model {
@@ -177,7 +179,7 @@ public final class _staticBlock
             return listStaticBlocks().stream().filter(_staticBlockMatchFn).collect(Collectors.toList());
         }
 
-        /** gets the index<SUP>th</SUP> static block declared in the _type */
+        /** @return the index<SUP>th</SUP> static block declared in the _type */
         _staticBlock getStaticBlock( int index );
 
         /** adds a Static block based on th body of the lambda */
@@ -276,8 +278,6 @@ public final class _staticBlock
         T removeStaticBlock( InitializerDeclaration id );
         
     }
-    
-    
     
     public static final _java.Semantic<Collection<_staticBlock>> EQIVALENT_STATIC_BLOCKS = (o1, o2)->{
          if( o1 == null){

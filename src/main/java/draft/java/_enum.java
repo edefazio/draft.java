@@ -321,9 +321,6 @@ public final class _enum implements _type<EnumDeclaration, _enum>,_method._hasMe
         constructor.setPrivate(true);
         constructor.setPublic(false);
         constructor.setProtected(false);
-        //constructor.getModremove(Modifier.PUBLIC); //ALWAYS make enum constructor private
-        //constructor.getModifiers().remove(Modifier.PROTECTED);
-        //constructor.getModifiers().remove(Modifier.PRIVATE); //its inferred to be private
         this.astEnum.addMember( constructor );
         return this;
     }
@@ -630,7 +627,7 @@ public final class _enum implements _type<EnumDeclaration, _enum>,_method._hasMe
         Map<_java.Component, Object> parts = new HashMap<>();
         parts.put( _java.Component.PACKAGE_NAME, this.getPackage() );
         parts.put( _java.Component.IMPORTS, this.listImports() );
-        parts.put(_java.Component.ANNOS, this.listAnnos() );
+        parts.put( _java.Component.ANNOS, this.listAnnos() );
         parts.put( _java.Component.IMPLEMENTS, this.listImplements() );
         parts.put( _java.Component.JAVADOC, this.getJavadoc() );
         parts.put( _java.Component.CONSTANTS, this.listConstants());
@@ -667,7 +664,6 @@ public final class _enum implements _type<EnumDeclaration, _enum>,_method._hasMe
 
         Set<_staticBlock> sbs = new HashSet<>();
         sbs.addAll( this.listStaticBlocks() );
-
 
         hash = 53 * hash + Objects.hash( this.getPackage(),
                 Ast.annotationsHash( astEnum),

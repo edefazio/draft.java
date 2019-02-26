@@ -482,6 +482,14 @@ public final class _parameter
             return this;
         }
 
+        public boolean hasParametersOfType( _typeRef... typeRefs ) {
+            String[] pts = new String[typeRefs.length];
+            for(int i=0;i<typeRefs.length;i++){
+                pts[i] = typeRefs[i].toString();
+            }
+            return astNodeWithParams.hasParametersOfType( pts );
+        }
+        
         public boolean hasParametersOfType( String... paramTypes ) {
             return astNodeWithParams.hasParametersOfType( paramTypes );
         }

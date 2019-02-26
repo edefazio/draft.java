@@ -43,6 +43,15 @@ import java.util.regex.Pattern;
  * user facing API... sufficive to say features/ methods may be added and the internals may change to be more efficient
  * or better at reporting errors, etc. but the existing API should be stable
  *
+ * <PRE> 
+ * you___
+ *  |    \
+ *  |  _draft__
+ *  | /   |    \
+ *  |----->----->------>
+ * .java   AST  javac  .class
+ * </PRE>
+ * 
  * @author Eric
  */
 public enum Ast {
