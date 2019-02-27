@@ -358,6 +358,7 @@ public enum _java {
         //FIELD
         FIELD("field", _field.class),
         NESTS("nests", List.class, _type.class),
+        NEST("nest", _type.class),
         TYPE("type", _typeRef.class), //annotation.element
         DEFAULT("default", Expression.class), //_annotation.element
 
