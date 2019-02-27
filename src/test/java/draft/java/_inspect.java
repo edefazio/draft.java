@@ -91,7 +91,7 @@ public interface _inspect<T> {
     
     public static ListImportDeclarationInspect INSPECT_IMPORTS = new ListImportDeclarationInspect(_java.Component.IMPORT.getName() );
     
-    public static class ListImportDeclarationInspect implements _inspect<NodeList<ImportDeclaration>>{        
+    public static class ListImportDeclarationInspect implements _inspect<List<ImportDeclaration>>{        
 
         private String name;
         
@@ -100,7 +100,7 @@ public interface _inspect<T> {
         }
                 
         @Override
-        public boolean equivalent(NodeList<ImportDeclaration> left, NodeList<ImportDeclaration> right) {
+        public boolean equivalent(List<ImportDeclaration> left, List<ImportDeclaration> right) {
             Set<ImportDeclaration> ls = new HashSet<>();
             Set<ImportDeclaration> rs = new HashSet<>();
             ls.addAll(left);
@@ -109,7 +109,7 @@ public interface _inspect<T> {
         }
 
         @Override
-        public DiffList diff(String path, DiffList dl, NodeList<ImportDeclaration> left, NodeList<ImportDeclaration> right) {
+        public DiffList diff(String path, DiffList dl, List<ImportDeclaration> left, List<ImportDeclaration> right) {
             Set<ImportDeclaration> ls = new HashSet<>();
             Set<ImportDeclaration> rs = new HashSet<>();
             Set<ImportDeclaration> both = new HashSet<>();
@@ -133,7 +133,7 @@ public interface _inspect<T> {
     
     public static ListClassOrInterfaceTypeInspect INSPECT_IMPLEMENTS = new ListClassOrInterfaceTypeInspect(_java.Component.IMPLEMENTS.getName() );
     
-    public static class ListClassOrInterfaceTypeInspect implements _inspect<NodeList<ClassOrInterfaceType>>{        
+    public static class ListClassOrInterfaceTypeInspect implements _inspect<List<ClassOrInterfaceType>>{        
 
         private String name;
         
@@ -142,7 +142,7 @@ public interface _inspect<T> {
         }
                 
         @Override
-        public boolean equivalent(NodeList<ClassOrInterfaceType> left, NodeList<ClassOrInterfaceType> right) {
+        public boolean equivalent(List<ClassOrInterfaceType> left, List<ClassOrInterfaceType> right) {
             Set<ClassOrInterfaceType> ls = new HashSet<>();
             Set<ClassOrInterfaceType> rs = new HashSet<>();
             ls.addAll(left);
@@ -151,7 +151,7 @@ public interface _inspect<T> {
         }
 
         @Override
-        public DiffList diff(String path, DiffList dl, NodeList<ClassOrInterfaceType> left, NodeList<ClassOrInterfaceType> right) {
+        public DiffList diff(String path, DiffList dl, List<ClassOrInterfaceType> left, List<ClassOrInterfaceType> right) {
             Set<ClassOrInterfaceType> ls = new HashSet<>();
             Set<ClassOrInterfaceType> rs = new HashSet<>();
             Set<ClassOrInterfaceType> both = new HashSet<>();
@@ -186,11 +186,11 @@ public interface _inspect<T> {
                 if( right == null){
                     return dl;
                 }
-                dl.add( path+_java.Component.ELEMENT, null, right);
+                dl.add( path+_java.Component.CONSTANT, null, right);
                 return dl;
             }
             if( right == null){
-                dl.add( path+_java.Component.ELEMENT, left, null);
+                dl.add( path+_java.Component.CONSTANT, left, null);
                 return dl;
             }
             INSPECT_ANNOS.diff(path, dl, left.getAnnos(), right.getAnnos());
@@ -202,23 +202,253 @@ public interface _inspect<T> {
             return dl;
         }                
     }
-    //INSPECT_STATIC_BLOCKS
+    public static final _typeInspect INSPECT_TYPE = new _typeInspect();
     
-    //INSPECT_ANNOTATION_ELEMENTS
-    //INSPECT_ENUM_CONSTANTS
+    public static class _typeInspect implements _inspect<_type>{
+
+        @Override
+        public boolean equivalent(_type left, _type right) {
+            return Objects.equals(left, right);
+        }
+
+        @Override
+        public DiffList diff(String path, DiffList dl, _type left, _type right) {
+            if(left == null){
+                if(right == null){
+                    return dl;
+                }
+                dl.add(path, null, right);
+                return dl;
+            }
+            if( right == null){
+                dl.add(path, left, null);
+                return dl;
+            }
+            if( !left.getClass().isAssignableFrom(right.getClass())){
+                dl.add(path+_java.Component.NEST, left, null);
+                dl.add(path+_java.Component.NEST, null, right);
+            }
+            if( left instanceof _class ){
+                INSPECT_CLASS.diff(path, (_class)left, (_class)right);
+                return dl;
+            }
+            if( left instanceof _interface ){
+                INSPECT_INTERFACE.diff(path, (_interface)left, (_interface)right);
+                return dl;
+            }
+            if( left instanceof _annotation ){
+                INSPECT_ANNOTATION.diff(path, (_annotation)left, (_annotation)right);
+                return dl;
+            }
+            INSPECT_ENUM.diff(path, (_enum)left, (_enum)right);
+            return dl;
+        }        
+    }
     
-    //INSPECT_METHODS
-    //INSPECT_FIELDS
-    //INSPECT_CONSTRUCTORS
+    public static final _typesInspect INSPECT_NESTS = new _typesInspect();
+            
+    public static class _typesInspect implements _inspect<List<_type>>{
+        
+        @Override
+        public boolean equivalent( List<_type> left, List<_type> right ){
+            Set<_type> ls = new HashSet<>();
+            Set<_type> rs = new HashSet<>();
+            ls.addAll( left);
+            rs.addAll( right);
+            return Objects.equals( ls, right);
+        }
+        
+        private static _type sameNameAndType(_type _t, Set<_type> target ){
+            Optional<_type> ot = target.stream().filter(t-> t.getName().equals(_t) && 
+                    _t.getClass().isAssignableFrom( t.getClass()) ).findFirst();
+            if( ot.isPresent() ){
+                return ot.get();
+            }
+            return null;
+        }
+        
+        @Override
+        public DiffList diff(String path, DiffList dl, List<_type>left, List<_type>right ){
+            Set<_type>ls = new HashSet<>();
+            Set<_type>rs = new HashSet<>();
+            Set<_type>both = new HashSet<>();
+            ls.addAll(left);
+            rs.addAll(right);
+            both.addAll(ls);
+            both.retainAll(rs);
+            
+            ls.removeAll(both);
+            ls.forEach(f -> {
+                _type cc = sameNameAndType( f, rs );
+                if( cc != null ){
+                    rs.remove( cc );
+                    INSPECT_TYPE.diff(path+_java.Component.NEST, f, cc);
+                    //dl.add(path+_java.Component.NEST, f, cc);                    
+                } else{
+                    dl.add(path+_java.Component.NEST, f, null);
+                }
+            });
+            
+            rs.forEach(f -> {
+                dl.add(path+_java.Component.NEST, null,f);                
+            });
+            return dl;
+        }
+    }
     
-    //INSPECT_EXTENDS
-    //INSPECT_IMPLEMENTS
+    public static _annotationInspect INSPECT_ANNOTATION = new _annotationInspect();
     
-    //INSPECT CLASS
-    //INSPECT_IMPORTS
-    //INSPECT_PACKAGE (String)
+    public static class _annotationInspect implements _inspect<_annotation>{
+
+        @Override
+        public boolean equivalent(_annotation left,_annotation right) {
+            return Objects.equals(left,right);
+        }
+
+        @Override
+        public DiffList diff(String path, DiffList dl,_annotation left, _annotation right) {
+            if( left == null){
+                if( right == null){
+                    return dl;
+                }
+                dl.add( path+_java.Component.ANNOTATION, null, right);
+                return dl;
+            }
+            if( right == null){
+                dl.add( path+_java.Component.ANNOTATION, left, null);
+                return dl;
+            }
+            INSPECT_PACKAGE_NAME.diff(path,dl, left.getPackage(), right.getPackage() );
+            INSPECT_IMPORTS.diff(path,dl, left.listImports(), right.listImports() );
+            INSPECT_ANNOS.diff(path, dl, left.getAnnos(), right.getAnnos());                     
+            INSPECT_JAVADOC.diff(path, dl, left.getJavadoc(), right.getJavadoc());              
+            INSPECT_NAME.diff(path, dl, left.getName(), right.getName());
+            INSPECT_MODIFIERS.diff(path, dl, left.getModifiers(), right.getModifiers());            
+            INSPECT_FIELDS.diff(path, dl, left.listFields(), right.listFields() );
+            INSPECT_ANNOTATION_ELEMENTS.diff(path, dl, left.listElements(), right.listElements() );
+            //INSPECT_NESTS            
+            return dl;
+        }
+    }
+     
+    public static _interfaceInspect INSPECT_INTERFACE = new _interfaceInspect();
     
-    //INSPECT_NESTS
+    public static class _interfaceInspect implements _inspect<_interface>{
+
+        @Override
+        public boolean equivalent(_interface left, _interface right) {
+            return Objects.equals(left,right);
+        }
+
+        @Override
+        public DiffList diff(String path, DiffList dl,_interface left, _interface right) {
+            if( left == null){
+                if( right == null){
+                    return dl;
+                }
+                dl.add( path+_java.Component.INTERFACE, null, right);
+                return dl;
+            }
+            if( right == null){
+                dl.add( path+_java.Component.INTERFACE, left, null);
+                return dl;
+            }
+            INSPECT_PACKAGE_NAME.diff(path,dl, left.getPackage(), right.getPackage() );
+            INSPECT_IMPORTS.diff(path,dl, left.listImports(), right.listImports() );
+            INSPECT_ANNOS.diff(path, dl, left.getAnnos(), right.getAnnos());          
+            INSPECT_EXTENDS.diff(path, dl, left.listExtends(), right.listExtends());          
+            INSPECT_JAVADOC.diff(path, dl, left.getJavadoc(), right.getJavadoc());  
+            INSPECT_TYPE_PARAMETERS.diff(path, dl, left.getTypeParameters(), right.getTypeParameters());  
+            INSPECT_NAME.diff(path, dl, left.getName(), right.getName());
+            INSPECT_MODIFIERS.diff(path, dl, left.getModifiers(), right.getModifiers());
+            INSPECT_METHODS.diff(path, dl, left.listMethods(), right.listMethods() );
+            INSPECT_FIELDS.diff(path, dl, left.listFields(), right.listFields() );
+            
+            //INSPECT_NESTS            
+            return dl;
+        }
+    }
+    
+    public static _enumInspect INSPECT_ENUM = new _enumInspect();
+    
+    public static class _enumInspect implements _inspect<_enum>{
+
+        @Override
+        public boolean equivalent(_enum left, _enum right) {
+            return Objects.equals(left,right);
+        }
+
+        @Override
+        public DiffList diff(String path, DiffList dl,_enum left, _enum right) {
+            if( left == null){
+                if( right == null){
+                    return dl;
+                }
+                dl.add( path+_java.Component.ENUM, null, right);
+                return dl;
+            }
+            if( right == null){
+                dl.add( path+_java.Component.ENUM, left, null);
+                return dl;
+            }
+            INSPECT_PACKAGE_NAME.diff(path,dl, left.getPackage(), right.getPackage() );
+            INSPECT_IMPORTS.diff(path,dl, left.listImports(), right.listImports() );
+            INSPECT_ANNOS.diff(path, dl, left.getAnnos(), right.getAnnos());                               
+            INSPECT_IMPLEMENTS.diff(path, dl, left.listImplements(), right.listImplements());  
+            INSPECT_JAVADOC.diff(path, dl, left.getJavadoc(), right.getJavadoc());  
+            INSPECT_STATIC_BLOCKS.diff(path, dl, left.listStaticBlocks(), right.listStaticBlocks());            
+            INSPECT_NAME.diff(path, dl, left.getName(), right.getName());
+            INSPECT_MODIFIERS.diff(path, dl, left.getModifiers(), right.getModifiers());
+            INSPECT_CONSTRUCTORS.diff(path, dl, left.listConstructors(), right.listConstructors());
+            INSPECT_METHODS.diff(path, dl, left.listMethods(), right.listMethods() );
+            INSPECT_FIELDS.diff(path, dl, left.listFields(), right.listFields() );
+            INSPECT_ENUM_CONSTANTS.diff(path, dl, left.listConstants(), right.listConstants());
+            
+            //INSPECT_NESTS            
+            return dl;
+        }
+    }
+    
+    public static _classInspect INSPECT_CLASS = new _classInspect();
+    
+    public static class _classInspect implements _inspect<_class>{
+
+        @Override
+        public boolean equivalent(_class left, _class right) {
+            return Objects.equals(left,right);
+        }
+
+        @Override
+        public DiffList diff(String path, DiffList dl,_class left, _class right) {
+            if( left == null){
+                if( right == null){
+                    return dl;
+                }
+                dl.add( path+_java.Component.CLASS, null, right);
+                return dl;
+            }
+            if( right == null){
+                dl.add( path+_java.Component.CLASS, left, null);
+                return dl;
+            }
+            INSPECT_PACKAGE_NAME.diff(path,dl, left.getPackage(), right.getPackage() );
+            INSPECT_IMPORTS.diff(path,dl, left.listImports(), right.listImports() );
+            INSPECT_ANNOS.diff(path, dl, left.getAnnos(), right.getAnnos());          
+            INSPECT_EXTENDS.diff(path, dl, left.listExtends(), right.listExtends());          
+            INSPECT_IMPLEMENTS.diff(path, dl, left.listImplements(), right.listImplements());  
+            INSPECT_JAVADOC.diff(path, dl, left.getJavadoc(), right.getJavadoc());  
+            INSPECT_TYPE_PARAMETERS.diff(path, dl, left.getTypeParameters(), right.getTypeParameters());  
+            INSPECT_STATIC_BLOCKS.diff(path, dl, left.listStaticBlocks(), right.listStaticBlocks());            
+            INSPECT_NAME.diff(path, dl, left.getName(), right.getName());
+            INSPECT_MODIFIERS.diff(path, dl, left.getModifiers(), right.getModifiers());
+            INSPECT_CONSTRUCTORS.diff(path, dl, left.listConstructors(), right.listConstructors());
+            INSPECT_METHODS.diff(path, dl, left.listMethods(), right.listMethods() );
+            INSPECT_FIELDS.diff(path, dl, left.listFields(), right.listFields() );
+            
+            //INSPECT_NESTS            
+            return dl;
+        }
+    }
     
     
     public static _annotationElementsInspect INSPECT_ANNOTATION_ELEMENTS = new _annotationElementsInspect();
@@ -271,6 +501,7 @@ public interface _inspect<T> {
         }       
     }
     
+    
     public static _annotationElementInspect INSPECT_ANNOTATION_ELEMENT = new _annotationElementInspect();
     
     public static class _annotationElementInspect implements _inspect<_annotation._element>{
@@ -297,8 +528,7 @@ public interface _inspect<T> {
             INSPECT_TYPE_REF.diff(path, dl, left.getType(), right.getType());
             INSPECT_DEFAULT.diff(path, dl, left.getDefaultValue(), right.getDefaultValue());
             INSPECT_JAVADOC.diff(path, dl, left.getJavadoc(), right.getJavadoc());
-            INSPECT_ANNOS.diff(path, dl, left.getAnnos(), right.getAnnos());
-            
+            INSPECT_ANNOS.diff(path, dl, left.getAnnos(), right.getAnnos());            
             return dl;
         }
     }
@@ -578,6 +808,16 @@ public interface _inspect<T> {
             return Objects.equals(ls,rs);            
         }
 
+        public static _method findSameNameAndParameters(_method tm, Set<_method>targets ){
+            Optional<_method> om = targets.stream().filter(m -> m.getName().equals(tm.getName()) 
+                    && m.getType().equals(tm.getType()) 
+                    && m.getParameters().hasParametersOfType(tm.getParameters().types())).findFirst();
+            if( om != null ){
+                return om.get();
+            }
+            return null;
+        }
+        
         @Override
         public DiffList diff(String path, DiffList dl, List<_method> left, List<_method> right) {
             Set<_method>ls = new HashSet<>();
@@ -589,18 +829,35 @@ public interface _inspect<T> {
             both.addAll(left);
             both.retainAll(right);
             
+            ls.removeAll(both);
+            rs.removeAll(both);
+            
+            ls.forEach(m -> {
+                _method fm = findSameNameAndParameters(m, rs);
+                if( fm != null ){
+                    rs.remove(fm);
+                    INSPECT_METHOD.diff(path, m, fm);
+                } else{
+                    dl.add( path, m, null );
+                }
+            });
+            
+            rs.forEach(m -> {
+                dl.add( path, m, null );                
+            });
+            
+            
             if( both.size() ==  right.size() ){
                 return dl;
-            }
+            }           
             
-            List<_matchedMethods> matchedUnequal = new ArrayList<>();
-            left.removeAll(both);
-            right.removeAll(both);
             
+            //List<_matchedMethods> matchedUnequal = new ArrayList<>();
+            /*
             //int autoMatchSim = (1 << 7) + 1 << 5;
-            if( !( left.isEmpty() || right.isEmpty() ) ){ //if either has nothing left, we cant match
-                _method[]ll = left.toArray(new _method[0]);
-                _method[]rr = right.toArray(new _method[0]);
+            if( !( ls.isEmpty() || rs.isEmpty() ) ){ //if either has nothing left, we cant match
+                _method[]ll = ls.toArray(new _method[0]);
+                _method[]rr = rs.toArray(new _method[0]);
                 
                 int maxSim = 0;
                 //int[][] sim = new int[ll.length][rr.length];
@@ -617,10 +874,12 @@ public interface _inspect<T> {
                 }                
                 //Collections.sort(allSims);
                 System.out.println( allSims );
+                return dl;
                 //TODO matching routine & remove matches from left and right
             }
             left.forEach(m -> dl.add(path+_java.Component.METHOD, m, null));
             right.forEach(m -> dl.add(path+_java.Component.METHOD, null, m));            
+            */
             return dl;
             //throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
         }        

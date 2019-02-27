@@ -6,9 +6,12 @@ import draft.java._inspect.StringInspect;
 import draft.java._inspect._textDiff;
 import draft.java._parameter._parameters;
 import draft.java._typeParameter._typeParameters;
+import draft.java.macro._autoDto;
+import draft.java.macro._static;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.Serializable;
+import java.util.List;
 import junit.framework.TestCase;
 
 /**
@@ -16,6 +19,71 @@ import junit.framework.TestCase;
  * @author Eric
  */
 public class _inspectTest extends TestCase {
+    
+    public void testInspectMethods(){
+        _class _c = _class.of("A", new Object(){
+            final String name = "bozo";
+            int x,y,z;    
+            
+            public @_static int calc(){
+                return 1 * 2 * 3;
+            }
+            
+        }, _autoDto.$);
+        
+        _class _d = _class.of("A", new Object(){            
+            public @_static int calc(){
+                return 1 * 2 * 3;
+            }
+            
+            int z,x,y;           
+            final String name = "bozo";
+            
+        }, _autoDto.$);
+        
+        List<_method> ms = _c.listMethods();
+        List<_method> ms2 = _d.listMethods();
+        
+        assertTrue(_inspect.INSPECT_FIELDS.diff(_c.listFields(), _d.listFields()).isEmpty());
+        assertTrue(_inspect.INSPECT_METHODS.diff(ms, ms2).isEmpty());           
+        
+        assertTrue(_inspect.INSPECT_CLASS.diff(_c, _d).isEmpty());        
+    }
+    
+    /*
+    public void testInspect_class(){
+        _class _c = _class.of("A", new Object(){
+            int x,y,z;
+            
+            
+            public int b(){
+                return 100;
+            }
+            
+            String name = "Eric";
+            
+        }, _autoDto.$);
+        
+        _class _d = _class.of("A", new Object(){            
+            String name = "Eric";
+            
+            public int b(){
+                return 100;
+            }
+            int x,y,z;
+        }, _autoDto.$);
+        
+        assertEquals( _c, _c);
+        assertEquals( _c, _d);
+        System.out.println( _c);
+        System.out.println( _d);
+        
+        //System.out.println( _inspect.INSPECT_CLASS.diff(_c, _d). );
+        
+        assertTrue( _inspect.INSPECT_CLASS.diff(_c, _d).isEmpty());
+    }
+    */
+    
     
     public void testInspectMethod(){
         _method _m1 = _method.of(new Object(){ 
