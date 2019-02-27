@@ -423,6 +423,15 @@ public final class _parameter
             return -1;
         }
 
+        
+        public _typeRef[] types(){
+            _typeRef[] ts = new _typeRef[count()];
+            for(int i=0;i<this.count();i++){
+                ts[i] = _typeRef.of( this.astNodeWithParams.getParameter(i).getType() );
+            }
+            return ts;
+        }
+        
         public _parameters remove( Parameter... ps ) {
             for( int i = 0; i < ps.length; i++ ) {
                 this.astNodeWithParams.getParameters().remove( ps[ i ] );
