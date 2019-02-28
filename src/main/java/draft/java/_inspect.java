@@ -10,10 +10,33 @@ import com.github.javaparser.ast.type.Type;
 import com.github.javaparser.ast.type.TypeParameter;
 import draft.ObjectDiff;
 import draft.ObjectDiff.DiffList;
+import draft.java.Ast;
+import draft.java._anno;
+import draft.java._annotation;
+import draft.java._body;
+import draft.java._class;
+import draft.java._constructor;
+import draft.java._enum;
+import draft.java._field;
+import draft.java._interface;
+import draft.java._java;
 import static draft.java.Ast.typesEqual;
+import draft.java._java.Component;
+import draft.java._javadoc;
+import draft.java._method;
+import draft.java._modifiers;
+import draft.java._parameter;
 import draft.java._parameter._parameters;
+import draft.java._receiverParameter;
+import draft.java._staticBlock;
+import draft.java._throws;
+import draft.java._type;
 import draft.java._typeParameter._typeParameters;
+import draft.java._typeRef;
 import java.util.*;
+import java.util.function.Consumer;
+import java.util.function.Predicate;
+import java.util.stream.Collectors;
 import name.fraser.neil.plaintext.diff_match_patch;
 import name.fraser.neil.plaintext.diff_match_patch.Diff;
 
@@ -24,6 +47,18 @@ import name.fraser.neil.plaintext.diff_match_patch.Diff;
 public interface _inspect<T> {
     
     public boolean equivalent( T left, T right );
+    
+    
+    default _diffTree diffTree( T left, T right) {
+        return diffTree(new _path(), new _diffTree(), left, right );
+    }
+    
+    default _diffTree diffTree( _diffTree dt, T left, T right) {
+        return diffTree( new _path(), dt, left, right );
+    }
+    
+    public _diffTree diffTree( _path path, _diffTree dt, T left, T right );
+    
     
     public DiffList diff( String path, DiffList dl, T left, T right );
     
@@ -37,7 +72,223 @@ public interface _inspect<T> {
         return diff( path, dl, left, right);
     }
     
-    static final Map<_java.Component, _inspect> _inspectMap = new HashMap<>();
+    
+    /**
+     * Defines the components and identifies the path within a _type to
+     * a specific member or property
+     * 
+     * for example:
+     * <PRE>
+     * (ALLCAPS = _java.COMPONENT, (inside parenthesis = id)
+     * 
+     * CLASS[MyClass].NAME                          : the name of class MyClass
+     * INTERFACE[I].EXTENDS                         : the extends on the interface I
+     * ENUM[Scope].IMPLEMENTS                       : the implements on the enum Scope
+     * ANNOTATION[Retain].FIELD[hops].INIT          : init of a field hops on the annotation Retain
+     * CLASS[MyClass].METHOD[m(int)].PARAMETER[0]   : the first parameter on method m(int) in class MyClass
+     * 
+     * //if we have nested components it can get interesting (omit Component for brevity) 
+     * ENUM[E].NEST.CLASS[inner].METHOD[m()].BODY   : (the method body on a nested class within an enum)
+     * </PRE>
+     * 
+     */
+    public static class _path{
+            
+        /** 
+         * the types of components that identify an entity 
+         * for example: 
+         * <PRE>
+         * Component.CLASS, Component.NAME (the class Name)
+         * Component.INTERFACE, Component.EXTENDS (the extends on the interface)
+         * Component.ENUM, Component.IMPLEMENTS ( the implements on the enum)
+         * Component.ANNOTATION. Component.FIELD, Component.INIT (init of a field on the annotation)
+         * 
+         * //if we have nested components it can get interesting (omit Component for brevity) 
+         * ENUM, CLASS, METHOD, BODY (the method body on a nested class within an enum)
+         * </PRE>
+         * 
+         * we build this as we traverse the class (when identifying diffs)
+         */ 
+        List<_java.Component> componentPath;
+        
+        /**
+         * The identifying String of a member component (usually the name of the member) 
+         * (i.e. for a _field, _type, _method, _annotation._element, or _enum._constant the name)
+         * (for a constructor, the parameter types)
+         * 
+         * //NOTE: can be empty for non-named components (i.e. EXTENDS, IMPLEMENTS, etc.)
+         */
+        List<String> idPath;
+        
+        public _path(){
+            componentPath = new ArrayList<>();
+            idPath = new ArrayList<>();
+        }
+        
+        public _path(_path original){
+            componentPath = new ArrayList();
+            componentPath.addAll(original.componentPath);
+            idPath = new ArrayList();
+            idPath.addAll(original.idPath);
+        }
+        
+        /** Build and return a new _path that follows the current path down one component */
+        public _path in( _java.Component component){
+            return in( component, "");            
+        }
+        
+        public int size(){
+            return this.componentPath.size();
+        }
+        
+        /** Build and return a new _path that follows the current path down one component */
+        public _path in(_java.Component component, String id){
+            _path _p = new _path(this);
+            _p.componentPath.add(component);
+            _p.idPath.add(id);
+            return _p;
+        }        
+        
+        /** return the component path as a String */
+        public String componentPathString(){
+            StringBuilder sb = new StringBuilder();
+            for(int i=0;i<this.componentPath.size();i++){
+                if( i > 0 ){
+                    sb.append(".");
+                }
+                sb.append(this.componentPath.get(i).getName());
+            }
+            return sb.toString();
+        }
+        
+        @Override
+        public String toString(){
+            StringBuilder sb = new StringBuilder();
+            for(int i=0;i<this.componentPath.size();i++){
+                if( i > 0 ){
+                    sb.append(".");
+                }
+                sb.append(this.componentPath.get(i).getName());
+                if( this.idPath.get(i).length() > 0){
+                    sb.append("[").append( this.idPath.get(i) ).append("]");
+                }
+            }
+            return sb.toString();
+        }
+    }
+    
+    /**
+     * A Tree of Diff Nodes that reference the domain
+     * 
+     */
+    public static class _diffTree{
+        
+        public List<_diffNode> diffs = new ArrayList<>();
+        
+        public int size(){
+            return diffs.size();
+        }
+        
+        public boolean isEmpty(){
+            return size() == 0;
+        }
+        
+        /**
+         * List all paths that have diffs
+         * @return 
+         */
+        public List<_path>paths(){
+            return diffs.stream().map(d -> d.path ).collect(Collectors.toList());
+        }
+        
+        /**
+         * Return the diff at the path, (or null if no diff exists at this path)
+         * @param _p
+         * @return 
+         */
+        public _diffNode at(_path _p){            
+            Optional<_diffNode> od = 
+                    diffs.stream().filter(d -> d.path.equals(_p) ).findFirst();
+            if( od.isPresent() ){
+                return od.get();
+            }
+            return null;
+        } 
+        
+        /**
+         * For each of the matching DiffNodes in the Tree, perform some action
+         * @param _diffNodeMatchFn function for matching specific _diffNodes
+         * @param _diffNodeActionFn consumer action function on selected _diffNodes
+         * @return  the potentially modified) _diffTree
+         */
+        public _diffTree forEach( Predicate<_diffNode> _diffNodeMatchFn, Consumer<_diffNode> _diffNodeActionFn ){
+            list(_diffNodeMatchFn).forEach(_diffNodeActionFn);
+            return this;
+        }
+        
+        public _diffTree forEach( Consumer<_diffNode> _diffNodeFn ){
+            this.diffs.forEach(_diffNodeFn);
+            return this;
+        }
+        
+        public List<_diffNode> list(){
+            return this.diffs;
+        } 
+        
+        public List<_diffNode> list(Predicate<_diffNode> DiffNodeMatchFn ){
+            return this.diffs.stream().filter(DiffNodeMatchFn).collect(Collectors.toList());
+        }
+        
+        public _diffTree add( _path path, Object left, Object right ){
+            diffs.add( new _diffNode(path, left, right));
+            return this;
+        }
+        
+        @Override
+        public String toString(){
+            if( isEmpty() ){
+                return " - no diffs found -";
+            }
+            StringBuilder sb = new StringBuilder();
+            sb.append("(").append( diffs.size()).append(") diffs").append(System.lineSeparator());
+            this.diffs.forEach( d -> {
+                if( d.left == null ){
+                    sb.append("  + ").append( d.path.toString() ).append(System.lineSeparator() );
+                } else if (d.right == null ){
+                    sb.append("  - ").append( d.path.toString() ).append(System.lineSeparator() );
+                } else{
+                    sb.append("  ~ ").append( d.path.toString() ).append(System.lineSeparator() );
+                }
+                });
+            return sb.toString();
+        }        
+    }
+    
+    /**
+     * Representation of a node within the Diff tree
+     * 
+     */ 
+    public static class _diffNode{
+        
+        public Object left;
+        public Object right;
+        public _path path;
+        
+        public _diffNode(_path path, Object left, Object right) {
+            this.path = path;
+            this.left = left;
+            this.right = right;
+        }
+        
+        boolean hasComponent(Component component){
+            return this.path.componentPath.contains(component);
+        }
+        
+        public Component leafComponent(){
+            return this.path.componentPath.get( this.path.size() -1 );
+        }
+    }
+    
     
     public static _enumConstantsInspect INSPECT_ENUM_CONSTANTS = new _enumConstantsInspect();
     
@@ -59,6 +310,32 @@ public interface _inspect<T> {
                 return ec.get();
             }
             return null;
+        }
+        
+        @Override
+        public _diffTree diffTree( _path path, _diffTree dt, List<_enum._constant> left, List<_enum._constant> right) {
+            Set<_enum._constant>ls = new HashSet<>();
+            Set<_enum._constant>rs = new HashSet<>();
+            Set<_enum._constant>both = new HashSet<>();
+            ls.addAll(left);
+            rs.addAll(right);
+            both.addAll(ls);
+            both.retainAll(rs);
+            
+            ls.removeAll(both);
+            ls.forEach(f -> {
+                _enum._constant cc = sameName( f, rs );
+                if( cc != null ){
+                    rs.remove( cc );
+                    dt.add(path.in(_java.Component.CONSTANT, f.getName()), f, cc);
+                } else{
+                    dt.add(path.in(_java.Component.CONSTANT, f.getName()), f, null);                    
+                }
+            });            
+            rs.forEach(f -> {
+                dt.add( path.in(_java.Component.CONSTANT, f.getName()), null, f);                                    
+            });
+            return dt;
         }
         
         @Override
@@ -89,11 +366,12 @@ public interface _inspect<T> {
         }        
     }
     
+    
     public static ListImportDeclarationInspect INSPECT_IMPORTS = new ListImportDeclarationInspect(_java.Component.IMPORT.getName() );
     
     public static class ListImportDeclarationInspect implements _inspect<List<ImportDeclaration>>{        
 
-        private String name;
+        private final String name;
         
         public ListImportDeclarationInspect(String name){
             this.name = name;
@@ -108,6 +386,26 @@ public interface _inspect<T> {
             return Objects.equals( ls, rs);
         }
 
+        @Override
+        public _diffTree diffTree( _path path, _diffTree dt, List<ImportDeclaration> left, List<ImportDeclaration> right) {
+            Set<ImportDeclaration> ls = new HashSet<>();
+            Set<ImportDeclaration> rs = new HashSet<>();
+            Set<ImportDeclaration> both = new HashSet<>();
+            ls.addAll(left);
+            rs.addAll(right);
+            
+            both.addAll( left);
+            both.retainAll( right);
+            
+            ls.removeAll(both);
+            rs.removeAll(both);
+            
+            ls.forEach(c -> dt.add(path.in(_java.Component.IMPORT), c, null) );
+            rs.forEach(c -> dt.add(path.in(_java.Component.IMPORT), null, c) );
+            
+            return dt;
+        }
+        
         @Override
         public DiffList diff(String path, DiffList dl, List<ImportDeclaration> left, List<ImportDeclaration> right) {
             Set<ImportDeclaration> ls = new HashSet<>();
@@ -129,16 +427,16 @@ public interface _inspect<T> {
         }        
     }
     
-    public static ListClassOrInterfaceTypeInspect INSPECT_EXTENDS = new ListClassOrInterfaceTypeInspect(_java.Component.EXTENDS.getName() );
+    public static ListClassOrInterfaceTypeInspect INSPECT_EXTENDS = new ListClassOrInterfaceTypeInspect(_java.Component.EXTENDS);
     
-    public static ListClassOrInterfaceTypeInspect INSPECT_IMPLEMENTS = new ListClassOrInterfaceTypeInspect(_java.Component.IMPLEMENTS.getName() );
+    public static ListClassOrInterfaceTypeInspect INSPECT_IMPLEMENTS = new ListClassOrInterfaceTypeInspect(_java.Component.IMPLEMENTS );
     
     public static class ListClassOrInterfaceTypeInspect implements _inspect<List<ClassOrInterfaceType>>{        
 
-        private String name;
+        private final Component component;
         
-        public ListClassOrInterfaceTypeInspect(String name){
-            this.name = name;
+        public ListClassOrInterfaceTypeInspect(Component component){
+            this.component = component;
         }
                 
         @Override
@@ -150,6 +448,26 @@ public interface _inspect<T> {
             return Objects.equals( ls, rs);
         }
 
+        @Override
+        public _diffTree diffTree( _path path, _diffTree dt, List<ClassOrInterfaceType> left, List<ClassOrInterfaceType> right) {
+            Set<ClassOrInterfaceType> ls = new HashSet<>();
+            Set<ClassOrInterfaceType> rs = new HashSet<>();
+            Set<ClassOrInterfaceType> both = new HashSet<>();
+            ls.addAll(left);
+            rs.addAll(right);
+            
+            both.addAll( left);
+            both.retainAll( right);
+            
+            ls.removeAll(both);
+            rs.removeAll(both);
+            
+            ls.forEach(c -> dt.add(path.in(component), c, null) );
+            rs.forEach(c -> dt.add(path.in(component), null, c) );
+            
+            return dt;
+        }
+        
         @Override
         public DiffList diff(String path, DiffList dl, List<ClassOrInterfaceType> left, List<ClassOrInterfaceType> right) {
             Set<ClassOrInterfaceType> ls = new HashSet<>();
@@ -164,8 +482,8 @@ public interface _inspect<T> {
             ls.removeAll(both);
             rs.removeAll(both);
             
-            ls.forEach(c -> dl.add(name, c, null) );
-            rs.forEach(c -> dl.add(name, null, c) );
+            ls.forEach(c -> dl.add(component.getName(), c, null) );
+            rs.forEach(c -> dl.add(component.getName(), null, c) );
             
             return dl;
         }        
@@ -180,7 +498,32 @@ public interface _inspect<T> {
             return Objects.equals(left,right);
         }
         
-         @Override
+        
+        @Override
+        public _diffTree diffTree( _path path, _diffTree dt, _enum._constant left, _enum._constant right) {
+            if( left == null){
+                if( right == null){
+                    return dt;
+                }
+                dt.add( path.in(_java.Component.CONSTANT, right.getName()), null, right);
+                return dt;
+            }
+            if( right == null){
+                dt.add( path.in(_java.Component.CONSTANT, left.getName()), left, null );
+                return dt;
+                //dl.add( path+_java.Component.CONSTANT, left, null);
+                //return dl;
+            }
+            INSPECT_ANNOS.diffTree(path, dt, left.getAnnos(), right.getAnnos());
+            INSPECT_JAVADOC.diffTree(path, dt, left.getJavadoc(), right.getJavadoc());
+            INSPECT_NAME.diffTree(path, dt, left.getName(), right.getName());
+            INSPECT_ARGUMENTS.diffTree(path, dt, left.listArguments(), right.listArguments());
+            INSPECT_METHODS.diffTree(path, dt, left.listMethods(), right.listMethods());
+            INSPECT_FIELDS.diffTree(path, dt, left.listFields(), right.listFields());            
+            return dt;
+        }
+        
+        @Override
         public DiffList diff(String path, DiffList dl,_enum._constant left, _enum._constant right) {
             if( left == null){
                 if( right == null){
@@ -211,6 +554,51 @@ public interface _inspect<T> {
             return Objects.equals(left, right);
         }
 
+        public Component getComponent( _type t ){
+            if( t instanceof _class){
+                return Component.CLASS;
+            }
+            if( t instanceof _interface){
+                return Component.INTERFACE;
+            }
+            if( t instanceof _enum){
+                return Component.ENUM;
+            }
+            return Component.ANNOTATION;            
+        }
+        
+        @Override
+        public _diffTree diffTree( _path path, _diffTree dt, _type left, _type right) {
+            if(left == null){
+                if(right == null){
+                    return dt;
+                }
+                dt.add(path.in(getComponent(right), right.getName()), null, right);
+                return dt;
+            }
+            if( right == null){
+                dt.add(path.in(getComponent(left), left.getName()), left, null);
+                return dt;
+            }
+            if( !left.getClass().isAssignableFrom(right.getClass())){
+                //on the fence about this
+                dt.add(path.in(getComponent(left), left.getName()), left, null);
+                dt.add(path.in(getComponent(right), right.getName() ), null, right);
+                //dt.add(path.in(Component.NEST), left, null);
+                //dt.add(path.in(Component.NEST), null, right);
+            }
+            if( left instanceof _class ){
+                return INSPECT_CLASS.diffTree(path.in(Component.CLASS, left.getName()), dt, (_class)left, (_class)right);
+            }
+            if( left instanceof _interface ){
+                return INSPECT_INTERFACE.diffTree(path.in(Component.INTERFACE, left.getName()), dt, (_interface)left, (_interface)right);
+            }
+            if( left instanceof _annotation ){
+                return INSPECT_ANNOTATION.diffTree(path.in(Component.ANNOTATION, left.getName()),dt, (_annotation)left, (_annotation)right);                
+            }
+            return INSPECT_ENUM.diffTree(path.in(Component.ENUM, left.getName()),dt,  (_enum)left, (_enum)right);            
+        }
+        
         @Override
         public DiffList diff(String path, DiffList dl, _type left, _type right) {
             if(left == null){
@@ -268,6 +656,34 @@ public interface _inspect<T> {
         }
         
         @Override
+        public _diffTree diffTree( _path path, _diffTree dt, List<_type>left, List<_type>right ){
+            Set<_type>ls = new HashSet<>();
+            Set<_type>rs = new HashSet<>();
+            Set<_type>both = new HashSet<>();
+            ls.addAll(left);
+            rs.addAll(right);
+            both.addAll(ls);
+            both.retainAll(rs);
+            
+            ls.removeAll(both);
+            ls.forEach(f -> {
+                _type cc = sameNameAndType( f, rs );
+                if( cc != null ){
+                    rs.remove( cc );
+                    INSPECT_TYPE.diffTree(path.in(_java.Component.NEST),dt, f, cc);
+                    //dl.add(path+_java.Component.NEST, f, cc);                    
+                } else{
+                    dt.add(path.in(_java.Component.NEST), f, null);
+                }
+            });
+            
+            rs.forEach(f -> {
+                dt.add(path.in(_java.Component.NEST), null,f);                
+            });
+            return dt;            
+        }
+        
+        @Override
         public DiffList diff(String path, DiffList dl, List<_type>left, List<_type>right ){
             Set<_type>ls = new HashSet<>();
             Set<_type>rs = new HashSet<>();
@@ -306,6 +722,29 @@ public interface _inspect<T> {
         }
 
         @Override
+        public _diffTree diffTree( _path path, _diffTree dt, _annotation left, _annotation right) {
+            if( left == null){
+                if( right == null){
+                    return dt;
+                }
+                return dt.add( path.in(_java.Component.ANNOTATION, right.getName()), null, right);                
+            }
+            if( right == null){
+                return dt.add( path.in(_java.Component.ANNOTATION, left.getName()), left, null);
+            }
+            INSPECT_PACKAGE_NAME.diffTree(path,dt, left.getPackage(), right.getPackage() );
+            INSPECT_IMPORTS.diffTree(path,dt, left.listImports(), right.listImports() );
+            INSPECT_ANNOS.diffTree(path, dt, left.getAnnos(), right.getAnnos());                     
+            INSPECT_JAVADOC.diffTree(path, dt, left.getJavadoc(), right.getJavadoc());              
+            INSPECT_NAME.diffTree(path, dt, left.getName(), right.getName());
+            INSPECT_MODIFIERS.diffTree(path, dt, left.getModifiers(), right.getModifiers());            
+            INSPECT_FIELDS.diffTree(path, dt, left.listFields(), right.listFields() );
+            INSPECT_ANNOTATION_ELEMENTS.diffTree(path, dt, left.listElements(), right.listElements() );
+            INSPECT_NESTS.diffTree(path, dt, left.listNests(), right.listNests());
+            return dt;
+        }
+        
+        @Override
         public DiffList diff(String path, DiffList dl,_annotation left, _annotation right) {
             if( left == null){
                 if( right == null){
@@ -326,7 +765,7 @@ public interface _inspect<T> {
             INSPECT_MODIFIERS.diff(path, dl, left.getModifiers(), right.getModifiers());            
             INSPECT_FIELDS.diff(path, dl, left.listFields(), right.listFields() );
             INSPECT_ANNOTATION_ELEMENTS.diff(path, dl, left.listElements(), right.listElements() );
-            //INSPECT_NESTS            
+            INSPECT_NESTS.diff(path, dl, left.listNests(), right.listNests());       
             return dl;
         }
     }
@@ -340,6 +779,31 @@ public interface _inspect<T> {
             return Objects.equals(left,right);
         }
 
+        public _diffTree diffTree( _path path, _diffTree dt, _interface left, _interface right) {
+            if( left == null){
+                if( right == null){
+                    return dt;
+                }
+                return dt.add( path.in(_java.Component.INTERFACE, right.getName()), null, right);
+            }
+            if( right == null){
+                return dt.add( path.in(_java.Component.INTERFACE, left.getName()), left, null);
+            }
+            INSPECT_PACKAGE_NAME.diffTree(path,dt, left.getPackage(), right.getPackage() );
+            INSPECT_IMPORTS.diffTree(path,dt, left.listImports(), right.listImports() );
+            INSPECT_ANNOS.diffTree(path, dt, left.getAnnos(), right.getAnnos());          
+            INSPECT_EXTENDS.diffTree(path, dt, left.listExtends(), right.listExtends());          
+            INSPECT_JAVADOC.diffTree(path, dt, left.getJavadoc(), right.getJavadoc());  
+            INSPECT_TYPE_PARAMETERS.diffTree(path, dt, left.getTypeParameters(), right.getTypeParameters());  
+            INSPECT_NAME.diffTree(path, dt, left.getName(), right.getName());
+            INSPECT_MODIFIERS.diffTree(path, dt, left.getModifiers(), right.getModifiers());
+            INSPECT_METHODS.diffTree(path, dt, left.listMethods(), right.listMethods() );
+            INSPECT_FIELDS.diffTree(path, dt, left.listFields(), right.listFields() );
+            INSPECT_NESTS.diffTree(path, dt, left.listNests(), right.listNests());
+            //INSPECT_NESTS            
+            return dt;
+        }
+        
         @Override
         public DiffList diff(String path, DiffList dl,_interface left, _interface right) {
             if( left == null){
@@ -364,7 +828,7 @@ public interface _inspect<T> {
             INSPECT_METHODS.diff(path, dl, left.listMethods(), right.listMethods() );
             INSPECT_FIELDS.diff(path, dl, left.listFields(), right.listFields() );
             
-            //INSPECT_NESTS            
+            INSPECT_NESTS.diff(path, dl, left.listNests(), right.listNests());
             return dl;
         }
     }
@@ -378,6 +842,35 @@ public interface _inspect<T> {
             return Objects.equals(left,right);
         }
 
+        public _diffTree diffTree( _path path, _diffTree dt, _enum left, _enum right) {
+            if( left == null){
+                if( right == null){
+                    return dt;
+                }
+                return dt.add( path.in(_java.Component.ENUM, right.getName()), null, right);                
+            }
+            if( right == null){
+                return dt.add( path.in(_java.Component.ENUM, left.getName()), left, null );
+                //dl.add( path+_java.Component.ENUM, left, null);
+                //return dl;
+            }
+            INSPECT_PACKAGE_NAME.diffTree(path,dt, left.getPackage(), right.getPackage() );
+            INSPECT_IMPORTS.diffTree(path,dt, left.listImports(), right.listImports() );
+            INSPECT_ANNOS.diffTree(path, dt, left.getAnnos(), right.getAnnos());                               
+            INSPECT_IMPLEMENTS.diffTree(path, dt, left.listImplements(), right.listImplements());  
+            INSPECT_JAVADOC.diffTree(path, dt, left.getJavadoc(), right.getJavadoc());  
+            INSPECT_STATIC_BLOCKS.diffTree(path, dt, left.listStaticBlocks(), right.listStaticBlocks());            
+            INSPECT_NAME.diffTree(path, dt, left.getName(), right.getName());
+            INSPECT_MODIFIERS.diffTree(path, dt, left.getModifiers(), right.getModifiers());
+            INSPECT_CONSTRUCTORS.diffTree(path, dt, left.listConstructors(), right.listConstructors());
+            INSPECT_METHODS.diffTree(path, dt, left.listMethods(), right.listMethods() );
+            INSPECT_FIELDS.diffTree(path, dt, left.listFields(), right.listFields() );
+            INSPECT_ENUM_CONSTANTS.diffTree(path, dt, left.listConstants(), right.listConstants());
+            
+            INSPECT_NESTS.diffTree(path, dt, left.listNests(), right.listNests());  
+            return dt;
+        }
+        
         @Override
         public DiffList diff(String path, DiffList dl,_enum left, _enum right) {
             if( left == null){
@@ -404,7 +897,7 @@ public interface _inspect<T> {
             INSPECT_FIELDS.diff(path, dl, left.listFields(), right.listFields() );
             INSPECT_ENUM_CONSTANTS.diff(path, dl, left.listConstants(), right.listConstants());
             
-            //INSPECT_NESTS            
+            INSPECT_NESTS.diff(path, dl, left.listNests(), right.listNests());
             return dl;
         }
     }
@@ -418,6 +911,34 @@ public interface _inspect<T> {
             return Objects.equals(left,right);
         }
 
+        public _diffTree diffTree( _path path, _diffTree dt, _class left, _class right) {
+            if( left == null){
+                if( right == null){
+                    return dt;
+                }
+                return dt.add( path.in(_java.Component.CLASS, right.getName()), null, right);
+            }
+            if( right == null){
+                return dt.add( path.in(_java.Component.CLASS, left.getName()), left, null);
+            }
+            INSPECT_PACKAGE_NAME.diffTree(path, dt, left.getPackage(), right.getPackage() );
+            INSPECT_IMPORTS.diffTree(path,dt, left.listImports(), right.listImports() );
+            INSPECT_ANNOS.diffTree(path, dt, left.getAnnos(), right.getAnnos());          
+            INSPECT_EXTENDS.diffTree(path, dt, left.listExtends(), right.listExtends());          
+            INSPECT_IMPLEMENTS.diffTree(path, dt, left.listImplements(), right.listImplements());  
+            INSPECT_JAVADOC.diffTree(path, dt, left.getJavadoc(), right.getJavadoc());  
+            INSPECT_TYPE_PARAMETERS.diffTree(path, dt, left.getTypeParameters(), right.getTypeParameters());  
+            INSPECT_STATIC_BLOCKS.diffTree(path, dt, left.listStaticBlocks(), right.listStaticBlocks());            
+            INSPECT_NAME.diffTree(path, dt, left.getName(), right.getName());
+            INSPECT_MODIFIERS.diffTree(path, dt, left.getModifiers(), right.getModifiers());
+            INSPECT_CONSTRUCTORS.diffTree(path, dt, left.listConstructors(), right.listConstructors());
+            INSPECT_METHODS.diffTree(path, dt, left.listMethods(), right.listMethods() );
+            INSPECT_FIELDS.diffTree(path, dt, left.listFields(), right.listFields() );
+            
+            INSPECT_NESTS.diffTree(path, dt, left.listNests(), right.listNests());
+            return dt;
+        }
+        
         @Override
         public DiffList diff(String path, DiffList dl,_class left, _class right) {
             if( left == null){
@@ -445,7 +966,7 @@ public interface _inspect<T> {
             INSPECT_METHODS.diff(path, dl, left.listMethods(), right.listMethods() );
             INSPECT_FIELDS.diff(path, dl, left.listFields(), right.listFields() );
             
-            //INSPECT_NESTS            
+            INSPECT_NESTS.diff(path, dl, left.listNests(), right.listNests());
             return dl;
         }
     }
@@ -471,6 +992,32 @@ public interface _inspect<T> {
                 return ec.get();
             }
             return null;
+        }
+        
+        public _diffTree diffTree( _path path, _diffTree dt, List<_annotation._element> left, List<_annotation._element> right) {
+            Set<_annotation._element>ls = new HashSet<>();
+            Set<_annotation._element>rs = new HashSet<>();
+            Set<_annotation._element>both = new HashSet<>();
+            ls.addAll(left);
+            rs.addAll(right);
+            both.addAll(ls);
+            both.retainAll(rs);
+            
+            ls.removeAll(both);
+            ls.forEach(f -> {
+                _annotation._element cc = sameName( f, rs );
+                if( cc != null ){
+                    rs.remove( cc );
+                    dt.add(path.in(_java.Component.ELEMENT, f.getName()), f, cc);
+                } else{
+                    dt.add(path.in( _java.Component.ELEMENT,f.getName()), f, null);
+                }
+            });
+            
+            rs.forEach(f -> {
+                dt.add(path.in(_java.Component.ELEMENT, f.getName()), null,f);                
+            });
+            return dt;
         }
         
         @Override
@@ -511,6 +1058,25 @@ public interface _inspect<T> {
             return Objects.equals(left,right);
         }
 
+        public _diffTree diffTree( _path path, _diffTree dt, _annotation._element left, _annotation._element right) {
+            if( left == null){
+                if( right == null){
+                    return dt;
+                }
+                return dt.add( path.in( _java.Component.ELEMENT, right.getName()), null, right);
+                
+            }
+            if( right == null){
+                return dt.add( path.in( _java.Component.ELEMENT, left.getName()), left, null);                
+            }
+            INSPECT_NAME.diffTree(path, dt, left.getName(), right.getName());
+            INSPECT_TYPE_REF.diffTree(path, dt, left.getType(), right.getType());
+            INSPECT_DEFAULT.diffTree(path, dt, left.getDefaultValue(), right.getDefaultValue());
+            INSPECT_JAVADOC.diffTree(path, dt, left.getJavadoc(), right.getJavadoc());
+            INSPECT_ANNOS.diffTree(path, dt, left.getAnnos(), right.getAnnos());            
+            return dt;
+        }
+        
         @Override
         public DiffList diff(String path, DiffList dl, _annotation._element left, _annotation._element right) {
             if( left == null){
@@ -554,6 +1120,39 @@ public interface _inspect<T> {
                 return _f.get();
             }
             return null;
+        }
+        
+        public _diffTree diffTree( _path path, _diffTree dt, List<_field> left, List<_field> right) {
+            Set<_field> lf = new HashSet<>();
+            Set<_field> rf = new HashSet<>();
+            lf.addAll(left);
+            rf.addAll(right);
+            Set<_field> both = new HashSet<>();
+            both.addAll(left);
+            both.retainAll(right);
+            
+            //organize fields that have the same name as edits
+            lf.removeAll(both);
+            rf.removeAll(both);
+            
+            lf.forEach(f ->  {
+                _field match = getFieldNamed( rf, f.getName() );
+                if( match != null ){
+                    dt.add(path.in( _java.Component.FIELD, f.getName()), f, match);
+                } else{
+                    dt.add(path.in(_java.Component.FIELD, f.getName()), f, null);
+                }
+            });
+            
+            rf.forEach(f ->  {
+                _field match = getFieldNamed( lf, f.getName() );
+                if( match != null ){
+                    dt.add(path.in( _java.Component.FIELD, f.getName()), match, f);
+                } else{
+                    dt.add(path.in(_java.Component.FIELD, f.getName()), null, f);
+                }
+            });
+            return dt;
         }
         
         @Override
@@ -601,6 +1200,26 @@ public interface _inspect<T> {
         }
 
         @Override
+        public _diffTree diffTree( _path path, _diffTree dt, _field left, _field right) {
+            if( left == null){
+                if( right == null){
+                    return dt;
+                }
+                return dt.add( path.in(_java.Component.FIELD, right.getName()), null, right);
+            }
+            if( right == null){
+                return dt.add( path.in(_java.Component.FIELD, left.getName()), left, null);
+            }
+            INSPECT_NAME.diffTree(path, dt, left.getName(), right.getName());
+            INSPECT_TYPE_REF.diffTree(path, dt, left.getType(), right.getType());
+            INSPECT_MODIFIERS.diffTree(path, dt, left.getModifiers(), right.getModifiers());
+            INSPECT_JAVADOC.diffTree(path, dt, left.getJavadoc(), right.getJavadoc());
+            INSPECT_ANNOS.diffTree(path, dt, left.getAnnos(), right.getAnnos());
+            INSPECT_INIT.diffTree(path, dt, left.getInit(), right.getInit() );
+            return dt;
+        }
+        
+        @Override
         public DiffList diff(String path, DiffList dl, _field left, _field right) {
             if( left == null){
                 if( right == null){
@@ -640,6 +1259,25 @@ public interface _inspect<T> {
         }
 
         @Override
+        public _diffTree diffTree( _path path, _diffTree dt, List<_staticBlock> left, List<_staticBlock> right) {
+            Set<_staticBlock> ls = new HashSet<>();
+            Set<_staticBlock> rs = new HashSet<>();
+            Set<_staticBlock> both = new HashSet<>();
+            ls.addAll( left);
+            rs.addAll(right);
+            
+            both.addAll(left);
+            both.retainAll(right);
+            
+            ls.removeAll(both);
+            rs.removeAll(both);
+            
+            ls.forEach(s -> dt.add(path.in(_java.Component.STATIC_BLOCK), s, null));
+            rs.forEach(s -> dt.add(path.in(_java.Component.STATIC_BLOCK), null, s));
+            return dt;
+        }
+        
+        @Override
         public DiffList diff(String path, DiffList dl, List<_staticBlock> left, List<_staticBlock> right) {
             Set<_staticBlock> ls = new HashSet<>();
             Set<_staticBlock> rs = new HashSet<>();
@@ -670,6 +1308,20 @@ public interface _inspect<T> {
             return Objects.equals(left, right);
         }
 
+        @Override
+        public _diffTree diffTree( _path path, _diffTree dt, _staticBlock left, _staticBlock right) {
+            if( left == null){
+                if( right == null){
+                    return dt;
+                }
+                return dt.add( path.in( _java.Component.STATIC_BLOCK), null, right);
+            }
+            if( right == null){
+                return dt.add( path.in(_java.Component.STATIC_BLOCK), left, null);
+            }
+            return INSPECT_BODY.diffTree(path, dt, left.getBody(), right.getBody());            
+        }
+        
         @Override
         public DiffList diff(String path, DiffList dl, _staticBlock left, _staticBlock right) {
             if( left == null){
@@ -703,7 +1355,8 @@ public interface _inspect<T> {
                     
             Optional<_constructor> oc = 
                 lcs.stream().filter(
-                    c -> c.getName().equals(ct) && c.getParameters().hasParametersOfType(_trs)).findFirst();
+                    c -> c.getName().equals(ct) 
+                            && c.getParameters().hasParametersOfType(_trs)).findFirst();
             if( oc.isPresent() ){
                 return oc.get();
             }
@@ -719,6 +1372,35 @@ public interface _inspect<T> {
             return Objects.equals( ls, rs );
         }
 
+        
+        @Override
+        public _diffTree diffTree( _path path, _diffTree dt, List<_constructor> left, List<_constructor> right) {
+            Set<_constructor> ls = new HashSet<>();
+            Set<_constructor> rs = new HashSet<>();
+            Set<_constructor> both = new HashSet<>();
+            ls.addAll(left);
+            rs.addAll(right);
+            
+            both.addAll(left);
+            both.retainAll(right);
+            
+            ls.removeAll(both);
+            rs.removeAll(both);
+            ls.forEach(c -> {
+                _constructor _rct = sameNameAndParameterTypes(c, rs); 
+                if( _rct != null ){
+                    rs.remove(_rct);
+                    dt.add(path.in( _java.Component.CONSTRUCTOR, _constructorInspect.constructorSignatureDescription(c) ), c, _rct);
+                } else{
+                    dt.add(path.in( _java.Component.CONSTRUCTOR, _constructorInspect.constructorSignatureDescription(c) ), c, null);
+                }
+            });
+            rs.forEach(c -> {
+                dt.add(path.in( _java.Component.CONSTRUCTOR, _constructorInspect.constructorSignatureDescription(c) ), null,c );                
+            });
+            return dt;
+        }
+        
         @Override
         public DiffList diff(String path, DiffList dl, List<_constructor> left, List<_constructor> right) {
             Set<_constructor> ls = new HashSet<>();
@@ -742,7 +1424,7 @@ public interface _inspect<T> {
                 }
             });
             rs.forEach(c -> {
-                dl.add(path+_java.Component.CONSTRUCTOR, c, null);                
+                dl.add(path+_java.Component.CONSTRUCTOR, null, c);                
             });
             return dl;
         }        
@@ -756,6 +1438,50 @@ public interface _inspect<T> {
         @Override
         public boolean equivalent(_constructor left, _constructor right) {
             return Objects.equals(left, right);
+        }
+        
+        public static String constructorSignatureDescription(_constructor ct){
+            StringBuilder sb = new StringBuilder(); 
+            
+            _parameters _pts = ct.getParameters();
+            //_typeRef[] _trs = new _typeRef[_pts.count()];
+            sb.append( ct.getName() );
+            sb.append( "(");
+            for(int i=0;i<_pts.count();i++){
+                if( i > 0){
+                    sb.append(", ");
+                }
+                sb.append(_pts.get(i).getType() );
+                if(_pts.get(i).isVarArg() ){
+                    sb.append("...");
+                }
+                //_trs[i] = _pts.get(i).getType();
+            }
+            sb.append(")");
+            return sb.toString();
+        }
+        
+        @Override
+        public _diffTree diffTree( _path path, _diffTree dt, _constructor left, _constructor right) {
+            if( left == null){
+                if( right == null){
+                    return dt;
+                }
+                return dt.add(path.in(_java.Component.CONSTRUCTOR, constructorSignatureDescription(right)), null, right);
+            }
+            if( right == null){
+                return dt.add(path.in(_java.Component.CONSTRUCTOR, constructorSignatureDescription(left)), left, null);
+            }        
+            INSPECT_JAVADOC.diffTree(path, dt, left.getJavadoc(), right.getJavadoc());
+            INSPECT_ANNOS.diffTree( path, dt, left.getAnnos(), right.getAnnos());
+            INSPECT_MODIFIERS.diffTree(path, dt, left.getModifiers(), right.getModifiers());            
+            INSPECT_NAME.diffTree( path, dt, left.getName(), right.getName());            
+            INSPECT_RECEIVER_PARAMETER.diffTree(path, dt, left.getReceiverParameter(), right.getReceiverParameter());
+            INSPECT_PARAMETERS.diffTree(path, dt, left.getParameters(), right.getParameters());
+            INSPECT_TYPE_PARAMETERS.diffTree(path, dt, left.getTypeParameters(), right.getTypeParameters());
+            INSPECT_THROWS.diffTree( path, dt, left.getThrows(), right.getThrows());            
+            INSPECT_BODY.diffTree(path, dt, left.getBody(), right.getBody());            
+            return dt;
         }
 
         @Override
@@ -808,6 +1534,23 @@ public interface _inspect<T> {
             return Objects.equals(ls,rs);            
         }
 
+        public static String describeMethodSignature(_method _m ){
+            StringBuilder sb = new StringBuilder();
+            sb.append(_m.getName());
+            sb.append("(");
+            for(int i=0;i< _m.getParameters().count(); i++){
+                if( i > 0 ){
+                    sb.append(", ");
+                }
+                sb.append( _m.getParameter(i).getType() );
+                if( _m.getParameter(i).isVarArg() ){
+                    sb.append("...");
+                }
+            }
+            sb.append(")");
+            return sb.toString();
+        }
+        
         public static _method findSameNameAndParameters(_method tm, Set<_method>targets ){
             Optional<_method> om = targets.stream().filter(m -> m.getName().equals(tm.getName()) 
                     && m.getType().equals(tm.getType()) 
@@ -816,6 +1559,38 @@ public interface _inspect<T> {
                 return om.get();
             }
             return null;
+        }
+        
+        @Override
+        public _diffTree diffTree( _path path, _diffTree dt,  List<_method> left, List<_method> right) {
+            Set<_method>ls = new HashSet<>();
+            ls.addAll(left);
+            Set<_method>rs = new HashSet<>();
+            rs.addAll(right);
+            
+            Set<_method> both = new HashSet<>();
+            both.addAll(left);
+            both.retainAll(right);
+            
+            ls.removeAll(right);
+            rs.removeAll(left);
+            
+            ls.forEach(m -> {
+                
+                _method fm = findSameNameAndParameters(m, rs);
+                //System.out.println(" LEFT NOT MATCHED "+m+" "+rs);
+                if( fm != null ){
+                    rs.remove(fm);
+                    INSPECT_METHOD.diffTree(path.in(Component.METHOD, describeMethodSignature(m)), dt, m, fm);
+                } else{
+                    dt.add( path.in(Component.METHOD, describeMethodSignature(m)), m, null );
+                }
+            });            
+            rs.forEach(m -> {
+                //System.out.println(" RIGHT NOT MATCHED "+m);
+                dt.add( path.in(Component.METHOD, describeMethodSignature(m)), null, m );                
+            });                                             
+            return dt;
         }
         
         @Override
@@ -851,37 +1626,7 @@ public interface _inspect<T> {
                 return dl;
             }           
             
-            
-            //List<_matchedMethods> matchedUnequal = new ArrayList<>();
-            /*
-            //int autoMatchSim = (1 << 7) + 1 << 5;
-            if( !( ls.isEmpty() || rs.isEmpty() ) ){ //if either has nothing left, we cant match
-                _method[]ll = ls.toArray(new _method[0]);
-                _method[]rr = rs.toArray(new _method[0]);
-                
-                int maxSim = 0;
-                //int[][] sim = new int[ll.length][rr.length];
-                List<Integer> allSims = new ArrayList<>();
-                for(int i=0; i<ll.length;i++){                    
-                    for(int j=0;j<rr.length;j++){
-                        int si = INSPECT_METHOD.calcSimularity( ll[i], rr[j] );
-                        //sim[i][j] = si;
-                        allSims.add(si);
-                        if( si > maxSim ){
-                            maxSim = si;
-                        }
-                    }
-                }                
-                //Collections.sort(allSims);
-                System.out.println( allSims );
-                return dl;
-                //TODO matching routine & remove matches from left and right
-            }
-            left.forEach(m -> dl.add(path+_java.Component.METHOD, m, null));
-            right.forEach(m -> dl.add(path+_java.Component.METHOD, null, m));            
-            */
-            return dl;
-            //throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+            return dl;            
         }        
     }
     
@@ -894,6 +1639,30 @@ public interface _inspect<T> {
             return Objects.equals(left, right);
         }
 
+        @Override
+        public _diffTree diffTree( _path path, _diffTree dt, _method left, _method right) {
+            if( left == null){
+                if( right == null){
+                    return dt;
+                }
+                return dt.add( path.in(_java.Component.METHOD,_methodsInspect.describeMethodSignature(right)), null, right);                
+            }
+            if( right == null){
+                return dt.add( path.in(_java.Component.METHOD,_methodsInspect.describeMethodSignature(left)), left, null);
+            }
+            INSPECT_JAVADOC.diffTree(path, dt, left.getJavadoc(), right.getJavadoc());
+            INSPECT_ANNOS.diffTree( path, dt, left.getAnnos(), right.getAnnos());
+            INSPECT_MODIFIERS.diffTree(path, dt, left.getModifiers(), right.getModifiers());
+            INSPECT_TYPE_REF.diffTree(path, dt, left.getType(), right.getType());
+            INSPECT_NAME.diffTree( path, dt, left.getName(), right.getName());            
+            INSPECT_RECEIVER_PARAMETER.diffTree(path, dt, left.getReceiverParameter(), right.getReceiverParameter());
+            INSPECT_PARAMETERS.diffTree(path, dt, left.getParameters(), right.getParameters());
+            INSPECT_TYPE_PARAMETERS.diffTree(path, dt, left.getTypeParameters(), right.getTypeParameters());
+            INSPECT_THROWS.diffTree( path, dt, left.getThrows(), right.getThrows());            
+            INSPECT_BODY.diffTree(path, dt, left.getBody(), right.getBody());            
+            return dt;
+        }
+        
         @Override
         public DiffList diff(String path, DiffList dl, _method left, _method right) {
             if( left == null){
@@ -975,6 +1744,37 @@ public interface _inspect<T> {
         }
 
         @Override
+        public _diffTree diffTree( _path path, _diffTree dt, _body left, _body right) {
+             if(!left.isPresent() ){
+                if( ! right.isPresent() ){
+                    return dt;
+                }
+                else{
+                    return dt.add(path.in( _java.Component.BODY), left, right);                    
+                }
+            }
+            if( !right.isPresent()) {
+                return dt.add(path.in( _java.Component.BODY), left, right);
+            }
+            String leftSer = left.toString(Ast.PRINT_NO_COMMENTS);
+            String rightSer = right.toString(Ast.PRINT_NO_COMMENTS);
+            if( !Objects.equals( leftSer, rightSer )){
+                //ok. we know at least one diff (other than comments) are in the text
+                // lets diff the originals WITH comments
+                LinkedList<Diff> diffs = plainTextDiff.diff_main(left.toString(), right.toString());
+                _textDiff td = new _textDiff(diffs);
+                // NOTE: we treat code DIFFERENTLY than other objects that are diffedbecause 
+                // diffs in code can cross object boundaries and it's not as "clean"
+                // as simply having members with properties because of the nature of code
+                // instead we have a _textDiff which encapsulates the apparent changes
+                // the text has to undergo to get from LEFT, to RIGHT
+                
+                dt.add(path.in(_java.Component.BODY), td, td);                
+            }            
+            return dt;
+        }
+        
+        @Override
         public DiffList diff(String path, DiffList dl, _body left, _body right) {
             if(!left.isPresent() ){
                 if( ! right.isPresent() ){
@@ -996,7 +1796,7 @@ public interface _inspect<T> {
                 // lets diff the originals WITH comments
                 LinkedList<Diff> diffs = plainTextDiff.diff_main(left.toString(), right.toString());
                 _textDiff td = new _textDiff(diffs);
-                // NOTE: we treat code DIFFERENTLY than other objects that are diffedbecause 
+                // NOTE: we treat code DIFFERENTLY than other objects that are diffed because 
                 // diffs in code can cross object boundaries and it's not as "clean"
                 // as simply having members with properties because of the nature of code
                 // instead we have a _textDiff which encapsulates the apparent changes
@@ -1019,6 +1819,27 @@ public interface _inspect<T> {
             return Objects.equals(left, right);
         }
 
+        @Override
+        public _diffTree diffTree( _path path, _diffTree dt, _parameters left, _parameters right) {
+            for(int i=0;i<left.count();i++){
+                _parameter _l = left.get(i);
+                _parameter _r = null;
+                if( i < right.count() ){
+                    _r = right.get(i);
+                }
+                if( !Objects.equals(left, right) ){
+                    dt.add(path.in(_java.Component.PARAMETER,"["+i+"]"), _l, _r);
+                }                
+            }
+            if( right.count() > left.count() ){
+                for(int i=left.count(); i<right.count(); i++){
+                    _parameter _r = right.get(i);
+                    dt.add(path.in( _java.Component.PARAMETER,"["+i+"]"), null, _r);
+                }
+            }
+            return dt;
+        }
+        
         @Override
         public DiffList diff(String path, DiffList dl, _parameters left, _parameters right) {
             for(int i=0;i<left.count();i++){
@@ -1052,6 +1873,14 @@ public interface _inspect<T> {
         }
 
         @Override
+        public _diffTree diffTree( _path path, _diffTree dt, _modifiers left, _modifiers right) {
+            if( !equivalent( left, right)){
+                dt.add(path.in( _java.Component.MODIFIERS), left, right);
+            }
+            return dt;
+        }
+        
+        @Override
         public DiffList diff(String path, DiffList dl, _modifiers left, _modifiers right) {
             if( !equivalent( left, right)){
                 dl.add(path+_java.Component.MODIFIERS.getName(), left, right);
@@ -1070,6 +1899,14 @@ public interface _inspect<T> {
             return Objects.equals(left, right);
         }
 
+        @Override
+        public _diffTree diffTree( _path path, _diffTree dt,  _javadoc left, _javadoc right) {
+            if( !equivalent( left, right)){
+                dt.add(path.in( _java.Component.JAVADOC ), left, right);
+            }
+            return dt;
+        }
+        
         @Override
         public DiffList diff(String path, DiffList dl, _javadoc left, _javadoc right) {
             if( !equivalent( left, right)){
@@ -1092,6 +1929,22 @@ public interface _inspect<T> {
             return Objects.equals( left, right);
         }
 
+        @Override
+        public _diffTree diffTree( _path path, _diffTree dt,  _receiverParameter left, _receiverParameter right) {
+            if( !equivalent( left, right )){
+                if(left == null){
+                    return dt.add(path.in(Component.RECEIVER_PARAMETER), null, right);                    
+                }
+                if(right == null){
+                    return dt.add(path.in(Component.RECEIVER_PARAMETER), left, null);                                        
+                }                
+                INSPECT_NAME.diffTree(path.in(Component.RECEIVER_PARAMETER), dt, left.getName(), right.getName());
+                INSPECT_TYPE_REF.diffTree(path.in(Component.RECEIVER_PARAMETER), dt, left.getType(), right.getType());
+                INSPECT_ANNOS.diffTree(path.in(Component.RECEIVER_PARAMETER), dt, left.getAnnos(), right.getAnnos());
+            }
+            return dt;            
+        }
+        
         @Override
         public DiffList diff(String path, DiffList dl, _receiverParameter left, _receiverParameter right) {
             if( !equivalent( left, right )){
@@ -1128,6 +1981,28 @@ public interface _inspect<T> {
             return Objects.equals(left, right);
         }
 
+        @Override
+        public _diffTree diffTree( _path path, _diffTree dt, _anno._annos left, _anno._annos right) {
+            NodeList<AnnotationExpr> laes = left.astAnnNode.getAnnotations();
+            NodeList<AnnotationExpr> raes = right.astAnnNode.getAnnotations();
+            for( int i = 0; i < laes.size(); i++ ) {
+                AnnotationExpr e = (AnnotationExpr)laes.get( i );
+                //find a matching annotation in other, if one isnt found, then not equal
+                if( !raes.stream().filter( a -> Ast.annotationEqual( e, (AnnotationExpr)a ) ).findFirst().isPresent() ) {
+                    dt.add( path.in(Component.ANNO, e.getNameAsString()), e, null);
+                }
+            }
+            
+            for( int i = 0; i < raes.size(); i++ ) {
+                AnnotationExpr e = (AnnotationExpr)raes.get( i );
+                //find a matching annotation in other, if one isnt found, then not equal
+                if( !laes.stream().filter( a -> Ast.annotationEqual( e, (AnnotationExpr)a ) ).findFirst().isPresent() ) {
+                    dt.add(path.in(Component.ANNO, e.getNameAsString()), null, e);
+                }
+            }            
+            return dt;
+        }
+        
         @Override
         public DiffList diff(String path, DiffList dl, _anno._annos left, _anno._annos right) {
             NodeList<AnnotationExpr> laes = left.astAnnNode.getAnnotations();
@@ -1169,6 +2044,14 @@ public interface _inspect<T> {
         }
 
         @Override
+        public _diffTree diffTree( _path path, _diffTree dt, _typeRef left, _typeRef right) { 
+            if( !equivalent(left, right) ){
+                dt.add(path.in(Component.TYPE), left, right);
+            }            
+            return dt;
+        }
+        
+        @Override
         public DiffList diff(String path, DiffList dl, _typeRef left, _typeRef right) {
             if( !equivalent(left, right) ){
                 dl.add(path+name, left, right);
@@ -1193,6 +2076,27 @@ public interface _inspect<T> {
             return Objects.equals( left, right );
         }
 
+        
+        @Override
+        public _diffTree diffTree( _path path, _diffTree dt, _typeParameters left, _typeParameters right) {
+            //List<ObjectDiff.Entry> des = new ArrayList<>();
+            for(int i=0; i<left.ast().size();i++){
+                Type cit = left.ast().get(i);
+                
+                if( ! right.ast().stream().filter( c-> typesEqual(c, cit) ).findFirst().isPresent()){
+                    dt.add(path.in(Component.TYPE_PARAMETER), cit, null);
+                    //des.add(new ObjectDiff.Entry( path + name, cit, null) );
+                }
+            }
+            for(int i=0; i<right.ast().size();i++){
+                Type cit = right.ast().get(i);
+                if( ! left.ast().stream().filter( c-> typesEqual(c, cit) ).findFirst().isPresent()){
+                    dt.add(path.in(Component.TYPE_PARAMETER), null, cit);
+                }
+            }
+            return dt;
+        }
+        
         @Override
         public DiffList diff(String path, DiffList dl, _typeParameters left, _typeParameters right) {
             return diff(path, dl, left.ast(), right.ast());
@@ -1238,6 +2142,25 @@ public interface _inspect<T> {
             return Objects.equals(left, right);
         }
 
+        @Override
+        public _diffTree diffTree( _path path, _diffTree dt, _throws left, _throws right) {
+            //List<ObjectDiff.Entry> des = new ArrayList<>();
+            for(int i=0; i<left.count();i++){
+                ReferenceType cit = left.get(i);
+                if( ! right.ast().stream().filter( c-> typesEqual(c, cit) ).findFirst().isPresent()){
+                    dt.add( path.in(Component.THROWS), cit, null ); 
+                }
+            }
+            for(int i=0; i<right.count();i++){
+                ReferenceType cit = right.get(i);
+                if( ! left.ast().stream().filter( c-> typesEqual(c, cit) ).findFirst().isPresent()){
+                    dt.add( path.in(Component.THROWS), null, cit ); 
+                    //des.add(new ObjectDiff.Entry( path + name, null, cit) );
+                }
+            }
+            return dt;
+        }
+        
         @Override
         public DiffList diff(String path, DiffList dl, _throws left, _throws right) {
             
@@ -1291,6 +2214,26 @@ public interface _inspect<T> {
         }
 
         @Override
+        public _diffTree diffTree( _path path, _diffTree dt, List<Expression> left, List<Expression> right) {
+            if(left == null ){
+                if(right == null){
+                    return dt;
+                }
+                for(int i=0;i<right.size();i++){
+                    dt.add( path.in(Component.ARGUMENT,"["+i+"]"), null, right);
+                }
+                return dt;
+            }
+            if( right == null ){
+                for(int i=0;i<left.size();i++){
+                    dt.add(path.in(Component.ARGUMENT,"["+i+"]"), left, null);
+                }
+                return dt;
+            }            
+            return dt;
+        }
+        
+        @Override
         public DiffList diff(String path, DiffList dl, List<Expression> left, List<Expression> right) {
             if(left == null ){
                 if(right == null){
@@ -1311,17 +2254,17 @@ public interface _inspect<T> {
         }
         
     }
-    public static final ExpressionInspect INSPECT_DEFAULT = new ExpressionInspect(_java.Component.DEFAULT.getName());
+    public static final ExpressionInspect INSPECT_DEFAULT = new ExpressionInspect(_java.Component.DEFAULT);
     
-    public static final ExpressionInspect INSPECT_INIT = new ExpressionInspect(_java.Component.INIT.getName());
+    public static final ExpressionInspect INSPECT_INIT = new ExpressionInspect(_java.Component.INIT);
     
     public static class ExpressionInspect 
             implements _inspect<Expression>{
         
-        public String name;
+        public Component component;
         
-        public ExpressionInspect( String name ){
-            this.name = name;
+        public ExpressionInspect( Component component ){
+            this.component = component;
         }
         
         @Override
@@ -1329,27 +2272,37 @@ public interface _inspect<T> {
             return Objects.equals(left, right);
         }
         
+        
+        @Override
+        public _diffTree diffTree( _path path, _diffTree dt, Expression left, Expression right ){
+            if( !equivalent(left, right) ){                
+                return dt.add( path.in( component), left, right);
+            }
+            return dt;
+        }
+        
         @Override
         public DiffList diff( String path, DiffList dl, Expression left, Expression right ){
             if( !equivalent(left, right) ){                
-                return dl.add(path+name, left, right);
+                return dl.add(path+component.name, left, right);
             }
             return dl;
         }        
     }
     
-    public static final StringInspect INSPECT_PACKAGE_NAME = new StringInspect(_java.Component.PACKAGE_NAME.getName());
+    public static final StringInspect INSPECT_PACKAGE_NAME = new StringInspect(_java.Component.PACKAGE_NAME);
     
-    public static final StringInspect INSPECT_NAME = new StringInspect(_java.Component.NAME.getName());
+    public static final StringInspect INSPECT_NAME = new StringInspect(_java.Component.NAME);
     
     public static class StringInspect 
             implements _inspect<String>{
         
-        public String name;
+        public Component component;
         
-        public StringInspect( String name ){
-            this.name = name;
+        public StringInspect( Component component ){
+            this.component = component;
         }
+        
         
         @Override
         public boolean equivalent( String left, String right){
@@ -1357,9 +2310,17 @@ public interface _inspect<T> {
         }
         
         @Override
+        public _diffTree diffTree( _path path, _diffTree dt, String left, String right ){
+            if( !equivalent(left, right)){
+                return dt.add(path.in(component), left, right);
+            }
+            return dt;
+        }
+        
+        @Override
         public DiffList diff( String path, DiffList dl, String left, String right ){
             if( !equivalent(left, right) ){                
-                return dl.add(path+name, left, right);
+                return dl.add(path+component.getName(), left, right);
             }
             return dl;
         }

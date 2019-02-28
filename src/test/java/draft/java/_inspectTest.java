@@ -2,11 +2,15 @@ package draft.java;
 
 import draft.ObjectDiff.DiffList;
 import draft.java._anno._annos;
+import draft.java._inspect._diffTree;
 import draft.java._inspect.StringInspect;
+import draft.java._inspect._path;
 import draft.java._inspect._textDiff;
+import draft.java._java.Component;
 import draft.java._parameter._parameters;
 import draft.java._typeParameter._typeParameters;
 import draft.java.macro._autoDto;
+import draft.java.macro._name;
 import draft.java.macro._static;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -20,34 +24,115 @@ import junit.framework.TestCase;
  */
 public class _inspectTest extends TestCase {
     
+    public void testClassDiff(){
+        class C{
+            int a;
+            void m(){}
+            C(){}
+        }
+        
+        @_name("C")
+        class D{
+            int a;
+            void m(){}
+            D(){}
+        }
+        _class _c1 = _class.of(C.class);
+        _class _c2 = _class.of(D.class);
+        
+        assertTrue(_class.diffTree(_c1, _c2).isEmpty());
+        
+        _diffTree dt = _class.diffTree(_c1.name("D"), _c2);
+        //there is a name diff
+        System.out.println( dt );
+        
+        //inserted is [+] null, right
+        //deleted  is [-] left, null
+        //similar is  [~] left, right
+        
+        //undercomponent 
+        //onComponent    (NAME)
+        assertTrue(dt.list(d -> d.hasComponent(Component.NAME)).size() == 1);
+        
+        dt.forEach(d -> System.out.println( d.path.componentPath) );
+        assertTrue(dt.list(d -> d.hasComponent(Component.CONSTRUCTOR)).size() >= 1);
+        
+        _c1.getMethod("m").annotate(Deprecated.class);        
+        dt = _class.diffTree(_c1, _c2);
+        
+        assertTrue(dt.list(d -> d.hasComponent(Component.METHOD)).size() >= 1);
+        
+    }
+    
+    public void testInspectBodyDiffs(){
+        class C{
+            public void m(){
+               System.out.println(1);
+               System.out.println(2);
+            } 
+        } 
+        @_name("C")
+        class D{
+            public void m(){
+               System.out.println(2);
+               System.out.println(1);
+            }
+        }
+        _class _c = _class.of( C.class );
+        _class _c2 = _class.of( D.class );
+        _diffTree dt = _inspect.INSPECT_CLASS.diffTree(_c, _c2);
+        System.out.println( dt );
+        List<_path> paths = dt.paths();
+        System.out.println( dt.at( paths.get(0) ) );
+        
+        /*
+        //transposed
+        _method _c = _method.of(new Object(){
+           public void m(){
+               System.out.println(1);
+               System.out.println(2);
+           } 
+        });
+        _method _m2 = _method.of(new Object(){
+           public void m(){
+               System.out.println(2);
+               System.out.println(1);
+           } 
+        });
+        DiffTree dt = _inspect.INSPECT_METHOD.diffTree(_m, _m2);
+        
+        System.out.println( dt );
+        */
+        
+    }
+    
     public void testInspectMethods(){
         _class _c = _class.of("A", new Object(){
             final String name = "bozo";
-            int x,y,z;    
-            
+            int x,y,z;                
             public @_static int calc(){
                 return 1 * 2 * 3;
-            }
-            
+            }            
         }, _autoDto.$);
         
         _class _d = _class.of("A", new Object(){            
+            final String name = "bozo";
+            int x,y,z;                       
             public @_static int calc(){
                 return 1 * 2 * 3;
-            }
-            
-            int z,x,y;           
-            final String name = "bozo";
-            
+            }            
         }, _autoDto.$);
         
         List<_method> ms = _c.listMethods();
         List<_method> ms2 = _d.listMethods();
         
         assertTrue(_inspect.INSPECT_FIELDS.diff(_c.listFields(), _d.listFields()).isEmpty());
-        assertTrue(_inspect.INSPECT_METHODS.diff(ms, ms2).isEmpty());           
-        
+        assertTrue(_inspect.INSPECT_METHODS.diff(ms, ms2).isEmpty());                   
         assertTrue(_inspect.INSPECT_CLASS.diff(_c, _d).isEmpty());        
+        
+        assertTrue(_inspect.INSPECT_FIELDS.diffTree(_c.listFields(), _d.listFields()).isEmpty());
+        assertTrue(_inspect.INSPECT_METHODS.diffTree(ms, ms2).isEmpty());
+        assertTrue(_inspect.INSPECT_CLASS.diffTree(_c, _d).isEmpty());                
     }
     
     /*
@@ -112,16 +197,16 @@ public class _inspectTest extends TestCase {
     }
     
     public void testInspectStringBase(){
-        StringInspect si = new StringInspect("Name");
+        StringInspect si = new StringInspect(Component.NAME);
         assertTrue( si.equivalent("a", "a") );
         assertFalse( si.equivalent("A", "a") );
         
         assertTrue( si.diff("a", "a").isEmpty() );
-        assertTrue( si.diff("a", "b").hasDiff("Name") );        
+        assertTrue( si.diff("a", "b").hasDiff("name") );        
     }
     
     public void testInspectStringParamAtPath(){
-        StringInspect si = new StringInspect("name");
+        StringInspect si = new StringInspect(Component.NAME);
         assertTrue( si.diff("parameter[0].", "a", "a").isEmpty() );
         assertTrue( si.diff("parameter[0].", "b", "a").hasDiff("parameter[0].name") );        
     }

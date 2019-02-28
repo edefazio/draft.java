@@ -11,6 +11,8 @@ import draft.java._typeParameter._typeParameters;
 import draft.java._anno.*;
 import draft.DraftException;
 import draft.Text;
+import draft.java._inspect._diffTree;
+import draft.java._inspect._path;
 import draft.java.io._in;
 import draft.java.macro._macro;
 import draft.java.macro._remove;
@@ -1033,5 +1035,17 @@ public final class _class implements _type<ClassOrInterfaceDeclaration, _class>,
                 tf, tm, tc, tn);
 
         return hash;
+    }
+    
+    /**
+     * statically diff the contents of the two _class objects
+     * @param left
+     * @param right
+     * @return the _diffTree showing the diffs at the levels of the _class
+     */
+    public static _diffTree diffTree(_class left, _class right){        
+        _path path = new _path();
+        _diffTree dt = new _diffTree();
+        return _inspect.INSPECT_CLASS.diffTree(path, dt, left, right);
     }
 }
