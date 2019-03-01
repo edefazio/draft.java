@@ -21,10 +21,12 @@ import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import name.fraser.neil.plaintext.diff_match_patch;
 import name.fraser.neil.plaintext.diff_match_patch.Diff;
+import name.fraser.neil.plaintext.diff_match_patch.Operation;
 
 /**
  *
  * @author Eric
+ * @param <T> the type to be inspected
  */
 public interface _inspect<T> {
     
@@ -217,9 +219,47 @@ public interface _inspect<T> {
             return this;
         }
         
+        /**
+         * 
+         * @param _diffNodeFn
+         * @return 
+         */
         public _diffTree forEach( Consumer<_diffNode> _diffNodeFn ){
             this.diffs.forEach(_diffNodeFn);
             return this;
+        }
+        
+        public _diffTree forEdits(Consumer<_editNode> _editNodeActionFn){
+            listEdits().forEach(_editNodeActionFn);
+            return this;
+        }
+        
+        public _diffTree forEdits( Predicate<_editNode> _editNodeMatchFn, Consumer<_editNode> _editNodeActionFn){
+            listEdits(_editNodeMatchFn).forEach(_editNodeActionFn);
+            return this;
+        }
+        
+        public List<_editNode> listEdits( Predicate<_editNode> _editNodeMatchFn ){
+            List<_editNode> ens = new ArrayList<>();            
+            list( d -> d instanceof _editNode && _editNodeMatchFn.test( (_editNode)d) )
+                    .forEach( e -> ens.add( (_editNode)e));
+            return ens;
+        }
+        
+        /**
+         * Lists the diffs that are edit "text diffs" (usually diffs for some body of code)
+         * 
+         * these involve the edit distance algorithm (more low level involved for
+         * determining edits needed to be applied to the left text to create the 
+         * right text
+         * 
+         * @see _editNode
+         * @return a list of _editNode that have edits (usually in code bodies)
+         */
+        public List<_editNode> listEdits(){
+            List<_editNode> tds = new ArrayList<>();
+            list(d -> d instanceof _editNode ).forEach(n -> tds.add( (_editNode)n));
+            return tds;
         }
         
         public List<_diffNode> list(){
@@ -290,6 +330,18 @@ public interface _inspect<T> {
             return this.diffs.stream().filter(DiffNodeMatchFn).collect(Collectors.toList());
         }
         
+        /**
+         * Add a "textual" edit diff between two entities
+         * 
+         * @param path the path to the entity
+         * @param lds the linkedList of diffs
+         * @return the diffTree
+         */
+        public _diffTree addEdit( _path path, LinkedList<Diff> lds ){
+            diffs.add( _editNode.of(path, lds) );
+            return this;
+        }
+        
         public _diffTree add( _path path, Object left, Object right ){
             diffs.add( new _diffNode(path, left, right));
             return this;
@@ -309,19 +361,106 @@ public interface _inspect<T> {
                 else if( d.isRemove() ){
                     sb.append("  - ").append( d.path.toString() ).append(System.lineSeparator() );
                 }
-                else{ //its a change
+                else{ //its a change / edit
                     sb.append("  ~ ").append( d.path.toString() ).append(System.lineSeparator() );
                 }
-                /*
-                if( d.right == null ){
-                    sb.append("  + ").append( d.path.toString() ).append(System.lineSeparator() );
-                } else if (d.left == null ){
-                    sb.append("  - ").append( d.path.toString() ).append(System.lineSeparator() );
-                } else{
-                    sb.append("  ~ ").append( d.path.toString() ).append(System.lineSeparator() );
-                }*/
-                });
+            });
             return sb.toString();
+        }        
+    }
+    
+    /**
+     * A different kind of Node to represent a "diff", which involves looking
+     * at the "edit distance" between two textual entities.
+     * 
+     * This is more in line your typical diff (between (2) files) where 
+     * we internally try to figure out "edits" between the code on the left
+     * and the code on the right
+     * 
+     * i.e. with (2) documents LEFT and RIGHT side by side:
+     * <PRE>
+     *  LEFT  |  RIGHT
+     *        |
+     *  AA    |  AA 
+     *  BB    |  CC
+     *  CC    |  DD
+     *  EE    |  FF
+     *  FF    |  GG
+     * </PRE>
+     * 
+     * when we calculate the "EDIT DISTANCE" diff, we consider what edits
+     * (adds and removals) from the LEFT document have to occur to reach the
+     * RIGHT document.
+     * 
+     * 
+     * <PRE>     
+     *  LEFT     EDITS
+     *            
+     *  AA       KEEP   AA
+     *  - BB     REMOVE BB
+     *  CC       KEEP   CC 
+     *  + DD     ADD    DD 
+     *  - EE     REMOVE EE
+     *  FF       KEEP   FF
+     *  + GG     ADD    GG
+     * </PRE>
+     * 
+     * ...if we "execute" these edits on LEFT we end up with RIGHT
+     * <PRE>
+     *  AA
+     *  CC
+     *  DD
+     *  FF
+     *  GG
+     * </PRE>
+     */
+    public static class _editNode extends _diffNode{
+        
+        public static _editNode of( _path path, LinkedList<Diff>diffs ){
+            return new _editNode(path, diffs);
+        }
+        
+        public _editNode forEach( Consumer<Diff> diffActionFn ){
+            getTextDiff().forEach(diffActionFn);
+            return this;
+        }
+        
+        /**
+         * For all instances where the text on the right needs to be added to 
+         * the text on the left
+         */
+        public _editNode forAdds( Consumer<Diff> addActionFn ){
+            getTextDiff().stream().filter(d -> d.operation == Operation.INSERT).forEach(addActionFn);
+            return this;
+        }
+        
+        /**
+         * For all instances where the text on the left is to be removed to 
+         * create the text on the right
+         * @param removeActionFn
+         * @return 
+         */
+        public _editNode forRemoves( Consumer<Diff> removeActionFn ){
+            getTextDiff().stream().filter(d -> d.operation == Operation.DELETE).forEach(removeActionFn);
+            return this;
+        }
+        
+        /**
+         * For all instances where the text is the same between left and right
+         * @param keepActionFn
+         * @return 
+         */
+        public _editNode forSames( Consumer<Diff> keepActionFn ){
+            getTextDiff().stream().filter(d -> d.operation == Operation.EQUAL).forEach(keepActionFn);
+            return this;
+        }
+        
+        public _editNode(_path path, LinkedList<Diff> diffs) {
+            super( path, diffs, diffs);
+        }
+        
+        public LinkedList<Diff> getTextDiff(){
+            return (LinkedList<Diff>)left;
         }        
     }
     
@@ -335,11 +474,29 @@ public interface _inspect<T> {
         public Object right;
         public _path path;
         
+        /**
+         * Is this diff a Textual Diff?
+         * @return true if this is a textual diff
+         */
+        public boolean isTextDiff(){
+            return this instanceof _editNode;
+        }
+        
+        /**
+         * Return the _textDiffNode implementation of this diff
+         * OR throw and exception if this IS NOT a _textDiffNode
+         * @return 
+         */
+        public _editNode asTextDiff(){
+            return (_editNode)this;
+        }
+        
         public _diffNode(_path path, Object left, Object right) {
             this.path = path;
             this.left = left;
             this.right = right;
         }
+        
         
         /**
          * Does the delta represent a node being ADDED from left to the right
@@ -394,17 +551,14 @@ public interface _inspect<T> {
         public boolean has(String id){
             return this.path.idPath.contains(id);
         }
+        
         public boolean has(Component component){
             return this.path.componentPath.contains(component);
         }
         
-        public boolean has(Component... component){
-            return this.path.has(component);
-        }
-        
-        public Component leafComponent(){
-            return this.path.componentPath.get( this.path.size() -1 );
-        }
+        public boolean has(Component... components){
+            return this.path.has(components);
+        }        
     }
     
     
@@ -1240,6 +1394,7 @@ public interface _inspect<T> {
             return null;
         }
         
+        @Override
         public _diffTree diffTree( _path path, _diffTree dt, List<_field> left, List<_field> right) {
             Set<_field> lf = new HashSet<>();
             Set<_field> rf = new HashSet<>();
@@ -1256,7 +1411,8 @@ public interface _inspect<T> {
             lf.forEach(f ->  {
                 _field match = getFieldNamed( rf, f.getName() );
                 if( match != null ){
-                    dt.add(path.in( _java.Component.FIELD, f.getName()), f, match);
+                    //dt.add(path.in( _java.Component.FIELD, f.getName()), f, match);
+                    INSPECT_FIELD.diffTree(path.in(Component.FIELD), dt, f, match);
                 } else{
                     dt.add(path.in(_java.Component.FIELD, f.getName()), f, null);
                 }
@@ -1265,7 +1421,8 @@ public interface _inspect<T> {
             rf.forEach(f ->  {
                 _field match = getFieldNamed( lf, f.getName() );
                 if( match != null ){
-                    dt.add(path.in( _java.Component.FIELD, f.getName()), match, f);
+                    //dt.add(path.in( _java.Component.FIELD, f.getName()), match, f);
+                    INSPECT_FIELD.diffTree(path.in(Component.FIELD), dt, match, f);
                 } else{
                     dt.add(path.in(_java.Component.FIELD, f.getName()), null, f);
                 }
@@ -1879,15 +2036,18 @@ public interface _inspect<T> {
             if( !Objects.equals( leftSer, rightSer )){
                 //ok. we know at least one diff (other than comments) are in the text
                 // lets diff the originals WITH comments
-                LinkedList<Diff> diffs = plainTextDiff.diff_main(left.toString(), right.toString());
-                _textDiff td = new _textDiff(diffs);
+                
                 // NOTE: we treat code DIFFERENTLY than other objects that are diffedbecause 
                 // diffs in code can cross object boundaries and it's not as "clean"
                 // as simply having members with properties because of the nature of code
                 // instead we have a _textDiff which encapsulates the apparent changes
-                // the text has to undergo to get from LEFT, to RIGHT
+                // the text has to undergo to get from LEFT, to RIGHT and incorporates               
+                // the Edit Distance between two bodies of text
+                LinkedList<Diff> diffs = plainTextDiff.diff_main(left.toString(), right.toString());
+                dt.addEdit(path.in(Component.BODY), diffs);
+                //_textDiff td = new _textDiff(diffs);
                 
-                dt.add(path.in(_java.Component.BODY), td, td);                
+                //dt.add(path.in(_java.Component.BODY), td, td);                
             }            
             return dt;
         }
@@ -1913,14 +2073,15 @@ public interface _inspect<T> {
                 //ok. we know at least one diff (other than comments) are in the text
                 // lets diff the originals WITH comments
                 LinkedList<Diff> diffs = plainTextDiff.diff_main(left.toString(), right.toString());
-                _textDiff td = new _textDiff(diffs);
+                //dl.addEdit(path+_java.Component.BODY.getName(), diffs);
+                //_textDiff td = new _textDiff(diffs);
                 // NOTE: we treat code DIFFERENTLY than other objects that are diffed because 
                 // diffs in code can cross object boundaries and it's not as "clean"
                 // as simply having members with properties because of the nature of code
                 // instead we have a _textDiff which encapsulates the apparent changes
                 // the text has to undergo to get from LEFT, to RIGHT
                 
-                dl.add(path+_java.Component.BODY.getName(), td, td);                
+                dl.add(path+_java.Component.BODY.getName(), diffs, diffs);                
             }            
             return dl;
         }        
@@ -2453,10 +2614,10 @@ public interface _inspect<T> {
      * pieces of text, rather than ASSUME the left is a previous and the right
      * is the current with a Patch Applied.
      * 
-     */
+     
     public static class _textDiff{
         
-        /* the diff_match_patch derived diffs */
+        /* the diff_match_patch derived diffs 
         public final LinkedList<Diff>diffs;
         
         public _textDiff(LinkedList<Diff> diffs ){
@@ -2466,7 +2627,7 @@ public interface _inspect<T> {
         /**
          * Return the ENTIRE LEFT document as a String
          * @return 
-         */
+         
         public String left(){
             StringBuilder sb = new StringBuilder();
             diffs.forEach(s -> {
@@ -2481,7 +2642,7 @@ public interface _inspect<T> {
          * return the entire RIGHT document as a String
          * 
          * @return the right document
-         */
+         
         public String right(){
             StringBuilder sb = new StringBuilder();
             diffs.forEach(s -> {
@@ -2492,4 +2653,5 @@ public interface _inspect<T> {
             return sb.toString();
         }
     }
+    */ 
 }

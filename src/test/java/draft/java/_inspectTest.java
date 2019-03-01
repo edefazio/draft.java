@@ -5,7 +5,6 @@ import draft.java._anno._annos;
 import draft.java._inspect._diffTree;
 import draft.java._inspect.StringInspect;
 import draft.java._inspect._path;
-import draft.java._inspect._textDiff;
 import static draft.java._java.Component.*;
 import draft.java._parameter._parameters;
 import draft.java._typeParameter._typeParameters;
@@ -24,6 +23,92 @@ import junit.framework.TestCase;
  */
 public class _inspectTest extends TestCase {
     
+    public void testField(){
+        _field _f1 =_field.of("int a;");
+        _field _f2 =_field.of("int a;");
+        
+        _class _c1 = _class.of("C");
+        _class _c2 = _class.of("C").field(_f2);
+               
+        _diffTree dt = _class.diffTree(_c1, _c2);
+        assertNotNull( dt.first(FIELD) );
+        assertTrue( dt.first(FIELD).isAdd()); //its added between left and right
+        
+        _c1.field(_f1);
+        dt = _class.diffTree(_c1, _c2);
+        assertTrue( dt.isEmpty() );
+        
+        _f1.init(1);
+        dt = _class.diffTree(_c1, _c2);
+        //System.out.println( dt );
+        assertTrue( dt.first(FIELD, INIT).isRemove()); //field init is removed from left to right 
+        _f2.init(1);        
+        _f2.annotate("@Ann");
+        dt = _class.diffTree(_c1, _c2);
+        assertTrue(dt.first(FIELD, ANNO).isAdd());
+        
+        _f1.annotate("@Ann");
+        _f1.setPrivate();
+        dt = _class.diffTree(_c1, _c2);
+        assertTrue(dt.first(FIELD, MODIFIERS).isChange()); 
+        
+        _f2.setPrivate();        
+        _f2.javadoc("A javadoc");
+        dt = _class.diffTree(_c1, _c2);
+        assertTrue(dt.first(FIELD, JAVADOC).isChange());
+        
+        _f1.javadoc("A javadoc");        
+        _f1.type(float.class);
+        _f1.init(1.0f);
+        dt = _class.diffTree(_c1, _c2);
+        assertTrue(dt.first(FIELD, TYPE).isChange());
+        
+        _f2.type(float.class);
+        _f2.init(1.0f);
+        _f2.name("b");        
+        dt = _class.diffTree(_c1, _c2);
+        //When we change the name of the field, we are affectively changing the API
+        // so instead of it being considered a CHANGE it is rather a: 
+        // REMOVE (of the old field "a")
+        // ADD ( of the new field "b")
+        // ...since all accesses to "a" are have to change to "b"
+        assertTrue(dt.list(FIELD).size() == 2 );
+        
+        _f1.name("b");
+        dt = _class.diffTree(_c1, _c2);
+        assertTrue(dt.isEmpty());        
+    }
+    
+    public void testBody(){
+        _method _m1 = _method.of( new Object(){ void m(){} } );
+        _method _m2 = _method.of( new Object(){ void m(){} } );
+        _class _c1 = _class.of("C").method(_m1);
+        _class _c2 = _class.of("C").method(_m2);
+        assertTrue(_class.diffTree(_c1, _c2).isEmpty());
+        
+        _m1.setBody(()->{System.out.println(1);} );
+        
+        _diffTree _dt = _class.diffTree(_c1, _c2);
+        assertTrue( _dt.first(BODY).isChange() );
+        assertTrue( _dt.first(METHOD, BODY).isChange() );
+        
+        _dt.listEdits();
+        
+        _dt.first(d -> d.isTextDiff() );
+                
+        
+        _dt.listEdits().get(0).forRemoves(d->System.out.println("REMOVED: " + d.text));
+        
+        //_dt.first(BODY).textDiff().forRemoves()...;
+        //_dt.first(BODY).textDiff().for
+        
+        
+        
+        // changing any of these
+        // name, parameter types
+        // will diff as an ADD / REMOVE instead of a change        
+    }    
+    
     public void testMethodDiff(){
         _class _c1 = _class.of("C").method("void m(){}");
         _class _c2 = _class.of("C").method("void m(){}");
@@ -32,7 +117,7 @@ public class _inspectTest extends TestCase {
         //System.out.println( _c2 );
         _diffTree dt = _class.diffTree(_c1, _c2);
         
-        System.out.println( dt );
+        //System.out.println( dt );
         
         assertEquals( 1, dt.list(METHOD,ANNO).size() );
         assertTrue(
@@ -43,16 +128,13 @@ public class _inspectTest extends TestCase {
         _c1.forMethods(m -> m.setFinal());
         
         dt = _class.diffTree(_c1, _c2);
-        System.out.println( dt );
+        //System.out.println( dt );
         assertNotNull(
             dt.first(METHOD, MODIFIERS) );     
         
         assertTrue(
-            dt.first(METHOD, MODIFIERS).isChange() );     
-        
-        
-        
-        System.out.println( dt );        
+            dt.first(METHOD, MODIFIERS).isChange() );            
+        //System.out.println( dt );        
     }
     public void testClassDiff(){
         class C{
@@ -221,10 +303,10 @@ public class _inspectTest extends TestCase {
         DiffList dl = _inspect.INSPECT_METHOD.diff(_m1, _m2);
         assertTrue(dl.hasDiff(_java.Component.NAME, _java.Component.BODY));
         
-        _textDiff dmp = (_textDiff)dl.left(_java.Component.BODY);
-        System.out.println( dmp );
-        System.out.println( dmp.left() );
-        System.out.println( dmp.right() );
+        //_textDiff dmp = (_textDiff)dl.left(_java.Component.BODY);
+        //System.out.println( dmp );
+        //System.out.println( dmp.left() );
+        //System.out.println( dmp.right() );
         
         //_m1.setBody( (a,b)-> System.out.println(1) );
     }
@@ -375,14 +457,5 @@ public class _inspectTest extends TestCase {
                 _parameters.of("(int i, String s)"), _parameters.of("(int i)") ).hasDiff("parameter[1]") );        
     }
     
-    public void testBody(){
-        class C{
-            void noBody(){}
-            void noBoddyComment() {/*comment*/}
-            
-            void oneStatement(){ System.out.println(1); }
-            void oneStatementComment(){ /*comment*/ System.out.println(1); }
-        }
-        
-    }
+    
 }
