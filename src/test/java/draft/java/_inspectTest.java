@@ -6,7 +6,7 @@ import draft.java._inspect._diffTree;
 import draft.java._inspect.StringInspect;
 import draft.java._inspect._path;
 import draft.java._inspect._textDiff;
-import draft.java._java.Component;
+import static draft.java._java.Component.*;
 import draft.java._parameter._parameters;
 import draft.java._typeParameter._typeParameters;
 import draft.java.macro._autoDto;
@@ -24,6 +24,27 @@ import junit.framework.TestCase;
  */
 public class _inspectTest extends TestCase {
     
+    public void testMethodDiff(){
+        _class _c1 = _class.of("C").method("void m(){}");
+        _class _c2 = _class.of("C").method("void m(){}");
+        _c2.forMethods(m-> m.annotate(Deprecated.class));
+        
+        System.out.println( _c2 );
+        _diffTree dt = _class.diffTree(_c1, _c2);
+        
+        System.out.println( dt );
+        
+        assertEquals( 1, dt.list(METHOD,ANNO).size() );
+        assertTrue(
+            dt.first(METHOD,ANNO).isAdd()); //its Added from left -> right
+        
+        assertNotNull(dt.first(METHOD));
+        assertNotNull(dt.first(ANNO));
+       
+        
+        
+        System.out.println( dt );        
+    }
     public void testClassDiff(){
         class C{
             int a;
@@ -43,6 +64,7 @@ public class _inspectTest extends TestCase {
         assertTrue(_class.diffTree(_c1, _c2).isEmpty());
         
         _diffTree dt = _class.diffTree(_c1.name("D"), _c2);
+        
         //there is a name diff
         System.out.println( dt );
         
@@ -52,15 +74,17 @@ public class _inspectTest extends TestCase {
         
         //undercomponent 
         //onComponent    (NAME)
-        assertTrue(dt.list(d -> d.hasComponent(Component.NAME)).size() == 1);
+        
+        assertTrue(dt.list(d -> d.has(NAME)).size() == 1);
         
         dt.forEach(d -> System.out.println( d.path.componentPath) );
-        assertTrue(dt.list(d -> d.hasComponent(Component.CONSTRUCTOR)).size() >= 1);
+        assertTrue(dt.list(CONSTRUCTOR).size() >= 1);
         
         _c1.getMethod("m").annotate(Deprecated.class);        
         dt = _class.diffTree(_c1, _c2);
+        assertTrue(dt.first(ANNO).isRemove()); //its removed from left -> right
         
-        assertTrue(dt.list(d -> d.hasComponent(Component.METHOD)).size() >= 1);
+        
         
     }
     
@@ -197,7 +221,7 @@ public class _inspectTest extends TestCase {
     }
     
     public void testInspectStringBase(){
-        StringInspect si = new StringInspect(Component.NAME);
+        StringInspect si = new StringInspect(NAME);
         assertTrue( si.equivalent("a", "a") );
         assertFalse( si.equivalent("A", "a") );
         
@@ -206,7 +230,7 @@ public class _inspectTest extends TestCase {
     }
     
     public void testInspectStringParamAtPath(){
-        StringInspect si = new StringInspect(Component.NAME);
+        StringInspect si = new StringInspect(NAME);
         assertTrue( si.diff("parameter[0].", "a", "a").isEmpty() );
         assertTrue( si.diff("parameter[0].", "b", "a").hasDiff("parameter[0].name") );        
     }

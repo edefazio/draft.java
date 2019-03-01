@@ -10,29 +10,11 @@ import com.github.javaparser.ast.type.Type;
 import com.github.javaparser.ast.type.TypeParameter;
 import draft.ObjectDiff;
 import draft.ObjectDiff.DiffList;
-import draft.java.Ast;
-import draft.java._anno;
-import draft.java._annotation;
-import draft.java._body;
-import draft.java._class;
-import draft.java._constructor;
-import draft.java._enum;
-import draft.java._field;
-import draft.java._interface;
-import draft.java._java;
 import static draft.java.Ast.typesEqual;
 import draft.java._java.Component;
-import draft.java._javadoc;
-import draft.java._method;
-import draft.java._modifiers;
-import draft.java._parameter;
 import draft.java._parameter._parameters;
-import draft.java._receiverParameter;
-import draft.java._staticBlock;
-import draft.java._throws;
-import draft.java._type;
 import draft.java._typeParameter._typeParameters;
-import draft.java._typeRef;
+
 import java.util.*;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
@@ -141,6 +123,20 @@ public interface _inspect<T> {
             return this.componentPath.size();
         }
         
+        public boolean has(String id){
+            return idPath.contains(id);
+        }
+        
+        public boolean has(Component... components){  
+            Set<Component> s = new HashSet<>();
+            Arrays.stream(components).forEach( c -> s.add(c));
+            return componentPath.containsAll(s);
+        }
+        
+        public boolean has(Component component){
+            return componentPath.contains(component);
+        }
+        
         /** Build and return a new _path that follows the current path down one component */
         public _path in(_java.Component component, String id){
             _path _p = new _path(this);
@@ -206,13 +202,8 @@ public interface _inspect<T> {
          * @param _p
          * @return 
          */
-        public _diffNode at(_path _p){            
-            Optional<_diffNode> od = 
-                    diffs.stream().filter(d -> d.path.equals(_p) ).findFirst();
-            if( od.isPresent() ){
-                return od.get();
-            }
-            return null;
+        public _diffNode at(_path _p){      
+            return first( d-> d.path.equals(_p));            
         } 
         
         /**
@@ -235,6 +226,66 @@ public interface _inspect<T> {
             return this.diffs;
         } 
         
+        public _diffNode first( Component componet ){
+            Optional<_diffNode> first = 
+                    this.diffs.stream().filter(d -> d.has(componet)).findFirst();
+            if( first.isPresent() ){
+                return first.get();
+            }
+            return null;
+        }
+        
+        public _diffNode first( Component... componets ){
+            Optional<_diffNode> first = 
+                    this.diffs.stream().filter(d -> d.has(componets) ).findFirst();
+            if( first.isPresent() ){
+                return first.get();
+            }
+            return null;
+        }
+        
+        public _diffNode first( Predicate<_diffNode> _diffNodeMatchFn ){
+            Optional<_diffNode> first = 
+                    this.diffs.stream().filter(_diffNodeMatchFn).findFirst();
+            if( first.isPresent() ){
+                return first.get();
+            }
+            return null;
+        }
+        
+        /**
+         * List all diffs that have this component type in them
+         * @param component the component type
+         * @return a list of diffNodes
+         */
+        public List<_diffNode> list( Component component ){
+            return list( d-> d.path.has(component));
+        }
+        
+        /**
+         * List All diffs that have these components in their path IN THIS ORDER
+         * 
+         * _class _a = _class.of("C").field("int i;");
+         * _class _b = _class.of("@A C").field("@Deprecated int i;");
+         * 
+         * _diffTree dt = _class.diffTree(_a, _b);
+         * 
+         * //verify that there is ONE match of an ANNOTATION on a FIELD
+         * assertEquals(1, dt.list(Component.FIELD, Component.ANNO).size());
+         * 
+         * //they DONT have to be in order
+         * assertEquals(1, dt.list(Component.ANNO, Component.FIELD).size());
+         * 
+         * //they only provide one
+         * assertEquals(2, dt.list(Component.ANNO).size()); 
+         * 
+         * @param components
+         * @return 
+         */
+        public List<_diffNode> list( Component...components ){
+            return list( d-> d.path.has(components));
+        }
+        
         public List<_diffNode> list(Predicate<_diffNode> DiffNodeMatchFn ){
             return this.diffs.stream().filter(DiffNodeMatchFn).collect(Collectors.toList());
         }
@@ -252,13 +303,23 @@ public interface _inspect<T> {
             StringBuilder sb = new StringBuilder();
             sb.append("(").append( diffs.size()).append(") diffs").append(System.lineSeparator());
             this.diffs.forEach( d -> {
-                if( d.left == null ){
+                if( d.isAdd() ){
                     sb.append("  + ").append( d.path.toString() ).append(System.lineSeparator() );
-                } else if (d.right == null ){
+                }
+                else if( d.isRemove() ){
+                    sb.append("  - ").append( d.path.toString() ).append(System.lineSeparator() );
+                }
+                else{ //its a change
+                    sb.append("  ~ ").append( d.path.toString() ).append(System.lineSeparator() );
+                }
+                /*
+                if( d.right == null ){
+                    sb.append("  + ").append( d.path.toString() ).append(System.lineSeparator() );
+                } else if (d.left == null ){
                     sb.append("  - ").append( d.path.toString() ).append(System.lineSeparator() );
                 } else{
                     sb.append("  ~ ").append( d.path.toString() ).append(System.lineSeparator() );
-                }
+                }*/
                 });
             return sb.toString();
         }        
@@ -280,8 +341,65 @@ public interface _inspect<T> {
             this.right = right;
         }
         
-        boolean hasComponent(Component component){
+        /**
+         * Does the delta represent a node being ADDED from left to the right
+         * for instance:
+         * <PRE>
+         * _class _a = _class.of("C");
+         * _class _b = _class.of("C").field("int a;");
+         * 
+         * _diffTree diff = _class.diffTree(_a, _b);
+         * //verify the adding of the field "int a" is an Add Diff
+         * assertTrue( diff.list(Component.FIELD).get(0).isAdd() );
+         * </PRE>
+         * @return true if the diffNode represents an ADD of a component
+         * proceeding FROM the left model to TO the RIGHT model.
+         */
+        public boolean isAdd(){
+            return left == null;    
+        }
+        
+        /**
+         * Does the delta represent a node being ADDED from left to the right
+         * for instance:
+         * <PRE>
+         * _class _a = _class.of("C").field("int a;");
+         * _class _b = _class.of("C");
+         * 
+         * _diffTree diff = _class.diffTree(_a, _b);
+         * //verify the adding of the field "int a" is an Add Diff
+         * assertTrue( diff.list(Component.FIELD).get(0).isRemove() );
+         * </PRE>
+         * 
+         * @return true if the diffNode represents an REMOVE
+         */
+        public boolean isRemove(){
+            return right == null;
+        }
+        
+        /**
+         * the component has been changed from one to another
+         * (there is a left and right component to compare)
+         * @return 
+         */
+        public boolean isChange(){
+            return left != null && right != null;
+        }
+        
+        /**
+         * does the path of the diffNode have the particualr id?
+         * @param id the id of the entity("f", "m(String)", parameter[1]
+         * @return if the 
+         */
+        public boolean has(String id){
+            return this.path.idPath.contains(id);
+        }
+        public boolean has(Component component){
             return this.path.componentPath.contains(component);
+        }
+        
+        public boolean has(Component... component){
+            return this.path.has(component);
         }
         
         public Component leafComponent(){

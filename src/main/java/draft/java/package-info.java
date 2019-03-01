@@ -1,21 +1,21 @@
 /**
  * <P>draft.java provides an alternate API (code as a data structure) 
  * to representing, analyzing and modifying a program as discrete .java source 
- * files.  draft.java mediates between different representations: </P>
+ * files in plain text. draft.java mediates between different representations: </P>
  * <UL>
  *   <LI>plain text .java source code i.e. ("int square(int x){ return x*x; }")
- *   <LI>reflective Objects (i.e. java.lang.Method )
  *   <LI>AST (i.e. {@link com.github.javaparser.ast.body.MethodDeclaration} )
- *   <LI>Object (i.e. {@link draft.java._method}
- *   <LI>bytecode (i.e. {@link draft.java.file._classFile})
+ *   <LI>draft Object (i.e. {@link draft.java._method}
  * </UL>
  * <PRE> 
- * you______
- *  |       \
- *  |  ____draft___________
- *  | /      |      \      \
- *  |-------->------->------>
- * .java    AST    javac  .class
+ * you__________
+ *   |          |
+ *   |    ----draft
+ *   |   /      |
+ *   |  /------AST
+ *   | /        |     
+ *   |---------->---------->
+ * .java      javac     .class
  * </PRE>
  * 
  * <P>...normally, the programmer interacts directly with the plain text .java
@@ -24,9 +24,9 @@
  * in .class files.</P>
  * 
  * <PRE> 
- * you 
- *  |-----[ javac ]---->
- * .java             .class
+ * you
+ *   |---------->---------->
+ * .java      javac     .class
  * </PRE>
  * 
  * 
@@ -45,16 +45,16 @@
  * <P>when we do a compile and build the program, it is NOT like building 
  * a wall of bricks, laying one discrete unit on top of another, but rather a 
  * complex graph of dependencies needs to be resolved, and it is often very opaque
- * whether the changes made to one file don't cause a bad side effect within 
+ * whether the changes made to one unit/file don't cause a bad side effect within 
  * the context of the program as a whole.</P>
  * 
  * <P>although it makes our lives as developers more convenient when we can treat 
- * each (source file) as a separate "unit", the program as a whole is a 
+ * each (source file) as a separate "unit"; the program as a whole is a 
  * complex system, and wholistic understanding requires understanding the units
  * and most importantly the relationships between the units (Classes / etc).</P>
  * 
  * <P>draft.java allows the programmer to load, inspect, query, analyze and 
- * manipulate the source code as a wholistic Object (data structure) at a higher 
- * level of abstraction than code as plain-text symbols within discrete files.</P>  
+ * manipulate the source code as a wholistic Domain Object (data structure) at 
+ * a higher level of abstraction than code as plain-text within discrete files.</P>  
  */
 package draft.java;

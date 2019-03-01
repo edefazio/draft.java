@@ -324,8 +324,10 @@ public enum _java {
      * part basis)
      */
     public enum Component implements Named {
+        /** i.e. @Deprecated @NotNull */
         ANNOS("annos", _anno._annos.class),
         //annotation
+        /** i.e. @Deprecated */
         ANNO("anno", _anno.class),
         CLASS("class", _class.class),
         ENUM("enum", _enum.class),
