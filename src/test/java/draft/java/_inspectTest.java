@@ -29,18 +29,27 @@ public class _inspectTest extends TestCase {
         _class _c2 = _class.of("C").method("void m(){}");
         _c2.forMethods(m-> m.annotate(Deprecated.class));
         
-        System.out.println( _c2 );
+        //System.out.println( _c2 );
         _diffTree dt = _class.diffTree(_c1, _c2);
         
         System.out.println( dt );
         
         assertEquals( 1, dt.list(METHOD,ANNO).size() );
         assertTrue(
-            dt.first(METHOD,ANNO).isAdd()); //its Added from left -> right
-        
+            dt.first(METHOD,ANNO).isAdd()); //its Added from left -> right        
         assertNotNull(dt.first(METHOD));
         assertNotNull(dt.first(ANNO));
        
+        _c1.forMethods(m -> m.setFinal());
+        
+        dt = _class.diffTree(_c1, _c2);
+        System.out.println( dt );
+        assertNotNull(
+            dt.first(METHOD, MODIFIERS) );     
+        
+        assertTrue(
+            dt.first(METHOD, MODIFIERS).isChange() );     
+        
         
         
         System.out.println( dt );        
