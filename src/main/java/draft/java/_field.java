@@ -653,4 +653,101 @@ public final class _field
             return (T)this;
         }
     }
+    
+    public static _fieldsInspect INSPECT_FIELDS = new _fieldsInspect();
+    
+    public static class _fieldsInspect implements _inspect<List<_field>>{
+
+        @Override
+        public boolean equivalent(List<_field> left, List<_field> right) {
+            Set<_field> lf = new HashSet<>();
+            Set<_field> rf = new HashSet<>();
+            lf.addAll(left);
+            rf.addAll(right);
+            return Objects.equals(lf, rf);
+        }
+
+        public _field getFieldNamed(Set<_field> _fs , String name){
+            Optional<_field> _f = 
+                    _fs.stream().filter(f-> f.getName().equals( name) ).findFirst();
+            if( _f.isPresent() ){
+                return _f.get();
+            }
+            return null;
+        }
+        
+        @Override
+        public _inspect._diffTree diffTree( _java._inspector _ins, _inspect._path path, _inspect._diffTree dt, List<_field> left, List<_field> right) {
+            Set<_field> lf = new HashSet<>();
+            Set<_field> rf = new HashSet<>();
+            lf.addAll(left);
+            rf.addAll(right);
+            Set<_field> both = new HashSet<>();
+            both.addAll(left);
+            both.retainAll(right);
+            
+            //organize fields that have the same name as edits
+            lf.removeAll(both);
+            rf.removeAll(both);
+            
+            lf.forEach(f ->  {
+                _field match = getFieldNamed( rf, f.getName() );
+                if( match != null ){
+                    //dt.add(path.in( _java.Component.FIELD, f.getName()), f, match);
+                    _ins.INSPECT_FIELD.diffTree(_ins, path.in(_java.Component.FIELD), dt, f, match);
+                    rf.remove(match);
+                } else{
+                    dt.add(path.in(_java.Component.FIELD, f.getName()), f, null);
+                }
+            });
+            
+            rf.forEach(f ->  {
+                dt.add(path.in(_java.Component.FIELD, f.getName()), null, f);
+                        });
+            
+                /* WE already checked & removed matching fields from left, so the fields
+                   remaining in right are unique
+                _field match = getFieldNamed( lf, f.getName() );
+                if( match != null ){
+                    //dt.add(path.in( _java.Component.FIELD, f.getName()), match, f);
+                    INSPECT_FIELD.diffTree(path.in(_java.Component.FIELD), dt, match, f);
+                } else{
+                    dt.add(path.in(_java.Component.FIELD, f.getName()), null, f);
+                }
+            });*/
+            return dt;
+        }
+    }
+    
+    public static _fieldInspect INSPECT_FIELD = new _fieldInspect();
+    
+    public static class _fieldInspect implements _inspect<_field>{
+
+        @Override
+        public boolean equivalent(_field left, _field right) {
+            return Objects.equals(left,right);
+        }
+
+        @Override
+        public _inspect._diffTree diffTree( _java._inspector _ins, _inspect._path path, _inspect._diffTree dt, _field left, _field right) {
+            if( left == null){
+                if( right == null){
+                    return dt;
+                }
+                return dt.add( path.in(_java.Component.FIELD, right.getName()), null, right);
+            }
+            if( right == null){
+                return dt.add( path.in(_java.Component.FIELD, left.getName()), left, null);
+            }
+            _ins.INSPECT_NAME.diffTree(_ins, path, dt, left.getName(), right.getName());
+            _ins.INSPECT_TYPE_REF.diffTree(_ins, path, dt, left.getType(), right.getType());
+            _ins.INSPECT_MODIFIERS.diffTree(_ins, path, dt, left.getModifiers(), right.getModifiers());
+            _ins.INSPECT_JAVADOC.diffTree(_ins, path, dt, left.getJavadoc(), right.getJavadoc());
+            _ins.INSPECT_ANNOS.diffTree(_ins, path, dt, left.getAnnos(), right.getAnnos());
+            _ins.INSPECT_INIT.diffTree(_ins, path, dt, left.getInit(), right.getInit() );
+            return dt;
+        }
+    }
+    
+    public static final _java.ExpressionInspect INSPECT_INIT = new _java.ExpressionInspect(_java.Component.INIT);
 }

@@ -5,8 +5,10 @@ import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
 import com.github.javaparser.ast.nodeTypes.NodeWithTypeParameters;
 import com.github.javaparser.ast.type.ClassOrInterfaceType;
 import com.github.javaparser.ast.type.ReferenceType;
+import com.github.javaparser.ast.type.Type;
 import com.github.javaparser.ast.type.TypeParameter;
 import draft.Text;
+import static draft.java.Ast.typesEqual;
 import draft.java._model.*;
 
 import java.util.*;
@@ -333,5 +335,45 @@ public final class _typeParameter
         T removeTypeParameters();
 
         boolean hasTypeParameters();
+    }
+    
+    public static final _typeParametersInspect INSPECT_TYPE_PARAMETERS = 
+        new _typeParametersInspect();
+    
+    public static class _typeParametersInspect
+        implements _inspect<_typeParameters> {
+
+        String name = _java.Component.TYPE_PARAMETERS.getName();
+        
+        public _typeParametersInspect(){ 
+        }
+        @Override
+        public boolean equivalent(_typeParameters left, _typeParameters right) {            
+            return Objects.equals( left, right );
+        }
+
+        @Override
+        public _inspect._diffTree diffTree( _java._inspector _ins, _inspect._path path, _inspect._diffTree dt, _typeParameters left, _typeParameters right) {
+            //List<ObjectDiff.Entry> des = new ArrayList<>();
+            for(int i=0; i<left.ast().size();i++){
+                Type cit = left.ast().get(i);
+                
+                if( ! right.ast().stream().filter( c-> typesEqual(c, cit) ).findFirst().isPresent()){
+                    dt.add(path.in(_java.Component.TYPE_PARAMETER), cit, null);
+                    //des.add(new ObjectDiff.Entry( path + name, cit, null) );
+                }
+            }
+            for(int i=0; i<right.ast().size();i++){
+                Type cit = right.ast().get(i);
+                if( ! left.ast().stream().filter( c-> typesEqual(c, cit) ).findFirst().isPresent()){
+                    dt.add(path.in(_java.Component.TYPE_PARAMETER), null, cit);
+                }
+            }
+            return dt;
+        }
+        
+        public boolean equivalent(NodeList<TypeParameter>left, NodeList<TypeParameter> right) {            
+            return Ast.typesEqual(left, right);
+        }
     }
 }

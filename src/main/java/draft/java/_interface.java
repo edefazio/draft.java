@@ -506,4 +506,41 @@ public final class _interface implements _type<ClassOrInterfaceDeclaration, _int
         this.astInterface.getTypeParameters().clear();
         return this;
     }
+    
+    
+    public static _interfaceInspect INSPECT_INTERFACE = new _interfaceInspect();
+    
+    public static class _interfaceInspect implements _inspect<_interface>{
+
+        @Override
+        public boolean equivalent(_interface left, _interface right) {
+            return Objects.equals(left,right);
+        }
+
+        @Override
+        public _inspect._diffTree diffTree( _java._inspector _ins, _inspect._path path, _inspect._diffTree dt, _interface left, _interface right) {
+            if( left == null){
+                if( right == null){
+                    return dt;
+                }
+                return dt.add( path.in(_java.Component.INTERFACE, right.getName()), null, right);
+            }
+            if( right == null){
+                return dt.add( path.in(_java.Component.INTERFACE, left.getName()), left, null);
+            }
+            _ins.INSPECT_PACKAGE_NAME.diffTree(_ins, path,dt, left.getPackage(), right.getPackage() );
+            _ins.INSPECT_IMPORTS.diffTree(_ins, path,dt, left.listImports(), right.listImports() );
+            _ins.INSPECT_ANNOS.diffTree(_ins, path, dt, left.getAnnos(), right.getAnnos());          
+            _ins.INSPECT_EXTENDS.diffTree(_ins, path, dt, left.listExtends(), right.listExtends());          
+            _ins.INSPECT_JAVADOC.diffTree(_ins, path, dt, left.getJavadoc(), right.getJavadoc());  
+            _ins.INSPECT_TYPE_PARAMETERS.diffTree(_ins, path, dt, left.getTypeParameters(), right.getTypeParameters());  
+            _ins.INSPECT_NAME.diffTree(_ins, path, dt, left.getName(), right.getName());
+            _ins.INSPECT_MODIFIERS.diffTree(_ins, path, dt, left.getModifiers(), right.getModifiers());
+            _ins.INSPECT_METHODS.diffTree(_ins, path, dt, left.listMethods(), right.listMethods() );
+            _ins.INSPECT_FIELDS.diffTree(_ins, path, dt, left.listFields(), right.listFields() );
+            _ins.INSPECT_NESTS.diffTree(_ins, path, dt, left.listNests(), right.listNests());
+            //INSPECT_NESTS            
+            return dt;
+        }    
+    }
 }

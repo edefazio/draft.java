@@ -423,4 +423,109 @@ public enum _java {
             return null;
         }
     }
+    
+    public static final StringInspect INSPECT_NAME = new StringInspect(_java.Component.NAME);
+    
+    public static class StringInspect 
+            implements _inspect<String>{
+        
+        public Component component;
+        
+        public StringInspect( Component component ){
+            this.component = component;
+        }
+        
+        
+        @Override
+        public boolean equivalent( String left, String right){
+            return Objects.equals(left, right);
+        }
+        
+        @Override
+        public _inspect._diffTree diffTree( _java._inspector _ins, _inspect._path path, _inspect._diffTree dt, String left, String right ){
+            if( !equivalent(left, right)){
+                return dt.add(path.in(component), left, right);
+            }
+            return dt;
+        }
+    }
+    
+    public static class ExpressionInspect 
+            implements _inspect<Expression>{
+        
+        public Component component;
+        
+        public ExpressionInspect( Component component ){
+            this.component = component;
+        }
+        
+        @Override
+        public boolean equivalent( Expression left, Expression right){
+            return Objects.equals(left, right);
+        }
+        
+        
+        @Override
+        public _inspect._diffTree diffTree( _java._inspector _ins, _inspect._path path, _inspect._diffTree dt, Expression left, Expression right ){
+            if( !equivalent(left, right) ){                
+                return dt.add( path.in( component), left, right);
+            }
+            return dt;
+        }
+    }
+    
+    /**
+     * Create an instance of an inspector
+     * 
+     * NOTE: to change how domain inspection works, you can simply set a field
+     * to a new implementation and then 
+     */
+    public static final _inspector INSPECTOR = new _inspector();
+    
+    /**
+     * This provides a single entity that PROVIDES ALL of the implementations
+     * needed for inspecting the _java domain model
+     * 
+     * we can create a single instance and pass it in to the 
+     * individual inspectors for _inspect.
+     */
+    public static class _inspector{
+        public _inspect<List<_enum._constant>> INSPECT_ENUM_CONSTANTS = new _enum._enumConstantsInspect();
+        public _inspect<List<ImportDeclaration>> INSPECT_IMPORTS = new _type.ListImportDeclarationInspect(_java.Component.IMPORT.getName() );
+        public _inspect<List<ClassOrInterfaceType>> INSPECT_EXTENDS = new _type.ListClassOrInterfaceTypeInspect(_java.Component.EXTENDS);    
+        public _inspect<List<ClassOrInterfaceType>> INSPECT_IMPLEMENTS = new _type.ListClassOrInterfaceTypeInspect(_java.Component.IMPLEMENTS );
+        public _inspect<_enum._constant> INSPECT_ENUM_CONSTANT = new _enum._enumConstantInspect();
+        public _inspect<_type> INSPECT_TYPE = new _type._typeInspect();
+        public _inspect<List<_type>> INSPECT_NESTS = new _type._typesInspect();
+        public _inspect<_annotation> INSPECT_ANNOTATION = new _annotation._annotationInspect();
+        public _inspect<_interface> INSPECT_INTERFACE = new _interface._interfaceInspect();
+        public _inspect<_enum> INSPECT_ENUM = new _enum._enumInspect();     
+        public _inspect<_class> INSPECT_CLASS = new _class._classInspect();    
+        public _inspect<List<_annotation._element>>INSPECT_ANNOTATION_ELEMENTS = new _annotation._annotationElementsInspect();
+        public _inspect<_annotation._element> INSPECT_ANNOTATION_ELEMENT = new _annotation._annotationElementInspect();
+        public _inspect<List<_field>> INSPECT_FIELDS = new _field._fieldsInspect();
+        public _inspect<_field> INSPECT_FIELD = new _field._fieldInspect();    
+        public _inspect<List<_staticBlock>> INSPECT_STATIC_BLOCKS = new _staticBlock._staticBlocksInspect();    
+        public _inspect<_staticBlock> INSPECT_STATIC_BLOCK = new _staticBlock._staticBlockInspect();    
+        public _inspect<List<_constructor>> INSPECT_CONSTRUCTORS = new _constructor._constructorsInspect();    
+        public _inspect<_constructor> INSPECT_CONSTRUCTOR = new _constructor._constructorInspect();    
+        public _inspect<List<_method>> INSPECT_METHODS = new _method._methodsInspect();    
+        public _inspect<_method> INSPECT_METHOD = new _method._methodInspect();    
+        public _inspect<_body> INSPECT_BODY = new _body._bodyInspect();    
+        public _inspect<_parameter._parameters> INSPECT_PARAMETERS = new _parameter._parametersInspect();    
+        public _inspect<_modifiers> INSPECT_MODIFIERS = new _modifiers._modifiersInspect();    
+        public _inspect<_javadoc> INSPECT_JAVADOC = new _javadoc._javadocInspect();    
+        public _inspect<_receiverParameter> INSPECT_RECEIVER_PARAMETER = 
+            new _receiverParameter._receiverParameterInspect();    
+        public _inspect<_anno._annos> INSPECT_ANNOS = new _anno._annosInspect();    
+        public _inspect<_typeRef> INSPECT_TYPE_REF = new _typeRef._typeRefInspect();    
+        public _inspect<_typeParameter._typeParameters> INSPECT_TYPE_PARAMETERS = 
+            new _typeParameter._typeParametersInspect();    
+        public _inspect<_throws> INSPECT_THROWS = new _throws._throwsInspect();    
+        public _inspect<List<Expression>> INSPECT_ARGUMENTS = new _enum.ArgsInspect();    
+        public _inspect<Expression> INSPECT_DEFAULT = new _java.ExpressionInspect(_java.Component.DEFAULT);    
+        public _inspect<Expression> INSPECT_INIT = new _java.ExpressionInspect(_java.Component.INIT);
+        public _inspect<String> INSPECT_PACKAGE_NAME = new _java.StringInspect(_java.Component.PACKAGE_NAME);    
+        public _inspect<String> INSPECT_NAME = new _java.StringInspect(_java.Component.NAME);
+    }
 }

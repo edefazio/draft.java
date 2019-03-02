@@ -755,4 +755,121 @@ public final class _constructor implements _anno._hasAnnos<_constructor>, _javad
             return constructor( _c.ast() );
         }
     }
+    
+    public static final _constructorsInspect INSPECT_CONSTRUCTORS = 
+            new _constructorsInspect();
+    
+    public static class _constructorsInspect implements _inspect<List<_constructor>>{
+
+        public static _constructor sameNameAndParameterTypes(_constructor ct, Set<_constructor> lcs ){
+            _parameters _pts = ct.getParameters();
+            _typeRef[] _trs = new _typeRef[_pts.count()];
+            for(int i=0;i<_pts.count();i++){
+                _trs[i] = _pts.get(i).getType();
+            }
+//            _pts.forEach( p -> _trs[i]  );
+                    
+            Optional<_constructor> oc = 
+                lcs.stream().filter(
+                    c -> c.getName().equals(ct) 
+                            && c.getParameters().hasParametersOfType(_trs)).findFirst();
+            if( oc.isPresent() ){
+                return oc.get();
+            }
+            return null;
+        }
+        
+        @Override
+        public boolean equivalent(List<_constructor> left, List<_constructor> right) {
+            Set<_constructor> ls = new HashSet<>();
+            Set<_constructor> rs = new HashSet<>();
+            ls.addAll(left);
+            rs.addAll(right);
+            return Objects.equals( ls, rs );
+        }
+
+        
+        @Override
+        public _inspect._diffTree diffTree( _java._inspector _ins, _inspect._path path, _inspect._diffTree dt, List<_constructor> left, List<_constructor> right) {
+            Set<_constructor> ls = new HashSet<>();
+            Set<_constructor> rs = new HashSet<>();
+            Set<_constructor> both = new HashSet<>();
+            ls.addAll(left);
+            rs.addAll(right);
+            
+            both.addAll(left);
+            both.retainAll(right);
+            
+            ls.removeAll(both);
+            rs.removeAll(both);
+            ls.forEach(c -> {
+                _constructor _rct = sameNameAndParameterTypes(c, rs); 
+                if( _rct != null ){
+                    rs.remove(_rct);
+                    dt.add(path.in( _java.Component.CONSTRUCTOR, _constructorInspect.constructorSignatureDescription(c) ), c, _rct);
+                } else{
+                    dt.add(path.in( _java.Component.CONSTRUCTOR, _constructorInspect.constructorSignatureDescription(c) ), c, null);
+                }
+            });
+            rs.forEach(c -> {
+                dt.add(path.in( _java.Component.CONSTRUCTOR, _constructorInspect.constructorSignatureDescription(c) ), null,c );                
+            });
+            return dt;
+        }
+    }
+    
+    public static final _constructorInspect INSPECT_CONSTRUCTOR = 
+            new _constructorInspect();
+    
+    public static class _constructorInspect implements _inspect<_constructor>{
+
+        @Override
+        public boolean equivalent(_constructor left, _constructor right) {
+            return Objects.equals(left, right);
+        }
+        
+        public static String constructorSignatureDescription(_constructor ct){
+            StringBuilder sb = new StringBuilder(); 
+            
+            _parameters _pts = ct.getParameters();
+            //_typeRef[] _trs = new _typeRef[_pts.count()];
+            sb.append( ct.getName() );
+            sb.append( "(");
+            for(int i=0;i<_pts.count();i++){
+                if( i > 0){
+                    sb.append(", ");
+                }
+                sb.append(_pts.get(i).getType() );
+                if(_pts.get(i).isVarArg() ){
+                    sb.append("...");
+                }
+                //_trs[i] = _pts.get(i).getType();
+            }
+            sb.append(")");
+            return sb.toString();
+        }
+        
+        @Override
+        public _inspect._diffTree diffTree( _java._inspector _ins, _inspect._path path, _inspect._diffTree dt, _constructor left, _constructor right) {
+            if( left == null){
+                if( right == null){
+                    return dt;
+                }
+                return dt.add(path.in(_java.Component.CONSTRUCTOR, constructorSignatureDescription(right)), null, right);
+            }
+            if( right == null){
+                return dt.add(path.in(_java.Component.CONSTRUCTOR, constructorSignatureDescription(left)), left, null);
+            }        
+            _ins.INSPECT_JAVADOC.diffTree(_ins, path, dt, left.getJavadoc(), right.getJavadoc());
+            _ins.INSPECT_ANNOS.diffTree(_ins, path, dt, left.getAnnos(), right.getAnnos());
+            _ins.INSPECT_MODIFIERS.diffTree(_ins,path, dt, left.getModifiers(), right.getModifiers());            
+            _ins.INSPECT_NAME.diffTree(_ins, path, dt, left.getName(), right.getName());            
+            _ins.INSPECT_RECEIVER_PARAMETER.diffTree(_ins, path, dt, left.getReceiverParameter(), right.getReceiverParameter());
+            _ins.INSPECT_PARAMETERS.diffTree(_ins,path, dt, left.getParameters(), right.getParameters());
+            _ins.INSPECT_TYPE_PARAMETERS.diffTree(_ins,path, dt, left.getTypeParameters(), right.getTypeParameters());
+            _ins.INSPECT_THROWS.diffTree(_ins, path, dt, left.getThrows(), right.getThrows());            
+            _ins.INSPECT_BODY.diffTree(_ins,path, dt, left.getBody(), right.getBody());            
+            return dt;
+        }
+    } 
 }

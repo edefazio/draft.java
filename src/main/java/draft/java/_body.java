@@ -14,6 +14,7 @@ import draft.DraftException;
 import java.util.*;
 import java.util.function.Function;
 import java.util.function.Predicate;
+import name.fraser.neil.plaintext.diff_match_patch;
 
 /**
  * The "body" part of methods, constructors, and static blocks 
@@ -484,4 +485,51 @@ public final class _body implements _model {
             return null;
         }
     }
+    
+    public static final _bodyInspect INSPECT_BODY =
+        new _bodyInspect();
+
+    public static class _bodyInspect implements _inspect<_body>{
+
+        private static final diff_match_patch plainTextDiff = new diff_match_patch();
+        
+        @Override
+        public boolean equivalent(_body left, _body right) {
+            return Objects.equals(left, right);
+        }
+
+        @Override
+        public _inspect._diffTree diffTree( _java._inspector _ins, _inspect._path path, _inspect._diffTree dt, _body left, _body right) {
+             if(!left.isPresent() ){
+                if( ! right.isPresent() ){
+                    return dt;
+                }
+                else{
+                    return dt.add(path.in( _java.Component.BODY), left, right);                    
+                }
+            }
+            if( !right.isPresent()) {
+                return dt.add(path.in( _java.Component.BODY), left, right);
+            }
+            String leftSer = left.toString(Ast.PRINT_NO_COMMENTS);
+            String rightSer = right.toString(Ast.PRINT_NO_COMMENTS);
+            if( !Objects.equals( leftSer, rightSer )){
+                //ok. we know at least one diff (other than comments) are in the text
+                // lets diff the originals WITH comments
+                
+                // NOTE: we treat code DIFFERENTLY than other objects that are diffedbecause 
+                // diffs in code can cross object boundaries and it's not as "clean"
+                // as simply having members with properties because of the nature of code
+                // instead we have a _textDiff which encapsulates the apparent changes
+                // the text has to undergo to get from LEFT, to RIGHT and incorporates               
+                // the Edit Distance between two bodies of text
+                LinkedList<diff_match_patch.Diff> diffs = plainTextDiff.diff_main(left.toString(), right.toString());
+                dt.addEdit(path.in(_java.Component.BODY), diffs);
+                //_textDiff td = new _textDiff(diffs);
+                
+                //dt.add(path.in(_java.Component.BODY), td, td);                
+            }            
+            return dt;
+        }        
+    }   
 }

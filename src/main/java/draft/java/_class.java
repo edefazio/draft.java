@@ -1039,13 +1039,52 @@ public final class _class implements _type<ClassOrInterfaceDeclaration, _class>,
     
     /**
      * statically diff the contents of the two _class objects
-     * @param left
-     * @param right
+     * @param left the left _class
+     * @param right the right _class
      * @return the _diffTree showing the diffs at the levels of the _class
      */
     public static _diffTree diffTree(_class left, _class right){        
         _path path = new _path();
         _diffTree dt = new _diffTree();
-        return _inspect.INSPECT_CLASS.diffTree(path, dt, left, right);
+        return INSPECT_CLASS.diffTree(path, dt, left, right);
+    }
+    
+    public static _classInspect INSPECT_CLASS = new _classInspect();
+    
+    public static class _classInspect implements _inspect<_class>{
+
+        @Override
+        public boolean equivalent(_class left, _class right) {
+            return Objects.equals(left,right);
+        }
+
+        @Override
+        public _diffTree diffTree( _java._inspector _ins, _path path, _diffTree dt, _class left, _class right) {
+            if( left == null){
+                if( right == null){
+                    return dt;
+                }
+                return dt.add( path.in(_java.Component.CLASS, right.getName()), null, right);
+            }
+            if( right == null){
+                return dt.add( path.in(_java.Component.CLASS, left.getName()), left, null);
+            }
+            _ins.INSPECT_PACKAGE_NAME.diffTree(_ins, path, dt, left.getPackage(), right.getPackage() );
+            _ins.INSPECT_IMPORTS.diffTree(_ins, path,dt, left.listImports(), right.listImports() );
+            _ins.INSPECT_ANNOS.diffTree(_ins, path, dt, left.getAnnos(), right.getAnnos());          
+            _ins.INSPECT_EXTENDS.diffTree(_ins, path, dt, left.listExtends(), right.listExtends());          
+            _ins.INSPECT_IMPLEMENTS.diffTree(_ins, path, dt, left.listImplements(), right.listImplements());  
+            _ins.INSPECT_JAVADOC.diffTree(_ins, path, dt, left.getJavadoc(), right.getJavadoc());  
+            _ins.INSPECT_TYPE_PARAMETERS.diffTree(_ins, path, dt, left.getTypeParameters(), right.getTypeParameters());  
+            _ins.INSPECT_STATIC_BLOCKS.diffTree(_ins, path, dt, left.listStaticBlocks(), right.listStaticBlocks());            
+            _ins.INSPECT_NAME.diffTree(_ins, path, dt, left.getName(), right.getName());
+            _ins.INSPECT_MODIFIERS.diffTree(_ins, path, dt, left.getModifiers(), right.getModifiers());
+            _ins.INSPECT_CONSTRUCTORS.diffTree(_ins, path, dt, left.listConstructors(), right.listConstructors());
+            _ins.INSPECT_METHODS.diffTree(_ins, path, dt, left.listMethods(), right.listMethods() );
+            _ins.INSPECT_FIELDS.diffTree(_ins, path, dt, left.listFields(), right.listFields() );
+            
+            _ins.INSPECT_NESTS.diffTree(_ins, path, dt, left.listNests(), right.listNests());
+            return dt;
+        }
     }
 }

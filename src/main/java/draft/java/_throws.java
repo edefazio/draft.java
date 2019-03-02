@@ -5,6 +5,7 @@ import com.github.javaparser.ast.body.MethodDeclaration;
 import com.github.javaparser.ast.nodeTypes.NodeWithThrownExceptions;
 import com.github.javaparser.ast.type.ReferenceType;
 import draft.Text;
+import static draft.java.Ast.typesEqual;
 import java.util.*;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
@@ -276,5 +277,44 @@ public final class _throws
         boolean isThrown( ReferenceType refType );
 
         boolean isThrown( String typeName );
+    }
+    
+    public static final _throwsInspect INSPECT_THROWS = new _throwsInspect();
+    
+    public static class _throwsInspect
+        implements _inspect<_throws> {
+
+        String name = _java.Component.THROWS.getName();
+        
+        public _throwsInspect(){ 
+        }
+        
+        @Override
+        public boolean equivalent(_throws left, _throws right) {
+            return Objects.equals(left, right);
+        }
+
+        @Override
+        public _inspect._diffTree diffTree( _java._inspector _ins, _inspect._path path, _inspect._diffTree dt, _throws left, _throws right) {
+            //List<ObjectDiff.Entry> des = new ArrayList<>();
+            for(int i=0; i<left.count();i++){
+                ReferenceType cit = left.get(i);
+                if( ! right.ast().stream().filter( c-> typesEqual(c, cit) ).findFirst().isPresent()){
+                    dt.add( path.in(_java.Component.THROWS), cit, null ); 
+                }
+            }
+            for(int i=0; i<right.count();i++){
+                ReferenceType cit = right.get(i);
+                if( ! left.ast().stream().filter( c-> typesEqual(c, cit) ).findFirst().isPresent()){
+                    dt.add( path.in(_java.Component.THROWS), null, cit ); 
+                    //des.add(new ObjectDiff.Entry( path + name, null, cit) );
+                }
+            }
+            return dt;
+        }
+        
+        public boolean equivalent(NodeList<ReferenceType>left, NodeList<ReferenceType> right) {            
+            return Ast.typesEqual(left, right);
+        }
     }
 }

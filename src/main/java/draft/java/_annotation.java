@@ -801,4 +801,118 @@ public final class _annotation
     public static boolean equivalent( Collection<_element> left, Collection<_element> right){
         return EQIVALENT_ELEMENTS_LIST.equivalent(left, right);
     }
+    
+    public static _annotationInspect INSPECT_ANNOTATION = new _annotationInspect();
+    
+    public static class _annotationInspect implements _inspect<_annotation>{
+
+        @Override
+        public boolean equivalent(_annotation left,_annotation right) {
+            return Objects.equals(left,right);
+        }
+
+        @Override
+        public _inspect._diffTree diffTree( _java._inspector _ins, _inspect._path path, _inspect._diffTree dt, _annotation left, _annotation right) {
+            if( left == null){
+                if( right == null){
+                    return dt;
+                }
+                return dt.add( path.in(_java.Component.ANNOTATION, right.getName()), null, right);                
+            }
+            if( right == null){
+                return dt.add( path.in(_java.Component.ANNOTATION, left.getName()), left, null);
+            }
+            _ins.INSPECT_PACKAGE_NAME.diffTree(_ins, path,dt, left.getPackage(), right.getPackage() );
+            _ins.INSPECT_IMPORTS.diffTree(_ins,path,dt, left.listImports(), right.listImports() );
+            _ins.INSPECT_ANNOS.diffTree(_ins,path, dt, left.getAnnos(), right.getAnnos());                     
+            _ins.INSPECT_JAVADOC.diffTree(_ins,path, dt, left.getJavadoc(), right.getJavadoc());              
+            _ins.INSPECT_NAME.diffTree(_ins,path, dt, left.getName(), right.getName());
+            _ins.INSPECT_MODIFIERS.diffTree(_ins,path, dt, left.getModifiers(), right.getModifiers());            
+            _ins.INSPECT_FIELDS.diffTree(_ins,path, dt, left.listFields(), right.listFields() );
+            _ins.INSPECT_ANNOTATION_ELEMENTS.diffTree(_ins,path, dt, left.listElements(), right.listElements() );
+            _ins.INSPECT_NESTS.diffTree(_ins,path, dt, left.listNests(), right.listNests());
+            return dt;
+        }        
+    }
+    
+    public static _annotationElementsInspect INSPECT_ANNOTATION_ELEMENTS = new _annotationElementsInspect();
+    
+    public static class _annotationElementsInspect implements _inspect<List<_annotation._element>>{
+
+        @Override
+        public boolean equivalent( List<_annotation._element> left, List<_annotation._element> right) {
+            Set<_annotation._element>ls = new HashSet<>();
+            Set<_annotation._element>rs = new HashSet<>();
+            ls.addAll(left);
+            rs.addAll(right);
+            return Objects.equals(ls, rs);
+        }
+
+        public _annotation._element sameName( _annotation._element target, Set<_annotation._element> source ){
+            Optional<_annotation._element> ec = 
+                    source.stream().filter(c-> c.getName().equals(target.getName())).findFirst();
+            if( ec.isPresent()){
+                return ec.get();
+            }
+            return null;
+        }
+        
+        @Override
+        public _inspect._diffTree diffTree( _java._inspector _ins, _inspect._path path, _inspect._diffTree dt, List<_annotation._element> left, List<_annotation._element> right) {
+            Set<_annotation._element>ls = new HashSet<>();
+            Set<_annotation._element>rs = new HashSet<>();
+            Set<_annotation._element>both = new HashSet<>();
+            ls.addAll(left);
+            rs.addAll(right);
+            both.addAll(ls);
+            both.retainAll(rs);
+            
+            ls.removeAll(both);
+            ls.forEach(f -> {
+                _annotation._element cc = sameName( f, rs );
+                if( cc != null ){
+                    rs.remove( cc );
+                    dt.add(path.in(_java.Component.ELEMENT, f.getName()), f, cc);
+                } else{
+                    dt.add(path.in( _java.Component.ELEMENT,f.getName()), f, null);
+                }
+            });
+            
+            rs.forEach(f -> {
+                dt.add(path.in(_java.Component.ELEMENT, f.getName()), null,f);                
+            });
+            return dt;
+        }        
+    }
+    
+    public static _annotationElementInspect INSPECT_ANNOTATION_ELEMENT = new _annotationElementInspect();
+    
+    public static class _annotationElementInspect implements _inspect<_annotation._element>{
+
+        @Override
+        public boolean equivalent(_annotation._element left, _annotation._element right) {
+            return Objects.equals(left,right);
+        }
+
+        public _inspect._diffTree diffTree( _java._inspector _ins, _inspect._path path, _inspect._diffTree dt, _annotation._element left, _annotation._element right) {
+            if( left == null){
+                if( right == null){
+                    return dt;
+                }
+                return dt.add( path.in( _java.Component.ELEMENT, right.getName()), null, right);
+                
+            }
+            if( right == null){
+                return dt.add( path.in( _java.Component.ELEMENT, left.getName()), left, null);                
+            }
+            _ins.INSPECT_NAME.diffTree(_ins, path, dt, left.getName(), right.getName());
+            _ins.INSPECT_TYPE_REF.diffTree(_ins,path, dt, left.getType(), right.getType());
+            _ins.INSPECT_DEFAULT.diffTree(_ins,path, dt, left.getDefaultValue(), right.getDefaultValue());
+            _ins.INSPECT_JAVADOC.diffTree(_ins,path, dt, left.getJavadoc(), right.getJavadoc());
+            _ins.INSPECT_ANNOS.diffTree(_ins,path, dt, left.getAnnos(), right.getAnnos());            
+            return dt;
+        }        
+    }
+    
+    public static final _java.ExpressionInspect INSPECT_DEFAULT = new _java.ExpressionInspect(_java.Component.DEFAULT);
 }

@@ -679,4 +679,23 @@ public final class _modifiers
 
         T setStrictFp( boolean toSet );
     }
+    
+    public static final _modifiersInspect INSPECT_MODIFIERS = 
+        new _modifiersInspect();
+    
+    public static class _modifiersInspect implements _inspect<_modifiers>{
+       
+        @Override
+        public boolean equivalent(_modifiers left, _modifiers right) {
+            return Objects.equals(left, right);
+        }
+
+        @Override
+        public _inspect._diffTree diffTree( _java._inspector _ins, _inspect._path path, _inspect._diffTree dt, _modifiers left, _modifiers right) {
+            if( !equivalent( left, right)){
+                dt.add(path.in( _java.Component.MODIFIERS), left, right);
+            }
+            return dt;
+        }
+    }
 }

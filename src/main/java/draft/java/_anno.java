@@ -1037,4 +1037,43 @@ public final class _anno
             return new _annos( fd );
         }
     }
+    
+    public static final _annosInspect INSPECT_ANNOS = new _annosInspect();
+    
+    
+    public static class _annosInspect
+        implements _inspect<_anno._annos> {
+
+        String name = _java.Component.ANNOS.getName();
+        
+        public _annosInspect(){ 
+        }
+        
+        @Override
+        public boolean equivalent(_anno._annos left, _anno._annos right) {            
+            return Objects.equals(left, right);
+        }
+
+        @Override
+        public _inspect._diffTree diffTree( _java._inspector _inspect, _inspect._path path, _inspect._diffTree dt, _anno._annos left, _anno._annos right) {
+            NodeList<AnnotationExpr> laes = left.astAnnNode.getAnnotations();
+            NodeList<AnnotationExpr> raes = right.astAnnNode.getAnnotations();
+            for( int i = 0; i < laes.size(); i++ ) {
+                AnnotationExpr e = (AnnotationExpr)laes.get( i );
+                //find a matching annotation in other, if one isnt found, then not equal
+                if( !raes.stream().filter( a -> Ast.annotationEqual( e, (AnnotationExpr)a ) ).findFirst().isPresent() ) {
+                    dt.add( path.in(_java.Component.ANNO, e.getNameAsString()), e, null);
+                }
+            }
+            
+            for( int i = 0; i < raes.size(); i++ ) {
+                AnnotationExpr e = (AnnotationExpr)raes.get( i );
+                //find a matching annotation in other, if one isnt found, then not equal
+                if( !laes.stream().filter( a -> Ast.annotationEqual( e, (AnnotationExpr)a ) ).findFirst().isPresent() ) {
+                    dt.add(path.in(_java.Component.ANNO, e.getNameAsString()), null, e);
+                }
+            }            
+            return dt;
+        }
+    }
 }

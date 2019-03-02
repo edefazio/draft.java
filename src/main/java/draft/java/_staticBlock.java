@@ -305,4 +305,66 @@ public final class _staticBlock
     public static boolean equivalent( Collection<_staticBlock> left, Collection<_staticBlock> right ){
         return EQIVALENT_STATIC_BLOCKS.equivalent(left, right);
     }
+    
+    public static _staticBlocksInspect INSPECT_STATIC_BLOCKS 
+            = new _staticBlocksInspect();
+    
+    public static class _staticBlocksInspect 
+            implements _inspect<List<_staticBlock>> {
+
+        @Override
+        public boolean equivalent(List<_staticBlock> left, List<_staticBlock> right) {
+            Set<_staticBlock> ls = new HashSet<>();
+            Set<_staticBlock> rs = new HashSet<>();
+            ls.addAll( left);
+            rs.addAll(right);
+            
+            return Objects.equals(ls, rs);
+        }
+
+        @Override
+        public _inspect._diffTree diffTree( _java._inspector _ins, _inspect._path path, _inspect._diffTree dt, List<_staticBlock> left, List<_staticBlock> right) {
+            Set<_staticBlock> ls = new HashSet<>();
+            Set<_staticBlock> rs = new HashSet<>();
+            Set<_staticBlock> both = new HashSet<>();
+            ls.addAll( left);
+            rs.addAll(right);
+            
+            both.addAll(left);
+            both.retainAll(right);
+            
+            ls.removeAll(both);
+            rs.removeAll(both);
+            
+            ls.forEach(s -> dt.add(path.in(_java.Component.STATIC_BLOCK), s, null));
+            rs.forEach(s -> dt.add(path.in(_java.Component.STATIC_BLOCK), null, s));
+            return dt;
+        }
+    }
+    
+    public static _staticBlockInspect INSPECT_STATIC_BLOCK 
+            = new _staticBlockInspect();
+            
+    public static class _staticBlockInspect 
+            implements _inspect<_staticBlock> {
+
+        @Override
+        public boolean equivalent(_staticBlock left, _staticBlock right) {
+            return Objects.equals(left, right);
+        }
+
+        @Override
+        public _inspect._diffTree diffTree( _java._inspector _ins, _inspect._path path, _inspect._diffTree dt, _staticBlock left, _staticBlock right) {
+            if( left == null){
+                if( right == null){
+                    return dt;
+                }
+                return dt.add( path.in( _java.Component.STATIC_BLOCK), null, right);
+            }
+            if( right == null){
+                return dt.add( path.in(_java.Component.STATIC_BLOCK), left, null);
+            }
+            return _ins.INSPECT_BODY.diffTree(_ins, path, dt, left.getBody(), right.getBody());            
+        }
+    }
 }

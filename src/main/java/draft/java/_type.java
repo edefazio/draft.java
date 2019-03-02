@@ -1280,4 +1280,196 @@ public interface _type<AST extends TypeDeclaration, T extends _type>
 
         T removeExtends( ClassOrInterfaceType coit );
     }
+    
+    
+    public static ListImportDeclarationInspect INSPECT_IMPORTS = new ListImportDeclarationInspect(_java.Component.IMPORT.getName() );
+    
+    public static class ListImportDeclarationInspect implements _inspect<List<ImportDeclaration>>{        
+
+        private final String name;
+        
+        public ListImportDeclarationInspect(String name){
+            this.name = name;
+        }
+                
+        @Override
+        public boolean equivalent(List<ImportDeclaration> left, List<ImportDeclaration> right) {
+            Set<ImportDeclaration> ls = new HashSet<>();
+            Set<ImportDeclaration> rs = new HashSet<>();
+            ls.addAll(left);
+            rs.addAll(right);
+            return Objects.equals( ls, rs);
+        }
+
+        @Override
+        public _inspect._diffTree diffTree( _java._inspector _ins, _inspect._path path, _inspect._diffTree dt, List<ImportDeclaration> left, List<ImportDeclaration> right) {
+            Set<ImportDeclaration> ls = new HashSet<>();
+            Set<ImportDeclaration> rs = new HashSet<>();
+            Set<ImportDeclaration> both = new HashSet<>();
+            ls.addAll(left);
+            rs.addAll(right);
+            
+            both.addAll( left);
+            both.retainAll( right);
+            
+            ls.removeAll(both);
+            rs.removeAll(both);
+            
+            ls.forEach(c -> dt.add(path.in(_java.Component.IMPORT), c, null) );
+            rs.forEach(c -> dt.add(path.in(_java.Component.IMPORT), null, c) );
+            
+            return dt;
+        }        
+    }
+    
+    public static ListClassOrInterfaceTypeInspect INSPECT_EXTENDS = new ListClassOrInterfaceTypeInspect(_java.Component.EXTENDS);
+    
+    public static ListClassOrInterfaceTypeInspect INSPECT_IMPLEMENTS = new ListClassOrInterfaceTypeInspect(_java.Component.IMPLEMENTS );
+    
+    public static class ListClassOrInterfaceTypeInspect implements _inspect<List<ClassOrInterfaceType>>{        
+
+        private final _java.Component component;
+        
+        public ListClassOrInterfaceTypeInspect(_java.Component component){
+            this.component = component;
+        }
+                
+        @Override
+        public boolean equivalent(List<ClassOrInterfaceType> left, List<ClassOrInterfaceType> right) {
+            Set<ClassOrInterfaceType> ls = new HashSet<>();
+            Set<ClassOrInterfaceType> rs = new HashSet<>();
+            ls.addAll(left);
+            rs.addAll(right);
+            return Objects.equals( ls, rs);
+        }
+
+        @Override
+        public _inspect._diffTree diffTree( _java._inspector _ins, _inspect._path path, _inspect._diffTree dt, List<ClassOrInterfaceType> left, List<ClassOrInterfaceType> right) {
+            Set<ClassOrInterfaceType> ls = new HashSet<>();
+            Set<ClassOrInterfaceType> rs = new HashSet<>();
+            Set<ClassOrInterfaceType> both = new HashSet<>();
+            ls.addAll(left);
+            rs.addAll(right);
+            
+            both.addAll( left);
+            both.retainAll( right);
+            
+            ls.removeAll(both);
+            rs.removeAll(both);
+            
+            ls.forEach(c -> dt.add(path.in(component), c, null) );
+            rs.forEach(c -> dt.add(path.in(component), null, c) );
+            
+            return dt;
+        }        
+    }
+    
+    public static final _typeInspect INSPECT_TYPE = new _typeInspect();
+    
+    public static class _typeInspect implements _inspect<_type>{
+
+        @Override
+        public boolean equivalent(_type left, _type right) {
+            return Objects.equals(left, right);
+        }
+
+        public _java.Component getComponent( _type t ){
+            if( t instanceof _class){
+                return _java.Component.CLASS;
+            }
+            if( t instanceof _interface){
+                return _java.Component.INTERFACE;
+            }
+            if( t instanceof _enum){
+                return _java.Component.ENUM;
+            }
+            return _java.Component.ANNOTATION;            
+        }
+        
+        @Override
+        public _inspect._diffTree diffTree( _java._inspector _ins, _inspect._path path, _inspect._diffTree dt, _type left, _type right) {
+            if(left == null){
+                if(right == null){
+                    return dt;
+                }
+                dt.add(path.in(getComponent(right), right.getName()), null, right);
+                return dt;
+            }
+            if( right == null){
+                dt.add(path.in(getComponent(left), left.getName()), left, null);
+                return dt;
+            }
+            if( !left.getClass().isAssignableFrom(right.getClass())){
+                //on the fence about this
+                dt.add(path.in(getComponent(left), left.getName()), left, null);
+                dt.add(path.in(getComponent(right), right.getName() ), null, right);
+                //dt.add(path.in(Component.NEST), left, null);
+                //dt.add(path.in(Component.NEST), null, right);
+            }
+            if( left instanceof _class ){
+                return _ins.INSPECT_CLASS.diffTree(_ins, path.in(_java.Component.CLASS, left.getName()), dt, (_class)left, (_class)right);
+            }
+            if( left instanceof _interface ){
+                return _ins.INSPECT_INTERFACE.diffTree(_ins, path.in(_java.Component.INTERFACE, left.getName()), dt, (_interface)left, (_interface)right);
+            }
+            if( left instanceof _annotation ){
+                return _ins.INSPECT_ANNOTATION.diffTree(_ins, path.in(_java.Component.ANNOTATION, left.getName()),dt, (_annotation)left, (_annotation)right);                
+            }
+            return _ins.INSPECT_ENUM.diffTree(_ins, path.in(_java.Component.ENUM, left.getName()),dt,  (_enum)left, (_enum)right);            
+        }        
+    }
+    
+    
+    public static final _typesInspect INSPECT_NESTS = new _typesInspect();
+            
+    public static class _typesInspect implements _inspect<List<_type>>{
+        
+        @Override
+        public boolean equivalent( List<_type> left, List<_type> right ){
+            Set<_type> ls = new HashSet<>();
+            Set<_type> rs = new HashSet<>();
+            ls.addAll( left);
+            rs.addAll( right);
+            return Objects.equals( ls, right);
+        }
+        
+        private static _type sameNameAndType(_type _t, Set<_type> target ){
+            Optional<_type> ot = target.stream().filter(t-> t.getName().equals(_t) && 
+                    _t.getClass().isAssignableFrom( t.getClass()) ).findFirst();
+            if( ot.isPresent() ){
+                return ot.get();
+            }
+            return null;
+        }
+        
+        @Override
+        public _inspect._diffTree diffTree( _java._inspector _ins, _inspect._path path, _inspect._diffTree dt, List<_type>left, List<_type>right ){
+            Set<_type>ls = new HashSet<>();
+            Set<_type>rs = new HashSet<>();
+            Set<_type>both = new HashSet<>();
+            ls.addAll(left);
+            rs.addAll(right);
+            both.addAll(ls);
+            both.retainAll(rs);
+            
+            ls.removeAll(both);
+            ls.forEach(f -> {
+                _type cc = sameNameAndType( f, rs );
+                if( cc != null ){                    
+                    _ins.INSPECT_TYPE.diffTree(_ins, path.in(_java.Component.NEST),dt, f, cc);
+                    rs.remove( cc );
+                    //dl.add(path+_java.Component.NEST, f, cc);                    
+                } else{
+                    dt.add(path.in(_java.Component.NEST), f, null);
+                }
+            });
+            
+            rs.forEach(f -> {
+                dt.add(path.in(_java.Component.NEST), null,f);                
+            });
+            return dt;            
+        }        
+    }
+    
+    public static final _java.StringInspect INSPECT_PACKAGE_NAME = new _java.StringInspect(_java.Component.PACKAGE_NAME);
 }

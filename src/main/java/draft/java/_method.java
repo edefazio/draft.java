@@ -1131,4 +1131,164 @@ public final class _method
             return method(updateBody(_m, le));
         }
     }
+    
+    public static final _methodsInspect INSPECT_METHODS = new _methodsInspect();
+    
+    public static class _methodsInspect implements _inspect<List<_method>>{
+
+        static class _matchedMethods{
+            _method left;
+            _method right;
+            
+            public _matchedMethods(_method left, _method right){
+                this.left = left;
+                this.right = right;
+            }
+        }
+        
+        @Override
+        public boolean equivalent(List<_method> left, List<_method> right) {
+            Set<_method>ls = new HashSet<>();
+            ls.addAll(left);
+            Set<_method>rs = new HashSet<>();
+            rs.addAll(right);
+            return Objects.equals(ls,rs);            
+        }
+
+        public static String describeMethodSignature(_method _m ){
+            StringBuilder sb = new StringBuilder();
+            sb.append(_m.getName());
+            sb.append("(");
+            for(int i=0;i< _m.getParameters().count(); i++){
+                if( i > 0 ){
+                    sb.append(", ");
+                }
+                sb.append( _m.getParameter(i).getType() );
+                if( _m.getParameter(i).isVarArg() ){
+                    sb.append("...");
+                }
+            }
+            sb.append(")");
+            return sb.toString();
+        }
+        
+        public static _method findSameNameAndParameters(_method tm, Set<_method>targets ){
+            Optional<_method> om = targets.stream().filter(m -> m.getName().equals(tm.getName()) 
+                    && m.getType().equals(tm.getType()) 
+                    && m.getParameters().hasParametersOfType(tm.getParameters().types())).findFirst();
+            if( om != null ){
+                return om.get();
+            }
+            return null;
+        }
+        
+        @Override
+        public _inspect._diffTree diffTree( _java._inspector _ins, _inspect._path path, _inspect._diffTree dt,  List<_method> left, List<_method> right) {
+            Set<_method>ls = new HashSet<>();
+            ls.addAll(left);
+            Set<_method>rs = new HashSet<>();
+            rs.addAll(right);
+            
+            Set<_method> both = new HashSet<>();
+            both.addAll(left);
+            both.retainAll(right);
+            
+            ls.removeAll(right);
+            rs.removeAll(left);
+            
+            ls.forEach(m -> {
+                
+                _method fm = findSameNameAndParameters(m, rs);
+                //System.out.println(" LEFT NOT MATCHED "+m+" "+rs);
+                if( fm != null ){
+                    rs.remove(fm);
+                    _ins.INSPECT_METHOD.diffTree(_ins, path.in(_java.Component.METHOD, describeMethodSignature(m)), dt, m, fm);
+                } else{
+                    dt.add( path.in(_java.Component.METHOD, describeMethodSignature(m)), m, null );
+                }
+            });            
+            rs.forEach(m -> {
+                //System.out.println(" RIGHT NOT MATCHED "+m);
+                dt.add( path.in(_java.Component.METHOD, describeMethodSignature(m)), null, m );                
+            });                                             
+            return dt;
+        }        
+    }
+    
+    public static final _methodInspect INSPECT_METHOD = new _methodInspect();
+    
+    public static class _methodInspect implements _inspect<_method>{
+
+        @Override
+        public boolean equivalent(_method left, _method right) {
+            return Objects.equals(left, right);
+        }
+
+        @Override
+        public _inspect._diffTree diffTree( _java._inspector _ins, _inspect._path path, _inspect._diffTree dt, _method left, _method right) {
+            if( left == null){
+                if( right == null){
+                    return dt;
+                }
+                return dt.add( path.in(_java.Component.METHOD,_methodsInspect.describeMethodSignature(right)), null, right);                
+            }
+            if( right == null){
+                return dt.add( path.in(_java.Component.METHOD,_methodsInspect.describeMethodSignature(left)), left, null);
+            }
+            _ins.INSPECT_JAVADOC.diffTree(_ins, path, dt, left.getJavadoc(), right.getJavadoc());
+            _ins.INSPECT_ANNOS.diffTree(_ins,  path, dt, left.getAnnos(), right.getAnnos());
+            _ins.INSPECT_MODIFIERS.diffTree(_ins, path, dt, left.getModifiers(), right.getModifiers());
+            _ins.INSPECT_TYPE_REF.diffTree(_ins, path, dt, left.getType(), right.getType());
+            _ins.INSPECT_NAME.diffTree(_ins,  path, dt, left.getName(), right.getName());            
+            _ins.INSPECT_RECEIVER_PARAMETER.diffTree(_ins, path, dt, left.getReceiverParameter(), right.getReceiverParameter());
+            _ins.INSPECT_PARAMETERS.diffTree(_ins, path, dt, left.getParameters(), right.getParameters());
+            _ins.INSPECT_TYPE_PARAMETERS.diffTree(_ins, path, dt, left.getTypeParameters(), right.getTypeParameters());
+            _ins.INSPECT_THROWS.diffTree( _ins, path, dt, left.getThrows(), right.getThrows());            
+            _ins.INSPECT_BODY.diffTree(_ins, path, dt, left.getBody(), right.getBody());            
+            return dt;
+        }
+        
+        
+        /**
+         * Calculates the similarity among (2) instances 
+         * @param left
+         * @param right
+         * @return 
+         
+        public int calcSimularity(_method left, _method right){
+            int simularity = 0;
+            if( INSPECT_BODY.equivalent(left.getBody(), right.getBody()) ){
+                simularity += (1 << 9);
+            }
+            if( INSPECT_NAME.equivalent(left.getName(), right.getName()) ){
+                simularity += (1 << 8);
+            }
+            if( INSPECT_TYPE_REF.equivalent(left.getType(), right.getType()) ){
+                simularity += (1 << 7);
+            }
+            if( INSPECT_PARAMETERS.equivalent(left.getParameters(), right.getParameters()) ){
+                simularity += (1 << 6);
+            }
+            if( INSPECT_MODIFIERS.equivalent(left.getModifiers(), right.getModifiers()) ){
+                simularity += (1 << 5);
+            }
+            if( INSPECT_ANNOS.equivalent(left.getAnnos(), right.getAnnos()) ){
+                simularity += (1 << 4);
+            }
+            if( INSPECT_THROWS.equivalent(left.getThrows(), right.getThrows()) ){
+                simularity += (1 << 3);
+            }
+            if( INSPECT_TYPE_PARAMETERS.equivalent(left.getTypeParameters(), right.getTypeParameters()) ){
+                simularity += (1 << 2);
+            }
+            if( INSPECT_RECEIVER_PARAMETER.equivalent(left.getReceiverParameter(), right.getReceiverParameter()) ){
+                simularity += (1 << 1);
+            }
+            if( INSPECT_JAVADOC.equivalent(left.getJavadoc(), right.getJavadoc() ) ){
+                simularity += (1);
+            }
+            return simularity;
+        }
+        */ 
+    }
 }

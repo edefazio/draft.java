@@ -104,4 +104,23 @@ public final class _javadoc
 
         T removeJavadoc();
     }
+    
+    public static final _javadocInspect INSPECT_JAVADOC = 
+        new _javadocInspect();
+    
+    public static class _javadocInspect implements _inspect<_javadoc>{
+       
+        @Override
+        public boolean equivalent(_javadoc left, _javadoc right) {
+            return Objects.equals(left, right);
+        }
+
+        @Override
+        public _inspect._diffTree diffTree( _java._inspector _ins, _inspect._path path, _inspect._diffTree dt,  _javadoc left, _javadoc right) {
+            if( !equivalent( left, right)){
+                dt.add(path.in( _java.Component.JAVADOC ), left, right);
+            }
+            return dt;
+        }        
+    }
 }

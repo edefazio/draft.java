@@ -584,4 +584,40 @@ public final class _parameter
             return this.astNodeWithParams;
         }
     }
+    
+    /**
+     * Inspects parameters
+     */
+    public static final _parametersInspect INSPECT_PARAMETERS = 
+        new _parametersInspect();
+
+    public static class _parametersInspect 
+            implements _inspect<_parameters>{
+
+        @Override
+        public boolean equivalent(_parameters left, _parameters right) {
+            return Objects.equals(left, right);
+        }
+
+        @Override
+        public _inspect._diffTree diffTree( _java._inspector _ins, _inspect._path path, _inspect._diffTree dt, _parameters left, _parameters right) {
+            for(int i=0;i<left.count();i++){
+                _parameter _l = left.get(i);
+                _parameter _r = null;
+                if( i < right.count() ){
+                    _r = right.get(i);
+                }
+                if( !Objects.equals(left, right) ){
+                    dt.add(path.in(_java.Component.PARAMETER, i+""), _l, _r);
+                }                
+            }
+            if( right.count() > left.count() ){
+                for(int i=left.count(); i<right.count(); i++){
+                    _parameter _r = right.get(i);
+                    dt.add(path.in( _java.Component.PARAMETER,i+""), null, _r);
+                }
+            }
+            return dt;
+        }        
+    }   
 }
