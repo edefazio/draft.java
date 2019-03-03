@@ -167,8 +167,6 @@ public final class _modifiers
     public boolean isDefault() {
 
         return this.node.hasModifier( Modifier.Keyword.DEFAULT );
-        //EnumSet<Modifier> ms = this.node.getModifiers();
-        //return ms.contains(Modifier.DEFAULT);
     }
 
     /**
@@ -335,7 +333,6 @@ public final class _modifiers
     public String[] asKeywords() {
         List<String> strs = new ArrayList<>();
         if( node.getModifiers() != null ) {
-            //System.out.println( "NOT NULL");
             this.node.getModifiers().forEach( i -> strs.add( ((Modifier)i).getKeyword().asString() ) );
         }
         return (String[])strs.toArray( new String[ 0 ] );
@@ -691,7 +688,7 @@ public final class _modifiers
         }
 
         @Override
-        public _inspect._diffTree diffTree( _java._inspector _ins, _inspect._path path, _inspect._diffTree dt, _modifiers left, _modifiers right) {
+        public _inspect._diff diff( _java._inspector _ins, _inspect._path path, _inspect._diff dt, _modifiers left, _modifiers right) {
             if( !equivalent( left, right)){
                 dt.add(path.in( _java.Component.MODIFIERS), left, right);
             }

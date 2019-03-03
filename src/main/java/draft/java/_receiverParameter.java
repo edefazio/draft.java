@@ -171,7 +171,7 @@ public final class _receiverParameter
         }
 
         @Override
-        public _inspect._diffTree diffTree(_java._inspector _ins, _inspect._path path, _inspect._diffTree dt,  _receiverParameter left, _receiverParameter right) {
+        public _inspect._diff diff(_java._inspector _ins, _inspect._path path, _inspect._diff dt,  _receiverParameter left, _receiverParameter right) {
             if( !equivalent( left, right )){
                 if(left == null){
                     return dt.add(path.in(_java.Component.RECEIVER_PARAMETER), null, right);                    
@@ -179,9 +179,9 @@ public final class _receiverParameter
                 if(right == null){
                     return dt.add(path.in(_java.Component.RECEIVER_PARAMETER), left, null);                                        
                 }                
-                _ins.INSPECT_NAME.diffTree(_ins, path.in(_java.Component.RECEIVER_PARAMETER), dt, left.getName(), right.getName());
-                _ins.INSPECT_TYPE_REF.diffTree(_ins, path.in(_java.Component.RECEIVER_PARAMETER), dt, left.getType(), right.getType());
-                _ins.INSPECT_ANNOS.diffTree(_ins, path.in(_java.Component.RECEIVER_PARAMETER), dt, left.getAnnos(), right.getAnnos());
+                _ins.INSPECT_NAME.diff(_ins, path.in(_java.Component.RECEIVER_PARAMETER), dt, left.getName(), right.getName());
+                _ins.INSPECT_TYPE_REF.diff(_ins, path.in(_java.Component.RECEIVER_PARAMETER), dt, left.getType(), right.getType());
+                _ins.INSPECT_ANNOS.diff(_ins, path.in(_java.Component.RECEIVER_PARAMETER), dt, left.getAnnos(), right.getAnnos());
             }
             return dt;            
         }

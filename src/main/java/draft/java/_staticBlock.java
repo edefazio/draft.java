@@ -323,7 +323,7 @@ public final class _staticBlock
         }
 
         @Override
-        public _inspect._diffTree diffTree( _java._inspector _ins, _inspect._path path, _inspect._diffTree dt, List<_staticBlock> left, List<_staticBlock> right) {
+        public _inspect._diff diff( _java._inspector _ins, _inspect._path path, _inspect._diff dt, List<_staticBlock> left, List<_staticBlock> right) {
             Set<_staticBlock> ls = new HashSet<>();
             Set<_staticBlock> rs = new HashSet<>();
             Set<_staticBlock> both = new HashSet<>();
@@ -354,7 +354,7 @@ public final class _staticBlock
         }
 
         @Override
-        public _inspect._diffTree diffTree( _java._inspector _ins, _inspect._path path, _inspect._diffTree dt, _staticBlock left, _staticBlock right) {
+        public _inspect._diff diff( _java._inspector _ins, _inspect._path path, _inspect._diff dt, _staticBlock left, _staticBlock right) {
             if( left == null){
                 if( right == null){
                     return dt;
@@ -364,7 +364,7 @@ public final class _staticBlock
             if( right == null){
                 return dt.add( path.in(_java.Component.STATIC_BLOCK), left, null);
             }
-            return _ins.INSPECT_BODY.diffTree(_ins, path, dt, left.getBody(), right.getBody());            
+            return _ins.INSPECT_BODY.diff(_ins, path, dt, left.getBody(), right.getBody());            
         }
     }
 }

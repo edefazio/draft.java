@@ -1,9 +1,13 @@
 package draft.java;
 
 import draft.java._anno._annos;
-import draft.java._inspect._diffTree;
+import draft.java._inspect._addNode;
+import draft.java._inspect._changeNode;
+import draft.java._inspect._diff;
+import draft.java._inspect._editNode;
 import draft.java._java.StringInspect;
 import draft.java._inspect._path;
+import draft.java._inspect._removeNode;
 import static draft.java._java.Component.*;
 import draft.java._parameter._parameters;
 import draft.java._typeParameter._typeParameters;
@@ -29,43 +33,43 @@ public class _inspectTest extends TestCase {
         _class _c1 = _class.of("C");
         _class _c2 = _class.of("C").field(_f2);
                
-        _diffTree dt = _class.diffTree(_c1, _c2);
+        _diff dt = _class.diff(_c1, _c2);
         assertNotNull( dt.first(FIELD) );
-        assertTrue( dt.first(FIELD).isAdd()); //its added between left and right
+        assertTrue( dt.first(FIELD) instanceof _addNode); //its added between left and right
         
         _c1.field(_f1);
-        dt = _class.diffTree(_c1, _c2);
+        dt = _class.diff(_c1, _c2);
         assertTrue( dt.isEmpty() );
         
         _f1.init(1);
-        dt = _class.diffTree(_c1, _c2);
+        dt = _class.diff(_c1, _c2);
         //System.out.println( dt );
-        assertTrue( dt.first(FIELD, INIT).isRemove()); //field init is removed from left to right 
+        assertTrue( dt.first(FIELD, INIT) instanceof _removeNode); //field init is removed from left to right 
         _f2.init(1);        
         _f2.annotate("@Ann");
-        dt = _class.diffTree(_c1, _c2);
-        assertTrue(dt.first(FIELD, ANNO).isAdd());
+        dt = _class.diff(_c1, _c2);
+        assertTrue(dt.first(FIELD, ANNO) instanceof _addNode);
         
         _f1.annotate("@Ann");
         _f1.setPrivate();
-        dt = _class.diffTree(_c1, _c2);
-        assertTrue(dt.first(FIELD, MODIFIERS).isChange()); 
+        dt = _class.diff(_c1, _c2);
+        assertTrue(dt.first(FIELD, MODIFIERS) instanceof _changeNode ); 
         
         _f2.setPrivate();        
         _f2.javadoc("A javadoc");
-        dt = _class.diffTree(_c1, _c2);
-        assertTrue(dt.first(FIELD, JAVADOC).isChange());
+        dt = _class.diff(_c1, _c2);
+        assertTrue(dt.first(FIELD, JAVADOC) instanceof _changeNode );
         
         _f1.javadoc("A javadoc");        
         _f1.type(float.class);
         _f1.init(1.0f);
-        dt = _class.diffTree(_c1, _c2);
-        assertTrue(dt.first(FIELD, TYPE).isChange());
+        dt = _class.diff(_c1, _c2);
+        assertTrue(dt.first(FIELD, TYPE) instanceof _changeNode );
         
         _f2.type(float.class);
         _f2.init(1.0f);
         _f2.name("b");        
-        dt = _class.diffTree(_c1, _c2);
+        dt = _class.diff(_c1, _c2);
         //When we change the name of the field, we are affectively changing the API
         // so instead of it being considered a CHANGE it is rather a: 
         // REMOVE (of the old field "a")
@@ -74,7 +78,7 @@ public class _inspectTest extends TestCase {
         assertTrue(dt.list(FIELD).size() == 2 );
         
         _f1.name("b");
-        dt = _class.diffTree(_c1, _c2);
+        dt = _class.diff(_c1, _c2);
         assertTrue(dt.isEmpty());        
     }
     
@@ -83,17 +87,17 @@ public class _inspectTest extends TestCase {
         _method _m2 = _method.of( new Object(){ void m(){} } );
         _class _c1 = _class.of("C").method(_m1);
         _class _c2 = _class.of("C").method(_m2);
-        assertTrue(_class.diffTree(_c1, _c2).isEmpty());
+        assertTrue(_class.diff(_c1, _c2).isEmpty());
         
         _m1.setBody(()->{System.out.println(1);} );
         
-        _diffTree _dt = _class.diffTree(_c1, _c2);
-        assertTrue( _dt.first(BODY).isChange() );
-        assertTrue( _dt.first(METHOD, BODY).isChange() );
+        _diff _dt = _class.diff(_c1, _c2);
+        assertTrue(_dt.first(BODY) instanceof _editNode );
+        assertTrue(_dt.first(METHOD, BODY) instanceof _editNode );
         
         _dt.listEdits();
         
-        _dt.first(d -> d.isTextDiff() );
+        _dt.first(d -> d instanceof _editNode );
                 
         
         _dt.listEdits().get(0).forRemoves(d->System.out.println("REMOVED: " + d.text));
@@ -114,25 +118,25 @@ public class _inspectTest extends TestCase {
         _c2.forMethods(m-> m.annotate(Deprecated.class));
         
         //System.out.println( _c2 );
-        _diffTree dt = _class.diffTree(_c1, _c2);
+        _diff dt = _class.diff(_c1, _c2);
         
         //System.out.println( dt );
         
         assertEquals( 1, dt.list(METHOD,ANNO).size() );
         assertTrue(
-            dt.first(METHOD,ANNO).isAdd()); //its Added from left -> right        
+            dt.first(METHOD,ANNO) instanceof _addNode ); //its Added from left -> right        
         assertNotNull(dt.first(METHOD));
         assertNotNull(dt.first(ANNO));
        
         _c1.forMethods(m -> m.setFinal());
         
-        dt = _class.diffTree(_c1, _c2);
+        dt = _class.diff(_c1, _c2);
         //System.out.println( dt );
         assertNotNull(
             dt.first(METHOD, MODIFIERS) );     
         
         assertTrue(
-            dt.first(METHOD, MODIFIERS).isChange() );            
+            dt.first(METHOD, MODIFIERS) instanceof _changeNode );            
         //System.out.println( dt );        
     }
     public void testClassDiff(){
@@ -151,9 +155,9 @@ public class _inspectTest extends TestCase {
         _class _c1 = _class.of(C.class);
         _class _c2 = _class.of(D.class);
         
-        assertTrue(_class.diffTree(_c1, _c2).isEmpty());
+        assertTrue(_class.diff(_c1, _c2).isEmpty());
         
-        _diffTree dt = _class.diffTree(_c1.name("D"), _c2);
+        _diff dt = _class.diff(_c1.name("D"), _c2);
         
         //there is a name diff
         System.out.println( dt );
@@ -167,12 +171,12 @@ public class _inspectTest extends TestCase {
         
         assertTrue(dt.list(d -> d.has(NAME)).size() == 1);
         
-        dt.forEach(d -> System.out.println( d.path.componentPath) );
+        dt.forEach(d -> System.out.println( d.path().componentPath) );
         assertTrue(dt.list(CONSTRUCTOR).size() >= 1);
         
         _c1.getMethod("m").annotate(Deprecated.class);        
-        dt = _class.diffTree(_c1, _c2);
-        assertTrue(dt.first(ANNO).isRemove()); //its removed from left -> right
+        dt = _class.diff(_c1, _c2);
+        assertTrue(dt.first(ANNO) instanceof _removeNode); //its removed from left -> right
         
         
         
@@ -194,7 +198,8 @@ public class _inspectTest extends TestCase {
         }
         _class _c = _class.of( C.class );
         _class _c2 = _class.of( D.class );
-        _diffTree dt = _class.diffTree(_c, _c2);
+        _c.diff(_c2);
+        _diff dt = _class.diff(_c, _c2);
         System.out.println( dt );
         List<_path> paths = dt.paths();
         System.out.println( dt.at( paths.get(0) ) );
@@ -240,13 +245,13 @@ public class _inspectTest extends TestCase {
         List<_method> ms = _c.listMethods();
         List<_method> ms2 = _d.listMethods();
         
-        assertTrue(_field.INSPECT_FIELDS.diffTree(_c.listFields(), _d.listFields()).isEmpty());
-        assertTrue(_method.INSPECT_METHODS.diffTree(ms, ms2).isEmpty());                   
-        assertTrue(_class.INSPECT_CLASS.diffTree(_c, _d).isEmpty());        
+        assertTrue(_field.INSPECT_FIELDS.diff(_c.listFields(), _d.listFields()).isEmpty());
+        assertTrue(_method.INSPECT_METHODS.diff(ms, ms2).isEmpty());                   
+        assertTrue(_class.INSPECT_CLASS.diff(_c, _d).isEmpty());        
         
-        assertTrue(_field.INSPECT_FIELDS.diffTree(_c.listFields(), _d.listFields()).isEmpty());
-        assertTrue(_method.INSPECT_METHODS.diffTree(ms, ms2).isEmpty());
-        assertTrue(_class.INSPECT_CLASS.diffTree(_c, _d).isEmpty());                
+        assertTrue(_field.INSPECT_FIELDS.diff(_c.listFields(), _d.listFields()).isEmpty());
+        assertTrue(_method.INSPECT_METHODS.diff(ms, ms2).isEmpty());
+        assertTrue(_class.INSPECT_CLASS.diff(_c, _d).isEmpty());                
     }
     
     /*
@@ -292,14 +297,14 @@ public class _inspectTest extends TestCase {
             void a(){}
         });
         
-        assertTrue(_method.INSPECT_METHOD.diffTree(_m1, _m2).isEmpty());
+        assertTrue(_method.INSPECT_METHOD.diff(_m1, _m2).isEmpty());
         _m1.name("b");
-        System.out.println( _method.INSPECT_METHOD.diffTree(_m1, _m2) );
+        System.out.println( _method.INSPECT_METHOD.diff(_m1, _m2) );
         
-        assertTrue(_method.INSPECT_METHOD.diffTree(_m1, _m2).first(_java.Component.NAME) != null);
+        assertTrue(_method.INSPECT_METHOD.diff(_m1, _m2).first(_java.Component.NAME) != null);
         _m1.setBody( ()-> System.out.println(1) );
         
-        _diffTree dl = _method.INSPECT_METHOD.diffTree(_m1, _m2);
+        _diff dl = _method.INSPECT_METHOD.diff(_m1, _m2);
         assertTrue(dl.first(BODY) != null);
         
         //_textDiff dmp = (_textDiff)dl.left(_java.Component.BODY);
@@ -315,8 +320,8 @@ public class _inspectTest extends TestCase {
         assertTrue( si.equivalent("a", "a") );
         assertFalse( si.equivalent("A", "a") );
         
-        assertTrue( si.diffTree("a", "a").isEmpty() );
-        assertTrue( si.diffTree("a", "b").has(NAME) );        
+        assertTrue( si.diff("a", "a").isEmpty() );
+        assertTrue( si.diff("a", "b").has(NAME) );        
     }
    
     
@@ -344,15 +349,15 @@ public class _inspectTest extends TestCase {
             _i.getMethod("t4").getThrows()));
         
         
-        assertTrue( _throws.INSPECT_THROWS.diffTree( 
+        assertTrue( _throws.INSPECT_THROWS.diff( 
             _i.getMethod("t").getThrows(),
             _i.getMethod("t2").getThrows()).isEmpty() );
         
-        assertTrue( _throws.INSPECT_THROWS.diffTree( 
+        assertTrue( _throws.INSPECT_THROWS.diff( 
             _i.getMethod("t").getThrows(),
             _i.getMethod("t3").getThrows()).has( THROWS ) );
         
-        assertTrue( _throws.INSPECT_THROWS.diffTree( 
+        assertTrue( _throws.INSPECT_THROWS.diff( 
             _i.getMethod("t3").getThrows(),
             _i.getMethod("t4").getThrows()).size() == 2 );        
     }
@@ -379,8 +384,8 @@ public class _inspectTest extends TestCase {
         assertTrue( _typeParameter.INSPECT_TYPE_PARAMETERS.equivalent(_tpe.ast(), _tpe2.ast()) ); //one fully qual other not        
         assertTrue( _typeParameter.INSPECT_TYPE_PARAMETERS.equivalent(_tp21.ast(), _tp22.ast()) ); //out of order one fully qualified other not
         
-        assertTrue( _typeParameter.INSPECT_TYPE_PARAMETERS.diffTree(_ntp, _tp22 ).has(TYPE_PARAMETER) );
-        assertTrue( _typeParameter.INSPECT_TYPE_PARAMETERS.diffTree(_ntp, _tp22 ).size() == 2 );                
+        assertTrue( _typeParameter.INSPECT_TYPE_PARAMETERS.diff(_ntp, _tp22 ).has(TYPE_PARAMETER) );
+        assertTrue( _typeParameter.INSPECT_TYPE_PARAMETERS.diff(_ntp, _tp22 ).size() == 2 );                
     }
     
     public @interface A{}    
@@ -411,7 +416,7 @@ public class _inspectTest extends TestCase {
         assertEquals( ab.hashCode(), ba.hashCode() );
         assertEquals( ab,ba );
         
-        System.out.println( _anno.INSPECT_ANNOS.diffTree(c, e) );
+        System.out.println( _anno.INSPECT_ANNOS.diff(c, e) );
         
         assertTrue(_anno.INSPECT_ANNOS.equivalent(c, e));
         assertTrue(_anno.INSPECT_ANNOS.equivalent(ab, ba));        
@@ -435,19 +440,19 @@ public class _inspectTest extends TestCase {
         assertTrue( _parameter.INSPECT_PARAMETERS.equivalent(
                 _parameters.of("()"), _parameters.of("()") ) );
         
-        assertTrue( _parameter.INSPECT_PARAMETERS.diffTree(
+        assertTrue( _parameter.INSPECT_PARAMETERS.diff(
                 _parameters.of("()"), _parameters.of("(int i)") ).has(PARAMETER, "0") );
         
-        assertTrue( _parameter.INSPECT_PARAMETERS.diffTree(
+        assertTrue( _parameter.INSPECT_PARAMETERS.diff(
                 _parameters.of("(int i)"), _parameters.of("()") ).has(PARAMETER, "0") );
         
-        assertTrue( _parameter.INSPECT_PARAMETERS.diffTree(
+        assertTrue( _parameter.INSPECT_PARAMETERS.diff(
                 _parameters.of("(int i)"), _parameters.of("(String i)") ).has(PARAMETER, "0") );
         
-        assertTrue( _parameter.INSPECT_PARAMETERS.diffTree(
+        assertTrue( _parameter.INSPECT_PARAMETERS.diff(
                 _parameters.of("(int i)"), _parameters.of("(int i, String s)") ).has(PARAMETER, "1") );
         
-        assertTrue( _parameter.INSPECT_PARAMETERS.diffTree(
+        assertTrue( _parameter.INSPECT_PARAMETERS.diff(
                 _parameters.of("(int i, String s)"), _parameters.of("(int i)") ).has(PARAMETER, "1") );        
     }   
 }

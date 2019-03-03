@@ -9,7 +9,7 @@ import draft.java._model.*;
 import draft.DraftException;
 import draft.Text;
 import draft.java._anno.*;
-import draft.java._java.Semantic;
+import draft.java._inspect._diff;
 import draft.java.macro._macro;
 import draft.java.macro._remove;
 
@@ -557,7 +557,7 @@ public final class _field
     /**
      * Verify that one list of _fields is equivalent to another list of _fields
      * Here we put the _fields in a HashSet and verify the HashSets are equal
-     */
+     
     public static Semantic<Collection<_field>> EQIVALENT_FIELDS_LIST = (Collection<_field> o1, Collection<_field> o2) -> {
         if( o1 == null ){
             return o2 == null;
@@ -574,6 +574,24 @@ public final class _field
     
     public static boolean equivalent( Collection<_field> left, Collection<_field> right){
         return EQIVALENT_FIELDS_LIST.equivalent(left, right);
+    }
+    */
+    
+    /**
+     * 
+     * @param right
+     * @return 
+     */
+    public _diff diff( _field right ){
+        return INSPECT_FIELD.diff(this, right);
+    }
+    
+    public static _diff diff( _field left, _field right){
+        return INSPECT_FIELD.diff(left, right);
+    }
+    
+    public static _diff diff( List<_field> left, List<_field> right){
+        return INSPECT_FIELDS.diff(left, right);
     }
     
     /**
@@ -677,7 +695,7 @@ public final class _field
         }
         
         @Override
-        public _inspect._diffTree diffTree( _java._inspector _ins, _inspect._path path, _inspect._diffTree dt, List<_field> left, List<_field> right) {
+        public _inspect._diff diff( _java._inspector _ins, _inspect._path path, _inspect._diff dt, List<_field> left, List<_field> right) {
             Set<_field> lf = new HashSet<>();
             Set<_field> rf = new HashSet<>();
             lf.addAll(left);
@@ -694,7 +712,7 @@ public final class _field
                 _field match = getFieldNamed( rf, f.getName() );
                 if( match != null ){
                     //dt.add(path.in( _java.Component.FIELD, f.getName()), f, match);
-                    _ins.INSPECT_FIELD.diffTree(_ins, path.in(_java.Component.FIELD), dt, f, match);
+                    _ins.INSPECT_FIELD.diff(_ins, path.in(_java.Component.FIELD), dt, f, match);
                     rf.remove(match);
                 } else{
                     dt.add(path.in(_java.Component.FIELD, f.getName()), f, null);
@@ -729,7 +747,7 @@ public final class _field
         }
 
         @Override
-        public _inspect._diffTree diffTree( _java._inspector _ins, _inspect._path path, _inspect._diffTree dt, _field left, _field right) {
+        public _inspect._diff diff( _java._inspector _ins, _inspect._path path, _inspect._diff dt, _field left, _field right) {
             if( left == null){
                 if( right == null){
                     return dt;
@@ -739,12 +757,12 @@ public final class _field
             if( right == null){
                 return dt.add( path.in(_java.Component.FIELD, left.getName()), left, null);
             }
-            _ins.INSPECT_NAME.diffTree(_ins, path, dt, left.getName(), right.getName());
-            _ins.INSPECT_TYPE_REF.diffTree(_ins, path, dt, left.getType(), right.getType());
-            _ins.INSPECT_MODIFIERS.diffTree(_ins, path, dt, left.getModifiers(), right.getModifiers());
-            _ins.INSPECT_JAVADOC.diffTree(_ins, path, dt, left.getJavadoc(), right.getJavadoc());
-            _ins.INSPECT_ANNOS.diffTree(_ins, path, dt, left.getAnnos(), right.getAnnos());
-            _ins.INSPECT_INIT.diffTree(_ins, path, dt, left.getInit(), right.getInit() );
+            _ins.INSPECT_NAME.diff(_ins, path, dt, left.getName(), right.getName());
+            _ins.INSPECT_TYPE_REF.diff(_ins, path, dt, left.getType(), right.getType());
+            _ins.INSPECT_MODIFIERS.diff(_ins, path, dt, left.getModifiers(), right.getModifiers());
+            _ins.INSPECT_JAVADOC.diff(_ins, path, dt, left.getJavadoc(), right.getJavadoc());
+            _ins.INSPECT_ANNOS.diff(_ins, path, dt, left.getAnnos(), right.getAnnos());
+            _ins.INSPECT_INIT.diff(_ins, path, dt, left.getInit(), right.getInit() );
             return dt;
         }
     }

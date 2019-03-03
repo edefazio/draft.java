@@ -277,7 +277,7 @@ public final class _typeRef<T extends Type>
         }
 
         @Override
-        public _inspect._diffTree diffTree( _java._inspector _ins, _inspect._path path, _inspect._diffTree dt, _typeRef left, _typeRef right) { 
+        public _inspect._diff diff( _java._inspector _ins, _inspect._path path, _inspect._diff dt, _typeRef left, _typeRef right) { 
             if( !equivalent(left, right) ){
                 dt.add(path.in(_java.Component.TYPE), left, right);
             }            

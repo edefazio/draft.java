@@ -10,6 +10,7 @@ import com.github.javaparser.ast.type.ClassOrInterfaceType;
 import draft.DraftException;
 import draft.Text;
 import draft.java._anno.*;
+import draft.java._inspect._diff;
 import draft.java.io._in;
 import draft.java.macro._macro;
 
@@ -1014,11 +1015,31 @@ public final class _enum implements _type<EnumDeclaration, _enum>,_method._hasMe
                     getName(), listArguments() );
             return hash;
         }
+        
+        public _diff diff(_constant right ){
+            return INSPECT_ENUM_CONSTANT.diff(this, right);
+        }
+        
+        public static _diff diff( _constant left, _constant right){
+            return INSPECT_ENUM_CONSTANT.diff(left, right);
+        }
+        
+        public static _diff diff( List<_constant> left, List<_constant> right){
+            return INSPECT_ENUM_CONSTANTS.diff(left, right);
+        }
+    }
+    
+    public _diff diff( _enum right){
+        return INSPECT_ENUM.diff(this, right);
+    }
+    
+    public static _diff diff( _enum left, _enum right ){
+        return INSPECT_ENUM.diff(left, right);
     }
     
     /**
      * Verify that one list of _constant is equivalent to another list of _constant
-     */
+     
     public static _java.Semantic<Collection<_constant>> EQIVALENT_CONSTANTS_LIST = 
             (Collection<_constant> o1, Collection<_constant> o2) -> {
         if( o1 == null ){
@@ -1037,6 +1058,7 @@ public final class _enum implements _type<EnumDeclaration, _enum>,_method._hasMe
     public static boolean equivalent( Collection<_constant> left, Collection<_constant> right){
         return EQIVALENT_CONSTANTS_LIST.equivalent(left, right);
     }
+    */
     
     public static _enumConstantInspect INSPECT_ENUM_CONSTANT = new _enumConstantInspect();
     
@@ -1049,7 +1071,7 @@ public final class _enum implements _type<EnumDeclaration, _enum>,_method._hasMe
         
         
         @Override
-        public _inspect._diffTree diffTree( _java._inspector _ins, _inspect._path path, _inspect._diffTree dt, _enum._constant left, _enum._constant right) {
+        public _inspect._diff diff( _java._inspector _ins, _inspect._path path, _inspect._diff dt, _enum._constant left, _enum._constant right) {
             if( left == null){
                 if( right == null){
                     return dt;
@@ -1063,12 +1085,12 @@ public final class _enum implements _type<EnumDeclaration, _enum>,_method._hasMe
                 //dl.add( path+_java.Component.CONSTANT, left, null);
                 //return dl;
             }
-            _ins.INSPECT_ANNOS.diffTree(_ins, path, dt, left.getAnnos(), right.getAnnos());
-            _ins.INSPECT_JAVADOC.diffTree(_ins, path, dt, left.getJavadoc(), right.getJavadoc());
-            _ins.INSPECT_NAME.diffTree(_ins, path, dt, left.getName(), right.getName());
-            _ins.INSPECT_ARGUMENTS.diffTree(_ins, path, dt, left.listArguments(), right.listArguments());
-            _ins.INSPECT_METHODS.diffTree(_ins, path, dt, left.listMethods(), right.listMethods());
-            _ins.INSPECT_FIELDS.diffTree(_ins, path, dt, left.listFields(), right.listFields());            
+            _ins.INSPECT_ANNOS.diff(_ins, path, dt, left.getAnnos(), right.getAnnos());
+            _ins.INSPECT_JAVADOC.diff(_ins, path, dt, left.getJavadoc(), right.getJavadoc());
+            _ins.INSPECT_NAME.diff(_ins, path, dt, left.getName(), right.getName());
+            _ins.INSPECT_ARGUMENTS.diff(_ins, path, dt, left.listArguments(), right.listArguments());
+            _ins.INSPECT_METHODS.diff(_ins, path, dt, left.listMethods(), right.listMethods());
+            _ins.INSPECT_FIELDS.diff(_ins, path, dt, left.listFields(), right.listFields());            
             return dt;
         }        
     }
@@ -1096,7 +1118,7 @@ public final class _enum implements _type<EnumDeclaration, _enum>,_method._hasMe
         }
         
         @Override
-        public _inspect._diffTree diffTree( _java._inspector _ins, _inspect._path path, _inspect._diffTree dt, List<_enum._constant> left, List<_enum._constant> right) {
+        public _inspect._diff diff( _java._inspector _ins, _inspect._path path, _inspect._diff dt, List<_enum._constant> left, List<_enum._constant> right) {
             Set<_enum._constant>ls = new HashSet<>();
             Set<_enum._constant>rs = new HashSet<>();
             Set<_enum._constant>both = new HashSet<>();
@@ -1133,7 +1155,7 @@ public final class _enum implements _type<EnumDeclaration, _enum>,_method._hasMe
         }
 
         @Override
-        public _inspect._diffTree diffTree( _java._inspector _ins, _inspect._path path, _inspect._diffTree dt, _enum left, _enum right) {
+        public _inspect._diff diff( _java._inspector _ins, _inspect._path path, _inspect._diff dt, _enum left, _enum right) {
             if( left == null){
                 if( right == null){
                     return dt;
@@ -1145,19 +1167,19 @@ public final class _enum implements _type<EnumDeclaration, _enum>,_method._hasMe
                 //dl.add( path+_java.Component.ENUM, left, null);
                 //return dl;
             }
-            _ins.INSPECT_PACKAGE_NAME.diffTree(_ins, path,dt, left.getPackage(), right.getPackage() );
-            _ins.INSPECT_IMPORTS.diffTree(_ins, path,dt, left.listImports(), right.listImports() );
-            _ins.INSPECT_ANNOS.diffTree(_ins, path, dt, left.getAnnos(), right.getAnnos());                               
-            _ins.INSPECT_IMPLEMENTS.diffTree(_ins, path, dt, left.listImplements(), right.listImplements());  
-            _ins.INSPECT_JAVADOC.diffTree(_ins, path, dt, left.getJavadoc(), right.getJavadoc());  
-            _ins.INSPECT_STATIC_BLOCKS.diffTree(_ins, path, dt, left.listStaticBlocks(), right.listStaticBlocks());            
-            _ins.INSPECT_NAME.diffTree(_ins, path, dt, left.getName(), right.getName());
-            _ins.INSPECT_MODIFIERS.diffTree(_ins, path, dt, left.getModifiers(), right.getModifiers());
-            _ins.INSPECT_CONSTRUCTORS.diffTree(_ins, path, dt, left.listConstructors(), right.listConstructors());
-            _ins.INSPECT_METHODS.diffTree(_ins, path, dt, left.listMethods(), right.listMethods() );
-            _ins.INSPECT_FIELDS.diffTree(_ins, path, dt, left.listFields(), right.listFields() );
-            _ins.INSPECT_ENUM_CONSTANTS.diffTree(_ins, path, dt, left.listConstants(), right.listConstants());            
-            _ins.INSPECT_NESTS.diffTree(_ins, path, dt, left.listNests(), right.listNests());  
+            _ins.INSPECT_PACKAGE_NAME.diff(_ins, path,dt, left.getPackage(), right.getPackage() );
+            _ins.INSPECT_IMPORTS.diff(_ins, path,dt, left.listImports(), right.listImports() );
+            _ins.INSPECT_ANNOS.diff(_ins, path, dt, left.getAnnos(), right.getAnnos());                               
+            _ins.INSPECT_IMPLEMENTS.diff(_ins, path, dt, left.listImplements(), right.listImplements());  
+            _ins.INSPECT_JAVADOC.diff(_ins, path, dt, left.getJavadoc(), right.getJavadoc());  
+            _ins.INSPECT_STATIC_BLOCKS.diff(_ins, path, dt, left.listStaticBlocks(), right.listStaticBlocks());            
+            _ins.INSPECT_NAME.diff(_ins, path, dt, left.getName(), right.getName());
+            _ins.INSPECT_MODIFIERS.diff(_ins, path, dt, left.getModifiers(), right.getModifiers());
+            _ins.INSPECT_CONSTRUCTORS.diff(_ins, path, dt, left.listConstructors(), right.listConstructors());
+            _ins.INSPECT_METHODS.diff(_ins, path, dt, left.listMethods(), right.listMethods() );
+            _ins.INSPECT_FIELDS.diff(_ins, path, dt, left.listFields(), right.listFields() );
+            _ins.INSPECT_ENUM_CONSTANTS.diff(_ins, path, dt, left.listConstants(), right.listConstants());            
+            _ins.INSPECT_NESTS.diff(_ins, path, dt, left.listNests(), right.listNests());  
             return dt;
         }
     }
@@ -1172,7 +1194,7 @@ public final class _enum implements _type<EnumDeclaration, _enum>,_method._hasMe
         }
 
         @Override
-        public _inspect._diffTree diffTree( _java._inspector _ins, _inspect._path path, _inspect._diffTree dt, List<Expression> left, List<Expression> right) {
+        public _inspect._diff diff( _java._inspector _ins, _inspect._path path, _inspect._diff dt, List<Expression> left, List<Expression> right) {
             if(left == null ){
                 if(right == null){
                     return dt;

@@ -1,5 +1,6 @@
 package draft.java;
 
+import draft.Text;
 import draft.java._java.Component;
 
 import java.util.*;
@@ -10,7 +11,56 @@ import name.fraser.neil.plaintext.diff_match_patch.Diff;
 import name.fraser.neil.plaintext.diff_match_patch.Operation;
 
 /**
- *
+ * <P>Inspect is an abstraction that knows how to "take apart" and inspect
+ * a composite entity and inspect it (usually against another entity)</P>
+ * 
+ * <P>Think of it like a detailed RUNNABLE INSTRUCTION MANUAL for how to take apart
+ * a composite instance (and all other composite instances contained within it)
+ * and COMPARE these components to another (perhaps a PROTOTYPE instance).</P>
+ * 
+ * <P>A good analogy would be an Instruction manual for how to break down a Car 
+ * Engine, and how to inspect the individual parts of the engine</P> 
+ * 
+ * <P>This provides a way of us to "deeply diff" based on the semantics of the Java 
+ * language... for example given a class F with (2) versions in the code repository:
+ * <PRE>
+ * //Version 1
+ * class F{
+ *    static final int ID = 100;
+ *    int a;
+ *    float b;
+ *    void m(){}
+ * }
+ * 
+ * //Version 2
+ * class F{
+ *    void m(){ System.out.println(1);}
+ *    @Deprecated int a;
+ *    float b;
+ *    String name;
+ * } 
+ * </PRE>
+ * we can diff top find what differences occurred between version 1 and 
+ * version 2.
+ * 
+ * <PRE>
+ * //assuming we loaded these classes as _v1 and _v2
+ * _diff _d = _diff( _v1, _v2 );
+ * //prints paths to all entities added in _v2
+ * _d.forAdds( a -> System.out.println(   "ADDED  :" + a.path) ); 
+ * 
+ * //prints paths to all of the entities removed in v2
+ * _d.forRemoves( r -> System.out.println("REMOVED:" + r.path) ); 
+ * 
+ * //prints paths to all edited entities in v2
+ * _d.forEdits( e -> System.out.println(  "EDITED :" + e.path) ); 
+ * </PRE>
+ * ...if we wanted to know the semantic differentces between the 2
+ * </P>
+ * 
+ * if we have a Large program
+ * 
+ * 
  * @author Eric
  * @param <T> the type to be inspected
  */
@@ -18,19 +68,19 @@ public interface _inspect<T> {
     
     public boolean equivalent( T left, T right );    
     
-    default _diffTree diffTree( T left, T right) {
-        return diffTree(new _path(), new _diffTree(), left, right );
+    default _diff diff( T left, T right) {
+        return _inspect.this.diff(new _path(), new _diff(), left, right );
     }
     
-    default _diffTree diffTree( _diffTree dt, T left, T right) {
-        return diffTree( new _path(), dt, left, right );
+    default _diff diff( _diff dt, T left, T right) {
+        return _inspect.this.diff( new _path(), dt, left, right );
     }
     
-    default _diffTree diffTree( _path path, _diffTree dt, T left, T right ){
-        return diffTree(_java.INSPECTOR, path, dt, left, right);
+    default _diff diff( _path path, _diff dt, T left, T right ){
+        return diff(_java.INSPECTOR, path, dt, left, right);
     }
     
-    public _diffTree diffTree( _java._inspector _inspect, _path path, _diffTree dt, T left, T right);
+    public _diff diff( _java._inspector _inspect, _path path, _diff dt, T left, T right);
     
    
     /**
@@ -174,13 +224,15 @@ public interface _inspect<T> {
     }
     
     /**
-     * A Tree of Diff Nodes that reference the domain
-     * 
+     * collection of diff _nodes that represent the deep differences between
+     * two domain objects (two _class es, _methods, _fields)
      */
-    public static class _diffTree{
+    public static class _diff{
         
-        public List<_diffNode> diffs = new ArrayList<>();
+        /** the underlying diffs collected */
+        public List<_node> diffs = new ArrayList<>();
         
+        /** @return number of diffs */
         public int size(){
             return diffs.size();
         }
@@ -194,7 +246,7 @@ public interface _inspect<T> {
          * @return 
          */
         public List<_path>paths(){
-            return diffs.stream().map(d -> d.path ).collect(Collectors.toList());
+            return diffs.stream().map(d -> d.path() ).collect(Collectors.toList());
         }
         
         /**
@@ -202,20 +254,25 @@ public interface _inspect<T> {
          * @param _p
          * @return 
          */
-        public _diffNode at(_path _p){      
-            return first( d-> d.path.equals(_p));            
+        public _node at(_path _p){      
+            return first( d-> d.path().equals(_p));            
         } 
         
-        
+        /**
+         * Does the diff happen for this specific component type 
+         * (i.e. Component.FIELD, Component.METHOD, Component.BODY , etc. )
+         * @param component the component type
+         * @return true if there exists at least one diff containing the component
+         */
         public boolean has(Component component){
             return has( new Component[]{component} );
         }
         
         /**
-         * Has a Diff that contains these components
+         * Is there at least (1) diff that contains these components
          * 
-         * @param components
-         * @return 
+         * @param components the components expected to have a diff
+         * @return true if there is at least (1) diff containing ALL of the components
          */
         public boolean has(Component...components){
            return first(components) != null;
@@ -224,9 +281,9 @@ public interface _inspect<T> {
         /**
          * for example 
          * 
-         * 
-         * has( PARAMETER, "0" );
-         * 
+         * <PRE>
+         * has( PARAMETER, "0" ); //is there a diff someone with the first parameter?
+         * </PRE>
          * @param component
          * @param ids
          * @return 
@@ -237,32 +294,94 @@ public interface _inspect<T> {
         
         /**
          * For each of the matching DiffNodes in the Tree, perform some action
-         * @param _diffNodeMatchFn function for matching specific _diffNodes
-         * @param _diffNodeActionFn consumer action function on selected _diffNodes
+         * @param _nodeMatchFn function for matching specific _diffNodes
+         * @param _nodeActionFn consumer action function on selected _diffNodes
          * @return  the potentially modified) _diffTree
          */
-        public _diffTree forEach( Predicate<_diffNode> _diffNodeMatchFn, Consumer<_diffNode> _diffNodeActionFn ){
-            list(_diffNodeMatchFn).forEach(_diffNodeActionFn);
+        public _diff forEach( Predicate<_node> _nodeMatchFn, Consumer<_node> _nodeActionFn ){
+            list(_nodeMatchFn).forEach(_nodeActionFn);
             return this;
         }
         
         /**
          * 
-         * @param _diffNodeFn
-         * @return 
+         * @param _nodeFn
+         * @return the potentially modified diff
          */
-        public _diffTree forEach( Consumer<_diffNode> _diffNodeFn ){
-            this.diffs.forEach(_diffNodeFn);
+        public _diff forEach( Consumer<_node> _nodeFn ){
+            this.diffs.forEach(_nodeFn);
+            return this;
+        }
+        /**
+         * For all diffs that are ADD 
+         * (meaning they are ABSENT in LEFT and PRESENT in RIGHT)
+         * check if they match the _addNodeActionFn and, if so, execute the
+         * _addNodeActionFn
+         * @param _addNodeMatchFn matching function for Add nodes
+         * @param _addNodeActionFn the action for adds that pass the matchFn
+         * @return the potentially modified _diff
+         */
+        public _diff forAdds( Predicate<_addNode> _addNodeMatchFn, Consumer<_addNode> _addNodeActionFn){
+            List<_node> ns = list(d -> d instanceof _addNode &&  _addNodeMatchFn.test((_addNode)d));
+            List<_addNode> ans = new ArrayList<>();
+            ns.forEach(n -> ans.add( (_addNode)n));
+            ans.forEach( _addNodeActionFn );
             return this;
         }
         
-        public _diffTree forEdits(Consumer<_editNode> _editNodeActionFn){
-            listEdits().forEach(_editNodeActionFn);
+        public _diff forAdds( Consumer<_addNode> _addNodeActionFn ){
+            List<_node> ns = list(d -> d instanceof _addNode);
+            List<_addNode> ans = new ArrayList<>();
+            ns.forEach(n -> ans.add( (_addNode)n));
+            ans.forEach( _addNodeActionFn );
+            return this;            
+        }
+
+        public _diff forRemoves( Predicate<_removeNode> _removeNodeMatchFn, Consumer<_removeNode> _removeNodeActionFn){
+            List<_node> ns = list(d -> d instanceof _removeNode &&  _removeNodeMatchFn.test((_removeNode)d));
+            List<_removeNode> ans = new ArrayList<>();
+            ns.forEach(n -> ans.add( (_removeNode)n));
+            ans.forEach( _removeNodeActionFn );
             return this;
         }
         
-        public _diffTree forEdits( Predicate<_editNode> _editNodeMatchFn, Consumer<_editNode> _editNodeActionFn){
-            listEdits(_editNodeMatchFn).forEach(_editNodeActionFn);
+        public _diff forRemoves( Consumer<_removeNode> _removeNodeActionFn ){
+            List<_node> ns = list(d -> d instanceof _removeNode );
+            List<_removeNode> ans = new ArrayList<>();
+            ns.forEach(n -> ans.add( (_removeNode)n));
+            ans.forEach( _removeNodeActionFn );
+            return this;
+        }        
+        
+        public _diff forChanges( Predicate<_changeNode> _changeNodeMatchFn, Consumer<_changeNode> _changeNodeActionFn){
+            List<_node> ns = list(d -> d instanceof _removeNode &&  _changeNodeMatchFn.test((_changeNode)d));
+            List<_changeNode> ans = new ArrayList<>();
+            ns.forEach(n -> ans.add( (_changeNode)n));
+            ans.forEach( _changeNodeActionFn );
+            return this;
+        }
+        
+        public _diff forChanges( Consumer<_changeNode> _changeNodeActionFn ){
+            List<_node> ns = list(d -> d instanceof _changeNode );
+            List<_changeNode> ans = new ArrayList<>();
+            ns.forEach(n -> ans.add( (_changeNode)n));
+            ans.forEach( _changeNodeActionFn );
+            return this;
+        }  
+        
+        public _diff forEdits(Consumer<_editNode> _editNodeActionFn){
+            List<_node> ns = list(d -> d instanceof _editNode );
+            List<_editNode> ans = new ArrayList<>();
+            ns.forEach(n -> ans.add( (_editNode)n));
+            ans.forEach( _editNodeActionFn );
+            return this;
+        }
+        
+        public _diff forEdits( Predicate<_editNode> _editNodeMatchFn, Consumer<_editNode> _editNodeActionFn){
+            List<_node> ns = list(d -> d instanceof _editNode &&  _editNodeMatchFn.test((_editNode)d));
+            List<_editNode> ans = new ArrayList<>();
+            ns.forEach(n -> ans.add( (_editNode)n));
+            ans.forEach( _editNodeActionFn );
             return this;
         }
         //forAddEdits
@@ -292,12 +411,12 @@ public interface _inspect<T> {
             return tds;
         }
         
-        public List<_diffNode> list(){
+        public List<_node> list(){
             return this.diffs;
         } 
         
-        public _diffNode first( Component componet ){
-            Optional<_diffNode> first = 
+        public _node first( Component componet ){
+            Optional<_node> first = 
                     this.diffs.stream().filter(d -> d.has(componet)).findFirst();
             if( first.isPresent() ){
                 return first.get();
@@ -305,8 +424,8 @@ public interface _inspect<T> {
             return null;
         }
         
-        public _diffNode first( Component... componets ){
-            Optional<_diffNode> first = 
+        public _node first( Component... componets ){
+            Optional<_node> first = 
                     this.diffs.stream().filter(d -> d.has(componets) ).findFirst();
             if( first.isPresent() ){
                 return first.get();
@@ -314,8 +433,8 @@ public interface _inspect<T> {
             return null;
         }
         
-        public _diffNode first( Predicate<_diffNode> _diffNodeMatchFn ){
-            Optional<_diffNode> first = 
+        public _node first( Predicate<_node> _diffNodeMatchFn ){
+            Optional<_node> first = 
                     this.diffs.stream().filter(_diffNodeMatchFn).findFirst();
             if( first.isPresent() ){
                 return first.get();
@@ -328,8 +447,8 @@ public interface _inspect<T> {
          * @param component the component type
          * @return a list of diffNodes
          */
-        public List<_diffNode> list( Component component ){
-            return list( d-> d.path.has(component));
+        public List<_node> list( Component component ){
+            return list( d-> d.has(component));
         }
         
         /**
@@ -343,7 +462,7 @@ public interface _inspect<T> {
          * //verify that there is ONE match of an ANNOTATION on a FIELD
          * assertEquals(1, dt.list(Component.FIELD, Component.ANNO).size());
          * 
-         * //they DONT have to be in order
+         * //components DONT have to be in order
          * assertEquals(1, dt.list(Component.ANNO, Component.FIELD).size());
          * 
          * //they only provide one
@@ -352,60 +471,292 @@ public interface _inspect<T> {
          * @param components
          * @return 
          */
-        public List<_diffNode> list( Component...components ){
-            return list( d-> d.path.has(components));
+        public List<_node> list( Component...components ){
+            return list( d-> d.has(components));
         }
         
-        public List<_diffNode> list(Predicate<_diffNode> DiffNodeMatchFn ){
-            return this.diffs.stream().filter(DiffNodeMatchFn).collect(Collectors.toList());
+        /**
+         * Lists nodes matching a matchFn
+         * @param _nodeMatchFn matches diff nodes for retrieval
+         * @return list of diff nodes that match the nodeMatchFn
+         */
+        public List<_node> list(Predicate<_node> _nodeMatchFn ){
+            return this.diffs.stream().filter(_nodeMatchFn).collect(Collectors.toList());
         }
         
         /**
          * Add a "textual" edit diff between two entities
          * 
          * @param path the path to the entity
-         * @param lds the linkedList of diffs
+         * @param lds the linkedList of diffs based on the textual diffs between
+         * the left and right entities
+         * @param left the left entity
+         * @param right the right entity
          * @return the diffTree
          */
-        public _diffTree addEdit( _path path, LinkedList<Diff> lds ){
-            diffs.add( _editNode.of(path, lds) );
+        public _diff addEdit( _path path, LinkedList<Diff> lds, Object left, Object right ){
+            diffs.add( _editNode.of(path, lds, left, right) );
             return this;
         }
         
-        public _diffTree add( _path path, Object left, Object right ){
-            diffs.add( new _diffNode(path, left, right));
+        /**
+         * Adds the appropriate _node (_addNode, _removeNode, _changeNode) depending
+         * on the state of left and right
+         * 
+         * @param path the path to the diff node
+         * @param left the value of the left entity
+         * @param right the value of the right entity
+         * @return  the updated _diff
+         */
+        public _diff add( _path path, Object left, Object right ){
+            if( left == null ){
+                diffs.add( new _addNode(path, right));
+                return this;
+            }
+            if( right == null ){
+                diffs.add( new _removeNode(path, left));
+                return this;
+            }
+            diffs.add( new _changeNode(path, left, right));
             return this;
         }
         
         @Override
         public String toString(){
             if( isEmpty() ){
-                return " - no diffs found -";
+                return "-- (0) differences --";
             }
             StringBuilder sb = new StringBuilder();
             sb.append("(").append( diffs.size()).append(") diffs").append(System.lineSeparator());
-            this.diffs.forEach( d -> {
-                if( d.isAdd() ){
-                    sb.append("  + ").append( d.path.toString() ).append(System.lineSeparator() );
-                }
-                else if( d.isRemove() ){
-                    sb.append("  - ").append( d.path.toString() ).append(System.lineSeparator() );
-                }
-                else{ //its a change / edit
-                    sb.append("  ~ ").append( d.path.toString() ).append(System.lineSeparator() );
-                }
-            });
+            this.diffs.forEach( d-> sb.append(d) );            
             return sb.toString();
         }        
+    }    
+    
+    public interface _node{
+        
+        Object left();
+        
+        Object right();
+        
+        _path path();
+        
+        public boolean has( Component component );
+        
+        /**
+         * 
+         * @param components
+         * @return 
+         */
+        public boolean has( Component... components );
+        
+        /** 
+         * does this node have this id within the path?  
+         * @param id a particular id (i.e. "0", "isFull", etc.)
+         * @return true if the nod has the id within the path
+         */
+        public boolean has( String id );
+        
+        /** 
+         * does this node have ALL these ids within the path?  
+         * @param ids a particular ids (i.e. "0", "isFull", etc.)
+         * @return true if the nod has the id within the path
+         */
+        public boolean has( String... ids );
     }
     
     /**
-     * A different kind of Node to represent a "diff", which involves looking
-     * at the "edit distance" between two textual entities.
+     * A node that is NOT found on the left but is found on the right
+     * (it has been added in transitioning between the left and right)
+     */
+    public static class _addNode implements _node {
+        Object add;
+        _path path;
+        
+        public _addNode( _path path, Object added ){
+            this.path = path;
+            this.add = added;
+        }
+        
+        @Override
+        public Object left(){
+            return null;
+        }
+        
+        @Override
+        public Object right(){
+            return add;
+        }
+        
+        @Override
+        public _path path(){
+            return path;
+        }
+        
+        /**
+         * does the path of the diffNode have the particualr id?
+         * @param id the id of the entity("f", "m(String)", parameter[1]
+         * @return if the 
+         */
+        @Override
+        public boolean has(String id){
+            return this.path.idPath.contains(id);
+        }
+        
+        @Override
+        public boolean has(String...ids){
+            Set<String> idd = new HashSet<>();
+            Arrays.stream(ids).forEach(i -> idd.add(i) );
+            return this.path.idPath.containsAll(idd);
+        }
+        
+        
+        @Override
+        public boolean has( Component component ){
+            return path.has(component);
+        }
+        
+        @Override
+        public boolean has( Component... components ){
+            return path.has( components );
+        }
+        
+        @Override
+        public String toString(){
+            return "  + " + path.toString() + System.lineSeparator();
+        }
+    }
+    
+    /**
+     * an entity that exists on the left which is removed on the right
+     */
+    public static class _removeNode implements _node{
+        Object removed;
+        _path path;
+        
+        public _removeNode( _path path, Object removed ){
+            this.path = path;
+            this.removed = removed;
+        }
+        
+        @Override
+        public Object left(){
+            return removed;
+        }
+        
+        @Override
+        public Object right(){
+            return null;
+        }
+        
+        @Override
+        public _path path(){
+            return path;
+        }
+        
+        /**
+         * does the path of the diffNode have the particualr id?
+         * @param id the id of the entity("f", "m(String)", parameter[1]
+         * @return if the 
+         */
+        @Override
+        public boolean has(String id){
+            return this.path.idPath.contains(id);
+        }
+        
+        @Override
+        public boolean has(String...ids){
+            Set<String> idd = new HashSet<>();
+            Arrays.stream(ids).forEach(i -> idd.add(i) );
+            return this.path.idPath.containsAll(idd);
+        }
+        
+        @Override
+        public boolean has( Component component ){
+            return path.has(component);
+        }
+        
+        @Override
+        public boolean has( Component... components ){
+            return path.has( components );
+        }
+        
+        @Override
+        public String toString(){
+            return "  - " + path.toString() + System.lineSeparator();
+        }
+    }
+    
+    /**
+     * A Node that has a changed state between the left and right node
+     * (for example an added or changed modifier, implement or extends)
+     */
+    public static class _changeNode implements _node{
+        Object left;
+        Object right;
+        _path path;
+        
+        public _changeNode( _path path, Object left, Object right ){
+            this.path = path;
+            this.left = left;
+            this.right = right;
+        }
+        
+        @Override
+        public Object left(){
+            return left;
+        }
+        
+        @Override
+        public Object right(){
+            return right;
+        }
+        
+        @Override
+        public _path path(){
+            return path;
+        }
+        
+        /**
+         * does the path of the diffNode have the particualr id?
+         * @param id the id of the entity("f", "m(String)", parameter[1]
+         * @return if the 
+         */
+        @Override
+        public boolean has(String id){
+            return this.path.idPath.contains(id);
+        }
+        
+        @Override
+        public boolean has(String...ids){
+            Set<String> idd = new HashSet<>();
+            Arrays.stream(ids).forEach(i -> idd.add(i) );
+            return this.path.idPath.containsAll(idd);
+        }
+        
+        @Override
+        public boolean has( Component component ){
+            return path.has(component);
+        }
+        
+        @Override
+        public boolean has( Component... components ){
+            return path.has( components );
+        }
+        
+        @Override
+        public String toString(){
+            return "  ~ " + path.toString() + System.lineSeparator();
+        }
+    }
+    
+    /**
+     * A different kind of Node to represent edits of the text. 
+     * This involves looking at the "edit distance" between two textual entities.
      * 
      * This is more in line your typical diff (between (2) files) where 
-     * we internally try to figure out "edits" between the code on the left
-     * and the code on the right
+     * we internally try to figure out "edits" between the code/some text on the
+     * left and the code/some text on the right
      * 
      * i.e. with (2) documents LEFT and RIGHT side by side:
      * <PRE>
@@ -426,12 +777,12 @@ public interface _inspect<T> {
      * <PRE>     
      *  LEFT     EDITS
      *            
-     *  AA       KEEP   AA
+     *  AA       RETAIN AA
      *  - BB     REMOVE BB
-     *  CC       KEEP   CC 
+     *  CC       RETAIN CC 
      *  + DD     ADD    DD 
      *  - EE     REMOVE EE
-     *  FF       KEEP   FF
+     *  FF       RETAIN FF
      *  + GG     ADD    GG
      * </PRE>
      * 
@@ -444,23 +795,92 @@ public interface _inspect<T> {
      *  GG
      * </PRE>
      */
-    public static class _editNode extends _diffNode{
+    public static class _editNode implements _node{
         
-        public static _editNode of( _path path, LinkedList<Diff>diffs ){
-            return new _editNode(path, diffs);
+        public static final _editNode of (_path path, LinkedList<Diff> diffs, Object left, Object right ){
+            return new _editNode(path, diffs, left, right );
         }
         
-        public _editNode forEach( Consumer<Diff> diffActionFn ){
-            getTextDiff().forEach(diffActionFn);
+        /** A list of diff_match_patch Diffs based on the TEXTUAL DIFFS of the left and right entity */
+        public LinkedList<Diff>diffs;        
+        /** the path to the entity */
+        public _path path;
+        /** the full object of the left entity */
+        public Object left; 
+        /** the full right object entity */
+        public Object right;
+        
+        public _editNode( _path path, LinkedList<Diff> diffs, Object left, Object right){
+            this.diffs = diffs;
+            this.path = path;
+            this.left = left;
+            this.right = right;
+        }
+        
+        @Override
+        public Object left(){
+            return left;
+        }
+        
+        @Override
+        public Object right(){
+            return right;
+        }
+        
+        @Override
+        public _path path(){
+            return path;
+        }
+        
+        /**
+         * does the path of the diffNode have the particualr id?
+         * @param id the id of the entity("f", "m(String)", parameter[1]
+         * @return if the 
+         */
+        @Override
+        public boolean has(String id){
+            return this.path.idPath.contains(id);
+        }
+        
+        @Override
+        public boolean has(String...ids){
+            Set<String> idd = new HashSet<>();
+            Arrays.stream(ids).forEach(i -> idd.add(i) );
+            return this.path.idPath.containsAll(idd);
+        }
+        
+        @Override
+        public boolean has( Component component ){
+            return path.has(component);
+        }
+        
+        @Override
+        public boolean has( Component... components ){
+            return path.has( components );
+        }
+        
+        /** 
+         * just give me the raw diffs to do with what I please
+         * 
+         * @return 
+         */
+        public LinkedList<Diff> listDiffs(){
+            return this.diffs;
+        }        
+        
+         public _editNode forEach( Consumer<Diff> diffActionFn ){
+            listDiffs().forEach(diffActionFn);
             return this;
         }
         
         /**
          * For all instances where the text on the right needs to be added to 
          * the text on the left
+         * @param addActionFn
+         * @return 
          */
         public _editNode forAdds( Consumer<Diff> addActionFn ){
-            getTextDiff().stream().filter(d -> d.operation == Operation.INSERT).forEach(addActionFn);
+            listDiffs().stream().filter(d -> d.operation == Operation.INSERT).forEach(addActionFn);
             return this;
         }
         
@@ -471,199 +891,25 @@ public interface _inspect<T> {
          * @return 
          */
         public _editNode forRemoves( Consumer<Diff> removeActionFn ){
-            getTextDiff().stream().filter(d -> d.operation == Operation.DELETE).forEach(removeActionFn);
+            listDiffs().stream().filter(d -> d.operation == Operation.DELETE).forEach(removeActionFn);
             return this;
         }
         
         /**
          * For all instances where the text is the same between left and right
-         * @param keepActionFn
+         * @param retainActionFn
          * @return 
          */
-        public _editNode forSames( Consumer<Diff> keepActionFn ){
-            getTextDiff().stream().filter(d -> d.operation == Operation.EQUAL).forEach(keepActionFn);
+        public _editNode forRetains( Consumer<Diff> retainActionFn ){
+            listDiffs().stream().filter(d -> d.operation == Operation.EQUAL).forEach(retainActionFn);
             return this;
         }
         
-        public _editNode(_path path, LinkedList<Diff> diffs) {
-            super( path, diffs, diffs);
+        @Override
+        public String toString(){
+            StringBuilder sb = new StringBuilder();
+            sb.append("  E ").append( path ).append(System.lineSeparator());          
+            return sb.toString();
         }
-        
-        public LinkedList<Diff> getTextDiff(){
-            return (LinkedList<Diff>)left;
-        }        
-    }
-    
-    /**
-     * Representation of a node within the Diff tree
-     * 
-     */ 
-    public static class _diffNode{
-        
-        public Object left;
-        public Object right;
-        public _path path;
-        
-        /**
-         * Is this diff a Textual Diff?
-         * @return true if this is a textual diff
-         */
-        public boolean isTextDiff(){
-            return this instanceof _editNode;
-        }
-        
-        /**
-         * Return the _textDiffNode implementation of this diff
-         * OR throw and exception if this IS NOT a _textDiffNode
-         * @return 
-         */
-        public _editNode asTextDiff(){
-            return (_editNode)this;
-        }
-        
-        public _diffNode(_path path, Object left, Object right) {
-            this.path = path;
-            this.left = left;
-            this.right = right;
-        }
-        
-        
-        /**
-         * Does the delta represent a node being ADDED from left to the right
-         * for instance:
-         * <PRE>
-         * _class _a = _class.of("C");
-         * _class _b = _class.of("C").field("int a;");
-         * 
-         * _diffTree diff = _class.diffTree(_a, _b);
-         * //verify the adding of the field "int a" is an Add Diff
-         * assertTrue( diff.list(Component.FIELD).get(0).isAdd() );
-         * </PRE>
-         * @return true if the diffNode represents an ADD of a component
-         * proceeding FROM the left model to TO the RIGHT model.
-         */
-        public boolean isAdd(){
-            return left == null;    
-        }
-        
-        /**
-         * Does the delta represent a node being ADDED from left to the right
-         * for instance:
-         * <PRE>
-         * _class _a = _class.of("C").field("int a;");
-         * _class _b = _class.of("C");
-         * 
-         * _diffTree diff = _class.diffTree(_a, _b);
-         * //verify the adding of the field "int a" is an Add Diff
-         * assertTrue( diff.list(Component.FIELD).get(0).isRemove() );
-         * </PRE>
-         * 
-         * @return true if the diffNode represents an REMOVE
-         */
-        public boolean isRemove(){
-            return right == null;
-        }
-        
-        /**
-         * the component has been changed from one to another
-         * (there is a left and right component to compare)
-         * @return 
-         */
-        public boolean isChange(){
-            return left != null && right != null;
-        }
-        
-        /**
-         * does the path of the diffNode have the particualr id?
-         * @param id the id of the entity("f", "m(String)", parameter[1]
-         * @return if the 
-         */
-        public boolean has(String id){
-            return this.path.idPath.contains(id);
-        }
-        
-        public boolean has(String...ids){
-            Set<String> idd = new HashSet<>();
-            Arrays.stream(ids).forEach(i -> idd.add(i) );
-            return this.path.idPath.containsAll(idd);
-        }
-        
-        public boolean has(Component component){
-            return this.path.componentPath.contains(component);
-        }
-        
-        public boolean has(Component... components){
-            return this.path.has(components);
-        }        
-    }
-    
-    /*
-    public static _enum._enumConstantsInspect INSPECT_ENUM_CONSTANTS = new _enum._enumConstantsInspect();
-    public static _type.ListImportDeclarationInspect INSPECT_IMPORTS = new _type.ListImportDeclarationInspect(_java.Component.IMPORT.getName() );
-    public static _type.ListClassOrInterfaceTypeInspect INSPECT_EXTENDS = new _type.ListClassOrInterfaceTypeInspect(_java.Component.EXTENDS);    
-    public static _type.ListClassOrInterfaceTypeInspect INSPECT_IMPLEMENTS = new _type.ListClassOrInterfaceTypeInspect(_java.Component.IMPLEMENTS );
-    public static _enum._enumConstantInspect INSPECT_ENUM_CONSTANT = new _enum._enumConstantInspect();
-    public static final _type._typeInspect INSPECT_TYPE = new _type._typeInspect();
-    public static final _type._typesInspect INSPECT_NESTS = new _type._typesInspect();
-    public static _annotation._annotationInspect INSPECT_ANNOTATION = new _annotation._annotationInspect();
-    public static _interface._interfaceInspect INSPECT_INTERFACE = new _interface._interfaceInspect();
-    public static _enum._enumInspect INSPECT_ENUM = new _enum._enumInspect();     
-    public static _class._classInspect INSPECT_CLASS = new _class._classInspect();    
-    public static _annotation._annotationElementsInspect INSPECT_ANNOTATION_ELEMENTS = new _annotation._annotationElementsInspect();
-    public static _annotation._annotationElementInspect INSPECT_ANNOTATION_ELEMENT = new _annotation._annotationElementInspect();
-    public static _field._fieldsInspect INSPECT_FIELDS = new _field._fieldsInspect();
-    public static _field._fieldInspect INSPECT_FIELD = new _field._fieldInspect();
-    
-    public static _staticBlock._staticBlocksInspect INSPECT_STATIC_BLOCKS 
-            = new _staticBlock._staticBlocksInspect();
-    
-    public static _staticBlock._staticBlockInspect INSPECT_STATIC_BLOCK 
-            = new _staticBlock._staticBlockInspect();
-    
-    public static final _constructor._constructorsInspect INSPECT_CONSTRUCTORS = 
-            new _constructor._constructorsInspect();
-    
-    public static final _constructor._constructorInspect INSPECT_CONSTRUCTOR = 
-            new _constructor._constructorInspect();
-    
-    public static final _method._methodsInspect INSPECT_METHODS = new _method._methodsInspect();
-    
-    public static final _method._methodInspect INSPECT_METHOD = new _method._methodInspect();
-    
-    public static final _body._bodyInspect INSPECT_BODY = new _body._bodyInspect();
-    
-    public static final _parameter._parametersInspect INSPECT_PARAMETERS = 
-        new _parameter._parametersInspect();
-    
-    public static final _modifiers._modifiersInspect INSPECT_MODIFIERS = 
-        new _modifiers._modifiersInspect();
-    
-    public static final _javadoc._javadocInspect INSPECT_JAVADOC = 
-        new _javadoc._javadocInspect();
-    
-    public static final _receiverParameter._receiverParameterInspect INSPECT_RECEIVER_PARAMETER = 
-        new _receiverParameter._receiverParameterInspect();
-    
-    public static final _anno._annosInspect INSPECT_ANNOS = new _anno._annosInspect();
-    
-    public static final _typeRef._typeRefInspect INSPECT_TYPE_REF = new _typeRef._typeRefInspect();
-    
-    public static final _typeParameter._typeParametersInspect INSPECT_TYPE_PARAMETERS = 
-        new _typeParameter._typeParametersInspect();
-    
-    public static final _throws._throwsInspect INSPECT_THROWS = new _throws._throwsInspect();
-    
-    public static final _enum.ArgsInspect INSPECT_ARGUMENTS = new _enum.ArgsInspect();
-    
-    public static final _java.ExpressionInspect INSPECT_DEFAULT = new _java.ExpressionInspect(_java.Component.DEFAULT);
-    
-    public static final _java.ExpressionInspect INSPECT_INIT = new _java.ExpressionInspect(_java.Component.INIT);
-    
-    
-    public static final _java.StringInspect INSPECT_PACKAGE_NAME = new _java.StringInspect(_java.Component.PACKAGE_NAME);
-    
-    public static final _java.StringInspect INSPECT_NAME = new _java.StringInspect(_java.Component.NAME);
-
-    */
-    
+    }    
 }

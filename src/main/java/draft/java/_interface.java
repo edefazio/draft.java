@@ -8,6 +8,7 @@ import com.github.javaparser.ast.type.*;
 import draft.DraftException;
 import draft.java._anno.*;
 import draft.Text;
+import draft.java._inspect._diff;
 import draft.java._typeParameter._typeParameters;
 import draft.java.io._in;
 import draft.java.macro._macro;
@@ -170,12 +171,14 @@ public final class _interface implements _type<ClassOrInterfaceDeclaration, _int
         return null; //its an orphan
     }
 
+    @Override
     public _interface removeFields( Predicate<_field> _fieldMatchFn){
         List<_field> fs = listFields(_fieldMatchFn);
         fs.forEach(f -> removeField(f));
         return this;
     }
 
+    @Override
     public _interface removeField( _field _f ){
         if( listFields().contains(_f) ){
             if( _f.getFieldDeclaration().getVariables().size() == 1){
@@ -187,6 +190,7 @@ public final class _interface implements _type<ClassOrInterfaceDeclaration, _int
         return this;
     }
 
+    @Override
     public _interface removeField( String fieldName ){
         Optional<FieldDeclaration> ofd = this.astInterface.getFieldByName(fieldName );
         if( ofd.isPresent() ){
@@ -233,12 +237,14 @@ public final class _interface implements _type<ClassOrInterfaceDeclaration, _int
     }
 
 
+    @Override
     public _interface removeExtends( Class toRemove ){
         this.astInterface.getExtendedTypes().removeIf( im -> im.getNameAsString().equals( toRemove.getSimpleName() ) ||
                 im.getNameAsString().equals(toRemove.getCanonicalName()) );
         return this;
     }
 
+    @Override
     public _interface removeExtends( ClassOrInterfaceType toRemove ){
         this.astInterface.getExtendedTypes().remove( toRemove );
         return this;
@@ -507,6 +513,13 @@ public final class _interface implements _type<ClassOrInterfaceDeclaration, _int
         return this;
     }
     
+    public _diff diff( _interface right ){
+        return INSPECT_INTERFACE.diff(this, right);
+    }
+    
+    public _diff diff( _interface left, _interface right ){
+        return INSPECT_INTERFACE.diff(left, right);
+    }
     
     public static _interfaceInspect INSPECT_INTERFACE = new _interfaceInspect();
     
@@ -518,7 +531,7 @@ public final class _interface implements _type<ClassOrInterfaceDeclaration, _int
         }
 
         @Override
-        public _inspect._diffTree diffTree( _java._inspector _ins, _inspect._path path, _inspect._diffTree dt, _interface left, _interface right) {
+        public _inspect._diff diff( _java._inspector _ins, _inspect._path path, _inspect._diff dt, _interface left, _interface right) {
             if( left == null){
                 if( right == null){
                     return dt;
@@ -528,17 +541,17 @@ public final class _interface implements _type<ClassOrInterfaceDeclaration, _int
             if( right == null){
                 return dt.add( path.in(_java.Component.INTERFACE, left.getName()), left, null);
             }
-            _ins.INSPECT_PACKAGE_NAME.diffTree(_ins, path,dt, left.getPackage(), right.getPackage() );
-            _ins.INSPECT_IMPORTS.diffTree(_ins, path,dt, left.listImports(), right.listImports() );
-            _ins.INSPECT_ANNOS.diffTree(_ins, path, dt, left.getAnnos(), right.getAnnos());          
-            _ins.INSPECT_EXTENDS.diffTree(_ins, path, dt, left.listExtends(), right.listExtends());          
-            _ins.INSPECT_JAVADOC.diffTree(_ins, path, dt, left.getJavadoc(), right.getJavadoc());  
-            _ins.INSPECT_TYPE_PARAMETERS.diffTree(_ins, path, dt, left.getTypeParameters(), right.getTypeParameters());  
-            _ins.INSPECT_NAME.diffTree(_ins, path, dt, left.getName(), right.getName());
-            _ins.INSPECT_MODIFIERS.diffTree(_ins, path, dt, left.getModifiers(), right.getModifiers());
-            _ins.INSPECT_METHODS.diffTree(_ins, path, dt, left.listMethods(), right.listMethods() );
-            _ins.INSPECT_FIELDS.diffTree(_ins, path, dt, left.listFields(), right.listFields() );
-            _ins.INSPECT_NESTS.diffTree(_ins, path, dt, left.listNests(), right.listNests());
+            _ins.INSPECT_PACKAGE_NAME.diff(_ins, path,dt, left.getPackage(), right.getPackage() );
+            _ins.INSPECT_IMPORTS.diff(_ins, path,dt, left.listImports(), right.listImports() );
+            _ins.INSPECT_ANNOS.diff(_ins, path, dt, left.getAnnos(), right.getAnnos());          
+            _ins.INSPECT_EXTENDS.diff(_ins, path, dt, left.listExtends(), right.listExtends());          
+            _ins.INSPECT_JAVADOC.diff(_ins, path, dt, left.getJavadoc(), right.getJavadoc());  
+            _ins.INSPECT_TYPE_PARAMETERS.diff(_ins, path, dt, left.getTypeParameters(), right.getTypeParameters());  
+            _ins.INSPECT_NAME.diff(_ins, path, dt, left.getName(), right.getName());
+            _ins.INSPECT_MODIFIERS.diff(_ins, path, dt, left.getModifiers(), right.getModifiers());
+            _ins.INSPECT_METHODS.diff(_ins, path, dt, left.listMethods(), right.listMethods() );
+            _ins.INSPECT_FIELDS.diff(_ins, path, dt, left.listFields(), right.listFields() );
+            _ins.INSPECT_NESTS.diff(_ins, path, dt, left.listNests(), right.listNests());
             //INSPECT_NESTS            
             return dt;
         }    

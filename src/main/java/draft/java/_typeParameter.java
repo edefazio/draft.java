@@ -353,7 +353,7 @@ public final class _typeParameter
         }
 
         @Override
-        public _inspect._diffTree diffTree( _java._inspector _ins, _inspect._path path, _inspect._diffTree dt, _typeParameters left, _typeParameters right) {
+        public _inspect._diff diff( _java._inspector _ins, _inspect._path path, _inspect._diff dt, _typeParameters left, _typeParameters right) {
             //List<ObjectDiff.Entry> des = new ArrayList<>();
             for(int i=0; i<left.ast().size();i++){
                 Type cit = left.ast().get(i);

@@ -4,6 +4,7 @@ import com.github.javaparser.ast.comments.Comment;
 import com.github.javaparser.ast.comments.JavadocComment;
 import com.github.javaparser.ast.nodeTypes.NodeWithJavadoc;
 import draft.Text;
+import draft.java._inspect._diff;
 import java.util.Objects;
 
 /**
@@ -86,6 +87,14 @@ public final class _javadoc
         return hash;
     }
 
+    public _diff diff( _javadoc right ){
+        return INSPECT_JAVADOC.diff(this, right);
+    }
+    
+    public static _diff diff( _javadoc left, _javadoc right){
+        return INSPECT_JAVADOC.diff(left, right);
+    }
+    
     /**
      * Model entity that optionally has a Javadoc Comment attributed to it
      *
@@ -95,13 +104,26 @@ public final class _javadoc
     public interface _hasJavadoc<T extends _hasJavadoc>
             extends _model {
 
-        /** gets the JAVADOC for this element (or returns null) */
+        /** @return the JAVADOC for this element (or returns null) */
         _javadoc getJavadoc();
 
+        /** 
+         * Add a javadoc to the entity and return the modified entity
+         * @param content the javadoc content
+         * @return 
+         */
         T javadoc( String... content );
 
+        /**
+         * Does this component have a Javadoc entry?
+         * @return true if there is a javadoc, false otherwise
+         */
         boolean hasJavadoc();
 
+        /**
+         * Remove the javadoc entry from the entity and return the modified entity
+         * @return the modified entity
+         */
         T removeJavadoc();
     }
     
@@ -116,7 +138,7 @@ public final class _javadoc
         }
 
         @Override
-        public _inspect._diffTree diffTree( _java._inspector _ins, _inspect._path path, _inspect._diffTree dt,  _javadoc left, _javadoc right) {
+        public _inspect._diff diff( _java._inspector _ins, _inspect._path path, _inspect._diff dt,  _javadoc left, _javadoc right) {
             if( !equivalent( left, right)){
                 dt.add(path.in( _java.Component.JAVADOC ), left, right);
             }

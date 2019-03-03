@@ -9,6 +9,7 @@ import draft.DraftException;
 import draft.Text;
 import draft.java._model.*;
 import static draft.java.Ast.field;
+import draft.java._inspect._diff;
 import java.lang.annotation.Annotation;
 import java.util.*;
 import java.util.function.Consumer;
@@ -719,7 +720,7 @@ public final class _anno
 
     /**
      * Verify that one list of _anno is equivalent to another list of _anno
-     */
+     
     public static _java.Semantic<Collection<_anno>> EQIVALENT_ANNOS_LIST = 
             (Collection<_anno> o1, Collection<_anno> o2) -> {
         if( o1 == null ){
@@ -738,6 +739,7 @@ public final class _anno
     public static boolean equivalent( Collection<_anno> left, Collection<_anno> right){
         return EQIVALENT_ANNOS_LIST.equivalent(left, right);
     }
+    */ 
     
     /**
      * Grouping of _anno (s) expressions ({@link AnnotationExpr})
@@ -1036,6 +1038,14 @@ public final class _anno
             this.astAnnNode.getAnnotations().forEach( a -> fd.addAnnotation( ((AnnotationExpr)a).clone() ) );
             return new _annos( fd );
         }
+        
+        public _diff diff( _annos _as ){
+            return INSPECT_ANNOS.diff(this, _as);
+        }
+        
+        public static _diff diff( _annos left, _annos right){
+            return INSPECT_ANNOS.diff(left, right);
+        }
     }
     
     public static final _annosInspect INSPECT_ANNOS = new _annosInspect();
@@ -1055,7 +1065,7 @@ public final class _anno
         }
 
         @Override
-        public _inspect._diffTree diffTree( _java._inspector _inspect, _inspect._path path, _inspect._diffTree dt, _anno._annos left, _anno._annos right) {
+        public _diff diff( _java._inspector _inspect, _inspect._path path, _diff dt, _annos left, _annos right) {
             NodeList<AnnotationExpr> laes = left.astAnnNode.getAnnotations();
             NodeList<AnnotationExpr> raes = right.astAnnNode.getAnnotations();
             for( int i = 0; i < laes.size(); i++ ) {

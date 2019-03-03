@@ -11,7 +11,7 @@ import draft.java._typeParameter._typeParameters;
 import draft.java._anno.*;
 import draft.DraftException;
 import draft.Text;
-import draft.java._inspect._diffTree;
+import draft.java._inspect._diff;
 import draft.java._inspect._path;
 import draft.java.io._in;
 import draft.java.macro._macro;
@@ -203,13 +203,9 @@ public final class _class implements _type<ClassOrInterfaceDeclaration, _class>,
                 return of( Ast.compilationUnit("public class "+shortcutClass));
             }
             else{
-                //System.out.println( "SINGLE LINE" );
                 if( !classDef[0].trim().endsWith("}" ) ){
-                    //System.out.println( "ADDING" );
                     classDef[0] = classDef[0]+"{}";
                 }
-                //System.out.println( "SINGLE LINE"+classDef[0] );
-
             }
         }
         return of( Ast.compilationUnit( classDef ));
@@ -217,7 +213,6 @@ public final class _class implements _type<ClassOrInterfaceDeclaration, _class>,
 
     public static _class of( TypeDeclaration td ){
         if( td instanceof ClassOrInterfaceDeclaration && !td.asClassOrInterfaceDeclaration().isInterface() ) {
-            System.out.println( "GOt HEre in TypeDecl");
             return new _class( (ClassOrInterfaceDeclaration)td);
         }
         throw new DraftException("Expected AST ClassOrInterfaceDeclaration as Class, got "+ td.getClass() );        
@@ -266,7 +261,6 @@ public final class _class implements _type<ClassOrInterfaceDeclaration, _class>,
      * @return
      */
     public static _class of( String signature, Object anonymousClassBody, Function<_type, _type>...typeFn){
-        //System.out.println( "ANNOTATIONS" + abstractMethodBody.getClass().getAnnotations().length );
         StackTraceElement ste = Thread.currentThread().getStackTrace()[2];
         _class _c = _class.of(signature);
         Class theClass = anonymousClassBody.getClass();
@@ -274,7 +268,6 @@ public final class _class implements _type<ClassOrInterfaceDeclaration, _class>,
         //interfaces
         if(theClass.getInterfaces().length > 0){
             for(int i=0; i< theClass.getInterfaces().length; i++){
-            //Arrays.stream(theClass.getInterfaces()).forEach( i -> {
                 _c.imports(theClass.getInterfaces()[i]);
                 _c.implement(theClass.getInterfaces()[i]);
             }
@@ -294,7 +287,6 @@ public final class _class implements _type<ClassOrInterfaceDeclaration, _class>,
         }
         //add imports from methods return types parametder types
         Set<Class>toImport = _type.inferImportsFrom(anonymousClassBody);
-        //System.out.println( toImport );
 
         _c.imports(toImport.toArray(new Class[0]));
         //we process the ANNOTATIONS on the TYPE
@@ -854,20 +846,10 @@ public final class _class implements _type<ClassOrInterfaceDeclaration, _class>,
 
     @Override
     public String toString(){
-        //if( this.astCompilationUnit.isPresent()){
-        //    return this.astCompilationUnit.get().toString();
-        //}
         if( this.astClass.isTopLevelType()){
-            //System.out.println( getFullName()+">>>>>>>> IS TOP LEVEL TYPE" );
             return this.findCompilationUnit().toString();
         }
-        return this.astClass.toString();
-        //System.out.println( getFullName()+"!!!!!!!!! >>>>>>>> IS NOT TOP LEVEL TYPE" );
-        //if( this.astClass.getParentNode().isPresent() ){
-            //System.out.println( getFullName()+" DOES have a parent node" );
-        //    Node parent = this.astClass.getParentNode().get();
-        //    System.out.println( getFullName()+" DOES have a parent node of "+parent.getClass() );
-        //}
+        return this.astClass.toString();        
     }
 
     @Override
@@ -1038,15 +1020,28 @@ public final class _class implements _type<ClassOrInterfaceDeclaration, _class>,
     }
     
     /**
-     * statically diff the contents of the two _class objects
-     * @param left the left _class
-     * @param right the right _class
-     * @return the _diffTree showing the diffs at the levels of the _class
+     * Diff this _class against the right _class and return a diff-tree
+     * containing the changes (add, remove, edit)s that would be applied to this
+     * in order to transform it to the right _class
+     *
+     * @param right the "right" / or target _class to diff / transform to
+     * @return the changes required to make this to the right _class
      */
-    public static _diffTree diffTree(_class left, _class right){        
-        _path path = new _path();
-        _diffTree dt = new _diffTree();
-        return INSPECT_CLASS.diffTree(path, dt, left, right);
+    public _diff diff(_class right) {
+        return INSPECT_CLASS.diff(this, right);
+    }
+
+    /**
+     * Diff left _class against the right _class and return a diff-tree
+     * containing the changes (add, remove, edit)s that would be applied to left
+     * in order to transform it to the right _class
+     *
+     * @param left the starting _class
+     * @param right the target _class to diff / transform to
+     * @return the changes required to make this left to the right _class
+     */
+    public static _diff diff(_class left, _class right) {
+        return INSPECT_CLASS.diff(left, right);
     }
     
     public static _classInspect INSPECT_CLASS = new _classInspect();
@@ -1059,7 +1054,7 @@ public final class _class implements _type<ClassOrInterfaceDeclaration, _class>,
         }
 
         @Override
-        public _diffTree diffTree( _java._inspector _ins, _path path, _diffTree dt, _class left, _class right) {
+        public _diff diff( _java._inspector _ins, _path path, _diff dt, _class left, _class right) {
             if( left == null){
                 if( right == null){
                     return dt;
@@ -1069,22 +1064,22 @@ public final class _class implements _type<ClassOrInterfaceDeclaration, _class>,
             if( right == null){
                 return dt.add( path.in(_java.Component.CLASS, left.getName()), left, null);
             }
-            _ins.INSPECT_PACKAGE_NAME.diffTree(_ins, path, dt, left.getPackage(), right.getPackage() );
-            _ins.INSPECT_IMPORTS.diffTree(_ins, path,dt, left.listImports(), right.listImports() );
-            _ins.INSPECT_ANNOS.diffTree(_ins, path, dt, left.getAnnos(), right.getAnnos());          
-            _ins.INSPECT_EXTENDS.diffTree(_ins, path, dt, left.listExtends(), right.listExtends());          
-            _ins.INSPECT_IMPLEMENTS.diffTree(_ins, path, dt, left.listImplements(), right.listImplements());  
-            _ins.INSPECT_JAVADOC.diffTree(_ins, path, dt, left.getJavadoc(), right.getJavadoc());  
-            _ins.INSPECT_TYPE_PARAMETERS.diffTree(_ins, path, dt, left.getTypeParameters(), right.getTypeParameters());  
-            _ins.INSPECT_STATIC_BLOCKS.diffTree(_ins, path, dt, left.listStaticBlocks(), right.listStaticBlocks());            
-            _ins.INSPECT_NAME.diffTree(_ins, path, dt, left.getName(), right.getName());
-            _ins.INSPECT_MODIFIERS.diffTree(_ins, path, dt, left.getModifiers(), right.getModifiers());
-            _ins.INSPECT_CONSTRUCTORS.diffTree(_ins, path, dt, left.listConstructors(), right.listConstructors());
-            _ins.INSPECT_METHODS.diffTree(_ins, path, dt, left.listMethods(), right.listMethods() );
-            _ins.INSPECT_FIELDS.diffTree(_ins, path, dt, left.listFields(), right.listFields() );
+            _ins.INSPECT_PACKAGE_NAME.diff(_ins, path, dt, left.getPackage(), right.getPackage() );
+            _ins.INSPECT_IMPORTS.diff(_ins, path,dt, left.listImports(), right.listImports() );
+            _ins.INSPECT_ANNOS.diff(_ins, path, dt, left.getAnnos(), right.getAnnos());          
+            _ins.INSPECT_EXTENDS.diff(_ins, path, dt, left.listExtends(), right.listExtends());          
+            _ins.INSPECT_IMPLEMENTS.diff(_ins, path, dt, left.listImplements(), right.listImplements());  
+            _ins.INSPECT_JAVADOC.diff(_ins, path, dt, left.getJavadoc(), right.getJavadoc());  
+            _ins.INSPECT_TYPE_PARAMETERS.diff(_ins, path, dt, left.getTypeParameters(), right.getTypeParameters());  
+            _ins.INSPECT_STATIC_BLOCKS.diff(_ins, path, dt, left.listStaticBlocks(), right.listStaticBlocks());            
+            _ins.INSPECT_NAME.diff(_ins, path, dt, left.getName(), right.getName());
+            _ins.INSPECT_MODIFIERS.diff(_ins, path, dt, left.getModifiers(), right.getModifiers());
+            _ins.INSPECT_CONSTRUCTORS.diff(_ins, path, dt, left.listConstructors(), right.listConstructors());
+            _ins.INSPECT_METHODS.diff(_ins, path, dt, left.listMethods(), right.listMethods() );
+            _ins.INSPECT_FIELDS.diff(_ins, path, dt, left.listFields(), right.listFields() );
             
-            _ins.INSPECT_NESTS.diffTree(_ins, path, dt, left.listNests(), right.listNests());
+            _ins.INSPECT_NESTS.diff(_ins, path, dt, left.listNests(), right.listNests());
             return dt;
         }
-    }
+    }    
 }

@@ -512,7 +512,7 @@ public final class _constructor implements _anno._hasAnnos<_constructor>, _javad
 
     /**
      * Verify that one list of _constructor is equivalent to another list of _constructor
-     */
+     
     public static _java.Semantic<Collection<_constructor>> EQIVALENT_CTORS_LIST = 
             (Collection<_constructor> o1, Collection<_constructor> o2) -> {
         if( o1 == null ){
@@ -531,6 +531,7 @@ public final class _constructor implements _anno._hasAnnos<_constructor>, _javad
     public static boolean equivalent( Collection<_constructor> left, Collection<_constructor> right){
         return EQIVALENT_CTORS_LIST.equivalent(left, right);
     }
+    */ 
     
     /**
      *
@@ -564,11 +565,27 @@ public final class _constructor implements _anno._hasAnnos<_constructor>, _javad
             return (T)this;
         }
 
-        T removeConstructor( ConstructorDeclaration cd );
+        /**
+         * remove the constructor defined by this astConstructor
+         * @param astConstructor the ast representation of the constructor
+         * @return  the modified T
+         */
+        T removeConstructor( ConstructorDeclaration astConstructor );
 
+        /**
+         * Remove the constructor and return the modified T
+         * @param _ct the constructor instance to remove
+         * @return 
+         */
         T removeConstructor( _constructor _ct);
 
-        T removeConstructors( Predicate<_constructor> ctorMatchFn);
+        /**
+         * Remove all constructors that match the _constructorMatchFn and return 
+         * the modified T
+         * @param _constructorMatchFn function for matching constructors for removal
+         * @return the modified T
+         */
+        T removeConstructors( Predicate<_constructor> _constructorMatchFn);
 
         /**
          * Build and add a constructor based on the contents of the anonymous Object passed in
@@ -603,9 +620,19 @@ public final class _constructor implements _anno._hasAnnos<_constructor>, _javad
             return (T)this;
         }
 
-        T constructor( ConstructorDeclaration constructor );
+        /**
+         * Build & add a constructor based on the AST representation
+         * @param astConstructor
+         * @return 
+         */
+        T constructor( ConstructorDeclaration astConstructor );
 
 
+        /**
+         * Build & Add a constructor from the String representation of the code
+         * @param ctor the constructor that was built
+         * @return 
+         */
         default T constructor(String ctor){
             return constructor( new String[]{ctor});
         }
@@ -790,7 +817,7 @@ public final class _constructor implements _anno._hasAnnos<_constructor>, _javad
 
         
         @Override
-        public _inspect._diffTree diffTree( _java._inspector _ins, _inspect._path path, _inspect._diffTree dt, List<_constructor> left, List<_constructor> right) {
+        public _inspect._diff diff( _java._inspector _ins, _inspect._path path, _inspect._diff dt, List<_constructor> left, List<_constructor> right) {
             Set<_constructor> ls = new HashSet<>();
             Set<_constructor> rs = new HashSet<>();
             Set<_constructor> both = new HashSet<>();
@@ -850,7 +877,7 @@ public final class _constructor implements _anno._hasAnnos<_constructor>, _javad
         }
         
         @Override
-        public _inspect._diffTree diffTree( _java._inspector _ins, _inspect._path path, _inspect._diffTree dt, _constructor left, _constructor right) {
+        public _inspect._diff diff( _java._inspector _ins, _inspect._path path, _inspect._diff dt, _constructor left, _constructor right) {
             if( left == null){
                 if( right == null){
                     return dt;
@@ -860,15 +887,15 @@ public final class _constructor implements _anno._hasAnnos<_constructor>, _javad
             if( right == null){
                 return dt.add(path.in(_java.Component.CONSTRUCTOR, constructorSignatureDescription(left)), left, null);
             }        
-            _ins.INSPECT_JAVADOC.diffTree(_ins, path, dt, left.getJavadoc(), right.getJavadoc());
-            _ins.INSPECT_ANNOS.diffTree(_ins, path, dt, left.getAnnos(), right.getAnnos());
-            _ins.INSPECT_MODIFIERS.diffTree(_ins,path, dt, left.getModifiers(), right.getModifiers());            
-            _ins.INSPECT_NAME.diffTree(_ins, path, dt, left.getName(), right.getName());            
-            _ins.INSPECT_RECEIVER_PARAMETER.diffTree(_ins, path, dt, left.getReceiverParameter(), right.getReceiverParameter());
-            _ins.INSPECT_PARAMETERS.diffTree(_ins,path, dt, left.getParameters(), right.getParameters());
-            _ins.INSPECT_TYPE_PARAMETERS.diffTree(_ins,path, dt, left.getTypeParameters(), right.getTypeParameters());
-            _ins.INSPECT_THROWS.diffTree(_ins, path, dt, left.getThrows(), right.getThrows());            
-            _ins.INSPECT_BODY.diffTree(_ins,path, dt, left.getBody(), right.getBody());            
+            _ins.INSPECT_JAVADOC.diff(_ins, path, dt, left.getJavadoc(), right.getJavadoc());
+            _ins.INSPECT_ANNOS.diff(_ins, path, dt, left.getAnnos(), right.getAnnos());
+            _ins.INSPECT_MODIFIERS.diff(_ins,path, dt, left.getModifiers(), right.getModifiers());            
+            _ins.INSPECT_NAME.diff(_ins, path, dt, left.getName(), right.getName());            
+            _ins.INSPECT_RECEIVER_PARAMETER.diff(_ins, path, dt, left.getReceiverParameter(), right.getReceiverParameter());
+            _ins.INSPECT_PARAMETERS.diff(_ins,path, dt, left.getParameters(), right.getParameters());
+            _ins.INSPECT_TYPE_PARAMETERS.diff(_ins,path, dt, left.getTypeParameters(), right.getTypeParameters());
+            _ins.INSPECT_THROWS.diff(_ins, path, dt, left.getThrows(), right.getThrows());            
+            _ins.INSPECT_BODY.diff(_ins,path, dt, left.getBody(), right.getBody());            
             return dt;
         }
     } 

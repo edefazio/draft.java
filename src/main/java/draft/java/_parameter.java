@@ -600,7 +600,7 @@ public final class _parameter
         }
 
         @Override
-        public _inspect._diffTree diffTree( _java._inspector _ins, _inspect._path path, _inspect._diffTree dt, _parameters left, _parameters right) {
+        public _inspect._diff diff( _java._inspector _ins, _inspect._path path, _inspect._diff dt, _parameters left, _parameters right) {
             for(int i=0;i<left.count();i++){
                 _parameter _l = left.get(i);
                 _parameter _r = null;

@@ -295,7 +295,7 @@ public final class _throws
         }
 
         @Override
-        public _inspect._diffTree diffTree( _java._inspector _ins, _inspect._path path, _inspect._diffTree dt, _throws left, _throws right) {
+        public _inspect._diff diff( _java._inspector _ins, _inspect._path path, _inspect._diff dt, _throws left, _throws right) {
             //List<ObjectDiff.Entry> des = new ArrayList<>();
             for(int i=0; i<left.count();i++){
                 ReferenceType cit = left.get(i);

@@ -11,6 +11,7 @@ import draft.java._model.*;
 import draft.Text;
 import draft.java._parameter.*;
 import draft.java._anno.*;
+import draft.java._inspect._diff;
 import draft.java._typeParameter._typeParameters;
 import draft.java.macro._macro;
 import draft.java.macro._remove;
@@ -415,6 +416,18 @@ public final class _method
     @Override
     public boolean hasParameters() {
         return this.astMethod.getParameters().isNonEmpty();
+    }
+    
+    public _diff diff( _method right ){
+        return INSPECT_METHOD.diff(this, right);
+    }
+    
+    public static _diff diff( _method left, _method right ){
+        return INSPECT_METHOD.diff(left, right );
+    }
+    
+    public static _diff diff( List<_method> left, List<_method> right ){
+        return INSPECT_METHODS.diff(left, right);
     }
     
     /**
@@ -1183,7 +1196,7 @@ public final class _method
         }
         
         @Override
-        public _inspect._diffTree diffTree( _java._inspector _ins, _inspect._path path, _inspect._diffTree dt,  List<_method> left, List<_method> right) {
+        public _inspect._diff diff( _java._inspector _ins, _inspect._path path, _inspect._diff dt,  List<_method> left, List<_method> right) {
             Set<_method>ls = new HashSet<>();
             ls.addAll(left);
             Set<_method>rs = new HashSet<>();
@@ -1202,7 +1215,7 @@ public final class _method
                 //System.out.println(" LEFT NOT MATCHED "+m+" "+rs);
                 if( fm != null ){
                     rs.remove(fm);
-                    _ins.INSPECT_METHOD.diffTree(_ins, path.in(_java.Component.METHOD, describeMethodSignature(m)), dt, m, fm);
+                    _ins.INSPECT_METHOD.diff(_ins, path.in(_java.Component.METHOD, describeMethodSignature(m)), dt, m, fm);
                 } else{
                     dt.add( path.in(_java.Component.METHOD, describeMethodSignature(m)), m, null );
                 }
@@ -1225,7 +1238,7 @@ public final class _method
         }
 
         @Override
-        public _inspect._diffTree diffTree( _java._inspector _ins, _inspect._path path, _inspect._diffTree dt, _method left, _method right) {
+        public _inspect._diff diff( _java._inspector _ins, _inspect._path path, _inspect._diff dt, _method left, _method right) {
             if( left == null){
                 if( right == null){
                     return dt;
@@ -1235,16 +1248,16 @@ public final class _method
             if( right == null){
                 return dt.add( path.in(_java.Component.METHOD,_methodsInspect.describeMethodSignature(left)), left, null);
             }
-            _ins.INSPECT_JAVADOC.diffTree(_ins, path, dt, left.getJavadoc(), right.getJavadoc());
-            _ins.INSPECT_ANNOS.diffTree(_ins,  path, dt, left.getAnnos(), right.getAnnos());
-            _ins.INSPECT_MODIFIERS.diffTree(_ins, path, dt, left.getModifiers(), right.getModifiers());
-            _ins.INSPECT_TYPE_REF.diffTree(_ins, path, dt, left.getType(), right.getType());
-            _ins.INSPECT_NAME.diffTree(_ins,  path, dt, left.getName(), right.getName());            
-            _ins.INSPECT_RECEIVER_PARAMETER.diffTree(_ins, path, dt, left.getReceiverParameter(), right.getReceiverParameter());
-            _ins.INSPECT_PARAMETERS.diffTree(_ins, path, dt, left.getParameters(), right.getParameters());
-            _ins.INSPECT_TYPE_PARAMETERS.diffTree(_ins, path, dt, left.getTypeParameters(), right.getTypeParameters());
-            _ins.INSPECT_THROWS.diffTree( _ins, path, dt, left.getThrows(), right.getThrows());            
-            _ins.INSPECT_BODY.diffTree(_ins, path, dt, left.getBody(), right.getBody());            
+            _ins.INSPECT_JAVADOC.diff(_ins, path, dt, left.getJavadoc(), right.getJavadoc());
+            _ins.INSPECT_ANNOS.diff(_ins,  path, dt, left.getAnnos(), right.getAnnos());
+            _ins.INSPECT_MODIFIERS.diff(_ins, path, dt, left.getModifiers(), right.getModifiers());
+            _ins.INSPECT_TYPE_REF.diff(_ins, path, dt, left.getType(), right.getType());
+            _ins.INSPECT_NAME.diff(_ins,  path, dt, left.getName(), right.getName());            
+            _ins.INSPECT_RECEIVER_PARAMETER.diff(_ins, path, dt, left.getReceiverParameter(), right.getReceiverParameter());
+            _ins.INSPECT_PARAMETERS.diff(_ins, path, dt, left.getParameters(), right.getParameters());
+            _ins.INSPECT_TYPE_PARAMETERS.diff(_ins, path, dt, left.getTypeParameters(), right.getTypeParameters());
+            _ins.INSPECT_THROWS.diff( _ins, path, dt, left.getThrows(), right.getThrows());            
+            _ins.INSPECT_BODY.diff(_ins, path, dt, left.getBody(), right.getBody());            
             return dt;
         }
         

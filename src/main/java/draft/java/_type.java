@@ -1302,7 +1302,7 @@ public interface _type<AST extends TypeDeclaration, T extends _type>
         }
 
         @Override
-        public _inspect._diffTree diffTree( _java._inspector _ins, _inspect._path path, _inspect._diffTree dt, List<ImportDeclaration> left, List<ImportDeclaration> right) {
+        public _inspect._diff diff( _java._inspector _ins, _inspect._path path, _inspect._diff dt, List<ImportDeclaration> left, List<ImportDeclaration> right) {
             Set<ImportDeclaration> ls = new HashSet<>();
             Set<ImportDeclaration> rs = new HashSet<>();
             Set<ImportDeclaration> both = new HashSet<>();
@@ -1344,7 +1344,7 @@ public interface _type<AST extends TypeDeclaration, T extends _type>
         }
 
         @Override
-        public _inspect._diffTree diffTree( _java._inspector _ins, _inspect._path path, _inspect._diffTree dt, List<ClassOrInterfaceType> left, List<ClassOrInterfaceType> right) {
+        public _inspect._diff diff( _java._inspector _ins, _inspect._path path, _inspect._diff dt, List<ClassOrInterfaceType> left, List<ClassOrInterfaceType> right) {
             Set<ClassOrInterfaceType> ls = new HashSet<>();
             Set<ClassOrInterfaceType> rs = new HashSet<>();
             Set<ClassOrInterfaceType> both = new HashSet<>();
@@ -1387,7 +1387,7 @@ public interface _type<AST extends TypeDeclaration, T extends _type>
         }
         
         @Override
-        public _inspect._diffTree diffTree( _java._inspector _ins, _inspect._path path, _inspect._diffTree dt, _type left, _type right) {
+        public _inspect._diff diff( _java._inspector _ins, _inspect._path path, _inspect._diff dt, _type left, _type right) {
             if(left == null){
                 if(right == null){
                     return dt;
@@ -1407,15 +1407,15 @@ public interface _type<AST extends TypeDeclaration, T extends _type>
                 //dt.add(path.in(Component.NEST), null, right);
             }
             if( left instanceof _class ){
-                return _ins.INSPECT_CLASS.diffTree(_ins, path.in(_java.Component.CLASS, left.getName()), dt, (_class)left, (_class)right);
+                return _ins.INSPECT_CLASS.diff(_ins, path.in(_java.Component.CLASS, left.getName()), dt, (_class)left, (_class)right);
             }
             if( left instanceof _interface ){
-                return _ins.INSPECT_INTERFACE.diffTree(_ins, path.in(_java.Component.INTERFACE, left.getName()), dt, (_interface)left, (_interface)right);
+                return _ins.INSPECT_INTERFACE.diff(_ins, path.in(_java.Component.INTERFACE, left.getName()), dt, (_interface)left, (_interface)right);
             }
             if( left instanceof _annotation ){
-                return _ins.INSPECT_ANNOTATION.diffTree(_ins, path.in(_java.Component.ANNOTATION, left.getName()),dt, (_annotation)left, (_annotation)right);                
+                return _ins.INSPECT_ANNOTATION.diff(_ins, path.in(_java.Component.ANNOTATION, left.getName()),dt, (_annotation)left, (_annotation)right);                
             }
-            return _ins.INSPECT_ENUM.diffTree(_ins, path.in(_java.Component.ENUM, left.getName()),dt,  (_enum)left, (_enum)right);            
+            return _ins.INSPECT_ENUM.diff(_ins, path.in(_java.Component.ENUM, left.getName()),dt,  (_enum)left, (_enum)right);            
         }        
     }
     
@@ -1443,7 +1443,7 @@ public interface _type<AST extends TypeDeclaration, T extends _type>
         }
         
         @Override
-        public _inspect._diffTree diffTree( _java._inspector _ins, _inspect._path path, _inspect._diffTree dt, List<_type>left, List<_type>right ){
+        public _inspect._diff diff( _java._inspector _ins, _inspect._path path, _inspect._diff dt, List<_type>left, List<_type>right ){
             Set<_type>ls = new HashSet<>();
             Set<_type>rs = new HashSet<>();
             Set<_type>both = new HashSet<>();
@@ -1456,7 +1456,7 @@ public interface _type<AST extends TypeDeclaration, T extends _type>
             ls.forEach(f -> {
                 _type cc = sameNameAndType( f, rs );
                 if( cc != null ){                    
-                    _ins.INSPECT_TYPE.diffTree(_ins, path.in(_java.Component.NEST),dt, f, cc);
+                    _ins.INSPECT_TYPE.diff(_ins, path.in(_java.Component.NEST),dt, f, cc);
                     rs.remove( cc );
                     //dl.add(path+_java.Component.NEST, f, cc);                    
                 } else{

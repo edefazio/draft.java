@@ -424,8 +424,15 @@ public enum _java {
         }
     }
     
+    /** 
+     * Inspector for a String (name)
+     * 
+     */
     public static final StringInspect INSPECT_NAME = new StringInspect(_java.Component.NAME);
     
+    /**
+     * Inspect for a String
+     */
     public static class StringInspect 
             implements _inspect<String>{
         
@@ -435,14 +442,13 @@ public enum _java {
             this.component = component;
         }
         
-        
         @Override
         public boolean equivalent( String left, String right){
             return Objects.equals(left, right);
         }
         
         @Override
-        public _inspect._diffTree diffTree( _java._inspector _ins, _inspect._path path, _inspect._diffTree dt, String left, String right ){
+        public _inspect._diff diff( _java._inspector _ins, _inspect._path path, _inspect._diff dt, String left, String right ){
             if( !equivalent(left, right)){
                 return dt.add(path.in(component), left, right);
             }
@@ -466,7 +472,7 @@ public enum _java {
         
         
         @Override
-        public _inspect._diffTree diffTree( _java._inspector _ins, _inspect._path path, _inspect._diffTree dt, Expression left, Expression right ){
+        public _inspect._diff diff( _java._inspector _ins, _inspect._path path, _inspect._diff dt, Expression left, Expression right ){
             if( !equivalent(left, right) ){                
                 return dt.add( path.in( component), left, right);
             }

@@ -30,12 +30,22 @@ public final class Text {
      * @return a Single string where each line is indented 4 spaces
      */
     public static String indent( String string ) {
+        return indent( string, "    ");        
+    }
+    
+    /**
+     *
+     * @param string an un-indented String with multiple lines
+     * @param prefix the prefix to add to each line
+     * @return a Single string where each line is indented 4 spaces
+     */
+    public static String indent( String string, String prefix ) {
         List<String> ls = lines( string );
 
         StringBuilder sb = new StringBuilder();
 
         for (String l : ls) {
-            sb.append("    ");
+            sb.append(prefix);
             sb.append(l);
             sb.append(System.lineSeparator());
         }

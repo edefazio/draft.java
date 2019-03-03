@@ -9,6 +9,7 @@ import com.github.javaparser.ast.type.Type;
 import draft.DraftException;
 import draft.Text;
 import draft.java._anno.*;
+import draft.java._inspect._diff;
 import draft.java.io._in;
 import draft.java.macro._macro;
 
@@ -93,8 +94,6 @@ public final class _annotation
         return this;
     }
 
-
-
     public _annotation targetParameter(){
         this.imports( Target.class, ElementType.class );
         removeAnnos(Target.class);
@@ -143,20 +142,10 @@ public final class _annotation
         annotate("Target(ElementType.PACKAGE)");
         return this;
     }
-    /*
-    public _annotation target( ElementType...elementTypes ){
-        if( elementTypes.length == 1 ){
-
-        }
-        return this;
-    }
-    */
 
     public _annotation targetConstructor(){
         this.imports( Target.class, ElementType.class );
         removeAnnos(Target.class);
-        //ElementType.TYPE,ElementType.PARAMETER, ElementType.TYPE_USE, ElementType.TYPE_PARAMETER,
-        //        ElementType.ANNOTATION_TYPE, ElementType.LOCAL_VARIABLE, ElementType.PACKAGE
         annotate("Target(ElementType.CONSTRUCTOR)");
         return this;
     }
@@ -164,25 +153,7 @@ public final class _annotation
     public _annotation targetField(){
         this.imports( Target.class, ElementType.class );
         removeAnnos(Target.class);
-        annotate("Target(ElementType.FIELD)");
-        /*
-        //get the existing target annotation
-        _anno _a = getAnno(Target.class);
-        if( _a != null ) {
-            _a.
-            List<Expression> exprs = _a.listValues();
-
-            if( _a.listValues(Expr.ARRAY_INITIALIZER) )
-            //check if FIELD is one of the targets... if NOT, add it
-            if( !_a.listValues().stream().filter(e -> $fieldTarget.matches(e) ).findFirst().isPresent()){
-                _a.addAttr()
-            }
-        }
-        else{ //there isnt any existing target annotation so create one
-            annotate( "Target(ElementType.FIELD)");
-        }
-        return this;
-        */
+        annotate("Target(ElementType.FIELD)");        
         return this;
     }
 
@@ -397,7 +368,6 @@ public final class _annotation
         tf.addAll( other.listFields() );
 
         if( !Objects.equals( tf, of)){
-            //System.out.println( "FIELDS");
             return false;
         }
 
@@ -407,7 +377,6 @@ public final class _annotation
         op.addAll(other.listElements() );
 
         if( !Objects.equals( tp, op)){
-            //System.out.println( "Elements");
             return false;
         }
 
@@ -417,7 +386,6 @@ public final class _annotation
         on.addAll( other.listNests() );
 
         if( !Objects.equals( tn, on)){
-            //System.out.println( "NESTS");
             return false;
         }
         return true;
@@ -492,7 +460,6 @@ public final class _annotation
         hash = 13 * hash + Objects.hashCode( this.getEffectiveModifiers() );
 
         hash = 13 * hash + Objects.hashCode( this.getJavadoc() );
-        //hash = 13 * hash * Objects.hashCode( this.getAnnos() );
         hash = 13 * hash + Ast.annotationsHash( astAnnotation  );
 
         hash = 13 * hash + Objects.hashCode( this.getName() );
@@ -541,6 +508,7 @@ public final class _annotation
     /** 
      * is the AnnotationDeclaration equal this class
      * @param ad 
+     * @return true if these annotations are equivalent
      */
     public boolean is( AnnotationDeclaration ad ){
         try{
@@ -551,6 +519,31 @@ public final class _annotation
         }
     }
 
+    /**
+     * Diff this _annotation against the _right _annotation 
+     * and return a diff-tree containing the changes (add, remove, edit)s that
+     * would be applied to this in order to transform it to the _right _annotation
+     * 
+     * @param right the "right" / or target annotation to diff / transform to
+     * @return the changes required to make this to the _right _annotation  
+     */
+    public _diff diff( _annotation right ){
+        return INSPECT_ANNOTATION.diff(this, right);
+    }
+        
+    /**
+     * Diff left _annotation against the right _annotation 
+     * and return a diff-tree containing the changes (add, remove, edit)s that
+     * would be applied to this in order to transform it to the right _annotation
+     * 
+     * @param left the starting annotation
+     * @param right the target annotation to diff / transform to
+     * @return the changes required to make this left to the right _annotation  
+     */
+    public static _diff diff( _annotation left, _annotation right){
+        return INSPECT_ANNOTATION.diff(left, right);
+    }
+    
     /**
      * a property element added to an annotation
      * <PRE>
@@ -730,9 +723,6 @@ public final class _annotation
             if( !Ast.annotationsEqual( this.astAnnMember, other.astAnnMember)){
                 return false;
             }
-            //if( !Objects.equals( this.getAnnos(), other.getAnnos() )){
-            //    return false;
-            //}
             if( !Objects.equals( this.getJavadoc(), other.getJavadoc() ) ) {
                 return false;
             }
@@ -742,9 +732,6 @@ public final class _annotation
             if( !Ast.typesEqual( astAnnMember.getType(), other.astAnnMember.getType())){
                 return false;
             }
-            //if( !Objects.equals( this.getType(), other.getType() ) ) {
-            //    return false;
-            // }
             if( !Objects.equals( this.getDefaultValue(), other.getDefaultValue() ) ) {
                 return false;
             }
@@ -778,11 +765,49 @@ public final class _annotation
         public String toString(){
             return this.astAnnMember.toString();
         }
+        
+        /**
+         * Diff this _element against the _right _element 
+         * and return a diff-tree containing the changes (add, remove, edit)s that
+         * would be applied to this in order to transform it to the right _element
+         * 
+         * @param right the "right" / or target _element to diff / transform to
+         * @return the changes required to make this to the right _element  
+         */
+        public _diff diff( _element right ){
+            return INSPECT_ANNOTATION_ELEMENT.diff(this, right);
+        }
+        
+        /**
+         * Diff left _element against the right _element
+         * and return a diff-tree containing the changes (add, remove, edit)s that
+         * would be applied to this in order to transform it to the right _element
+         * 
+         * @param left the starting _element
+         * @param right the target _element to diff / transform to
+         * @return the changes required to make this left to the right _annotation  
+         */
+        public static _diff diff( _element left, _element right){
+            return INSPECT_ANNOTATION_ELEMENT.diff(left, right);
+        }
+        
+        /**
+         * Diff left _elements against the right _elements
+         * and return a diff-tree containing the changes (add, remove, edit)s that
+         * would be applied to this in order to transform it to the right _elements
+         * 
+         * @param left the starting _elements
+         * @param right the target _elements to diff / transform to
+         * @return the changes required to make this left to the right _elements 
+         */
+        public static _diff diff( List<_element> left, List<_element> right){
+            return INSPECT_ANNOTATION_ELEMENTS.diff(left, right);
+        }        
     }
     
     /**
      * Verify that one list of _element is equivalent to another list of _element
-     */
+     
     public static _java.Semantic<Collection<_element>> EQIVALENT_ELEMENTS_LIST = 
             (Collection<_element> o1, Collection<_element> o2) -> {
         if( o1 == null ){
@@ -801,6 +826,7 @@ public final class _annotation
     public static boolean equivalent( Collection<_element> left, Collection<_element> right){
         return EQIVALENT_ELEMENTS_LIST.equivalent(left, right);
     }
+    */ 
     
     public static _annotationInspect INSPECT_ANNOTATION = new _annotationInspect();
     
@@ -812,7 +838,7 @@ public final class _annotation
         }
 
         @Override
-        public _inspect._diffTree diffTree( _java._inspector _ins, _inspect._path path, _inspect._diffTree dt, _annotation left, _annotation right) {
+        public _inspect._diff diff( _java._inspector _ins, _inspect._path path, _inspect._diff dt, _annotation left, _annotation right) {
             if( left == null){
                 if( right == null){
                     return dt;
@@ -822,15 +848,15 @@ public final class _annotation
             if( right == null){
                 return dt.add( path.in(_java.Component.ANNOTATION, left.getName()), left, null);
             }
-            _ins.INSPECT_PACKAGE_NAME.diffTree(_ins, path,dt, left.getPackage(), right.getPackage() );
-            _ins.INSPECT_IMPORTS.diffTree(_ins,path,dt, left.listImports(), right.listImports() );
-            _ins.INSPECT_ANNOS.diffTree(_ins,path, dt, left.getAnnos(), right.getAnnos());                     
-            _ins.INSPECT_JAVADOC.diffTree(_ins,path, dt, left.getJavadoc(), right.getJavadoc());              
-            _ins.INSPECT_NAME.diffTree(_ins,path, dt, left.getName(), right.getName());
-            _ins.INSPECT_MODIFIERS.diffTree(_ins,path, dt, left.getModifiers(), right.getModifiers());            
-            _ins.INSPECT_FIELDS.diffTree(_ins,path, dt, left.listFields(), right.listFields() );
-            _ins.INSPECT_ANNOTATION_ELEMENTS.diffTree(_ins,path, dt, left.listElements(), right.listElements() );
-            _ins.INSPECT_NESTS.diffTree(_ins,path, dt, left.listNests(), right.listNests());
+            _ins.INSPECT_PACKAGE_NAME.diff(_ins, path,dt, left.getPackage(), right.getPackage() );
+            _ins.INSPECT_IMPORTS.diff(_ins,path,dt, left.listImports(), right.listImports() );
+            _ins.INSPECT_ANNOS.diff(_ins,path, dt, left.getAnnos(), right.getAnnos());                     
+            _ins.INSPECT_JAVADOC.diff(_ins,path, dt, left.getJavadoc(), right.getJavadoc());              
+            _ins.INSPECT_NAME.diff(_ins,path, dt, left.getName(), right.getName());
+            _ins.INSPECT_MODIFIERS.diff(_ins,path, dt, left.getModifiers(), right.getModifiers());            
+            _ins.INSPECT_FIELDS.diff(_ins,path, dt, left.listFields(), right.listFields() );
+            _ins.INSPECT_ANNOTATION_ELEMENTS.diff(_ins,path, dt, left.listElements(), right.listElements() );
+            _ins.INSPECT_NESTS.diff(_ins,path, dt, left.listNests(), right.listNests());
             return dt;
         }        
     }
@@ -858,7 +884,7 @@ public final class _annotation
         }
         
         @Override
-        public _inspect._diffTree diffTree( _java._inspector _ins, _inspect._path path, _inspect._diffTree dt, List<_annotation._element> left, List<_annotation._element> right) {
+        public _inspect._diff diff( _java._inspector _ins, _inspect._path path, _inspect._diff dt, List<_annotation._element> left, List<_annotation._element> right) {
             Set<_annotation._element>ls = new HashSet<>();
             Set<_annotation._element>rs = new HashSet<>();
             Set<_annotation._element>both = new HashSet<>();
@@ -894,7 +920,7 @@ public final class _annotation
             return Objects.equals(left,right);
         }
 
-        public _inspect._diffTree diffTree( _java._inspector _ins, _inspect._path path, _inspect._diffTree dt, _annotation._element left, _annotation._element right) {
+        public _inspect._diff diff( _java._inspector _ins, _inspect._path path, _inspect._diff dt, _annotation._element left, _annotation._element right) {
             if( left == null){
                 if( right == null){
                     return dt;
@@ -905,11 +931,11 @@ public final class _annotation
             if( right == null){
                 return dt.add( path.in( _java.Component.ELEMENT, left.getName()), left, null);                
             }
-            _ins.INSPECT_NAME.diffTree(_ins, path, dt, left.getName(), right.getName());
-            _ins.INSPECT_TYPE_REF.diffTree(_ins,path, dt, left.getType(), right.getType());
-            _ins.INSPECT_DEFAULT.diffTree(_ins,path, dt, left.getDefaultValue(), right.getDefaultValue());
-            _ins.INSPECT_JAVADOC.diffTree(_ins,path, dt, left.getJavadoc(), right.getJavadoc());
-            _ins.INSPECT_ANNOS.diffTree(_ins,path, dt, left.getAnnos(), right.getAnnos());            
+            _ins.INSPECT_NAME.diff(_ins, path, dt, left.getName(), right.getName());
+            _ins.INSPECT_TYPE_REF.diff(_ins,path, dt, left.getType(), right.getType());
+            _ins.INSPECT_DEFAULT.diff(_ins,path, dt, left.getDefaultValue(), right.getDefaultValue());
+            _ins.INSPECT_JAVADOC.diff(_ins,path, dt, left.getJavadoc(), right.getJavadoc());
+            _ins.INSPECT_ANNOS.diff(_ins,path, dt, left.getAnnos(), right.getAnnos());            
             return dt;
         }        
     }
