@@ -1,6 +1,5 @@
 package draft.java;
 
-import draft.Text;
 import draft.java._java.Component;
 
 import java.util.*;
@@ -12,14 +11,15 @@ import name.fraser.neil.plaintext.diff_match_patch.Operation;
 
 /**
  * <P>Inspect is an abstraction that knows how to "take apart" and inspect
- * a composite entity and inspect it (usually against another entity)</P>
+ * a composite instance and against another instance</P>
  * 
- * <P>Think of it like a detailed RUNNABLE INSTRUCTION MANUAL for how to take apart
+ * <P>Think of it like a detailed INSTRUCTION MANUAL for how to take apart
  * a composite instance (and all other composite instances contained within it)
- * and COMPARE these components to another (perhaps a PROTOTYPE instance).</P>
+ * and COMPARE these components to another (perhaps PROTOTYPE instance).</P>
  * 
  * <P>A good analogy would be an Instruction manual for how to break down a Car 
- * Engine, and how to inspect the individual parts of the engine</P> 
+ * Engine, and how to inspect the individual modules and parts of the engine all the
+ * way down to each bolt and nut</P> 
  * 
  * <P>This provides a way of us to "deeply diff" based on the semantics of the Java 
  * language... for example given a class F with (2) versions in the code repository:
@@ -34,14 +34,48 @@ import name.fraser.neil.plaintext.diff_match_patch.Operation;
  * 
  * //Version 2
  * class F{
+ * 
  *    void m(){ System.out.println(1);}
- *    @Deprecated int a;
+ * 
  *    float b;
+ * 
+ *    @Deprecated int a;
+ * 
  *    String name;
  * } 
  * </PRE>
- * we can diff top find what differences occurred between version 1 and 
- * version 2.
+ * <P>we can diff to find what differences occurred between version 1 and 
+ * version 2. NOTE: the Object diff is NOT a pure textual based diff, but rather
+ * it tries to match members (fields, methods, constructors, etc.) based on 
+ * the API (names, signature) without regard to the order they are declared in 
+ * the code.  (NOTE: how above, in version 1, the method "m()" is defined as
+ * the LAST member, and in Version 2, m() is defined as the FIRST member....
+ * A naive diff would mark the entire content of Version 1 as a Diff against 
+ * version2... but _inspect matches:</P>
+ * <PRE>
+ * Version 1      Version 2
+ * int a;         @Deprecated int a;
+ * float b;       float b;
+ * void m()       void m(){ System.out.println(1); }
+ * </PRE>
+ * and diffs the semantic contents of these members (i.e. checking the equivalency 
+ * and differences between the individual entities)
+ * rather than diffing the textual representation (which depends on the spaces,
+ * the code formatting, etc.)
+ * 
+ * 
+ * 
+ * NOTE: even though we can match individual members, we 
+ * DO care that underlying properties are equivalent.  For instance we care that
+ * the body of "m()" in Version 1, 
+ *    "void m(){}"
+ * ...and the body of m() in Version 2 is different:
+ *    "void m(){ System.out.println(1);}"
+ * ...and we we log this as a diff
+ * 
+ *     _diff.addEdit( new path().in(Component.METHOD,"m()").in(Component.Body),
+ *         
+ * 
  * 
  * <PRE>
  * //assuming we loaded these classes as _v1 and _v2
@@ -55,7 +89,7 @@ import name.fraser.neil.plaintext.diff_match_patch.Operation;
  * //prints paths to all edited entities in v2
  * _d.forEdits( e -> System.out.println(  "EDITED :" + e.path) ); 
  * </PRE>
- * ...if we wanted to know the semantic differentces between the 2
+ * ...if we wanted to know the semantic differences between the 2
  * </P>
  * 
  * if we have a Large program
@@ -66,20 +100,62 @@ import name.fraser.neil.plaintext.diff_match_patch.Operation;
  */
 public interface _inspect<T> {
     
+    /** 
+     * are the left and right nodes "semantically" equivalent? 
+     * @param left usually an earlier version of an entity (could be null)
+     * @param right the updated
+     * @return true if they are equivalent, false otherwise
+     */
     public boolean equivalent( T left, T right );    
     
+    /**
+     * deep diff into the left and right nodes and 
+     * return the differences as a _diff
+     * 
+     * @param left
+     * @param right
+     * @return a _diff node showing the deltas between the two entities
+     */
     default _diff diff( T left, T right) {
         return _inspect.this.diff(new _path(), new _diff(), left, right );
     }
     
+    /**
+     * 
+     * @param dt
+     * @param left
+     * @param right
+     * @return 
+     */
     default _diff diff( _diff dt, T left, T right) {
         return _inspect.this.diff( new _path(), dt, left, right );
     }
     
+    /**
+     * Build a diff to represent the deltas between the two entities(left and right)
+     * 
+     * @param path starting path
+     * @param dt the diff
+     * @param left the left entity
+     * @param right the right entity
+     * @return the diff
+     */
     default _diff diff( _path path, _diff dt, T left, T right ){
         return diff(_java.INSPECTOR, path, dt, left, right);
     }
     
+    /**
+     * Build a diff to represent the deltas between the two entities(left and right)
+     * 
+     * @param _inspect main inspector containing the underlying inspector 
+     * implementations used for all component types as I walk through the members
+     * (it will be passed to all intermediate members for testing equality
+     * @param path the starting path
+     * @param dt the current diff
+     * @param left the left instance
+     * @param right the right instance
+     * @return  the full diff between the left and right (and all underlying nodes)
+     */
     public _diff diff( _java._inspector _inspect, _path path, _diff dt, T left, T right);
     
    
@@ -100,7 +176,6 @@ public interface _inspect<T> {
      * //if we have nested components it can get interesting (omit Component for brevity) 
      * ENUM[E].NEST.CLASS[inner].METHOD[m()].BODY   : (the method body on a nested class within an enum)
      * </PRE>
-     * 
      */
     public static class _path{
             
@@ -151,6 +226,10 @@ public interface _inspect<T> {
             return this.componentPath.size();
         }
         
+        /**
+         * get the leaf component in the path
+         * @return the last component in the path (only null if the path is empty)
+         */
         public Component leaf(){
             if( !this.componentPath.isEmpty() ){
                 return this.componentPath.get(this.componentPath.size() -1 );
@@ -158,20 +237,28 @@ public interface _inspect<T> {
             return null;
         }
         
-        public boolean isLeaf( Component component ){
-            return component.equals(leaf());
-        }
-        
-        public boolean isLeafId( String id ){
-            return id.equals(leafId());
-        }
-        
+        /**
+         * Gets the last id in the path (note: may be empty string, null if the path is empty)
+         * @return the last id of the path
+         */
         public String leafId(){
             if( !this.idPath.isEmpty() ){
                 return this.idPath.get(this.idPath.size() -1 );
             }
             return null;
         }
+         
+        /** @return is the leaf component this component? */
+        public boolean isLeaf( Component component ){
+            return component.equals(leaf());
+        }
+        
+        /** @return is the leaf id this id? */
+        public boolean isLeafId( String id ){
+            return id.equals(leafId());
+        }
+        
+       
         
         public boolean has(String id){
             return idPath.contains(id);
@@ -195,7 +282,7 @@ public interface _inspect<T> {
             return _p;
         }        
         
-        /** return the component path as a String */
+        /** @return the component path as a String */
         public String componentPathString(){
             StringBuilder sb = new StringBuilder();
             for(int i=0;i<this.componentPath.size();i++){
@@ -305,11 +392,11 @@ public interface _inspect<T> {
         
         /**
          * 
-         * @param _nodeFn
-         * @return the potentially modified diff
+         * @param _nodeActionFn action to take on each node
+         * @return the potentially modified _diff
          */
-        public _diff forEach( Consumer<_node> _nodeFn ){
-            this.diffs.forEach(_nodeFn);
+        public _diff forEach( Consumer<_node> _nodeActionFn ){
+            this.diffs.forEach(_nodeActionFn);
             return this;
         }
         /**
@@ -384,10 +471,92 @@ public interface _inspect<T> {
             ans.forEach( _editNodeActionFn );
             return this;
         }
-        //forAddEdits
-        //forRemoveEdits
-        //forSameEdits
         
+        /**
+         * List all add nodes that comply with the _addNodeActionFn
+         * 
+         * @param _addNodeMatchFn match function for selecting diff nodes
+         * @return a list of _addNodes
+         */
+        public List<_addNode> listAdds( Predicate<_addNode> _addNodeMatchFn ){
+            List<_addNode> ens = new ArrayList<>();            
+            list( d -> d instanceof _addNode && _addNodeMatchFn.test( (_addNode)d) )
+                    .forEach( e -> ens.add( (_addNode)e));
+            return ens;
+        }
+        
+        /**
+         * Lists the diffs that are add Nodes 
+         * (not found in the left, but found in the right)         
+         * 
+         * @see _addNode
+         * @return a list of _addNode that are FOUND on the RIGHT and NOT FOUND on the LEFT
+         */
+        public List<_addNode> listAdds(){
+            List<_addNode> tds = new ArrayList<>();
+            list(d -> d instanceof _addNode ).forEach(n -> tds.add( (_addNode)n));
+            return tds;
+        }        
+        
+        /**
+         * List all remove nodes that comply with the _removeNodeActionFn
+         * 
+         * @param _removeNodeMatchFn match function for selecting _removeNode s
+         * @return a list of _removeNodes that match the _removeNodeMatchFn
+         */
+        public List<_removeNode> listRemoves( Predicate<_removeNode> _removeNodeMatchFn ){
+            List<_removeNode> ens = new ArrayList<>();            
+            list( d -> d instanceof _removeNode && _removeNodeMatchFn.test( (_removeNode)d) )
+                    .forEach( e -> ens.add( (_removeNode)e));
+            return ens;
+        }
+        
+        /**
+         * Lists the diffs that are _removeNodes 
+         * (Found on the left, but NOT FOUND on the right)         
+         * 
+         * @see _removeNode
+         * @return a list of _removeNode that have removes (Found on left, not on right)
+         */
+        public List<_removeNode> listRemoves(){
+            List<_removeNode> tds = new ArrayList<>();
+            list(d -> d instanceof _removeNode ).forEach(n -> tds.add( (_removeNode)n));
+            return tds;
+        }
+        
+        /**
+         * List all change nodes that comply with the _changeNodeActionFn
+         * 
+         * @param _changeNodeMatchFn match function for selecting _changeNode s
+         * @return a list of _changeNodes that match the _changeNodeMatchFn
+         */
+        public List<_changeNode> listChanges( Predicate<_changeNode> _changeNodeMatchFn ){
+            List<_changeNode> ens = new ArrayList<>();            
+            list( d -> d instanceof _changeNode && _changeNodeMatchFn.test( (_changeNode)d) )
+                    .forEach( e -> ens.add( (_changeNode)e));
+            return ens;
+        }
+        
+        /**
+         * Lists the diffs that are _changeNodes 
+         * Objects matched (API-wise) on both LEFT and RIGHT but changed 
+         * (i.e. Modifiers, Annotations, etc.)
+         * 
+         * @see _changeNode
+         * @return a list of _changeNode that have changes (Found on left & right but different)
+         */
+        public List<_changeNode> listChanges(){
+            List<_changeNode> tds = new ArrayList<>();
+            list(d -> d instanceof _changeNode ).forEach(n -> tds.add( (_changeNode)n));
+            return tds;
+        }
+        
+        /**
+         * List all edit nodes that comply with the _editNodeActionFn
+         * 
+         * @param _editNodeMatchFn match function for selecting diff nodes
+         * @return a list of _editNodes
+         */
         public List<_editNode> listEdits( Predicate<_editNode> _editNodeMatchFn ){
             List<_editNode> ens = new ArrayList<>();            
             list( d -> d instanceof _editNode && _editNodeMatchFn.test( (_editNode)d) )
@@ -533,22 +702,77 @@ public interface _inspect<T> {
         }        
     }    
     
+    /**
+     * A specific diff entry between two complex domain objects (left and right)
+     * the left is the model as it appears in the left entity (could be null)
+     * the left is the model as it appears in the left entity (could be null)
+     * the path marks the component types (METHOD, FIELD, PARAMETER, NEST, etc.)
+     * and identifiers( "0", "m(String)") that are traversed to reach the diff
+     * node
+     */
     public interface _node{
         
+        /** @return the left entity (potentially null) that is different */
         Object left();
         
+        /** @return the right entity (potentially null) that is different */
         Object right();
         
+        /** 
+         * @return the path that marks the component types 
+         * (METHOD, FIELD, PARAMETER, NEST, etc.)
+         * and identifiers
+         * ( "0", "m(String)") 
+         * that are traversed to reach the diff node
+         */ 
         _path path();
         
-        public boolean has( Component component );
+        /**
+         * Does this diff node contain this component anywhere in the path
+         * @param component
+         * @return true if contains the component anywhere in path
+         */
+        boolean has( Component component );
         
         /**
-         * 
-         * @param components
-         * @return 
+         * Does this diff node contain ALL of these components anywhere in the path
+         * @param components list of components
+         * @return true if contains ALL components in path
          */
         public boolean has( Component... components );
+        
+        /**
+         * is the last part of the path at this Component with this id:
+         * i.e. examples
+         * <PRE>
+         * EXTENDS, ""             //the Extends (no id)
+         * IMPLEMENTS, ""          //implements (no id)
+         * PARAMETER, "0"          //the first parameter
+         * FIELD, "f"              //the field named f
+         * METHOD, m(String)       //the method "m" with the String argument
+         * CONSTRUCTOR, c(int,int) //the constructor named c with int args
+         * </PRE>
+         * @param component the component
+         * @param id the identifying features of this path
+         * @return true if this is the last part of the path 
+         */
+        public boolean at( Component component, String id );
+        
+        /**
+         * Is the underlying leaf level component where the diff occurs this 
+         * specific component? (i.e. METHOD, PARAMETER, FIELD)
+         * @param component the expected leaf component
+         * @return true if this node has a path ending with this component
+         */
+        public boolean at( Component component );
+        
+        /**
+         * Is the underlying leaf level id where the diff occurs 
+         * have an id that matches this id?
+         * @param id the expected leaf id
+         * @return true if this node has a path ending with this component
+         */
+        public boolean at( String id);
         
         /** 
          * does this node have this id within the path?  
@@ -622,6 +846,21 @@ public interface _inspect<T> {
         }
         
         @Override
+        public boolean at(Component component){
+            return path.isLeaf(component);
+        }
+        
+        @Override
+        public boolean at(String id){
+            return path.isLeafId(id);
+        }
+        
+        @Override
+        public boolean at(Component component, String id){
+            return path.isLeaf(component) && path.isLeafId(id);
+        }
+        
+        @Override
         public String toString(){
             return "  + " + path.toString() + System.lineSeparator();
         }
@@ -652,6 +891,22 @@ public interface _inspect<T> {
         @Override
         public _path path(){
             return path;
+        }
+        
+        
+        @Override
+        public boolean at(Component component){
+            return path.isLeaf(component);
+        }
+        
+        @Override
+        public boolean at(String id){
+            return path.isLeafId(id);
+        }
+        
+        @Override
+        public boolean at(Component component, String id){
+            return path.isLeaf(component) && path.isLeafId(id);
         }
         
         /**
@@ -715,6 +970,22 @@ public interface _inspect<T> {
         @Override
         public _path path(){
             return path;
+        }
+        
+        
+        @Override
+        public boolean at(Component component){
+            return path.isLeaf(component);
+        }
+        
+        @Override
+        public boolean at(String id){
+            return path.isLeafId(id);
+        }
+        
+        @Override
+        public boolean at(Component component, String id){
+            return path.isLeaf(component) && path.isLeafId(id);
         }
         
         /**
@@ -830,6 +1101,22 @@ public interface _inspect<T> {
         @Override
         public _path path(){
             return path;
+        }
+        
+        
+        @Override
+        public boolean at(Component component){
+            return path.isLeaf(component);
+        }
+        
+        @Override
+        public boolean at(String id){
+            return path.isLeafId(id);
+        }
+        
+        @Override
+        public boolean at(Component component, String id){
+            return path.isLeaf(component) && path.isLeafId(id);
         }
         
         /**
