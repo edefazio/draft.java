@@ -1,13 +1,8 @@
 package draft.java;
 
 import draft.java._anno._annos;
-import draft.java._inspect._addNode;
-import draft.java._inspect._changeNode;
-import draft.java._inspect._diff;
-import draft.java._inspect._editNode;
+import draft.java._inspect.*;
 import draft.java._java.StringInspect;
-import draft.java._inspect._path;
-import draft.java._inspect._removeNode;
 import static draft.java._java.Component.*;
 import draft.java._parameter._parameters;
 import draft.java._typeParameter._typeParameters;
@@ -21,11 +16,46 @@ import java.util.List;
 import junit.framework.TestCase;
 
 /**
- * TODO, I COULD make it that I get a TextDiff for a change in javadoc
+ * 
  * @author Eric
  */
 public class _inspectTest extends TestCase {
     
+    public void testNewApi(){
+        _class _v1 = _class.of("C");
+        _class _v2 = _v1.copy();
+        assertTrue(_v1.diff(_v2).isEmpty()); //they the same
+        
+        _v2.field("int a;");       //add a change to _v2 only
+        _diff _d = _v1.diff(_v2);  //diff _v1 with _v2
+        
+        assertTrue(_d.at(FIELD));      //there is a DIFF AT at least one FIELD
+        assertTrue(_d.at(FIELD, "a")); //there is a DIFF AT at a field named "a"
+        
+        //find the first Diff AT a FIELD and verify it is an Add         
+        assertTrue(_d.firstAt(FIELD).isAdd()); //Add means added between _v1 and _v2
+        
+        //find the first Diff AT a FIELD named "a" and verify it is an Add
+        assertTrue(_d.firstAt(FIELD, "a").isAdd());
+        
+        //OK, lets change to v2.diff(_v1); 
+        _d = _v2.diff(_v1); // _v2 -> _v1
+        
+        // (v2->v1) find the same diffs, however they are REMOVE, not ADD 
+        assertTrue(_d.firstAt(FIELD).isRemove()); //Removed between _v2 and _v1
+        
+        // (v2->v1) find the same diffs, however they are REMOVE, not ADD 
+        assertTrue(_d.firstAt(FIELD, "a").isRemove());
+        
+        
+        //assertTrue( _d.has(FIELD) ); //there is a diff on (or below) a field
+        //assertTrue( _d.has(FIELD, "a") ); //there is a diff on (or below) a field named "a"
+        
+        _v2.field("int a;");
+        //assertTrue( _v2.diff(_v1))
+        
+        
+    }
     public void testField(){
         _field _f1 =_field.of("int a;");
         _field _f2 =_field.of("int a;");
@@ -75,7 +105,7 @@ public class _inspectTest extends TestCase {
         // REMOVE (of the old field "a")
         // ADD ( of the new field "b")
         // ...since all accesses to "a" are have to change to "b"
-        assertTrue(dt.list(FIELD).size() == 2 );
+        assertTrue(dt.listOf(FIELD).size() == 2 );
         
         _f1.name("b");
         dt = _class.diff(_c1, _c2);
@@ -122,7 +152,7 @@ public class _inspectTest extends TestCase {
         
         //System.out.println( dt );
         
-        assertEquals( 1, dt.list(METHOD,ANNO).size() );
+        assertEquals( 1, dt.listOf(METHOD,ANNO).size() );
         assertTrue(
             dt.first(METHOD,ANNO) instanceof _addNode ); //its Added from left -> right        
         assertNotNull(dt.first(METHOD));
@@ -172,7 +202,7 @@ public class _inspectTest extends TestCase {
         assertTrue(dt.list(d -> d.has(NAME)).size() == 1);
         
         dt.forEach(d -> System.out.println( d.path().componentPath) );
-        assertTrue(dt.list(CONSTRUCTOR).size() >= 1);
+        assertTrue(dt.listOf(CONSTRUCTOR).size() >= 1);
         
         _c1.getMethod("m").annotate(Deprecated.class);        
         dt = _class.diff(_c1, _c2);

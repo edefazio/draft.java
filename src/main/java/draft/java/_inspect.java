@@ -19,7 +19,7 @@ import name.fraser.neil.plaintext.diff_match_patch.Operation;
  * 
  * <P>A good analogy would be an Instruction manual for how to break down a Car 
  * Engine, and how to inspect the individual modules and parts of the engine all the
- * way down to each bolt and nut</P> 
+ * way down to each washer, bolt and nut.</P> 
  * 
  * <P>This provides a way of us to "deeply diff" based on the semantics of the Java 
  * language... for example given a class F with (2) versions in the code repository:
@@ -58,24 +58,21 @@ import name.fraser.neil.plaintext.diff_match_patch.Operation;
  * float b;       float b;
  * void m()       void m(){ System.out.println(1); }
  * </PRE>
- * and diffs the semantic contents of these members (i.e. checking the equivalency 
+ * <P>and diffs the semantic contents of these members (i.e. checking the equivalency 
  * and differences between the individual entities)
  * rather than diffing the textual representation (which depends on the spaces,
- * the code formatting, etc.)
+ * the code formatting, etc.)</P>
  * 
- * 
- * 
- * NOTE: even though we can match individual members, we 
+ * <P>NOTE: even though we can match individual members, we 
  * DO care that underlying properties are equivalent.  For instance we care that
- * the body of "m()" in Version 1, 
+ * the body of "m()" in Version 1,<PRE> 
  *    "void m(){}"
  * ...and the body of m() in Version 2 is different:
  *    "void m(){ System.out.println(1);}"
  * ...and we we log this as a diff
  * 
  *     _diff.addEdit( new path().in(Component.METHOD,"m()").in(Component.Body),
- *         
- * 
+ * </PRE>        
  * 
  * <PRE>
  * //assuming we loaded these classes as _v1 and _v2
@@ -91,9 +88,6 @@ import name.fraser.neil.plaintext.diff_match_patch.Operation;
  * </PRE>
  * ...if we wanted to know the semantic differences between the 2
  * </P>
- * 
- * if we have a Large program
- * 
  * 
  * @author Eric
  * @param <T> the type to be inspected
@@ -205,11 +199,18 @@ public interface _inspect<T> {
          */
         List<String> idPath;
         
+        /**
+         * build a new empty path
+         */
         public _path(){
             componentPath = new ArrayList<>();
             idPath = new ArrayList<>();
         }
         
+        /**
+         * create a new path containing all nodes as the original
+         * @param original 
+         */
         public _path(_path original){
             componentPath = new ArrayList();
             componentPath.addAll(original.componentPath);
@@ -227,7 +228,7 @@ public interface _inspect<T> {
         }
         
         /**
-         * get the leaf component in the path
+         * get the leaf (last component) component in the path
          * @return the last component in the path (only null if the path is empty)
          */
         public Component leaf(){
@@ -248,28 +249,58 @@ public interface _inspect<T> {
             return null;
         }
          
-        /** @return is the leaf component this component? */
+        /**
+         * @param component the component
+         * @return is the last component in the path this component? 
+         */
         public boolean isLeaf( Component component ){
             return component.equals(leaf());
         }
         
-        /** @return is the leaf id this id? */
+        /** 
+         * @param id 
+         * @return is the last id in the path this id? 
+         */
         public boolean isLeafId( String id ){
             return id.equals(leafId());
         }
         
-       
-        
+        /**
+         * does the path contain this id at any node?
+         * @param id 
+         * @return true if 
+         */
         public boolean has(String id){
             return idPath.contains(id);
         }
         
+        /**
+         * does the path contain ALL of these ids (in ANY order)
+         * @param ids the ids to look for in the path
+         * @return true if the path contains all ids
+         */
+        public boolean has(String...ids){
+            Set<String>sids = new HashSet<>();
+            Arrays.stream(ids).forEach(i -> sids.add(i));
+            return idPath.containsAll(sids);
+        }
+        
+        /**
+         * does this path contain all of these components (in ANY order)?
+         * @param components 
+         * @return true if the path contains all these components in ANY order
+         */
         public boolean has(Component... components){  
             Set<Component> s = new HashSet<>();
             Arrays.stream(components).forEach( c -> s.add(c));
             return componentPath.containsAll(s);
         }
         
+        /**
+         * does the path contain this component anywhere?
+         * @param component
+         * @return 
+         */
         public boolean has(Component component){
             return componentPath.contains(component);
         }
@@ -282,7 +313,9 @@ public interface _inspect<T> {
             return _p;
         }        
         
-        /** @return the component path as a String */
+        /** 
+         * @return the component path as a String 
+         */
         public String componentPathString(){
             StringBuilder sb = new StringBuilder();
             for(int i=0;i<this.componentPath.size();i++){
@@ -366,8 +399,8 @@ public interface _inspect<T> {
         }
         
         /**
-         * for example 
-         * 
+         * Does this path have this component and these ids ANYWHERE?
+         * for example: 
          * <PRE>
          * has( PARAMETER, "0" ); //is there a diff someone with the first parameter?
          * </PRE>
@@ -377,6 +410,14 @@ public interface _inspect<T> {
          */
         public boolean has(Component component, String... ids ){
             return first( d -> d.has(component) && d.has(ids) ) != null;
+        }
+        
+        public boolean at( Component component){
+            return first( d -> d.at(component) ) != null;
+        }
+        
+        public boolean at( Component component, String id){
+            return first( d -> d.at(component) && d.at(id) ) != null;
         }
         
         /**
@@ -391,7 +432,7 @@ public interface _inspect<T> {
         }
         
         /**
-         * 
+         * For each diff _node use run this _nodeActionFn
          * @param _nodeActionFn action to take on each node
          * @return the potentially modified _diff
          */
@@ -399,10 +440,11 @@ public interface _inspect<T> {
             this.diffs.forEach(_nodeActionFn);
             return this;
         }
+        
         /**
          * For all diffs that are ADD 
          * (meaning they are ABSENT in LEFT and PRESENT in RIGHT)
-         * check if they match the _addNodeActionFn and, if so, execute the
+         * check if they match the _addNodeMatchFn and, if so, execute the
          * _addNodeActionFn
          * @param _addNodeMatchFn matching function for Add nodes
          * @param _addNodeActionFn the action for adds that pass the matchFn
@@ -416,6 +458,13 @@ public interface _inspect<T> {
             return this;
         }
         
+        /**
+         * For all diff _nodes that are ADD 
+         * (meaning they are ABSENT in LEFT and PRESENT in RIGHT)
+         * execute the _addNodeActionFn
+         * @param _addNodeActionFn the action for adds that pass the matchFn
+         * @return the potentially modified _diff
+         */
         public _diff forAdds( Consumer<_addNode> _addNodeActionFn ){
             List<_node> ns = list(d -> d instanceof _addNode);
             List<_addNode> ans = new ArrayList<>();
@@ -424,6 +473,15 @@ public interface _inspect<T> {
             return this;            
         }
 
+        /**
+         * For all diffs that are REMOVE 
+         * (meaning they are PRESENT in LEFT and ABSENT in RIGHT)
+         * check if they match the _removeNodeMatchFn and, if so, execute the
+         * _removeNodeActionFn
+         * @param _removeNodeMatchFn matching function for Remove nodes
+         * @param _removeNodeActionFn the action for removes that pass the matchFn
+         * @return the potentially modified _diff
+         */
         public _diff forRemoves( Predicate<_removeNode> _removeNodeMatchFn, Consumer<_removeNode> _removeNodeActionFn){
             List<_node> ns = list(d -> d instanceof _removeNode &&  _removeNodeMatchFn.test((_removeNode)d));
             List<_removeNode> ans = new ArrayList<>();
@@ -432,6 +490,13 @@ public interface _inspect<T> {
             return this;
         }
         
+        /**
+         * For all diffs that are REMOVE 
+         * (meaning they are PRESENT in LEFT and ABSENT in RIGHT)
+         * execute the _removeNodeActionFn
+         * @param _removeNodeActionFn the action for removes that pass the matchFn
+         * @return the potentially modified _diff
+         */
         public _diff forRemoves( Consumer<_removeNode> _removeNodeActionFn ){
             List<_node> ns = list(d -> d instanceof _removeNode );
             List<_removeNode> ans = new ArrayList<>();
@@ -440,6 +505,15 @@ public interface _inspect<T> {
             return this;
         }        
         
+        /**
+         * For all diffs that are CHANGE 
+         * (meaning they are PRESENT in LEFT & RIGHT but different)
+         * check if they match the _changeNodeMatchFn and, if so, execute the
+         * _changeNodeActionFn
+         * @param _changeNodeMatchFn matching function for change nodes
+         * @param _changeNodeActionFn the action for changes that pass the matchFn
+         * @return the potentially modified _diff
+         */
         public _diff forChanges( Predicate<_changeNode> _changeNodeMatchFn, Consumer<_changeNode> _changeNodeActionFn){
             List<_node> ns = list(d -> d instanceof _removeNode &&  _changeNodeMatchFn.test((_changeNode)d));
             List<_changeNode> ans = new ArrayList<>();
@@ -448,6 +522,14 @@ public interface _inspect<T> {
             return this;
         }
         
+        /**
+         * For all diffs that are CHANGE 
+         * (meaning they are PRESENT in LEFT & RIGHT but different)
+         * check if they match the _changeNodeMatchFn and, if so, execute the
+         * _changeNodeActionFn
+         * @param _changeNodeActionFn the action for changes that pass the matchFn
+         * @return the potentially modified _diff
+         */
         public _diff forChanges( Consumer<_changeNode> _changeNodeActionFn ){
             List<_node> ns = list(d -> d instanceof _changeNode );
             List<_changeNode> ans = new ArrayList<>();
@@ -456,6 +538,14 @@ public interface _inspect<T> {
             return this;
         }  
         
+        /**
+         * For all diffs that are EDITs 
+         * (meaning they are PRESENT in LEFT & RIGHT but different on a textual 
+         * level... this means the underlying code is put through a diff)
+         * execute the _editNodeActionFn
+         * @param _editNodeActionFn the action for edits that pass the matchFn
+         * @return the potentially modified _diff
+         */
         public _diff forEdits(Consumer<_editNode> _editNodeActionFn){
             List<_node> ns = list(d -> d instanceof _editNode );
             List<_editNode> ans = new ArrayList<>();
@@ -464,6 +554,16 @@ public interface _inspect<T> {
             return this;
         }
         
+        /**
+         * For all diffs that are EDITs 
+         * (meaning they are PRESENT in LEFT & RIGHT but different on a textual 
+         * level... this means the underlying code is put through a diff)
+         * check if they match the _editNodeMatchFn and, if so, execute the
+         * _editNodeActionFn
+         * @param _editNodeMatchFn matching function for edit nodes
+         * @param _editNodeActionFn the action for edits that pass the matchFn
+         * @return the potentially modified _diff
+         */
         public _diff forEdits( Predicate<_editNode> _editNodeMatchFn, Consumer<_editNode> _editNodeActionFn){
             List<_node> ns = list(d -> d instanceof _editNode &&  _editNodeMatchFn.test((_editNode)d));
             List<_editNode> ans = new ArrayList<>();
@@ -580,10 +680,48 @@ public interface _inspect<T> {
             return tds;
         }
         
+        /**
+         * @return a list of all diff nodes
+         */
         public List<_node> list(){
             return this.diffs;
         } 
         
+        /**
+         * Find the first diff that is at (the last component in the path is)
+         * the component type
+         * @param componet the last component in the path
+         * @return the first diff node found at this path or null if none found
+         */
+        public _node firstAt( Component componet ){
+            Optional<_node> first = 
+                    this.diffs.stream().filter(d -> d.at(componet)).findFirst();
+            if( first.isPresent() ){
+                return first.get();
+            }
+            return null;
+        }
+        
+        /**
+         * Find the first diff that is at (the last component in the path is)
+         * the component type
+         * @param component the last component in the path
+         * @param id the last id in the path to the component
+         * @return the first diff node found at this path or null if none found
+         */
+        public _node firstAt( Component component, String id){
+            Optional<_node> first = 
+                    this.diffs.stream().filter(d -> d.at(component, id)).findFirst();
+            if( first.isPresent() ){
+                return first.get();
+            }
+            return null;
+        }
+        /**
+         * return the first diff node that has this component anywhere in the path
+         * @param componet the target component
+         * @return the first node
+         */
         public _node first( Component componet ){
             Optional<_node> first = 
                     this.diffs.stream().filter(d -> d.has(componet)).findFirst();
@@ -593,6 +731,12 @@ public interface _inspect<T> {
             return null;
         }
         
+        /**
+         * return the first diff node that contains ALL of the components ANYWHERE in the path
+         * @param componets the components expected in the path
+         * @return the first node to contain all of the components (in ANY order)
+         * in the path (or null if none found)
+         */
         public _node first( Component... componets ){
             Optional<_node> first = 
                     this.diffs.stream().filter(d -> d.has(componets) ).findFirst();
@@ -602,9 +746,14 @@ public interface _inspect<T> {
             return null;
         }
         
-        public _node first( Predicate<_node> _diffNodeMatchFn ){
+        /**
+         * find the first node that matches the predicate or return null
+         * @param _nodeMatchFn
+         * @return the first node that matches the function or null if none found
+         */
+        public _node first( Predicate<_node> _nodeMatchFn ){
             Optional<_node> first = 
-                    this.diffs.stream().filter(_diffNodeMatchFn).findFirst();
+                    this.diffs.stream().filter(_nodeMatchFn).findFirst();
             if( first.isPresent() ){
                 return first.get();
             }
@@ -612,11 +761,31 @@ public interface _inspect<T> {
         }
         
         /**
+         * List all diff _nodes that have this component as the last
+         * component in the path
+         * @param id the leaf (last) id in the path (i.e. "0", "m(String)")
+         * @return 
+         */
+        public List<_node> listAt( String id ){
+            return list( d-> d.at(id));
+        }
+        
+        /**
+         * List all diff _nodes that have this component as the last
+         * component in the path
+         * @param component the leaf component to look for (i.e. METHOD, FIELD)
+         * @return 
+         */
+        public List<_node> listAt( Component component ){
+            return list( d-> d.at(component));
+        }
+        
+        /**
          * List all diffs that have this component type in them
          * @param component the component type
          * @return a list of diffNodes
          */
-        public List<_node> list( Component component ){
+        public List<_node> listOf( Component component ){
             return list( d-> d.has(component));
         }
         
@@ -640,7 +809,7 @@ public interface _inspect<T> {
          * @param components
          * @return 
          */
-        public List<_node> list( Component...components ){
+        public List<_node> listOf( Component...components ){
             return list( d-> d.has(components));
         }
         
@@ -718,6 +887,38 @@ public interface _inspect<T> {
         /** @return the right entity (potentially null) that is different */
         Object right();
         
+        default boolean isAdd(){
+            return this instanceof _addNode;
+        }
+        
+        default boolean isRemove(){
+            return this instanceof _removeNode;
+        }
+        
+        default boolean isChange(){
+            return this instanceof _changeNode;
+        }
+        
+        default boolean isEdit(){
+            return this instanceof _editNode;
+        }
+        
+        default _addNode asAddNode(){
+            return (_addNode)this;
+        }
+        
+        default _removeNode asRemoveNode(){
+            return (_removeNode)this;
+        }
+        
+        default _changeNode asChangeNode(){
+            return (_changeNode)this;
+        }
+        
+        default _editNode asEditNode(){
+            return (_editNode)this;
+        }
+        
         /** 
          * @return the path that marks the component types 
          * (METHOD, FIELD, PARAMETER, NEST, etc.)
@@ -732,14 +933,18 @@ public interface _inspect<T> {
          * @param component
          * @return true if contains the component anywhere in path
          */
-        boolean has( Component component );
+        default boolean has( Component component ){
+            return path().has(component);
+        }
         
         /**
          * Does this diff node contain ALL of these components anywhere in the path
          * @param components list of components
          * @return true if contains ALL components in path
          */
-        public boolean has( Component... components );
+        default boolean has( Component... components ){
+            return path().has(components);
+        }
         
         /**
          * is the last part of the path at this Component with this id:
@@ -756,7 +961,9 @@ public interface _inspect<T> {
          * @param id the identifying features of this path
          * @return true if this is the last part of the path 
          */
-        public boolean at( Component component, String id );
+        default boolean at( Component component, String id ){
+            return path().isLeaf(component) && path().isLeafId(id);
+        }
         
         /**
          * Is the underlying leaf level component where the diff occurs this 
@@ -764,7 +971,9 @@ public interface _inspect<T> {
          * @param component the expected leaf component
          * @return true if this node has a path ending with this component
          */
-        public boolean at( Component component );
+        default boolean at( Component component ){
+            return path().isLeaf(component);
+        }
         
         /**
          * Is the underlying leaf level id where the diff occurs 
@@ -772,21 +981,27 @@ public interface _inspect<T> {
          * @param id the expected leaf id
          * @return true if this node has a path ending with this component
          */
-        public boolean at( String id);
+        default boolean at( String id){
+            return path().isLeafId(id);
+        }
         
         /** 
          * does this node have this id within the path?  
          * @param id a particular id (i.e. "0", "isFull", etc.)
          * @return true if the nod has the id within the path
          */
-        public boolean has( String id );
+        default boolean has( String id ){
+            return path().has(id);
+        }
         
         /** 
          * does this node have ALL these ids within the path?  
          * @param ids a particular ids (i.e. "0", "isFull", etc.)
          * @return true if the nod has the id within the path
          */
-        public boolean has( String... ids );
+        default boolean has( String... ids ){
+            return path().has(ids);
+        }
     }
     
     /**
@@ -815,49 +1030,6 @@ public interface _inspect<T> {
         @Override
         public _path path(){
             return path;
-        }
-        
-        /**
-         * does the path of the diffNode have the particualr id?
-         * @param id the id of the entity("f", "m(String)", parameter[1]
-         * @return if the 
-         */
-        @Override
-        public boolean has(String id){
-            return this.path.idPath.contains(id);
-        }
-        
-        @Override
-        public boolean has(String...ids){
-            Set<String> idd = new HashSet<>();
-            Arrays.stream(ids).forEach(i -> idd.add(i) );
-            return this.path.idPath.containsAll(idd);
-        }
-        
-        
-        @Override
-        public boolean has( Component component ){
-            return path.has(component);
-        }
-        
-        @Override
-        public boolean has( Component... components ){
-            return path.has( components );
-        }
-        
-        @Override
-        public boolean at(Component component){
-            return path.isLeaf(component);
-        }
-        
-        @Override
-        public boolean at(String id){
-            return path.isLeafId(id);
-        }
-        
-        @Override
-        public boolean at(Component component, String id){
-            return path.isLeaf(component) && path.isLeafId(id);
         }
         
         @Override
@@ -891,49 +1063,6 @@ public interface _inspect<T> {
         @Override
         public _path path(){
             return path;
-        }
-        
-        
-        @Override
-        public boolean at(Component component){
-            return path.isLeaf(component);
-        }
-        
-        @Override
-        public boolean at(String id){
-            return path.isLeafId(id);
-        }
-        
-        @Override
-        public boolean at(Component component, String id){
-            return path.isLeaf(component) && path.isLeafId(id);
-        }
-        
-        /**
-         * does the path of the diffNode have the particualr id?
-         * @param id the id of the entity("f", "m(String)", parameter[1]
-         * @return if the 
-         */
-        @Override
-        public boolean has(String id){
-            return this.path.idPath.contains(id);
-        }
-        
-        @Override
-        public boolean has(String...ids){
-            Set<String> idd = new HashSet<>();
-            Arrays.stream(ids).forEach(i -> idd.add(i) );
-            return this.path.idPath.containsAll(idd);
-        }
-        
-        @Override
-        public boolean has( Component component ){
-            return path.has(component);
-        }
-        
-        @Override
-        public boolean has( Component... components ){
-            return path.has( components );
         }
         
         @Override
@@ -970,49 +1099,6 @@ public interface _inspect<T> {
         @Override
         public _path path(){
             return path;
-        }
-        
-        
-        @Override
-        public boolean at(Component component){
-            return path.isLeaf(component);
-        }
-        
-        @Override
-        public boolean at(String id){
-            return path.isLeafId(id);
-        }
-        
-        @Override
-        public boolean at(Component component, String id){
-            return path.isLeaf(component) && path.isLeafId(id);
-        }
-        
-        /**
-         * does the path of the diffNode have the particualr id?
-         * @param id the id of the entity("f", "m(String)", parameter[1]
-         * @return if the 
-         */
-        @Override
-        public boolean has(String id){
-            return this.path.idPath.contains(id);
-        }
-        
-        @Override
-        public boolean has(String...ids){
-            Set<String> idd = new HashSet<>();
-            Arrays.stream(ids).forEach(i -> idd.add(i) );
-            return this.path.idPath.containsAll(idd);
-        }
-        
-        @Override
-        public boolean has( Component component ){
-            return path.has(component);
-        }
-        
-        @Override
-        public boolean has( Component... components ){
-            return path.has( components );
         }
         
         @Override
@@ -1101,49 +1187,6 @@ public interface _inspect<T> {
         @Override
         public _path path(){
             return path;
-        }
-        
-        
-        @Override
-        public boolean at(Component component){
-            return path.isLeaf(component);
-        }
-        
-        @Override
-        public boolean at(String id){
-            return path.isLeafId(id);
-        }
-        
-        @Override
-        public boolean at(Component component, String id){
-            return path.isLeaf(component) && path.isLeafId(id);
-        }
-        
-        /**
-         * does the path of the diffNode have the particualr id?
-         * @param id the id of the entity("f", "m(String)", parameter[1]
-         * @return if the 
-         */
-        @Override
-        public boolean has(String id){
-            return this.path.idPath.contains(id);
-        }
-        
-        @Override
-        public boolean has(String...ids){
-            Set<String> idd = new HashSet<>();
-            Arrays.stream(ids).forEach(i -> idd.add(i) );
-            return this.path.idPath.containsAll(idd);
-        }
-        
-        @Override
-        public boolean has( Component component ){
-            return path.has(component);
-        }
-        
-        @Override
-        public boolean has( Component... components ){
-            return path.has( components );
         }
         
         /** 
