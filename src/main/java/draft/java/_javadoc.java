@@ -115,6 +115,13 @@ public final class _javadoc
         T javadoc( String... content );
 
         /**
+         * set the javadoc comment with this JavadocComment
+         * @param astJavadocComment the
+         * @return the modified T
+         */
+        T javadoc( JavadocComment astJavadocComment );
+        
+        /**
          * Does this component have a Javadoc entry?
          * @return true if there is a javadoc, false otherwise
          */
@@ -130,7 +137,8 @@ public final class _javadoc
     public static final _javadocInspect INSPECT_JAVADOC = 
         new _javadocInspect();
     
-    public static class _javadocInspect implements _inspect<_javadoc>{
+    public static class _javadocInspect implements _inspect<_javadoc>, 
+            _differ<_javadoc, _node>{
        
         @Override
         public boolean equivalent(_javadoc left, _javadoc right) {
@@ -144,5 +152,77 @@ public final class _javadoc
             }
             return dt;
         }        
+
+        @Override
+        public <R extends _node> _dif diff(_path path, build dt, R leftRoot, R rightRoot, _javadoc left, _javadoc right) {
+            if( !equivalent( left, right)){
+                dt.node( new _changeJavadoc( path.in( _java.Component.JAVADOC ), (_hasJavadoc)leftRoot, (_hasJavadoc)rightRoot) );
+            }
+            return (_dif)dt;
+        }
+    }
+    
+    /**
+     * Both signifies a delta and provides a means to 
+     * commit (via right()) 
+     * or rollback( via left())
+     */
+    public static class _changeJavadoc 
+            implements _differ._delta, _differ._change<JavadocComment>{
+        _inspect._path path;
+        _hasJavadoc left;
+        _hasJavadoc right;
+        JavadocComment leftJavadoc;
+        JavadocComment rightJavadoc;
+        
+        public _changeJavadoc(_inspect._path _p, _hasJavadoc left, _hasJavadoc right ){
+            this.path = _p;
+            this.left = left;
+            if( left.hasJavadoc() ){
+                this.leftJavadoc = left.getJavadoc().ast().clone();
+            }
+            this.right = right;
+            if( right.hasJavadoc()){
+                this.rightJavadoc = right.getJavadoc().ast().clone();            
+            }
+        }
+        
+        public void keepLeft(){
+            left.javadoc(leftJavadoc);
+            right.javadoc(leftJavadoc);
+        }
+        
+        public void keepRight(){
+            left.javadoc(rightJavadoc);
+            right.javadoc(rightJavadoc);
+        }
+        
+        public JavadocComment left(){
+            return leftJavadoc;
+        }
+        
+        public JavadocComment right(){
+            return rightJavadoc;
+        }
+        
+        @Override
+        public _model leftRoot() {
+            return left;
+        }
+
+        @Override
+        public _model rightRoot() {
+            return right;
+        }
+
+        @Override
+        public _inspect._path path() {
+            return path;
+        }
+        
+        @Override
+        public String toString(){
+            return "   ~ "+path;
+        }
     }
 }

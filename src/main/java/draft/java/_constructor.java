@@ -3,6 +3,7 @@ package draft.java;
 import com.github.javaparser.ast.Modifier;
 import com.github.javaparser.ast.NodeList;
 import com.github.javaparser.ast.body.*;
+import com.github.javaparser.ast.comments.JavadocComment;
 import com.github.javaparser.ast.expr.LambdaExpr;
 import com.github.javaparser.ast.expr.ObjectCreationExpr;
 import com.github.javaparser.ast.stmt.BlockStmt;
@@ -115,6 +116,12 @@ public final class _constructor implements _anno._hasAnnos<_constructor>, _javad
         return this;
     }
 
+    @Override
+    public _constructor javadoc( JavadocComment astJavadocComment ){
+        this.astCtor.setJavadocComment( astJavadocComment );
+        return this;
+    }
+    
     @Override
     public boolean equals( Object obj ) {
         if( this == obj ) {
@@ -303,7 +310,20 @@ public final class _constructor implements _anno._hasAnnos<_constructor>, _javad
         this.astCtor.addThrownException( (ReferenceType)Ast.typeRef( throwException ) );
         return this;
     }
+    
+    @Override
+    public _constructor setThrows( NodeList<ReferenceType> thrws ){
+        this.astCtor.setThrownExceptions(thrws);
+        return this;
+    }
+    
 
+    @Override
+    public _constructor setParameters(NodeList<Parameter> astPs){
+        this.astCtor.setParameters(astPs);
+        return this;        
+    }
+    
     @Override
     public _constructor addParameters( Parameter... parameters ) {
         Arrays.stream( parameters ).forEach( p -> addParameter( p ) );
@@ -495,17 +515,17 @@ public final class _constructor implements _anno._hasAnnos<_constructor>, _javad
     }
 
     @Override
-    public _constructor setReceiverParameter( String receiverParameter ) {
-        return setReceiverParameter( Ast.receiverParameter( receiverParameter ) );
+    public _constructor receiverParameter( String receiverParameter ) {
+        return receiverParameter( Ast.receiverParameter( receiverParameter ) );
     }
 
     @Override
-    public _constructor setReceiverParameter( _receiverParameter _rp ) {
-        return setReceiverParameter( _rp.ast() );
+    public _constructor receiverParameter( _receiverParameter _rp ) {
+        return receiverParameter( _rp.ast() );
     }
 
     @Override
-    public _constructor setReceiverParameter( ReceiverParameter rp ) {
+    public _constructor receiverParameter( ReceiverParameter rp ) {
         this.astCtor.setReceiverParameter( rp );
         return this;
     }

@@ -5,6 +5,7 @@ import com.github.javaparser.ast.*;
 import com.github.javaparser.ast.body.*;
 import com.github.javaparser.ast.comments.BlockComment;
 import com.github.javaparser.ast.comments.Comment;
+import com.github.javaparser.ast.comments.JavadocComment;
 import com.github.javaparser.ast.nodeTypes.NodeWithName;
 import com.github.javaparser.ast.stmt.LocalClassDeclarationStmt;
 import com.github.javaparser.ast.type.ClassOrInterfaceType;
@@ -646,7 +647,7 @@ public interface _type<AST extends TypeDeclaration, T extends _type>
             //System.out.println( "AFTER ADD "+ this);
             return (T)this;
         }
-        throw new DraftException("No CompilationUnit of TYPE "+ ((T)this).getName()+" to add imports");
+        throw new DraftException("No AST CompilationUnit of TYPE "+ ((T)this).getName()+" to add imports");
     }
 
     default T imports( ImportDeclaration...importDecls){
@@ -655,7 +656,7 @@ public interface _type<AST extends TypeDeclaration, T extends _type>
             Arrays.stream( importDecls ).forEach( c-> cu.addImport( c ) );
             return (T)this;
         }
-        throw new DraftException("No CompilationUnit of class "+ getName()+" to add imports");
+        throw new DraftException("No AST CompilationUnit of class "+ getName()+" to add imports");
     }
 
     default T imports( String...importStatements ){
@@ -664,7 +665,7 @@ public interface _type<AST extends TypeDeclaration, T extends _type>
             Arrays.stream( importStatements ).forEach( c-> cu.addImport( Ast.importDeclaration( c ) ) );
             return (T)this;
         }
-        throw new DraftException("No CompilationUnit of "+ getName()+" to add imports");
+        throw new DraftException("No AST CompilationUnit of "+ getName()+" to add imports");
     }
 
     @Override
@@ -673,6 +674,12 @@ public interface _type<AST extends TypeDeclaration, T extends _type>
         return (T)this;
     }
 
+    @Override
+    default T javadoc( JavadocComment astJavadocComment ){
+        astType().setJavadocComment( astJavadocComment );
+        return (T)this;
+    }
+    
     @Override
     default T removeJavadoc(){
         astType().removeJavaDocComment();

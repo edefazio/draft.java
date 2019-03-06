@@ -718,28 +718,6 @@ public final class _anno
         }
     }
 
-    /**
-     * Verify that one list of _anno is equivalent to another list of _anno
-     
-    public static _java.Semantic<Collection<_anno>> EQIVALENT_ANNOS_LIST = 
-            (Collection<_anno> o1, Collection<_anno> o2) -> {
-        if( o1 == null ){
-            return o2 == null;
-        }
-        if( o1.size() != o2.size()){
-            return false;
-        }
-        Set<_anno> tm = new HashSet<>();
-        Set<_anno> om = new HashSet<>();
-        tm.addAll(o1);
-        om.addAll(o2);
-        return Objects.equals(tm, om);
-    };
-    
-    public static boolean equivalent( Collection<_anno> left, Collection<_anno> right){
-        return EQIVALENT_ANNOS_LIST.equivalent(left, right);
-    }
-    */ 
     
     /**
      * Grouping of _anno (s) expressions ({@link AnnotationExpr})
@@ -1052,7 +1030,7 @@ public final class _anno
     
     
     public static class _annosInspect
-        implements _inspect<_anno._annos> {
+        implements _inspect<_anno._annos>, _differ<_anno._annos, _node>  {
 
         String name = _java.Component.ANNOS.getName();
         
@@ -1065,7 +1043,7 @@ public final class _anno
         }
 
         @Override
-        public _diff diff( _java._inspector _inspect, _inspect._path path, _diff dt, _annos left, _annos right) {
+        public _inspect._diff diff( _java._inspector _inspect, _inspect._path path, _inspect._diff dt, _annos left, _annos right) {
             NodeList<AnnotationExpr> laes = left.astAnnNode.getAnnotations();
             NodeList<AnnotationExpr> raes = right.astAnnNode.getAnnotations();
             for( int i = 0; i < laes.size(); i++ ) {
@@ -1085,5 +1063,142 @@ public final class _anno
             }            
             return dt;
         }
-    }
+
+        @Override
+        public <R extends _node> _dif diff(_path path, build dt, R leftRoot, R rightRoot, _annos left, _annos right) {
+            NodeList<AnnotationExpr> laes = left.astAnnNode.getAnnotations();
+            NodeList<AnnotationExpr> raes = right.astAnnNode.getAnnotations();
+            for( int i = 0; i < laes.size(); i++ ) {
+                AnnotationExpr e = (AnnotationExpr)laes.get( i );
+                //find a matching annotation in other, if one isnt found, then not equal
+                if(!raes.stream().filter(a -> Ast.annotationEqual(e, (AnnotationExpr)a)).findFirst().isPresent()){
+                    dt.node(new remove_anno( //in LEFT not in RIGHT means REMOVE
+                        path.in(_java.Component.ANNO, e.getNameAsString()),(_hasAnnos)leftRoot,(_hasAnnos)rightRoot,_anno.of(e)));
+                }
+            }            
+            for( int i = 0; i < raes.size(); i++ ) {
+                AnnotationExpr e = (AnnotationExpr)raes.get( i );
+                //find a matching annotation in other, if one isnt found, then not equal
+                if( !laes.stream().filter( a -> Ast.annotationEqual( e, (AnnotationExpr)a ) ).findFirst().isPresent() ) {
+                    dt.node(new add_anno( //in LEFT not in RIGHT means REMOVE
+                        path.in(_java.Component.ANNO, e.getNameAsString()),(_hasAnnos)leftRoot,(_hasAnnos)rightRoot,_anno.of(e)));
+                }
+            }            
+            return (_dif)dt;
+        }
+        
+        
+        public static class remove_anno //extends remove_node<_hasAnnos, _anno>{
+                implements _differ._delta<_hasAnnos>, _remove<_anno>{
+
+            public _path path;
+            public _hasAnnos leftRoot;
+            public _hasAnnos rightRoot;
+            public _anno toRemove;
+            
+            public remove_anno(_path p, _hasAnnos left, _hasAnnos right, _anno toRemove){
+                this.path = p;
+                this.leftRoot = left;
+                this.rightRoot = right;
+                this.toRemove = toRemove.copy();
+            }
+            
+            @Override
+            public _hasAnnos leftRoot() {
+                return leftRoot;
+            }
+
+            @Override
+            public _hasAnnos rightRoot() {
+                return rightRoot;
+            }
+
+            @Override
+            public _path path() {
+                return path;
+            }
+
+            @Override
+            public _anno removed() {
+                return toRemove;
+            }
+
+            @Override
+            public void keepRight() {
+                //remove the anno
+                leftRoot.removeAnno(toRemove.annotationExpr);
+                rightRoot.removeAnno(toRemove.annotationExpr);
+            }
+
+            @Override
+            public void keepLeft() {
+                //remove it IN CASE so we dont mistakenly add it twice
+                leftRoot.removeAnno(toRemove.annotationExpr);
+                leftRoot.annotate(toRemove);
+                rightRoot.removeAnno(toRemove.annotationExpr);                
+                rightRoot.annotate(toRemove);
+            }            
+            
+            @Override
+            public String toString(){
+                return "   - "+path;
+            }
+        }
+        
+        public static class add_anno implements _differ._delta<_hasAnnos>, _add<_anno>{
+
+            public _path path;
+            public _hasAnnos leftRoot;
+            public _hasAnnos rightRoot;
+            public _anno toAdd;
+            
+            public add_anno(_path p, _hasAnnos left, _hasAnnos right, _anno toAdd){
+                this.path = p;
+                this.leftRoot = left;
+                this.rightRoot = right;
+                this.toAdd = toAdd.copy();
+            }
+            
+            @Override
+            public _hasAnnos leftRoot() {
+                return leftRoot;
+            }
+
+            @Override
+            public _hasAnnos rightRoot() {
+                return rightRoot;
+            }
+
+            @Override
+            public _path path() {
+                return path;
+            }
+
+            @Override
+            public _anno added() {
+                return toAdd;
+            }
+
+            @Override
+            public void keepRight() {
+                //remove it before just so we dont mistakenly add it twice
+                leftRoot.removeAnno(toAdd.annotationExpr);
+                leftRoot.annotate(toAdd);
+                rightRoot.removeAnno(toAdd.annotationExpr);
+                rightRoot.annotate(toAdd);
+            }
+
+            @Override
+            public void keepLeft() {
+                //remove it before just so we dont mistakenly add it twice
+                leftRoot.removeAnno(toAdd.annotationExpr);
+                rightRoot.removeAnno(toAdd.annotationExpr);                
+            }          
+            
+            @Override
+            public String toString(){
+                return "   + "+path;
+            }
+        }
+    }       
 }

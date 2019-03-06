@@ -251,23 +251,6 @@ public final class _parameter
             return !getParameters().isEmpty();
         }
 
-        /**
-         * When we get parameters we should do a
-         * _class _c = _class.of(Local.class);
-         *
-         * Method m = Local.class.getMethod("sort");
-         * java.lang.reflect.Type[] genericParameterTypes = m.getGenericParameterTypes();
-         * _c.getMethod("sort").hasParametersOfType( genericParameterTypes );
-         *
-         * @param genericParameterTypes
-         * @return
-         
-        boolean hasParametersOfType(java.lang.reflect.Type...genericParameterTypes );
-        */
-        
-        //NOTE: this is removed becayuse it gives BAD results for Generic Parameters
-        // List<String>, etc.
-        //boolean hasParametersOfType( Class<?>... clazz );
 
         default List<_parameter> listParameters() {
             return getParameters().list();
@@ -317,6 +300,18 @@ public final class _parameter
 
         T addParameters( Parameter... ps );
 
+        T setParameters(NodeList<Parameter> astPs);
+        
+        default T setParameters(_parameters _ps){
+            return (T)setParameters( _ps.ast() );
+        }        
+        
+        default T setParameters( Parameter... astPs ){
+            NodeList<Parameter>nl = new NodeList<>();
+            Arrays.stream(astPs).forEach(p -> nl.add(p));
+            return setParameters(nl);
+        }
+               
         default boolean isVarArg() {
             return getParameters().isVarArg();
         }
@@ -592,7 +587,7 @@ public final class _parameter
         new _parametersInspect();
 
     public static class _parametersInspect 
-            implements _inspect<_parameters>{
+            implements _inspect<_parameters>, _differ<_parameters,_node> {
 
         @Override
         public boolean equivalent(_parameters left, _parameters right) {
@@ -619,5 +614,74 @@ public final class _parameter
             }
             return dt;
         }        
+
+        @Override
+        public <R extends _node> _dif diff(_path path, build dt, R leftRoot, R rightRoot, _parameters left, _parameters right) {
+            if( !Objects.equals(left, right )){
+                dt.node(new _changeParameters(path.in(_java.Component.PARAMETERS),(_hasParameters)leftRoot,(_hasParameters)rightRoot) );
+            }
+            return (_dif)dt;            
+        }
+        
+        public static class _changeParameters 
+                implements _delta<_hasParameters>, _change<_parameters> {
+
+            public _path path;
+            public _hasParameters leftRoot;
+            public _hasParameters rightRoot;
+            public _parameters left;
+            public _parameters right;
+            
+            public _changeParameters(_path path, _hasParameters leftRoot, _hasParameters rightRoot){
+                this.path = path;
+                this.leftRoot = leftRoot;
+                this.rightRoot = rightRoot;
+                this.left = leftRoot.getParameters().copy();
+                this.right = rightRoot.getParameters().copy();
+            }
+            
+            @Override
+            public _hasParameters leftRoot() {
+                return leftRoot;
+            }
+
+            @Override
+            public _hasParameters rightRoot() {
+                return rightRoot;
+            }
+
+            @Override
+            public _path path() {
+                return path;
+            }
+
+            @Override
+            public _parameters left() {
+                return left;
+            }
+
+            @Override
+            public _parameters right() {
+                return right;
+            }
+
+            @Override
+            public void keepLeft() {
+                leftRoot.setParameters( left);
+                rightRoot.setParameters( left );
+            }
+
+            @Override
+            public void keepRight() {
+                leftRoot.setParameters( right );
+                rightRoot.setParameters( right );
+            }
+            
+            @Override
+            public String toString(){
+                return "   ~ "+path;
+            }
+            
+        }
     }   
 }

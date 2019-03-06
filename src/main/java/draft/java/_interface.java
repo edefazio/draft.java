@@ -210,6 +210,11 @@ public final class _interface implements _type<ClassOrInterfaceDeclaration, _int
     }
 
     @Override
+    public NodeList<TypeParameter> listAstTypeParameters(){
+        return this.astInterface.getTypeParameters();
+    }
+    
+    @Override
     public _interface typeParameters( String typeParameters ){
         this.astInterface.setTypeParameters( Ast.typeParameters( typeParameters ) );
         return this;

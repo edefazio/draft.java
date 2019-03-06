@@ -295,7 +295,7 @@ public enum _java {
      * java.util.Map<java.net.URL,String> map; =/= Map<URL,String> map;
      *
      * @param <A>
-     */
+     
     public interface Semantic<A> {
 
         /**
@@ -312,9 +312,10 @@ public enum _java {
          * @param left the first instance
          * @param right the second instance
          * @return true if they are semantically equivalent
-         */
+         
         public boolean equivalent(A left, A right);
     }
+    */ 
 
     /**
      * A Way to consistently name things when we construct and deconstruct
@@ -434,7 +435,7 @@ public enum _java {
      * Inspect for a String
      */
     public static class StringInspect 
-            implements _inspect<String>{
+            implements _inspect<String>, _differ<String,_node>{
         
         public Component component;
         
@@ -454,10 +455,20 @@ public enum _java {
             }
             return dt;
         }
+
+        
+        @Override
+        public <R extends _node> _dif diff( _path path, build dt, R leftRoot, R rightRoot, String left, String right) {
+            if( !equivalent(left, right)){                
+                return (_dif)dt.node(new _changeName(path.in(component), (_named)leftRoot, (_named)rightRoot));                
+            }
+            return (_dif)dt;
+        }
+        
     }
     
     public static class ExpressionInspect 
-            implements _inspect<Expression>{
+            implements _inspect<Expression> { //, _differ<Expression, _node>{
         
         public Component component;
         
@@ -478,6 +489,24 @@ public enum _java {
             }
             return dt;
         }
+        
+        /*
+        @Override
+        public <R extends _node> _dif diff(_diffMaster _inspect, _path path, build dt, R leftRoot, R rightRoot, Expression left, Expression right) {
+            if( !equivalent(left, right)){
+                if( left == null){
+                    return (_dif) dt.node(new _addExpression());
+                }
+                if( right  == null ){
+                    return dt.node(new _removeExpression());
+                }
+                return (_dif)dt.addRemoveOrChange(path.in(component), leftRoot, rightRoot, left, right);                
+            }
+            return (_dif)dt;
+        }
+        */
+        
+       
     }
     
     /**
@@ -529,9 +558,54 @@ public enum _java {
             new _typeParameter._typeParametersInspect();    
         public _inspect<_throws> INSPECT_THROWS = new _throws._throwsInspect();    
         public _inspect<List<Expression>> INSPECT_ARGUMENTS = new _enum.ArgsInspect();    
+        public _inspect<Expression> INSPECT_ARGUMENT = new _java.ExpressionInspect(_java.Component.ARGUMENT);    
         public _inspect<Expression> INSPECT_DEFAULT = new _java.ExpressionInspect(_java.Component.DEFAULT);    
         public _inspect<Expression> INSPECT_INIT = new _java.ExpressionInspect(_java.Component.INIT);
         public _inspect<String> INSPECT_PACKAGE_NAME = new _java.StringInspect(_java.Component.PACKAGE_NAME);    
         public _inspect<String> INSPECT_NAME = new _java.StringInspect(_java.Component.NAME);
     }
+    /*
+    public static class _diffMaster{
+        public _inspect<List<_enum._constant>> INSPECT_ENUM_CONSTANTS = new _enum._enumConstantsInspect();
+        public _inspect<List<ImportDeclaration>> INSPECT_IMPORTS = new _type.ListImportDeclarationInspect(_java.Component.IMPORT.getName() );
+        public _inspect<List<ClassOrInterfaceType>> INSPECT_EXTENDS = new _type.ListClassOrInterfaceTypeInspect(_java.Component.EXTENDS);    
+        public _inspect<List<ClassOrInterfaceType>> INSPECT_IMPLEMENTS = new _type.ListClassOrInterfaceTypeInspect(_java.Component.IMPLEMENTS );
+        public _inspect<_enum._constant> INSPECT_ENUM_CONSTANT = new _enum._enumConstantInspect();
+        public _inspect<_type> INSPECT_TYPE = new _type._typeInspect();
+        public _inspect<List<_type>> INSPECT_NESTS = new _type._typesInspect();
+        public _inspect<_annotation> INSPECT_ANNOTATION = new _annotation._annotationInspect();
+        public _inspect<_interface> INSPECT_INTERFACE = new _interface._interfaceInspect();
+        public _inspect<_enum> INSPECT_ENUM = new _enum._enumInspect();     
+        public _inspect<_class> INSPECT_CLASS = new _class._classInspect();    
+        public _inspect<List<_annotation._element>>INSPECT_ANNOTATION_ELEMENTS = new _annotation._annotationElementsInspect();
+        public _inspect<_annotation._element> INSPECT_ANNOTATION_ELEMENT = new _annotation._annotationElementInspect();
+        public _inspect<List<_field>> INSPECT_FIELDS = new _field._fieldsInspect();
+        public _inspect<_field> INSPECT_FIELD = new _field._fieldInspect();    
+        public _inspect<List<_staticBlock>> INSPECT_STATIC_BLOCKS = new _staticBlock._staticBlocksInspect();    
+        public _inspect<_staticBlock> INSPECT_STATIC_BLOCK = new _staticBlock._staticBlockInspect();    
+        public _inspect<List<_constructor>> INSPECT_CONSTRUCTORS = new _constructor._constructorsInspect();    
+        public _inspect<_constructor> INSPECT_CONSTRUCTOR = new _constructor._constructorInspect();    
+        public _inspect<List<_method>> INSPECT_METHODS = new _method._methodsInspect();    
+        public _inspect<_method> INSPECT_METHOD = new _method._methodInspect();    
+        public _inspect<_body> INSPECT_BODY = new _body._bodyInspect();    
+        public _inspect<_parameter._parameters> INSPECT_PARAMETERS = new _parameter._parametersInspect();    
+        public _inspect<_modifiers> INSPECT_MODIFIERS = new _modifiers._modifiersInspect();    
+        public _inspect<_javadoc> INSPECT_JAVADOC = new _javadoc._javadocInspect();    
+        public _inspect<_receiverParameter> INSPECT_RECEIVER_PARAMETER = 
+            new _receiverParameter._receiverParameterInspect();    
+        
+        public _inspect<_typeRef> INSPECT_TYPE_REF = new _typeRef._typeRefInspect();    
+        public _inspect<_typeParameter._typeParameters> INSPECT_TYPE_PARAMETERS = 
+            new _typeParameter._typeParametersInspect();    
+        public _differ<_anno._annos, _node> INSPECT_ANNOS = new _anno._annosInspect();    
+        //public _differ<_throws, _node> INSPECT_THROWS = new _throws._throwsInspect();    
+        public _differ<List<Expression>, _node> INSPECT_ARGUMENTS = new _enum.ArgsInspect();    
+        //public _differ<Expression, _node> INSPECT_ARGUMENT = new _java.ExpressionInspect(_java.Component.ARGUMENT);    
+        //public _differ<Expression, _node> INSPECT_DEFAULT = new _java.ExpressionInspect(_java.Component.DEFAULT);    
+        //public _differ<Expression, _node> INSPECT_INIT = new _java.ExpressionInspect(_java.Component.INIT);
+        //public _differ<String, _node> INSPECT_PACKAGE_NAME = new _java.StringInspect(_java.Component.PACKAGE_NAME);    
+        //public _differ<String, _node> INSPECT_NAME = new _java.StringInspect(_java.Component.NAME);
+    }
+*/
+    
 }

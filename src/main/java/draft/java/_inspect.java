@@ -1,5 +1,6 @@
 package draft.java;
 
+import draft.DraftException;
 import draft.java._java.Component;
 
 import java.util.*;
@@ -140,6 +141,7 @@ public interface _inspect<T> {
     
     /**
      * Build a diff to represent the deltas between the two entities(left and right)
+     * using the _inspector as the mechanism for diffing
      * 
      * @param _inspect main inspector containing the underlying inspector 
      * implementations used for all component types as I walk through the members
@@ -151,6 +153,14 @@ public interface _inspect<T> {
      * @return  the full diff between the left and right (and all underlying nodes)
      */
     public _diff diff( _java._inspector _inspect, _path path, _diff dt, T left, T right);
+    
+    
+    /*
+    public interface _deepInspect<T> extends _inspect<T>{
+        
+        public <R extends _model._node> _diff diff( _java._inspector _inspect, _path path, _diff dt, R leftRoot, R rightRoot, T left, T right);
+    }
+    */
     
    
     /**
@@ -173,6 +183,21 @@ public interface _inspect<T> {
      */
     public static class _path{
             
+        public static _path of(Object...pathAsTokens){
+            _path _p = new _path();
+            for(int i=0;i<pathAsTokens.length;i+=2){
+                if(! (pathAsTokens[i] instanceof Component)){
+                    throw new DraftException("element ["+i+"] MUST be a Component");
+                }
+                if( (pathAsTokens.length > i + 1) && pathAsTokens[i+1] instanceof String){
+                    _p = _p.in( (Component)pathAsTokens[i], (String)pathAsTokens[i+1]);
+                } else{
+                    _p = _p.in( (Component)pathAsTokens[i]);
+                }                        
+            }
+            return _p;
+        }
+        
         /** 
          * the types of components that identify an entity 
          * for example: 
@@ -341,6 +366,31 @@ public interface _inspect<T> {
             }
             return sb.toString();
         }
+
+        @Override
+        public int hashCode() {
+            int hash = 5;
+            hash = 79 * hash + Objects.hashCode(this.componentPath);
+            hash = 79 * hash + Objects.hashCode(this.idPath);
+            return hash;
+        }
+        
+        @Override
+        public boolean equals( Object obj ){
+            if( obj == null ){
+                return false;
+            }
+            if( this == obj ){
+                return true;
+            }
+            if( !( obj instanceof _path) ){
+                return false;
+            }
+            _path other = (_path)obj;
+            
+            return Objects.equals(this.componentPath, other.componentPath) &&
+                    Objects.equals( this.idPath, other.idPath);
+        }
     }
     
     /**
@@ -350,7 +400,7 @@ public interface _inspect<T> {
     public static class _diff{
         
         /** the underlying diffs collected */
-        public List<_node> diffs = new ArrayList<>();
+        public List<_diffNode> diffs = new ArrayList<>();
         
         /** @return number of diffs */
         public int size(){
@@ -370,16 +420,25 @@ public interface _inspect<T> {
         }
         
         /**
-         * Return the diff at the path, (or null if no diff exists at this path)
-         * @param _p
-         * @return 
+         * Return the _diffNode at the path, (or null if no diff exists at this path)
+         * @param _p the underlying _path
+         * @return the _diffNode at this path, or null if not found
          */
-        public _node at(_path _p){      
-            return first( d-> d.path().equals(_p));            
+        public _diffNode at(_path _p){      
+            return first( d-> d.path().equals(_p));                   
         } 
         
         /**
-         * Does the diff happen for this specific component type 
+         * returns the DiffNode that can be found at this (Full) path
+         * @param pathAsTokens the tokens that make up the path
+         * @return the _diffNode found at this path or null if not found
+         */
+        public _diffNode atPath( Object...pathAsTokens){
+            return at( _path.of(pathAsTokens));
+        }
+        
+        /**
+         * Is there at least (1) _diffNode that has a path through this specific component type 
          * (i.e. Component.FIELD, Component.METHOD, Component.BODY , etc. )
          * @param component the component type
          * @return true if there exists at least one diff containing the component
@@ -389,13 +448,14 @@ public interface _inspect<T> {
         }
         
         /**
-         * Is there at least (1) diff that contains these components
+         * Is there at least (1) diff that has a path through ALL of these components?
          * 
-         * @param components the components expected to have a diff
-         * @return true if there is at least (1) diff containing ALL of the components
+         * @param components the components expected to have a diff (in ANY order)
+         * @return true if there is at least (1) diff containing a path through 
+         * ALL of the components
          */
         public boolean has(Component...components){
-           return first(components) != null;
+           return firstOf(components) != null;
         }
         
         /**
@@ -412,11 +472,22 @@ public interface _inspect<T> {
             return first( d -> d.has(component) && d.has(ids) ) != null;
         }
         
-        public boolean at( Component component){
+        /**
+         * IS there a Diff Node at the specified Component type?
+         * @param component the component type
+         * @return true if there is a diff node at this type
+         */
+        public boolean isAt( Component component){
             return first( d -> d.at(component) ) != null;
         }
         
-        public boolean at( Component component, String id){
+        /**
+         * Is there a Diff Node at the specified Component type
+         * @param component the component type
+         * @param id the identifier for the node
+         * @return true if a Diff was found at this Node, false otherwise
+         */
+        public boolean isAt( Component component, String id){
             return first( d -> d.at(component) && d.at(id) ) != null;
         }
         
@@ -426,7 +497,7 @@ public interface _inspect<T> {
          * @param _nodeActionFn consumer action function on selected _diffNodes
          * @return  the potentially modified) _diffTree
          */
-        public _diff forEach( Predicate<_node> _nodeMatchFn, Consumer<_node> _nodeActionFn ){
+        public _diff forEach( Predicate<_diffNode> _nodeMatchFn, Consumer<_diffNode> _nodeActionFn ){
             list(_nodeMatchFn).forEach(_nodeActionFn);
             return this;
         }
@@ -436,7 +507,7 @@ public interface _inspect<T> {
          * @param _nodeActionFn action to take on each node
          * @return the potentially modified _diff
          */
-        public _diff forEach( Consumer<_node> _nodeActionFn ){
+        public _diff forEach( Consumer<_diffNode> _nodeActionFn ){
             this.diffs.forEach(_nodeActionFn);
             return this;
         }
@@ -451,7 +522,7 @@ public interface _inspect<T> {
          * @return the potentially modified _diff
          */
         public _diff forAdds( Predicate<_addNode> _addNodeMatchFn, Consumer<_addNode> _addNodeActionFn){
-            List<_node> ns = list(d -> d instanceof _addNode &&  _addNodeMatchFn.test((_addNode)d));
+            List<_diffNode> ns = list(d -> d instanceof _addNode &&  _addNodeMatchFn.test((_addNode)d));
             List<_addNode> ans = new ArrayList<>();
             ns.forEach(n -> ans.add( (_addNode)n));
             ans.forEach( _addNodeActionFn );
@@ -466,7 +537,7 @@ public interface _inspect<T> {
          * @return the potentially modified _diff
          */
         public _diff forAdds( Consumer<_addNode> _addNodeActionFn ){
-            List<_node> ns = list(d -> d instanceof _addNode);
+            List<_diffNode> ns = list(d -> d instanceof _addNode);
             List<_addNode> ans = new ArrayList<>();
             ns.forEach(n -> ans.add( (_addNode)n));
             ans.forEach( _addNodeActionFn );
@@ -483,7 +554,7 @@ public interface _inspect<T> {
          * @return the potentially modified _diff
          */
         public _diff forRemoves( Predicate<_removeNode> _removeNodeMatchFn, Consumer<_removeNode> _removeNodeActionFn){
-            List<_node> ns = list(d -> d instanceof _removeNode &&  _removeNodeMatchFn.test((_removeNode)d));
+            List<_diffNode> ns = list(d -> d instanceof _removeNode &&  _removeNodeMatchFn.test((_removeNode)d));
             List<_removeNode> ans = new ArrayList<>();
             ns.forEach(n -> ans.add( (_removeNode)n));
             ans.forEach( _removeNodeActionFn );
@@ -498,7 +569,7 @@ public interface _inspect<T> {
          * @return the potentially modified _diff
          */
         public _diff forRemoves( Consumer<_removeNode> _removeNodeActionFn ){
-            List<_node> ns = list(d -> d instanceof _removeNode );
+            List<_diffNode> ns = list(d -> d instanceof _removeNode );
             List<_removeNode> ans = new ArrayList<>();
             ns.forEach(n -> ans.add( (_removeNode)n));
             ans.forEach( _removeNodeActionFn );
@@ -515,7 +586,7 @@ public interface _inspect<T> {
          * @return the potentially modified _diff
          */
         public _diff forChanges( Predicate<_changeNode> _changeNodeMatchFn, Consumer<_changeNode> _changeNodeActionFn){
-            List<_node> ns = list(d -> d instanceof _removeNode &&  _changeNodeMatchFn.test((_changeNode)d));
+            List<_diffNode> ns = list(d -> d instanceof _removeNode &&  _changeNodeMatchFn.test((_changeNode)d));
             List<_changeNode> ans = new ArrayList<>();
             ns.forEach(n -> ans.add( (_changeNode)n));
             ans.forEach( _changeNodeActionFn );
@@ -531,7 +602,7 @@ public interface _inspect<T> {
          * @return the potentially modified _diff
          */
         public _diff forChanges( Consumer<_changeNode> _changeNodeActionFn ){
-            List<_node> ns = list(d -> d instanceof _changeNode );
+            List<_diffNode> ns = list(d -> d instanceof _changeNode );
             List<_changeNode> ans = new ArrayList<>();
             ns.forEach(n -> ans.add( (_changeNode)n));
             ans.forEach( _changeNodeActionFn );
@@ -547,7 +618,7 @@ public interface _inspect<T> {
          * @return the potentially modified _diff
          */
         public _diff forEdits(Consumer<_editNode> _editNodeActionFn){
-            List<_node> ns = list(d -> d instanceof _editNode );
+            List<_diffNode> ns = list(d -> d instanceof _editNode );
             List<_editNode> ans = new ArrayList<>();
             ns.forEach(n -> ans.add( (_editNode)n));
             ans.forEach( _editNodeActionFn );
@@ -565,7 +636,7 @@ public interface _inspect<T> {
          * @return the potentially modified _diff
          */
         public _diff forEdits( Predicate<_editNode> _editNodeMatchFn, Consumer<_editNode> _editNodeActionFn){
-            List<_node> ns = list(d -> d instanceof _editNode &&  _editNodeMatchFn.test((_editNode)d));
+            List<_diffNode> ns = list(d -> d instanceof _editNode &&  _editNodeMatchFn.test((_editNode)d));
             List<_editNode> ans = new ArrayList<>();
             ns.forEach(n -> ans.add( (_editNode)n));
             ans.forEach( _editNodeActionFn );
@@ -683,7 +754,7 @@ public interface _inspect<T> {
         /**
          * @return a list of all diff nodes
          */
-        public List<_node> list(){
+        public List<_diffNode> list(){
             return this.diffs;
         } 
         
@@ -693,8 +764,8 @@ public interface _inspect<T> {
          * @param componet the last component in the path
          * @return the first diff node found at this path or null if none found
          */
-        public _node firstAt( Component componet ){
-            Optional<_node> first = 
+        public _diffNode firstAt( Component componet ){
+            Optional<_diffNode> first = 
                     this.diffs.stream().filter(d -> d.at(componet)).findFirst();
             if( first.isPresent() ){
                 return first.get();
@@ -704,13 +775,13 @@ public interface _inspect<T> {
         
         /**
          * Find the first diff that is at (the last component in the path is)
-         * the component type
+         * the component type with this id
          * @param component the last component in the path
          * @param id the last id in the path to the component
          * @return the first diff node found at this path or null if none found
          */
-        public _node firstAt( Component component, String id){
-            Optional<_node> first = 
+        public _diffNode firstAt( Component component, String id){
+            Optional<_diffNode> first = 
                     this.diffs.stream().filter(d -> d.at(component, id)).findFirst();
             if( first.isPresent() ){
                 return first.get();
@@ -718,12 +789,12 @@ public interface _inspect<T> {
             return null;
         }
         /**
-         * return the first diff node that has this component anywhere in the path
+         * return the first diff node that passes through this component (anywhere in the path)
          * @param componet the target component
-         * @return the first node
+         * @return the first node that has a diff passing through this path
          */
-        public _node first( Component componet ){
-            Optional<_node> first = 
+        public _diffNode firstOf( Component componet ){
+            Optional<_diffNode> first = 
                     this.diffs.stream().filter(d -> d.has(componet)).findFirst();
             if( first.isPresent() ){
                 return first.get();
@@ -737,8 +808,8 @@ public interface _inspect<T> {
          * @return the first node to contain all of the components (in ANY order)
          * in the path (or null if none found)
          */
-        public _node first( Component... componets ){
-            Optional<_node> first = 
+        public _diffNode firstOf( Component... componets ){
+            Optional<_diffNode> first = 
                     this.diffs.stream().filter(d -> d.has(componets) ).findFirst();
             if( first.isPresent() ){
                 return first.get();
@@ -751,8 +822,8 @@ public interface _inspect<T> {
          * @param _nodeMatchFn
          * @return the first node that matches the function or null if none found
          */
-        public _node first( Predicate<_node> _nodeMatchFn ){
-            Optional<_node> first = 
+        public _diffNode first( Predicate<_diffNode> _nodeMatchFn ){
+            Optional<_diffNode> first = 
                     this.diffs.stream().filter(_nodeMatchFn).findFirst();
             if( first.isPresent() ){
                 return first.get();
@@ -766,7 +837,7 @@ public interface _inspect<T> {
          * @param id the leaf (last) id in the path (i.e. "0", "m(String)")
          * @return 
          */
-        public List<_node> listAt( String id ){
+        public List<_diffNode> listAt( String id ){
             return list( d-> d.at(id));
         }
         
@@ -776,7 +847,7 @@ public interface _inspect<T> {
          * @param component the leaf component to look for (i.e. METHOD, FIELD)
          * @return 
          */
-        public List<_node> listAt( Component component ){
+        public List<_diffNode> listAt( Component component ){
             return list( d-> d.at(component));
         }
         
@@ -785,7 +856,7 @@ public interface _inspect<T> {
          * @param component the component type
          * @return a list of diffNodes
          */
-        public List<_node> listOf( Component component ){
+        public List<_diffNode> listOf( Component component ){
             return list( d-> d.has(component));
         }
         
@@ -809,7 +880,7 @@ public interface _inspect<T> {
          * @param components
          * @return 
          */
-        public List<_node> listOf( Component...components ){
+        public List<_diffNode> listOf( Component...components ){
             return list( d-> d.has(components));
         }
         
@@ -818,7 +889,7 @@ public interface _inspect<T> {
          * @param _nodeMatchFn matches diff nodes for retrieval
          * @return list of diff nodes that match the nodeMatchFn
          */
-        public List<_node> list(Predicate<_node> _nodeMatchFn ){
+        public List<_diffNode> list(Predicate<_diffNode> _nodeMatchFn ){
             return this.diffs.stream().filter(_nodeMatchFn).collect(Collectors.toList());
         }
         
@@ -879,7 +950,7 @@ public interface _inspect<T> {
      * and identifiers( "0", "m(String)") that are traversed to reach the diff
      * node
      */
-    public interface _node{
+    public interface _diffNode{
         
         /** @return the left entity (potentially null) that is different */
         Object left();
@@ -903,19 +974,19 @@ public interface _inspect<T> {
             return this instanceof _editNode;
         }
         
-        default _addNode asAddNode(){
+        default _addNode asAdd(){
             return (_addNode)this;
         }
         
-        default _removeNode asRemoveNode(){
+        default _removeNode asRemove(){
             return (_removeNode)this;
         }
         
-        default _changeNode asChangeNode(){
+        default _changeNode asChange(){
             return (_changeNode)this;
         }
         
-        default _editNode asEditNode(){
+        default _editNode asEdit(){
             return (_editNode)this;
         }
         
@@ -1008,7 +1079,7 @@ public interface _inspect<T> {
      * A node that is NOT found on the left but is found on the right
      * (it has been added in transitioning between the left and right)
      */
-    public static class _addNode implements _node {
+    public static class _addNode implements _diffNode {
         Object add;
         _path path;
         
@@ -1041,18 +1112,18 @@ public interface _inspect<T> {
     /**
      * an entity that exists on the left which is removed on the right
      */
-    public static class _removeNode implements _node{
-        Object removed;
+    public static class _removeNode implements _diffNode{
+        Object toRemove;
         _path path;
         
-        public _removeNode( _path path, Object removed ){
+        public _removeNode( _path path, Object toRemove ){
             this.path = path;
-            this.removed = removed;
+            this.toRemove = toRemove;
         }
         
         @Override
         public Object left(){
-            return removed;
+            return toRemove;
         }
         
         @Override
@@ -1068,14 +1139,14 @@ public interface _inspect<T> {
         @Override
         public String toString(){
             return "  - " + path.toString() + System.lineSeparator();
-        }
+        }        
     }
     
     /**
      * A Node that has a changed state between the left and right node
      * (for example an added or changed modifier, implement or extends)
      */
-    public static class _changeNode implements _node{
+    public static class _changeNode implements _diffNode{
         Object left;
         Object right;
         _path path;
@@ -1152,7 +1223,7 @@ public interface _inspect<T> {
      *  GG
      * </PRE>
      */
-    public static class _editNode implements _node{
+    public static class _editNode implements _diffNode{
         
         public static final _editNode of (_path path, LinkedList<Diff> diffs, Object left, Object right ){
             return new _editNode(path, diffs, left, right );

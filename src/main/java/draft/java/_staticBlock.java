@@ -143,6 +143,12 @@ public final class _staticBlock
     }
 
     @Override
+    public _staticBlock javadoc( JavadocComment astJavadocComment ){
+        this.astStaticInit.setJavadocComment( astJavadocComment );
+        return this;
+    }
+        
+    @Override
     public _staticBlock javadoc( String... content ) {
         if( this.astStaticInit.getJavadocComment().isPresent() ) {
             this.astStaticInit.getJavadocComment().get().setContent( Text.combine( content ) );
@@ -279,6 +285,7 @@ public final class _staticBlock
         
     }
     
+    /*
     public static final _java.Semantic<Collection<_staticBlock>> EQIVALENT_STATIC_BLOCKS = (o1, o2)->{
          if( o1 == null){
                 return o2 == null;
@@ -295,16 +302,18 @@ public final class _staticBlock
             om.addAll(o2);
             return Objects.equals(tm, om);        
     };
+    */
     
     /** 
      * Are these (2) collections of methods equivalent ?
      * @param left
      * @param right
      * @return true if these collections are semantically equivalent
-     */
+     
     public static boolean equivalent( Collection<_staticBlock> left, Collection<_staticBlock> right ){
         return EQIVALENT_STATIC_BLOCKS.equivalent(left, right);
     }
+    */ 
     
     public static _staticBlocksInspect INSPECT_STATIC_BLOCKS 
             = new _staticBlocksInspect();

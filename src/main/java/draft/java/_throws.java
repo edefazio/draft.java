@@ -221,6 +221,7 @@ public final class _throws
         return this.astNodeWithThrows.getThrownExceptions().indexOf( (ReferenceType)element.ast() );
     }
 
+    /*
     public static final _java.Semantic<Collection<ReferenceType>> EQIVALENT_THROWS = (o1, o2)->{
         if( o1 == null){
             return o2 == null;
@@ -237,16 +238,18 @@ public final class _throws
         om.addAll(o2);
         return Objects.equals(tm, om);        
     };
+    */
     
     /** 
      * Are these (2) collections of throws equivalent ?
      * @param left
      * @param right
      * @return true if these collections are semantically equivalent
-     */
+     
     public static boolean equivalent( Collection<ReferenceType> left, Collection<ReferenceType> right ){
         return EQIVALENT_THROWS.equivalent(left, right);
     }
+    */ 
     
     /**
      * examples:
@@ -264,6 +267,9 @@ public final class _throws
             return getThrows().isEmpty();
         }
 
+        
+        T setThrows( NodeList<ReferenceType> thrw );
+        
         T addThrows( String... throwExceptions );
 
         T addThrows( String throwException );
@@ -282,7 +288,7 @@ public final class _throws
     public static final _throwsInspect INSPECT_THROWS = new _throwsInspect();
     
     public static class _throwsInspect
-        implements _inspect<_throws> {
+        implements _inspect<_throws>, _differ<_throws, _node> {
 
         String name = _java.Component.THROWS.getName();
         
@@ -294,6 +300,25 @@ public final class _throws
             return Objects.equals(left, right);
         }
 
+        /*
+        @Override
+        public <R extends _node> _dif diff(_java._diffMaster _inspect, _path path, build dt, R leftRoot, R rightRoot, _throws left, _throws right) {
+            for(int i=0; i<left.count();i++){
+                ReferenceType cit = left.get(i);
+                if( ! right.ast().stream().filter( c-> typesEqual(c, cit) ).findFirst().isPresent()){
+                    dt.addRemoveOrChange(path.in(_java.Component.THROWS), leftRoot, rightRoot, cit, null ); 
+                }
+            }
+            for(int i=0; i<right.count();i++){
+                ReferenceType cit = right.get(i);
+                if( ! left.ast().stream().filter( c-> typesEqual(c, cit) ).findFirst().isPresent()){
+                    dt.addRemoveOrChange( path.in(_java.Component.THROWS),leftRoot, rightRoot, null, cit ); 
+                }
+            }
+            return (_dif)dt;
+        }
+        */
+        
         @Override
         public _inspect._diff diff( _java._inspector _ins, _inspect._path path, _inspect._diff dt, _throws left, _throws right) {
             //List<ObjectDiff.Entry> des = new ArrayList<>();
@@ -315,6 +340,69 @@ public final class _throws
         
         public boolean equivalent(NodeList<ReferenceType>left, NodeList<ReferenceType> right) {            
             return Ast.typesEqual(left, right);
+        }
+
+        @Override
+        public <R extends _node> _dif diff(_path path, build dt, R leftRoot, R rightRoot, _throws left, _throws right) {
+            throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        }
+
+        public static class _change_throws
+                implements _delta<_hasThrows>, _change<List<ReferenceType>>{
+
+            public _path path;
+            public _hasThrows leftRoot;
+            public _hasThrows rightRoot;
+            public NodeList<ReferenceType> left;
+            public NodeList<ReferenceType> right;
+            
+            public _change_throws(_path p, _hasThrows leftRoot, _hasThrows rightRoot){
+                this.path = path;
+                this.leftRoot = leftRoot;
+                this.rightRoot = rightRoot;
+                left = new NodeList<>();
+                left.addAll( leftRoot.getThrows().astNodeWithThrows.getThrownExceptions() );
+                right = new NodeList<>();
+                right.addAll( rightRoot.getThrows().astNodeWithThrows.getThrownExceptions() );
+            }
+            
+            @Override
+            public _hasThrows leftRoot() {
+                return leftRoot;
+            }
+
+            @Override
+            public _hasThrows rightRoot() {
+                return rightRoot;
+            }
+
+            @Override
+            public _path path() {
+                return this.path;
+            }
+
+            @Override
+            public List<ReferenceType> left() {
+                return left;
+            }
+
+            @Override
+            public List<ReferenceType> right() {
+                return right;
+            }
+
+            @Override
+            public void keepLeft() {
+                leftRoot.setThrows(left);
+                rightRoot.setThrows(left);
+            }
+
+            @Override
+            public void keepRight() {
+                leftRoot.setThrows( right );
+                rightRoot.setThrows( right );
+            }
+            
         }
     }
 }

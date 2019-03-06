@@ -282,6 +282,7 @@ public final class _typeParameter
         }
     }
 
+    /*
         public static final _java.Semantic<Collection<_typeParameter>> EQIVALENT_TYPE_PARAMETERS = (o1, o2)->{
          if( o1 == null){
                 return o2 == null;
@@ -298,16 +299,19 @@ public final class _typeParameter
             om.addAll(o2);
             return Objects.equals(tm, om);        
     };
+    */
     
     /** 
      * Are these (2) collections of throws equivalent ?
      * @param left
      * @param right
      * @return true if these collections are semantically equivalent
-     */
+     
     public static boolean equivalent( Collection<_typeParameter> left, Collection<_typeParameter> right ){
         return EQIVALENT_TYPE_PARAMETERS.equivalent(left, right);
     }
+    */
+    
     /**
      *
      * @author Eric
@@ -316,12 +320,23 @@ public final class _typeParameter
     public interface _hasTypeParameters<T extends _hasTypeParameters>
         extends _model {
 
+        /**
+         * @return  the typeParameters entity which wraps the AST NodeList<TypeParameter> entities
+         */
         _typeParameters getTypeParameters();
 
+        /* return a list of AST typeParameters */
+        NodeList<TypeParameter> listAstTypeParameters();
+        
+        /**
+         * parse the string as TypeParameters and set the typeParameters
+         * @param typeParameters string of typeParameters
+         * @return the modified T
+         */
         T typeParameters( String typeParameters );
 
         /**
-         * set the TYPE_PARAMETERS on the entity
+         * @param typeParameters Strings that represent individual TypeParameters
          */
         T typeParameters( String... typeParameters );
 
@@ -330,10 +345,11 @@ public final class _typeParameter
         T typeParameters( NodeList<TypeParameter> typeParams );
 
         /**
-         * removeIn the TYPE PARAMETERS from the entity
+         * remove all typeParametersfrom the entity
          */
         T removeTypeParameters();
 
+        /** does this have non empty type parameters */
         boolean hasTypeParameters();
     }
     
@@ -341,7 +357,7 @@ public final class _typeParameter
         new _typeParametersInspect();
     
     public static class _typeParametersInspect
-        implements _inspect<_typeParameters> {
+        implements _inspect<_typeParameters>, _differ<_typeParameters,_node> {
 
         String name = _java.Component.TYPE_PARAMETERS.getName();
         
@@ -374,6 +390,83 @@ public final class _typeParameter
         
         public boolean equivalent(NodeList<TypeParameter>left, NodeList<TypeParameter> right) {            
             return Ast.typesEqual(left, right);
+        }
+
+        @Override
+        public <R extends _node> _dif diff(_path path, build dt, R leftRoot, R rightRoot, _typeParameters left, _typeParameters right) {
+            if( !Ast.typesEqual(left.astNodeWithTypeParams.getTypeParameters(), right.astNodeWithTypeParams.getTypeParameters())){
+                dt.node( new _change_typeParameters(path.in(_java.Component.TYPE_PARAMETERS), (_hasTypeParameters)leftRoot, (_hasTypeParameters)rightRoot));
+            }
+            return (_dif)dt;
+        }
+        
+        public static class _change_typeParameters 
+                implements _delta<_hasTypeParameters>, _change<NodeList<TypeParameter>>{
+
+            public _path path;
+            public _hasTypeParameters leftRoot;
+            public _hasTypeParameters rightRoot;
+            public NodeList<TypeParameter> left;
+            public NodeList<TypeParameter> right;
+            
+            public _change_typeParameters(_path path, _hasTypeParameters leftRoot, _hasTypeParameters rightRoot){
+                this.path = path;
+                this.leftRoot = leftRoot;
+                this.rightRoot = rightRoot;
+                
+                this.left = new NodeList<>();
+                this.right = new NodeList<>();
+                this.left.addAll(leftRoot.listAstTypeParameters());
+                this.right.addAll(rightRoot.listAstTypeParameters()); 
+            }
+            
+            @Override
+            public _hasTypeParameters leftRoot() {
+                return leftRoot;
+            }
+
+            @Override
+            public _hasTypeParameters rightRoot() {
+                return rightRoot;
+            }
+
+            @Override
+            public _path path() {
+                return path;
+            }
+
+            @Override
+            public NodeList<TypeParameter> left() {
+                return left;
+            }
+
+            @Override
+            public NodeList<TypeParameter> right() {
+                return right;
+            }
+
+            @Override
+            public void keepLeft() {
+                this.leftRoot.removeTypeParameters();
+                this.leftRoot.typeParameters(left);
+                
+                this.rightRoot.removeTypeParameters();
+                this.rightRoot.typeParameters(left);
+            }
+
+            @Override
+            public void keepRight() {
+                this.leftRoot.removeTypeParameters();
+                this.leftRoot.typeParameters(right);
+                
+                this.rightRoot.removeTypeParameters();
+                this.rightRoot.typeParameters(right);
+            }
+            
+            @Override
+            public String toString(){
+                return "   ~ "+path;
+            }            
         }
     }
 }

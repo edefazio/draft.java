@@ -34,6 +34,7 @@ public class EquivalentTest extends TestCase {
     static _method m1a = _method.of( "public abstract void a();" );
     static _method m2a = _method.of( "public int b();" );
         
+    /*
     public void testSimple(){
         //test both null
         assertTrue(_method.equivalent(null,null));
@@ -62,8 +63,8 @@ public class EquivalentTest extends TestCase {
         ms2.add(m1);
         assertTrue(_method.equivalent(ms1, ms2));//different order        
     }
-    
-    
+    */
+    /*
     public void testSemantic(){
         
         List<_method> ms1 = new ArrayList<>();
@@ -88,5 +89,6 @@ public class EquivalentTest extends TestCase {
         ms2.add(m1a);
         assertTrue(_method.equivalent(ms1, ms2));//different order equivalent       
     }
+*/
     
 }

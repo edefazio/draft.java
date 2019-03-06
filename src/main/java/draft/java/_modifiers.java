@@ -495,6 +495,11 @@ public final class _modifiers
             getModifiers().set( mods );
             return (T)this;
         }
+        
+        default T modifiers(NodeList<Modifier> mods ){
+            getModifiers().node.setModifiers(mods);
+            return (T)this;
+        }
 
         /**
          * Some modifiers are implied and not always printed in the source code...
@@ -585,7 +590,7 @@ public final class _modifiers
 
     /**
      * Verify that one list of _constructor is equivalent to another list of _constructor
-     */
+     
     public static _java.Semantic<Collection<Modifier>> EQIVALENT_MODIFIERS_LIST = 
             (Collection<Modifier> o1, Collection<Modifier> o2) -> {
         if( o1 == null ){
@@ -604,6 +609,7 @@ public final class _modifiers
     public static boolean equivalent( Collection<Modifier> left, Collection<Modifier> right){
         return EQIVALENT_MODIFIERS_LIST.equivalent(left, right);
     }
+    */
     
     interface _hasFinal<T extends _hasFinal> {
 
@@ -680,7 +686,8 @@ public final class _modifiers
     public static final _modifiersInspect INSPECT_MODIFIERS = 
         new _modifiersInspect();
     
-    public static class _modifiersInspect implements _inspect<_modifiers>{
+    public static class _modifiersInspect implements _inspect<_modifiers>,  
+            _differ<NodeList<Modifier>,_node>{
        
         @Override
         public boolean equivalent(_modifiers left, _modifiers right) {
@@ -693,6 +700,74 @@ public final class _modifiers
                 dt.add(path.in( _java.Component.MODIFIERS), left, right);
             }
             return dt;
+        }
+
+        @Override
+        public <R extends _node> _dif diff(_path path, build dt, R leftRoot, R rightRoot, NodeList<Modifier> left, NodeList<Modifier> right) {
+            if( !Objects.equals( left, right )){
+                dt.node( new _changeModifiers(path.in(_java.Component.MODIFIERS), (_hasModifiers)leftRoot, (_hasModifiers)rightRoot) );
+            }
+            return (_dif)dt;
+        }
+        
+        public static class _changeModifiers 
+                implements _delta<_hasModifiers>, _change<NodeList<Modifier>>{
+
+            public _path path;
+            public _hasModifiers leftRoot;
+            public _hasModifiers rightRoot;
+            public NodeList<Modifier> left;
+            public NodeList<Modifier> right;
+            
+            public _changeModifiers( _path path, _hasModifiers leftRoot, _hasModifiers rightRoot){
+                this.path = path;
+                this.leftRoot = leftRoot;
+                this.rightRoot = rightRoot;
+                this.left = leftRoot.getEffectiveModifiers();
+                this.right = rightRoot.getEffectiveModifiers();
+            }
+            
+            @Override
+            public _hasModifiers leftRoot() {
+                return leftRoot;
+            }
+
+            @Override
+            public _hasModifiers rightRoot() {
+                return rightRoot;
+            }
+
+            @Override
+            public _path path() {
+                return path;
+            }
+
+            @Override
+            public NodeList<Modifier> left() {
+                return left;
+            }
+
+            @Override
+            public NodeList<Modifier> right() {
+                return right;
+            }
+
+            @Override
+            public void keepLeft() {
+                leftRoot.modifiers(left);
+                rightRoot.modifiers(left);
+            }
+
+            @Override
+            public void keepRight() {
+                leftRoot.modifiers(right);
+                rightRoot.modifiers(right);
+            }            
+            
+            @Override
+            public String toString(){
+                return "   ~ "+path;
+            }
         }
     }
 }

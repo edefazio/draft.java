@@ -4,9 +4,12 @@ import draft.java._anno._annos;
 import draft.java._inspect.*;
 import draft.java._java.StringInspect;
 import static draft.java._java.Component.*;
+import draft.java._model._member;
 import draft.java._parameter._parameters;
 import draft.java._typeParameter._typeParameters;
 import draft.java.macro._autoDto;
+import draft.java.macro._autoGet;
+import draft.java.macro._autoSet;
 import draft.java.macro._name;
 import draft.java.macro._static;
 import java.io.FileNotFoundException;
@@ -21,7 +24,47 @@ import junit.framework.TestCase;
  */
 public class _inspectTest extends TestCase {
     
-    public void testNewApi(){
+    /**
+     * Merge changes to the right
+     * 
+     */
+    //public static class MergeRight{
+        
+        /** 
+         * Take this change and commit it to the left entity to make it like the 
+         * right entity
+         
+        public void rollback(_node _n){
+            if( _n instanceof _removeNode ){
+                
+                _removeNode _r = (_removeNode)_n;
+                Object toRemove = _r.toRemove;
+                if(toRemove instanceof _model._node ){
+                    
+                    _model._node _mn = (_model._node)toRemove;
+                    _mn.ast().removeForced();                
+                } else{
+                    System.out.println( "Couldnt remove "+ toRemove );
+                }
+            } else if( _n instanceof _addNode ){
+                _addNode _a = (_addNode)_n;
+                Object toAdd = _a.add;
+                if(toAdd instanceof _model._node ){
+                    _model._node _mn = (_model._node)toAdd;
+                    _mn.ast().removeForced();                
+                } else{
+                    System.out.println( "Couldnt remove "+ toAdd );
+                }
+            }
+            
+        }
+        
+        public void rollbackRight(){
+            
+        }
+    }
+    */ 
+    public void testNewApiSingleChanges(){
         _class _v1 = _class.of("C");
         _class _v2 = _v1.copy();
         assertTrue(_v1.diff(_v2).isEmpty()); //they the same
@@ -29,8 +72,8 @@ public class _inspectTest extends TestCase {
         _v2.field("int a;");       //add a change to _v2 only
         _diff _d = _v1.diff(_v2);  //diff _v1 with _v2
         
-        assertTrue(_d.at(FIELD));      //there is a DIFF AT at least one FIELD
-        assertTrue(_d.at(FIELD, "a")); //there is a DIFF AT at a field named "a"
+        assertTrue(_d.isAt(FIELD));      //there is a DIFF AT at least one FIELD
+        assertTrue(_d.isAt(FIELD, "a")); //there is a DIFF AT at a field named "a"
         
         //find the first Diff AT a FIELD and verify it is an Add         
         assertTrue(_d.firstAt(FIELD).isAdd()); //Add means added between _v1 and _v2
@@ -47,15 +90,95 @@ public class _inspectTest extends TestCase {
         // (v2->v1) find the same diffs, however they are REMOVE, not ADD 
         assertTrue(_d.firstAt(FIELD, "a").isRemove());
         
+        _d = _v1.field("int a;").diff(_v2);
+        assertTrue( _d.isEmpty() );        
         
-        //assertTrue( _d.has(FIELD) ); //there is a diff on (or below) a field
-        //assertTrue( _d.has(FIELD, "a") ); //there is a diff on (or below) a field named "a"
+        // alright, we realize if we change the order (_v1->_v2) to (_v2->_v1) 
+        // from now on well ALWAYS make changes to _v2 to show how they show up
+        // in the diff
+        _method _m = _method.of("void m(){}");
+        _v2.method(_m);
+        _d = _v1.diff(_v2);
+        assertTrue(_d.isAt(METHOD) ); //there is a METHOD diff
+        assertTrue(_d.isAt(METHOD,"m()") ); //there is a diff on METHOD with signature "m()"
+        assertTrue(_d.firstAt(METHOD,"m()").isAdd() ); //the first method diff is an Add
+        assertEquals( _m, _d.firstAt(METHOD,"m()").asAdd().add); //verify it is the same method       
+        _v1.method(_m.copy());
+        assertTrue( _v1.diff(_v2).isEmpty() );
         
-        _v2.field("int a;");
-        //assertTrue( _v2.diff(_v1))
+        //now lets change the v2 method modifiers
+        _v2.getMethod("m").setStatic();        
+        _d = _v1.diff(_v2);
+        
+        //System.out.println( _d );
+        assertTrue( _d.has(METHOD, MODIFIERS));
+        //System.out.println( _d );
+        //System.out.println( _path.of(METHOD, "m()", MODIFIERS) );
+        assertEquals( _path.of(METHOD, "m()", MODIFIERS), _path.of(METHOD, "m()", MODIFIERS));
+        assertTrue( _d.atPath(METHOD, "m()", MODIFIERS).isChange() );
+        
+        //update v1 to make them equal now
+        _v1.getMethod("m").setStatic();
         
         
+        //now change the body in v2
+        _v2.getMethod("m").setBody(() -> {System.out.println(1);} );
+        _d = _v1.diff(_v2);
+        
+        //System.out.println( _d );
+        assertTrue( _d.has(METHOD, BODY));
+        assertTrue( _d.firstAt(BODY).isEdit() );
+        assertTrue( _d.atPath(METHOD,"m()", BODY).isEdit() );
+        
+        //verify that I can get the edit node and check it against the method
+        assertEquals( _m.getBody(), _d.atPath(METHOD,"m()",BODY).asEdit().right );
+        assertEquals( _v1.getMethod("m").getBody(), _d.atPath(METHOD,"m()",BODY).asEdit().left );
+        
+        _body _v2bd = (_body)_d.atPath(METHOD,"m()",BODY).asEdit().right();
+        
+        
+        //Can I MERGE a Change from V2 back to V1
+        // YEAH LETS DO THIS AT THE AST LEVEL
+        
+        //if its an ADD
+        // I just ADD the thing (i.e. ADDMEMBER)
+        //if its a REMOVE
+        // just remove Member
+        
+        //get the line count of the body
+        System.out.println( _v2bd.ast().getRange().get().getLineCount() );
+        
+        //_d.atPath(METHOD,"m()", BODY).asEdit()
+        
+        _constructor ct = _constructor.of("C(){}");        
+        _v2.constructor(ct);                
+        
+        _d = _v1.diff(_v2);
+        
+        assertTrue(_d.atPath(CONSTRUCTOR, "C()").isAdd());
     }
+    
+    public void testMulti(){
+        _class _v1 = _class.of("C");
+        _class _v2 = _class.of("C", new Object(){
+            int x;
+            int y;
+            
+            void m(){
+                System.out.println("m");
+            }
+            void n(){
+                System.out.println("n");
+            }
+            
+        }, _autoGet.$, _autoSet.$);
+        
+        //move ALL members from _v2 to _v1
+        _v1.add(_v2.listMembers().toArray(new _member[0]));
+        assertEquals( _v1, _v2);        
+    }
+    
+    
     public void testField(){
         _field _f1 =_field.of("int a;");
         _field _f2 =_field.of("int a;");
@@ -64,8 +187,8 @@ public class _inspectTest extends TestCase {
         _class _c2 = _class.of("C").field(_f2);
                
         _diff dt = _class.diff(_c1, _c2);
-        assertNotNull( dt.first(FIELD) );
-        assertTrue( dt.first(FIELD) instanceof _addNode); //its added between left and right
+        assertNotNull( dt.firstOf(FIELD) );
+        assertTrue( dt.firstOf(FIELD) instanceof _addNode); //its added between left and right
         
         _c1.field(_f1);
         dt = _class.diff(_c1, _c2);
@@ -74,27 +197,27 @@ public class _inspectTest extends TestCase {
         _f1.init(1);
         dt = _class.diff(_c1, _c2);
         //System.out.println( dt );
-        assertTrue( dt.first(FIELD, INIT) instanceof _removeNode); //field init is removed from left to right 
+        assertTrue( dt.firstOf(FIELD, INIT) instanceof _removeNode); //field init is removed from left to right 
         _f2.init(1);        
         _f2.annotate("@Ann");
         dt = _class.diff(_c1, _c2);
-        assertTrue(dt.first(FIELD, ANNO) instanceof _addNode);
+        assertTrue(dt.firstOf(FIELD, ANNO) instanceof _addNode);
         
         _f1.annotate("@Ann");
         _f1.setPrivate();
         dt = _class.diff(_c1, _c2);
-        assertTrue(dt.first(FIELD, MODIFIERS) instanceof _changeNode ); 
+        assertTrue(dt.firstOf(FIELD, MODIFIERS) instanceof _changeNode ); 
         
         _f2.setPrivate();        
         _f2.javadoc("A javadoc");
         dt = _class.diff(_c1, _c2);
-        assertTrue(dt.first(FIELD, JAVADOC) instanceof _changeNode );
+        assertTrue(dt.firstOf(FIELD, JAVADOC) instanceof _changeNode );
         
         _f1.javadoc("A javadoc");        
         _f1.type(float.class);
         _f1.init(1.0f);
         dt = _class.diff(_c1, _c2);
-        assertTrue(dt.first(FIELD, TYPE) instanceof _changeNode );
+        assertTrue(dt.firstOf(FIELD, TYPE) instanceof _changeNode );
         
         _f2.type(float.class);
         _f2.init(1.0f);
@@ -122,8 +245,8 @@ public class _inspectTest extends TestCase {
         _m1.setBody(()->{System.out.println(1);} );
         
         _diff _dt = _class.diff(_c1, _c2);
-        assertTrue(_dt.first(BODY) instanceof _editNode );
-        assertTrue(_dt.first(METHOD, BODY) instanceof _editNode );
+        assertTrue(_dt.firstOf(BODY) instanceof _editNode );
+        assertTrue(_dt.firstOf(METHOD, BODY) instanceof _editNode );
         
         _dt.listEdits();
         
@@ -154,19 +277,19 @@ public class _inspectTest extends TestCase {
         
         assertEquals( 1, dt.listOf(METHOD,ANNO).size() );
         assertTrue(
-            dt.first(METHOD,ANNO) instanceof _addNode ); //its Added from left -> right        
-        assertNotNull(dt.first(METHOD));
-        assertNotNull(dt.first(ANNO));
+            dt.firstOf(METHOD,ANNO) instanceof _addNode ); //its Added from left -> right        
+        assertNotNull(dt.firstOf(METHOD));
+        assertNotNull(dt.firstOf(ANNO));
        
         _c1.forMethods(m -> m.setFinal());
         
         dt = _class.diff(_c1, _c2);
         //System.out.println( dt );
         assertNotNull(
-            dt.first(METHOD, MODIFIERS) );     
+            dt.firstOf(METHOD, MODIFIERS) );     
         
         assertTrue(
-            dt.first(METHOD, MODIFIERS) instanceof _changeNode );            
+            dt.firstOf(METHOD, MODIFIERS) instanceof _changeNode );            
         //System.out.println( dt );        
     }
     public void testClassDiff(){
@@ -206,7 +329,7 @@ public class _inspectTest extends TestCase {
         
         _c1.getMethod("m").annotate(Deprecated.class);        
         dt = _class.diff(_c1, _c2);
-        assertTrue(dt.first(ANNO) instanceof _removeNode); //its removed from left -> right
+        assertTrue(dt.firstOf(ANNO) instanceof _removeNode); //its removed from left -> right
         
         
         
@@ -331,11 +454,11 @@ public class _inspectTest extends TestCase {
         _m1.name("b");
         System.out.println( _method.INSPECT_METHOD.diff(_m1, _m2) );
         
-        assertTrue(_method.INSPECT_METHOD.diff(_m1, _m2).first(_java.Component.NAME) != null);
+        assertTrue(_method.INSPECT_METHOD.diff(_m1, _m2).firstOf(_java.Component.NAME) != null);
         _m1.setBody( ()-> System.out.println(1) );
         
         _diff dl = _method.INSPECT_METHOD.diff(_m1, _m2);
-        assertTrue(dl.first(BODY) != null);
+        assertTrue(dl.firstOf(BODY) != null);
         
         //_textDiff dmp = (_textDiff)dl.left(_java.Component.BODY);
         //System.out.println( dmp );
@@ -428,7 +551,7 @@ public class _inspectTest extends TestCase {
             
             @A int a;
             @B int b;
-            
+               
             @A @B int ab;
             @draft.java._inspectTest.B @draft.java._inspectTest.A int ba;
         }

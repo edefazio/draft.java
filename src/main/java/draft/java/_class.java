@@ -477,6 +477,12 @@ public final class _class implements _type<ClassOrInterfaceDeclaration, _class>,
         return null; //its an orphan
     }
 
+    
+    @Override
+    public NodeList<TypeParameter> listAstTypeParameters(){
+        return this.astClass.getTypeParameters();
+    }
+    
     @Override
     public boolean hasTypeParameters(){
         return this.astClass.getTypeParameters().isNonEmpty();

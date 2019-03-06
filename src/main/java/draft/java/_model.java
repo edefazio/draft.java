@@ -86,6 +86,7 @@ public interface _model {
             return mdd;
         }
 
+        
         /**
          * @return the underlying AST Node instance being manipulated
          * by the _model._node facade

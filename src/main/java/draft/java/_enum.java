@@ -3,6 +3,7 @@ package draft.java;
 import com.github.javaparser.JavaParser;
 import com.github.javaparser.ast.*;
 import com.github.javaparser.ast.body.*;
+import com.github.javaparser.ast.comments.JavadocComment;
 import com.github.javaparser.ast.expr.Expression;
 import com.github.javaparser.ast.expr.ObjectCreationExpr;
 import com.github.javaparser.ast.stmt.BlockStmt;
@@ -11,11 +12,13 @@ import draft.DraftException;
 import draft.Text;
 import draft.java._anno.*;
 import draft.java._inspect._diff;
+import draft.java._java.Component;
 import draft.java.io._in;
 import draft.java.macro._macro;
 
 import java.io.InputStream;
 import java.util.*;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Predicate;
@@ -723,6 +726,12 @@ public final class _enum implements _type<EnumDeclaration, _enum>,_method._hasMe
         }
 
         @Override
+        public _constant javadoc( JavadocComment astJavadocComment ){
+            this.astConstant.setJavadocComment( astJavadocComment );
+            return this;
+        }
+        
+        @Override
         public _constant removeJavadoc(){
             this.astConstant.removeJavaDocComment();
             return this;
@@ -782,6 +791,18 @@ public final class _enum implements _type<EnumDeclaration, _enum>,_method._hasMe
             return this;
         }
         
+        public _constant setArguments( NodeList<Expression> arguments ){
+            this.astConstant.setArguments(arguments);
+            return this;
+        }
+        
+        public _constant setArguments( List<Expression> arguments ){
+            NodeList<Expression> nles = new NodeList<>();
+            nles.addAll(arguments);
+            this.astConstant.setArguments(nles);
+            return this;
+        }
+        
         public _constant setArgument( int index, boolean b){
             return setArgument(index, Expr.of(b));
         }
@@ -813,6 +834,11 @@ public final class _enum implements _type<EnumDeclaration, _enum>,_method._hasMe
         
         public _constant forArguments( Predicate<Expression> expressionMatchFn, Consumer<Expression> expressionAction ){
             this.listArguments(expressionMatchFn).forEach(expressionAction);
+            return this;
+        }
+        
+        public _constant removeArgument( int index ){
+            this.astConstant.getArguments().remove(index);
             return this;
         }
         
@@ -1062,12 +1088,14 @@ public final class _enum implements _type<EnumDeclaration, _enum>,_method._hasMe
     
     public static _enumConstantInspect INSPECT_ENUM_CONSTANT = new _enumConstantInspect();
     
-    public static class _enumConstantInspect implements _inspect<_enum._constant>{        
+    public static class _enumConstantInspect implements _inspect<_enum._constant>,
+            _differ<_enum._constant, _enum> {        
         
         @Override
         public boolean equivalent(_enum._constant left, _enum._constant right) {
             return Objects.equals(left,right);
         }
+        
         
         
         @Override
@@ -1093,11 +1121,28 @@ public final class _enum implements _type<EnumDeclaration, _enum>,_method._hasMe
             _ins.INSPECT_FIELDS.diff(_ins, path, dt, left.listFields(), right.listFields());            
             return dt;
         }        
+
+        @Override
+        public <R extends _node> _dif diff(_path path, build dt, R leftRoot, R rightRoot, _constant left, _constant right) {
+            _path _p = path.in(Component.CONSTANT, left.getName());
+            _anno.INSPECT_ANNOS.diff( _p, dt, left, right, left.getAnnos(), right.getAnnos());
+            _javadoc.INSPECT_JAVADOC.diff(_p, dt, left, right, left.getJavadoc(), right.getJavadoc());
+            if(!Objects.equals( left.getName(), right.getName())){
+                dt.node(new _differ._changeName( _p, left, right) );
+            }
+            //_ins.INSPECT_NAME.diff(_ins, path, dt, left.getName(), right.getName());
+            INSPECT_ARGUMENTS.diff(_p, dt, left, right);
+            _method.INSPECT_METHODS.diff(_p, dt, left, right, left.listMethods(), right.listMethods());
+            _field.INSPECT_FIELDS.diff(_p, dt, left, right, left.listFields(), right.listFields());
+            //_ins.INSPECT_FIELDS.diff(_ins, path, dt, left.listFields(), right.listFields());     
+            return (_dif)dt;
+        }
     }
     
     public static _enumConstantsInspect INSPECT_ENUM_CONSTANTS = new _enumConstantsInspect();
     
-    public static class _enumConstantsInspect implements _inspect<List<_enum._constant>>{
+    public static class _enumConstantsInspect 
+            implements _inspect<List<_enum._constant>> {
 
         @Override
         public boolean equivalent( List<_enum._constant> left, List<_enum._constant> right) {
@@ -1186,7 +1231,8 @@ public final class _enum implements _type<EnumDeclaration, _enum>,_method._hasMe
     
     public static final ArgsInspect INSPECT_ARGUMENTS = new ArgsInspect();
     
-    public static class ArgsInspect implements _inspect<List<Expression>>{
+    public static class ArgsInspect implements _inspect<List<Expression>>, 
+            _differ<List<Expression>, _node> {
 
         @Override
         public boolean equivalent(List<Expression> left, List<Expression> right) {
@@ -1194,23 +1240,304 @@ public final class _enum implements _type<EnumDeclaration, _enum>,_method._hasMe
         }
 
         @Override
+        public <R extends _node> _dif diff(_path path, build dt, R leftRoot, R rightRoot, List<Expression> left, List<Expression> right) {
+            if( ! Objects.equals(left, right)){
+                dt.node( new _changeArguments(path.in(Component.ARGUMENTS), (_constant)leftRoot, (_constant)rightRoot) );
+            }
+            return (_dif)dt;
+            /*
+            if(left == null ){
+                if(right == null){
+                    return (_dif)dt;
+                }
+                for(int i=0;i<right.size();i++){
+                    dt.addRemoveOrChange(path.in(_java.Component.ARGUMENT, i+""),leftRoot, rightRoot, null, right);
+                }
+                return (_dif)dt;
+            }
+            if( right == null ){
+                for(int i=0;i<left.size();i++){
+                    dt.addRemoveOrChange(path.in(_java.Component.ARGUMENT, i+""),leftRoot, rightRoot, left, null);
+                }
+                return (_dif)dt;
+            } 
+            
+            int max = Math.max( left.size(), right.size() );
+            for(int i=0;i<max;i++){
+                Expression l = left.size() > i ? left.get(i) : null;
+                Expression r = right.size() > i ? right.get(i) : null;
+                
+                if( l == null ){
+                    dt.node( new _addArgument( path.in(Component.ARGUMENT, i+""), (_constant)leftRoot, (_constant)rightRoot, i ));
+                }else if ( r == null ){
+                    dt.node( new _removeArgument( path.in(Component.ARGUMENT, i+""), (_constant)leftRoot, (_constant)rightRoot, i ));
+                }else{
+                    if( ! Objects.equals(l, r)) {
+                        dt.node( new _changeArgument( path.in(Component.ARGUMENT, i+""), (_constant)leftRoot, (_constant)rightRoot, i ));
+                    }
+                }
+            }
+            return (_dif)dt;            
+*/
+        }
+        
+        public static final _java.ExpressionInspect INSPECT_ARG = new _java.ExpressionInspect(Component.ARGUMENT);
+        
+        @Override
         public _inspect._diff diff( _java._inspector _ins, _inspect._path path, _inspect._diff dt, List<Expression> left, List<Expression> right) {
+            
             if(left == null ){
                 if(right == null){
                     return dt;
                 }
                 for(int i=0;i<right.size();i++){
-                    dt.add( path.in(_java.Component.ARGUMENT,"["+i+"]"), null, right);
+                    dt.add( path.in(_java.Component.ARGUMENT, i+""), null, right);
                 }
                 return dt;
             }
             if( right == null ){
                 for(int i=0;i<left.size();i++){
-                    dt.add(path.in(_java.Component.ARGUMENT,"["+i+"]"), left, null);
+                    dt.add(path.in(_java.Component.ARGUMENT, i+""), left, null);
                 }
                 return dt;
-            }            
+            }
+            int max = Math.max( left.size(), right.size() );
+            for(int i=0;i<max;i++){
+                Expression l = left.size() > i ? left.get(i) : null;
+                Expression r = right.size() > i ? right.get(i) : null;
+                _ins.INSPECT_ARGUMENT.diff(_ins, path.in(_java.Component.ARGUMENT,""+i), dt, l, r);
+            }
             return dt;
+        }
+
+         public static class _changeArguments
+                implements _differ._delta<_constant>, _differ._change<List<Expression>>{
+
+            _path path; 
+            _constant leftRoot;
+            _constant rightRoot;
+            NodeList<Expression> leftArguments;
+            NodeList<Expression> rightArguments;
+            
+            public _changeArguments(_path path, _constant left, _constant right){
+                this.path = path;
+                this.leftRoot = left;
+                this.rightRoot = right;
+                
+                //these are effectively clones
+                leftArguments = new NodeList<>();
+                rightArguments = new NodeList<>();
+                leftArguments.addAll(leftRoot.astConstant.getArguments());
+                rightArguments.addAll(rightRoot.astConstant.getArguments());                
+            }
+            
+            @Override
+            public _constant leftRoot() {
+                return leftRoot;
+            }
+
+            @Override
+            public _constant rightRoot() {
+                return rightRoot;
+            }
+
+            @Override
+            public _path path() {
+                return path;
+            }
+
+            @Override
+            public List<Expression> left() {
+                return leftArguments;
+            }
+            
+            @Override
+            public List<Expression> right() {
+                return rightArguments;
+            }
+
+            @Override
+            public void keepRight() {
+                this.leftRoot.setArguments(rightArguments);
+                this.rightRoot.setArguments(rightArguments);                
+            }
+
+            @Override
+            public void keepLeft() {
+                this.leftRoot.setArguments(leftArguments);
+                this.rightRoot.setArguments(leftArguments);
+            }            
+        }
+         
+        public static class _changeArgument
+                implements _differ._delta<_constant>, _differ._change<Expression>{
+
+            _path path; 
+            _constant leftRoot;
+            _constant rightRoot;
+            int index;
+            AtomicBoolean committed = new AtomicBoolean(false);
+            Expression leftArgument;
+            Expression rightArgument;
+            
+            public _changeArgument(_path path, _constant left, _constant right, int index){
+                this.path = path;
+                this.leftRoot = left;
+                this.rightRoot = right;
+                this.index = index;
+                this.leftArgument = leftRoot.getArgument(index).clone();                
+                this.rightArgument = rightRoot.getArgument(index).clone();                
+            }
+            
+            @Override
+            public _constant leftRoot() {
+                return leftRoot;
+            }
+
+            @Override
+            public _constant rightRoot() {
+                return rightRoot;
+            }
+
+            @Override
+            public _path path() {
+                return path;
+            }
+
+            @Override
+            public Expression left() {
+                return leftArgument;
+            }
+            
+            @Override
+            public Expression right() {
+                return rightArgument;
+            }
+
+            @Override
+            public void keepRight() {
+                this.leftRoot.setArgument(index, rightArgument);
+                this.rightRoot.setArgument(index, rightArgument);                                
+            }
+
+            @Override
+            public void keepLeft() {
+                this.leftRoot.setArgument(index, leftArgument);
+                this.rightRoot.setArgument(index, leftArgument);                                
+            }            
+        }
+        
+        public static class _addArgument
+                implements _differ._delta<_constant>, _differ._add<Expression>{
+
+            _path path; 
+            _constant leftRoot;
+            _constant rightRoot;
+            int rightIndex;
+            int leftIndex =-1;
+            AtomicBoolean committed = new AtomicBoolean(false);
+            Expression toAdd;
+            
+            public _addArgument(_path path, _constant left, _constant right, int rightIndex){
+                this.path = path;
+                this.leftRoot = left;
+                this.rightRoot = right;
+                this.rightIndex = rightIndex;
+                this.toAdd = rightRoot.getArgument(rightIndex).clone();                
+            }
+            
+            @Override
+            public _constant leftRoot() {
+                return leftRoot;
+            }
+
+            @Override
+            public _constant rightRoot() {
+                return rightRoot;
+            }
+
+            @Override
+            public _path path() {
+                return path;
+            }
+
+            @Override
+            public Expression added() {
+                return toAdd;
+            }
+
+            @Override
+            public void keepRight() {
+                if( !committed.get() ){
+                    committed.set(true);
+                    this.leftRoot.addArgument(toAdd);
+                    this.leftIndex = this.leftRoot.listArguments().size() -1;
+                    this.rightRoot.removeArgument(rightIndex);
+                }                
+            }
+
+            @Override
+            public void keepLeft() {
+                if( committed.get() ){
+                    committed.set(false);
+                    leftRoot.removeArgument(leftIndex);
+                    rightRoot.astConstant.getArguments().add(rightIndex, toAdd);
+                }
+            }
+            
+        }
+        
+        public static class _removeArgument
+                implements _differ._delta<_node>, _differ._remove<Expression>{
+             
+             _path path;                 
+            _constant leftRoot;
+            _constant rightRoot;
+            int rightIndex = -1;
+            int leftIndex;
+            AtomicBoolean committed = new AtomicBoolean(false);
+            Expression toRemove;
+
+            public _removeArgument(_path path, _constant left, _constant right, int leftIndex){
+                this.path = path;
+                this.leftRoot = left;
+                this.rightRoot = right;
+                this.leftIndex = leftIndex;
+                this.toRemove = leftRoot.getArgument(leftIndex).clone();                
+            }
+             
+            
+            @Override
+            public _node leftRoot() {
+                return leftRoot;
+            }
+
+            @Override
+            public _node rightRoot() {
+                return rightRoot;
+            }
+
+            @Override
+            public _path path() {
+                return path;
+            }
+
+            @Override
+            public Expression removed() {
+                return toRemove;
+            }
+
+            @Override
+            public void keepRight() {
+                this.leftRoot.removeArgument(leftIndex);
+                //this.rightRoot.astConstant.getArguments().remove(rightIndex);                
+            }
+
+            @Override
+            public void keepLeft() {
+                this.leftRoot.removeArgument(rightIndex);
+            }
+            
         }
     }
 }

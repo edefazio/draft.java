@@ -3,13 +3,19 @@ package draft.java;
 import com.github.javaparser.JavaParser;
 import com.github.javaparser.ast.*;
 import com.github.javaparser.ast.body.*;
+import com.github.javaparser.ast.comments.JavadocComment;
 import com.github.javaparser.ast.expr.Expression;
 import com.github.javaparser.ast.expr.ObjectCreationExpr;
 import com.github.javaparser.ast.type.Type;
 import draft.DraftException;
 import draft.Text;
 import draft.java._anno.*;
+import draft.java._differ._delta;
 import draft.java._inspect._diff;
+import draft.java._inspect._path;
+import draft.java._java.Component;
+import draft.java._javadoc._changeJavadoc;
+import draft.java._javadoc._hasJavadoc;
 import draft.java.io._in;
 import draft.java.macro._macro;
 
@@ -699,6 +705,12 @@ public final class _annotation
             this.astAnnMember.setJavadocComment( Text.combine(content));
             return this;
         }
+        
+        @Override
+        public _element javadoc( JavadocComment astJavadocComment ){
+            this.astAnnMember.setJavadocComment( astJavadocComment );
+            return this;
+        }
 
         @Override
         public _annos getAnnos() {
@@ -913,13 +925,63 @@ public final class _annotation
     
     public static _annotationElementInspect INSPECT_ANNOTATION_ELEMENT = new _annotationElementInspect();
     
-    public static class _annotationElementInspect implements _inspect<_annotation._element>{
+    public static class _annotationElementInspect implements _inspect<_annotation._element>, 
+            _differ<_annotation._element,_node>{
+        
 
         @Override
         public boolean equivalent(_annotation._element left, _annotation._element right) {
             return Objects.equals(left,right);
         }
 
+        @Override
+        public <R extends _node> _dif diff(_path path, build dt, R leftRoot, R rightRoot, _element left, _element right) {
+            
+            /*
+            if( left == null){
+                if( right == null){
+                    return (_dif)dt; //both null
+                }
+                return (_dif)dt.add( 
+                        path.in( _java.Component.ELEMENT, right.getName()), 
+                        leftRoot, 
+                        rightRoot, 
+                        right);
+                
+            }
+            if( right == null){
+                return (_dif)dt.remove( 
+                        path.in( _java.Component.ELEMENT, left.getName()), 
+                        leftRoot, 
+                        rightRoot, 
+                        left);              
+            }
+            */
+            if( !left.getName().equals(right.getName()) ){
+                dt.node( new _changeName( path.in(Component.ELEMENT,left.getName()).in(Component.NAME), left, right) );
+            }
+            if( !Objects.equals( left.getType(), right.getType() ) ){
+                dt.node(new _change_type( path.in(Component.ELEMENT, left.getName()).in(Component.TYPE), left, right) );
+            }
+            if( !Objects.equals(left.getDefaultValue(), right.getDefaultValue()) ){
+                dt.node(new _changeDefault( path.in(Component.ELEMENT, left.getName()).in(Component.DEFAULT), left, right) );
+            }
+            if( !Objects.equals(left.getJavadoc(), right.getJavadoc())){
+                dt.node(new _changeJavadoc( path.in(Component.ELEMENT, left.getName()).in(Component.JAVADOC), left, right) );
+            }
+            if( !Objects.equals(left.getAnnos(), right.getAnnos())){
+                _anno.INSPECT_ANNOS.diff(path.in( Component.ELEMENT, left.getName()),dt, left, right);
+            }
+            /*
+            _ins.INSPECT_NAME.diff(_ins, path, dt, left, right, left.getName(), right.getName());
+            _ins.INSPECT_TYPE_REF.diff(_ins,path, dt, left, right, left.getType(), right.getType());
+            _ins.INSPECT_DEFAULT.diff(_ins,path, dt, left, right, left.getDefaultValue(), right.getDefaultValue());
+            _ins.INSPECT_JAVADOC.diff(_ins,path, dt, left, right, left.getJavadoc(), right.getJavadoc());
+            _ins.INSPECT_ANNOS.diff(_ins,path, dt, left, right, left.getAnnos(), right.getAnnos());            
+            */
+            return (_dif)dt;            
+        }
+        
         public _inspect._diff diff( _java._inspector _ins, _inspect._path path, _inspect._diff dt, _annotation._element left, _annotation._element right) {
             if( left == null){
                 if( right == null){
@@ -938,6 +1000,66 @@ public final class _annotation
             _ins.INSPECT_ANNOS.diff(_ins,path, dt, left.getAnnos(), right.getAnnos());            
             return dt;
         }        
+    }
+    
+    
+    /**
+     * Both signifies a delta and provides a means to 
+     * commit (via right()) 
+     * or rollback( via left())
+     */
+    public static class _changeDefault 
+            implements _differ._delta, _differ._change<Expression>{
+        _inspect._path path;
+        _element left;
+        _element right;
+        Expression leftExpression;
+        Expression rightExpression;
+        
+        public _changeDefault(_path _p, _element left, _element right ){
+            this.path = _p;
+            this.left = left;
+            if( left.hasDefaultValue() ){
+                this.leftExpression = left.getDefaultValue().clone();
+            }
+            this.right = right;
+            if( right.hasDefaultValue()){
+                this.rightExpression = right.getDefaultValue().clone();            
+            }
+        }
+        
+        public void keepLeft(){
+            left.setDefaultValue(leftExpression);
+            right.setDefaultValue(leftExpression);
+        }
+        
+        public void keepRight(){
+            left.setDefaultValue(rightExpression);
+            right.setDefaultValue(rightExpression);
+        }
+        
+        public Expression left(){
+            return leftExpression;
+        }
+        
+        public Expression right(){
+            return rightExpression;
+        }
+        
+        @Override
+        public _model leftRoot() {
+            return left;
+        }
+
+        @Override
+        public _model rightRoot() {
+            return right;
+        }
+
+        @Override
+        public _inspect._path path() {
+            return path;
+        }
     }
     
     public static final _java.ExpressionInspect INSPECT_DEFAULT = new _java.ExpressionInspect(_java.Component.DEFAULT);
