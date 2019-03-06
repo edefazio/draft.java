@@ -6,13 +6,10 @@
 package draft.java;
 
 import draft.java._differ._add;
-import draft.java._differ._addNode;
 import draft.java._differ._change;
-import draft.java._differ._changeNode;
 import draft.java._differ._delta;
 import draft.java._differ._editNode;
 import draft.java._differ._remove;
-import draft.java._differ._removeNode;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -190,7 +187,7 @@ public interface _dif {
      * @return the potentially modified _diff
      */
     default _dif forChanges(Predicate<_change> _changeNodeMatchFn, Consumer<_change> _changeNodeActionFn) {
-        List<_delta> ns = list(d -> d instanceof _changeNode && _changeNodeMatchFn.test((_change) d));
+        List<_delta> ns = list(d -> d instanceof _change && _changeNodeMatchFn.test((_change) d));
         List<_change> ans = new ArrayList<>();
         ns.forEach(n -> ans.add((_change) n));
         ans.forEach(_changeNodeActionFn);
@@ -255,7 +252,7 @@ public interface _dif {
      */
     default List<_add> listAdds(Predicate<_add> _addNodeMatchFn) {
         List<_add> ens = new ArrayList<>();
-        list(d -> d instanceof _addNode && _addNodeMatchFn.test((_add) d))
+        list(d -> d instanceof _add && _addNodeMatchFn.test((_add) d))
                 .forEach(e -> ens.add((_add) e));
         return ens;
     }

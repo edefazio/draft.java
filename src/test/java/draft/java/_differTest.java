@@ -10,6 +10,7 @@ import draft.java._differ._change_type;
 import draft.java._inspect._path;
 import draft.java._java.Component;
 import draft.java._model._node;
+import java.io.IOException;
 import junit.framework.TestCase;
 
 /**
@@ -36,6 +37,7 @@ public class _differTest extends TestCase {
         _m1.typeParameters("<T extends A>");
         _m1.receiverParameter("rp this");
         _m1.addParameter("int i");
+        _m1.addThrows(IOException.class);
         _method.INSPECT_METHOD.diff(new _path(), dt, leftRoot, rightRoot, _m1, _m2);
         
         System.out.println( dt );
@@ -43,8 +45,8 @@ public class _differTest extends TestCase {
         assertFalse( _m1.equals(_m2));
         
         //ok manually do this
-        _m2.setBody("return 1;");
-        dt.forChanges(c-> c.keepLeft() );        
+        //_m2.setBody("return 1;");
+        dt.forEach(c-> c.keepLeft() );        
         assertEquals(_m1, _m2);
         
         

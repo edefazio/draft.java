@@ -15,6 +15,7 @@ import java.util.List;
 import java.util.function.Consumer;
 import name.fraser.neil.plaintext.diff_match_patch;
 import name.fraser.neil.plaintext.diff_match_patch.Diff;
+import name.fraser.neil.plaintext.diff_match_patch.Operation;
 
 /**
  *
@@ -189,8 +190,11 @@ public interface _differ<T, R extends _node> {
         
         R leftRoot();
         
-        
         R rightRoot();
+        
+        void keepLeft();
+        
+        void keepRight();
         
         /** 
          * @return the path that marks the component types 
@@ -217,16 +221,16 @@ public interface _differ<T, R extends _node> {
             return this instanceof _editNode;
         }
         
-        default _addNode asAdd(){
-            return (_addNode)this;
+        default _add asAdd(){
+            return (_add)this;
         }
         
-        default _removeNode asRemove(){
-            return (_removeNode)this;
+        default _remove asRemove(){
+            return (_remove)this;
         }
         
-        default _changeNode asChange(){
-            return (_changeNode)this;
+        default _change asChange(){
+            return (_change)this;
         }
         
         default _editNode asEdit(){
@@ -320,6 +324,30 @@ public interface _differ<T, R extends _node> {
             return this;
         }
         
+        public void keepLeft(){
+            StringBuilder sb = new StringBuilder();
+            forEach( d -> {
+                //DELETE, INSERT, EQUAL
+                if( d.operation == Operation.EQUAL || d.operation == Operation.DELETE ){
+                    sb.append(d.text);
+                }
+            });
+            this.leftRoot().setBody(sb.toString());
+            this.rightRoot().setBody(sb.toString());
+        }
+        
+        public void keepRight(){
+            StringBuilder sb = new StringBuilder();
+            forEach( d -> {
+                //DELETE, INSERT, EQUAL
+                if( d.operation == Operation.EQUAL || d.operation == Operation.INSERT ){
+                    sb.append(d.text);
+                }
+            });
+            this.leftRoot().setBody(sb.toString());
+            this.rightRoot().setBody(sb.toString());
+        }
+        
         /**
          * For all instances where the text on the right needs to be added to 
          * the text on the left
@@ -357,12 +385,12 @@ public interface _differ<T, R extends _node> {
      * A node that is NOT found on the left but is found on the right
      * (it has been added in transitioning between the left and right)
      * @param <R>
-     */
+     
     public static  class _addNode<R extends _node> implements _delta<R> {
         
         R _leftRoot;
         R _rightRoot;
-        /** entity that is ABSENT on the leftRoot and present on the rightRoot (added from left to right) */
+         entity that is ABSENT on the leftRoot and present on the rightRoot (added from left to right) 
         Object add;
         _path path;
         
@@ -398,16 +426,18 @@ public interface _differ<T, R extends _node> {
         }
     }
     
+    */
+    
      /**
      * A node that is NOT found on the left but is found on the right
      * (it has been added in transitioning between the left and right)
      * @param <R>
-     */
+    
     public static class _removeNode<R extends _node> implements _delta<R> {
         
         R _leftRoot;
         R _rightRoot;
-        /** node that is on the left, but removed on the right*/
+         node that is on the left, but removed on the right
         Object remove; 
         _path path;
         
@@ -442,17 +472,18 @@ public interface _differ<T, R extends _node> {
             return "  - " + path.toString() + System.lineSeparator();
         }
     }
+    */ 
     
     /**
      * A node that is NOT found on the left but is found on the right
      * (it has been added in transitioning between the left and right)
      * R 
-     */
+     
     public static class _changeNode<R extends _node> implements _delta<R> {
         
         R _leftRoot;
         R _rightRoot;
-        /** node that is on the left, but removed on the right*/
+         node that is on the left, but removed on the right
         Object original; 
         Object changed;
         _path path;
@@ -493,6 +524,7 @@ public interface _differ<T, R extends _node> {
             return "  ~ " + path.toString() + System.lineSeparator();
         }
     }
+    * */
     
    
     
@@ -525,7 +557,7 @@ public interface _differ<T, R extends _node> {
          * @param _leftRoot the left entities root (i.e if the left entity is a _method, it might be a class containing the method)
          * @param _rightRoot the right entities root (i.e if the left entity is a _method, it might be a interface containing the method)
          * @return the diffTree
-         */
+         
         public builder edit(_path path,_hasBody _leftRoot,_hasBody _rightRoot, LinkedList<diff_match_patch.Diff> lds) {            
             diffs.add( new _editNode(path, _leftRoot, _rightRoot, lds) );            
             return this;
@@ -549,6 +581,7 @@ public interface _differ<T, R extends _node> {
         public _mydiff compile(){
             return new _mydiff( this.diffs );
         }
+        */ 
     }    
     
     

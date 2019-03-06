@@ -344,7 +344,10 @@ public final class _throws
 
         @Override
         public <R extends _node> _dif diff(_path path, build dt, R leftRoot, R rightRoot, _throws left, _throws right) {
-            throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+            if( !Objects.equals( left, right)){
+                dt.node( new _change_throws(path.in(_java.Component.THROWS), (_hasThrows)leftRoot, (_hasThrows)rightRoot ) );
+            }
+            return (_dif)dt;
         }
 
         public static class _change_throws
@@ -357,7 +360,7 @@ public final class _throws
             public NodeList<ReferenceType> right;
             
             public _change_throws(_path p, _hasThrows leftRoot, _hasThrows rightRoot){
-                this.path = path;
+                this.path = p;
                 this.leftRoot = leftRoot;
                 this.rightRoot = rightRoot;
                 left = new NodeList<>();
@@ -403,6 +406,10 @@ public final class _throws
                 rightRoot.setThrows( right );
             }
             
+            @Override
+            public String toString(){
+                return "   ~ "+ path;
+            }
         }
     }
 }

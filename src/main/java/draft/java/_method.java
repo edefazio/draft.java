@@ -1443,15 +1443,8 @@ public final class _method
             _typeParameter.INSPECT_TYPE_PARAMETERS.diff(p, dt, left, right, left.getTypeParameters(), right.getTypeParameters());
             _receiverParameter.INSPECT_RECEIVER_PARAMETER.diff(p, dt, left, right, left.getReceiverParameter(), right.getReceiverParameter());
             _parameter.INSPECT_PARAMETERS.diff(p, dt, left, right, left.getParameters(),right.getParameters() );
-            
-            //body
-            //throws
-            
-            //_dif.INSPECT_TYPE_REF.diff(path, dt, left, right);
-
-            
-            /*** HERE */
-            
+            _throws.INSPECT_THROWS.diff(p, dt, left, right, left.getThrows(),right.getThrows() );
+            _body.INSPECT_BODY.diff(p, dt, left, right, left.getBody(),right.getBody() );            
             return (_dif)dt;
         }
 
