@@ -10,12 +10,9 @@ import com.github.javaparser.ast.type.Type;
 import draft.DraftException;
 import draft.Text;
 import draft.java._anno.*;
-import draft.java._differ._delta;
 import draft.java._inspect._diff;
 import draft.java._inspect._path;
 import draft.java._java.Component;
-import draft.java._javadoc._changeJavadoc;
-import draft.java._javadoc._hasJavadoc;
 import draft.java.io._in;
 import draft.java.macro._macro;
 
@@ -93,8 +90,33 @@ public final class _annotation
         return this;
     }
 
+    /**
+     * Set the target element types for this annotation
+     * (with an annotation)
+     * @param elementTypes the element types this annotation should target
+     * @return the modified annotation
+     */
+    public _annotation targets( ElementType...elementTypes ){        
+        if( elementTypes.length == 0 ){
+            this.removeAnnos( Target.class);
+        }
+        this.imports(Target.class, ElementType.class); 
+        if( elementTypes.length == 1 ){
+            this.removeAnnos( Target.class);
+            return annotate("Target(ElementType."+elementTypes[0].name()+")" );
+        }                
+        StringBuilder sb = new StringBuilder();
+        for(int i=0;i<elementTypes.length; i++){
+            if( i > 0 ){
+                sb.append(",");
+            }
+            sb.append("ElementType.").append(elementTypes[i].name() );
+        }
+        return annotate("Target({"+sb.toString()+"})");        
+    }
+    
     public _annotation targetMethod(){
-        this.imports( Target.class, ElementType.class );
+        this.imports( Target.class, ElementType.class );        
         removeAnnos(Target.class);
         annotate("Target(ElementType.METHOD)");
         return this;
@@ -106,7 +128,6 @@ public final class _annotation
         annotate("Target(ElementType.PARAMETER)");
         return this;
     }
-
 
     public _annotation targetTypeUse(){
         this.imports( Target.class, ElementType.class );
@@ -171,7 +192,7 @@ public final class _annotation
                 String shortcutClass = strs[0];
                 String packageName = null;
                 int lastDotIndex = shortcutClass.lastIndexOf('.');
-                if( lastDotIndex >0 ){
+                if( lastDotIndex > 0 ){
                     packageName = shortcutClass.substring(0, lastDotIndex );
                     shortcutClass = shortcutClass.substring(lastDotIndex + 1);
                     if(!shortcutClass.endsWith("}")){
@@ -406,7 +427,8 @@ public final class _annotation
     }
 
     public _annotation removeElement( _element _e ){
-        this.astAnnotation.remove(_e.astAnnMember );
+        listElements(e -> e.equals(_e)).forEach(e-> e.ast().removeForced() );
+        //this.astAnnotation.remove(_e.astAnnMember );
         return this;
     }
 
@@ -586,10 +608,7 @@ public final class _annotation
             amd.setDefaultValue(defaultValue);
             return of( amd );
         }
-
-        public @interface R{
-             int value() default 12;
-        }
+        
         private final AnnotationMemberDeclaration astAnnMember;
 
         public _element( AnnotationMemberDeclaration astAnnMember ){
@@ -817,32 +836,10 @@ public final class _annotation
         }        
     }
     
-    /**
-     * Verify that one list of _element is equivalent to another list of _element
-     
-    public static _java.Semantic<Collection<_element>> EQIVALENT_ELEMENTS_LIST = 
-            (Collection<_element> o1, Collection<_element> o2) -> {
-        if( o1 == null ){
-            return o2 == null;
-        }
-        if( o1.size() != o2.size()){
-            return false;
-        }
-        Set<_element> tm = new HashSet<>();
-        Set<_element> om = new HashSet<>();
-        tm.addAll(o1);
-        om.addAll(o2);
-        return Objects.equals(tm, om);
-    };
-    
-    public static boolean equivalent( Collection<_element> left, Collection<_element> right){
-        return EQIVALENT_ELEMENTS_LIST.equivalent(left, right);
-    }
-    */ 
-    
     public static _annotationInspect INSPECT_ANNOTATION = new _annotationInspect();
     
-    public static class _annotationInspect implements _inspect<_annotation>{
+    public static class _annotationInspect implements _inspect<_annotation>, 
+            _differ<_annotation, _node> {
 
         @Override
         public boolean equivalent(_annotation left,_annotation right) {
@@ -871,11 +868,26 @@ public final class _annotation
             _ins.INSPECT_NESTS.diff(_ins,path, dt, left.listNests(), right.listNests());
             return dt;
         }        
+
+        @Override
+        public <R extends _node> _dif diff(_path path, build dt, R leftRoot, R rightRoot, _annotation left, _annotation right) {
+            _java.INSPECT_PACKAGE_NAME.diff(path, dt, leftRoot, rightRoot, left.getPackage(), right.getPackage());
+            //imports
+            _anno.INSPECT_ANNOS.diff(path, dt, leftRoot, rightRoot, left.getAnnos(), right.getAnnos());
+            _javadoc.INSPECT_JAVADOC.diff(path, dt, leftRoot, rightRoot, left.getJavadoc(), right.getJavadoc());
+            _java.INSPECT_NAME.diff(path, dt, leftRoot, rightRoot, left.getName(), right.getName());
+            _modifiers.INSPECT_MODIFIERS.diff(path, dt, leftRoot, rightRoot, left.getEffectiveModifiers(), right.getEffectiveModifiers());
+            _field.INSPECT_FIELDS.diff(path, dt, leftRoot, rightRoot, left.listFields(), right.listFields());
+            INSPECT_ANNOTATION_ELEMENTS.diff(path, dt, leftRoot, rightRoot, left.listElements(), right.listElements());
+            //nests
+            return (_dif)dt;
+        }
     }
     
     public static _annotationElementsInspect INSPECT_ANNOTATION_ELEMENTS = new _annotationElementsInspect();
     
-    public static class _annotationElementsInspect implements _inspect<List<_annotation._element>>{
+    public static class _annotationElementsInspect implements _inspect<List<_annotation._element>>, 
+            _differ<List<_annotation._element>,_node>{
 
         @Override
         public boolean equivalent( List<_annotation._element> left, List<_annotation._element> right) {
@@ -921,6 +933,144 @@ public final class _annotation
             });
             return dt;
         }        
+
+        @Override
+        public <R extends _node> _dif diff(_path path, build dt, R leftRoot, R rightRoot, List<_element> left, List<_element> right) {
+            Set<_annotation._element>ls = new HashSet<>();
+            Set<_annotation._element>rs = new HashSet<>();
+            Set<_annotation._element>both = new HashSet<>();
+            ls.addAll(left);
+            rs.addAll(right);
+            both.addAll(ls);
+            both.retainAll(rs);
+            
+            ls.removeAll(both);
+            ls.forEach(f -> {
+                _annotation._element cc = sameName( f, rs );
+                if( cc != null ){
+                    rs.remove( cc );
+                    //dt.add(path.in(_java.Component.ELEMENT, f.getName()), f, cc);
+                    INSPECT_ANNOTATION_ELEMENT.diff(path.in(_java.Component.ELEMENT, f.getName()), dt, leftRoot, rightRoot, f, cc);
+                } else{
+                    dt.node( new remove_element( path.in(Component.ELEMENT, f.getName()), (_annotation)leftRoot,(_annotation)rightRoot, f));
+                    //dt.add(path.in( _java.Component.ELEMENT,f.getName()), f, null);
+                }
+            });
+            
+            rs.forEach(f -> {
+                dt.node( new add_element( path.in(Component.ELEMENT, f.getName()), (_annotation)leftRoot,(_annotation)rightRoot, f));
+                //dt.add(path.in(_java.Component.ELEMENT, f.getName()), null,f);                
+            });
+            return (_dif)dt;
+        }
+        
+        public static class add_element implements _delta<_annotation>, _add<_element>{
+
+            public _path path;
+            public _annotation leftRoot;
+            public _annotation rightRoot;
+            public _element toAdd;
+            
+            public add_element( _path path, _annotation leftRoot, _annotation rightRoot, _element toAdd ){
+                this.path = path;
+                this.leftRoot = leftRoot;
+                this.rightRoot = rightRoot;
+                this.toAdd = toAdd;
+            }
+            
+            @Override
+            public _annotation leftRoot() {
+                return leftRoot;
+            }
+
+            @Override
+            public _annotation rightRoot() {
+                return rightRoot;
+            }
+
+            @Override
+            public void keepLeft() {
+                leftRoot.removeElement(toAdd);
+                rightRoot.removeElement(toAdd);
+            }
+
+            @Override
+            public void keepRight() {
+                leftRoot.removeElement(toAdd);
+                rightRoot.removeElement(toAdd);
+                leftRoot.element(toAdd);
+                rightRoot.element(toAdd);
+            }
+
+            @Override
+            public _path path() {
+                return path;
+            }
+
+            @Override
+            public _element added() {
+                return toAdd;
+            }
+            
+            @Override
+            public String toString(){
+                return "   + "+path;
+            }            
+        }
+        
+        public static class remove_element implements _delta<_annotation>, _remove<_element>{
+
+            public _path path;
+            public _annotation leftRoot;
+            public _annotation rightRoot;
+            public _element toRemove;
+            
+            public remove_element( _path path, _annotation leftRoot, _annotation rightRoot, _element toRemove ){
+                this.path = path;
+                this.leftRoot = leftRoot;
+                this.rightRoot = rightRoot;
+                this.toRemove = _element.of( toRemove.toString());
+            }
+            
+            @Override
+            public _annotation leftRoot() {
+                return leftRoot;
+            }
+
+            @Override
+            public _annotation rightRoot() {
+                return rightRoot;
+            }
+
+            @Override
+            public void keepLeft() {
+                leftRoot.removeElement(toRemove);
+                rightRoot.removeElement(toRemove);
+            }
+
+            @Override
+            public void keepRight() {
+                leftRoot.removeElement(toRemove);
+                rightRoot.removeElement(toRemove);
+                leftRoot.element(toRemove);
+                rightRoot.element(toRemove);
+            }
+
+            @Override
+            public _path path() {
+                return path;
+            }
+
+            @Override
+            public _element removed() {
+                return toRemove;
+            }
+            
+            @Override
+            public String toString(){
+                return "   - "+path;
+            }            
+        }
     }
     
     public static _annotationElementInspect INSPECT_ANNOTATION_ELEMENT = new _annotationElementInspect();
@@ -957,21 +1107,28 @@ public final class _annotation
                         left);              
             }
             */
-            if( !left.getName().equals(right.getName()) ){
-                dt.node( new _changeName( path.in(Component.ELEMENT,left.getName()).in(Component.NAME), left, right) );
-            }
-            if( !Objects.equals( left.getType(), right.getType() ) ){
-                dt.node(new _change_type( path.in(Component.ELEMENT, left.getName()).in(Component.TYPE), left, right) );
-            }
-            if( !Objects.equals(left.getDefaultValue(), right.getDefaultValue()) ){
-                dt.node(new _changeDefault( path.in(Component.ELEMENT, left.getName()).in(Component.DEFAULT), left, right) );
-            }
-            if( !Objects.equals(left.getJavadoc(), right.getJavadoc())){
-                dt.node(new _changeJavadoc( path.in(Component.ELEMENT, left.getName()).in(Component.JAVADOC), left, right) );
-            }
-            if( !Objects.equals(left.getAnnos(), right.getAnnos())){
-                _anno.INSPECT_ANNOS.diff(path.in( Component.ELEMENT, left.getName()),dt, left, right);
-            }
+            _java.INSPECT_NAME.diff(path, dt, left, right, left.getName(), right.getName());
+            //if( !left.getName().equals(right.getName()) ){
+            //    dt.node( new _changeName( path.in(Component.ELEMENT,left.getName()).in(Component.NAME), left, right) );
+            //}
+            //if( !Objects.equals( left.getType(), right.getType() ) ){
+            //    dt.node(new _change_type( path.in(Component.ELEMENT, left.getName()).in(Component.TYPE), left, right) );
+            //}
+            _typeRef.INSPECT_TYPE_REF.diff(path, dt, left, right, left.getType(), right.getType());
+            
+            INSPECT_DEFAULT_VALUE.diff(path, dt, left, right, left.getDefaultValue(), right.getDefaultValue());
+            
+            //if( !Objects.equals(left.getDefaultValue(), right.getDefaultValue()) ){
+            //    dt.node(new _changeDefault( path.in(Component.ELEMENT, left.getName()).in(Component.DEFAULT), left, right) );
+            //}
+            _javadoc.INSPECT_JAVADOC.diff(path, dt, left, right, left.getJavadoc(), right.getJavadoc());
+            //if( !Objects.equals(left.getJavadoc(), right.getJavadoc())){
+            //    dt.node(new _changeJavadoc( path.in(Component.ELEMENT, left.getName()).in(Component.JAVADOC), left, right) );
+            //}
+            _anno.INSPECT_ANNOS.diff(path, dt, left, right, left.getAnnos(), right.getAnnos() );
+            //if( !Objects.equals(left.getAnnos(), right.getAnnos())){
+            //    _anno.INSPECT_ANNOS.diff(path.in( Component.ELEMENT, left.getName()),dt, left, right);
+            //}
             /*
             _ins.INSPECT_NAME.diff(_ins, path, dt, left, right, left.getName(), right.getName());
             _ins.INSPECT_TYPE_REF.diff(_ins,path, dt, left, right, left.getType(), right.getType());
@@ -982,6 +1139,7 @@ public final class _annotation
             return (_dif)dt;            
         }
         
+        @Override
         public _inspect._diff diff( _java._inspector _ins, _inspect._path path, _inspect._diff dt, _annotation._element left, _annotation._element right) {
             if( left == null){
                 if( right == null){
@@ -1002,6 +1160,18 @@ public final class _annotation
         }        
     }
     
+    public static final inspectDefaultValue INSPECT_DEFAULT_VALUE = new inspectDefaultValue();
+    
+    public static class inspectDefaultValue implements _differ<Expression,_element>{
+
+        @Override
+        public <R extends _node> _dif diff(_path path, build dt, R leftRoot, R rightRoot, Expression left, Expression right) {
+            if( !Objects.equals(left, right ) ){
+                dt.node(new _changeDefault( path.in(Component.DEFAULT), (_element)leftRoot, (_element)rightRoot) );
+            }
+            return (_dif)dt;
+        }        
+    }
     
     /**
      * Both signifies a delta and provides a means to 
@@ -1028,20 +1198,24 @@ public final class _annotation
             }
         }
         
+        @Override
         public void keepLeft(){
             left.setDefaultValue(leftExpression);
             right.setDefaultValue(leftExpression);
         }
         
+        @Override
         public void keepRight(){
             left.setDefaultValue(rightExpression);
             right.setDefaultValue(rightExpression);
         }
         
+        @Override
         public Expression left(){
             return leftExpression;
         }
         
+        @Override
         public Expression right(){
             return rightExpression;
         }

@@ -28,40 +28,45 @@ import java.util.stream.Collectors;
  * 1) write code as text within an editor to create .java files
  * 2) call the javac compiler to convert the .java files to an AST then into
  * Java .class files (ByteCode)
- * 3) run the program in a Java VM to (convert the ByteCode into IR/Machine code)
-
- editor           compiler         VM runtime
-  _________      _____________      _____________
- /         \    /             \    /             \
- .java files -> AST -> ByteCode -> IR Machine Code
-
-
+ * 3) run the java command/program to create a Java VM to run the bytecode
+ * <PRE> 
+ * you
+ *   |---------->---------->---------->
+ * .java     [javac]     .class     [JVM] 
+ * </PRE>
+ * 
  * <H2>Draft Programming Workflow</H2>:
- * 1) Build draft objects (instead of .java files)
- * 2) call the javac compiler to convert the draft objects (which ARE ASTs) into
+ * 1) (At runtime), build draft objects (which ARE ASTs) /instead of .java files/
+ * 2) (At runtime) call the javac compiler to convert the draft objects (which ARE ASTs) into
  * Java .class files (ByteCode)
- * 3) run the program in a Java VM to convert the ByteCode into IR/Machine code
- compiler           VM runtime
-  _____________      _____________
- /             \    /             \
- AST -> ByteCode -> IR Machine Code
- ^
- |
- draft
- _model
- objects
- </PRE>
+ * 3) (At runtime) load the .class byteCodes into the current runtime to use the classes
+ * <PRE> 
+ * you__________
+ *   |          |
+ *   |    ----draft---------------- 
+ *   |   /      |       \          \
+ *   |  /------AST       \          \
+ *   | /        |         \          \
+ *   |---------->---------->---------->
+ * .java     [javac]     .class     [JVM]
+ * </PRE>
  *
  * Examples:
- * //compile and return the (unloaded) ByteCode within
- * _classFiles _cfs = _javac.of(_class.of("C").FIELDS("String firstName, lastName;"));
+ * //draft & compile return the (unloaded) byteCode for a drafted class
+ * _classFiles _cfs = _javac.of(_class.of("C").fields("String firstName, lastName;"));
  *
- * //create, compile and load a new {@link Class} into a new {@link ClassLoader}:
- * Class draft = _load.of(_class.of("C").FIELDS("String firstName, lastName;"));
+ * //draft, compile & load a new {@link Class} into a new {@link ClassLoader}:
+ * Class draft = _project.of(_class.of("C").fields("String firstName, lastName;")).getClass("C");
  *
- * //create / compile/ load a new {@link Class} into a new {@link ClassLoader}
+ * //draft / compile/ load a new {@link Class} into a new {@link ClassLoader}
  * //& create a new instance:
  * Object o = _new.of( _class.of("C").FIELDS("String firstName, lastName;"));
+ * 
+ * //draft / compile & load a new Class then create a new proxied instance and 
+ * // call the getNum instance method
+ * int num = (int)
+ *    project.of( _class.of("C", new Object(){ public static int getNum(){return 123;} }))
+ *        .proxy("C").call("getNum");
  *
  * @author Eric
  * @param <AST> the Ast {@link TypeDeclaration} ({@link ClassOrInterfaceDeclaration},

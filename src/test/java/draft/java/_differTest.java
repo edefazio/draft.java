@@ -14,6 +14,27 @@ import junit.framework.TestCase;
  */
 public class _differTest extends TestCase {
     
+    public void test_enumConstantListDiff(){
+        _enum._constant _a1 = _enum._constant.of("A");
+        _enum._constant _b1 = _enum._constant.of("B");
+        
+        _enum._constant _a2 = _enum._constant.of("A");
+        _enum._constant _b2 = _enum._constant.of("B");
+        
+        _enum _e1 = _enum.of("E");
+        _enum _e2 = _enum.of("E");
+        
+        _e1.constant(_a1).constant(_b1);
+        _e2.constant(_b2).constant(_a2);
+        _path path = new _path();
+        _differ._mydiff dt = new _differ._mydiff();
+        assertEquals( _e1, _e2);
+        _enum.INSPECT_ENUM_CONSTANTS.diff(path, dt, _e1, _e2, _e1.listConstants(), _e2.listConstants());
+        assertTrue( dt.isEmpty() );
+        System.out.println( dt );
+        //assertTrue(dt.isEmpty());
+    }
+    
     public void test_enumConstantDiff(){
         _enum._constant _a1 = _enum._constant.of("A");
         _enum._constant _a2 = _enum._constant.of("A");

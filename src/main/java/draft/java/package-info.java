@@ -1,7 +1,9 @@
 /**
  * <P>draft.java provides an alternate API (code as a data structure) 
- * to representing, analyzing and modifying a program as discrete .java source 
- * files in plain text. draft.java mediates between different representations: </P>
+ * to representing, analyzing and modifying and running java code at runtime.  
+ * Instead of building off the paradigm that .java code is stored in discrete .java 
+ * source files in plain text. draft.java stores an in memory draft objects 
+ * (with an AST) and mediates between different representations of the source code:</P>
  * <UL>
  *   <LI>plain text .java source code i.e. ("int square(int x){ return x*x; }")
  *   <LI>AST (i.e. {@link com.github.javaparser.ast.body.MethodDeclaration} )
@@ -10,23 +12,24 @@
  * <PRE> 
  * you__________
  *   |          |
- *   |    ----draft
- *   |   /      |
- *   |  /------AST
- *   | /        |     
- *   |---------->---------->
- * .java      javac     .class
+ *   |    ----draft---------------- 
+ *   |   /      |       \          \
+ *   |  /------AST       \          \
+ *   | /        |         \          \
+ *   |---------->---------->---------->
+ * .java     [javac]     .class     [JVM]
  * </PRE>
  * 
  * <P>...normally, the programmer interacts directly with the plain text .java
  * source files (directly or through an IDE).  Periodically the source code is 
  * compiled using the javac tool, which converts the .java source to Java bytecodes
- * in .class files.</P>
+ * in .class files. These .class files are then provided to the JVM to be converted
+ * into working machine code and run</P>
  * 
  * <PRE> 
  * you
- *   |---------->---------->
- * .java      javac     .class
+ *   |---------->---------->---------->
+ * .java     [javac]     .class     [JVM]
  * </PRE>
  * 
  * 

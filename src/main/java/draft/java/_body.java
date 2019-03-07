@@ -437,7 +437,7 @@ public final class _body implements _model {
                 if (ls.getStatement().isBlockStmt()) {
                     BlockStmt bs = ls.getStatement().asBlockStmt();
                     NodeList<Statement> stmts = bs.getStatements();
-                    if (stmts.size() == 0) {
+                    if (stmts.isEmpty()) {
                         (ls.getParentNode().get()).replace(ls, new EmptyStmt());
                     } else if (stmts.size() == 1) {
                         //System.out.println("Single Statement");
@@ -531,7 +531,7 @@ public final class _body implements _model {
 
     public static class _bodyInspect implements _inspect<_body>, _differ<_body, _node> {
 
-        private static final diff_match_patch plainTextDiff = new diff_match_patch();
+        private static final diff_match_patch BODY_TEXT_DIFF = new diff_match_patch();
 
         @Override
         public boolean equivalent(_body left, _body right) {
@@ -543,8 +543,8 @@ public final class _body implements _model {
             if( left == right ){
                 return (_dif)dt;
             }
-            String leftSer = left.toString( );
-            String rightSer = right.toString( );
+            String leftSer = left.toString(Ast.PRINT_NO_COMMENTS);
+            String rightSer = right.toString(Ast.PRINT_NO_COMMENTS);
             
             if (!Objects.equals(leftSer, rightSer)) {
                 //ok. we know at least one diff (other than comments) are in the text
@@ -556,7 +556,7 @@ public final class _body implements _model {
                 // instead we have a _textDiff which encapsulates the apparent changes
                 // the text has to undergo to get from LEFT, to RIGHT and incorporates               
                 // the Edit Distance between two bodies of text
-                LinkedList<diff_match_patch.Diff> diffs = plainTextDiff.diff_main(left.toString(), right.toString());
+                LinkedList<diff_match_patch.Diff> diffs = BODY_TEXT_DIFF.diff_main(left.toString(), right.toString());
                 
                 //_path path, _hasBody _leftRoot, _hasBody _rightRoot, LinkedList<Diff> diffs ){
                 dt.node( new _differ._editNode(path.in(_java.Component.BODY), (_hasBody)leftRoot, (_hasBody)rightRoot, diffs ) );
@@ -593,15 +593,13 @@ public final class _body implements _model {
                 // instead we have a _textDiff which encapsulates the apparent changes
                 // the text has to undergo to get from LEFT, to RIGHT and incorporates               
                 // the Edit Distance between two bodies of text
-                LinkedList<diff_match_patch.Diff> diffs = plainTextDiff.diff_main(left.toString(), right.toString());
+                LinkedList<diff_match_patch.Diff> diffs = BODY_TEXT_DIFF.diff_main(left.toString(), right.toString());
                 dt.addEdit(path.in(_java.Component.BODY), diffs, left, right);
                 //_textDiff td = new _textDiff(diffs);
 
                 //dt.add(path.in(_java.Component.BODY), td, td);                
             }
             return dt;
-        }
-
-       
+        }  
     }
 }

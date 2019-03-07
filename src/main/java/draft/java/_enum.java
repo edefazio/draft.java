@@ -14,6 +14,7 @@ import draft.Text;
 import draft.java._anno.*;
 import draft.java._inspect._diff;
 import draft.java._java.Component;
+import static draft.java._java.Component.CONSTANT;
 import draft.java.io._in;
 import draft.java.macro._macro;
 
@@ -1077,29 +1078,6 @@ public final class _enum implements _type<EnumDeclaration, _enum>,_method._hasMe
         return INSPECT_ENUM.diff(left, right);
     }
     
-    /**
-     * Verify that one list of _constant is equivalent to another list of _constant
-     
-    public static _java.Semantic<Collection<_constant>> EQIVALENT_CONSTANTS_LIST = 
-            (Collection<_constant> o1, Collection<_constant> o2) -> {
-        if( o1 == null ){
-            return o2 == null;
-        }
-        if( o1.size() != o2.size()){
-            return false;
-        }
-        Set<_constant> tm = new HashSet<>();
-        Set<_constant> om = new HashSet<>();
-        tm.addAll(o1);
-        om.addAll(o2);
-        return Objects.equals(tm, om);
-    };
-    
-    public static boolean equivalent( Collection<_constant> left, Collection<_constant> right){
-        return EQIVALENT_CONSTANTS_LIST.equivalent(left, right);
-    }
-    */
-    
     public static _enumConstantInspect INSPECT_ENUM_CONSTANT = new _enumConstantInspect();
     
     public static class _enumConstantInspect implements _inspect<_enum._constant>,
@@ -1124,8 +1102,6 @@ public final class _enum implements _type<EnumDeclaration, _enum>,_method._hasMe
             if( right == null){
                 dt.add( path.in(_java.Component.CONSTANT, left.getName()), left, null );
                 return dt;
-                //dl.add( path+_java.Component.CONSTANT, left, null);
-                //return dl;
             }
             _ins.INSPECT_ANNOS.diff(_ins, path, dt, left.getAnnos(), right.getAnnos());
             _ins.INSPECT_JAVADOC.diff(_ins, path, dt, left.getJavadoc(), right.getJavadoc());
@@ -1144,11 +1120,9 @@ public final class _enum implements _type<EnumDeclaration, _enum>,_method._hasMe
             if(!Objects.equals( left.getName(), right.getName())){
                 dt.node(new _differ._changeName( _p, left, right) );
             }
-            //_ins.INSPECT_NAME.diff(_ins, path, dt, left.getName(), right.getName());
             INSPECT_ARGUMENTS.diff(_p, dt, left, right, left.listArguments(), right.listArguments());
             _method.INSPECT_METHODS.diff(_p, dt, left, right, left.listMethods(), right.listMethods());
-            _field.INSPECT_FIELDS.diff(_p, dt, left, right, left.listFields(), right.listFields());
-            //_ins.INSPECT_FIELDS.diff(_ins, path, dt, left.listFields(), right.listFields());     
+            _field.INSPECT_FIELDS.diff(_p, dt, left, right, left.listFields(), right.listFields()); 
             return (_dif)dt;
         }
     }
@@ -1156,7 +1130,8 @@ public final class _enum implements _type<EnumDeclaration, _enum>,_method._hasMe
     public static _enumConstantsInspect INSPECT_ENUM_CONSTANTS = new _enumConstantsInspect();
     
     public static class _enumConstantsInspect 
-            implements _inspect<List<_enum._constant>> {
+            implements _inspect<List<_enum._constant>>, 
+                _differ<List<_enum._constant>, _node> {
 
         @Override
         public boolean equivalent( List<_enum._constant> left, List<_enum._constant> right) {
@@ -1201,6 +1176,133 @@ public final class _enum implements _type<EnumDeclaration, _enum>,_method._hasMe
             });
             return dt;
         }        
+
+        @Override
+        public <R extends _node> _dif diff(_path path, build dt, R leftRoot, R rightRoot, List<_constant> left, List<_constant> right) {
+            Set<_enum._constant>ls = new HashSet<>();
+            Set<_enum._constant>rs = new HashSet<>();
+            Set<_enum._constant>both = new HashSet<>();
+            ls.addAll(left);
+            rs.addAll(right);
+            both.addAll(ls);
+            both.retainAll(rs);
+            
+            ls.removeAll(both);
+            rs.removeAll(both);
+            ls.forEach(f -> {
+                _enum._constant cc = sameName( f, rs );
+                if( cc != null ){
+                    rs.remove( cc );
+                    INSPECT_ENUM_CONSTANT.diff(path, dt, leftRoot, rightRoot, f, cc);
+                } else{
+                    dt.node( new remove_enum_constant(path.in(CONSTANT, f.getName()), (_enum)leftRoot, (_enum)rightRoot, f) );                    
+                }
+            });            
+            rs.forEach(f -> {
+                dt.node( new add_enum_constant(path.in(CONSTANT, f.getName()), (_enum)leftRoot, (_enum)rightRoot, f) );                             
+            });
+            return (_dif)dt;
+        }
+        
+        public static class add_enum_constant implements _delta<_enum>, _add<_enum._constant>{
+
+            public _path path;
+            public _enum leftRoot;
+            public _enum rightRoot;
+            public _enum._constant toAdd;
+            
+            public add_enum_constant(_path path, _enum leftRoot, _enum rightRoot, _constant added ){
+                this.path = path;
+                this.leftRoot = leftRoot;
+                this.rightRoot = rightRoot;
+                this.toAdd = _constant.of(added.toString());
+            }
+             @Override
+            public _enum leftRoot() {
+                return leftRoot;
+            }
+
+            @Override
+            public _enum rightRoot() {
+                return rightRoot;
+            }
+
+            @Override
+            public void keepLeft() {
+                leftRoot.remove(toAdd);
+                rightRoot.remove(toAdd);               
+            }
+
+            @Override
+            public void keepRight() {                
+                
+                leftRoot.remove(toAdd);
+                leftRoot.add(toAdd);
+                
+                rightRoot.remove(toAdd);
+                rightRoot.add(toAdd); 
+            }
+
+            @Override
+            public _path path() {
+                return path;
+            }
+
+            @Override
+            public _constant added() {
+                return this.toAdd;
+            }            
+        }
+        
+        public static class remove_enum_constant implements _delta<_enum>, _remove<_enum._constant>{
+
+            public _path path;
+            public _enum leftRoot;
+            public _enum rightRoot;
+            public _enum._constant toRemove;
+            
+            public remove_enum_constant(_path path, _enum leftRoot, _enum rightRoot, _constant removed ){
+                this.path = path;
+                this.leftRoot = leftRoot;
+                this.rightRoot = rightRoot;
+                this.toRemove = _constant.of(removed.toString());
+            }
+            
+            @Override
+            public _enum leftRoot() {
+                return leftRoot;
+            }
+
+            @Override
+            public _enum rightRoot() {
+                return rightRoot;
+            }
+
+            @Override
+            public void keepLeft() {
+                leftRoot.remove(toRemove);
+                leftRoot.add(toRemove);
+                
+                rightRoot.remove(toRemove);
+                rightRoot.add(toRemove);                
+            }
+
+            @Override
+            public void keepRight() {                
+                leftRoot.remove(toRemove);
+                rightRoot.remove(toRemove);
+            }
+
+            @Override
+            public _path path() {
+                return path;
+            }
+
+            @Override
+            public _constant removed() {
+                return this.toRemove;
+            }            
+        }
     }
     
     
@@ -1223,8 +1325,6 @@ public final class _enum implements _type<EnumDeclaration, _enum>,_method._hasMe
             }
             if( right == null){
                 return dt.add( path.in(_java.Component.ENUM, left.getName()), left, null );
-                //dl.add( path+_java.Component.ENUM, left, null);
-                //return dl;
             }
             _ins.INSPECT_PACKAGE_NAME.diff(_ins, path,dt, left.getPackage(), right.getPackage() );
             _ins.INSPECT_IMPORTS.diff(_ins, path,dt, left.listImports(), right.listImports() );
@@ -1258,41 +1358,7 @@ public final class _enum implements _type<EnumDeclaration, _enum>,_method._hasMe
             if( ! Objects.equals(left, right)){
                 dt.node( new _changeArguments(path.in(Component.ARGUMENTS), (_constant)leftRoot, (_constant)rightRoot) );
             }
-            return (_dif)dt;
-            /*
-            if(left == null ){
-                if(right == null){
-                    return (_dif)dt;
-                }
-                for(int i=0;i<right.size();i++){
-                    dt.addRemoveOrChange(path.in(_java.Component.ARGUMENT, i+""),leftRoot, rightRoot, null, right);
-                }
-                return (_dif)dt;
-            }
-            if( right == null ){
-                for(int i=0;i<left.size();i++){
-                    dt.addRemoveOrChange(path.in(_java.Component.ARGUMENT, i+""),leftRoot, rightRoot, left, null);
-                }
-                return (_dif)dt;
-            } 
-            
-            int max = Math.max( left.size(), right.size() );
-            for(int i=0;i<max;i++){
-                Expression l = left.size() > i ? left.get(i) : null;
-                Expression r = right.size() > i ? right.get(i) : null;
-                
-                if( l == null ){
-                    dt.node( new _addArgument( path.in(Component.ARGUMENT, i+""), (_constant)leftRoot, (_constant)rightRoot, i ));
-                }else if ( r == null ){
-                    dt.node( new _removeArgument( path.in(Component.ARGUMENT, i+""), (_constant)leftRoot, (_constant)rightRoot, i ));
-                }else{
-                    if( ! Objects.equals(l, r)) {
-                        dt.node( new _changeArgument( path.in(Component.ARGUMENT, i+""), (_constant)leftRoot, (_constant)rightRoot, i ));
-                    }
-                }
-            }
             return (_dif)dt;            
-*/
         }
         
         public static final _java.ExpressionInspect INSPECT_ARG = new _java.ExpressionInspect(Component.ARGUMENT);
@@ -1324,7 +1390,7 @@ public final class _enum implements _type<EnumDeclaration, _enum>,_method._hasMe
             return dt;
         }
 
-         public static class _changeArguments
+        public static class _changeArguments
                 implements _differ._delta<_constant>, _differ._change<List<Expression>>{
 
             _path path; 
@@ -1380,183 +1446,12 @@ public final class _enum implements _type<EnumDeclaration, _enum>,_method._hasMe
             public void keepLeft() {
                 this.leftRoot.setArguments(leftArguments);
                 this.rightRoot.setArguments(leftArguments);
-            }            
+            }        
             
+            @Override
             public String toString(){
                 return "   ~ "+path;
             }
         }
-        /* 
-        public static class _changeArgument
-                implements _differ._delta<_constant>, _differ._change<Expression>{
-
-            _path path; 
-            _constant leftRoot;
-            _constant rightRoot;
-            int index;
-            AtomicBoolean committed = new AtomicBoolean(false);
-            Expression leftArgument;
-            Expression rightArgument;
-            
-            public _changeArgument(_path path, _constant left, _constant right, int index){
-                this.path = path;
-                this.leftRoot = left;
-                this.rightRoot = right;
-                this.index = index;
-                this.leftArgument = leftRoot.getArgument(index).clone();                
-                this.rightArgument = rightRoot.getArgument(index).clone();                
-            }
-            
-            @Override
-            public _constant leftRoot() {
-                return leftRoot;
-            }
-
-            @Override
-            public _constant rightRoot() {
-                return rightRoot;
-            }
-
-            @Override
-            public _path path() {
-                return path;
-            }
-
-            @Override
-            public Expression left() {
-                return leftArgument;
-            }
-            
-            @Override
-            public Expression right() {
-                return rightArgument;
-            }
-
-            @Override
-            public void keepRight() {
-                this.leftRoot.setArgument(index, rightArgument);
-                this.rightRoot.setArgument(index, rightArgument);                                
-            }
-
-            @Override
-            public void keepLeft() {
-                this.leftRoot.setArgument(index, leftArgument);
-                this.rightRoot.setArgument(index, leftArgument);                                
-            }            
-        }
-        
-        public static class _addArgument
-                implements _differ._delta<_constant>, _differ._add<Expression>{
-
-            _path path; 
-            _constant leftRoot;
-            _constant rightRoot;
-            int rightIndex;
-            int leftIndex =-1;
-            AtomicBoolean committed = new AtomicBoolean(false);
-            Expression toAdd;
-            
-            public _addArgument(_path path, _constant left, _constant right, int rightIndex){
-                this.path = path;
-                this.leftRoot = left;
-                this.rightRoot = right;
-                this.rightIndex = rightIndex;
-                this.toAdd = rightRoot.getArgument(rightIndex).clone();                
-            }
-            
-            @Override
-            public _constant leftRoot() {
-                return leftRoot;
-            }
-
-            @Override
-            public _constant rightRoot() {
-                return rightRoot;
-            }
-
-            @Override
-            public _path path() {
-                return path;
-            }
-
-            @Override
-            public Expression added() {
-                return toAdd;
-            }
-
-            @Override
-            public void keepRight() {
-                if( !committed.get() ){
-                    committed.set(true);
-                    this.leftRoot.addArgument(toAdd);
-                    this.leftIndex = this.leftRoot.listArguments().size() -1;
-                    this.rightRoot.removeArgument(rightIndex);
-                }                
-            }
-
-            @Override
-            public void keepLeft() {
-                if( committed.get() ){
-                    committed.set(false);
-                    leftRoot.removeArgument(leftIndex);
-                    rightRoot.astConstant.getArguments().add(rightIndex, toAdd);
-                }
-            }
-            
-        }
-        
-        public static class _removeArgument
-                implements _differ._delta<_node>, _differ._remove<Expression>{
-             
-             _path path;                 
-            _constant leftRoot;
-            _constant rightRoot;
-            int rightIndex = -1;
-            int leftIndex;
-            AtomicBoolean committed = new AtomicBoolean(false);
-            Expression toRemove;
-
-            public _removeArgument(_path path, _constant left, _constant right, int leftIndex){
-                this.path = path;
-                this.leftRoot = left;
-                this.rightRoot = right;
-                this.leftIndex = leftIndex;
-                this.toRemove = leftRoot.getArgument(leftIndex).clone();                
-            }
-             
-            
-            @Override
-            public _node leftRoot() {
-                return leftRoot;
-            }
-
-            @Override
-            public _node rightRoot() {
-                return rightRoot;
-            }
-
-            @Override
-            public _path path() {
-                return path;
-            }
-
-            @Override
-            public Expression removed() {
-                return toRemove;
-            }
-
-            @Override
-            public void keepRight() {
-                this.leftRoot.removeArgument(leftIndex);
-                //this.rightRoot.astConstant.getArguments().remove(rightIndex);                
-            }
-
-            @Override
-            public void keepLeft() {
-                this.leftRoot.removeArgument(rightIndex);
-            }
-            
-        }
-*/
     }
 }

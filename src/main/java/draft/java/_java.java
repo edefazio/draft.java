@@ -425,6 +425,10 @@ public enum _java {
         }
     }
     
+    
+    public static final StringInspect INSPECT_PACKAGE_NAME = new StringInspect(_java.Component.PACKAGE_NAME);
+    
+    
     /** 
      * Inspector for a String (name)
      * 

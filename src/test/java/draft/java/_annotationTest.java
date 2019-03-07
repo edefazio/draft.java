@@ -5,6 +5,7 @@ import draft.java._annotation._element;
 import java.util.List;
 
 import draft.java.template.$expr;
+import java.lang.annotation.ElementType;
 import junit.framework.TestCase;
 import test.ComplexAnnotationType;
 import test.subpkg.ann2;
@@ -15,6 +16,12 @@ import test.subpkg.ann2;
  */
 public class _annotationTest extends TestCase  {
 
+    public void testTargets(){
+        _annotation _a = _annotation.of("aaaa.bbbb.A").targets(ElementType.CONSTRUCTOR );
+        System.out.println( _a);
+        _a = _annotation.of("aaaa.bbbb.A").targets(ElementType.CONSTRUCTOR, ElementType.FIELD);
+        System.out.println( _a);
+    }
     public void testAnnotatAnonymousBody(){
         _annotation _a = _annotation.of("aaaa.bbbb.Anny", new Object(){
             int a;
