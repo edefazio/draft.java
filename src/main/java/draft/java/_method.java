@@ -988,16 +988,12 @@ public final class _method
         }
 
         default T removeMethod(_method _m) {
-            if (listMethods().contains(_m)) {
-                _m.ast().removeForced();
-            }
-            return (T) this;
+            this.forMethods(m -> m.equals(_m), m-> m.astMethod.removeForced() );
+            return removeMethod( _m.astMethod );
         }
 
-        default T removeMethod(MethodDeclaration m) {
-            if (listMethods().stream().filter((_m -> _m.ast().equals(m))).findFirst().isPresent()) {
-                m.removeForced();
-            }
+        default T removeMethod(MethodDeclaration astM) {
+            this.forMethods(m -> m.equals(_method.of(astM)), m-> m.astMethod.removeForced() );
             return (T) this;
         }
 
@@ -1206,9 +1202,9 @@ public final class _method
 
         public static _method findSameNameAndParameters(_method tm, Set<_method> targets) {
             Optional<_method> om = targets.stream().filter(m -> m.getName().equals(tm.getName())
-                    && m.getType().equals(tm.getType())
+                    //&& m.getType().equals(tm.getType())
                     && m.getParameters().hasParametersOfType(tm.getParameters().types())).findFirst();
-            if (om != null) {
+            if( om.isPresent() ) {
                 return om.get();
             }
             return null;
@@ -1229,10 +1225,9 @@ public final class _method
             rs.removeAll(left);
 
             ls.forEach(m -> {
-
                 _method fm = findSameNameAndParameters(m, rs);
                 //System.out.println(" LEFT NOT MATCHED "+m+" "+rs);
-                if (fm != null) {
+                if(fm != null) {
                     rs.remove(fm);
                     INSPECT_METHOD.diff(
                             path,
@@ -1242,9 +1237,10 @@ public final class _method
                             m,
                             fm);
                 } else {
+                    //System.out.println("METHOD"+ m );
                     dt.node(new _removeMethod(
                             path.in(_java.Component.METHOD, describeMethodSignature(m)),
-                            (_hasMethods) leftRoot, (_hasMethods) rightRoot, m));
+                            (_hasMethods) leftRoot, (_hasMethods) rightRoot, m) );
                 }
             });
             rs.forEach(m -> {
@@ -1267,8 +1263,8 @@ public final class _method
             public _removeMethod(_path path, _hasMethods leftRoot, _hasMethods rightRoot, _method _toRemove) {
                 this.path = path;
                 this.leftRoot = leftRoot;
-                this.rightRoot = rightRoot;
-                this.toRemove = toRemove.copy();
+                this.rightRoot = rightRoot;                
+                this.toRemove = _method.of( _toRemove.toString());
             }
 
             @Override
@@ -1294,17 +1290,30 @@ public final class _method
             @Override
             public void keepRight() {
                 this.leftRoot.removeMethod(toRemove);
+                this.rightRoot.removeMethod(toRemove);
             }
 
             @Override
             public void keepLeft() {
+                //System.out.println( "KEEPLEFT BEFORE LEFT  "+System.lineSeparator()+  leftRoot );
+                //System.out.println( "KEEPLEFT BEFORE RIGHT "+System.lineSeparator()+  rightRoot );
+                this.leftRoot.removeMethod(toRemove); //dont double add
+                this.leftRoot.method(toRemove);
+                
+                //System.out.println( "BEFORE "+ leftRoot );
                 this.rightRoot.removeMethod(toRemove);
                 this.rightRoot.method(toRemove);
 
-                this.leftRoot.removeMethod(toRemove); //dont double add
-                this.leftRoot.method(toRemove);
+                
+                //System.out.println( "AFTER "+ leftRoot );
+                //System.out.println( "KEEPLEFT AFTER LEFT  "+System.lineSeparator()+ leftRoot +" >>>>>");
+                //System.out.println( "KEEPLEFT AFTER RIGHT "+System.lineSeparator()+ rightRoot +" >>>>>");                
             }
 
+            @Override
+            public String toString(){
+                return "   - "+path;
+            }
         }
 
         public static class _addMethod implements _delta<_hasMethods>, _add<_method> {
@@ -1318,7 +1327,7 @@ public final class _method
                 this.path = path;
                 this.leftRoot = leftRoot;
                 this.rightRoot = rightRoot;
-                this.toAdd = toAdd.copy();
+                this.toAdd = _method.of( _toAdd.toString());
             }
 
             @Override
@@ -1353,7 +1362,12 @@ public final class _method
             @Override
             public void keepLeft() {
                 this.leftRoot.removeMethod(toAdd);
-                this.rightRoot.removeMethod(toAdd);
+                this.rightRoot.removeMethod(toAdd);                
+            }
+            
+            @Override
+            public String toString(){
+                return "   + "+path;
             }
         }
 

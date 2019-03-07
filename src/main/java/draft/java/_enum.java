@@ -8,6 +8,7 @@ import com.github.javaparser.ast.expr.Expression;
 import com.github.javaparser.ast.expr.ObjectCreationExpr;
 import com.github.javaparser.ast.stmt.BlockStmt;
 import com.github.javaparser.ast.type.ClassOrInterfaceType;
+import com.github.javaparser.printer.PrettyPrinterConfiguration;
 import draft.DraftException;
 import draft.Text;
 import draft.java._anno.*;
@@ -380,6 +381,11 @@ public final class _enum implements _type<EnumDeclaration, _enum>,_method._hasMe
         return this;
     }
 
+    public _enum constant( _constant _c ){
+        this.astEnum.addEntry( _c.ast() );
+        return this;
+    }
+    
     public _enum constant ( String...constantDecl ) {
         return constant( Ast.constant( constantDecl ));
     }
@@ -1028,6 +1034,14 @@ public final class _enum implements _type<EnumDeclaration, _enum>,_method._hasMe
             return parts;
         }
 
+        public String toString(){
+            return this.astConstant.toString();
+        }
+        
+        public String toString( PrettyPrinterConfiguration ppv ){
+            return this.astConstant.toString(ppv);
+        }
+        
         @Override
         public int hashCode() {
             int hash = 7;
@@ -1131,7 +1145,7 @@ public final class _enum implements _type<EnumDeclaration, _enum>,_method._hasMe
                 dt.node(new _differ._changeName( _p, left, right) );
             }
             //_ins.INSPECT_NAME.diff(_ins, path, dt, left.getName(), right.getName());
-            INSPECT_ARGUMENTS.diff(_p, dt, left, right);
+            INSPECT_ARGUMENTS.diff(_p, dt, left, right, left.listArguments(), right.listArguments());
             _method.INSPECT_METHODS.diff(_p, dt, left, right, left.listMethods(), right.listMethods());
             _field.INSPECT_FIELDS.diff(_p, dt, left, right, left.listFields(), right.listFields());
             //_ins.INSPECT_FIELDS.diff(_ins, path, dt, left.listFields(), right.listFields());     
@@ -1367,8 +1381,12 @@ public final class _enum implements _type<EnumDeclaration, _enum>,_method._hasMe
                 this.leftRoot.setArguments(leftArguments);
                 this.rightRoot.setArguments(leftArguments);
             }            
+            
+            public String toString(){
+                return "   ~ "+path;
+            }
         }
-         
+        /* 
         public static class _changeArgument
                 implements _differ._delta<_constant>, _differ._change<Expression>{
 
@@ -1539,5 +1557,6 @@ public final class _enum implements _type<EnumDeclaration, _enum>,_method._hasMe
             }
             
         }
+*/
     }
 }

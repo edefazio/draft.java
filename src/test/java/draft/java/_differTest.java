@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package draft.java;
 
 import draft.java._differ._changeName;
@@ -18,6 +13,40 @@ import junit.framework.TestCase;
  * @author Eric
  */
 public class _differTest extends TestCase {
+    
+    public void test_enumConstantDiff(){
+        _enum._constant _a1 = _enum._constant.of("A");
+        _enum._constant _a2 = _enum._constant.of("A");
+        _differ._mydiff dt = new _differ._mydiff();
+        _enum _e1 = _enum.of("E");
+        _enum _e2 = _enum.of("E");
+        _e1.constant(_a1);
+        _e2.constant(_a2);
+        
+        _node leftRoot = _e1;
+        _node rightRoot = _e2;
+        _path path = new _path().in(Component.ENUM, "E");
+        _enum.INSPECT_ENUM_CONSTANT.diff(path, dt, leftRoot, rightRoot, _a1, _a2);
+        System.out.println( dt );
+        
+        _a1.method("int m(){ return 1; }");
+        _a1.field("int i=100;");
+        _a1.addArgument(0);
+        _a1.annotate(Deprecated.class);
+        _a1.javadoc("Javadoc ");
+        
+        _enum.INSPECT_ENUM_CONSTANT.diff(path, dt, leftRoot, rightRoot, _a1, _a2);
+        System.out.println( dt );
+        
+        dt.forEach( d-> d.keepLeft() );
+        
+        dt = new _differ._mydiff();
+        _enum.INSPECT_ENUM_CONSTANT.diff(path, dt, leftRoot, rightRoot, _a1, _a2);
+        
+        //System.out.println( dt );
+        assertEquals( _a1, _a2);        
+        //_method.INSPECT_METHOD.diff(new _path(), dt, leftRoot, rightRoot, _m1, _m2);
+    }
     
     public void test_methodDiff(){
         _method _m1 = _method.of("int m(){ return 1; }");

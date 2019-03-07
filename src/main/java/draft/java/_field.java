@@ -867,30 +867,16 @@ public final class _field
             lf.forEach(f -> {
                 _field match = getFieldNamed(rf, f.getName());
                 if (match != null) {
-                    //dt.add(path.in( _java.Component.FIELD, f.getName()), f, match);
                     INSPECT_FIELD.diff(path, dt, leftRoot, rightRoot, f, match);
                     rf.remove(match);
                 } else {
                     dt.node(new remove_field(path.in(_java.Component.FIELD, f.getName()), (_hasFields) leftRoot, (_hasFields) rightRoot, f));
-                    //dt.add(path.in(_java.Component.FIELD, f.getName()), f, null);
                 }
             });
-
             rf.forEach(f -> {
                 dt.node(new add_field(path.in(_java.Component.FIELD, f.getName()), (_hasFields) leftRoot, (_hasFields)rightRoot, f));
-                //dt.add(path.in(_java.Component.FIELD, f.getName()), null, f);
             });
 
-            /* WE already checked & removed matching fields from left, so the fields
-                   remaining in right are unique
-                _field match = getFieldNamed( lf, f.getName() );
-                if( match != null ){
-                    //dt.add(path.in( _java.Component.FIELD, f.getName()), match, f);
-                    INSPECT_FIELD.diffTree(path.in(_java.Component.FIELD), dt, match, f);
-                } else{
-                    dt.add(path.in(_java.Component.FIELD, f.getName()), null, f);
-                }
-            });*/
             return (_dif)dt;
         }
     }
@@ -939,11 +925,7 @@ public final class _field
                 dt.node(new _changeInit(p.in(Component.INIT), left, right));
             }
             return (_dif) dt;
-            //_ins.INSPECT_JAVADOC.diff(_ins, path, dt, left.getJavadoc(), right.getJavadoc());
-            //_ins.INSPECT_ANNOS.diff(_ins, path, dt, left.getAnnos(), right.getAnnos());
-            //_ins.INSPECT_INIT.diff(_ins, path, dt, left.getInit(), right.getInit() );
         }
-
     }
 
     /**

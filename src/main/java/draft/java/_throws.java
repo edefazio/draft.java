@@ -220,36 +220,6 @@ public final class _throws
     public int indexOf( _typeRef<ReferenceType> element ) {
         return this.astNodeWithThrows.getThrownExceptions().indexOf( (ReferenceType)element.ast() );
     }
-
-    /*
-    public static final _java.Semantic<Collection<ReferenceType>> EQIVALENT_THROWS = (o1, o2)->{
-        if( o1 == null){
-            return o2 == null;
-        }
-        if( o2 == null ){
-            return false;
-        }
-        if( o1.size() != o2.size()){
-            return false;
-        }
-        Set<ReferenceType> tm = new HashSet<>();
-        Set<ReferenceType> om = new HashSet<>();
-        tm.addAll(o1);
-        om.addAll(o2);
-        return Objects.equals(tm, om);        
-    };
-    */
-    
-    /** 
-     * Are these (2) collections of throws equivalent ?
-     * @param left
-     * @param right
-     * @return true if these collections are semantically equivalent
-     
-    public static boolean equivalent( Collection<ReferenceType> left, Collection<ReferenceType> right ){
-        return EQIVALENT_THROWS.equivalent(left, right);
-    }
-    */ 
     
     /**
      * examples:
@@ -299,25 +269,6 @@ public final class _throws
         public boolean equivalent(_throws left, _throws right) {
             return Objects.equals(left, right);
         }
-
-        /*
-        @Override
-        public <R extends _node> _dif diff(_java._diffMaster _inspect, _path path, build dt, R leftRoot, R rightRoot, _throws left, _throws right) {
-            for(int i=0; i<left.count();i++){
-                ReferenceType cit = left.get(i);
-                if( ! right.ast().stream().filter( c-> typesEqual(c, cit) ).findFirst().isPresent()){
-                    dt.addRemoveOrChange(path.in(_java.Component.THROWS), leftRoot, rightRoot, cit, null ); 
-                }
-            }
-            for(int i=0; i<right.count();i++){
-                ReferenceType cit = right.get(i);
-                if( ! left.ast().stream().filter( c-> typesEqual(c, cit) ).findFirst().isPresent()){
-                    dt.addRemoveOrChange( path.in(_java.Component.THROWS),leftRoot, rightRoot, null, cit ); 
-                }
-            }
-            return (_dif)dt;
-        }
-        */
         
         @Override
         public _inspect._diff diff( _java._inspector _ins, _inspect._path path, _inspect._diff dt, _throws left, _throws right) {
@@ -332,7 +283,6 @@ public final class _throws
                 ReferenceType cit = right.get(i);
                 if( ! left.ast().stream().filter( c-> typesEqual(c, cit) ).findFirst().isPresent()){
                     dt.add( path.in(_java.Component.THROWS), null, cit ); 
-                    //des.add(new ObjectDiff.Entry( path + name, null, cit) );
                 }
             }
             return dt;
