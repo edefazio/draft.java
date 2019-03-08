@@ -1100,7 +1100,7 @@ public final class _class implements _type<ClassOrInterfaceDeclaration, _class>,
             //_ins.INSPECT_STATIC_BLOCKS.diff(_ins, path, dt, left.listStaticBlocks(), right.listStaticBlocks());            
             _java.INSPECT_NAME.diff(path, dt, leftRoot, rightRoot, left.getName(), right.getName());
             _modifiers.INSPECT_MODIFIERS.diff(path, dt, leftRoot, rightRoot, left.getEffectiveModifiers(), right.getEffectiveModifiers());
-            //_ins.INSPECT_CONSTRUCTORS.diff(_ins, path, dt, left.listConstructors(), right.listConstructors());
+            _constructor.INSPECT_CONSTRUCTORS.diff(path, dt, left, right,left.listConstructors(), right.listConstructors());
             _method.INSPECT_METHODS.diff(path, dt, leftRoot, rightRoot, left.listMethods(), right.listMethods() );
             _field.INSPECT_FIELDS.diff(path, dt, leftRoot, rightRoot, left.listFields(), right.listFields() );
             

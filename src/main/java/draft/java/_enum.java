@@ -1036,10 +1036,12 @@ public final class _enum implements _type<EnumDeclaration, _enum>,_method._hasMe
             return parts;
         }
 
+        @Override
         public String toString(){
             return this.astConstant.toString();
         }
         
+        @Override
         public String toString( PrettyPrinterConfiguration ppv ){
             return this.astConstant.toString(ppv);
         }
@@ -1088,8 +1090,6 @@ public final class _enum implements _type<EnumDeclaration, _enum>,_method._hasMe
         public boolean equivalent(_enum._constant left, _enum._constant right) {
             return Objects.equals(left,right);
         }
-        
-        
         
         @Override
         public _inspect._diff diff( _java._inspector _ins, _inspect._path path, _inspect._diff dt, _enum._constant left, _enum._constant right) {
@@ -1319,7 +1319,7 @@ public final class _enum implements _type<EnumDeclaration, _enum>,_method._hasMe
     
     public static _enumInspect INSPECT_ENUM = new _enumInspect();
     
-    public static class _enumInspect implements _inspect<_enum>{
+    public static class _enumInspect implements _inspect<_enum>, _differ<_enum, _node> {
 
         @Override
         public boolean equivalent(_enum left, _enum right) {
@@ -1351,6 +1351,26 @@ public final class _enum implements _type<EnumDeclaration, _enum>,_method._hasMe
             _ins.INSPECT_ENUM_CONSTANTS.diff(_ins, path, dt, left.listConstants(), right.listConstants());            
             _ins.INSPECT_NESTS.diff(_ins, path, dt, left.listNests(), right.listNests());  
             return dt;
+        }
+
+        @Override
+        public <R extends _node> _dif diff(_path path, build dt, R leftRoot, R rightRoot, _enum left, _enum right) {
+            _java.INSPECT_PACKAGE.diff(path, dt, leftRoot, rightRoot, left.getPackage(), right.getPackage() );
+            _type.INSPECT_IMPORTS.diff(path, dt, leftRoot, rightRoot, left.listImports(), right.listImports() );
+            _anno.INSPECT_ANNOS.diff(path, dt, leftRoot, rightRoot, left.getAnnos(), right.getAnnos() );
+            
+            _type.INSPECT_IMPLEMENTS.diff(path, dt, leftRoot, rightRoot,left.listImplements(), right.listImplements());  
+            _javadoc.INSPECT_JAVADOC.diff(path, dt, leftRoot, rightRoot, left.getJavadoc(), right.getJavadoc());  
+            //_ins.INSPECT_STATIC_BLOCKS.diff(_ins, path, dt, left.listStaticBlocks(), right.listStaticBlocks());            
+            _java.INSPECT_NAME.diff(path, dt, leftRoot, rightRoot, left.getName(), right.getName());
+            _modifiers.INSPECT_MODIFIERS.diff(path, dt, leftRoot, rightRoot, left.getEffectiveModifiers(), right.getEffectiveModifiers());
+            _constructor.INSPECT_CONSTRUCTORS.diff(path, dt, leftRoot, rightRoot, left.listConstructors(), right.listConstructors());
+            _method.INSPECT_METHODS.diff(path, dt, leftRoot, rightRoot, left.listMethods(), right.listMethods() );
+            _field.INSPECT_FIELDS.diff(path, dt, leftRoot, rightRoot, left.listFields(), right.listFields() );
+            INSPECT_ENUM_CONSTANTS.diff(path, dt, leftRoot, rightRoot, left.listConstants(), right.listConstants());            
+            //_ins.INSPECT_NESTS.diff(_ins, path, dt, left.listNests(), right.listNests());  
+            
+            return (_dif)dt;            
         }
     }
     
