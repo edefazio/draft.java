@@ -1052,7 +1052,7 @@ public final class _class implements _type<ClassOrInterfaceDeclaration, _class>,
     
     public static _classInspect INSPECT_CLASS = new _classInspect();
     
-    public static class _classInspect implements _inspect<_class>{
+    public static class _classInspect implements _inspect<_class>, _differ<_class, _node> {
 
         @Override
         public boolean equivalent(_class left, _class right) {
@@ -1086,6 +1086,26 @@ public final class _class implements _type<ClassOrInterfaceDeclaration, _class>,
             
             _ins.INSPECT_NESTS.diff(_ins, path, dt, left.listNests(), right.listNests());
             return dt;
+        }
+
+        @Override
+        public <R extends _node> _dif diff(_path path, build dt, R leftRoot, R rightRoot, _class left, _class right) {
+            _java.INSPECT_PACKAGE_NAME.diff(path, dt, leftRoot, rightRoot, left.getPackage(), right.getPackage() );
+            _type.INSPECT_IMPORTS.diff(path,dt, leftRoot, rightRoot, left.listImports(), right.listImports() );
+            _anno.INSPECT_ANNOS.diff(path, dt, leftRoot, rightRoot, left.getAnnos(), right.getAnnos());          
+            _type.INSPECT_EXTENDS.diff(path, dt, leftRoot, rightRoot, left.listExtends(), right.listExtends());          
+            _type.INSPECT_IMPLEMENTS.diff(path, dt, leftRoot, rightRoot, left.listImplements(), right.listImplements());  
+            _javadoc.INSPECT_JAVADOC.diff( path, dt, leftRoot, rightRoot, left.getJavadoc(), right.getJavadoc());  
+            _typeParameter.INSPECT_TYPE_PARAMETERS.diff(path, dt, leftRoot, rightRoot,left.getTypeParameters(), right.getTypeParameters());  
+            //_ins.INSPECT_STATIC_BLOCKS.diff(_ins, path, dt, left.listStaticBlocks(), right.listStaticBlocks());            
+            _java.INSPECT_NAME.diff(path, dt, leftRoot, rightRoot, left.getName(), right.getName());
+            _modifiers.INSPECT_MODIFIERS.diff(path, dt, leftRoot, rightRoot, left.getEffectiveModifiers(), right.getEffectiveModifiers());
+            //_ins.INSPECT_CONSTRUCTORS.diff(_ins, path, dt, left.listConstructors(), right.listConstructors());
+            _method.INSPECT_METHODS.diff(path, dt, leftRoot, rightRoot, left.listMethods(), right.listMethods() );
+            _field.INSPECT_FIELDS.diff(path, dt, leftRoot, rightRoot, left.listFields(), right.listFields() );
+            
+            //_ins.INSPECT_NESTS.diff(_ins, path, dt, left.listNests(), right.listNests());
+            return (_dif)dt;
         }
     }    
 }

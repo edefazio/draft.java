@@ -12,6 +12,7 @@ import com.github.javaparser.ast.stmt.LocalClassDeclarationStmt;
 import com.github.javaparser.ast.type.ClassOrInterfaceType;
 import draft.DraftException;
 import draft.Text;
+import draft.java._java.Component;
 import draft.java._model.*;
 import draft.java.io._in;
 import draft.java.io._io;
@@ -1472,7 +1473,8 @@ public interface _type<AST extends TypeDeclaration, T extends _type>
     
     public static ListClassOrInterfaceTypeInspect INSPECT_IMPLEMENTS = new ListClassOrInterfaceTypeInspect(_java.Component.IMPLEMENTS );
     
-    public static class ListClassOrInterfaceTypeInspect implements _inspect<List<ClassOrInterfaceType>>{        
+    public static class ListClassOrInterfaceTypeInspect implements _inspect<List<ClassOrInterfaceType>>, 
+            _differ<List<ClassOrInterfaceType>, _node> {        
 
         private final _java.Component component;
         
@@ -1508,6 +1510,258 @@ public interface _type<AST extends TypeDeclaration, T extends _type>
             
             return dt;
         }        
+
+        @Override
+        public <R extends _node> _dif diff(_path path, build dt, R leftRoot, R rightRoot, List<ClassOrInterfaceType> left, List<ClassOrInterfaceType> right) {
+            Set<ClassOrInterfaceType> ls = new HashSet<>();
+            Set<ClassOrInterfaceType> rs = new HashSet<>();
+            Set<ClassOrInterfaceType> both = new HashSet<>();
+            ls.addAll(left);
+            rs.addAll(right);
+            
+            both.addAll( left);
+            both.retainAll( right);
+            
+            ls.removeAll(both);
+            rs.removeAll(both);
+            
+            ls.forEach(c -> {
+                if( this.component == Component.EXTENDS ){
+                    dt.node( new removeExtends( path.in(component), (_type)leftRoot, (_type)rightRoot, c ) ); 
+                } else {
+                    dt.node( new removeImplements( path.in(component), (_type)leftRoot, (_type)rightRoot, c ) );
+                }
+            });
+            rs.forEach(c -> {
+                if( this.component == Component.EXTENDS ){
+                    dt.node( new addExtends( path.in(component), (_type)leftRoot, (_type)rightRoot, c ) ); 
+                } else {
+                    dt.node( new addImplements( path.in(component), (_type)leftRoot, (_type)rightRoot, c ) );
+                }
+            });
+            
+            return (_dif)dt;
+        }
+        
+        public static class addExtends 
+                implements _delta<_type>,_add<ClassOrInterfaceType>{
+            
+            public _path path;
+            public _type leftRoot;
+            public _type rightRoot;
+            public ClassOrInterfaceType add;
+            
+            public addExtends(_path path, _type leftRoot, _type rightRoot, ClassOrInterfaceType add ){
+                this.path = path;
+                this.leftRoot = leftRoot;
+                this.rightRoot = rightRoot;
+                this.add = add.clone();
+            }
+            
+            @Override
+            public _type leftRoot() {
+                return leftRoot;
+            }
+
+            @Override
+            public _type rightRoot() {
+                return rightRoot;
+            }
+
+            @Override
+            public void keepLeft() {
+                ((_hasExtends)leftRoot).removeExtends(add);
+                ((_hasExtends)rightRoot).removeExtends(add);
+            }
+
+            @Override
+            public void keepRight() {
+                ((_hasExtends)leftRoot).removeExtends(add);
+                ((_hasExtends)leftRoot).extend(add);
+                ((_hasExtends)rightRoot).removeExtends(add);
+                ((_hasExtends)rightRoot).extend(add);
+            }
+
+            @Override
+            public _path path() {
+                return path;
+            }
+
+            @Override
+            public ClassOrInterfaceType added() {
+                return this.add;
+            }
+            
+            @Override
+            public String toString(){
+                return "   + "+path;
+            }        
+        }
+        
+         public static class removeExtends 
+                implements _delta<_type>,_remove<ClassOrInterfaceType>{
+            
+            public _path path;
+            public _type leftRoot;
+            public _type rightRoot;
+            public ClassOrInterfaceType remove;
+            
+            public removeExtends(_path path, _type leftRoot, _type rightRoot, ClassOrInterfaceType remove ){
+                this.path = path;
+                this.leftRoot = leftRoot;
+                this.rightRoot = rightRoot;
+                this.remove = remove.clone();
+            }
+            
+            @Override
+            public _type leftRoot() {
+                return leftRoot;
+            }
+
+            @Override
+            public _type rightRoot() {
+                return rightRoot;
+            }
+
+            @Override
+            public void keepLeft() {                
+                ((_hasExtends)leftRoot).removeExtends(remove);
+                ((_hasExtends)leftRoot).extend(remove);
+                ((_hasExtends)rightRoot).removeExtends(remove);
+                ((_hasExtends)rightRoot).extend(remove);                
+            }
+
+            @Override
+            public void keepRight() {
+                ((_hasExtends)leftRoot).removeExtends(remove);
+                ((_hasExtends)rightRoot).removeExtends(remove);
+            }
+
+            @Override
+            public _path path() {
+                return path;
+            }
+
+            @Override
+            public ClassOrInterfaceType removed() {
+                return this.remove;
+            }
+            
+            @Override
+            public String toString(){
+                return "   - "+path;
+            }        
+        }
+         
+        public static class addImplements 
+                implements _delta<_type>,_add<ClassOrInterfaceType>{
+            
+            public _path path;
+            public _type leftRoot;
+            public _type rightRoot;
+            public ClassOrInterfaceType add;
+            
+            public addImplements(_path path, _type leftRoot, _type rightRoot, ClassOrInterfaceType add ){
+                this.path = path;
+                this.leftRoot = leftRoot;
+                this.rightRoot = rightRoot;
+                this.add = add.clone();
+            }
+            
+            @Override
+            public _type leftRoot() {
+                return leftRoot;
+            }
+
+            @Override
+            public _type rightRoot() {
+                return rightRoot;
+            }
+
+            @Override
+            public void keepLeft() {
+                ((_hasImplements)leftRoot).removeImplements(add);
+                ((_hasImplements)rightRoot).removeImplements(add);
+            }
+
+            @Override
+            public void keepRight() {
+                ((_hasImplements)leftRoot).removeImplements(add);
+                ((_hasImplements)leftRoot).implement(add);
+                ((_hasImplements)rightRoot).removeImplements(add);
+                ((_hasImplements)rightRoot).implement(add);
+            }
+
+            @Override
+            public _path path() {
+                return path;
+            }
+
+            @Override
+            public ClassOrInterfaceType added() {
+                return this.add;
+            }
+            
+            @Override
+            public String toString(){
+                return "   + "+path;
+            }        
+        }
+        
+        public static class removeImplements 
+                implements _delta<_type>,_remove<ClassOrInterfaceType>{
+            
+            public _path path;
+            public _type leftRoot;
+            public _type rightRoot;
+            public ClassOrInterfaceType remove;
+            
+            public removeImplements(_path path, _type leftRoot, _type rightRoot, ClassOrInterfaceType remove ){
+                this.path = path;
+                this.leftRoot = leftRoot;
+                this.rightRoot = rightRoot;
+                this.remove = remove.clone();
+            }
+            
+            @Override
+            public _type leftRoot() {
+                return leftRoot;
+            }
+
+            @Override
+            public _type rightRoot() {
+                return rightRoot;
+            }
+
+            @Override
+            public void keepLeft() {                
+                ((_hasImplements)leftRoot).removeImplements(remove);
+                ((_hasImplements)leftRoot).implement(remove);
+                ((_hasImplements)rightRoot).removeImplements(remove);
+                ((_hasImplements)rightRoot).implement(remove);                
+            }
+
+            @Override
+            public void keepRight() {
+                ((_hasImplements)leftRoot).removeImplements(remove);
+                ((_hasImplements)rightRoot).removeImplements(remove);
+            }
+
+            @Override
+            public _path path() {
+                return path;
+            }
+
+            @Override
+            public ClassOrInterfaceType removed() {
+                return this.remove;
+            }
+            
+            @Override
+            public String toString(){
+                return "   - "+path;
+            }        
+        } 
     }
     
     public static final _typeInspect INSPECT_TYPE = new _typeInspect();

@@ -806,7 +806,8 @@ public final class _constructor implements _anno._hasAnnos<_constructor>, _javad
     public static final _constructorsInspect INSPECT_CONSTRUCTORS = 
             new _constructorsInspect();
     
-    public static class _constructorsInspect implements _inspect<List<_constructor>>{
+    public static class _constructorsInspect implements _inspect<List<_constructor>>,
+        _differ<List<_constructor>, _node>{
 
         public static _constructor sameNameAndParameterTypes(_constructor ct, Set<_constructor> lcs ){
             _parameters _pts = ct.getParameters();
@@ -863,12 +864,162 @@ public final class _constructor implements _anno._hasAnnos<_constructor>, _javad
             });
             return dt;
         }
+
+        @Override
+        public <R extends _node> _dif diff(_path path, build dt, R leftRoot, R rightRoot, List<_constructor> left, List<_constructor> right) {
+            Set<_constructor> ls = new HashSet<>();
+            Set<_constructor> rs = new HashSet<>();
+            Set<_constructor> both = new HashSet<>();
+            ls.addAll(left);
+            rs.addAll(right);
+            
+            both.addAll(left);
+            both.retainAll(right);
+            
+            ls.removeAll(both);
+            rs.removeAll(both);
+            ls.forEach(c -> {
+                _constructor _rct = sameNameAndParameterTypes(c, rs); 
+                if( _rct != null ){
+                    rs.remove(_rct);
+                    INSPECT_CONSTRUCTOR.diff(path.in(_java.Component.CONSTRUCTOR, 
+                            _constructorInspect.constructorSignatureDescription(c)), 
+                            dt, leftRoot, rightRoot, c, _rct);
+                    //dt.add(path.in( _java.Component.CONSTRUCTOR, _constructorInspect.constructorSignatureDescription(c) ), c, _rct);
+                } else{
+                    dt.node(new remove_constructor(path.in(_java.Component.CONSTRUCTOR, 
+                            _constructorInspect.constructorSignatureDescription(c)),
+                            (_hasConstructors)leftRoot, 
+                            (_hasConstructors)rightRoot, 
+                            c) );
+                    //dt.add(path.in( _java.Component.CONSTRUCTOR, _constructorInspect.constructorSignatureDescription(c) ), c, null);
+                }
+            });
+            rs.forEach(c -> {
+                dt.node(new add_constructor(path.in(_java.Component.CONSTRUCTOR, 
+                            _constructorInspect.constructorSignatureDescription(c)),
+                            (_hasConstructors)leftRoot, 
+                            (_hasConstructors)rightRoot, 
+                            c) );
+                //dt.add(path.in( _java.Component.CONSTRUCTOR, _constructorInspect.constructorSignatureDescription(c) ), null,c );                
+            });
+            return (_dif)dt;
+        }
+        
+        public static class add_constructor implements _delta<_hasConstructors>, _add<_constructor>{
+            
+            public _path path;
+            public _hasConstructors leftRoot;
+            public _hasConstructors rightRoot;
+            public _constructor toAdd;
+            
+            public add_constructor( _path path, _hasConstructors leftRoot, _hasConstructors rightRoot, _constructor toAdd ){
+                this.path = path;
+                this.leftRoot = leftRoot;
+                this.rightRoot = rightRoot;
+                this.toAdd = _constructor.of(toAdd.toString());
+            }
+            
+            @Override
+            public _hasConstructors leftRoot() {
+                return this.leftRoot;
+            }
+
+            @Override
+            public _hasConstructors rightRoot() {
+                return this.rightRoot;
+            }
+
+            @Override
+            public void keepLeft() {
+                leftRoot.removeConstructor(toAdd);
+                leftRoot.constructor(toAdd);
+                rightRoot.removeConstructor(toAdd);
+                rightRoot.constructor(toAdd);
+            }
+
+            @Override
+            public void keepRight() {
+                leftRoot.removeConstructor(toAdd);
+                rightRoot.removeConstructor(toAdd);                
+            }
+
+            @Override
+            public _path path() {
+                return path;
+            }
+
+            @Override
+            public _constructor added() {
+                return toAdd;
+            }
+            
+            @Override
+            public String toString(){
+                return "   + "+path;
+            }
+        }
+        
+        public static class remove_constructor implements _delta<_hasConstructors>, _remove<_constructor>{
+            
+            public _path path;
+            public _hasConstructors leftRoot;
+            public _hasConstructors rightRoot;
+            public _constructor toRemove;
+            
+            public remove_constructor( _path path, _hasConstructors leftRoot, _hasConstructors rightRoot, _constructor toRemove ){
+                this.path = path;
+                this.leftRoot = leftRoot;
+                this.rightRoot = rightRoot;
+                this.toRemove = _constructor.of(toRemove.toString());
+            }
+            
+            @Override
+            public _hasConstructors leftRoot() {
+                return this.leftRoot;
+            }
+
+            @Override
+            public _hasConstructors rightRoot() {
+                return this.rightRoot;
+            }
+
+            @Override
+            public void keepLeft() {
+                leftRoot.removeConstructor(toRemove);
+                rightRoot.removeConstructor(toRemove);                  
+            }
+
+            @Override
+            public void keepRight() {
+                leftRoot.removeConstructor(toRemove);
+                leftRoot.constructor(toRemove);
+                rightRoot.removeConstructor(toRemove);
+                rightRoot.constructor(toRemove);              
+            }
+
+            @Override
+            public _path path() {
+                return path;
+            }
+
+            @Override
+            public _constructor removed() {
+                return toRemove;
+            }
+            
+            @Override
+            public String toString(){
+                return "   - "+path;
+            }
+        }
     }
     
     public static final _constructorInspect INSPECT_CONSTRUCTOR = 
             new _constructorInspect();
     
-    public static class _constructorInspect implements _inspect<_constructor>{
+    public static class _constructorInspect implements _inspect<_constructor>, 
+        _differ<_constructor, _node>{
 
         @Override
         public boolean equivalent(_constructor left, _constructor right) {
@@ -917,6 +1068,20 @@ public final class _constructor implements _anno._hasAnnos<_constructor>, _javad
             _ins.INSPECT_THROWS.diff(_ins, path, dt, left.getThrows(), right.getThrows());            
             _ins.INSPECT_BODY.diff(_ins,path, dt, left.getBody(), right.getBody());            
             return dt;
+        }
+
+        @Override
+        public <R extends _node> _dif diff(_path path, build dt, R leftRoot, R rightRoot, _constructor left, _constructor right) {
+            _javadoc.INSPECT_JAVADOC.diff(path, dt, leftRoot, rightRoot, left.getJavadoc(), right.getJavadoc());
+            _anno.INSPECT_ANNOS.diff(path, dt,  leftRoot, rightRoot, left.getAnnos(), right.getAnnos());
+            _modifiers.INSPECT_MODIFIERS.diff(path, dt, leftRoot, rightRoot, left.getEffectiveModifiers(), right.getEffectiveModifiers());            
+            _java.INSPECT_NAME.diff(path, dt,  leftRoot, rightRoot, left.getName(), right.getName());            
+            _receiverParameter.INSPECT_RECEIVER_PARAMETER.diff(path, dt,  leftRoot, rightRoot, left.getReceiverParameter(), right.getReceiverParameter());
+            _parameter.INSPECT_PARAMETERS.diff(path, dt,  leftRoot, rightRoot, left.getParameters(), right.getParameters());
+            _typeParameter.INSPECT_TYPE_PARAMETERS.diff(path, dt,  leftRoot, rightRoot, left.getTypeParameters(), right.getTypeParameters());
+            _throws.INSPECT_THROWS.diff(path, dt,  leftRoot, rightRoot, left.getThrows(), right.getThrows());            
+            _body.INSPECT_BODY.diff(path, dt,  leftRoot, rightRoot, left.getBody(), right.getBody());            
+            return (_dif)dt;            
         }
     } 
 }
