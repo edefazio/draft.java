@@ -878,9 +878,8 @@ public final class _annotation
             _java.INSPECT_NAME.diff(path, dt, leftRoot, rightRoot, left.getName(), right.getName());
             _modifiers.INSPECT_MODIFIERS.diff(path, dt, leftRoot, rightRoot, left.getEffectiveModifiers(), right.getEffectiveModifiers());
             _field.INSPECT_FIELDS.diff(path, dt, leftRoot, rightRoot, left.listFields(), right.listFields());
-            INSPECT_ANNOTATION_ELEMENTS.diff(path, dt, leftRoot, rightRoot, left.listElements(), right.listElements());
-            
-            //nests
+            INSPECT_ANNOTATION_ELEMENTS.diff(path, dt, leftRoot, rightRoot, left.listElements(), right.listElements());            
+            _type.INSPECT_NESTS.diff(path, dt, leftRoot, rightRoot, left.listNests(), right.listNests());
             
             return (_dif)dt;
         }

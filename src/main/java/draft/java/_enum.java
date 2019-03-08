@@ -1368,7 +1368,7 @@ public final class _enum implements _type<EnumDeclaration, _enum>,_method._hasMe
             _method.INSPECT_METHODS.diff(path, dt, leftRoot, rightRoot, left.listMethods(), right.listMethods() );
             _field.INSPECT_FIELDS.diff(path, dt, leftRoot, rightRoot, left.listFields(), right.listFields() );
             INSPECT_ENUM_CONSTANTS.diff(path, dt, leftRoot, rightRoot, left.listConstants(), right.listConstants());            
-            //_ins.INSPECT_NESTS.diff(_ins, path, dt, left.listNests(), right.listNests());  
+            _type.INSPECT_NESTS.diff(path, dt, leftRoot, rightRoot, left.listNests(), right.listNests());
             
             return (_dif)dt;            
         }

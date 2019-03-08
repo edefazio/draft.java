@@ -1002,6 +1002,15 @@ public interface _type<AST extends TypeDeclaration, T extends _type>
         return null;
     }
 
+    default T removeNest( _type nestToRemove ){
+        listNests( t-> t.equals(nestToRemove) ).forEach( n -> n.ast().removeForced() );
+        return (T) this; 
+    }
+    
+    default T removeNest( TypeDeclaration nestToRemove ){
+        return removeNest( _type.of(nestToRemove ) );        
+    }
+    
     /**
      * list all nested types that match this _typeMatchFn
      * @param typeMatchFn function to
@@ -1766,7 +1775,8 @@ public interface _type<AST extends TypeDeclaration, T extends _type>
     
     public static final _typeInspect INSPECT_TYPE = new _typeInspect();
     
-    public static class _typeInspect implements _inspect<_type>{
+    public static class _typeInspect implements _inspect<_type>, 
+            _differ<_type, _node>{
 
         @Override
         public boolean equivalent(_type left, _type right) {
@@ -1817,12 +1827,27 @@ public interface _type<AST extends TypeDeclaration, T extends _type>
             }
             return _ins.INSPECT_ENUM.diff(_ins, path.in(_java.Component.ENUM, left.getName()),dt,  (_enum)left, (_enum)right);            
         }        
+
+        @Override
+        public <R extends _node> _dif diff(_path path, build dt, R leftRoot, R rightRoot, _type left, _type right) {
+            if( left instanceof _class ){
+                return _class.INSPECT_CLASS.diff( path.in(_java.Component.CLASS, left.getName()), dt, leftRoot, rightRoot, (_class)left, (_class)right);
+            }
+            if( left instanceof _interface ){
+                return _interface.INSPECT_INTERFACE.diff(path.in(_java.Component.INTERFACE, left.getName()), dt, leftRoot, rightRoot, (_interface)left, (_interface)right);
+            }
+            if( left instanceof _annotation ){
+                return _annotation.INSPECT_ANNOTATION.diff(path.in(_java.Component.ANNOTATION, left.getName()),dt, leftRoot, rightRoot, (_annotation)left, (_annotation)right);                
+            }
+            return _enum.INSPECT_ENUM.diff(path.in(_java.Component.ENUM, left.getName()),dt, leftRoot, rightRoot,  (_enum)left, (_enum)right);           
+        }
     }
     
     
     public static final _typesInspect INSPECT_NESTS = new _typesInspect();
             
-    public static class _typesInspect implements _inspect<List<_type>>{
+    public static class _typesInspect implements _inspect<List<_type>>, 
+            _differ<List<_type>, _node>{
         
         @Override
         public boolean equivalent( List<_type> left, List<_type> right ){
@@ -1869,6 +1894,169 @@ public interface _type<AST extends TypeDeclaration, T extends _type>
             });
             return dt;            
         }        
+
+        @Override
+        public <R extends _node> _dif diff(_path path, build dt, R leftRoot, R rightRoot, List<_type> left, List<_type> right) {
+            Set<_type>ls = new HashSet<>();
+            Set<_type>rs = new HashSet<>();
+            Set<_type>both = new HashSet<>();
+            ls.addAll(left);
+            rs.addAll(right);
+            both.addAll(ls);
+            both.retainAll(rs);
+            
+            ls.removeAll(both);
+            ls.forEach(f -> {
+                _type cc = sameNameAndType( f, rs );
+                if( cc != null ){                    
+                    INSPECT_TYPE.diff(path.in(_java.Component.NEST), dt, leftRoot, rightRoot, f, cc);
+                    rs.remove( cc );
+                    //dl.add(path+_java.Component.NEST, f, cc);                    
+                } else{                    
+                    if( f instanceof _class ){
+                        dt.node(new removeNest( path.in(_java.Component.NEST).in(Component.CLASS, f.getName()),
+                                (_type)leftRoot, (_type)rightRoot, f ) );    
+                    }else if( f instanceof _interface ){
+                        dt.node(new removeNest( path.in(_java.Component.NEST).in(Component.INTERFACE, f.getName()),
+                                (_type)leftRoot, (_type)rightRoot, f ) );
+                    }else if( f instanceof _enum ){
+                        dt.node(new removeNest( path.in(_java.Component.NEST).in(Component.ENUM, f.getName()),
+                                (_type)leftRoot, (_type)rightRoot, f ) );
+                    }else{
+                        dt.node(new removeNest( path.in(_java.Component.NEST).in(Component.ANNOTATION, f.getName()),
+                                (_type)leftRoot, (_type)rightRoot, f ) );
+                    }                    
+                    //dt.add(path.in(_java.Component.NEST), f, null);
+                }
+            });
+            
+            rs.forEach(f -> {
+                if( f instanceof _class ){
+                    dt.node(new addNest( path.in(_java.Component.NEST).in(Component.CLASS, f.getName()),
+                            (_type)leftRoot, (_type)rightRoot, f ) );    
+                }else if( f instanceof _interface ){
+                    dt.node(new addNest( path.in(_java.Component.NEST).in(Component.INTERFACE, f.getName()),
+                            (_type)leftRoot, (_type)rightRoot, f ) );
+                }else if( f instanceof _enum ){
+                    dt.node(new addNest( path.in(_java.Component.NEST).in(Component.ENUM, f.getName()),
+                            (_type)leftRoot, (_type)rightRoot, f ) );
+                }else{
+                    dt.node(new addNest( path.in(_java.Component.NEST).in(Component.ANNOTATION, f.getName()),
+                            (_type)leftRoot, (_type)rightRoot, f ) );
+                }                                    
+            });
+            return(_dif)dt;            
+        }
+        
+        public static class addNest
+                implements _delta<_type>,_add<_type>{
+            
+            public _path path;
+            public _type leftRoot;
+            public _type rightRoot;
+            public _type add;
+            
+            public addNest(_path path, _type leftRoot, _type rightRoot, _type add ){
+                this.path = path;
+                this.leftRoot = leftRoot;
+                this.rightRoot = rightRoot;
+                this.add = _type.of(add.toString());
+            }
+            
+            @Override
+            public _type leftRoot() {
+                return leftRoot;
+            }
+
+            @Override
+            public _type rightRoot() {
+                return rightRoot;
+            }
+
+            @Override
+            public void keepLeft() {                
+                leftRoot.removeNest(add);
+                rightRoot.removeNest(add);
+            }
+
+            @Override
+            public void keepRight() {
+                leftRoot.removeNest(add);
+                leftRoot.nest(add);
+                rightRoot.removeNest(add);
+                rightRoot.nest(add);
+            }
+
+            @Override
+            public _path path() {
+                return path;
+            }
+
+            @Override
+            public _type added() {
+                return this.add;
+            }
+            
+            @Override
+            public String toString(){
+                return "   + "+path;
+            }        
+        }
+        
+        public static class removeNest
+                implements _delta<_type>,_remove<_type>{
+            
+            public _path path;
+            public _type leftRoot;
+            public _type rightRoot;
+            public _type nestToRemove;
+            
+            public removeNest(_path path, _type leftRoot, _type rightRoot, _type nestToRemove ){
+                this.path = path;
+                this.leftRoot = leftRoot;
+                this.rightRoot = rightRoot;
+                this.nestToRemove = _type.of( nestToRemove.toString());
+            }
+            
+            @Override
+            public _type leftRoot() {
+                return leftRoot;
+            }
+
+            @Override
+            public _type rightRoot() {
+                return rightRoot;
+            }
+
+            @Override
+            public void keepLeft() {                
+                leftRoot.removeNest(nestToRemove);
+                leftRoot.nest(nestToRemove);
+                rightRoot.removeNest(nestToRemove);
+                rightRoot.nest(nestToRemove);                
+            }
+
+            @Override
+            public void keepRight() {
+                leftRoot.removeNest(nestToRemove);
+                rightRoot.removeNest(nestToRemove);
+            }
+
+            @Override
+            public _path path() {
+                return path;
+            }
+
+            @Override
+            public _type removed() {
+                return this.nestToRemove;
+            }
+            
+            @Override
+            public String toString(){
+                return "   - "+path;
+            }        
+        }         
     }
     
     public static final _java.StringInspect INSPECT_PACKAGE_NAME = new _java.StringInspect(_java.Component.PACKAGE_NAME);

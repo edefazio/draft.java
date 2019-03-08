@@ -575,7 +575,7 @@ public final class _interface implements _type<ClassOrInterfaceDeclaration, _int
             _modifiers.INSPECT_MODIFIERS.diff(path, dt, leftRoot, rightRoot, left.getEffectiveModifiers(), right.getEffectiveModifiers());
             _method.INSPECT_METHODS.diff(path, dt, leftRoot, rightRoot, left.listMethods(), right.listMethods() );
             _field.INSPECT_FIELDS.diff(path, dt, leftRoot, rightRoot, left.listFields(), right.listFields() );
-            //_ins.INSPECT_NESTS.diff(_ins, path, dt, left.listNests(), right.listNests());
+            _type.INSPECT_NESTS.diff(path, dt, leftRoot, rightRoot, left.listNests(), right.listNests());
             return (_dif)dt;
         }
     }

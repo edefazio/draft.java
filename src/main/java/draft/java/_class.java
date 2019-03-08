@@ -1103,8 +1103,8 @@ public final class _class implements _type<ClassOrInterfaceDeclaration, _class>,
             _constructor.INSPECT_CONSTRUCTORS.diff(path, dt, left, right,left.listConstructors(), right.listConstructors());
             _method.INSPECT_METHODS.diff(path, dt, leftRoot, rightRoot, left.listMethods(), right.listMethods() );
             _field.INSPECT_FIELDS.diff(path, dt, leftRoot, rightRoot, left.listFields(), right.listFields() );
+            _type.INSPECT_NESTS.diff(path, dt, leftRoot, rightRoot, left.listNests(), right.listNests());
             
-            //_ins.INSPECT_NESTS.diff(_ins, path, dt, left.listNests(), right.listNests());
             return (_dif)dt;
         }
     }    
