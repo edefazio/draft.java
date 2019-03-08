@@ -11,7 +11,7 @@ import draft.DraftException;
 import draft.Text;
 import draft.java._anno.*;
 import draft.java._inspect._diff;
-import draft.java._inspect._path;
+import draft.java._java._path;
 import draft.java._java.Component;
 import draft.java.macro._macro;
 import draft.java.macro._remove;
@@ -595,7 +595,8 @@ public final class _field
     }
 
     /**
-     *
+     * Components that have fields (_class, _interface, _enum, _annotation, _enum._constant)
+     * 
      * @author Eric
      * @param <T>
      */
@@ -677,12 +678,12 @@ public final class _field
     public static class remove_field //extends remove_node<_hasAnnos, _anno>{
             implements _differ._delta<_hasFields>, _differ._remove<_field> {
 
-        public _inspect._path path;
+        public _path path;
         public _hasFields leftRoot;
         public _hasFields rightRoot;
         public _field toRemove;
 
-        public remove_field(_inspect._path p, _hasFields left, _hasFields right, _field toRemove) {
+        public remove_field( _path p, _hasFields left, _hasFields right, _field toRemove) {
             this.path = p;
             this.leftRoot = left;
             this.rightRoot = right;
@@ -700,7 +701,7 @@ public final class _field
         }
 
         @Override
-        public _inspect._path path() {
+        public _path path() {
             return path;
         }
 
@@ -733,12 +734,12 @@ public final class _field
 
     public static class add_field implements _differ._delta<_hasFields>, _differ._add<_field> {
 
-        public _inspect._path path;
+        public _path path;
         public _hasFields leftRoot;
         public _hasFields rightRoot;
         public _field toAdd;
 
-        public add_field(_inspect._path p, _hasFields left, _hasFields right, _field toAdd) {
+        public add_field(_path p, _hasFields left, _hasFields right, _field toAdd) {
             this.path = p;
             this.leftRoot = left;
             this.rightRoot = right;
@@ -756,7 +757,7 @@ public final class _field
         }
 
         @Override
-        public _inspect._path path() {
+        public _path path() {
             return path;
         }
 
@@ -809,7 +810,7 @@ public final class _field
         }
 
         @Override
-        public _inspect._diff diff(_java._inspector _ins, _inspect._path path, _inspect._diff dt, List<_field> left, List<_field> right) {
+        public _inspect._diff diff(_java._inspector _ins, _path path, _inspect._diff dt, List<_field> left, List<_field> right) {
             Set<_field> lf = new HashSet<>();
             Set<_field> rf = new HashSet<>();
             lf.addAll(left);
@@ -836,17 +837,6 @@ public final class _field
             rf.forEach(f -> {
                 dt.add(path.in(_java.Component.FIELD, f.getName()), null, f);
             });
-
-            /* WE already checked & removed matching fields from left, so the fields
-                   remaining in right are unique
-                _field match = getFieldNamed( lf, f.getName() );
-                if( match != null ){
-                    //dt.add(path.in( _java.Component.FIELD, f.getName()), match, f);
-                    INSPECT_FIELD.diffTree(path.in(_java.Component.FIELD), dt, match, f);
-                } else{
-                    dt.add(path.in(_java.Component.FIELD, f.getName()), null, f);
-                }
-            });*/
             return dt;
         }
 
@@ -892,7 +882,7 @@ public final class _field
         }
 
         @Override
-        public _inspect._diff diff(_java._inspector _ins, _inspect._path path, _inspect._diff dt, _field left, _field right) {
+        public _inspect._diff diff(_java._inspector _ins, _path path, _inspect._diff dt, _field left, _field right) {
             if (left == null) {
                 if (right == null) {
                     return dt;
@@ -935,7 +925,7 @@ public final class _field
     public static class _changeInit
             implements _differ._delta<_field>, _differ._change<Expression> {
 
-        _inspect._path path;
+        _path path;
         _field left;
         _field right;
         Expression leftExpression;
@@ -986,7 +976,7 @@ public final class _field
         }
 
         @Override
-        public _inspect._path path() {
+        public _path path() {
             return path;
         }
     }

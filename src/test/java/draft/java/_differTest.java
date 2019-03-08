@@ -2,11 +2,10 @@ package draft.java;
 
 import draft.java._differ._changeName;
 import draft.java._differ._change_type;
-import draft.java._inspect._path;
 import draft.java._java.Component;
 import draft.java._model._node;
+import draft.java._java._path;
 import java.io.IOException;
-import java.util.concurrent.atomic.AtomicInteger;
 import junit.framework.TestCase;
 
 /**

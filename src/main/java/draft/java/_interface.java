@@ -9,6 +9,7 @@ import draft.DraftException;
 import draft.java._anno.*;
 import draft.Text;
 import draft.java._inspect._diff;
+import draft.java._java._path;
 import draft.java._typeParameter._typeParameters;
 import draft.java.io._in;
 import draft.java.macro._macro;
@@ -537,7 +538,7 @@ public final class _interface implements _type<ClassOrInterfaceDeclaration, _int
         }
 
         @Override
-        public _inspect._diff diff( _java._inspector _ins, _inspect._path path, _inspect._diff dt, _interface left, _interface right) {
+        public _inspect._diff diff( _java._inspector _ins, _path path, _inspect._diff dt, _interface left, _interface right) {
             if( left == null){
                 if( right == null){
                     return dt;

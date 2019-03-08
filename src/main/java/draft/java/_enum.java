@@ -1,6 +1,5 @@
 package draft.java;
 
-import com.github.javaparser.JavaParser;
 import com.github.javaparser.StaticJavaParser;
 import com.github.javaparser.ast.*;
 import com.github.javaparser.ast.body.*;
@@ -15,13 +14,14 @@ import draft.Text;
 import draft.java._anno.*;
 import draft.java._inspect._diff;
 import draft.java._java.Component;
+import draft.java._java._path;
+
 import static draft.java._java.Component.CONSTANT;
 import draft.java.io._in;
 import draft.java.macro._macro;
 
 import java.io.InputStream;
 import java.util.*;
-import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Predicate;
@@ -1092,7 +1092,7 @@ public final class _enum implements _type<EnumDeclaration, _enum>,_method._hasMe
         }
         
         @Override
-        public _inspect._diff diff( _java._inspector _ins, _inspect._path path, _inspect._diff dt, _enum._constant left, _enum._constant right) {
+        public _inspect._diff diff( _java._inspector _ins, _path path, _inspect._diff dt, _enum._constant left, _enum._constant right) {
             if( left == null){
                 if( right == null){
                     return dt;
@@ -1153,7 +1153,7 @@ public final class _enum implements _type<EnumDeclaration, _enum>,_method._hasMe
         }
         
         @Override
-        public _inspect._diff diff( _java._inspector _ins, _inspect._path path, _inspect._diff dt, List<_enum._constant> left, List<_enum._constant> right) {
+        public _inspect._diff diff( _java._inspector _ins, _path path, _inspect._diff dt, List<_enum._constant> left, List<_enum._constant> right) {
             Set<_enum._constant>ls = new HashSet<>();
             Set<_enum._constant>rs = new HashSet<>();
             Set<_enum._constant>both = new HashSet<>();
@@ -1327,7 +1327,7 @@ public final class _enum implements _type<EnumDeclaration, _enum>,_method._hasMe
         }
 
         @Override
-        public _inspect._diff diff( _java._inspector _ins, _inspect._path path, _inspect._diff dt, _enum left, _enum right) {
+        public _inspect._diff diff( _java._inspector _ins, _path path, _inspect._diff dt, _enum left, _enum right) {
             if( left == null){
                 if( right == null){
                     return dt;
@@ -1361,7 +1361,7 @@ public final class _enum implements _type<EnumDeclaration, _enum>,_method._hasMe
             
             _type.INSPECT_IMPLEMENTS.diff(path, dt, leftRoot, rightRoot,left.listImplements(), right.listImplements());  
             _javadoc.INSPECT_JAVADOC.diff(path, dt, leftRoot, rightRoot, left.getJavadoc(), right.getJavadoc());  
-            //_ins.INSPECT_STATIC_BLOCKS.diff(_ins, path, dt, left.listStaticBlocks(), right.listStaticBlocks());            
+            _staticBlock.INSPECT_STATIC_BLOCKS.diff(path, dt, leftRoot, rightRoot,left.listStaticBlocks(), right.listStaticBlocks());  
             _java.INSPECT_NAME.diff(path, dt, leftRoot, rightRoot, left.getName(), right.getName());
             _modifiers.INSPECT_MODIFIERS.diff(path, dt, leftRoot, rightRoot, left.getEffectiveModifiers(), right.getEffectiveModifiers());
             _constructor.INSPECT_CONSTRUCTORS.diff(path, dt, leftRoot, rightRoot, left.listConstructors(), right.listConstructors());
@@ -1395,7 +1395,7 @@ public final class _enum implements _type<EnumDeclaration, _enum>,_method._hasMe
         public static final _java.ExpressionInspect INSPECT_ARG = new _java.ExpressionInspect(Component.ARGUMENT);
         
         @Override
-        public _inspect._diff diff( _java._inspector _ins, _inspect._path path, _inspect._diff dt, List<Expression> left, List<Expression> right) {
+        public _inspect._diff diff( _java._inspector _ins, _path path, _inspect._diff dt, List<Expression> left, List<Expression> right) {
             
             if(left == null ){
                 if(right == null){

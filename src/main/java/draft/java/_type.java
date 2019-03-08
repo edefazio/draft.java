@@ -1,6 +1,5 @@
 package draft.java;
 
-import com.github.javaparser.JavaParser;
 import com.github.javaparser.StaticJavaParser;
 import com.github.javaparser.ast.*;
 import com.github.javaparser.ast.body.*;
@@ -13,6 +12,7 @@ import com.github.javaparser.ast.type.ClassOrInterfaceType;
 import draft.DraftException;
 import draft.Text;
 import draft.java._java.Component;
+import draft.java._java._path;
 import draft.java._model.*;
 import draft.java.io._in;
 import draft.java.io._io;
@@ -1317,7 +1317,7 @@ public interface _type<AST extends TypeDeclaration, T extends _type>
         }
 
         @Override
-        public _inspect._diff diff( _java._inspector _ins, _inspect._path path, _inspect._diff dt, List<ImportDeclaration> left, List<ImportDeclaration> right) {
+        public _inspect._diff diff( _java._inspector _ins, _path path, _inspect._diff dt, List<ImportDeclaration> left, List<ImportDeclaration> right) {
             Set<ImportDeclaration> ls = new HashSet<>();
             Set<ImportDeclaration> rs = new HashSet<>();
             Set<ImportDeclaration> both = new HashSet<>();
@@ -1492,7 +1492,7 @@ public interface _type<AST extends TypeDeclaration, T extends _type>
         }
 
         @Override
-        public _inspect._diff diff( _java._inspector _ins, _inspect._path path, _inspect._diff dt, List<ClassOrInterfaceType> left, List<ClassOrInterfaceType> right) {
+        public _inspect._diff diff( _java._inspector _ins, _path path, _inspect._diff dt, List<ClassOrInterfaceType> left, List<ClassOrInterfaceType> right) {
             Set<ClassOrInterfaceType> ls = new HashSet<>();
             Set<ClassOrInterfaceType> rs = new HashSet<>();
             Set<ClassOrInterfaceType> both = new HashSet<>();
@@ -1787,7 +1787,7 @@ public interface _type<AST extends TypeDeclaration, T extends _type>
         }
         
         @Override
-        public _inspect._diff diff( _java._inspector _ins, _inspect._path path, _inspect._diff dt, _type left, _type right) {
+        public _inspect._diff diff( _java._inspector _ins, _path path, _inspect._diff dt, _type left, _type right) {
             if(left == null){
                 if(right == null){
                     return dt;
@@ -1843,7 +1843,7 @@ public interface _type<AST extends TypeDeclaration, T extends _type>
         }
         
         @Override
-        public _inspect._diff diff( _java._inspector _ins, _inspect._path path, _inspect._diff dt, List<_type>left, List<_type>right ){
+        public _inspect._diff diff( _java._inspector _ins,_path path, _inspect._diff dt, List<_type>left, List<_type>right ){
             Set<_type>ls = new HashSet<>();
             Set<_type>rs = new HashSet<>();
             Set<_type>both = new HashSet<>();

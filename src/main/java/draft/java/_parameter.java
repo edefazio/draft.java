@@ -9,6 +9,7 @@ import draft.Text;
 import draft.java._modifiers._hasFinal;
 import draft.java._anno.*;
 import draft.java._model.*;
+import draft.java._java._path;
 import java.util.*;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
@@ -595,7 +596,7 @@ public final class _parameter
         }
 
         @Override
-        public _inspect._diff diff( _java._inspector _ins, _inspect._path path, _inspect._diff dt, _parameters left, _parameters right) {
+        public _inspect._diff diff( _java._inspector _ins, _path path, _inspect._diff dt, _parameters left, _parameters right) {
             for(int i=0;i<left.count();i++){
                 _parameter _l = left.get(i);
                 _parameter _r = null;

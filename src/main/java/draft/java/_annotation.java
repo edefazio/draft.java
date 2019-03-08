@@ -1,6 +1,5 @@
 package draft.java;
 
-import com.github.javaparser.JavaParser;
 import com.github.javaparser.StaticJavaParser;
 import com.github.javaparser.ast.*;
 import com.github.javaparser.ast.body.*;
@@ -12,7 +11,7 @@ import draft.DraftException;
 import draft.Text;
 import draft.java._anno.*;
 import draft.java._inspect._diff;
-import draft.java._inspect._path;
+import draft.java._java._path;
 import draft.java._java.Component;
 import draft.java.io._in;
 import draft.java.macro._macro;
@@ -848,7 +847,7 @@ public final class _annotation
         }
 
         @Override
-        public _inspect._diff diff( _java._inspector _ins, _inspect._path path, _inspect._diff dt, _annotation left, _annotation right) {
+        public _inspect._diff diff( _java._inspector _ins, _path path, _inspect._diff dt, _annotation left, _annotation right) {
             if( left == null){
                 if( right == null){
                     return dt;
@@ -880,7 +879,9 @@ public final class _annotation
             _modifiers.INSPECT_MODIFIERS.diff(path, dt, leftRoot, rightRoot, left.getEffectiveModifiers(), right.getEffectiveModifiers());
             _field.INSPECT_FIELDS.diff(path, dt, leftRoot, rightRoot, left.listFields(), right.listFields());
             INSPECT_ANNOTATION_ELEMENTS.diff(path, dt, leftRoot, rightRoot, left.listElements(), right.listElements());
+            
             //nests
+            
             return (_dif)dt;
         }
     }
@@ -909,7 +910,7 @@ public final class _annotation
         }
         
         @Override
-        public _inspect._diff diff( _java._inspector _ins, _inspect._path path, _inspect._diff dt, List<_annotation._element> left, List<_annotation._element> right) {
+        public _inspect._diff diff( _java._inspector _ins, _path path, _inspect._diff dt, List<_annotation._element> left, List<_annotation._element> right) {
             Set<_annotation._element>ls = new HashSet<>();
             Set<_annotation._element>rs = new HashSet<>();
             Set<_annotation._element>both = new HashSet<>();
@@ -1141,7 +1142,7 @@ public final class _annotation
         }
         
         @Override
-        public _inspect._diff diff( _java._inspector _ins, _inspect._path path, _inspect._diff dt, _annotation._element left, _annotation._element right) {
+        public _inspect._diff diff( _java._inspector _ins, _path path, _inspect._diff dt, _annotation._element left, _annotation._element right) {
             if( left == null){
                 if( right == null){
                     return dt;
@@ -1181,7 +1182,7 @@ public final class _annotation
      */
     public static class _changeDefault 
             implements _differ._delta, _differ._change<Expression>{
-        _inspect._path path;
+        _path path;
         _element left;
         _element right;
         Expression leftExpression;
@@ -1232,7 +1233,7 @@ public final class _annotation
         }
 
         @Override
-        public _inspect._path path() {
+        public _path path() {
             return path;
         }
     }

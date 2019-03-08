@@ -6,6 +6,8 @@ import com.github.javaparser.ast.type.Type;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
+
+import draft.java._java._path;
 import draft.java._anno.*;
 import draft.java._model.*;
 
@@ -171,7 +173,7 @@ public final class _receiverParameter
         }
 
         @Override
-        public _inspect._diff diff(_java._inspector _ins, _inspect._path path, _inspect._diff dt,  _receiverParameter left, _receiverParameter right) {
+        public _inspect._diff diff(_java._inspector _ins, _path path, _inspect._diff dt,  _receiverParameter left, _receiverParameter right) {
             if( !equivalent( left, right )){
                 if(left == null){
                     return dt.add(path.in(_java.Component.RECEIVER_PARAMETER), null, right);                    

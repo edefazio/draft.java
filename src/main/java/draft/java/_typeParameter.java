@@ -4,12 +4,12 @@ import com.github.javaparser.ast.NodeList;
 import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
 import com.github.javaparser.ast.nodeTypes.NodeWithTypeParameters;
 import com.github.javaparser.ast.type.ClassOrInterfaceType;
-import com.github.javaparser.ast.type.ReferenceType;
 import com.github.javaparser.ast.type.Type;
 import com.github.javaparser.ast.type.TypeParameter;
 import draft.Text;
 import static draft.java.Ast.typesEqual;
 import draft.java._model.*;
+import draft.java._java._path;
 
 import java.util.*;
 import java.util.function.Consumer;
@@ -369,7 +369,7 @@ public final class _typeParameter
         }
 
         @Override
-        public _inspect._diff diff( _java._inspector _ins, _inspect._path path, _inspect._diff dt, _typeParameters left, _typeParameters right) {
+        public _inspect._diff diff( _java._inspector _ins, _path path, _inspect._diff dt, _typeParameters left, _typeParameters right) {
             //List<ObjectDiff.Entry> des = new ArrayList<>();
             for(int i=0; i<left.ast().size();i++){
                 Type cit = left.ast().get(i);

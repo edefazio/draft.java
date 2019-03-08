@@ -5,6 +5,7 @@ import com.github.javaparser.ast.comments.JavadocComment;
 import com.github.javaparser.ast.nodeTypes.NodeWithJavadoc;
 import draft.Text;
 import draft.java._inspect._diff;
+import draft.java._java._path;
 import java.util.Objects;
 
 /**
@@ -146,7 +147,7 @@ public final class _javadoc
         }
 
         @Override
-        public _inspect._diff diff( _java._inspector _ins, _inspect._path path, _inspect._diff dt,  _javadoc left, _javadoc right) {
+        public _inspect._diff diff( _java._inspector _ins,_path path, _inspect._diff dt,  _javadoc left, _javadoc right) {
             if( !equivalent( left, right)){
                 dt.add(path.in( _java.Component.JAVADOC ), left, right);
             }
@@ -169,13 +170,13 @@ public final class _javadoc
      */
     public static class _changeJavadoc 
             implements _differ._delta, _differ._change<JavadocComment>{
-        _inspect._path path;
-        _hasJavadoc left;
-        _hasJavadoc right;
-        JavadocComment leftJavadoc;
-        JavadocComment rightJavadoc;
+        public _path path;
+        public _hasJavadoc left;
+        public _hasJavadoc right;
+        public JavadocComment leftJavadoc;
+        public JavadocComment rightJavadoc;
         
-        public _changeJavadoc(_inspect._path _p, _hasJavadoc left, _hasJavadoc right ){
+        public _changeJavadoc(_path _p, _hasJavadoc left, _hasJavadoc right ){
             this.path = _p;
             this.left = left;
             if( left.hasJavadoc() ){
@@ -216,7 +217,7 @@ public final class _javadoc
         }
 
         @Override
-        public _inspect._path path() {
+        public _path path() {
             return path;
         }
         

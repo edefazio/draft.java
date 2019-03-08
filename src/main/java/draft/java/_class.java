@@ -12,7 +12,7 @@ import draft.java._anno.*;
 import draft.DraftException;
 import draft.Text;
 import draft.java._inspect._diff;
-import draft.java._inspect._path;
+import draft.java._java._path;
 import draft.java.io._in;
 import draft.java.macro._macro;
 import draft.java.macro._remove;
@@ -1097,7 +1097,7 @@ public final class _class implements _type<ClassOrInterfaceDeclaration, _class>,
             _type.INSPECT_IMPLEMENTS.diff(path, dt, leftRoot, rightRoot, left.listImplements(), right.listImplements());  
             _javadoc.INSPECT_JAVADOC.diff( path, dt, leftRoot, rightRoot, left.getJavadoc(), right.getJavadoc());  
             _typeParameter.INSPECT_TYPE_PARAMETERS.diff(path, dt, leftRoot, rightRoot,left.getTypeParameters(), right.getTypeParameters());  
-            //_ins.INSPECT_STATIC_BLOCKS.diff(_ins, path, dt, left.listStaticBlocks(), right.listStaticBlocks());            
+            _staticBlock.INSPECT_STATIC_BLOCKS.diff(path, dt, leftRoot, rightRoot,left.listStaticBlocks(), right.listStaticBlocks());              
             _java.INSPECT_NAME.diff(path, dt, leftRoot, rightRoot, left.getName(), right.getName());
             _modifiers.INSPECT_MODIFIERS.diff(path, dt, leftRoot, rightRoot, left.getEffectiveModifiers(), right.getEffectiveModifiers());
             _constructor.INSPECT_CONSTRUCTORS.diff(path, dt, left, right,left.listConstructors(), right.listConstructors());

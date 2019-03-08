@@ -16,6 +16,7 @@ import draft.java._anno.*;
 import draft.java._parameter.*;
 import draft.java._typeParameter.*;
 import draft.java.macro._remove;
+import draft.java._java._path;
 
 import java.util.*;
 import java.util.function.*;
@@ -838,7 +839,7 @@ public final class _constructor implements _anno._hasAnnos<_constructor>, _javad
 
         
         @Override
-        public _inspect._diff diff( _java._inspector _ins, _inspect._path path, _inspect._diff dt, List<_constructor> left, List<_constructor> right) {
+        public _inspect._diff diff( _java._inspector _ins, _path path, _inspect._diff dt, List<_constructor> left, List<_constructor> right) {
             Set<_constructor> ls = new HashSet<>();
             Set<_constructor> rs = new HashSet<>();
             Set<_constructor> both = new HashSet<>();
@@ -1048,7 +1049,7 @@ public final class _constructor implements _anno._hasAnnos<_constructor>, _javad
         }
         
         @Override
-        public _inspect._diff diff( _java._inspector _ins, _inspect._path path, _inspect._diff dt, _constructor left, _constructor right) {
+        public _inspect._diff diff( _java._inspector _ins, _path path, _inspect._diff dt, _constructor left, _constructor right) {
             if( left == null){
                 if( right == null){
                     return dt;

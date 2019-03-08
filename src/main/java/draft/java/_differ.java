@@ -3,7 +3,8 @@ package draft.java;
 import draft.java._body._hasBody;
 //import draft.java._dif;
 //import draft.java._inspect;
-import draft.java._inspect._path;
+//import draft.java._inspect._path;
+import draft.java._java._path;
 //import draft.java._java;
 //import draft.java._java._diffMaster;
 //import draft.java._java._inspector;
@@ -592,7 +593,7 @@ public interface _differ<T, R extends _node> {
      */
     public static class _change_type 
             implements _differ._delta, _differ._change<_typeRef>{
-        _inspect._path path;
+        _path path;
         _model._namedType left;
         _model._namedType right;
         _typeRef leftType;
@@ -635,7 +636,7 @@ public interface _differ<T, R extends _node> {
         }
 
         @Override
-        public _inspect._path path() {
+        public _path path() {
             return path;
         }
         
@@ -650,7 +651,7 @@ public interface _differ<T, R extends _node> {
         _model._named right;
         String leftName;
         String rightName;
-        _inspect._path path;
+        _path path;
         
          public _changeName(_path _p, _model._named left, _model._named right ){
             this.path = _p;
@@ -693,7 +694,7 @@ public interface _differ<T, R extends _node> {
         }
 
         @Override
-        public _inspect._path path() {
+        public _path path() {
             return path;
         }
         

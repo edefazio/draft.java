@@ -6,7 +6,7 @@ import com.github.javaparser.ast.stmt.BlockStmt;
 import com.github.javaparser.ast.stmt.Statement;
 import draft.Text;
 import draft.java._model.*;
-import java.util.Collection;
+import draft.java._java._path;
 
 import java.util.*;
 import java.util.function.BiConsumer;
@@ -239,8 +239,10 @@ public final class _staticBlock
 
         /**
          * Build a static Block based on the Lambda Body
-         * @param command the lambda command body (to get the source of the Static Block)
          * @param <A> the command type
+         * @param <B>
+         * @param <C>
+         * @param command the lambda command body (to get the source of the Static Block)         
          * @return the modified T
          */
         default <A extends Object, B extends Object, C extends Object> T staticBlock( Expr.TriConsumer<A, B, C> command ){
@@ -250,8 +252,11 @@ public final class _staticBlock
 
         /**
          * Build a static Block based on the Lambda Body
-         * @param command the lambda command body (to get the source of the Static Block)
          * @param <A> the command type
+         * @param <B>
+         * @param <C>
+         * @param <D>
+         * @param command the lambda command body (to get the source of the Static Block)         
          * @return the modified T
          */
         default <A extends Object, B extends Object, C extends Object, D extends Object> T staticBlock( Expr.QuadConsumer<A, B, C, D> command ){
@@ -277,49 +282,33 @@ public final class _staticBlock
             return (T)this;
         }
 
-        /** remove the static block from the _type and return the _type */
+        default T staticBlock( _staticBlock sb){
+             BlockStmt bs = ((_type)this).astType().addStaticInitializer();
+             bs.setStatements(sb.astStaticInit.getBody().getStatements());
+             return (T)this;
+        }
+        
+        /** 
+         * remove the _staticBlock from the _type and return the _type 
+         * @param _sb the staticBlock
+         * @return the modified T
+         */
         T removeStaticBlock( _staticBlock _sb );
 
-        /** remove the static block from the _type and return the _type */
-        T removeStaticBlock( InitializerDeclaration id );
+        /** 
+         * remove the static block from the _type and return the _type
+         * @param astInitializerDeclaration
+         * @return the modified T
+         */
+        T removeStaticBlock( InitializerDeclaration astInitializerDeclaration );
         
     }
-    
-    /*
-    public static final _java.Semantic<Collection<_staticBlock>> EQIVALENT_STATIC_BLOCKS = (o1, o2)->{
-         if( o1 == null){
-                return o2 == null;
-            }
-            if( o2 == null ){
-                return false;
-            }
-            if( o1.size() != o2.size()){
-                return false;
-            }
-            Set<_staticBlock> tm = new HashSet<>();
-            Set<_staticBlock> om = new HashSet<>();
-            tm.addAll(o1);
-            om.addAll(o2);
-            return Objects.equals(tm, om);        
-    };
-    */
-    
-    /** 
-     * Are these (2) collections of methods equivalent ?
-     * @param left
-     * @param right
-     * @return true if these collections are semantically equivalent
-     
-    public static boolean equivalent( Collection<_staticBlock> left, Collection<_staticBlock> right ){
-        return EQIVALENT_STATIC_BLOCKS.equivalent(left, right);
-    }
-    */ 
     
     public static _staticBlocksInspect INSPECT_STATIC_BLOCKS 
             = new _staticBlocksInspect();
     
     public static class _staticBlocksInspect 
-            implements _inspect<List<_staticBlock>> {
+            implements _inspect<List<_staticBlock>>, _differ<List<_staticBlock>, _node> {
 
         @Override
         public boolean equivalent(List<_staticBlock> left, List<_staticBlock> right) {
@@ -332,7 +321,7 @@ public final class _staticBlock
         }
 
         @Override
-        public _inspect._diff diff( _java._inspector _ins, _inspect._path path, _inspect._diff dt, List<_staticBlock> left, List<_staticBlock> right) {
+        public _inspect._diff diff( _java._inspector _ins, _path path, _inspect._diff dt, List<_staticBlock> left, List<_staticBlock> right) {
             Set<_staticBlock> ls = new HashSet<>();
             Set<_staticBlock> rs = new HashSet<>();
             Set<_staticBlock> both = new HashSet<>();
@@ -349,6 +338,142 @@ public final class _staticBlock
             rs.forEach(s -> dt.add(path.in(_java.Component.STATIC_BLOCK), null, s));
             return dt;
         }
+
+        @Override
+        public <R extends _node> _dif diff(_path path, build dt, R leftRoot, R rightRoot, List<_staticBlock> left, List<_staticBlock> right) {
+            Set<_staticBlock> ls = new HashSet<>();
+            Set<_staticBlock> rs = new HashSet<>();
+            Set<_staticBlock> both = new HashSet<>();
+            ls.addAll( left);
+            rs.addAll(right);
+            
+            both.addAll(left);
+            both.retainAll(right);
+            
+            ls.removeAll(both);
+            rs.removeAll(both);
+            
+            ls.forEach(s -> dt.node( new remove_staticBlock(
+                    path.in(_java.Component.STATIC_BLOCK), 
+                    (_hasStaticBlock)leftRoot, (_hasStaticBlock)rightRoot, s) ) );
+            rs.forEach(s -> dt.node( new add_staticBlock(
+                    path.in(_java.Component.STATIC_BLOCK), 
+                    (_hasStaticBlock)leftRoot, (_hasStaticBlock)rightRoot, s) ) );
+            return (_dif)dt;
+        }
+        
+        public static class add_staticBlock implements _delta<_hasStaticBlock>, _add<_staticBlock> {
+
+            public _path path;
+            public _hasStaticBlock leftRoot;
+            public _hasStaticBlock rightRoot;
+            public _staticBlock toAdd;
+            //TODO? leftMemberIndex, rightMemberIndex so I add the static Block in the right place???
+            
+            public add_staticBlock(_path path, _hasStaticBlock leftRoot, _hasStaticBlock rightRoot, _staticBlock toAdd){
+                this.path = path;
+                this.leftRoot = leftRoot;
+                this.rightRoot = rightRoot;
+                this.toAdd = _staticBlock.of(toAdd.astStaticInit.clone());
+            }
+            
+            @Override
+            public _hasStaticBlock leftRoot() {
+                return leftRoot;
+            }
+
+            @Override
+            public _hasStaticBlock rightRoot() {
+                return rightRoot;
+            }
+
+            @Override
+            public void keepLeft() {
+                this.leftRoot.removeStaticBlock(toAdd);
+                this.rightRoot.removeStaticBlock(toAdd);                            
+            }
+
+            @Override
+            public void keepRight() {                
+                this.leftRoot.removeStaticBlock(toAdd);
+                this.leftRoot.staticBlock(toAdd);
+                
+                this.rightRoot.removeStaticBlock(toAdd);
+                this.rightRoot.staticBlock(toAdd);    
+            }
+
+            @Override
+            public _path path() {
+                return this.path;
+            }
+
+            @Override
+            public _staticBlock added() {
+                return this.toAdd;
+            }
+            
+            @Override
+            public String toString(){
+                return "   + "+path;
+            }
+        }
+        
+        public static class remove_staticBlock implements _delta<_hasStaticBlock>, _remove<_staticBlock> {
+
+            public _path path;
+            public _hasStaticBlock leftRoot;
+            public _hasStaticBlock rightRoot;
+            public _staticBlock toRemove;
+            
+            public remove_staticBlock(_path path, _hasStaticBlock leftRoot, _hasStaticBlock rightRoot, _staticBlock toRemove){
+                this.path = path;
+                this.leftRoot = leftRoot;
+                this.rightRoot = rightRoot;
+                this.toRemove = _staticBlock.of(toRemove.astStaticInit.clone());
+            }
+            
+            @Override
+            public _hasStaticBlock leftRoot() {
+                return leftRoot;
+            }
+
+            @Override
+            public _hasStaticBlock rightRoot() {
+                return rightRoot;
+            }
+
+            @Override
+            public void keepLeft() {
+                this.leftRoot.removeStaticBlock(toRemove);
+                this.leftRoot.staticBlock(toRemove);
+                
+                this.rightRoot.removeStaticBlock(toRemove);
+                this.rightRoot.staticBlock(toRemove);
+            }
+
+            @Override
+            public void keepRight() {
+                
+                this.leftRoot.removeStaticBlock(toRemove);
+                this.rightRoot.removeStaticBlock(toRemove);
+                
+            }
+
+            @Override
+            public _path path() {
+                return this.path;
+            }
+
+            @Override
+            public _staticBlock removed() {
+                return this.toRemove;
+            }
+            
+            @Override
+            public String toString(){
+                return "   - "+path;
+            }
+        }
     }
     
     public static _staticBlockInspect INSPECT_STATIC_BLOCK 
@@ -363,7 +488,7 @@ public final class _staticBlock
         }
 
         @Override
-        public _inspect._diff diff( _java._inspector _ins, _inspect._path path, _inspect._diff dt, _staticBlock left, _staticBlock right) {
+        public _inspect._diff diff( _java._inspector _ins, _path path, _inspect._diff dt, _staticBlock left, _staticBlock right) {
             if( left == null){
                 if( right == null){
                     return dt;

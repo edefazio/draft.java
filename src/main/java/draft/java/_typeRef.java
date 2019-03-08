@@ -3,6 +3,7 @@ package draft.java;
 import com.github.javaparser.ast.type.Type;
 import draft.java._java.Component;
 import draft.java._model.*;
+import draft.java._java._path;
 
 import java.util.*;
 
@@ -282,7 +283,7 @@ public final class _typeRef<T extends Type>
         
         
         @Override
-        public _inspect._diff diff( _java._inspector _ins, _inspect._path path, _inspect._diff dt, _typeRef left, _typeRef right) { 
+        public _inspect._diff diff( _java._inspector _ins, _path path, _inspect._diff dt, _typeRef left, _typeRef right) { 
             if( !equivalent(left, right) ){
                 dt.add(path.in(_java.Component.TYPE), left, right);
             }            

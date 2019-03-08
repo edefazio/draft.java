@@ -5,6 +5,7 @@ import com.github.javaparser.ast.body.MethodDeclaration;
 import com.github.javaparser.ast.nodeTypes.NodeWithThrownExceptions;
 import com.github.javaparser.ast.type.ReferenceType;
 import draft.Text;
+import draft.java._java._path;
 import static draft.java.Ast.typesEqual;
 import java.util.*;
 import java.util.function.Consumer;
@@ -271,7 +272,7 @@ public final class _throws
         }
         
         @Override
-        public _inspect._diff diff( _java._inspector _ins, _inspect._path path, _inspect._diff dt, _throws left, _throws right) {
+        public _inspect._diff diff( _java._inspector _ins, _path path, _inspect._diff dt, _throws left, _throws right) {
             //List<ObjectDiff.Entry> des = new ArrayList<>();
             for(int i=0; i<left.count();i++){
                 ReferenceType cit = left.get(i);

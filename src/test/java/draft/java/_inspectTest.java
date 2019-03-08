@@ -5,6 +5,7 @@ import draft.java._inspect.*;
 import draft.java._java.StringInspect;
 import static draft.java._java.Component.*;
 import draft.java._model._member;
+import draft.java._java._path;
 import draft.java._parameter._parameters;
 import draft.java._typeParameter._typeParameters;
 import draft.java.macro._autoDto;

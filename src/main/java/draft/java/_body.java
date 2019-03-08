@@ -11,6 +11,7 @@ import com.github.javaparser.ast.stmt.*;
 import com.github.javaparser.printer.PrettyPrinterConfiguration;
 import draft.DraftException;
 import draft.java._inspect._diff;
+import draft.java._java._path;
 
 import java.util.*;
 import java.util.function.Function;
@@ -570,7 +571,7 @@ public final class _body implements _model {
         }
         
         @Override
-        public _inspect._diff diff(_java._inspector _ins, _inspect._path path, _inspect._diff dt, _body left, _body right) {
+        public _inspect._diff diff(_java._inspector _ins, _path path, _inspect._diff dt, _body left, _body right) {
             if (!left.isPresent()) {
                 if (!right.isPresent()) {
                     return dt;

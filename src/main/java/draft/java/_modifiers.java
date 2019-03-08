@@ -4,6 +4,7 @@ import com.github.javaparser.ast.NodeList;
 import com.github.javaparser.ast.nodeTypes.NodeWithModifiers;
 import com.github.javaparser.ast.Modifier;
 import java.util.*;
+import draft.java._java._path;
 
 /**
  * I find the default AST implementation (the EnumSet<Modifier>)
@@ -695,7 +696,7 @@ public final class _modifiers
         }
 
         @Override
-        public _inspect._diff diff( _java._inspector _ins, _inspect._path path, _inspect._diff dt, _modifiers left, _modifiers right) {
+        public _inspect._diff diff( _java._inspector _ins, _path path, _inspect._diff dt, _modifiers left, _modifiers right) {
             if( !equivalent( left, right)){
                 dt.add(path.in( _java.Component.MODIFIERS), left, right);
             }

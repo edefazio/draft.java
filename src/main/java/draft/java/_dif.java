@@ -16,6 +16,7 @@ import java.util.Optional;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
+import draft.java._java._path;
 
 /**
  *
@@ -44,7 +45,7 @@ public interface _dif {
      *
      * @return
      */
-    default List<_inspect._path> paths() {
+    default List<_path> paths() {
         return list().stream().map(d -> d.path()).collect(Collectors.toList());
     }
 
@@ -55,7 +56,7 @@ public interface _dif {
      * @param _p the underlying _path
      * @return the _diffNode at this path, or null if not found
      */
-    default _delta at(_inspect._path _p) {
+    default _delta at(_path _p) {
         return first(d -> d.path().equals(_p));
     }
 
@@ -66,7 +67,7 @@ public interface _dif {
      * @return the _diffNode found at this path or null if not found
      */
     default _delta atPath(Object... pathAsTokens) {
-        return at(_inspect._path.of(pathAsTokens));
+        return at(_path.of(pathAsTokens));
     }
 
     /**

@@ -10,6 +10,7 @@ import draft.Text;
 import draft.java._model.*;
 import static draft.java.Ast.field;
 import draft.java._inspect._diff;
+import draft.java._java._path;
 import java.lang.annotation.Annotation;
 import java.util.*;
 import java.util.function.Consumer;
@@ -1043,7 +1044,7 @@ public final class _anno
         }
 
         @Override
-        public _inspect._diff diff( _java._inspector _inspect, _inspect._path path, _inspect._diff dt, _annos left, _annos right) {
+        public _inspect._diff diff( _java._inspector _inspect, _path path, _inspect._diff dt, _annos left, _annos right) {
             NodeList<AnnotationExpr> laes = left.astAnnNode.getAnnotations();
             NodeList<AnnotationExpr> raes = right.astAnnNode.getAnnotations();
             for( int i = 0; i < laes.size(); i++ ) {

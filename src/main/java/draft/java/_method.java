@@ -12,6 +12,7 @@ import draft.java._model.*;
 import draft.Text;
 import draft.java._parameter.*;
 import draft.java._anno.*;
+import draft.java._java._path;
 import draft.java._inspect._diff;
 import draft.java._typeParameter._typeParameters;
 import draft.java.macro._macro;
@@ -1379,7 +1380,7 @@ public final class _method
          */
 
         @Override
-        public _inspect._diff diff(_java._inspector _ins, _inspect._path path, _inspect._diff dt, List<_method> left, List<_method> right) {
+        public _inspect._diff diff(_java._inspector _ins, _path path, _inspect._diff dt, List<_method> left, List<_method> right) {
             Set<_method> ls = new HashSet<>();
             ls.addAll(left);
             Set<_method> rs = new HashSet<>();
@@ -1422,7 +1423,7 @@ public final class _method
         }
 
         @Override
-        public _inspect._diff diff(_java._inspector _ins, _inspect._path path, _inspect._diff dt, _method left, _method right) {
+        public _inspect._diff diff(_java._inspector _ins, _path path, _inspect._diff dt, _method left, _method right) {
             if (left == null) {
                 if (right == null) {
                     return dt;
