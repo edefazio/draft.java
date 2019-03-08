@@ -660,16 +660,19 @@ public interface _differ<T, R extends _node> {
             this.rightName = right.getName();            
         }
          
+        @Override
         public void keepLeft(){
             left.name(leftName);
             right.name(leftName);
         }
         
+        @Override
         public void keepRight(){
             left.name(rightName);
             right.name(leftName);
         }
         
+        @Override
         public String left(){
             return leftName;
         }

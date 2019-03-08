@@ -6,6 +6,7 @@ import draft.java._inspect._path;
 import draft.java._java.Component;
 import draft.java._model._node;
 import java.io.IOException;
+import java.util.concurrent.atomic.AtomicInteger;
 import junit.framework.TestCase;
 
 /**
@@ -13,6 +14,29 @@ import junit.framework.TestCase;
  * @author Eric
  */
 public class _differTest extends TestCase {
+    
+    public void test_annotationDiff(){
+        _annotation _a1 = _annotation.of("A");
+        _annotation _a2 = _annotation.of("A");
+        
+        _path path = new _path();
+        _differ._mydiff dt = new _differ._mydiff();        
+        _annotation.INSPECT_ANNOTATION.diff(path, dt, null, null, _a1, _a2);
+        assertTrue( dt.isEmpty());
+        
+        _a1.targetType();
+        _a1.element("int a() default 1;");
+        _a1.imports(IOException.class);
+        _a1.field("public static final int ID = 1;");
+        _a1.javadoc("javadoc");
+        _a1.setPackage("dev.diff");
+        _a1.setProtected();
+        
+        _annotation.INSPECT_ANNOTATION.diff(path, dt, _a1, _a2, _a1, _a2);
+        System.out.println( dt );
+        
+    }
+    
     
     public void test_enumConstantListDiff(){
         _enum._constant _a1 = _enum._constant.of("A");
@@ -32,6 +56,25 @@ public class _differTest extends TestCase {
         _enum.INSPECT_ENUM_CONSTANTS.diff(path, dt, _e1, _e2, _e1.listConstants(), _e2.listConstants());
         assertTrue( dt.isEmpty() );
         System.out.println( dt );
+        
+        _e1.constant("C");
+        _enum.INSPECT_ENUM_CONSTANTS.diff(path, dt, _e1, _e2, _e1.listConstants(), _e2.listConstants());
+        
+        assertEquals( 1, dt.listRemoves().size() );
+        System.out.println( dt);
+        
+        dt.diffs.clear();        
+        _enum.INSPECT_ENUM_CONSTANTS.diff(path, dt, _e2, _e1, _e2.listConstants(), _e1.listConstants());        
+        assertEquals( 1, dt.listAdds().size() );
+        
+        
+        _e2.constant("C");        
+        _a1.addArgument(true);        
+        dt.diffs.clear();        
+        _enum.INSPECT_ENUM_CONSTANTS.diff(path, dt, _e2, _e1, _e2.listConstants(), _e1.listConstants());
+        
+        assertEquals( 1, dt.listChanges().size() );
+        System.out.println( dt);        
         //assertTrue(dt.isEmpty());
     }
     

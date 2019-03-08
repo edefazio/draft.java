@@ -1296,7 +1296,8 @@ public interface _type<AST extends TypeDeclaration, T extends _type>
     
     public static ListImportDeclarationInspect INSPECT_IMPORTS = new ListImportDeclarationInspect(_java.Component.IMPORT.getName() );
     
-    public static class ListImportDeclarationInspect implements _inspect<List<ImportDeclaration>>{        
+    public static class ListImportDeclarationInspect 
+            implements _inspect<List<ImportDeclaration>>,  _differ<List<ImportDeclaration>, _node> {        
 
         private final String name;
         
@@ -1332,6 +1333,138 @@ public interface _type<AST extends TypeDeclaration, T extends _type>
             
             return dt;
         }        
+
+        @Override
+        public <R extends _node> _dif diff(_path path, build dt, R leftRoot, R rightRoot, List<ImportDeclaration> left, List<ImportDeclaration> right) {
+            Set<ImportDeclaration> ls = new HashSet<>();
+            Set<ImportDeclaration> rs = new HashSet<>();
+            Set<ImportDeclaration> both = new HashSet<>();
+            ls.addAll(left);
+            rs.addAll(right);
+            
+            both.addAll( left);
+            both.retainAll( right);
+            
+            ls.removeAll(both);
+            rs.removeAll(both);
+            
+            ls.forEach( c -> dt.node(new removeImportDeclaration(
+                    path.in(_java.Component.IMPORT), 
+                    (_type)leftRoot, 
+                    (_type)rightRoot, c ) ));
+            
+            rs.forEach(c -> dt.node(new addImportDeclaration(
+                    path.in(_java.Component.IMPORT), 
+                    (_type)leftRoot, 
+                    (_type)rightRoot, c ) ));
+            
+            return (_dif)dt;
+        }
+        
+        public static class addImportDeclaration implements _delta<_type>, _add<ImportDeclaration>{
+            
+            public _path path;
+            public _type leftRoot;
+            public _type rightRoot;
+            public ImportDeclaration toAdd;
+            
+            public addImportDeclaration(_path path, _type leftRoot, _type rightRoot, ImportDeclaration id){
+                this.path = path;
+                this.leftRoot = leftRoot;
+                this.rightRoot = rightRoot;
+                this.toAdd = Ast.importDeclaration(id.toString());
+            }
+            
+            @Override
+            public _type leftRoot() {
+                return leftRoot;
+            }
+
+            @Override
+            public _type rightRoot() {
+                return rightRoot;
+            }
+
+            @Override
+            public void keepLeft() {
+                leftRoot.removeImports(toAdd);
+                rightRoot.removeImports(toAdd);
+            }
+
+            @Override
+            public void keepRight() {
+                leftRoot.imports(toAdd);
+                rightRoot.imports(toAdd);
+            }
+
+            @Override
+            public _path path() {
+                return path;
+            }
+
+            @Override
+            public ImportDeclaration added() {
+                return toAdd;
+            }
+            
+            @Override
+            public String toString(){
+                return "   + "+path;
+            }
+            
+        }
+        
+         public static class removeImportDeclaration implements _delta<_type>, _remove<ImportDeclaration>{
+            
+            public _path path;
+            public _type leftRoot;
+            public _type rightRoot;
+            public ImportDeclaration toRemove;
+            
+            public removeImportDeclaration(_path path, _type leftRoot, _type rightRoot, ImportDeclaration toRemove){
+                this.path = path;
+                this.leftRoot = leftRoot;
+                this.rightRoot = rightRoot;
+                this.toRemove = Ast.importDeclaration(toRemove.toString());
+            }
+            
+            @Override
+            public _type leftRoot() {
+                return leftRoot;
+            }
+
+            @Override
+            public _type rightRoot() {
+                return rightRoot;
+            }
+
+            @Override
+            public void keepLeft() {
+                leftRoot.imports(toRemove);
+                rightRoot.imports(toRemove);
+            }
+
+            @Override
+            public void keepRight() {                
+                leftRoot.removeImports(toRemove);
+                rightRoot.removeImports(toRemove);                
+            }
+
+            @Override
+            public _path path() {
+                return path;
+            }
+
+            @Override
+            public ImportDeclaration removed() {
+                return toRemove;
+            }
+            
+            @Override
+            public String toString(){
+                return "   - "+path;
+            }            
+        }
     }
     
     public static ListClassOrInterfaceTypeInspect INSPECT_EXTENDS = new ListClassOrInterfaceTypeInspect(_java.Component.EXTENDS);

@@ -871,8 +871,9 @@ public final class _annotation
 
         @Override
         public <R extends _node> _dif diff(_path path, build dt, R leftRoot, R rightRoot, _annotation left, _annotation right) {
-            _java.INSPECT_PACKAGE_NAME.diff(path, dt, leftRoot, rightRoot, left.getPackage(), right.getPackage());
+            _java.INSPECT_PACKAGE.diff(path, dt, leftRoot, rightRoot, left.getPackage(), right.getPackage());
             //imports
+            _type.INSPECT_IMPORTS.diff(path, dt, leftRoot, rightRoot, left.listImports(), right.listImports());
             _anno.INSPECT_ANNOS.diff(path, dt, leftRoot, rightRoot, left.getAnnos(), right.getAnnos());
             _javadoc.INSPECT_JAVADOC.diff(path, dt, leftRoot, rightRoot, left.getJavadoc(), right.getJavadoc());
             _java.INSPECT_NAME.diff(path, dt, leftRoot, rightRoot, left.getName(), right.getName());

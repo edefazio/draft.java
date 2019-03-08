@@ -1252,6 +1252,11 @@ public final class _enum implements _type<EnumDeclaration, _enum>,_method._hasMe
             public _constant added() {
                 return this.toAdd;
             }            
+            
+            @Override
+            public String toString(){
+                return "   + "+path;
+            }
         }
         
         public static class remove_enum_constant implements _delta<_enum>, _remove<_enum._constant>{
@@ -1302,6 +1307,11 @@ public final class _enum implements _type<EnumDeclaration, _enum>,_method._hasMe
             public _constant removed() {
                 return this.toRemove;
             }            
+            
+            @Override
+            public String toString(){
+                return "   - "+path;
+            }
         }
     }
     
