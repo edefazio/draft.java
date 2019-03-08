@@ -1,6 +1,7 @@
 package draft.java;
 
 import com.github.javaparser.JavaParser;
+import com.github.javaparser.StaticJavaParser;
 import com.github.javaparser.ast.*;
 import com.github.javaparser.ast.body.*;
 import com.github.javaparser.ast.comments.JavadocComment;
@@ -89,7 +90,7 @@ public final class _enum implements _type<EnumDeclaration, _enum>,_method._hasMe
 
 
     public static _enum of(InputStream is){
-        return of( JavaParser.parse(is) );
+        return of( StaticJavaParser.parse(is) );
     }
 
     public static _enum of( _in in ){

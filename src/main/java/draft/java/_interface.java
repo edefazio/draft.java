@@ -1,6 +1,7 @@
 package draft.java;
 
 import com.github.javaparser.JavaParser;
+import com.github.javaparser.StaticJavaParser;
 import com.github.javaparser.ast.*;
 import com.github.javaparser.ast.body.*;
 import com.github.javaparser.ast.expr.ObjectCreationExpr;
@@ -128,7 +129,7 @@ public final class _interface implements _type<ClassOrInterfaceDeclaration, _int
 
 
     public static _interface of(InputStream is){
-        return of( JavaParser.parse(is) );
+        return of( StaticJavaParser.parse(is) );
     }
 
     public static _interface of( _in in ){

@@ -1,6 +1,7 @@
 package draft.java;
 
 import com.github.javaparser.JavaParser;
+import com.github.javaparser.StaticJavaParser;
 import com.github.javaparser.ast.expr.LambdaExpr;
 import com.github.javaparser.ast.stmt.*;
 import draft.DraftException;
@@ -177,7 +178,7 @@ public enum Stmt {
             return block( str ).getStatement(0);
         }
         //return block(str).getStatement(0);
-        return JavaParser.parseStatement( str );
+        return StaticJavaParser.parseStatement( str );
     }
 
     public static final Class<AssertStmt> ASSERT = AssertStmt.class;
@@ -225,7 +226,7 @@ public enum Stmt {
 
             String comb = combined.substring(0, endCommentIndex+2)+startM;
             //System.out.println( ">> "+ combined.substring(0, endCommentIndex+2)+startM +"<<");
-            return JavaParser.parseBlock( comb );
+            return StaticJavaParser.parseBlock( comb );
         }
 
         if( !combined.startsWith("{") ){
@@ -245,7 +246,7 @@ public enum Stmt {
             combined = combined +System.lineSeparator()+ "}";
         }
         //System.out.println( "COMBINED " + combined );
-        return JavaParser.parseBlock( combined );
+        return StaticJavaParser.parseBlock( combined );
     }
 
 

@@ -2,6 +2,7 @@ package draft.java;
 
 import com.github.javaparser.JavaParser;
 import com.github.javaparser.Position;
+import com.github.javaparser.StaticJavaParser;
 import com.github.javaparser.ast.*;
 import com.github.javaparser.ast.body.*;
 import com.github.javaparser.ast.comments.*;
@@ -57,6 +58,7 @@ import java.util.regex.Pattern;
 public enum Ast {
     ;
 
+    //public static final JavaParser JP = new JavaParser(ParserConfiguration.)    
     /*---------------------------------------------------------
        the point of having all of these JavaParser Classes in a
        single place is to simplify / flatten the access to the JavaParser
@@ -545,7 +547,7 @@ public enum Ast {
     }
 
     public static CompilationUnit of( InputStream is ){
-        return JavaParser.parse(is);
+        return StaticJavaParser.parse(is);
     }
 
     /**
@@ -760,7 +762,7 @@ public enum Ast {
         }
         //return TYPE( _i.getInputStream() );
 
-        CompilationUnit cu = JavaParser.parse(_i.getInputStream());
+        CompilationUnit cu = StaticJavaParser.parse(_i.getInputStream());
         //CompilationUnit cu = (CompilationUnit)TYPE( _i.getInputStream() );
         //System.out.println( "TYPES "+ cu.getTypes() );
         //System.out.println( cu.getTypes() );
@@ -826,7 +828,7 @@ public enum Ast {
         if (!code.endsWith(";")) {
             code = code + ";";
         }
-        return JavaParser.parseImport(code);
+        return StaticJavaParser.parseImport(code);
     }
 
     /**
@@ -944,7 +946,7 @@ public enum Ast {
      */
     public static CompilationUnit compilationUnit(String... code) {
         String str = Text.combine(code);
-        return JavaParser.parse(str);
+        return StaticJavaParser.parse(str);
     }
 
     /**
@@ -972,7 +974,7 @@ public enum Ast {
      */
     public static CompilationUnit compilationUnit(Path path)
             throws IOException {
-        return JavaParser.parse(path);
+        return StaticJavaParser.parse(path);
     }
 
     /**
@@ -980,7 +982,7 @@ public enum Ast {
      * @return the Top Level Ast Node (CompilationUnit, TypeDeclaration)
      */
     public static TypeDeclaration type(InputStream is) {
-        CompilationUnit cu = JavaParser.parse(is);
+        CompilationUnit cu = StaticJavaParser.parse(is);
         List<TypeDeclaration> tds = listAll(cu, TypeDeclaration.class);
         if (tds.size() == 1) {
             return tds.get(0);
@@ -1021,7 +1023,7 @@ public enum Ast {
      */
     public static BodyDeclaration declaration(String... code) {
         try {
-            return JavaParser.parseBodyDeclaration(Text.combine(code));
+            return StaticJavaParser.parseBodyDeclaration(Text.combine(code));
         } catch (Exception e) {
             throw new DraftException("Invalid Body Definition : "
                     + System.lineSeparator() + Text.indent(Text.combine(code)));
@@ -1169,11 +1171,11 @@ public enum Ast {
     }
 
     public static Name name(String code) {
-        return JavaParser.parseName(code);
+        return StaticJavaParser.parseName(code);
     }
 
     public static SimpleName simpleName(String code) {
-        return JavaParser.parseSimpleName(code);
+        return StaticJavaParser.parseSimpleName(code);
     }
 
     public static Type typeRef(AnnotatedType at) {
@@ -1243,7 +1245,7 @@ public enum Ast {
             return ut.get(0);
         }
         //System.out.println("THE CODE HERE IS "+ code );
-        return JavaParser.parseType(code);
+        return StaticJavaParser.parseType(code);
     }
 
     public static NodeList<Parameter> parameters(String... code) {
@@ -1277,7 +1279,7 @@ public enum Ast {
     }
 
     public static Parameter parameter(String... code) {
-        return JavaParser.parseParameter(Text.combine(code));
+        return StaticJavaParser.parseParameter(Text.combine(code));
     }
 
     /**
@@ -1539,9 +1541,9 @@ public enum Ast {
     public static AnnotationExpr anno(String... code) {
         String s = Text.combine(code);
         if( s.startsWith("@")){
-            return JavaParser.parseAnnotation(s);
+            return StaticJavaParser.parseAnnotation(s);
         }
-        return JavaParser.parseAnnotation("@"+s);
+        return StaticJavaParser.parseAnnotation("@"+s);
     }
 
     /**

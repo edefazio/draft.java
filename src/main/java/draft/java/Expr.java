@@ -548,12 +548,12 @@ public enum Expr {
             return aie;
         }
         try{
-            return JavaParser.parseExpression( str );
+            return StaticJavaParser.parseExpression( str );
         }
         catch(ParseProblemException ppe){
             try {
                 //normal parsing of Variable Declarations fails, we need to call a special parse method
-                return JavaParser.parseVariableDeclarationExpr(str);
+                return StaticJavaParser.parseVariableDeclarationExpr(str);
             } catch(Exception e ) {
                 throw new DraftException("Unable to parse Expression \"" + str + "\" ", ppe);
             }
@@ -1009,6 +1009,6 @@ public enum Expr {
     public static final Class<VariableDeclarationExpr> VARIABLE_DECLARATION = VariableDeclarationExpr.class;
 
     public static VariableDeclarationExpr varDecl( String... code ) {
-        return JavaParser.parseVariableDeclarationExpr( Text.combine( code ));
+        return StaticJavaParser.parseVariableDeclarationExpr( Text.combine( code ));
     }
 }

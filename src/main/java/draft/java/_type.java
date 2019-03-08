@@ -1,6 +1,7 @@
 package draft.java;
 
 import com.github.javaparser.JavaParser;
+import com.github.javaparser.StaticJavaParser;
 import com.github.javaparser.ast.*;
 import com.github.javaparser.ast.body.*;
 import com.github.javaparser.ast.comments.BlockComment;
@@ -80,7 +81,7 @@ public interface _type<AST extends TypeDeclaration, T extends _type>
         _field._hasFields<T>, _member<Node, T> {
 
     static _type of( InputStream is ){
-        return of(JavaParser.parse(is));
+        return of(StaticJavaParser.parse(is));
     }
 
     /**

@@ -1,6 +1,7 @@
 package draft.java;
 
 import com.github.javaparser.JavaParser;
+import com.github.javaparser.StaticJavaParser;
 import com.github.javaparser.ast.*;
 import com.github.javaparser.ast.body.*;
 import com.github.javaparser.ast.comments.JavadocComment;
@@ -226,7 +227,7 @@ public final class _annotation
     }
 
     public static _annotation of(InputStream is){
-        return of( JavaParser.parse(is) );
+        return of( StaticJavaParser.parse(is) );
     }
 
     public static _annotation of( _in in ){
@@ -872,7 +873,6 @@ public final class _annotation
         @Override
         public <R extends _node> _dif diff(_path path, build dt, R leftRoot, R rightRoot, _annotation left, _annotation right) {
             _java.INSPECT_PACKAGE.diff(path, dt, leftRoot, rightRoot, left.getPackage(), right.getPackage());
-            //imports
             _type.INSPECT_IMPORTS.diff(path, dt, leftRoot, rightRoot, left.listImports(), right.listImports());
             _anno.INSPECT_ANNOS.diff(path, dt, leftRoot, rightRoot, left.getAnnos(), right.getAnnos());
             _javadoc.INSPECT_JAVADOC.diff(path, dt, leftRoot, rightRoot, left.getJavadoc(), right.getJavadoc());
