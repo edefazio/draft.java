@@ -791,45 +791,6 @@ public final class _enum implements _type<EnumDeclaration, _enum>,_method._hasMe
             return this;
         }
         
-        @Override
-        public _constant removeFields( Predicate<_field> _fieldMatchFn){
-            List<_field> fs = listFields(_fieldMatchFn);
-            fs.forEach(f -> removeField(f));
-            return this;
-        }
-
-        @Override
-        public _constant removeField( _field _f ){
-            if( listFields().contains(_f) ){
-                if( _f.getFieldDeclaration().getVariables().size() == 1){
-                    _f.getFieldDeclaration().remove();
-                } else{
-                    _f.getFieldDeclaration().getVariables().removeIf( v-> v.getNameAsString().equals(_f.getName() ));
-                }
-            }
-            return this;
-        }
-
-        @Override
-        public _constant removeField( String fieldName ){
-            Optional<BodyDeclaration<?>> ofd = this.astConstant.getClassBody().stream().filter(b -> {
-                if (b.isFieldDeclaration()) {
-                    NodeList<VariableDeclarator> vds = b.asFieldDeclaration().getVariables();
-                    return vds.stream().filter( v-> v.getNameAsString().equals(fieldName ) ).findFirst().isPresent();
-                }
-                return false;
-            }).findFirst();
-            if( ofd.isPresent() ){
-                FieldDeclaration fd = (FieldDeclaration)ofd.get();
-                if( fd.getVariables().size() == 1 ){
-                    fd.remove();
-                } else{
-                    fd.getVariables().removeIf( v-> v.getNameAsString().equals(fieldName));
-                }
-            }
-            return this;
-        }
-
         public List<Expression> listArguments(){
             return this.astConstant.getArguments();
         }
