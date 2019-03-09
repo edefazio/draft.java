@@ -501,12 +501,10 @@ public interface _type<AST extends TypeDeclaration, T extends _type>
                 List<ImportDeclaration> li = listImports();
                 //check star import
                 if (!listImports(i -> i.getNameAsString().equals(packageName) && i.isAsterisk()).isEmpty()) {
-                    System.out.println( "FOULD HERE");
                     return true;
                 }
                 //check exact import
-                if (!listImports(i -> i.getNameAsString().equals(clazz.getCanonicalName())).isEmpty()) {
-                    System.out.println( "FOULD HERE << ");
+                if (!listImports(i -> i.getNameAsString().equals(clazz.getCanonicalName())).isEmpty()){ 
                     return true;
                 }
             }
@@ -632,15 +630,18 @@ public interface _type<AST extends TypeDeclaration, T extends _type>
     default T imports( Class...classesToImport ){
         CompilationUnit cu = findCompilationUnit();
         if( cu != null ){
-            //Arrays.stream( classesToImport ).forEach( c-> cu.addImport( c ) );
             for(int i=0;i<classesToImport.length; i++){
-                //System.out.println( "Adding "+ classesToImport[i]);
-
+                //dont import primitives or primitive arrays
+                if( classesToImport[i] == null 
+                    || classesToImport[i].isPrimitive() 
+                    || classesToImport[i].isArray() && classesToImport[i].getComponentType().isPrimitive()){
+                    break;
+                }
+                String cn = classesToImport[i].getCanonicalName();
                 //fix a minor bug in JavaParser API where anything in "java.lang.**.*" is not imported
                 // so java.lang.annotation.* classes are not imported when they should be
                 if( classesToImport[i].getPackage() != Integer.class.getPackage()
-                        && classesToImport[i].getCanonicalName().startsWith("java") ) {
-                    //System.out.println( "manually adding "+classesToImport[i].getCanonicalName() );
+                        && classesToImport[i].getCanonicalName().startsWith("java.lang") ) {
                     if( classesToImport[i].isArray() ){
                         String s = classesToImport[i].getCanonicalName();
                         cu.addImport(s.substring(0, s.indexOf('[')));
@@ -656,9 +657,7 @@ public interface _type<AST extends TypeDeclaration, T extends _type>
                         cu.addImport(classesToImport[i]);
                     }
                 }
-                //System.out.println( cu.getImports() );
             }
-            //System.out.println( "AFTER ADD "+ this);
             return (T)this;
         }
         throw new DraftException("No AST CompilationUnit of TYPE "+ ((T)this).getName()+" to add imports");
@@ -771,7 +770,6 @@ public interface _type<AST extends TypeDeclaration, T extends _type>
     default NodeList<Modifier> getEffectiveModifiers() {
         NodeList<Modifier> implied = Ast.getImpliedModifiers( this.astType() );
         return Ast.merge( implied, this.astType().getModifiers());
-        //return EnumSet.noneOf(Modifier.class);
     }
 
     @Override
@@ -1131,7 +1129,7 @@ public interface _type<AST extends TypeDeclaration, T extends _type>
     }
 
     /**
-     * When we initialze or "import" the body of code for a _type... i.e.
+     * When we initialize or "import" the body of code for a _type... i.e.
      * <PRE>
      * //create the _class from the name, and anonymous object body
      * _class _c = _class.of("aaaa.bbbb.C", new Serializable(){
@@ -1173,13 +1171,13 @@ public interface _type<AST extends TypeDeclaration, T extends _type>
         Arrays.stream(anonymousClass.getInterfaces()).forEach(c-> classes.add(c));
 
         //super class if not Object
-        if( !anonymousClass.getSuperclass().equals(Object.class )){
+        if( anonymousClass.getSuperclass() != null &&
+            !anonymousClass.getSuperclass().equals(Object.class )){
             classes.add(anonymousClass.getSuperclass() );
         }
         // field types
         Arrays.stream(anonymousClass.getDeclaredFields()).forEach( f-> {
             if( !f.isSynthetic() && f.getAnnotation(_remove.class) == null ) {
-                //System.out.println( "ADDING FIELD "+ f.getType()+ f );
                 classes.add(f.getType());
             }
         } );
@@ -1188,14 +1186,9 @@ public interface _type<AST extends TypeDeclaration, T extends _type>
             if( c.getAnnotation(_remove.class) == null ) {
                 Arrays.stream(c.getParameters()).forEach( p -> {
                     if( p.isSynthetic() ){
-                        //System.out.println("ADDING NON SYNTHETIC "+ p.getType() );
                         classes.add( p.getType() );
                     }
                 } );
-                //Arrays.stream(c.getParameterTypes()).forEach(p -> {
-                //    if( p.is)
-                //    classes.add(p);
-                //});
                 Arrays.stream(c.getExceptionTypes()).forEach(p -> classes.add(p));
             }
         });
@@ -1205,12 +1198,10 @@ public interface _type<AST extends TypeDeclaration, T extends _type>
                 classes.add(m.getReturnType());
 
                 Arrays.stream(m.getParameters()).forEach( p -> {
-                    //System.out.println("ADDING NON SYNTHETIC "+ p.getType() );
-                    if( p.isSynthetic() ){
+                    if( !p.isSynthetic() ){
                         classes.add( p.getType() );
                     }
                 } );
-                //Arrays.stream(m.getParameterTypes()).forEach(p -> classes.add(p));
                 Arrays.stream(m.getExceptionTypes()).forEach(p -> classes.add(p));
             }
         });
@@ -1221,8 +1212,9 @@ public interface _type<AST extends TypeDeclaration, T extends _type>
             }
         });
         //lets not try importing java.lang.String or int.class
-        classes.removeIf( c-> c.isPrimitive() ||
-                ( c.getPackage() != null && c.getPackage().getName().equals("java.lang") ));
+        classes.removeIf( c-> c.isPrimitive() || ( c.isArray() && c.getComponentType().isPrimitive() ) 
+                || (c.getCanonicalName() == null)
+                || ( c.getPackage() != null && c.getPackage().getName().equals("java.lang") ));
         return classes;
     }
 
@@ -1820,8 +1812,6 @@ public interface _type<AST extends TypeDeclaration, T extends _type>
                 //on the fence about this
                 dt.add(path.in(getComponent(left), left.getName()), left, null);
                 dt.add(path.in(getComponent(right), right.getName() ), null, right);
-                //dt.add(path.in(Component.NEST), left, null);
-                //dt.add(path.in(Component.NEST), null, right);
             }
             if( left instanceof _class ){
                 return _ins.INSPECT_CLASS.diff(_ins, path.in(_java.Component.CLASS, left.getName()), dt, (_class)left, (_class)right);
@@ -1889,8 +1879,7 @@ public interface _type<AST extends TypeDeclaration, T extends _type>
                 _type cc = sameNameAndType( f, rs );
                 if( cc != null ){                    
                     _ins.INSPECT_TYPE.diff(_ins, path.in(_java.Component.NEST),dt, f, cc);
-                    rs.remove( cc );
-                    //dl.add(path+_java.Component.NEST, f, cc);                    
+                    rs.remove( cc );           
                 } else{
                     dt.add(path.in(_java.Component.NEST), f, null);
                 }
@@ -1918,7 +1907,6 @@ public interface _type<AST extends TypeDeclaration, T extends _type>
                 if( cc != null ){                    
                     INSPECT_TYPE.diff(path.in(_java.Component.NEST), dt, leftRoot, rightRoot, f, cc);
                     rs.remove( cc );
-                    //dl.add(path+_java.Component.NEST, f, cc);                    
                 } else{                    
                     if( f instanceof _class ){
                         dt.node(new removeNest( path.in(_java.Component.NEST).in(Component.CLASS, f.getName()),
@@ -1933,7 +1921,6 @@ public interface _type<AST extends TypeDeclaration, T extends _type>
                         dt.node(new removeNest( path.in(_java.Component.NEST).in(Component.ANNOTATION, f.getName()),
                                 (_type)leftRoot, (_type)rightRoot, f ) );
                     }                    
-                    //dt.add(path.in(_java.Component.NEST), f, null);
                 }
             });
             

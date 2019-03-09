@@ -73,6 +73,9 @@ public final class _class implements _type<ClassOrInterfaceDeclaration, _class>,
             _class _c = of( (ClassOrInterfaceDeclaration)n);
             
             _c = _macro.to(clazz, _c); //run annotation macros on the class
+            Set<Class> importClasses = _type.inferImportsFrom(clazz);
+            System.out.println( importClasses );
+            _c.imports(importClasses.toArray(new Class[0]));
             for(int i=0; i< typeFns.length; i++){
                 _c = (_class)typeFns[i].apply(_c);
             }
@@ -85,10 +88,13 @@ public final class _class implements _type<ClassOrInterfaceDeclaration, _class>,
             if( loc.getComment().isPresent() ){
                 _c.astType().setComment( loc.getComment().get());
             }
+            Set<Class> importClasses = _type.inferImportsFrom(clazz);
+            _c.imports(importClasses.toArray(new Class[0]));
             _c = _macro.to(clazz, _c);
             for(int i=0; i< typeFns.length; i++){
                 _c = (_class)typeFns[i].apply(_c);
             }
+            
             //Arrays.stream(typeFns).forEach( t$ -> t$.apply( _c) );
             return _c;
         }
@@ -100,7 +106,7 @@ public final class _class implements _type<ClassOrInterfaceDeclaration, _class>,
     }
 
     public static _class of( InputStream is ){
-        return(_class)_type.of(is);
+        return (_class)_type.of(is);
     }
 
     /**

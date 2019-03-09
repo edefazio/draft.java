@@ -23,6 +23,7 @@ import static java.util.Collections.sort;
  * @author Eric
  */
 public class _classTest extends TestCase {
+    
 
     public void testInferLocalClassImportsBasedOnAPI(){
         class Local{
@@ -31,7 +32,9 @@ public class _classTest extends TestCase {
         }
         _class _c = _class.of(Local.class);
         
+        System.out.println( _c);
         assertTrue( _c.hasImport(Map.class));// UUID.class, IOException.class) );
+        
         
         System.out.println( _c );
     }
@@ -164,9 +167,12 @@ public class _classTest extends TestCase {
                 return null;
             }
         });
+        
+        System.out.println( _c);
         assertTrue( _c.hasImport(Serializable.class)); //interface implemented
         assertTrue( _c.hasImport(Map.class)); //field type
         assertTrue( _c.hasImport(List.class));
+        assertTrue( _c.hasImport(Set.class));
         assertTrue( _c.hasImport(UUID.class));
         assertTrue( _c.hasImport(IOException.class));
     }

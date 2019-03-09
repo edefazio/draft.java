@@ -17,7 +17,6 @@ import junit.framework.TestCase;
  */
 public class _differTest extends TestCase {
     
-    
     /** 
      * verify (2) classes are equal no diffs, then add all component
      * types to another

@@ -44,7 +44,10 @@ public final class _enum implements _type<EnumDeclaration, _enum>,_method._hasMe
         if( n instanceof CompilationUnit ){
             return _macro.to(clazz, of( (CompilationUnit)n));
         }
-        return _macro.to(clazz, of( (EnumDeclaration)n));        
+        _enum _e = of( (EnumDeclaration)n);
+        Set<Class> importClasses = _type.inferImportsFrom(clazz);
+        _e.imports(importClasses.toArray(new Class[0]));
+        return _macro.to(clazz, _e);        
     }
 
     public static _enum of( String...classDef ){
@@ -88,7 +91,6 @@ public final class _enum implements _type<EnumDeclaration, _enum>,_method._hasMe
         return new _enum( astClass );
     }
 
-
     public static _enum of(InputStream is){
         return of( StaticJavaParser.parse(is) );
     }
@@ -107,6 +109,8 @@ public final class _enum implements _type<EnumDeclaration, _enum>,_method._hasMe
                 _e.astType().addMember(bds.get(i));
             }
         }
+        Set<Class> importClasses = _type.inferImportsFrom(anonymousBody);
+        _e.imports(importClasses.toArray(new Class[0]));
         _e = _macro.to(anonymousBody.getClass(), _e);
         for(int i=0;i<typeFns.length; i++){
             _e = (_enum)typeFns[i].apply(_e);
@@ -131,7 +135,6 @@ public final class _enum implements _type<EnumDeclaration, _enum>,_method._hasMe
 
     @Override
     public boolean isTopClass(){
-
         return astEnum.isTopLevelType();
     }
 
