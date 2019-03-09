@@ -30,7 +30,7 @@ public @interface _package {
             if( !_model.isTopClass() ){
                 _model.getModifiers().setStatic(false); //top level entities cannot be static
                 CompilationUnit cu = new CompilationUnit();
-                cu.addType( (TypeDeclaration)_model.astMember());
+                cu.addType( (TypeDeclaration)_model.ast());
                 if( packageName != null && !packageName.isEmpty()){
                     cu.setPackageDeclaration(packageName);
                 }

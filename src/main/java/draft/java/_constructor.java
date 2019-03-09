@@ -1,6 +1,7 @@
 package draft.java;
 
 import com.github.javaparser.ast.Modifier;
+import com.github.javaparser.ast.Node;
 import com.github.javaparser.ast.NodeList;
 import com.github.javaparser.ast.body.*;
 import com.github.javaparser.ast.comments.JavadocComment;
@@ -111,11 +112,6 @@ public final class _constructor implements _anno._hasAnnos<_constructor>,
     @Override
     public ConstructorDeclaration ast() {
         return astCtor;
-    }
-    
-    @Override
-    public ConstructorDeclaration astMember(){
-        return astCtor; 
     }
 
     @Override
@@ -231,14 +227,6 @@ public final class _constructor implements _anno._hasAnnos<_constructor>,
         return this;
     }
 
-    /*
-    @Override
-    public _constructor setBody( String... body ) {
-        this.astCtor.setBody( Stmt.block( body ) );
-        return this;
-    }
-    */
-
     @Override
     public _throws getThrows() {
         return _throws.of( astCtor );
@@ -282,37 +270,13 @@ public final class _constructor implements _anno._hasAnnos<_constructor>,
                 if( ctor.isVarArgs() &&  //if last parameter and varargs
                     Ast.typesEqual( pl.get(i).getType().getElementType(), 
                         _t.getElementType())  ){                    
-                } else{
-                    //System.out.println( "Failed at "+ _t+" =/= "+ pl.get(i).getType() );                
+                } else{             
                     return false;
                 }
             }
         }        
         return true;        
     }
-
-    /*
-    @Override
-    public _constructor setParameters(NodeList<Parameter> astPs){
-        this.astCtor.setParameters(astPs);
-        return this;        
-    }
-    
-
-    @Override
-    public _constructor addParameters( Parameter... parameters ) {
-        Arrays.stream( parameters ).forEach( p -> addParameter( p ) );
-        return this;
-    }
-
-    
-    
-    @Override
-    public _constructor addParameter( Parameter parameter ) {
-        this.astCtor.addParameter( parameter );
-        return this;
-    }
-    */
     
     public boolean is( String...constructorDeclaration ){
         try {
@@ -359,21 +323,6 @@ public final class _constructor implements _anno._hasAnnos<_constructor>,
     public String getName() {
         return astCtor.getNameAsString();
     }
-
-    /*
-    @Override
-    public _parameter getParameter( int index ) {
-        return _parameter.of( astCtor.getParameter( index ) );
-    }
-
-    @Override
-    public boolean isVarArg() {
-        if( this.astCtor.getParameters().isNonEmpty() ) {
-            return this.astCtor.getParameter( this.astCtor.getParameters().size() - 1 ).isVarArgs();
-        }
-        return false;
-    }
-    */
 
     @Override
     public _parameters getParameters() {
@@ -500,10 +449,10 @@ public final class _constructor implements _anno._hasAnnos<_constructor>,
      * @author Eric
      * @param <T>
      */
-    public interface _hasConstructors<T extends _hasConstructors & _type>
+    public interface _hasConstructors<T extends _hasConstructors & _type, N extends Node & NodeWithConstructors>
             extends _model {
 
-        //NodeWithConstructors ast();
+        N ast();
         
         List<_constructor> listConstructors();
 
@@ -981,7 +930,6 @@ public final class _constructor implements _anno._hasAnnos<_constructor>,
             StringBuilder sb = new StringBuilder(); 
             
             _parameters _pts = ct.getParameters();
-            //_typeRef[] _trs = new _typeRef[_pts.count()];
             sb.append( ct.getName() );
             sb.append( "(");
             for(int i=0;i<_pts.count();i++){
@@ -992,7 +940,6 @@ public final class _constructor implements _anno._hasAnnos<_constructor>,
                 if(_pts.get(i).isVarArg() ){
                     sb.append("...");
                 }
-                //_trs[i] = _pts.get(i).getType();
             }
             sb.append(")");
             return sb.toString();

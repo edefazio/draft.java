@@ -139,9 +139,7 @@ public interface _model {
      * @param <T> the model type
      */
     interface _member<N extends Node, T extends _named & _anno._hasAnnos & _javadoc._hasJavadoc>
-            extends _node<N>, _named<T>, _anno._hasAnnos<T>, _javadoc._hasJavadoc<T>{
-        
-        N astMember();
+            extends _node<N>, _named<T>, _anno._hasAnnos<T>, _javadoc._hasJavadoc<T>{        
     }
 
     /**

@@ -185,11 +185,6 @@ public final class _method
     }
 
     @Override
-    public MethodDeclaration astMember(){
-        return astMethod;
-    }
-    
-    @Override
     public MethodDeclaration ast() {
         return astMethod;
     }
@@ -477,7 +472,6 @@ public final class _method
                 ims.add(m);
             }
         });
-        //ims.addAll(this.astMethod.getModifiers());
         return ims;
     }
 

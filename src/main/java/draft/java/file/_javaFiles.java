@@ -307,7 +307,7 @@ public final class _javaFiles
                     oce-> oce.getAnonymousClassBody().isPresent() && oce.getType().getName().asString().equals(clazz.getSimpleName()));
             if( tds.size() == 1 ){
                 _class _c = _class.of( "ANONYMOUS");
-                tds.get(0).getAnonymousClassBody().get().forEach( e -> _c.astMember().addMember( e ) );
+                tds.get(0).getAnonymousClassBody().get().forEach( e -> _c.ast().addMember( e ) );
             }
         }
         return get( clazz.getName() );

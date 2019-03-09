@@ -157,25 +157,13 @@ public final class _interface implements _type<ClassOrInterfaceDeclaration, _int
     
     @Override
     public boolean isTopClass(){
-        return astMember().isTopLevelType();
-    }
-
-    /*
-    @Override
-    public ClassOrInterfaceDeclaration astType(){
-        return astInterface;
-    }
-    */
-    
-    @Override
-    public ClassOrInterfaceDeclaration astMember(){
-        return astInterface;
+        return ast().isTopLevelType();
     }
 
     @Override
     public CompilationUnit findCompilationUnit(){
-        if( this.astMember().isTopLevelType()){
-            return astMember().findCompilationUnit().get();
+        if( this.ast().isTopLevelType()){
+            return ast().findCompilationUnit().get();
         }
         //it might be a member class
         if( this.astInterface.findCompilationUnit().isPresent()){
@@ -313,8 +301,8 @@ public final class _interface implements _type<ClassOrInterfaceDeclaration, _int
 
     @Override
     public String toString(){
-        if( this.astMember().isTopLevelType()){
-            return this.astMember().findCompilationUnit().get().toString();
+        if( this.ast().isTopLevelType()){
+            return this.ast().findCompilationUnit().get().toString();
         }
         return this.astInterface.toString();
     }

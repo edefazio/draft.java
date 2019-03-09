@@ -39,8 +39,8 @@ public @interface _replace {
             Node oldNode = null;
             Node newNode = null;
             if( _model instanceof _type ) {
-                oldNode = ((_type) _model).astMember();
-                newNode = _java.nodeOf(((_type) _model).astMember().getClass(), str);
+                oldNode = ((_type) _model).ast();
+                newNode = _java.nodeOf(((_type) _model).ast().getClass(), str);
             }else {
                 oldNode = ((draft.java._model._node) _model).ast();
                 newNode = _java.nodeOf(((draft.java._model._node) _model).ast().getClass(), str);

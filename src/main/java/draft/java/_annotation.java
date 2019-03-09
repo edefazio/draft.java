@@ -249,25 +249,13 @@ public final class _annotation
 
     @Override
     public boolean isTopClass(){
-        return astMember().isTopLevelType();
-    }
-
-    /*
-    @Override
-    public AnnotationDeclaration astType(){
-        return astAnnotation;
-    }
-    */
-    
-    @Override
-    public AnnotationDeclaration astMember(){
-        return astAnnotation;
+        return ast().isTopLevelType();
     }
 
     @Override
     public CompilationUnit findCompilationUnit(){
-        if( this.astMember().findCompilationUnit().isPresent() ){
-            return this.astMember().findCompilationUnit().get();
+        if( this.ast().findCompilationUnit().isPresent() ){
+            return this.ast().findCompilationUnit().get();
         }
         return null;
     }
@@ -279,8 +267,8 @@ public final class _annotation
 
     @Override
     public String toString(){
-        if( this.astMember().isTopLevelType() ){
-            return this.astMember().findCompilationUnit().get().toString();
+        if( this.ast().isTopLevelType() ){
+            return this.ast().findCompilationUnit().get().toString();
         }
         return this.astAnnotation.toString();
     }
@@ -401,7 +389,6 @@ public final class _annotation
 
     public _annotation removeElement( _element _e ){
         listElements(e -> e.equals(_e)).forEach(e-> e.ast().removeForced() );
-        //this.astAnnotation.remove(_e.astAnnMember );
         return this;
     }
 
@@ -457,7 +444,6 @@ public final class _annotation
         hash = 13 * hash + Objects.hashCode( this.getPackage() );
         hash = 13 * hash + Ast.importsHash( astAnnotation  );
 
-        //FIXED... for some reason... I never had modifiers in hashCode
         hash = 13 * hash + Objects.hashCode( this.getEffectiveModifiers() );
 
         hash = 13 * hash + Objects.hashCode( this.getJavadoc() );
@@ -601,11 +587,6 @@ public final class _annotation
 
         @Override
         public AnnotationMemberDeclaration ast(){
-            return this.astAnnMember;
-        }
-
-        @Override
-        public AnnotationMemberDeclaration astMember(){
             return this.astAnnMember;
         }
         
@@ -933,17 +914,14 @@ public final class _annotation
                 _annotation._element cc = sameName( f, rs );
                 if( cc != null ){
                     rs.remove( cc );
-                    //dt.add(path.in(_java.Component.ELEMENT, f.getName()), f, cc);
                     INSPECT_ANNOTATION_ELEMENT.diff(path.in(_java.Component.ELEMENT, f.getName()), dt, leftRoot, rightRoot, f, cc);
                 } else{
                     dt.node( new remove_element( path.in(Component.ELEMENT, f.getName()), (_annotation)leftRoot,(_annotation)rightRoot, f));
-                    //dt.add(path.in( _java.Component.ELEMENT,f.getName()), f, null);
                 }
             });
             
             rs.forEach(f -> {
-                dt.node( new add_element( path.in(Component.ELEMENT, f.getName()), (_annotation)leftRoot,(_annotation)rightRoot, f));
-                //dt.add(path.in(_java.Component.ELEMENT, f.getName()), null,f);                
+                dt.node( new add_element( path.in(Component.ELEMENT, f.getName()), (_annotation)leftRoot,(_annotation)rightRoot, f));           
             });
             return (_dif)dt;
         }
@@ -1070,56 +1048,11 @@ public final class _annotation
 
         @Override
         public <R extends _node> _dif diff(_path path, build dt, R leftRoot, R rightRoot, _element left, _element right) {
-            
-            /*
-            if( left == null){
-                if( right == null){
-                    return (_dif)dt; //both null
-                }
-                return (_dif)dt.add( 
-                        path.in( _java.Component.ELEMENT, right.getName()), 
-                        leftRoot, 
-                        rightRoot, 
-                        right);
-                
-            }
-            if( right == null){
-                return (_dif)dt.remove( 
-                        path.in( _java.Component.ELEMENT, left.getName()), 
-                        leftRoot, 
-                        rightRoot, 
-                        left);              
-            }
-            */
-            _java.INSPECT_NAME.diff(path, dt, left, right, left.getName(), right.getName());
-            //if( !left.getName().equals(right.getName()) ){
-            //    dt.node( new _changeName( path.in(Component.ELEMENT,left.getName()).in(Component.NAME), left, right) );
-            //}
-            //if( !Objects.equals( left.getType(), right.getType() ) ){
-            //    dt.node(new _change_type( path.in(Component.ELEMENT, left.getName()).in(Component.TYPE), left, right) );
-            //}
-            _typeRef.INSPECT_TYPE_REF.diff(path, dt, left, right, left.getType(), right.getType());
-            
-            INSPECT_DEFAULT_VALUE.diff(path, dt, left, right, left.getDefaultValue(), right.getDefaultValue());
-            
-            //if( !Objects.equals(left.getDefaultValue(), right.getDefaultValue()) ){
-            //    dt.node(new _changeDefault( path.in(Component.ELEMENT, left.getName()).in(Component.DEFAULT), left, right) );
-            //}
             _javadoc.INSPECT_JAVADOC.diff(path, dt, left, right, left.getJavadoc(), right.getJavadoc());
-            //if( !Objects.equals(left.getJavadoc(), right.getJavadoc())){
-            //    dt.node(new _changeJavadoc( path.in(Component.ELEMENT, left.getName()).in(Component.JAVADOC), left, right) );
-            //}
             _anno.INSPECT_ANNOS.diff(path, dt, left, right, left.getAnnos(), right.getAnnos() );
-            //if( !Objects.equals(left.getAnnos(), right.getAnnos())){
-            //    _anno.INSPECT_ANNOS.diff(path.in( Component.ELEMENT, left.getName()),dt, left, right);
-            //}
-            /*
-            _ins.INSPECT_NAME.diff(_ins, path, dt, left, right, left.getName(), right.getName());
-            _ins.INSPECT_TYPE_REF.diff(_ins,path, dt, left, right, left.getType(), right.getType());
-            _ins.INSPECT_DEFAULT.diff(_ins,path, dt, left, right, left.getDefaultValue(), right.getDefaultValue());
-            _ins.INSPECT_JAVADOC.diff(_ins,path, dt, left, right, left.getJavadoc(), right.getJavadoc());
-            _ins.INSPECT_ANNOS.diff(_ins,path, dt, left, right, left.getAnnos(), right.getAnnos());            
-            */
+            _typeRef.INSPECT_TYPE_REF.diff(path, dt, left, right, left.getType(), right.getType());            
+            _java.INSPECT_NAME.diff(path, dt, left, right, left.getName(), right.getName());            
+            INSPECT_DEFAULT_VALUE.diff(path, dt, left, right, left.getDefaultValue(), right.getDefaultValue());            
             return (_dif)dt;            
         }
         

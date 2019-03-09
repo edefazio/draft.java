@@ -54,7 +54,7 @@ public @interface _autoDto {
             StackTraceElement ste = Thread.currentThread().getStackTrace()[2];
             ObjectCreationExpr oce = Expr.anonymousObject( ste );
             _class _c = _class.of(signature);
-            oce.getAnonymousClassBody().get().forEach( b-> _c.astMember().addMember(b));
+            oce.getAnonymousClassBody().get().forEach( b-> _c.ast().addMember(b));
             // Todo implement or extend
             Arrays.stream( body.getClass().getInterfaces()).forEach(e -> {
                 _c.implement( e );

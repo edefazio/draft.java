@@ -266,30 +266,25 @@ public final class _staticBlock
         }
 
         default boolean hasStaticBlock(){
-            return ((TypeDeclaration)((_type)this).astMember()).stream().anyMatch( m -> m instanceof InitializerDeclaration );
-            //return ((_type)this).astMember().getMembers().stream().anyMatch( m -> m instanceof InitializerDeclaration );
+            return ((TypeDeclaration)((_type)this).ast()).stream().anyMatch( m -> m instanceof InitializerDeclaration );
         }
 
         default T staticBlock(BlockStmt block){
-            BlockStmt bs = ((TypeDeclaration)((_type)this).astMember()).addStaticInitializer();
-            //BlockStmt bs = ((_type)this).ast().addStaticInitializer();
+            BlockStmt bs = ((TypeDeclaration)((_type)this).ast()).addStaticInitializer();
             bs.setStatements( block.getStatements());
             return (T)this;
         }
 
         default T staticBlock(String... content){
-            //reserve the static initializer on the _type
-            
-            //BlockStmt bs = ((_type)this).astType().addStaticInitializer();
-            BlockStmt bs = ((TypeDeclaration)((_type)this).astMember()).addStaticInitializer();
+            //reserve the static initializer on the _type            
+            BlockStmt bs = ((TypeDeclaration)((_type)this).ast()).addStaticInitializer();
 
             bs.setStatements( Ast.blockStmt( content ).getStatements());
             return (T)this;
         }
 
         default T staticBlock( _staticBlock sb){
-             //BlockStmt bs = ((_type)this).astType().addStaticInitializer();
-             BlockStmt bs = ((TypeDeclaration)((_type)this).astMember()).addStaticInitializer();
+             BlockStmt bs = ((TypeDeclaration)((_type)this).ast()).addStaticInitializer();
              bs.setStatements(sb.astStaticInit.getBody().getStatements());
              return (T)this;
         }
@@ -312,13 +307,7 @@ public final class _staticBlock
          */
         default T removeStaticBlock( InitializerDeclaration astInitializerDeclaration ){
             return removeStaticBlock( _staticBlock.of(astInitializerDeclaration));        
-        }
-        
-        
-        //T removeStaticBlock( _staticBlock _sb );
-
-        //T removeStaticBlock( InitializerDeclaration astInitializerDeclaration );
-        
+        }        
     }
     
     public static _staticBlocksInspect INSPECT_STATIC_BLOCKS 

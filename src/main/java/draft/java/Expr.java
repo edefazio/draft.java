@@ -312,7 +312,7 @@ public enum Expr {
         //check if it begins before the stack trace line and ends aftrer the stack trace line
         List<MethodCallExpr> ln = Ast.listAll(
                 Ast.WALK_BREADTH_FIRST,
-                _t.astMember(),
+                _t.ast(),
                 Ast.METHOD_CALL_EXPR,
                 mce->
                     mce.getRange().isPresent() && mce.getRange().get().begin.line <= lineNumber
@@ -498,7 +498,7 @@ public enum Expr {
         //mentioned in the stack trace based on the line numbers 
         List<MethodCallExpr> mces = Walk.list(
                 Ast.WALK_POST_ORDER,
-                _t.astMember(),
+                _t.ast(),
                 Ast.METHOD_CALL_EXPR,
                 (MethodCallExpr mce) -> ((MethodCallExpr)mce).getRange().get().begin.line <= ste.getLineNumber() &&
                         ((MethodCallExpr)mce).getRange().get().end.line >= ste.getLineNumber() &&

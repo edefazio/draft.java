@@ -36,7 +36,7 @@ import java.util.stream.Collectors;
  * @author Eric
  */
 public final class _enum implements _type<EnumDeclaration, _enum>,_method._hasMethods<_enum>,
-        _constructor._hasConstructors<_enum>, _staticBlock._hasStaticBlock<_enum>,
+        _constructor._hasConstructors<_enum, EnumDeclaration>, _staticBlock._hasStaticBlock<_enum>,
         _type._hasImplements<_enum>{
 
     public static _enum of( Class<? extends Enum> clazz ){
@@ -106,7 +106,7 @@ public final class _enum implements _type<EnumDeclaration, _enum>,_method._hasMe
         if( oce.getAnonymousClassBody().isPresent()) {
             NodeList<BodyDeclaration<?>> bds = oce.getAnonymousClassBody().get();
             for(int i=0; i<bds.size(); i++) {
-                _e.astMember().addMember(bds.get(i));
+                _e.ast().addMember(bds.get(i));
             }
         }
         Set<Class> importClasses = _type.inferImportsFrom(anonymousBody);
@@ -142,18 +142,6 @@ public final class _enum implements _type<EnumDeclaration, _enum>,_method._hasMe
     public boolean isTopClass(){
         return astEnum.isTopLevelType();
     }
-
-    /*
-    @Override
-    public EnumDeclaration astType(){
-        return astEnum;
-    }
-    */
-
-    @Override
-    public EnumDeclaration astMember(){
-        return astEnum;
-    }    
 
     @Override
     public CompilationUnit findCompilationUnit(){
@@ -412,12 +400,12 @@ public final class _enum implements _type<EnumDeclaration, _enum>,_method._hasMe
             _class _c = _class.of("C");
             NodeList<BodyDeclaration<?>> bds = oce.getAnonymousClassBody().get();
             for(int i=0; i<bds.size();i++){
-                _c.astMember().addMember(bds.get(i));
+                _c.ast().addMember(bds.get(i));
             }
             //apply macros to the constant BODY (here stored in a class)
             _c = _macro.to(anonymousBody.getClass(), _c);
             //the potentially modified BODY members are added
-            _ct.ast().setClassBody(_c.astMember().getMembers());
+            _ct.ast().setClassBody(_c.ast().getMembers());
             //_ct.astConstant.setClassBody( oce.getAnonymousClassBody().get());
         }
         return constant(_ct.ast());
@@ -672,12 +660,7 @@ public final class _enum implements _type<EnumDeclaration, _enum>,_method._hasMe
         @Override
         public EnumConstantDeclaration ast(){
             return astConstant;
-        }
-        
-        @Override
-        public EnumConstantDeclaration astMember(){
-            return astConstant; 
-        }
+        }        
 
         @Override
         public boolean hasJavadoc(){

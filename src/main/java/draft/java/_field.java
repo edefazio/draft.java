@@ -168,10 +168,12 @@ public final class _field
         return astVar;
     }
     
+    /*
     @Override
     public VariableDeclarator astMember(){
         return astVar;
     }
+    */
 
     public Expression getInit() {
         if (astVar.getInitializer().isPresent()) {

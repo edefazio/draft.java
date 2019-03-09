@@ -172,9 +172,9 @@ public interface _type<AST extends TypeDeclaration, T extends _type>
     default T add( _model._member..._members ){
         Arrays.stream(_members).forEach( _m -> {
             if(_m instanceof _field){
-                this.astMember().addMember( ((_field)_m).getFieldDeclaration() );
+                this.ast().addMember( ((_field)_m).getFieldDeclaration() );
             } else{
-                this.astMember().addMember( (BodyDeclaration)_m.ast() );
+                this.ast().addMember( (BodyDeclaration)_m.ast() );
             }
         }  );
         return (T)this;
@@ -186,7 +186,7 @@ public interface _type<AST extends TypeDeclaration, T extends _type>
      * @return the modified T
      */
     default T remove( _model._member..._members ){
-        Arrays.stream(_members).forEach( _m -> this.astMember().remove( _m.ast() ) );
+        Arrays.stream(_members).forEach( _m -> this.ast().remove( _m.ast() ) );
         return (T)this;
     }
     
@@ -248,26 +248,6 @@ public interface _type<AST extends TypeDeclaration, T extends _type>
     CompilationUnit findCompilationUnit();
 
     /**
-     * @return the AST Node instance being manipulated this will return a {@link CompilationUnit} if the
-     * _type is a top level TYPE, or a {@link TypeDeclaration} instance
-     
-    @Override
-    default  ast(){
-        if( this.isTopClass() ){
-            return this.findCompilationUnit();
-        }
-        return astMember();
-    }
-    */ 
-
-    /**
-     * Returns the Ast {@link TypeDeclaration} ({@link ClassOrInterfaceDeclaration},
-     * {@link AnnotationDeclaration}, {@link EnumDeclaration}
-     * @return the TypeDeclaration wrapped by this {@link _type}
-     */
-    //AST astType();
-
-    /**
      * Does this _type have a {@link PackageDeclaration} Node set?
      * @return true if the TYPE is a top level TYPE AND has a declared package
      */
@@ -282,7 +262,7 @@ public interface _type<AST extends TypeDeclaration, T extends _type>
      * @return the full NAME of the TYPE (separated by '.'s)
      */
     default String getFullName(){
-        return getFullName( astMember() );
+        return getFullName( ast() );
     }
 
     /**
@@ -360,7 +340,7 @@ public interface _type<AST extends TypeDeclaration, T extends _type>
         if( !this.isTopClass() ){
             CompilationUnit astRoot = new CompilationUnit();
             astRoot.setPackageDeclaration(packageName);
-            astRoot.addType(astMember());
+            astRoot.addType(ast());
             return (T) this;
         }
         CompilationUnit cu = findCompilationUnit();
@@ -396,15 +376,15 @@ public interface _type<AST extends TypeDeclaration, T extends _type>
             return (T)_annotation.of(this.findCompilationUnit().clone());
         }
         if( this instanceof _class ) {
-            return (T)_class.of( ((_class) this).astMember().clone());
+            return (T)_class.of( ((_class) this).ast().clone());
         }
         if( this instanceof _enum ) {
-            return (T)_enum.of( ((_enum) this).astMember().clone());
+            return (T)_enum.of( ((_enum) this).ast().clone());
         }
         if( this instanceof _interface ) {
-            return (T)_interface.of( ((_interface) this).astMember().clone());
+            return (T)_interface.of( ((_interface) this).ast().clone());
         }
-        return (T)_annotation.of( ((_annotation) this).astMember().clone());
+        return (T)_annotation.of( ((_annotation) this).ast().clone());
     }
 
     /**
@@ -683,98 +663,98 @@ public interface _type<AST extends TypeDeclaration, T extends _type>
 
     @Override
     default T javadoc( String...content ){
-        astMember().setJavadocComment( Text.combine(content));
+        ast().setJavadocComment( Text.combine(content));
         return (T)this;
     }
 
     @Override
     default T javadoc( JavadocComment astJavadocComment ){
-        astMember().setJavadocComment( astJavadocComment );
+        ast().setJavadocComment( astJavadocComment );
         return (T)this;
     }
     
     @Override
     default T removeJavadoc(){
-        astMember().removeJavaDocComment();
+        ast().removeJavaDocComment();
         return (T) this;
     }
 
     @Override
     default boolean hasJavadoc(){
-        return astMember().getJavadocComment().isPresent();
+        return ast().getJavadocComment().isPresent();
     }
 
     @Override
     default _javadoc getJavadoc() {
-        return _javadoc.of(this.astMember());
+        return _javadoc.of(this.ast());
     }
 
     @Override
     default _modifiers getModifiers(){
-        return _modifiers.of(this.astMember() );
+        return _modifiers.of(this.ast() );
     }
 
     default boolean isPublic(){
-        return this.astMember().isPublic();
+        return this.ast().isPublic();
     }
 
     default boolean isDefaultAccess(){
-        return !this.astMember().isProtected() &&
-                !this.astMember().isPrivate() &&
-                !this.astMember().isPublic();
+        return !this.ast().isProtected() &&
+                !this.ast().isPrivate() &&
+                !this.ast().isPublic();
     }
 
     default boolean isProtected(){
-        return this.astMember().isProtected();
+        return this.ast().isProtected();
     }
 
     default boolean isPrivate(){
-        return this.astMember().isPrivate();
+        return this.ast().isPrivate();
     }
 
     default boolean isStatic(){
-        return this.astMember().isStatic();
+        return this.ast().isStatic();
     }
 
     default boolean isStrictFp(){
-        return this.astMember().isStrictfp();
+        return this.ast().isStrictfp();
     }
 
     default T setPublic(){
-        this.astMember().setPublic(true);
-        this.astMember().setPrivate(false);
-        this.astMember().setProtected(false);
+        this.ast().setPublic(true);
+        this.ast().setPrivate(false);
+        this.ast().setProtected(false);
         return (T)this;
     }
 
     default T setProtected(){
-        this.astMember().setPublic(false);
-        this.astMember().setPrivate(false);
-        this.astMember().setProtected(true);
+        this.ast().setPublic(false);
+        this.ast().setPrivate(false);
+        this.ast().setProtected(true);
         return (T)this;
     }
     default T setPrivate(){
-        this.astMember().setPublic(false);
-        this.astMember().setPrivate(true);
-        this.astMember().setProtected(false);
+        this.ast().setPublic(false);
+        this.ast().setPrivate(true);
+        this.ast().setProtected(false);
         return (T)this;
     }
     default T setDefaultAccess(){
-        this.astMember().setPublic(false);
-        this.astMember().setPrivate(false);
-        this.astMember().setProtected(false);
+        this.ast().setPublic(false);
+        this.ast().setPrivate(false);
+        this.ast().setProtected(false);
         return (T)this;
     }
 
     @Override
     default NodeList<Modifier> getEffectiveModifiers() {
-        NodeList<Modifier> implied = Ast.getImpliedModifiers( this.astMember() );
-        return Ast.merge( implied, this.astMember().getModifiers());
+        NodeList<Modifier> implied = Ast.getImpliedModifiers( this.ast() );
+        return Ast.merge( implied, this.ast().getModifiers());
     }
 
     @Override
     default T name( String name ){
-        astMember().setName( name );
+        ast().setName( name );
         if( this instanceof _class ){
             //make sure to rename the CONSTRUCTORS
             _class _c = (_class)this;
@@ -790,13 +770,13 @@ public interface _type<AST extends TypeDeclaration, T extends _type>
 
     @Override
     default String getName(){
-        return astMember().getNameAsString();
+        return ast().getNameAsString();
     }
 
     @Override
     default List<_field> listFields() {
         List<_field> _fs = new ArrayList<>();
-        astMember().getFields().forEach( f->{
+        ast().getFields().forEach( f->{
             FieldDeclaration fd = ((FieldDeclaration)f);
             for(int i=0;i<fd.getVariables().size();i++){
                 _fs.add(_field.of(fd.getVariable( i ) ) );
@@ -907,7 +887,7 @@ public interface _type<AST extends TypeDeclaration, T extends _type>
      * @return
      */
     default T nest( _type type ){
-        ((TypeDeclaration)this.astMember()).addMember( (TypeDeclaration)type.astMember() );
+        ((TypeDeclaration)this.ast()).addMember( (TypeDeclaration)type.ast() );
         return (T)this;
     }
 
@@ -1033,7 +1013,7 @@ public interface _type<AST extends TypeDeclaration, T extends _type>
      * @return the direct children (nested {@link _type}s) of this {@link _type}
      */
     default List<_type> listNests(){
-        NodeList<BodyDeclaration> bds = astMember().getMembers();
+        NodeList<BodyDeclaration> bds = ast().getMembers();
         List<BodyDeclaration> ts =
                 bds.stream().filter( n-> n instanceof TypeDeclaration )
                         .collect(Collectors.toList());
