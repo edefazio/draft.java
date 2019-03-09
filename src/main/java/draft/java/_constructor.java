@@ -26,10 +26,12 @@ import java.util.stream.Collectors;
  * 
  * @author Eric
  */
-public final class _constructor implements _anno._hasAnnos<_constructor>, _javadoc._hasJavadoc<_constructor>,
-        _throws._hasThrows<_constructor>, _body._hasBody<_constructor>, _modifiers._hasModifiers<_constructor>,
-        _parameter._hasParameters<_constructor>,_receiverParameter._hasReceiverParameter<_constructor>,
-        _member<ConstructorDeclaration, _constructor> { //_referenceable<_constructor>, _node<ConstructorDeclaration>,
+public final class _constructor implements _anno._hasAnnos<_constructor>, 
+    _javadoc._hasJavadoc<_constructor>,_throws._hasThrows<_constructor>, 
+    _body._hasBody<_constructor>, _modifiers._hasModifiers<_constructor>,
+    _parameter._hasParameters<_constructor>,
+    _receiverParameter._hasReceiverParameter<_constructor>,
+    _member<ConstructorDeclaration, _constructor> {
 
 
     public static _constructor of( String signature ){
@@ -46,8 +48,8 @@ public final class _constructor implements _anno._hasAnnos<_constructor>, _javad
         StackTraceElement ste = Thread.currentThread().getStackTrace()[2];
         ObjectCreationExpr oce = Expr.anonymousObject( ste );
         MethodDeclaration theMethod = (MethodDeclaration)
-                oce.getAnonymousClassBody().get().stream().filter(m -> m instanceof MethodDeclaration &&
-                        !m.isAnnotationPresent(_remove.class) ).findFirst().get();
+            oce.getAnonymousClassBody().get().stream().filter(m -> m instanceof MethodDeclaration &&
+                !m.isAnnotationPresent(_remove.class) ).findFirst().get();
         //build the base method first
         _constructor _ct = _constructor.of( theMethod.getNameAsString() + " " +_parameters.of( theMethod )+"{}" );
         //MODIFIERS
@@ -273,7 +275,7 @@ public final class _constructor implements _anno._hasAnnos<_constructor>, _javad
                     Ast.typesEqual( pl.get(i).getType().getElementType(), 
                         _t.getElementType())  ){                    
                 } else{
-                    System.out.println( "Failed at "+ _t+" =/= "+ pl.get(i).getType() );                
+                    //System.out.println( "Failed at "+ _t+" =/= "+ pl.get(i).getType() );                
                     return false;
                 }
             }
@@ -519,12 +521,9 @@ public final class _constructor implements _anno._hasAnnos<_constructor>, _javad
             return removeConstructor( _constructor.of(astConstructor).name(((_type)this).getName()) );        
         }
 
-        
         /**
          * Remove the constructor and return the modified T
          * @param _ct the constructor instance to remove
-         * @return 
-         * @param _ct
          * @return 
          */
         default T removeConstructor( _constructor _ct){
@@ -680,6 +679,7 @@ public final class _constructor implements _anno._hasAnnos<_constructor>, _javad
 
         /**
          * constructor ( ()-> System.out.println("in constructor") );
+         * @param <A>
          * @param command
          * @return
          */

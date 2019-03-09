@@ -238,20 +238,15 @@ public final class _throws
             return getThrows().isEmpty();
         }
         
-        //T setThrows( NodeList<ReferenceType> thrw );
-        
         default T addThrows(String... throwExceptions) {
             Arrays.stream(throwExceptions).forEach(t -> addThrows(t));
             return (T)this;
         }
-        //T addThrows( String... throwExceptions );
         
         default T addThrows(String throwException) {
             getThrows().astNodeWithThrows.addThrownException((ReferenceType) Ast.typeRef(throwException));
-            //this.astMethod.addThrownException((ReferenceType) Ast.typeRef(throwException));
             return (T)this;
         }    
-        //T addThrows( String throwException );
 
         default T addThrows(Class<? extends Throwable>... throwExceptions) {
             Arrays.stream(throwExceptions).forEach(t -> addThrows(t));
@@ -281,16 +276,6 @@ public final class _throws
         default boolean hasThrow(ReferenceType rt) {
             return this.getThrows().contains(rt);
         }
-        
-        //T addThrows( Class<? extends Throwable>... throwExceptions );
-
-        //T addThrows( Class<? extends Throwable> throwException );
-
-        //boolean hasThrow( Class<? extends Throwable> thrownClass );
-
-        //boolean hasThrow( ReferenceType refType );
-
-        //boolean hasThrow( String typeName );
         
         default T removeThrow( Class<? extends Throwable> thrownClass ){
             getThrows().list( t -> t.is(thrownClass.getCanonicalName()) ).forEach( t -> t.ast().remove() );

@@ -471,7 +471,6 @@ public interface _type<AST extends TypeDeclaration, T extends _type>
         int dotIndex = className.lastIndexOf( '.' );
         if( dotIndex > 1 ){
             String packageName = className.substring( 0, dotIndex );
-            //System.out.println( "Looking for package NAME "+ PACKAGE_NAME);
             String simpleClassName =  className.substring( dotIndex + 1 );
             if( !listImports( i-> i.getNameAsString().equals( packageName ) && i.isAsterisk() ).isEmpty() ){
                 return true;

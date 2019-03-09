@@ -74,15 +74,12 @@ public final class _class implements _type<ClassOrInterfaceDeclaration, _class>,
             
             _c = _macro.to(clazz, _c); //run annotation macros on the class
             Set<Class> importClasses = _type.inferImportsFrom(clazz);
-            System.out.println( importClasses );
             _c.imports(importClasses.toArray(new Class[0]));
             for(int i=0; i< typeFns.length; i++){
                 _c = (_class)typeFns[i].apply(_c);
             }
-            //Arrays.stream(typeFns).forEach( t$ -> t$.apply( _c) );
             return _c;
         } else if( n instanceof LocalClassDeclarationStmt){
-            //System.out.println( "LOCAL CLASS "+ n );
             LocalClassDeclarationStmt loc = (LocalClassDeclarationStmt)n;
             _class _c = of(  ((LocalClassDeclarationStmt)n).getClassDeclaration());
             if( loc.getComment().isPresent() ){
@@ -93,9 +90,7 @@ public final class _class implements _type<ClassOrInterfaceDeclaration, _class>,
             _c = _macro.to(clazz, _c);
             for(int i=0; i< typeFns.length; i++){
                 _c = (_class)typeFns[i].apply(_c);
-            }
-            
-            //Arrays.stream(typeFns).forEach( t$ -> t$.apply( _c) );
+            }            
             return _c;
         }
         throw new DraftException("Abstract or synthetic classes are not supported"+ clazz);
@@ -147,12 +142,12 @@ public final class _class implements _type<ClassOrInterfaceDeclaration, _class>,
             ClassOrInterfaceDeclaration coid = (ClassOrInterfaceDeclaration)obd.get();
             //get the class
             Class clazz =
-                    Arrays.stream(anonymousObjectWithLocalClass.getClass().getDeclaredClasses())
-                            .filter( c -> {
-                                //NOTE: the name is a mess with $1$ nonsense for Anonymous Local class
-                                // so convert it to a typeRef for simplicity
-                                return _typeRef.of( coid.getNameAsString() ).is(c.getName());
-                            }).findFirst().get();
+                Arrays.stream(anonymousObjectWithLocalClass.getClass().getDeclaredClasses())
+                    .filter( c -> {
+                    //NOTE: the name is a mess with $1$ nonsense for Anonymous Local class
+                    // so convert it to a typeRef for simplicity
+                    return _typeRef.of( coid.getNameAsString() ).is(c.getName());
+                    }).findFirst().get();
 
             coid.remove(); //remove it from the old AST (the Anonymous class)
 
@@ -181,10 +176,16 @@ public final class _class implements _type<ClassOrInterfaceDeclaration, _class>,
     /**
      * if you pass a single line, with a single token (NO SPACES) into this, we create a shortcut class
      * you can specify the PACKAGE_NAME.className
-     * shortcut classes, i.e. _class.of("C") -> creates "public class C{}"
-     * shortcut classes, i.e. _class.of("C<T>") -> creates "public class C<T>{}"
-     * shortcut classes, i.e. _class.of("aaaa.bbbb.C") -> creates "package aaaa.bbbb;  public class C{}"
-     * shortcut classes, i.e. _class.of("aaaa.bbbb.C<Obj>") -> creates "package aaaa.bbbb;  public class C<Obj>{}"
+     * 
+     * <UL>
+     * <LI>shortcut classes, i.e._class.of("C") -> creates "public class C{}"
+     * <LI>shortcut classes, i.e._class.of("C<T>") -> creates "public class C<T>{}"
+     * <LI>shortcut classes, i.e. _class.of("aaaa.bbbb.C") -> creates "package aaaa.bbbb;  public class C{}"
+     * <LI>shortcut classes, i.e. _class.of("aaaa.bbbb.C<Obj>") -> creates "package aaaa.bbbb;  public class C<Obj>{}"
+     * </UL>
+     * 
+     * @param classDef
+     * @return 
      */ 
     public static _class of( String...classDef ){
 
@@ -503,7 +504,6 @@ public final class _class implements _type<ClassOrInterfaceDeclaration, _class>,
         }
         return null; //its an orphan
     }
-
     
     @Override
     public NodeList<TypeParameter> listAstTypeParameters(){
@@ -772,7 +772,7 @@ public final class _class implements _type<ClassOrInterfaceDeclaration, _class>,
     public boolean isExtends( Class clazz ){
         try{
             return isExtends( (ClassOrInterfaceType)Ast.typeRef( clazz ) ) ||
-                    isExtends( (ClassOrInterfaceType)Ast.typeRef( clazz.getSimpleName() ) );
+                isExtends( (ClassOrInterfaceType)Ast.typeRef( clazz.getSimpleName() ) );
         }catch( Exception e){}
         return false;
     }
