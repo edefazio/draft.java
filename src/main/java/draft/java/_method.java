@@ -431,55 +431,6 @@ public final class _method
         }
         return true;
     }
-
-    /**
-     * TODO REMOVE THIS IT DOESNT WORK (ESPECIALLY FOR VARARGS)
-     *
-     * @param genericParameterTypes
-     * @return      *
-     * @Override public boolean
-     * hasParametersOfType(java.lang.reflect.Type...genericParameterTypes){
-     * //receiver parameters? if( genericParameterTypes.length !=
-     * this.listParameters().size() ){ return false; } List<_parameter> pl =
-     * this.listParameters(); for(int i=0;i<genericParameterTypes.length; i++){
-     *
-     * _typeRef _t = _typeRef.of( genericParameterTypes[i].getTypeName() ); if(
-     * !pl.get(i).isType( _t ) ){ //System.out.println( "Failed at "+ _t+" =/=
-     * "+ pl.get(i).getType() ); //if the last one is a varargs
-     *
-     * return false; } } return true; /* List<String>paramTypes = new
-     * ArrayList<String>(); Arrays.stream(genericParameterTypes).forEach(t ->
-     * paramTypes.add(t.toString())); System.out.println( paramTypes );
-     * System.out.println( this.getParameters() );
-     *
-     * return this.ast().hasParametersOfType(paramTypes.toArray(new String[0]));
-     *
-     * }
-     
-    @Override
-    public _method addThrows(String... throwExceptions) {
-        Arrays.stream(throwExceptions).forEach(t -> addThrows(t));
-        return this;
-    }
-
-    @Override
-    public _method addThrows(String throwException) {
-        this.astMethod.addThrownException((ReferenceType) Ast.typeRef(throwException));
-        return this;
-    }
-
-    @Override
-    public _method addThrows(Class<? extends Throwable>... throwExceptions) {
-        Arrays.stream(throwExceptions).forEach(t -> addThrows(t));
-        return this;
-    }
-
-    @Override
-    public _method addThrows(Class<? extends Throwable> throwException) {
-        this.astMethod.addThrownException((ReferenceType) Ast.typeRef(throwException));
-        return this;
-    }
-    */
     
     @Override
     public _method addParameters(Parameter... parameters) {
@@ -505,7 +456,6 @@ public final class _method
 
     @Override
     public _modifiers getModifiers() {
-
         return _modifiers.of(this.astMethod);
     }
 
@@ -817,16 +767,10 @@ public final class _method
      * _method.of( "public static final void print", ()->{
      * System.out.println(1); });
      *
-     * @return
-     *
-     * public <T extends Object, U extends Object> _method setBody(
-     * Function<T,U> parametersAndBody){ return setBody(
-     * Stmt.block(Thread.currentThread().getStackTrace()[2])); }
-     */
-    /**
-     * _method.of( "public static final void print", ()->{
-     * System.out.println(1); });
-     *
+     * @param <T>
+     * @param <U>
+     * @param <V>
+     * @param parametersAndBody
      * @return
      */
     public <T extends Object, U extends Object, V extends Object> _method setBody(BiFunction<T, U, V> parametersAndBody) {
@@ -871,24 +815,6 @@ public final class _method
         return this;
     }
 
-    /*
-    public static final _java.Semantic<Collection<_method>> EQIVALENT_METHODS = (o1, o2)->{
-         if( o1 == null){
-                return o2 == null;
-            }
-            if( o2 == null ){
-                return false;
-            }
-            if( o1.size() != o2.size()){
-                return false;
-            }
-            Set<_method> tm = new HashSet<>();
-            Set<_method> om = new HashSet<>();
-            tm.addAll(o1);
-            om.addAll(o2);
-            return Objects.equals(tm, om);        
-    };
-     */
     /**
      * Are these (2) collections of methods equivalent ?
      *
@@ -1248,19 +1174,10 @@ public final class _method
 
             @Override
             public void keepLeft() {
-                //System.out.println( "KEEPLEFT BEFORE LEFT  "+System.lineSeparator()+  leftRoot );
-                //System.out.println( "KEEPLEFT BEFORE RIGHT "+System.lineSeparator()+  rightRoot );
                 this.leftRoot.removeMethod(toRemove); //dont double add
-                this.leftRoot.method(toRemove);
-                
-                //System.out.println( "BEFORE "+ leftRoot );
+                this.leftRoot.method(toRemove);                
                 this.rightRoot.removeMethod(toRemove);
-                this.rightRoot.method(toRemove);
-
-                
-                //System.out.println( "AFTER "+ leftRoot );
-                //System.out.println( "KEEPLEFT AFTER LEFT  "+System.lineSeparator()+ leftRoot +" >>>>>");
-                //System.out.println( "KEEPLEFT AFTER RIGHT "+System.lineSeparator()+ rightRoot +" >>>>>");                
+                this.rightRoot.method(toRemove);               
             }
 
             @Override
@@ -1324,13 +1241,6 @@ public final class _method
             }
         }
 
-        /*
-        @Override
-        public <R extends _node> _dif diff(_path path, build dt, R leftRoot, R rightRoot, _hasMethods left, _hasMethods right) {
-            
-        }
-         */
-
         @Override
         public _inspect._diff diff(_java._inspector _ins, _path path, _inspect._diff dt, List<_method> left, List<_method> right) {
             Set<_method> ls = new HashSet<>();
@@ -1348,7 +1258,6 @@ public final class _method
             ls.forEach(m -> {
 
                 _method fm = findSameNameAndParameters(m, rs);
-                //System.out.println(" LEFT NOT MATCHED "+m+" "+rs);
                 if (fm != null) {
                     rs.remove(fm);
                     _ins.INSPECT_METHOD.diff(_ins, path.in(_java.Component.METHOD, describeMethodSignature(m)), dt, m, fm);
@@ -1357,7 +1266,6 @@ public final class _method
                 }
             });
             rs.forEach(m -> {
-                //System.out.println(" RIGHT NOT MATCHED "+m);
                 dt.add(path.in(_java.Component.METHOD, describeMethodSignature(m)), null, m);
             });
             return dt;
@@ -1414,34 +1322,5 @@ public final class _method
             _body.INSPECT_BODY.diff(p, dt, left, right, left.getBody(),right.getBody() );            
             return (_dif)dt;
         }
-
-        /**
-         * Calculates the similarity among (2) instances
-         *
-         * @param left
-         * @param right
-         * @return          *
-         * public int calcSimularity(_method left, _method right){ int
-         * simularity = 0; if( INSPECT_BODY.equivalent(left.getBody(),
-         * right.getBody()) ){ simularity += (1 << 9); } if(
-         * INSPECT_NAME.equivalent(left.getName(), right.getName()) ){
-         * simularity += (1 << 8); } if(
-         * INSPECT_TYPE_REF.equivalent(left.getType(), right.getType()) ){
-         * simularity += (1 << 7); } if(
-         * INSPECT_PARAMETERS.equivalent(left.getParameters(),
-         * right.getParameters()) ){ simularity += (1 << 6); } if(
-         * INSPECT_MODIFIERS.equivalent(left.getModifiers(),
-         * right.getModifiers()) ){ simularity += (1 << 5); } if(
-         * INSPECT_ANNOS.equivalent(left.getAnnos(), right.getAnnos()) ){
-         * simularity += (1 << 4); } if(
-         * INSPECT_THROWS.equivalent(left.getThrows(), right.getThrows()) ){
-         * simularity += (1 << 3); } if(
-         * INSPECT_TYPE_PARAMETERS.equivalent(left.getTypeParameters(),
-         * right.getTypeParameters()) ){ simularity += (1 << 2); } if(
-         * INSPECT_RECEIVER_PARAMETER.equivalent(left.getReceiverParameter(),
-         * right.getReceiverParameter()) ){ simularity += (1 << 1); } if(
-         * INSPECT_JAVADOC.equivalent(left.getJavadoc(), right.getJavadoc() ) ){
-         * simularity += (1); } return simularity; }
-         */
     }
 }
