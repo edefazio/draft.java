@@ -218,7 +218,6 @@ public final class _method
     public boolean is(String... methodDecl) {
         try {
             _method _mm = of(methodDecl);
-            //System.out.println("IS "+ _mm );
 
             //because we DONT know the context of the method (on interface, etc.)
             // lets add all of the implied modifiers to the _mm temp model
@@ -226,9 +225,6 @@ public final class _method
             mms.forEach(mmm -> {
                 _mm.ast().addModifier(mmm.getKeyword());
             });
-            //System.out.println("ADDING" + mmm ); } );
-            //_mm.ast().addModifier(newModifiers)                    
-            //System.out.println("TRYING "+ _mm +" AGAINST "+ this );
             return _mm.equals(this);
         } catch (Exception e) {
         }
@@ -264,61 +260,38 @@ public final class _method
         final _method other = (_method) obj;
         if (this.astMethod == other.astMethod) {
             return true; //two _method s pointing to the same MethodDeclaration
-        }
-        //this.getAnnos(), this.getBody(), this.getJavadoc(), this.getModifiers(), this.getName(), this.getParameters(), this.getThrownExeptions(), this.getTypeParameters(), this.getType()
+        }        
         if (!Ast.annotationsEqual(astMethod, other.astMethod)) {
             return false;
         }
-        //if( !Objects.equals( this.getAnnos(), other.getAnnos() ) ) {
-        //System.out.println("annos");
-        //    return false;
-        //}
         if (!Objects.equals(this.getBody(), other.getBody())) {
-            //System.out.println("BODY");
             return false;
         }
         if (this.hasJavadoc() != other.hasJavadoc()) {
             return false;
         }
         if (this.hasJavadoc() && !Objects.equals(this.getJavadoc().getContent().trim(), other.getJavadoc().getContent().trim())) {
-            //System.out.println("JAVADOC >" + this.getJavadoc().getContent() +"< >"+other.getJavadoc().getContent());
             return false;
         }
         if (!Ast.modifiersEqual(this.astMethod, other.astMethod)) {
             return false;
         }
-        //if( !Objects.equals( this.getModifiers(), other.getModifiers() ) ) {
-        //System.out.println("MODIFIERS");
-        //    return false;
-        //}
         if (!Objects.equals(this.getName(), other.getName())) {
-            //System.out.println("NAME");
             return false;
         }
         if (!Objects.equals(this.getParameters(), other.getParameters())) {
-            //System.out.println("PARAMETERS");
             return false;
         }
         if (!Ast.typesEqual(astMethod.getThrownExceptions(), other.astMethod.getThrownExceptions())) {
             return false;
-        }
-        //if( !Objects.equals( this.getThrows(), other.getThrows() ) ) {
-        //System.out.println("thrownExpcet");
-        //    return false;
-        //}
+        }        
         if (!Objects.equals(this.getTypeParameters(), other.getTypeParameters())) {
-            //System.out.println("TYPE params");
             return false;
         }
         if (!Ast.typesEqual(astMethod.getType(), other.astMethod.getType())) {
             return false;
         }
-        //if( !Objects.equals( this.getType(), other.getType() ) ) {
-        //System.out.println("TYPE");
-        //    return false;
-        //}
         if (!Objects.equals(this.getReceiverParameter(), other.getReceiverParameter())) {
-            //System.out.println("TYPE");
             return false;
         }
         return true;
@@ -388,28 +361,6 @@ public final class _method
     @Override
     public _throws getThrows() {
         return _throws.of(astMethod);
-    }
-
-    @Override
-    public _method setThrows( NodeList<ReferenceType> thrws ){
-        this.astMethod.setThrownExceptions(thrws);
-        return this;
-    }
-    
-    @Override
-    public boolean isThrown(Class<? extends Throwable> clazz) {
-        return this.astMethod.isThrown(clazz)
-                || this.astMethod.isThrown(clazz.getCanonicalName());
-    }
-
-    @Override
-    public boolean isThrown(String name) {
-        return this.astMethod.isThrown(name);
-    }
-
-    @Override
-    public boolean isThrown(ReferenceType rt) {
-        return this.getThrows().contains(rt);
     }
 
     @Override
@@ -504,7 +455,7 @@ public final class _method
      * return this.ast().hasParametersOfType(paramTypes.toArray(new String[0]));
      *
      * }
-     */
+     
     @Override
     public _method addThrows(String... throwExceptions) {
         Arrays.stream(throwExceptions).forEach(t -> addThrows(t));
@@ -528,7 +479,8 @@ public final class _method
         this.astMethod.addThrownException((ReferenceType) Ast.typeRef(throwException));
         return this;
     }
-
+    */
+    
     @Override
     public _method addParameters(Parameter... parameters) {
         Arrays.stream(parameters).forEach(p -> addParameter(p));

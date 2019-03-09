@@ -152,8 +152,8 @@ public class _constructorTest extends TestCase {
         assertTrue( _ct.isVarArg());
         assertTrue( _ct.hasThrows());
         assertTrue( _ct.getThrows().is("A,B"));
-        assertTrue( _ct.isThrown("A"));
-        assertTrue( _ct.isThrown("B"));
+        assertTrue( _ct.hasThrow("A"));
+        assertTrue( _ct.hasThrow("B"));
         assertTrue( _ct.hasBody() );
         assertTrue( _ct.getBody().is( "System.out.println(1);","this.v = v;","this.m = m;" ));        
     }

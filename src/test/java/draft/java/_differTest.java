@@ -18,12 +18,16 @@ import junit.framework.TestCase;
 public class _differTest extends TestCase {
     
     
-    public void testFullDiff(){
+    /** 
+     * verify (2) classes are equal no diffs, then add all component
+     * types to another
+     */
+    public void testFullDiffClass(){
         _class _c1 = _class.of("C");
         _class _c2 = _class.of("C");
         
         _path path = new _path();
-        _differ._mydiff dt = new _differ._mydiff();        
+        _mydiff dt = new _mydiff();        
         _class.INSPECT_CLASS.diff(path, dt, _c1, _c2, _c1, _c2);
         assertTrue( dt.isEmpty() );
         _c1.body(new Serializable(){

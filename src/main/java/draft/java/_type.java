@@ -462,11 +462,12 @@ public interface _type<AST extends TypeDeclaration, T extends _type>
         return new ArrayList<>();
     }
 
-    default boolean isImported( _type _t ){
-        return isImported( _t.getFullName() );
+    
+    default boolean hasImport( _type _t ){
+        return _type.this.hasImport( _t.getFullName() );
     }
 
-    default boolean isImported(String className){
+    default boolean hasImport(String className){
         int dotIndex = className.lastIndexOf( '.' );
         if( dotIndex > 1 ){
             String packageName = className.substring( 0, dotIndex );
@@ -483,7 +484,11 @@ public interface _type<AST extends TypeDeclaration, T extends _type>
         return false;
     }
 
-    default boolean isImported(Class clazz ){
+    default boolean hasImports( Class...clazzes ){
+        return Arrays.stream(clazzes).allMatch(i -> hasImport(i) );
+    }
+    
+    default boolean hasImport(Class clazz ){
         if( clazz.isMemberClass() ){
             //check exact import
             if( !listImports( i-> i.getNameAsString().equals( clazz.getCanonicalName() ) ).isEmpty() ){

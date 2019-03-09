@@ -17,8 +17,8 @@ public class RuntimeAnnotationsTest extends TestCase {
         }
 
         _class _c = _class.of(C.class);
-        assertTrue(_c.isImported(UUID.class));
-        assertTrue(_c.isImported(Map.class));
+        assertTrue(_c.hasImport(UUID.class));
+        assertTrue(_c.hasImport(Map.class));
         _project.of( _c );
     }
 

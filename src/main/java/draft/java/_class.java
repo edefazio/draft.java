@@ -143,7 +143,6 @@ public final class _class implements _type<ClassOrInterfaceDeclaration, _class>,
             Class clazz =
                     Arrays.stream(anonymousObjectWithLocalClass.getClass().getDeclaredClasses())
                             .filter( c -> {
-                                //System.out.println( "TRYING "+ c.getName()+" FOR "+ coid.getNameAsString() );
                                 //NOTE: the name is a mess with $1$ nonsense for Anonymous Local class
                                 // so convert it to a typeRef for simplicity
                                 return _typeRef.of( coid.getNameAsString() ).is(c.getName());
@@ -173,12 +172,14 @@ public final class _class implements _type<ClassOrInterfaceDeclaration, _class>,
         return of( new String[]{classDef});
     }
 
-    //if you pass a single line, with a single token (NO SPACES) into this, we create a shortcut class
-    // you can specify the PACKAGE_NAME.className
-    //shortcut classes, i.e. _class.of("C") -> creates "public class C{}"
-    //shortcut classes, i.e. _class.of("C<T>") -> creates "public class C<T>{}"
-    //shortcut classes, i.e. _class.of("aaaa.bbbb.C") -> creates "package aaaa.bbbb;  public class C{}"
-    //shortcut classes, i.e. _class.of("aaaa.bbbb.C<Obj>") -> creates "package aaaa.bbbb;  public class C<Obj>{}"
+    /**
+     * if you pass a single line, with a single token (NO SPACES) into this, we create a shortcut class
+     * you can specify the PACKAGE_NAME.className
+     * shortcut classes, i.e. _class.of("C") -> creates "public class C{}"
+     * shortcut classes, i.e. _class.of("C<T>") -> creates "public class C<T>{}"
+     * shortcut classes, i.e. _class.of("aaaa.bbbb.C") -> creates "package aaaa.bbbb;  public class C{}"
+     * shortcut classes, i.e. _class.of("aaaa.bbbb.C<Obj>") -> creates "package aaaa.bbbb;  public class C<Obj>{}"
+     */ 
     public static _class of( String...classDef ){
 
         if( classDef.length == 1){
@@ -682,7 +683,7 @@ public final class _class implements _type<ClassOrInterfaceDeclaration, _class>,
         this.astClass.addMember( fd );
         return this;
     }
-
+ 
     @Override
     public List<_constructor> listConstructors() {
         List<_constructor> _cs = new ArrayList<>();

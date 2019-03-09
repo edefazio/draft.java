@@ -176,7 +176,7 @@ public final class _enum implements _type<EnumDeclaration, _enum>,_method._hasMe
     public boolean isImplements( Class clazz ){
         try{
             return isImplements( (ClassOrInterfaceType)Ast.typeRef( clazz ) ) ||
-                    this.isImported( clazz ) && isImplements(clazz.getSimpleName() );
+                    this.hasImport( clazz ) && isImplements(clazz.getSimpleName() );
         }catch( Exception e){ }
         return false;
     }

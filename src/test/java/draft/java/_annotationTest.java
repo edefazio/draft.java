@@ -39,7 +39,7 @@ public class _annotationTest extends TestCase  {
     public void testImport(){
         _annotation _an = _annotation.of(ComplexAnnotationType.class);
         assertEquals( "test", _an.getPackage() );
-        assertTrue(_an.isImported( ann2.class));
+        assertTrue(_an.hasImport( ann2.class));
         assertTrue(_an.hasJavadoc());
         assertTrue( _an.hasAnnos());
         assertTrue( _an.getAnnos().is( "@ann", "@ann2(k='5',v=7)"));

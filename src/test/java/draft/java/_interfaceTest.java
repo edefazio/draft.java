@@ -163,10 +163,10 @@ public class _interfaceTest extends TestCase {
         _interface _i = _interface.of( ComplexInterface.class );
         assertTrue(_i.hasPackage() );
         assertEquals( "test", _i.getPackage() );    
-        assertTrue( _i.isImported( Serializable.class));
-        assertTrue( _i.isImported( MarkerInterface.class));
-        assertTrue( _i.isImported( WithDefaultMethods.class));
-        assertTrue( _i.isImported( ann2.class));
+        assertTrue( _i.hasImport( Serializable.class));
+        assertTrue( _i.hasImport( MarkerInterface.class));
+        assertTrue( _i.hasImport( WithDefaultMethods.class));
+        assertTrue( _i.hasImport( ann2.class));
         
         assertTrue( _i.getJavadoc().getContent().contains("javadocs"));
         assertTrue( _i.getAnnos().is("@ann", "@ann2(k='d')"));

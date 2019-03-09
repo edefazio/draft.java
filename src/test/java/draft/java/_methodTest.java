@@ -466,7 +466,7 @@ public class _methodTest extends TestCase {
         
         _m.getThrows().add( IOException.class );
         System.out.println( _m );
-        assertTrue( _m.isThrown( IOException.class));
+        assertTrue( _m.hasThrow( IOException.class));
         
         
         assertEquals( _modifiers.of(), _m.getModifiers());

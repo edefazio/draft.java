@@ -39,7 +39,7 @@ public class macroTest extends TestCase {
         @U class F{
         }
         _class _c = _class.of(F.class);
-        assertTrue( _c.isImported(UUID.class));
+        assertTrue( _c.hasImport(UUID.class));
         assertFalse(_c.hasAnno(U.class));
     }
 
@@ -204,7 +204,7 @@ public class macroTest extends TestCase {
 
         }
         _class _c = _class.of(C.class);
-        assertTrue( _c.isImported(Map.class));
+        assertTrue( _c.hasImport(Map.class));
     }
 
     @_non_static

@@ -24,6 +24,18 @@ import static java.util.Collections.sort;
  */
 public class _classTest extends TestCase {
 
+    public void testInferLocalClassImportsBasedOnAPI(){
+        class Local{
+            Map map;
+            public UUID uuid() throws IOException{ return UUID.randomUUID();}
+        }
+        _class _c = _class.of(Local.class);
+        
+        assertTrue( _c.hasImport(Map.class));// UUID.class, IOException.class) );
+        
+        System.out.println( _c );
+    }
+    
     public void testJavadoc(){
         _class _c = _class.of("C").javadoc("Oh, Hello");
         assertEquals( "Oh, Hello", _c.getJavadoc().getContent());
@@ -152,11 +164,11 @@ public class _classTest extends TestCase {
                 return null;
             }
         });
-        assertTrue( _c.isImported(Serializable.class)); //interface implemented
-        assertTrue( _c.isImported(Map.class)); //field type
-        assertTrue( _c.isImported(List.class));
-        assertTrue( _c.isImported(UUID.class));
-        assertTrue( _c.isImported(IOException.class));
+        assertTrue( _c.hasImport(Serializable.class)); //interface implemented
+        assertTrue( _c.hasImport(Map.class)); //field type
+        assertTrue( _c.hasImport(List.class));
+        assertTrue( _c.hasImport(UUID.class));
+        assertTrue( _c.hasImport(IOException.class));
     }
 
     public interface MyI{
@@ -354,14 +366,14 @@ public class _classTest extends TestCase {
 
         });
         assertTrue( _c.isImplements(Serializable.class));
-        assertTrue( _c.isImported(Serializable.class));
+        assertTrue( _c.hasImport(Serializable.class));
 
         //you can set a base class
         _c = _class.of("D", new BaseClass(){
 
         });
         assertTrue( _c.isExtends(BaseClass.class));
-        assertTrue( _c.isImported(BaseClass.class));
+        assertTrue( _c.hasImport(BaseClass.class));
 
         _c = _class.of("E", new Object(){
             @_static public int f = 100;
@@ -615,10 +627,10 @@ public class _classTest extends TestCase {
         
         assertTrue( _c.getPackage().equals( "blah.fromscratch"));
         
-        assertTrue( _c.isImported(Map.class) );
-        assertTrue( _c.isImported(HashMap.class) );
-        assertTrue( _c.isImported( "aaaa.bbbb.C"));
-        assertTrue( _c.isImported( "blah.dat.Blart"));
+        assertTrue( _c.hasImport(Map.class) );
+        assertTrue( _c.hasImport(HashMap.class) );
+        assertTrue( _c.hasImport( "aaaa.bbbb.C"));
+        assertTrue( _c.hasImport( "blah.dat.Blart"));
         assertTrue(_c.hasMethods());
         assertEquals(1, _c.listMethods().size());
         _method _m = _c.getMethod("doIt");
@@ -635,9 +647,9 @@ public class _classTest extends TestCase {
         assertTrue( _m.hasParameters());
         assertTrue( _m.getParameters().is( "@ann @ann2(k=5)final String xx, int...varArgs"));
         assertTrue( _m.hasThrows());
-        assertTrue( _m.isThrown("I"));
-        assertTrue( _m.isThrown("H"));
-        assertTrue( _m.isThrown("G"));
+        assertTrue( _m.hasThrow("I"));
+        assertTrue( _m.hasThrow("H"));
+        assertTrue( _m.hasThrow("G"));
         assertTrue( _m.getBody().is( "System.out.println(15);"));        
         assertEquals(1, _c.listConstructors().size());
         _constructor _ct = _c.getConstructor(0);
@@ -652,9 +664,9 @@ public class _classTest extends TestCase {
         assertTrue( _ct.hasThrows() );
         assertTrue( _ct.getThrows().is( "throws D, P, Q"));
         assertTrue( _ct.getBody().is( "System.out.println(12);"));
-        assertTrue( _ct.isThrown( "P") );
-        assertTrue( _ct.isThrown( "D") );
-        assertTrue( _ct.isThrown( "Q") );
+        assertTrue( _ct.hasThrow( "P") );
+        assertTrue( _ct.hasThrow( "D") );
+        assertTrue( _ct.hasThrow( "Q") );
         assertTrue( _ct.hasParameters() );
         assertEquals(2, _ct.listParameters().size() );
         _parameter _p = _ct.getParameter( 0 );

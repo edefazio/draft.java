@@ -17,10 +17,10 @@ public class _typeTest extends TestCase {
                 .imports(_c, _c.getNest("F") );
 
         //verify I can import another _type that hasnt been drafted yet
-        assertTrue( _d.isImported(_c) );
+        assertTrue( _d.hasImport(_c) );
 
         //verify I can import a nested type that hasnt been drafted yet
-        assertTrue( _d.isImported(_c.getNest("F")) );
+        assertTrue( _d.hasImport(_c.getNest("F")) );
         _javac.of( _c, _d); //verify they both compile
 
         System.out.println(_d );

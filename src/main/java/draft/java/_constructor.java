@@ -8,7 +8,6 @@ import com.github.javaparser.ast.expr.LambdaExpr;
 import com.github.javaparser.ast.expr.ObjectCreationExpr;
 import com.github.javaparser.ast.stmt.BlockStmt;
 import com.github.javaparser.ast.stmt.Statement;
-import com.github.javaparser.ast.type.ReferenceType;
 
 import draft.Text;
 import draft.java._model.*;
@@ -281,43 +280,6 @@ public final class _constructor implements _anno._hasAnnos<_constructor>, _javad
         }        
         return true;        
     }
-   
-
-    @Override
-    public boolean hasParameters() {
-        return this.astCtor.getParameters().isNonEmpty();
-    }
-
-    @Override
-    public _constructor addThrows( String... throwExceptions ) {
-        Arrays.stream( throwExceptions ).forEach( t -> addThrows( t ) );
-        return this;
-    }
-
-    @Override
-    public _constructor addThrows( String throwException ) {
-        this.astCtor.addThrownException( (ReferenceType)Ast.typeRef( throwException ) );
-        return this;
-    }
-
-    @Override
-    public _constructor addThrows( Class<? extends Throwable>... throwExceptions ) {
-        Arrays.stream( throwExceptions ).forEach( t -> addThrows( t ) );
-        return this;
-    }
-
-    @Override
-    public _constructor addThrows( Class<? extends Throwable> throwException ) {
-        this.astCtor.addThrownException( (ReferenceType)Ast.typeRef( throwException ) );
-        return this;
-    }
-    
-    @Override
-    public _constructor setThrows( NodeList<ReferenceType> thrws ){
-        this.astCtor.setThrownExceptions(thrws);
-        return this;
-    }
-    
 
     @Override
     public _constructor setParameters(NodeList<Parameter> astPs){
@@ -452,21 +414,6 @@ public final class _constructor implements _anno._hasAnnos<_constructor>, _javad
         this.astCtor.setProtected(false);
         this.astCtor.setPublic(false);
         return this;
-    }
-
-    @Override
-    public boolean isThrown( Class<? extends Throwable> thrownClass ) {
-        return this.astCtor.isThrown( thrownClass );
-    }
-
-    @Override
-    public boolean isThrown( ReferenceType refType ) {
-        return this.astCtor.getThrownExceptions().contains( refType );
-    }
-
-    @Override
-    public boolean isThrown( String typeName ) {
-        return this.astCtor.isThrown( typeName );
     }
 
     @Override
@@ -700,7 +647,9 @@ public final class _constructor implements _anno._hasAnnos<_constructor>, _javad
         }
 
         /**
+         * 
          * constructor ( ()-> System.out.println("in constructor") );
+         * 
          * @param command
          * @return
          */
@@ -806,8 +755,6 @@ public final class _constructor implements _anno._hasAnnos<_constructor>, _javad
             for(int i=0;i<_pts.count();i++){
                 _trs[i] = _pts.get(i).getType();
             }
-//            _pts.forEach( p -> _trs[i]  );
-                    
             Optional<_constructor> oc = 
                 lcs.stream().filter(
                     c -> c.getName().equals(ct) 
@@ -876,14 +823,12 @@ public final class _constructor implements _anno._hasAnnos<_constructor>, _javad
                     INSPECT_CONSTRUCTOR.diff(path.in(_java.Component.CONSTRUCTOR, 
                             _constructorInspect.constructorSignatureDescription(c)), 
                             dt, leftRoot, rightRoot, c, _rct);
-                    //dt.add(path.in( _java.Component.CONSTRUCTOR, _constructorInspect.constructorSignatureDescription(c) ), c, _rct);
                 } else{
                     dt.node(new remove_constructor(path.in(_java.Component.CONSTRUCTOR, 
                             _constructorInspect.constructorSignatureDescription(c)),
                             (_hasConstructors)leftRoot, 
                             (_hasConstructors)rightRoot, 
                             c) );
-                    //dt.add(path.in( _java.Component.CONSTRUCTOR, _constructorInspect.constructorSignatureDescription(c) ), c, null);
                 }
             });
             rs.forEach(c -> {
@@ -891,8 +836,7 @@ public final class _constructor implements _anno._hasAnnos<_constructor>, _javad
                             _constructorInspect.constructorSignatureDescription(c)),
                             (_hasConstructors)leftRoot, 
                             (_hasConstructors)rightRoot, 
-                            c) );
-                //dt.add(path.in( _java.Component.CONSTRUCTOR, _constructorInspect.constructorSignatureDescription(c) ), null,c );                
+                            c) );               
             });
             return (_dif)dt;
         }
