@@ -1,6 +1,7 @@
 package draft.java.macro;
 
 import com.github.javaparser.ast.CompilationUnit;
+import com.github.javaparser.ast.body.TypeDeclaration;
 import draft.java._type;
 
 import java.lang.annotation.*;
@@ -36,7 +37,7 @@ public @interface _promote {
             _model.setPublic();
             _model.getModifiers().setStatic(false); //top level entities cannot be static
             CompilationUnit cu = new CompilationUnit();
-            cu.addType(_model.astType());
+            cu.addType( (TypeDeclaration)_model.astMember());
             if( packageName != null && !packageName.isEmpty()){
                 cu.setPackageDeclaration(packageName);
             }

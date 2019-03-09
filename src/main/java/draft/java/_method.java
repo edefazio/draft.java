@@ -185,6 +185,11 @@ public final class _method
     }
 
     @Override
+    public MethodDeclaration astMember(){
+        return astMethod;
+    }
+    
+    @Override
     public MethodDeclaration ast() {
         return astMethod;
     }

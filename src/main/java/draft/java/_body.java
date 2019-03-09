@@ -180,6 +180,9 @@ public final class _body implements _model {
     public interface _hasBody<T extends _hasBody>
             extends _model {
 
+        /** Returns NodeWithBody or NodeWithOptionalBody */
+        //Node ast();
+        
         /**
          * @return gets the body
          */

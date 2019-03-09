@@ -26,7 +26,7 @@ public @interface _remove {
             if( _model instanceof _type){
                 _type _t = (_type)_model;
 
-                boolean removed = _t.astType().remove();
+                boolean removed = _t.astMember().remove();
                 if( ! removed ){
                    throw new DraftException("Unable to removeIn _type via annotation Macro "+_model);
                 }

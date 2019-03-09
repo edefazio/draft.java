@@ -6,6 +6,7 @@ import com.github.javaparser.ast.body.*;
 import com.github.javaparser.ast.comments.JavadocComment;
 import com.github.javaparser.ast.expr.LambdaExpr;
 import com.github.javaparser.ast.expr.ObjectCreationExpr;
+import com.github.javaparser.ast.nodeTypes.NodeWithConstructors;
 import com.github.javaparser.ast.stmt.BlockStmt;
 import com.github.javaparser.ast.stmt.Statement;
 
@@ -110,6 +111,11 @@ public final class _constructor implements _anno._hasAnnos<_constructor>,
     @Override
     public ConstructorDeclaration ast() {
         return astCtor;
+    }
+    
+    @Override
+    public ConstructorDeclaration astMember(){
+        return astCtor; 
     }
 
     @Override
@@ -225,11 +231,13 @@ public final class _constructor implements _anno._hasAnnos<_constructor>,
         return this;
     }
 
+    /*
     @Override
     public _constructor setBody( String... body ) {
         this.astCtor.setBody( Stmt.block( body ) );
         return this;
     }
+    */
 
     @Override
     public _throws getThrows() {
@@ -283,24 +291,29 @@ public final class _constructor implements _anno._hasAnnos<_constructor>,
         return true;        
     }
 
+    /*
     @Override
     public _constructor setParameters(NodeList<Parameter> astPs){
         this.astCtor.setParameters(astPs);
         return this;        
     }
     
+
     @Override
     public _constructor addParameters( Parameter... parameters ) {
         Arrays.stream( parameters ).forEach( p -> addParameter( p ) );
         return this;
     }
 
+    
+    
     @Override
     public _constructor addParameter( Parameter parameter ) {
         this.astCtor.addParameter( parameter );
         return this;
     }
-
+    */
+    
     public boolean is( String...constructorDeclaration ){
         try {
             _constructor _ct = of(constructorDeclaration);
@@ -347,6 +360,7 @@ public final class _constructor implements _anno._hasAnnos<_constructor>,
         return astCtor.getNameAsString();
     }
 
+    /*
     @Override
     public _parameter getParameter( int index ) {
         return _parameter.of( astCtor.getParameter( index ) );
@@ -359,6 +373,7 @@ public final class _constructor implements _anno._hasAnnos<_constructor>,
         }
         return false;
     }
+    */
 
     @Override
     public _parameters getParameters() {
@@ -488,6 +503,8 @@ public final class _constructor implements _anno._hasAnnos<_constructor>,
     public interface _hasConstructors<T extends _hasConstructors & _type>
             extends _model {
 
+        //NodeWithConstructors ast();
+        
         List<_constructor> listConstructors();
 
         _constructor getConstructor( int index );
@@ -774,7 +791,6 @@ public final class _constructor implements _anno._hasAnnos<_constructor>,
             return Objects.equals( ls, rs );
         }
 
-        
         @Override
         public _inspect._diff diff( _java._inspector _ins, _path path, _inspect._diff dt, List<_constructor> left, List<_constructor> right) {
             Set<_constructor> ls = new HashSet<>();

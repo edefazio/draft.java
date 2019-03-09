@@ -249,19 +249,25 @@ public final class _annotation
 
     @Override
     public boolean isTopClass(){
-        return astType().isTopLevelType();
+        return astMember().isTopLevelType();
     }
 
+    /*
     @Override
     public AnnotationDeclaration astType(){
         return astAnnotation;
     }
-
+    */
+    
+    @Override
+    public AnnotationDeclaration astMember(){
+        return astAnnotation;
+    }
 
     @Override
     public CompilationUnit findCompilationUnit(){
-        if( this.astType().findCompilationUnit().isPresent() ){
-            return this.astType().findCompilationUnit().get();
+        if( this.astMember().findCompilationUnit().isPresent() ){
+            return this.astMember().findCompilationUnit().get();
         }
         return null;
     }
@@ -273,8 +279,8 @@ public final class _annotation
 
     @Override
     public String toString(){
-        if( this.astType().isTopLevelType() ){
-            return this.astType().findCompilationUnit().get().toString();
+        if( this.astMember().isTopLevelType() ){
+            return this.astMember().findCompilationUnit().get().toString();
         }
         return this.astAnnotation.toString();
     }
@@ -538,6 +544,11 @@ public final class _annotation
     public static _diff diff( _annotation left, _annotation right){
         return INSPECT_ANNOTATION.diff(left, right);
     }
+
+    @Override
+    public AnnotationDeclaration ast() {
+        return this.astAnnotation;
+    }
     
     /**
      * a property element added to an annotation
@@ -593,6 +604,11 @@ public final class _annotation
             return this.astAnnMember;
         }
 
+        @Override
+        public AnnotationMemberDeclaration astMember(){
+            return this.astAnnMember;
+        }
+        
         @Override
         public _element type( Type t){
             this.astAnnMember.setType( t );

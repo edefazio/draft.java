@@ -151,19 +151,31 @@ public final class _interface implements _type<ClassOrInterfaceDeclaration, _int
     private final ClassOrInterfaceDeclaration astInterface;
 
     @Override
+    public ClassOrInterfaceDeclaration ast(){
+        return this.astInterface;
+    }
+    
+    @Override
     public boolean isTopClass(){
-        return astType().isTopLevelType();
+        return astMember().isTopLevelType();
     }
 
+    /*
     @Override
     public ClassOrInterfaceDeclaration astType(){
+        return astInterface;
+    }
+    */
+    
+    @Override
+    public ClassOrInterfaceDeclaration astMember(){
         return astInterface;
     }
 
     @Override
     public CompilationUnit findCompilationUnit(){
-        if( this.astType().isTopLevelType()){
-            return astType().findCompilationUnit().get();
+        if( this.astMember().isTopLevelType()){
+            return astMember().findCompilationUnit().get();
         }
         //it might be a member class
         if( this.astInterface.findCompilationUnit().isPresent()){
@@ -301,8 +313,8 @@ public final class _interface implements _type<ClassOrInterfaceDeclaration, _int
 
     @Override
     public String toString(){
-        if( this.astType().isTopLevelType()){
-            return this.astType().findCompilationUnit().get().toString();
+        if( this.astMember().isTopLevelType()){
+            return this.astMember().findCompilationUnit().get().toString();
         }
         return this.astInterface.toString();
     }
@@ -323,27 +335,21 @@ public final class _interface implements _type<ClassOrInterfaceDeclaration, _int
             return true; //two _interfaces pointing to the same InterfaceDeclaration
         }
         if( !Objects.equals( this.getPackage(), other.getPackage())){
-            //System.out.println( "package");
             return false;
         }
         if( !Objects.equals( this.getAnnos(), other.getAnnos())){
-            //System.out.println( "annos");
             return false;
         }
         if( this.hasJavadoc() != other.hasJavadoc() ){
-            //System.out.println( "JAVADOC");
             return false;
         }
         if( this.hasJavadoc() && !Objects.equals( this.getJavadoc().getContent(), other.getJavadoc().getContent())){
-            //System.out.println( "JAVADOC");
             return false;
         }
         if( !Objects.equals( this.getModifiers(), other.getModifiers())){
-            //System.out.println( "MODIFIERS");
             return false;
         }
         if( !Objects.equals( this.getTypeParameters(), other.getTypeParameters())){
-            //System.out.println( "TYPE params");
             return false;
         }
         Set<_method> tm = new HashSet<>();
@@ -352,7 +358,6 @@ public final class _interface implements _type<ClassOrInterfaceDeclaration, _int
         om.addAll(  other.listMethods());
 
         if( !Objects.equals( tm, om)){
-            //System.out.println( "METHODS" + tm + System.lineSeparator()+ om);
             return false;
         }
         Set<_field> tf = new HashSet<>();
@@ -361,7 +366,6 @@ public final class _interface implements _type<ClassOrInterfaceDeclaration, _int
         of.addAll(  other.listFields());
 
         if( !Objects.equals( tf, of)){
-            //System.out.println( "FIELDS");
             return false;
         }
 
@@ -377,7 +381,6 @@ public final class _interface implements _type<ClassOrInterfaceDeclaration, _int
         tn.addAll( this.listNests() );
         on.addAll( this.listNests() );
         if( !Objects.equals( tn, on)){
-            //System.out.println( "NESTS");
             return false;
         }
         return true;
@@ -414,8 +417,6 @@ public final class _interface implements _type<ClassOrInterfaceDeclaration, _int
                 Ast.typesHashCode(astInterface.getExtendedTypes()),
                 nests);
 
-        //hash = 53 * hash + Objects.hashCode( this.astCompilationUnit );
-        //hash = 53 * hash + Objects.hashCode(this.astInterface );
         return hash;
     }
 

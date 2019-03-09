@@ -167,6 +167,11 @@ public final class _field
         //return this.getFieldDeclaration();
         return astVar;
     }
+    
+    @Override
+    public VariableDeclarator astMember(){
+        return astVar;
+    }
 
     public Expression getInit() {
         if (astVar.getInitializer().isPresent()) {

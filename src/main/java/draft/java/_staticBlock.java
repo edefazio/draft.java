@@ -1,6 +1,7 @@
 package draft.java;
 
 import com.github.javaparser.ast.body.InitializerDeclaration;
+import com.github.javaparser.ast.body.TypeDeclaration;
 import com.github.javaparser.ast.comments.JavadocComment;
 import com.github.javaparser.ast.stmt.BlockStmt;
 import com.github.javaparser.ast.stmt.Statement;
@@ -265,25 +266,30 @@ public final class _staticBlock
         }
 
         default boolean hasStaticBlock(){
-            return ((_type)this).astType().getMembers().stream().anyMatch( m -> m instanceof InitializerDeclaration );
+            return ((TypeDeclaration)((_type)this).astMember()).stream().anyMatch( m -> m instanceof InitializerDeclaration );
+            //return ((_type)this).astMember().getMembers().stream().anyMatch( m -> m instanceof InitializerDeclaration );
         }
 
         default T staticBlock(BlockStmt block){
-            BlockStmt bs = ((_type)this).astType().addStaticInitializer();
+            BlockStmt bs = ((TypeDeclaration)((_type)this).astMember()).addStaticInitializer();
+            //BlockStmt bs = ((_type)this).ast().addStaticInitializer();
             bs.setStatements( block.getStatements());
             return (T)this;
         }
 
         default T staticBlock(String... content){
             //reserve the static initializer on the _type
-            BlockStmt bs = ((_type)this).astType().addStaticInitializer();
+            
+            //BlockStmt bs = ((_type)this).astType().addStaticInitializer();
+            BlockStmt bs = ((TypeDeclaration)((_type)this).astMember()).addStaticInitializer();
 
             bs.setStatements( Ast.blockStmt( content ).getStatements());
             return (T)this;
         }
 
         default T staticBlock( _staticBlock sb){
-             BlockStmt bs = ((_type)this).astType().addStaticInitializer();
+             //BlockStmt bs = ((_type)this).astType().addStaticInitializer();
+             BlockStmt bs = ((TypeDeclaration)((_type)this).astMember()).addStaticInitializer();
              bs.setStatements(sb.astStaticInit.getBody().getStatements());
              return (T)this;
         }

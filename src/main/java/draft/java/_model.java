@@ -85,7 +85,6 @@ public interface _model {
             parts.forEach( (p,o) -> {mdd.put( p.name, o);});
             return mdd;
         }
-
         
         /**
          * @return the underlying AST Node instance being manipulated
@@ -141,6 +140,8 @@ public interface _model {
      */
     interface _member<N extends Node, T extends _named & _anno._hasAnnos & _javadoc._hasJavadoc>
             extends _node<N>, _named<T>, _anno._hasAnnos<T>, _javadoc._hasJavadoc<T>{
+        
+        N astMember();
     }
 
     /**

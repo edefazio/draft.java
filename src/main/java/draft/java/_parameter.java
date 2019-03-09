@@ -89,7 +89,7 @@ public final class _parameter
 
     @Override
     public boolean isType( Class clazz ) {
-        Type t = Ast.typeRef( clazz.getSimpleName() );
+        //Type t = Ast.typeRef( clazz.getSimpleName() );
         return this.astParameter.getTypeAsString().equals( clazz.getSimpleName() )
                 || this.astParameter.getTypeAsString().equals( clazz.getCanonicalName() );
     }
@@ -195,18 +195,7 @@ public final class _parameter
         if(!Ast.annotationsEqual(astParameter, other.astParameter)){
             return false;
         }
-        //if( !Objects.equals( _typeRef.of(this.astParameter.getType()), _typeRef.of(other.astParameter.getType()) )){
-        //    return false;
-        //}
-        //if( !Objects.typesEqual( _typeRef.of(this.astParameter.getType()), _typeRef.of(other.astParameter.getType()) )){
-        //    return false;
-        //}
-        //if( !Objects.equals( _annos.of(this.astParameter), _annos.of(other.astParameter) )){
-        //    return false;
-        //}
-
         return true;
-        //return typesEqual( this.astParameter, other.astParameter );
     }
 
     @Override
@@ -226,6 +215,7 @@ public final class _parameter
         return this;
     }
 
+    @Override
     public Map<_java.Component, Object> componentsMap( ) {
         Map<_java.Component, Object> parts = new HashMap<>();
         parts.put( _java.Component.FINAL, isFinal() );
@@ -242,16 +232,25 @@ public final class _parameter
      * @param <T>
      */
     public interface _hasParameters<T extends _hasParameters>
-            extends _model {
+        extends _model {
 
         _parameters getParameters();
+        
+        /**
+         * Return the Ast Node that has the parameters (i.e. {@link MethodDeclaration}, 
+         * {@link ConstructorDeclaration})
+         * @return the NodeWithParameters instance
+         */
+        NodeWithParameters ast();
+        
 
-        _parameter getParameter( int index );
-
-        default boolean hasParameters() {
-            return !getParameters().isEmpty();
+        default _parameter getParameter( int index ){
+            return _parameter.of( ast().getParameter( index ) );
         }
 
+        default boolean hasParameters() {
+            return !ast().getParameters().isEmpty();
+        }
 
         default List<_parameter> listParameters() {
             return getParameters().list();
@@ -296,12 +295,21 @@ public final class _parameter
             addParameter( parameter.ast() );
             return (T)this;
         }
+        
+        default T addParameter( Parameter p ){
+            ast().addParameter(p);
+            return (T)this;
+        }
 
-        T addParameter( Parameter p );
-
-        T addParameters( Parameter... ps );
-
-        T setParameters(NodeList<Parameter> astPs);
+        default T addParameters( Parameter... ps ){
+            Arrays.stream(ps).forEach( p -> addParameter(p));
+            return (T)this;
+        }
+        
+        default T setParameters(NodeList<Parameter> astPs){
+            ast().setParameters(astPs);
+            return (T)this;
+        }
         
         default T setParameters(_parameters _ps){
             return (T)setParameters( _ps.ast() );

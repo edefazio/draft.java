@@ -83,7 +83,7 @@ public final class _class implements _type<ClassOrInterfaceDeclaration, _class>,
             LocalClassDeclarationStmt loc = (LocalClassDeclarationStmt)n;
             _class _c = of(  ((LocalClassDeclarationStmt)n).getClassDeclaration());
             if( loc.getComment().isPresent() ){
-                _c.astType().setComment( loc.getComment().get());
+                _c.astMember().setComment( loc.getComment().get());
             }
             Set<Class> importClasses = _type.inferImportsFrom(clazz);
             _c.imports(importClasses.toArray(new Class[0]));
@@ -290,7 +290,7 @@ public final class _class implements _type<ClassOrInterfaceDeclaration, _class>,
         if( oce.getAnonymousClassBody().isPresent() ) {
             NodeList<BodyDeclaration<?>> bds = oce.getAnonymousClassBody().get();
             for (int i = 0; i <bds.size(); i++){
-                _c.astType().addMember( bds.get(i));
+                _c.astMember().addMember( bds.get(i));
             }
         }
         //add imports from methods return types parametder types
@@ -307,6 +307,11 @@ public final class _class implements _type<ClassOrInterfaceDeclaration, _class>,
 
     public _class( ClassOrInterfaceDeclaration astClass ){
         this.astClass = astClass;
+    }
+    
+    @Override
+    public ClassOrInterfaceDeclaration ast() {
+        return this.astClass;
     }
 
     /**
@@ -333,7 +338,7 @@ public final class _class implements _type<ClassOrInterfaceDeclaration, _class>,
         }
         ObjectCreationExpr oce = Expr.anonymousObject(ste);
         if( oce.getAnonymousClassBody().isPresent()){
-            oce.getAnonymousClassBody().get().forEach( m->this.astType().addMember(m) );
+            oce.getAnonymousClassBody().get().forEach( m->this.astMember().addMember(m) );
         }
         return this;
     }
@@ -406,7 +411,7 @@ public final class _class implements _type<ClassOrInterfaceDeclaration, _class>,
         imports( new Class[]{sup} );
         ObjectCreationExpr oce = Expr.anonymousObject(ste);
         if( oce.getAnonymousClassBody().isPresent()){
-            oce.getAnonymousClassBody().get().forEach( m->this.astType().addMember(m) );
+            oce.getAnonymousClassBody().get().forEach( m->this.astMember().addMember(m) );
         }
         _type.inferImportsFrom(anonymousImplementationBody).forEach( i -> imports(i) );
         return this;
@@ -451,13 +456,13 @@ public final class _class implements _type<ClassOrInterfaceDeclaration, _class>,
         _class _temp = _class.of("temp");
         if( oce != null && oce.getAnonymousClassBody().isPresent() ){
             //add the anonymous class members to the temp class
-            oce.getAnonymousClassBody().get().forEach(b-> _temp.astType().addMember(b));
+            oce.getAnonymousClassBody().get().forEach(b-> _temp.astMember().addMember(b));
         }
         //run the macros on the temp class (we might removeIn some stuff, etc.)
         _macro.to( anonymousClassBody.getClass(), _temp);
 
         //now add the finished members from temp to this _class
-        _temp.astType().getMembers().forEach( m -> this.astClass.addMember(m));
+        _temp.astMember().getMembers().forEach( m -> this.astClass.addMember(m));
         
         //create the approrpriate imports based on the signature of the 
         // added fields and methods, throws, etc.
@@ -485,18 +490,25 @@ public final class _class implements _type<ClassOrInterfaceDeclaration, _class>,
 
     @Override
     public boolean isTopClass(){
-        return astType().isTopLevelType();
+        return astMember().isTopLevelType();
     }
 
+    @Override
+    public ClassOrInterfaceDeclaration astMember(){
+        return this.astClass;
+    }
+        
+    /*
     @Override
     public ClassOrInterfaceDeclaration astType(){
         return astClass;
     }
+    */
 
     @Override
     public CompilationUnit findCompilationUnit(){
-        if( astType().isTopLevelType()){
-            return (CompilationUnit)astType().getParentNode().get(); //astCompilationUnit.get();
+        if( astMember().isTopLevelType()){
+            return (CompilationUnit)astMember().getParentNode().get(); //astCompilationUnit.get();
         }
         //it might be a member class
         if( this.astClass.findCompilationUnit().isPresent()){
@@ -993,7 +1005,7 @@ public final class _class implements _type<ClassOrInterfaceDeclaration, _class>,
         hash = 47 * hash + Objects.hash( this.getPackage(), this.getName(),
                 this.getJavadoc(), this.getAnnos(), this.getModifiers(),
                 this.getTypeParameters(), Ast.typeHash(this.getExtends()),
-                sbs, Ast.typesHashCode( astType().getImplementedTypes() ),
+                sbs, Ast.typesHashCode( astMember().getImplementedTypes() ),
                 Ast.importsHash(astClass),
                 tf, tm, tc, tn);
 

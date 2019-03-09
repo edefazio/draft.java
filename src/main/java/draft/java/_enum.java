@@ -106,7 +106,7 @@ public final class _enum implements _type<EnumDeclaration, _enum>,_method._hasMe
         if( oce.getAnonymousClassBody().isPresent()) {
             NodeList<BodyDeclaration<?>> bds = oce.getAnonymousClassBody().get();
             for(int i=0; i<bds.size(); i++) {
-                _e.astType().addMember(bds.get(i));
+                _e.astMember().addMember(bds.get(i));
             }
         }
         Set<Class> importClasses = _type.inferImportsFrom(anonymousBody);
@@ -134,14 +134,26 @@ public final class _enum implements _type<EnumDeclaration, _enum>,_method._hasMe
     private final EnumDeclaration astEnum;
 
     @Override
+    public EnumDeclaration ast(){
+        return this.astEnum;
+    }
+    
+    @Override
     public boolean isTopClass(){
         return astEnum.isTopLevelType();
     }
 
+    /*
     @Override
     public EnumDeclaration astType(){
         return astEnum;
     }
+    */
+
+    @Override
+    public EnumDeclaration astMember(){
+        return astEnum;
+    }    
 
     @Override
     public CompilationUnit findCompilationUnit(){
@@ -400,12 +412,12 @@ public final class _enum implements _type<EnumDeclaration, _enum>,_method._hasMe
             _class _c = _class.of("C");
             NodeList<BodyDeclaration<?>> bds = oce.getAnonymousClassBody().get();
             for(int i=0; i<bds.size();i++){
-                _c.astType().addMember(bds.get(i));
+                _c.astMember().addMember(bds.get(i));
             }
             //apply macros to the constant BODY (here stored in a class)
             _c = _macro.to(anonymousBody.getClass(), _c);
             //the potentially modified BODY members are added
-            _ct.ast().setClassBody(_c.astType().getMembers());
+            _ct.ast().setClassBody(_c.astMember().getMembers());
             //_ct.astConstant.setClassBody( oce.getAnonymousClassBody().get());
         }
         return constant(_ct.ast());
@@ -661,6 +673,11 @@ public final class _enum implements _type<EnumDeclaration, _enum>,_method._hasMe
         public EnumConstantDeclaration ast(){
             return astConstant;
         }
+        
+        @Override
+        public EnumConstantDeclaration astMember(){
+            return astConstant; 
+        }
 
         @Override
         public boolean hasJavadoc(){
@@ -890,19 +907,15 @@ public final class _enum implements _type<EnumDeclaration, _enum>,_method._hasMe
                 return true; //two _constant pointing to the same AstEnumDeclaration
             }
             if( !Objects.equals( this.getAnnos(), other.getAnnos() ) ) {
-                //System.out.println("annos");
                 return false;
             }
             if( !Objects.equals( this.getJavadoc(), other.getJavadoc() ) ) {
-                //System.out.println("JAVADOC");
                 return false;
             }
             if( !Objects.equals( this.getName(), other.getName() ) ) {
-                //System.out.println("NAME");
                 return false;
             }
             if( !Objects.equals(this.listArguments(), other.listArguments() ) ) {
-                //System.out.println("args");
                 return false;
             }
             Set<_method> tms = new HashSet<>();
@@ -1135,8 +1148,7 @@ public final class _enum implements _type<EnumDeclaration, _enum>,_method._hasMe
             }
 
             @Override
-            public void keepRight() {                
-                
+            public void keepRight() {                                
                 leftRoot.remove(toAdd);
                 leftRoot.add(toAdd);
                 
