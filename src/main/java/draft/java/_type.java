@@ -500,11 +500,13 @@ public interface _type<AST extends TypeDeclaration, T extends _type>
                 String packageName = clazz.getPackage().getName();
                 List<ImportDeclaration> li = listImports();
                 //check star import
-                if (listImports(i -> i.getNameAsString().equals(packageName) && i.isAsterisk()).isEmpty()) {
+                if (!listImports(i -> i.getNameAsString().equals(packageName) && i.isAsterisk()).isEmpty()) {
+                    System.out.println( "FOULD HERE");
                     return true;
                 }
                 //check exact import
                 if (!listImports(i -> i.getNameAsString().equals(clazz.getCanonicalName())).isEmpty()) {
+                    System.out.println( "FOULD HERE << ");
                     return true;
                 }
             }
