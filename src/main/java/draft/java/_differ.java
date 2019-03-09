@@ -92,6 +92,7 @@ public interface _differ<T, R extends _node> {
             this.diffs = diffs;
         }
         
+        @Override
         public List<_delta> list(){
             return diffs;
         }
@@ -107,41 +108,21 @@ public interface _differ<T, R extends _node> {
             return sb.toString();
         }        
         
+        @Override
         public build node( _delta d ){
             diffs.add( d);
             return this;
         }
         
-        /**
-         * Add a "textual" edit diff between two entities
-         *
-         * @param path the path to the entity
-         * @param lds the linkedList of diffs based on the textual diffs between the
-         * left and right entities
-         * @param _leftRoot the left entities root (i.e if the left entity is a _method, it might be a class containing the method)
-         * @param _rightRoot the right entities root (i.e if the left entity is a _method, it might be a interface containing the method)
-         * @return the diffTree
-         
-        public build edit(_path path,_hasBody _leftRoot,_hasBody _rightRoot, LinkedList<diff_match_patch.Diff> lds) {            
-            diffs.add( new _editNode(path, _leftRoot, _rightRoot, lds) );            
+        public _mydiff keepRight(){
+            diffs.forEach(d -> d.keepRight());
             return this;
         }
         
-        public build remove(_path path, _node leftRoot, _node rightRoot, Object remove ){
-            diffs.add( new _removeNode(path, leftRoot, rightRoot, remove) );
+        public _mydiff keepLeft(){
+            diffs.forEach(d -> d.keepLeft());
             return this;
-        }
-        
-        public build add(_path path, _node leftRoot, _node rightRoot, Object add ){
-            diffs.add( new _addNode(path, leftRoot, rightRoot, add) );
-            return this;
-        }
-        
-        public build change(_path path, _node leftRoot, _node rightRoot, Object original, Object changed ){
-            diffs.add( new _changeNode(path, leftRoot, rightRoot, original, changed) );
-            return this;
-        }
-        * */
+        }            
     }    
     
     public interface _remove<T>{
@@ -670,7 +651,7 @@ public interface _differ<T, R extends _node> {
         @Override
         public void keepRight(){
             left.name(rightName);
-            right.name(leftName);
+            right.name(rightName);
         }
         
         @Override

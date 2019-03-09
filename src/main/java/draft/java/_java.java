@@ -696,9 +696,13 @@ public enum _java {
             public _changePackageName(_path _p, _type leftRoot, _type rightRoot) {
                 this.path = _p;
                 this.leftRoot = leftRoot;
-                this.leftPackageName = leftRoot.getPackage();
+                if( leftRoot != null ){
+                    this.leftPackageName = leftRoot.getPackage();
+                }
                 this.rightRoot = rightRoot;
-                this.rightPackageName = rightRoot.getPackage();
+                if( rightRoot != null ){
+                    this.rightPackageName = rightRoot.getPackage();
+                }
             }
 
             @Override

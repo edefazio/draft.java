@@ -2,10 +2,13 @@ package draft.java;
 
 import draft.java._differ._changeName;
 import draft.java._differ._change_type;
+import draft.java._differ._mydiff;
 import draft.java._java.Component;
 import draft.java._model._node;
 import draft.java._java._path;
 import java.io.IOException;
+import java.io.Serializable;
+import java.util.Map;
 import junit.framework.TestCase;
 
 /**
@@ -13,6 +16,64 @@ import junit.framework.TestCase;
  * @author Eric
  */
 public class _differTest extends TestCase {
+    
+    
+    public void testFullDiff(){
+        _class _c1 = _class.of("C");
+        _class _c2 = _class.of("C");
+        
+        _path path = new _path();
+        _differ._mydiff dt = new _differ._mydiff();        
+        _class.INSPECT_CLASS.diff(path, dt, _c1, _c2, _c1, _c2);
+        assertTrue( dt.isEmpty() );
+        _c1.body(new Serializable(){
+            int x,y;
+            Map m() throws IOException {
+               return Map.of("1", 0);
+            }                      
+        });
+        _c1.setPackage("aaaa.bbbb");
+        _c1.name("B");
+        _c1.annotate(Deprecated.class);
+        _c1.extend("G");
+        _c1.constructor("public C(){System.out.println(1);}");
+        _c1.typeParameters("<T extends base>");
+        _c1.javadoc("some javadoc");
+        _c1.staticBlock(()-> System.out.println("Static block"));
+        _c1.nest(_interface.of("I") );
+        System.out.println( _c1 );
+        
+        _class.INSPECT_CLASS.diff(path, dt, _c1, _c2, _c1, _c2);
+        
+        assertEquals(16, dt.size() );
+        System.out.println("BEFORE " + _c2 );
+        dt.keepRight();
+        
+        
+        System.out.println("AFTER "+ _c2 );
+        /*
+        dt.diffs.clear();
+        
+        _class.INSPECT_CLASS.diff(path, dt, _c2, _c1, _c2, _c1);
+        System.out.println( dt );
+        assertEquals(16, dt.size() );
+        
+        //everything should be upgraded
+        dt.keepRight();        
+        _mydiff dd = new _mydiff();
+        _class.INSPECT_CLASS.diff(path, dt, _c2, _c1, _c2, _c1);
+        assertTrue( dd.isEmpty() );
+        
+        dt.keepLeft();
+        
+        _class.INSPECT_CLASS.diff(path, dt, _c2, _c1, _c2, _c1);
+        assertTrue( dd.isEmpty() );
+        
+        System.out.println( _c2 );
+        
+        */
+        
+    }
     
     public void test_annotationDiff(){
         _annotation _a1 = _annotation.of("A");

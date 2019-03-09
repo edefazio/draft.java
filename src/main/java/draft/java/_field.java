@@ -687,7 +687,7 @@ public final class _field
             this.path = p;
             this.leftRoot = left;
             this.rightRoot = right;
-            this.toRemove = toRemove.copy();
+            this.toRemove = _field.of( toRemove.toString());
         }
 
         @Override
@@ -743,7 +743,7 @@ public final class _field
             this.path = p;
             this.leftRoot = left;
             this.rightRoot = right;
-            this.toAdd = toAdd.copy();
+            this.toAdd = _field.of( toAdd.toString() );
         }
 
         @Override

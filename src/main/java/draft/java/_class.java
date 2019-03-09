@@ -361,13 +361,19 @@ public final class _class implements _type<ClassOrInterfaceDeclaration, _class>,
         return this;
     }
 
-    /** Make sure to route this to the correct (default method) */
+    /** 
+     * Make sure to route this to the correct (default method)
+     * @param clazz the class to implement
+     * @return the modified _class
+     */
     public _class implement( Class clazz ){
         return implement( new Class[]{clazz} );
     }
 
     /**
-     * i.e. _class _c = _class.of("C").implement(
+     * i.e. 
+     * <PRE>
+     * _class _c = _class.of("C").implement(
      *    new Descriptive(){
      *       public String describe(){
      *           return "a description";
@@ -379,6 +385,7 @@ public final class _class implements _type<ClassOrInterfaceDeclaration, _class>,
      *         return "a description";
      *     }
      * }
+     * </PRE>
      * @param anonymousImplementationBody anonymous Class that implements the interface and the method(s)
      *                                    required that will be "imported" in the _class
      * @return the modified Class
@@ -393,6 +400,7 @@ public final class _class implements _type<ClassOrInterfaceDeclaration, _class>,
         if( oce.getAnonymousClassBody().isPresent()){
             oce.getAnonymousClassBody().get().forEach( m->this.astType().addMember(m) );
         }
+        _type.inferImportsFrom(anonymousImplementationBody).forEach( i -> imports(i) );
         return this;
     }
 
@@ -431,7 +439,7 @@ public final class _class implements _type<ClassOrInterfaceDeclaration, _class>,
         StackTraceElement ste = Thread.currentThread().getStackTrace()[2];
         ObjectCreationExpr oce = Expr.anonymousObject(ste);
 
-        //create a temp _class to add these to so I can run _macro ANNOTATIONS on them
+        //create a temp _class to add these to so I can run _macro ANNOTATIONS on them        
         _class _temp = _class.of("temp");
         if( oce != null && oce.getAnonymousClassBody().isPresent() ){
             //add the anonymous class members to the temp class
@@ -442,6 +450,18 @@ public final class _class implements _type<ClassOrInterfaceDeclaration, _class>,
 
         //now add the finished members from temp to this _class
         _temp.astType().getMembers().forEach( m -> this.astClass.addMember(m));
+        
+        //create the approrpriate imports based on the signature of the 
+        // added fields and methods, throws, etc.
+        _type.inferImportsFrom(anonymousClassBody).forEach( i -> imports(i) );
+        
+        Class[] ints = anonymousClassBody.getClass().getInterfaces();
+        Arrays.stream(ints).forEach( i -> implement(i) );
+        
+        if( anonymousClassBody.getClass().getSuperclass() != null && anonymousClassBody.getClass().getSuperclass() != Object.class ){
+            this.extend( anonymousClassBody.getClass().getSuperclass() );
+        }
+        
         return this;
     }
 
@@ -718,13 +738,14 @@ public final class _class implements _type<ClassOrInterfaceDeclaration, _class>,
 
     @Override
     public _class removeConstructor( ConstructorDeclaration cd ){
-        this.astClass.remove( cd );
-        return this;
+        return removeConstructor( _constructor.of(cd).name(this.getName()) );        
     }
 
     @Override
     public _class removeConstructor( _constructor _ct){
-        this.astClass.remove(_ct.ast() );
+        _constructor _cc = _ct.copy().name(this.getName());
+        System.out.println( "Trying to remove constructor "+ _cc+" IN "+ this.getName() );
+        listConstructors( c-> c.equals( _cc ) ).forEach(c-> c.ast().removeForced() );        
         return this;
     }
 
@@ -1090,21 +1111,20 @@ public final class _class implements _type<ClassOrInterfaceDeclaration, _class>,
 
         @Override
         public <R extends _node> _dif diff(_path path, build dt, R leftRoot, R rightRoot, _class left, _class right) {
-            _java.INSPECT_PACKAGE_NAME.diff(path, dt, leftRoot, rightRoot, left.getPackage(), right.getPackage() );
+            _java.INSPECT_PACKAGE.diff(path, dt, leftRoot, rightRoot, left.getPackage(), right.getPackage() );
             _type.INSPECT_IMPORTS.diff(path,dt, leftRoot, rightRoot, left.listImports(), right.listImports() );
-            _anno.INSPECT_ANNOS.diff(path, dt, leftRoot, rightRoot, left.getAnnos(), right.getAnnos());          
+            _javadoc.INSPECT_JAVADOC.diff( path, dt, leftRoot, rightRoot, left.getJavadoc(), right.getJavadoc());  
+            _anno.INSPECT_ANNOS.diff(path, dt, leftRoot, rightRoot, left.getAnnos(), right.getAnnos());                      
+            _modifiers.INSPECT_MODIFIERS.diff(path, dt, leftRoot, rightRoot, left.getEffectiveModifiers(), right.getEffectiveModifiers());
+            _java.INSPECT_NAME.diff(path, dt, leftRoot, rightRoot, left.getName(), right.getName());
+            _typeParameter.INSPECT_TYPE_PARAMETERS.diff(path, dt, leftRoot, rightRoot,left.getTypeParameters(), right.getTypeParameters());  
             _type.INSPECT_EXTENDS.diff(path, dt, leftRoot, rightRoot, left.listExtends(), right.listExtends());          
             _type.INSPECT_IMPLEMENTS.diff(path, dt, leftRoot, rightRoot, left.listImplements(), right.listImplements());  
-            _javadoc.INSPECT_JAVADOC.diff( path, dt, leftRoot, rightRoot, left.getJavadoc(), right.getJavadoc());  
-            _typeParameter.INSPECT_TYPE_PARAMETERS.diff(path, dt, leftRoot, rightRoot,left.getTypeParameters(), right.getTypeParameters());  
             _staticBlock.INSPECT_STATIC_BLOCKS.diff(path, dt, leftRoot, rightRoot,left.listStaticBlocks(), right.listStaticBlocks());              
-            _java.INSPECT_NAME.diff(path, dt, leftRoot, rightRoot, left.getName(), right.getName());
-            _modifiers.INSPECT_MODIFIERS.diff(path, dt, leftRoot, rightRoot, left.getEffectiveModifiers(), right.getEffectiveModifiers());
             _constructor.INSPECT_CONSTRUCTORS.diff(path, dt, left, right,left.listConstructors(), right.listConstructors());
             _method.INSPECT_METHODS.diff(path, dt, leftRoot, rightRoot, left.listMethods(), right.listMethods() );
             _field.INSPECT_FIELDS.diff(path, dt, leftRoot, rightRoot, left.listFields(), right.listFields() );
-            _type.INSPECT_NESTS.diff(path, dt, leftRoot, rightRoot, left.listNests(), right.listNests());
-            
+            _type.INSPECT_NESTS.diff(path, dt, leftRoot, rightRoot, left.listNests(), right.listNests());            
             return (_dif)dt;
         }
     }    

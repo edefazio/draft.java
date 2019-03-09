@@ -530,29 +530,6 @@ public final class _constructor implements _anno._hasAnnos<_constructor>, _javad
         this.astCtor.setReceiverParameter( rp );
         return this;
     }
-
-    /**
-     * Verify that one list of _constructor is equivalent to another list of _constructor
-     
-    public static _java.Semantic<Collection<_constructor>> EQIVALENT_CTORS_LIST = 
-            (Collection<_constructor> o1, Collection<_constructor> o2) -> {
-        if( o1 == null ){
-            return o2 == null;
-        }
-        if( o1.size() != o2.size()){
-            return false;
-        }
-        Set<_constructor> tm = new HashSet<>();
-        Set<_constructor> om = new HashSet<>();
-        tm.addAll(o1);
-        om.addAll(o2);
-        return Objects.equals(tm, om);
-    };
-    
-    public static boolean equivalent( Collection<_constructor> left, Collection<_constructor> right){
-        return EQIVALENT_CTORS_LIST.equivalent(left, right);
-    }
-    */ 
     
     /**
      *
@@ -934,15 +911,15 @@ public final class _constructor implements _anno._hasAnnos<_constructor>, _javad
             @Override
             public void keepLeft() {
                 leftRoot.removeConstructor(toAdd);
-                leftRoot.constructor(toAdd);
-                rightRoot.removeConstructor(toAdd);
-                rightRoot.constructor(toAdd);
+                rightRoot.removeConstructor(toAdd);                   
             }
 
             @Override
             public void keepRight() {
                 leftRoot.removeConstructor(toAdd);
-                rightRoot.removeConstructor(toAdd);                
+                leftRoot.constructor(toAdd);
+                rightRoot.removeConstructor(toAdd);
+                rightRoot.constructor(toAdd);             
             }
 
             @Override
@@ -988,15 +965,15 @@ public final class _constructor implements _anno._hasAnnos<_constructor>, _javad
             @Override
             public void keepLeft() {
                 leftRoot.removeConstructor(toRemove);
-                rightRoot.removeConstructor(toRemove);                  
-            }
-
-            @Override
-            public void keepRight() {
-                leftRoot.removeConstructor(toRemove);
                 leftRoot.constructor(toRemove);
                 rightRoot.removeConstructor(toRemove);
                 rightRoot.constructor(toRemove);              
+            }
+            
+            @Override
+            public void keepRight() {                
+                leftRoot.removeConstructor(toRemove);
+                rightRoot.removeConstructor(toRemove);                  
             }
 
             @Override
