@@ -318,39 +318,6 @@ public final class _annotation
     }
 
     @Override
-    public _annotation removeFields( Predicate<_field> _fieldMatchFn){
-        List<_field> fs = listFields(_fieldMatchFn);
-        fs.forEach(f -> removeField(f));
-        return this;
-    }
-
-    @Override
-    public _annotation removeField( _field _f ){
-        if( listFields().contains(_f) ){
-            if( _f.getFieldDeclaration().getVariables().size() == 1){
-                _f.getFieldDeclaration().remove();
-            } else{
-                _f.getFieldDeclaration().getVariables().removeIf( v-> v.getNameAsString().equals(_f.getName() ));
-            }
-        }
-        return this;
-    }
-
-    @Override
-    public _annotation removeField( String fieldName ){
-        Optional<FieldDeclaration> ofd = this.astAnnotation.getFieldByName(fieldName );
-        if( ofd.isPresent() ){
-            FieldDeclaration fd = ofd.get();
-            if( fd.getVariables().size() == 1 ){
-                fd.remove();
-            } else{
-                fd.getVariables().removeIf( v-> v.getNameAsString().equals(fieldName));
-            }
-        }
-        return this;
-    }
-
-    @Override
     public boolean equals( Object obj ) {
         if( this == obj ) {
             return true;

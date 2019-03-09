@@ -293,14 +293,25 @@ public final class _staticBlock
          * @param _sb the staticBlock
          * @return the modified T
          */
-        T removeStaticBlock( _staticBlock _sb );
+        default T removeStaticBlock( _staticBlock _sb ){
+            this.listStaticBlocks(sb -> sb.equals(_sb))
+                .forEach(s -> s.ast().removeForced() );        
+            return (T)this;
+        }
 
         /** 
          * remove the static block from the _type and return the _type
          * @param astInitializerDeclaration
          * @return the modified T
          */
-        T removeStaticBlock( InitializerDeclaration astInitializerDeclaration );
+        default T removeStaticBlock( InitializerDeclaration astInitializerDeclaration ){
+            return removeStaticBlock( _staticBlock.of(astInitializerDeclaration));        
+        }
+        
+        
+        //T removeStaticBlock( _staticBlock _sb );
+
+        //T removeStaticBlock( InitializerDeclaration astInitializerDeclaration );
         
     }
     

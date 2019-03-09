@@ -223,25 +223,6 @@ public final class _enum implements _type<EnumDeclaration, _enum>,_method._hasMe
         return this;
     }
 
-
-    @Override
-    public _enum removeConstructor( ConstructorDeclaration cd ){
-        this.astEnum.remove( cd );
-        return this;
-    }
-
-    @Override
-    public _enum removeConstructor( _constructor _ct){
-        this.astEnum.remove(_ct.ast() );
-        return this;
-    }
-
-    @Override
-    public _enum removeConstructors( Predicate<_constructor> ctorMatchFn){
-        listConstructors(ctorMatchFn).forEach(c -> removeConstructor(c));
-        return this;
-    }
-
     @Override
     public _staticBlock getStaticBlock(int index ){
         NodeList<BodyDeclaration<?>> mems = this.astEnum.getMembers();
@@ -254,18 +235,6 @@ public final class _enum implements _type<EnumDeclaration, _enum>,_method._hasMe
             }
         }
         return null;
-    }
-
-    @Override
-    public _enum removeStaticBlock(_staticBlock _sb){
-        this.astEnum.remove(_sb.ast());
-        return this;
-    }
-
-    @Override
-    public _enum removeStaticBlock(InitializerDeclaration id){
-        this.astEnum.remove(id);
-        return this;
     }
 
     @Override
@@ -560,39 +529,6 @@ public final class _enum implements _type<EnumDeclaration, _enum>,_method._hasMe
     @Override
     public _enum forMembers( Predicate<_member>_memberMatchFn, Consumer<_member> _memberActionFn){
         listMembers(_memberMatchFn).forEach(m -> _memberActionFn.accept(m) );
-        return this;
-    }
-
-    @Override
-    public _enum removeFields( Predicate<_field> _fieldMatchFn){
-        List<_field> fs = listFields(_fieldMatchFn);
-        fs.forEach(f -> removeField(f));
-        return this;
-    }
-
-    @Override
-    public _enum removeField( _field _f ){
-        if( listFields().contains(_f) ){
-            if( _f.getFieldDeclaration().getVariables().size() == 1){
-                _f.getFieldDeclaration().remove();
-            } else{
-                _f.getFieldDeclaration().getVariables().removeIf( v-> v.getNameAsString().equals(_f.getName() ));
-            }
-        }
-        return this;
-    }
-
-    @Override
-    public _enum removeField( String fieldName ){
-        Optional<FieldDeclaration> ofd = this.astEnum.getFieldByName(fieldName );
-        if( ofd.isPresent() ){
-            FieldDeclaration fd = ofd.get();
-            if( fd.getVariables().size() == 1 ){
-                fd.remove();
-            } else{
-                fd.getVariables().removeIf( v-> v.getNameAsString().equals(fieldName));
-            }
-        }
         return this;
     }
 

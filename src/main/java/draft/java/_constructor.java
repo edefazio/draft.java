@@ -566,25 +566,38 @@ public final class _constructor implements _anno._hasAnnos<_constructor>, _javad
         /**
          * remove the constructor defined by this astConstructor
          * @param astConstructor the ast representation of the constructor
-         * @return  the modified T
-         */
-        T removeConstructor( ConstructorDeclaration astConstructor );
+         * @return  the modified T         
+         */ 
+        default T removeConstructor( ConstructorDeclaration astConstructor ){
+            return removeConstructor( _constructor.of(astConstructor).name(((_type)this).getName()) );        
+        }
 
+        
         /**
          * Remove the constructor and return the modified T
          * @param _ct the constructor instance to remove
          * @return 
+         * @param _ct
+         * @return 
          */
-        T removeConstructor( _constructor _ct);
+        default T removeConstructor( _constructor _ct){
+            _constructor _cc = _ct.copy().name( ((_type)this).getName() );
+        
+            listConstructors( c-> c.equals( _cc ) ).forEach(c-> c.ast().removeForced() );        
+            return (T)this;
+        }
 
         /**
          * Remove all constructors that match the _constructorMatchFn and return 
          * the modified T
-         * @param _constructorMatchFn function for matching constructors for removal
+         * @param ctorMatchFn function for matching constructors for removal
          * @return the modified T
-         */
-        T removeConstructors( Predicate<_constructor> _constructorMatchFn);
-
+         */ 
+        default T  removeConstructors( Predicate<_constructor> ctorMatchFn){
+            listConstructors(ctorMatchFn).forEach(c -> removeConstructor(c));
+            return (T)this;
+        }
+        
         /**
          * Build and add a constructor based on the contents of the anonymous Object passed in
          *

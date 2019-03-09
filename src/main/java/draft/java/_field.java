@@ -623,11 +623,38 @@ public final class _field
             return (T) this;
         }
 
-        T removeField(String fieldName);
+        default T removeField(String fieldName){
+            this.listFields(f-> f.getName().equals(fieldName)).forEach(f-> {
+                if(f.getFieldDeclaration().getVariables().size() == 1){
+                    f.getFieldDeclaration().removeForced();
+                } else {
+                    f.astVar.removeForced();
+                }            
+                });
+            return (T)this;
+        }
 
-        T removeField(_field _f);
+        default T removeField(_field _f){
+            this.listFields(f-> f.equals(_f)).forEach(f-> {
+                if(f.getFieldDeclaration().getVariables().size() == 1){
+                    f.getFieldDeclaration().removeForced();
+                } else {
+                    f.astVar.removeForced();
+                }            
+                });
+            return (T)this;
+        }
 
-        T removeFields(Predicate<_field> fieldPredicate);
+        default T removeFields(Predicate<_field> fieldPredicate){
+            this.listFields(fieldPredicate).forEach(f-> {
+                if(f.getFieldDeclaration().getVariables().size() == 1){
+                    f.getFieldDeclaration().removeForced();
+                } else {
+                    f.astVar.removeForced();
+                }            
+                });
+            return (T)this;
+        }
 
         default _field getField(String name) {
             return getField(f -> f.getName().equals(name));

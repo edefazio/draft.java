@@ -623,14 +623,14 @@ public final class _class implements _type<ClassOrInterfaceDeclaration, _class>,
     }
     @Override
     public _class removeStaticBlock( _staticBlock _sb ){
-        this.astClass.remove(_sb.ast());
+        this.listStaticBlocks(sb -> sb.equals(_sb))
+                .forEach(s -> s.ast().removeForced() );        
         return this;
     }
 
     @Override
     public _class removeStaticBlock( InitializerDeclaration astSb ){
-        this.astClass.remove(astSb);
-        return this;
+        return removeStaticBlock( _staticBlock.of(astSb));        
     }
 
     @Override
@@ -684,39 +684,6 @@ public final class _class implements _type<ClassOrInterfaceDeclaration, _class>,
     }
 
     @Override
-    public _class removeFields( Predicate<_field> _fieldMatchFn){
-        List<_field> fs = listFields(_fieldMatchFn);
-        fs.forEach(f -> removeField(f));
-        return this;
-    }
-
-    @Override
-    public _class removeField( _field _f ){
-        if( listFields().contains(_f) ){
-            if( _f.getFieldDeclaration().getVariables().size() == 1){
-                _f.getFieldDeclaration().remove();
-            } else{
-                _f.getFieldDeclaration().getVariables().removeIf( v-> v.getNameAsString().equals(_f.getName() ));
-            }
-        }
-        return this;
-    }
-
-    @Override
-    public _class removeField( String fieldName ){
-        Optional<FieldDeclaration> ofd = this.astClass.getFieldByName(fieldName );
-        if( ofd.isPresent() ){
-            FieldDeclaration fd = ofd.get();
-            if( fd.getVariables().size() == 1 ){
-                fd.remove();
-            } else{
-                fd.getVariables().removeIf( v-> v.getNameAsString().equals(fieldName));
-            }
-        }
-        return this;
-    }
-
-    @Override
     public List<_constructor> listConstructors() {
         List<_constructor> _cs = new ArrayList<>();
         astClass.getConstructors().forEach( c-> _cs.add( _constructor.of(c) ));
@@ -732,26 +699,6 @@ public final class _class implements _type<ClassOrInterfaceDeclaration, _class>,
     public _class constructor( ConstructorDeclaration constructor ) {
         constructor.setName(this.getName()); //alwyas set the constructor NAME to be the classes NAME
         this.astClass.addMember( constructor );
-        return this;
-    }
-
-
-    @Override
-    public _class removeConstructor( ConstructorDeclaration cd ){
-        return removeConstructor( _constructor.of(cd).name(this.getName()) );        
-    }
-
-    @Override
-    public _class removeConstructor( _constructor _ct){
-        _constructor _cc = _ct.copy().name(this.getName());
-        System.out.println( "Trying to remove constructor "+ _cc+" IN "+ this.getName() );
-        listConstructors( c-> c.equals( _cc ) ).forEach(c-> c.ast().removeForced() );        
-        return this;
-    }
-
-    @Override
-    public _class removeConstructors( Predicate<_constructor> ctorMatchFn){
-        listConstructors(ctorMatchFn).forEach(c -> removeConstructor(c));
         return this;
     }
 

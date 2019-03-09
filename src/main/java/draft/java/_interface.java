@@ -173,39 +173,6 @@ public final class _interface implements _type<ClassOrInterfaceDeclaration, _int
     }
 
     @Override
-    public _interface removeFields( Predicate<_field> _fieldMatchFn){
-        List<_field> fs = listFields(_fieldMatchFn);
-        fs.forEach(f -> removeField(f));
-        return this;
-    }
-
-    @Override
-    public _interface removeField( _field _f ){
-        if( listFields().contains(_f) ){
-            if( _f.getFieldDeclaration().getVariables().size() == 1){
-                _f.getFieldDeclaration().remove();
-            } else{
-                _f.getFieldDeclaration().getVariables().removeIf( v-> v.getNameAsString().equals(_f.getName() ));
-            }
-        }
-        return this;
-    }
-
-    @Override
-    public _interface removeField( String fieldName ){
-        Optional<FieldDeclaration> ofd = this.astInterface.getFieldByName(fieldName );
-        if( ofd.isPresent() ){
-            FieldDeclaration fd = ofd.get();
-            if( fd.getVariables().size() == 1 ){
-                fd.remove();
-            } else{
-                fd.getVariables().removeIf( v-> v.getNameAsString().equals(fieldName));
-            }
-        }
-        return this;
-    }
-
-    @Override
     public boolean hasTypeParameters(){
         return this.astInterface.getTypeParameters().isNonEmpty();
     }

@@ -41,24 +41,33 @@ public class _differTest extends TestCase {
         _c1.javadoc("some javadoc");
         _c1.staticBlock(()-> System.out.println("Static block"));
         _c1.nest(_interface.of("I") );
-        System.out.println( _c1 );
+        _class _c3 = _c1.copy();
+        //System.out.println( _c1 );
         
         _class.INSPECT_CLASS.diff(path, dt, _c1, _c2, _c1, _c2);
         
         assertEquals(16, dt.size() );
-        System.out.println("BEFORE " + _c2 );
+        //System.out.println("BEFORE " + _c2 );
         dt.keepRight();
+        //System.out.println("AFTER C2"+ _c2 );        
+        //System.out.println("AFTER C1"+ _c1 );
+        //assertEquals( _c1, _class.of("C"));
+        assertEquals( _c2, _class.of("C"));
         
+        dt.keepLeft(); //now 
+        assertEquals( _c2, _c3);
+        assertEquals( _c1, _c3);
         
-        System.out.println("AFTER "+ _c2 );
-        /*
         dt.diffs.clear();
+        
         
         _class.INSPECT_CLASS.diff(path, dt, _c2, _c1, _c2, _c1);
         System.out.println( dt );
-        assertEquals(16, dt.size() );
+        
+        //
         
         //everything should be upgraded
+        /*
         dt.keepRight();        
         _mydiff dd = new _mydiff();
         _class.INSPECT_CLASS.diff(path, dt, _c2, _c1, _c2, _c1);
@@ -70,7 +79,6 @@ public class _differTest extends TestCase {
         assertTrue( dd.isEmpty() );
         
         System.out.println( _c2 );
-        
         */
         
     }
@@ -236,9 +244,6 @@ public class _differTest extends TestCase {
         assertEquals( "n", _m1.getName() );
         _cn.keepLeft();
         assertEquals( "m", _m1.getName() );               
-    }
-    
-    
-    
+    }    
     
 }
