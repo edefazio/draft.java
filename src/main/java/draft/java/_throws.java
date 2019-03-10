@@ -49,7 +49,7 @@ public final class _throws
         return new _throws( md );
     }
 
-    private final NodeWithThrownExceptions astNodeWithThrows;
+    public final NodeWithThrownExceptions astNodeWithThrows;
 
     public _throws(){
         this( Ast.method("void m(){}") );
