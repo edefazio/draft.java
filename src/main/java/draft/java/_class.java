@@ -5,12 +5,9 @@ import com.github.javaparser.ast.body.*;
 import com.github.javaparser.ast.expr.ObjectCreationExpr;
 import com.github.javaparser.ast.stmt.*;
 import com.github.javaparser.ast.type.ClassOrInterfaceType;
-import com.github.javaparser.ast.type.TypeParameter;
 
-import draft.java._typeParameter._typeParameters;
 import draft.java._anno.*;
 import draft.DraftException;
-import draft.Text;
 import draft.java._inspect._diff;
 import draft.java._java._path;
 import draft.java.io._in;
@@ -517,33 +514,6 @@ public final class _class implements _type<ClassOrInterfaceDeclaration, _class>,
     }
     
     @Override
-    public NodeList<TypeParameter> listAstTypeParameters(){
-        return this.astClass.getTypeParameters();
-    }
-    
-    @Override
-    public boolean hasTypeParameters(){
-        return this.astClass.getTypeParameters().isNonEmpty();
-    }
-
-    @Override
-    public _class typeParameters( String typeParameters ){
-        this.astClass.setTypeParameters( Ast.typeParameters( typeParameters ) );
-        return this;
-    }
-
-    @Override
-    public _class typeParameters( NodeList<TypeParameter> typeParameters ){
-        this.astClass.setTypeParameters( typeParameters  );
-        return this;
-    }
-
-    @Override
-    public _typeParameters getTypeParameters(){
-        return _typeParameters.of(astClass);
-    }
-
-    @Override
     public boolean hasExtends(){
         return !this.astClass.getExtendedTypes().isEmpty();
     }
@@ -777,30 +747,7 @@ public final class _class implements _type<ClassOrInterfaceDeclaration, _class>,
             return this.findCompilationUnit().toString();
         }
         return this.astClass.toString();        
-    }
-
-    @Override
-    public _class typeParameters( String... typeParameters ) {
-        this.astClass.setTypeParameters( Ast.typeParameters( Text.combine( typeParameters) ));
-        return this;
-    }
-
-    @Override
-    public _class typeParameters( _typeParameters _tps ) {
-        this.astClass.setTypeParameters( _tps.ast() );
-        return this;
-    }
-
-    @Override
-    public _class removeTypeParameters() {
-        this.astClass.getTypeParameters().clear();
-        return this;
-    }
-
-    public _class removeTypeParameter( TypeParameter tp ){
-        this.astClass.getTypeParameters().remove(tp);
-        return this;
-    }
+    }   
 
     @Override
     public boolean equals( Object obj ) {

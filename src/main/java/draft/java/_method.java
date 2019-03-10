@@ -13,7 +13,6 @@ import draft.java._parameter.*;
 import draft.java._anno.*;
 import draft.java._java._path;
 import draft.java._inspect._diff;
-import draft.java._typeParameter._typeParameters;
 import draft.java.macro._macro;
 import draft.java.macro._remove;
 
@@ -326,27 +325,6 @@ public final class _method
         return _throws.of(astMethod);
     }
 
-    @Override
-    public NodeList<TypeParameter> listAstTypeParameters() {
-        return this.astMethod.getTypeParameters();
-    }
-
-    @Override
-    public _method typeParameters(String typeParameters) {
-        this.astMethod.setTypeParameters(Ast.typeParameters(typeParameters));
-        return this;
-    }
-
-    @Override
-    public _typeParameters getTypeParameters() {
-        return _typeParameters.of(this.astMethod);
-    }
-
-    @Override
-    public boolean hasTypeParameters() {
-        return this.astMethod.getTypeParameters().isNonEmpty();
-    }
-
     public _diff diff(_method right) {
         return INSPECT_METHOD.diff(this, right);
     }
@@ -373,7 +351,6 @@ public final class _method
             return false;
         }
         for (int i = 0; i < genericParameterTypes.length; i++) {
-            //System.out.println( "PARAM "+ genericParameterTypes[i]);
             _typeRef _t = _typeRef.of(genericParameterTypes[i]);
             if (!pl.get(i).isType(_t)) {
                 if (m.isVarArgs()
@@ -382,7 +359,7 @@ public final class _method
                                 _t.getElementType())) {
 
                 } else {
-                    System.out.println("Failed at " + _t + " =/= " + pl.get(i).getType());
+                    //System.out.println("Failed at " + _t + " =/= " + pl.get(i).getType());
                     return false;
                 }
             }
@@ -598,25 +575,7 @@ public final class _method
         this.astMethod.setFinal(toSet);
         return this;
     }
-
-    @Override
-    public _method typeParameters(NodeList<TypeParameter> typeParams) {
-        this.astMethod.setTypeParameters(typeParams);
-        return this;
-    }
-
-    @Override
-    public _method typeParameters(String... typeParameters) {
-        this.astMethod.setTypeParameters(Ast.typeParameters(Text.combine(typeParameters)));
-        return this;
-    }
-
-    @Override
-    public _method typeParameters(_typeParameters _tps) {
-        this.astMethod.setTypeParameters(_tps.ast());
-        return this;
-    }
-
+    
     @Override
     public boolean hasReceiverParameter() {
         return this.astMethod.getReceiverParameter().isPresent();

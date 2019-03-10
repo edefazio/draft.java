@@ -275,38 +275,71 @@ public final class _typeParameter
      */
     public interface _hasTypeParameters<T extends _hasTypeParameters>
         extends _model {
-
-        /**
-         * @return  the typeParameters entity which wraps the AST NodeList<TypeParameter> entities
-         */
-        _typeParameters getTypeParameters();
+        
+        default _typeParameters getTypeParameters(){
+            _member _m = (_member) this;
+            return _typeParameters.of( (NodeWithTypeParameters)_m.ast() );
+        }
+        
 
         /* return a list of AST typeParameters */
-        NodeList<TypeParameter> listAstTypeParameters();
+        default NodeList<TypeParameter> listAstTypeParameters() {
+            _member _m = (_member) this;
+            return ((NodeWithTypeParameters)_m.ast()).getTypeParameters();
+        }
         
         /**
          * parse the string as TypeParameters and set the typeParameters
          * @param typeParameters string of typeParameters
          * @return the modified T
          */
-        T typeParameters( String typeParameters );
+        default T typeParameters( String typeParameters ){
+            _typeParameters _tps = _typeParameters.of(typeParameters);
+            return typeParameters( _tps) ; //((NodeWithTypeParameters)_m.ast()).getTypeParameters();
+        }
 
         /**
          * @param typeParameters Strings that represent individual TypeParameters
+         * @return the modified T
          */
-        T typeParameters( String... typeParameters );
+        default T typeParameters( String... typeParameters ){
+            _typeParameters _tps = _typeParameters.of(typeParameters);
+            return typeParameters( _tps) ; //((NodeWithTypeParameters)_m.ast()).getTypeParameters();
+        }
 
-        T typeParameters( _typeParameters _tps );
+        default T typeParameters( _typeParameters _tps ){
+            _member _m = (_member) this;
+            ((NodeWithTypeParameters)_m.ast()).setTypeParameters(_tps.ast());            
+            return (T)this;
+        }
 
-        T typeParameters( NodeList<TypeParameter> typeParams );
+        default T typeParameters( NodeList<TypeParameter> astTypeParams ){
+            _member _m = (_member) this;
+            ((NodeWithTypeParameters)_m.ast()).setTypeParameters(astTypeParams);            
+            return (T)this;
+        }
 
+        default T removeTypeParameter( TypeParameter tp ){
+            _member _m = (_member) this;
+            ((NodeWithTypeParameters)_m.ast()).getTypeParameters().remove(tp);   
+            return (T)this;            
+        }
+        
         /**
          * remove all typeParametersfrom the entity
+         * @return 
          */
-        T removeTypeParameters();
+        default T removeTypeParameters(){
+            _member _m = (_member) this;
+            ((NodeWithTypeParameters)_m.ast()).getTypeParameters().clear();   
+            return (T)this;
+        }
 
         /** does this have non empty type parameters */
-        boolean hasTypeParameters();
+        default boolean hasTypeParameters(){
+            _member _m = (_member) this;
+            return ((NodeWithTypeParameters)_m.ast()).getTypeParameters().isNonEmpty();
+        }
     }
     
     public static final _typeParametersInspect INSPECT_TYPE_PARAMETERS = 

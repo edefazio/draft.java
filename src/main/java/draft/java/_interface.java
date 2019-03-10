@@ -7,10 +7,8 @@ import com.github.javaparser.ast.expr.ObjectCreationExpr;
 import com.github.javaparser.ast.type.*;
 import draft.DraftException;
 import draft.java._anno.*;
-import draft.Text;
 import draft.java._inspect._diff;
 import draft.java._java._path;
-import draft.java._typeParameter._typeParameters;
 import draft.java.io._in;
 import draft.java.macro._macro;
 
@@ -170,33 +168,6 @@ public final class _interface implements _type<ClassOrInterfaceDeclaration, _int
             return this.astInterface.findCompilationUnit().get();
         }
         return null; //its an orphan
-    }
-
-    @Override
-    public boolean hasTypeParameters(){
-        return this.astInterface.getTypeParameters().isNonEmpty();
-    }
-
-    @Override
-    public NodeList<TypeParameter> listAstTypeParameters(){
-        return this.astInterface.getTypeParameters();
-    }
-    
-    @Override
-    public _interface typeParameters( String typeParameters ){
-        this.astInterface.setTypeParameters( Ast.typeParameters( typeParameters ) );
-        return this;
-    }
-
-    @Override
-    public _interface typeParameters( NodeList<TypeParameter> typeParameters ){
-        this.astInterface.setTypeParameters( typeParameters  );
-        return this;
-    }
-
-    @Override
-    public _typeParameters getTypeParameters(){
-        return _typeParameters.of(astInterface);
     }
 
     @Override
@@ -455,24 +426,6 @@ public final class _interface implements _type<ClassOrInterfaceDeclaration, _int
         }catch(Exception e){
             return false;
         }
-    }
-
-    @Override
-    public _interface typeParameters( String... typeParameters ) {
-        this.astInterface.setTypeParameters( Ast.typeParameters( Text.combine( typeParameters) ));
-        return this;
-    }
-
-    @Override
-    public _interface typeParameters( _typeParameters _tps ) {
-        this.astInterface.setTypeParameters( _tps.ast() );
-        return this;
-    }
-
-    @Override
-    public _interface removeTypeParameters() {
-        this.astInterface.getTypeParameters().clear();
-        return this;
     }
     
     public _diff diff( _interface right ){

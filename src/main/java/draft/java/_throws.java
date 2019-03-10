@@ -65,7 +65,6 @@ public final class _throws
 
     public boolean contains( ReferenceType rt ) {
         return this.astNodeWithThrows.getThrownExceptions().stream().filter(r -> Ast.typesEqual(rt, (ReferenceType)r) ).findFirst().isPresent();
-        //return this.astNodeWithThrows.getThrownExceptions().contains( rt );
     }
 
     /** verify this throws contains all of the ReferenceTypes in rt */
