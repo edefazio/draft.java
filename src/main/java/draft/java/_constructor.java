@@ -374,41 +374,6 @@ public final class _constructor implements _anno._hasAnnos<_constructor>,
         }
         return this;
     }
-
-    @Override
-    public boolean hasReceiverParameter() {
-        return this.astCtor.getReceiverParameter().isPresent();
-    }
-
-    @Override
-    public _receiverParameter getReceiverParameter() {
-        if( this.astCtor.getReceiverParameter().isPresent() ) {
-            return _receiverParameter.of( this.astCtor.getReceiverParameter().get() );
-        }
-        return null;
-    }
-
-    @Override
-    public _constructor removeReceiverParameter() {
-        this.astCtor.removeReceiverParameter();
-        return this;
-    }
-
-    @Override
-    public _constructor receiverParameter( String receiverParameter ) {
-        return receiverParameter( Ast.receiverParameter( receiverParameter ) );
-    }
-
-    @Override
-    public _constructor receiverParameter( _receiverParameter _rp ) {
-        return receiverParameter( _rp.ast() );
-    }
-
-    @Override
-    public _constructor receiverParameter( ReceiverParameter rp ) {
-        this.astCtor.setReceiverParameter( rp );
-        return this;
-    }
     
     /**
      *

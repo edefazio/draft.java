@@ -1,5 +1,8 @@
 package draft.java;
 
+import com.github.javaparser.ast.Node;
+import com.github.javaparser.ast.body.ConstructorDeclaration;
+import com.github.javaparser.ast.body.MethodDeclaration;
 import com.github.javaparser.ast.body.ReceiverParameter;
 import com.github.javaparser.ast.type.Type;
 
@@ -140,17 +143,67 @@ public final class _receiverParameter
     public interface _hasReceiverParameter<T extends _hasReceiverParameter>
             extends _model {
 
-        _receiverParameter getReceiverParameter();
+        default boolean hasReceiverParameter() {      
+            return getAstReceiverParameter() != null;            
+        }
 
-        boolean hasReceiverParameter();
+        default _receiverParameter getReceiverParameter() {
+            ReceiverParameter astRp = getAstReceiverParameter();
+            if( astRp != null ){
+                return of(astRp);
+            }
+            return null;            
+        }
+        
+        default ReceiverParameter getAstReceiverParameter(){
+            Node n = (Node) ((_node)this).ast();
+            if( n instanceof MethodDeclaration ){
+                MethodDeclaration md = (MethodDeclaration)n;
+                if(md.getReceiverParameter().isPresent()){
+                    return md.getReceiverParameter().get();
+                }
+                return null;
+            }
+            ConstructorDeclaration cd = (ConstructorDeclaration)n;
+            if(cd.getReceiverParameter().isPresent()){
+                return cd.getReceiverParameter().get();
+            }
+            return null;
+        }
+        
+        default T removeReceiverParameter() {
+            if( hasReceiverParameter()){
+                Node n = (Node) ((_node)this).ast();
+                if( n instanceof MethodDeclaration ){
+                    MethodDeclaration md = (MethodDeclaration)n;
+                    md.removeReceiverParameter();
+                } else{
+                    ConstructorDeclaration cd = (ConstructorDeclaration)n;
+                    cd.removeReceiverParameter();
+                }
+            }            
+            return (T)this;
+        }
 
-        T receiverParameter( String receiverParameter );
+        default T receiverParameter( String receiverParameter ) {
+            return receiverParameter( Ast.receiverParameter( receiverParameter ) );
+        }
 
-        T receiverParameter( _receiverParameter _rp );
-
-        T receiverParameter( ReceiverParameter rp );
-
-        T removeReceiverParameter();
+        default T receiverParameter( _receiverParameter _rp ) {
+            return receiverParameter( _rp.ast() );
+        }
+        
+        default T receiverParameter( ReceiverParameter rp ) {
+            Node n = (Node) ((_node)this).ast();
+            if( n instanceof MethodDeclaration ){
+                MethodDeclaration md = (MethodDeclaration)n;
+                md.setReceiverParameter(rp);
+            } else{
+                ConstructorDeclaration cd = (ConstructorDeclaration)n;
+                cd.setReceiverParameter(rp);
+            }
+            return (T) this;
+        }    
     }
     
     public static final _receiverParameterInspect INSPECT_RECEIVER_PARAMETER = 

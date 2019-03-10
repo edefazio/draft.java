@@ -574,48 +574,7 @@ public final class _method
     public _method setFinal(boolean toSet) {
         this.astMethod.setFinal(toSet);
         return this;
-    }
-    
-    @Override
-    public boolean hasReceiverParameter() {
-        return this.astMethod.getReceiverParameter().isPresent();
-    }
-
-    @Override
-    public _receiverParameter getReceiverParameter() {
-        if (this.astMethod.getReceiverParameter().isPresent()) {
-            return _receiverParameter.of(this.astMethod.getReceiverParameter().get());
-        }
-        return null;
-    }
-
-    @Override
-    public _method removeReceiverParameter() {
-        this.astMethod.removeReceiverParameter();
-        return this;
-    }
-
-    @Override
-    public _method receiverParameter(String receiverParameter) {
-        return receiverParameter(Ast.receiverParameter(receiverParameter));
-    }
-
-    @Override
-    public _method receiverParameter(_receiverParameter _rp) {
-        return receiverParameter(_rp.ast());
-    }
-
-    @Override
-    public _method receiverParameter(ReceiverParameter rp) {
-        this.astMethod.setReceiverParameter(rp);
-        return this;
-    }
-
-    @Override
-    public _method removeTypeParameters() {
-        this.astMethod.getTypeParameters().clear();
-        return this;
-    }
+    }    
 
     @Override
     public _method setBody(BlockStmt body) {
