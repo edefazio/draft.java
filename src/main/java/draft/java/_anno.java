@@ -178,7 +178,6 @@ public final class _anno
             return is( Ast.anno( str ) );
         }
         catch( Exception e ) {
-            //System.out.println( "bad annotation "+str );
         }
         return false;
     }
@@ -496,17 +495,25 @@ public final class _anno
      *
      * @param <T> the container TYPE
      */
-    public interface _hasAnnos<T extends _hasAnnos> // & _referenceable
-            extends _model {
-
+    public interface _hasAnnos<T extends _hasAnnos>
+        extends _model {
+        
+        /**
+         * @return the annos
+         */
         _annos getAnnos();
         
+        /**
+         * gets the anno at the index
+         * @param index
+         * @return 
+         */
         default _anno getAnno( int index ) {
             return getAnnos().get( index );
         }
 
         /**
-         *
+         * replace the annotations with the _annos provided
          * @param _as
          * @return
          */
@@ -522,6 +529,11 @@ public final class _anno
             return !getAnnos().isEmpty();
         }
 
+        /**
+         * apply a function to all annos
+         * @param _annoActionFn
+         * @return the modified T
+         */
         default T forAnnos( Consumer<_anno> _annoActionFn ){
             getAnnos().forEach(_annoActionFn);
             return (T) this;
@@ -665,8 +677,13 @@ public final class _anno
             return (T)this;
         }
 
-        default T removeAnno( AnnotationExpr ae ){
-            getAnnos().remove(ae);
+        /**
+         * remove the annotation and return the modified T
+         * @param astAnn the annotation 
+         * @return 
+         */
+        default T removeAnno( AnnotationExpr astAnn ){
+            getAnnos().remove(astAnn);
             return (T)this;
         }
 
@@ -718,7 +735,6 @@ public final class _anno
             return (T)this;
         }
     }
-
     
     /**
      * Grouping of _anno (s) expressions ({@link AnnotationExpr})
@@ -920,7 +936,8 @@ public final class _anno
         }
 
         public boolean contains( AnnotationExpr astA ) {
-            return this.astAnnNode.getAnnotations().stream().filter( a -> Ast.annotationEqual( (AnnotationExpr)a, astA ) ).findFirst().isPresent();
+            return this.astAnnNode.getAnnotations().stream().filter( 
+                    a -> Ast.annotationEqual( (AnnotationExpr)a, astA ) ).findFirst().isPresent();
         }
 
         public boolean contains( Class<? extends Annotation> clazz ) {
@@ -961,15 +978,12 @@ public final class _anno
         }
 
         @Override
-        public int hashCode() {
-            
+        public int hashCode() {            
             if( this.astAnnNode == null ){
                 return 0;
             }
             Set<_anno> s = new HashSet<>();
-            this.astAnnNode.getAnnotations().forEach( a -> s.add( _anno.of((AnnotationExpr)a) ) ); //add each of the exprs to the set for order
-            //this.astAnnNode.getAnnotations().forEach( a -> s.add( (AnnotationExpr)a ) ); //add each of the exprs to the set for order
-            
+            this.astAnnNode.getAnnotations().forEach( a -> s.add( _anno.of((AnnotationExpr)a) ) ); //add each of the exprs to the set for order            
             return s.hashCode();
         }
 

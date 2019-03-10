@@ -90,8 +90,7 @@ public final class _typeParameter
         return Objects.equals( ttp, otp );
     }
 
-
-
+    @Override
     public Map<_java.Component, Object> componentsMap( ) {
         Map<_java.Component, Object> parts = new HashMap<>();
         parts.put( _java.Component.TYPE_PARAMETER, this.typeParameter );
@@ -101,7 +100,6 @@ public final class _typeParameter
     @Override
     public int hashCode() {
         return Objects.hashCode( Ast.normalizeTypeParameter(this.typeParameter) );
-        //return this.TYPE_PARAMETER.hashCode();
     }
 
     @Override
@@ -114,7 +112,7 @@ public final class _typeParameter
      * @author Eric
      */
     public static final class _typeParameters
-            implements _model { //_propertyList<NodeWithTypeParameters, TypeParameter, _typeParameter, _typeParameters> {
+            implements _model {
 
         public static _typeParameters of( String...tps){
             ClassOrInterfaceDeclaration coid = Ast.classDeclaration("class Dummy"+ Text.combine(tps) +"{}");
@@ -281,36 +279,6 @@ public final class _typeParameter
             return this;
         }
     }
-
-    /*
-        public static final _java.Semantic<Collection<_typeParameter>> EQIVALENT_TYPE_PARAMETERS = (o1, o2)->{
-         if( o1 == null){
-                return o2 == null;
-            }
-            if( o2 == null ){
-                return false;
-            }
-            if( o1.size() != o2.size()){
-                return false;
-            }
-            Set<_typeParameter> tm = new HashSet<>();
-            Set<_typeParameter> om = new HashSet<>();
-            tm.addAll(o1);
-            om.addAll(o2);
-            return Objects.equals(tm, om);        
-    };
-    */
-    
-    /** 
-     * Are these (2) collections of throws equivalent ?
-     * @param left
-     * @param right
-     * @return true if these collections are semantically equivalent
-     
-    public static boolean equivalent( Collection<_typeParameter> left, Collection<_typeParameter> right ){
-        return EQIVALENT_TYPE_PARAMETERS.equivalent(left, right);
-    }
-    */
     
     /**
      *
@@ -370,13 +338,11 @@ public final class _typeParameter
 
         @Override
         public _inspect._diff diff( _java._inspector _ins, _path path, _inspect._diff dt, _typeParameters left, _typeParameters right) {
-            //List<ObjectDiff.Entry> des = new ArrayList<>();
             for(int i=0; i<left.ast().size();i++){
                 Type cit = left.ast().get(i);
                 
                 if( ! right.ast().stream().filter( c-> typesEqual(c, cit) ).findFirst().isPresent()){
                     dt.add(path.in(_java.Component.TYPE_PARAMETER), cit, null);
-                    //des.add(new ObjectDiff.Entry( path + name, cit, null) );
                 }
             }
             for(int i=0; i<right.ast().size();i++){

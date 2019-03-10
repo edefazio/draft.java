@@ -2,7 +2,6 @@ package draft.java;
 
 import com.github.javaparser.ast.*;
 import com.github.javaparser.ast.body.*;
-import com.github.javaparser.ast.comments.JavadocComment;
 import com.github.javaparser.ast.expr.LambdaExpr;
 import com.github.javaparser.ast.expr.ObjectCreationExpr;
 import com.github.javaparser.ast.stmt.*;
@@ -189,6 +188,7 @@ public final class _method
         return astMethod;
     }
 
+    /*
     @Override
     public _method javadoc(String... javadoc) {
         astMethod.setJavadocComment(Text.combine(javadoc));
@@ -214,6 +214,7 @@ public final class _method
         }
         return false;
     }
+    */
 
     public boolean is(String... methodDecl) {
         try {
@@ -331,6 +332,7 @@ public final class _method
         return hash;
     }
 
+    /*
     @Override
     public boolean hasJavadoc() {
         return this.astMethod.getJavadocComment().isPresent();
@@ -340,6 +342,7 @@ public final class _method
     public _javadoc getJavadoc() {
         return _javadoc.of(this.astMethod);
     }
+    */
 
     @Override
     public _method type(Type type) {
@@ -384,10 +387,12 @@ public final class _method
         return this.astMethod.getTypeParameters().isNonEmpty();
     }
 
+    /*
     @Override
     public boolean hasParameters() {
         return this.astMethod.getParameters().isNonEmpty();
     }
+    */
 
     public _diff diff(_method right) {
         return INSPECT_METHOD.diff(this, right);
@@ -431,7 +436,7 @@ public final class _method
         }
         return true;
     }
-    
+    /*
     @Override
     public _method addParameters(Parameter... parameters) {
         Arrays.stream(parameters).forEach(p -> addParameter(p));
@@ -443,16 +448,19 @@ public final class _method
         this.astMethod.addParameter(parameter);
         return this;
     }
+    */
 
     @Override
     public _body getBody() {
         return _body.of(this.astMethod);
     }
 
+    /*
     @Override
     public boolean hasThrows() {
         return this.astMethod.getThrownExceptions().isNonEmpty();
     }
+    */
 
     @Override
     public _modifiers getModifiers() {
@@ -485,46 +493,19 @@ public final class _method
         return astMethod.getNameAsString();
     }
 
+    /*
     @Override
     public _method setParameters(NodeList<Parameter> astPs){
         this.astMethod.setParameters(astPs);
         return this;        
     }
+    */
     
     @Override
     public _parameters getParameters() {
         return _parameters.of(astMethod);
     }
-
-    public _parameter getParameter(String parameterName) {
-        Optional<Parameter> op = this.astMethod.getParameterByName(parameterName);
-        if (op.isPresent()) {
-            return _parameter.of(op.get());
-        }
-        return null;
-    }
-
-    public _parameter getParameter(Class type) {
-        Optional<Parameter> op = this.astMethod.getParameterByType(type);
-        if (op.isPresent()) {
-            return _parameter.of(op.get());
-        }
-        return null;
-    }
-
-    public _parameter getParameter(_typeRef _type) {
-        Optional<Parameter> op = this.astMethod.getParameterByType(_type.toString());
-        if (op.isPresent()) {
-            return _parameter.of(op.get());
-        }
-        return null;
-    }
-
-    @Override
-    public _parameter getParameter(int index) {
-        return _parameter.of(this.astMethod.getParameter(index));
-    }
-
+    
     public boolean is(MethodDeclaration methodDeclaration) {
         try {
             return of(methodDeclaration).equals(this);
@@ -614,7 +595,7 @@ public final class _method
         return this;
     }
 
-    public _method setDefaultAccess() {
+    public _method setPackagePrivate() {
         this.astMethod.setPrivate(false);
         this.astMethod.setProtected(false);
         this.astMethod.setPublic(false);
@@ -814,17 +795,6 @@ public final class _method
         return this;
     }
 
-    /**
-     * Are these (2) collections of methods equivalent ?
-     *
-     * @param left
-     * @param right
-     * @return true if these collections are semantically equivalent
-     *
-     * public static boolean equivalent( Collection<_method> left,
-     * Collection<_method> right ){ return EQIVALENT_METHODS.equivalent(left,
-     * right); }
-     */
     /**
      *
      * @author Eric
@@ -1104,7 +1074,6 @@ public final class _method
 
             ls.forEach(m -> {
                 _method fm = findSameNameAndParameters(m, rs);
-                //System.out.println(" LEFT NOT MATCHED "+m+" "+rs);
                 if(fm != null) {
                     rs.remove(fm);
                     INSPECT_METHOD.diff(
@@ -1115,15 +1084,12 @@ public final class _method
                             m,
                             fm);
                 } else {
-                    //System.out.println("METHOD"+ m );
                     dt.node(new _removeMethod(
                             path.in(_java.Component.METHOD, describeMethodSignature(m)),
                             (_hasMethods) leftRoot, (_hasMethods) rightRoot, m) );
                 }
             });
             rs.forEach(m -> {
-                //System.out.println(" RIGHT NOT MATCHED "+m);
-                //dt.add( path.in(_java.Component.METHOD, describeMethodSignature(m)), null, m );                
                 dt.node(new _addMethod(
                         path.in(_java.Component.METHOD, describeMethodSignature(m)),
                         (_hasMethods) leftRoot, (_hasMethods) rightRoot, m));

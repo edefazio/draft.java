@@ -102,18 +102,12 @@ public final class _receiverParameter
         if( ! Ast.annotationsEqual(this.astReceiverParam, other.astReceiverParam)){
             return false;
         }
-        //if( !Objects.equals( this.getAnnos(), other.getAnnos() ) ) {
-        //    return false;
-        //}
         if( !Objects.equals( this.getName(), other.getName() ) ) {
             return false;
         }
         if( ! Ast.typesEqual( astReceiverParam.getType(), other.astReceiverParam.getType())){
             return false;
         }
-        //if( !Objects.equals( this.getType(), other.getType() ) ) {
-        //    return false;
-        //}
         return true;
     }
 
@@ -191,18 +185,7 @@ public final class _receiverParameter
         @Override
         public <R extends _node> _dif diff(_path path, build dt, R leftRoot, R rightRoot, _receiverParameter left, _receiverParameter right) {
             if( !equivalent( left, right )){
-                dt.node(new change_receiverParameter(path.in(_java.Component.RECEIVER_PARAMETER), (_hasReceiverParameter)leftRoot,(_hasReceiverParameter)rightRoot ) );
-                /*
-                if(left == null){
-                    return dt.add(path.in(_java.Component.RECEIVER_PARAMETER), null, right);                    
-                }
-                if(right == null){
-                    return dt.add(path.in(_java.Component.RECEIVER_PARAMETER), left, null);                                        
-                }                
-                _ins.INSPECT_NAME.diff(_ins, path.in(_java.Component.RECEIVER_PARAMETER), dt, left.getName(), right.getName());
-                _ins.INSPECT_TYPE_REF.diff(_ins, path.in(_java.Component.RECEIVER_PARAMETER), dt, left.getType(), right.getType());
-                _ins.INSPECT_ANNOS.diff(_ins, path.in(_java.Component.RECEIVER_PARAMETER), dt, left.getAnnos(), right.getAnnos());
-                */
+                dt.node(new change_receiverParameter(path.in(_java.Component.RECEIVER_PARAMETER), (_hasReceiverParameter)leftRoot,(_hasReceiverParameter)rightRoot ) );                
             }
             return (_dif)dt;      
         }

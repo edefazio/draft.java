@@ -144,6 +144,7 @@ public final class _field
 
     /**
      * remove the initial value declaration of the field
+     * @return the modified field
      */
     public _field removeInit() {
         this.astVar.removeInitializer();
@@ -164,17 +165,9 @@ public final class _field
 
     @Override
     public VariableDeclarator ast() {
-        //return this.getFieldDeclaration();
         return astVar;
     }
     
-    /*
-    @Override
-    public VariableDeclarator astMember(){
-        return astVar;
-    }
-    */
-
     public Expression getInit() {
         if (astVar.getInitializer().isPresent()) {
             return astVar.getInitializer().get();
@@ -211,14 +204,21 @@ public final class _field
         return astVar.getNameAsString();
     }
 
+    
     @Override
     public boolean hasJavadoc() {
-        return getFieldDeclaration().getJavadocComment().isPresent();
+        if( getFieldDeclaration() != null ){
+            return getFieldDeclaration().getJavadocComment().isPresent();
+        }
+        return false;
+        
     }
 
     @Override
     public _field javadoc(String... contents) {
-        getFieldDeclaration().setJavadocComment(Text.combine(contents));
+        if( getFieldDeclaration() != null ){
+            getFieldDeclaration().setJavadocComment(Text.combine(contents));
+        }
         return this;
     }
 
@@ -237,10 +237,12 @@ public final class _field
 
     @Override
     public _field removeJavadoc() {
-        getFieldDeclaration().removeJavaDocComment();
+        if( getFieldDeclaration() != null ){
+            getFieldDeclaration().removeJavaDocComment();
+        }
         return this;
     }
-
+    
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
@@ -284,6 +286,7 @@ public final class _field
         return _typeRef.of(astVar.getType());
     }
 
+    /*
     @Override
     public boolean isType(Class clazz) {
         try {
@@ -307,6 +310,7 @@ public final class _field
         }
         return false;
     }
+    */
 
     @Override
     public _modifiers getModifiers() {

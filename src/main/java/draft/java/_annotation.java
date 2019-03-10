@@ -3,12 +3,10 @@ package draft.java;
 import com.github.javaparser.StaticJavaParser;
 import com.github.javaparser.ast.*;
 import com.github.javaparser.ast.body.*;
-import com.github.javaparser.ast.comments.JavadocComment;
 import com.github.javaparser.ast.expr.Expression;
 import com.github.javaparser.ast.expr.ObjectCreationExpr;
 import com.github.javaparser.ast.type.Type;
 import draft.DraftException;
-import draft.Text;
 import draft.java._anno.*;
 import draft.java._inspect._diff;
 import draft.java._java._path;
@@ -39,7 +37,11 @@ public final class _annotation
         if( n instanceof CompilationUnit ){
             return _macro.to(clazz, of( (CompilationUnit)n));
         }
-        return _macro.to(clazz, of( (AnnotationDeclaration)n));        
+        //not a compuilation
+        Set<Class> imps = _type.inferImportsFrom(clazz);
+        _annotation _a = of( (AnnotationDeclaration)n);
+        imps.forEach(i -> _a.imports(i) );
+        return _macro.to(clazz, _a);        
     }
 
     /**
@@ -55,6 +57,7 @@ public final class _annotation
         StackTraceElement ste = Thread.currentThread().getStackTrace()[2];
         _annotation _a = of( signature );
         ObjectCreationExpr oce = Expr.anonymousObject(ste);
+        
         NodeList<BodyDeclaration<?>> bds = oce.getAnonymousClassBody().get();
 
         //each field REALLY represents
@@ -235,7 +238,6 @@ public final class _annotation
     public _annotation( AnnotationDeclaration astClass ){
         this.astAnnotation = astClass;
     }
-
 
     /**
      * the AST storing the state of the _class
@@ -667,33 +669,35 @@ public final class _annotation
             return null;
         }
 
+        /*
         @Override
         public _javadoc getJavadoc() {
-            return _javadoc.of(this.astAnnMember);
+            return _javadoc.of(this.ast());
         }
 
         @Override
         public _element removeJavadoc(){
-            this.astAnnMember.removeJavaDocComment();
+            this.ast().removeJavaDocComment();
             return this;
         }
 
         @Override
         public boolean hasJavadoc(){
-            return this.astAnnMember.getJavadoc().isPresent();
+            return this.ast().getJavadoc().isPresent();
         }
 
         @Override
         public _element javadoc( String... content ) {
-            this.astAnnMember.setJavadocComment( Text.combine(content));
+            this.ast().setJavadocComment( Text.combine(content));
             return this;
         }
         
         @Override
         public _element javadoc( JavadocComment astJavadocComment ){
-            this.astAnnMember.setJavadocComment( astJavadocComment );
+            this.ast().setJavadocComment( astJavadocComment );
             return this;
         }
+        */
 
         @Override
         public _annos getAnnos() {

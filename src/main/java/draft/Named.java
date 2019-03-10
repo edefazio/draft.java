@@ -9,6 +9,6 @@ package draft;
  */
 public interface Named {
 
-    /** get the name of the named entity */
+    /** @return the name of the named entity */
     String getName();
 }

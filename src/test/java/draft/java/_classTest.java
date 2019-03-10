@@ -11,11 +11,13 @@ import draft.java.runtime.*;
 import junit.framework.TestCase;
 import draft.java._parameter.*;
 import draft.java._typeParameter.*;
+import java.net.URI;
 import test.ComplexClass;
 import test.NativeMethod;
 
 import static java.util.Collections.emptyList;
 import static java.util.Collections.sort;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
  *
@@ -25,6 +27,84 @@ import static java.util.Collections.sort;
 public class _classTest extends TestCase {
     
 
+    public interface ChumbaWomba{
+        Map m(UUID u) throws IOException;
+    }
+    
+    public @interface A{
+        
+    }
+    
+    //Instead of manually having to import each class
+    // infer the imports from the API
+    public void testImplementInferImports(){
+        _class _c = _class.of("C").implement(new ChumbaWomba(){
+            URI u = null;
+            @Override
+            public Map m(UUID u) throws IOException {
+                return Map.of();
+            }            
+        });
+        
+        // when we pass the anonymous ChuimbaWomba instance 
+        // in to the implement method...
+        assertTrue( _c.hasImport(Map.class));
+        assertTrue( _c.hasImport(URI.class));
+        assertTrue( _c.hasImport(IOException.class));
+        assertTrue( _c.hasImport(UUID.class));
+        assertTrue( _c.hasImport(ChumbaWomba.class));
+        
+        //System.out.println( _c );
+    }
+    
+    public abstract class BBC{
+        public abstract Set theSet(URI uri, UUID uuid) throws IOException;
+    } 
+    
+    // When you extend and provide the implementation, we
+    // the imports are inferred
+    public void testExtendInferImports(){
+        _class _c = _class.of("B").extend( new BBC(){
+                    
+            AtomicBoolean ab;
+                    
+            public Set theSet(URI uri, UUID uuid) throws IOException {
+                return Set.of();
+            }
+            
+        });
+       // System.out.println( _c );
+        
+        assertTrue( _c.hasImport(BBC.class));
+        assertTrue( _c.hasImport(AtomicBoolean.class));
+        assertTrue( _c.hasImport(Set.class));
+        assertTrue( _c.hasImport(UUID.class));
+        assertTrue( _c.hasImport(URI.class));
+        assertTrue( _c.hasImport(IOException.class));        
+    }
+    
+    // When you extend and provide the implementation, we
+    // the imports are inferred
+    public void testBodyInferImports(){
+        _class _c = _class.of("B").body( new BBC(){
+                    
+            AtomicBoolean ab;
+                    
+            public Set theSet(URI uri, UUID uuid) throws IOException {
+                return Set.of();
+            }
+            
+        });
+        System.out.println( _c );
+        
+        assertTrue( _c.hasImport(BBC.class));
+        assertTrue( _c.hasImport(AtomicBoolean.class));
+        assertTrue( _c.hasImport(Set.class));
+        assertTrue( _c.hasImport(UUID.class));
+        assertTrue( _c.hasImport(URI.class));
+        assertTrue( _c.hasImport(IOException.class));        
+    }
+    
     public void testInferLocalClassImportsBasedOnAPI(){
         class Local{
             Map map;
@@ -32,11 +112,11 @@ public class _classTest extends TestCase {
         }
         _class _c = _class.of(Local.class);
         
-        System.out.println( _c);
+        //System.out.println( _c);
         assertTrue( _c.hasImport(Map.class));// UUID.class, IOException.class) );
         
         
-        System.out.println( _c );
+        //System.out.println( _c );
     }
     
     public void testJavadoc(){
@@ -371,7 +451,7 @@ public class _classTest extends TestCase {
         _c = _class.of("aaaa.bbbb.C", new Serializable(){
 
         });
-        assertTrue( _c.isImplements(Serializable.class));
+        assertTrue( _c.hasImplements(Serializable.class));
         assertTrue( _c.hasImport(Serializable.class));
 
         //you can set a base class
@@ -547,7 +627,7 @@ public class _classTest extends TestCase {
         assertFalse( _c.isAbstract());
         assertFalse( _c.hasStaticBlock());
         assertFalse( _c.isExtends( Serializable.class ) );
-        assertFalse( _c.isImplements( Serializable.class ) );
+        assertFalse( _c.hasImplements( Serializable.class ) );
         assertNull( _c.getStaticBlock(0) );
         assertTrue( _c.listMethods().isEmpty() );
         assertTrue( _c.listFields().isEmpty() );
@@ -720,8 +800,8 @@ public class _classTest extends TestCase {
         assertTrue( _c.hasTypeParameters() );
         assertTrue( _c.getTypeParameters().is( "<T extends Impl>"));
         assertTrue( _c.isExtends( "Base") );
-        assertTrue( _c.isImplements( "A"));
-        assertTrue( _c.isImplements( "B"));        
+        assertTrue( _c.hasImplements( "A"));
+        assertTrue( _c.hasImplements( "B"));        
         assertTrue( _c.hasStaticBlock());
         assertNotNull( _c.getStaticBlock(0) ); //todo better static block
         assertTrue( _c.hasFields());        

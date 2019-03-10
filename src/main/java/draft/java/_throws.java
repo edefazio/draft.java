@@ -235,7 +235,7 @@ public final class _throws
         _throws getThrows();
 
         default boolean hasThrows() {
-            return getThrows().isEmpty();
+            return !getThrows().isEmpty();
         }
         
         default T addThrows(String... throwExceptions) {

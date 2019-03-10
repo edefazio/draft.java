@@ -247,6 +247,30 @@ public final class _parameter
         default _parameter getParameter( int index ){
             return _parameter.of( ast().getParameter( index ) );
         }
+        
+        default _parameter getParameter(Class type) {
+            Optional<Parameter> op = ast().getParameterByType(type);
+            if (op.isPresent()) {
+                return _parameter.of(op.get());
+            }
+            return null;
+        }
+
+        default _parameter getParameter(_typeRef _type) {
+            Optional<Parameter> op = ast().getParameterByType(_type.toString());
+            if (op.isPresent()) {
+                return _parameter.of(op.get());
+            }
+            return null;
+        }
+        
+        default _parameter getParameter(String parameterName) {
+            Optional<Parameter> op = this.ast().getParameterByName(parameterName);
+            if (op.isPresent()) {
+                return _parameter.of(op.get());
+            }
+            return null;
+        }
 
         default boolean hasParameters() {
             return !ast().getParameters().isEmpty();

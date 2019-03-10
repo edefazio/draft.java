@@ -315,18 +315,27 @@ public final class _class implements _type<ClassOrInterfaceDeclaration, _class>,
     }
 
     /**
-     * i.e. _class _c = _class.of("C").implement(
+     * <PRE>
+     * i.e. 
+     * _class _c = _class.of("C").implement(
      *    new Descriptive(){
-     *       public String describe(){
+     *       public String describe() throws IOException{
      *           return "a description";
      *       }
      * });
-     *
+     *</PRE>
+     * will update C, and import any classes on the interface that is 
+     * implemented.
+     * <PRE>
+     * //NOTE this import is on the public Descriptive API, so it gets added
+     * import java.io.IOException;
+     * 
      * public class C implements Descriptive{
-     *     public String describe(){
+     *     public String describe() throws IOException {
      *         return "a description";
      *     }
      * }
+     * </PRE>
      * @param anonymousImplementation
      * @return the modified Class
      */
@@ -340,6 +349,8 @@ public final class _class implements _type<ClassOrInterfaceDeclaration, _class>,
         if( oce.getAnonymousClassBody().isPresent()){
             oce.getAnonymousClassBody().get().forEach( m->this.ast().addMember(m) );
         }
+        Set<Class> ims = _type.inferImportsFrom(anonymousImplementation);
+        ims.forEach( i -> imports(i) );
         return this;
     }
 
@@ -570,39 +581,7 @@ public final class _class implements _type<ClassOrInterfaceDeclaration, _class>,
         this.astClass.addExtendedType( toExtend );
         return this;
     }
-
-    @Override
-    public boolean hasImplements(){
-        return !this.astClass.getImplementedTypes().isEmpty();
-    }
-
-    @Override
-    public List<ClassOrInterfaceType> listImplements(){
-        return astClass.getImplementedTypes();
-    }
-
-    @Override
-    public _class implement( ClassOrInterfaceType... toImplement ){
-        Arrays.stream( toImplement ).forEach( i -> this.astClass.addImplementedType( i ) );
-        return this;
-    }
-
-    @Override
-    public _class implement( Class... toImplement ){
-        Arrays.stream( toImplement ).forEach( i -> {
-            this.astClass.addImplementedType( i );
-            this.astClass.tryAddImportToParentCompilationUnit(i);
-        } );
-
-        return this;
-    }
-
-    @Override
-    public _class implement( String... toImplement ){
-        Arrays.stream( toImplement ).forEach( i -> this.astClass.addImplementedType( i ) );
-        return this;
-    }
-
+    
     @Override
     public _staticBlock getStaticBlock(int index ){
         NodeList<BodyDeclaration<?>> mems = this.astClass.getMembers();
@@ -628,12 +607,15 @@ public final class _class implements _type<ClassOrInterfaceDeclaration, _class>,
         }
         return sbs;
     }
+    
+    /*
     @Override
     public _class removeStaticBlock( _staticBlock _sb ){
         this.listStaticBlocks(sb -> sb.equals(_sb))
                 .forEach(s -> s.ast().removeForced() );        
         return this;
     }
+    */
 
     @Override
     public _class removeStaticBlock( InitializerDeclaration astSb ){
@@ -714,14 +696,6 @@ public final class _class implements _type<ClassOrInterfaceDeclaration, _class>,
         return _annos.of(this.astClass );
     }
 
-    @Override
-    public boolean isImplements( String str ){
-        try{
-            return isImplements( (ClassOrInterfaceType)Ast.typeRef( str ) );
-        }catch( Exception e){}
-        return false;
-    }
-
     public boolean is( String...classDeclaration){
         try{
             _class _o = of( classDeclaration );
@@ -739,21 +713,7 @@ public final class _class implements _type<ClassOrInterfaceDeclaration, _class>,
             return false;
         }
     }
-
-    @Override
-    public boolean isImplements( ClassOrInterfaceType ct ){
-        return this.astClass.getImplementedTypes().contains( ct );
-    }
-
-    @Override
-    public boolean isImplements( Class clazz ){
-        try{
-            return isImplements( (ClassOrInterfaceType)Ast.typeRef( clazz ) ) ||
-                    isImplements( (ClassOrInterfaceType)Ast.typeRef( clazz.getSimpleName() ) );
-        }catch( Exception e){ }
-        return false;
-    }
-
+    
     @Override
     public boolean isExtends( ClassOrInterfaceType ct ){
         return this.astClass.getExtendedTypes().contains( ct );

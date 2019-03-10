@@ -2,11 +2,14 @@ package draft.java;
 
 import com.github.javaparser.ast.Node;
 import com.github.javaparser.ast.body.MethodDeclaration;
+import com.github.javaparser.ast.comments.JavadocComment;
 import com.github.javaparser.ast.expr.AnnotationExpr;
+import com.github.javaparser.ast.nodeTypes.NodeWithJavadoc;
 import com.github.javaparser.ast.type.Type;
 import com.github.javaparser.printer.PrettyPrinterConfiguration;
 import draft.Composite;
 import draft.Named;
+import draft.Text;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -139,7 +142,35 @@ public interface _model {
      * @param <T> the model type
      */
     interface _member<N extends Node, T extends _named & _anno._hasAnnos & _javadoc._hasJavadoc>
-            extends _node<N>, _named<T>, _anno._hasAnnos<T>, _javadoc._hasJavadoc<T>{        
+            extends _node<N>, _named<T>, _anno._hasAnnos<T>, _javadoc._hasJavadoc<T>{      
+        
+        @Override
+        default _javadoc getJavadoc() {
+            return _javadoc.of((NodeWithJavadoc)this.ast());
+        }
+
+        @Override
+        default T removeJavadoc(){
+            ((NodeWithJavadoc)this.ast()).removeJavaDocComment();
+            return (T)this;
+        }
+
+        @Override
+        default boolean hasJavadoc(){
+            return ((NodeWithJavadoc)this.ast()).getJavadoc().isPresent();
+        }
+
+        @Override
+        default T javadoc( String... content ) {
+            ((NodeWithJavadoc)this.ast()).setJavadocComment( Text.combine(content));
+            return (T)this;
+        }
+        
+        @Override
+        default T javadoc( JavadocComment astJavadocComment ){
+            ((NodeWithJavadoc)this.ast()).setJavadocComment( astJavadocComment );
+            return (T)this;
+        }
     }
 
     /**

@@ -6,6 +6,10 @@ import com.github.javaparser.ast.body.*;
 import com.github.javaparser.ast.comments.BlockComment;
 import com.github.javaparser.ast.comments.Comment;
 import com.github.javaparser.ast.comments.JavadocComment;
+import com.github.javaparser.ast.nodeTypes.NodeWithAnnotations;
+import com.github.javaparser.ast.nodeTypes.NodeWithImplements;
+import com.github.javaparser.ast.nodeTypes.NodeWithJavadoc;
+import com.github.javaparser.ast.nodeTypes.NodeWithModifiers;
 import com.github.javaparser.ast.nodeTypes.NodeWithName;
 import com.github.javaparser.ast.stmt.LocalClassDeclarationStmt;
 import com.github.javaparser.ast.type.ClassOrInterfaceType;
@@ -77,8 +81,8 @@ import java.util.stream.Collectors;
  * @param <T> the _type entity that provides logical access to manipulating the
  * AST
  */
-public interface _type<AST extends TypeDeclaration, T extends _type>
-        extends  _javadoc._hasJavadoc<T>, _anno._hasAnnos<T>, _modifiers._hasModifiers<T>,
+public interface _type<AST extends TypeDeclaration & NodeWithJavadoc & NodeWithModifiers & NodeWithAnnotations, T extends _type>
+    extends _javadoc._hasJavadoc<T>, _anno._hasAnnos<T>, _modifiers._hasModifiers<T>,
         _field._hasFields<T>, _member<AST, T> {
 
     static _type of( InputStream is ){
@@ -94,6 +98,40 @@ public interface _type<AST extends TypeDeclaration, T extends _type>
         return of( clazz, _io.IN_DEFAULT );
     }
 
+    /**
+     * List the members (_fields, _methods, _constructors,...) of the _type
+     * @return
+     */
+    List<_member> listMembers();
+
+    /**
+     * Is this TYPE the top level class TYPE within a (i.e. a separate top level file /compilation Unit)?
+     * @return true if the _type is a top level TYPE, false otherwise
+     */
+    boolean isTopClass();
+    
+    /**
+     * Resolve the Compilation Unit that contains this _type,
+     * either this TYPE is:
+     * <UL>
+     * <LI>a top-level class
+     * <LI>a nested/member class
+     * <LI>an orphan class (a class built separately without linkage to a CompilationUnit
+     * (in which case this method returns a null)
+     * </UL>
+     * @return the top level CompilationUnit, or null if this _type is "orphaned"
+     * (created without linking to a CompilationUnit)
+     */
+    CompilationUnit findCompilationUnit();    
+    
+    /**
+     * Iterate & apply the action function to all Members that satisfy the _memberMatchFn
+     * @param _memberMatchFn function for selecting which members to apply the _memberActionFn
+     * @param _memberAction the action to apply to all selected members that satisfy the _memberMatchFn
+     * @return the modified T type
+     */
+    T forMembers( Predicate<_member> _memberMatchFn, Consumer<_member> _memberAction );
+    
     /**
      * given a Class, return the draft model of the source
      * @param clazz
@@ -157,11 +195,14 @@ public interface _type<AST extends TypeDeclaration, T extends _type>
         return (T)this;
     }
 
-
+    /**
+     * Sets the header comment (i.e. the copywrite)
+     * @param commentLines the lines in the header comment
+     * @return the modified T
+     */
     default T setHeaderComment( String...commentLines ){
         return setHeaderComment( new BlockComment( Text.combine(commentLines )) );
     }
-
 
     /**
      * add one or more _member(s) (_field, _method, _constructor, enum._constant, etc.) to the BODY of the _type
@@ -210,13 +251,7 @@ public interface _type<AST extends TypeDeclaration, T extends _type>
         }
         return (T)this;
     }
-
-    /**
-     * List the members (_fields, _methods, _constructors,...) of the _type
-     * @return
-     */
-    List<_member> listMembers();
-
+    
     /**
      * list all the members that match the predicate
      *
@@ -226,26 +261,6 @@ public interface _type<AST extends TypeDeclaration, T extends _type>
     default List<_member> listMembers( Predicate<_member> memberMatchFn ){
         return listMembers().stream().filter(memberMatchFn).collect(Collectors.toList());
     }
-
-    /**
-     * Is this TYPE the top level class TYPE within a (i.e. a separate top level file /compilation Unit)?
-     * @return true if the _type is a top level TYPE, false otherwise
-     */
-    boolean isTopClass();
-
-    /**
-     * Resolve the Compilation Unit that contains this _type,
-     * either this TYPE is:
-     * <UL>
-     * <LI>a top-level class
-     * <LI>a nested/member class
-     * <LI>an orphan class (a class built separately without linkage to a CompilationUnit
-     * (in which case this method returns a null)
-     * </UL>
-     * @return the top level CompilationUnit, or null if this _type is "orphaned"
-     * (created without linking to a CompilationUnit)
-     */
-    CompilationUnit findCompilationUnit();
 
     /**
      * Does this _type have a {@link PackageDeclaration} Node set?
@@ -661,6 +676,7 @@ public interface _type<AST extends TypeDeclaration, T extends _type>
         throw new DraftException("No AST CompilationUnit of "+ getName()+" to add imports");
     }
 
+    
     @Override
     default T javadoc( String...content ){
         ast().setJavadocComment( Text.combine(content));
@@ -793,6 +809,10 @@ public interface _type<AST extends TypeDeclaration, T extends _type>
     }
 
 
+    /**
+     * List the fully qualified names of all types defined in this _type
+     * @return 
+     */
     default List<String> listTypeNames(){
         List<_type> _ts = Walk.list(this, _type.class);
         List<String>names = new ArrayList<>();
@@ -809,13 +829,6 @@ public interface _type<AST extends TypeDeclaration, T extends _type>
         return forMembers( t-> true, _memberAction );
     }
 
-    /**
-     * Iterate & apply the action function to all Members that satisfy the _memberMatchFn
-     * @param _memberMatchFn function for selecting which members to apply the _memberActionFn
-     * @param _memberAction the action to apply to all selected members that satisfy the _memberMatchFn
-     * @return the modified T type
-     */
-    T forMembers( Predicate<_member> _memberMatchFn, Consumer<_member> _memberAction );
 
     /**
      * returns a _type or a nested _type if
@@ -887,6 +900,7 @@ public interface _type<AST extends TypeDeclaration, T extends _type>
      * @return
      */
     default T nest( _type type ){
+        //this.ast().addMember(type.ast());
         ((TypeDeclaration)this.ast()).addMember( (TypeDeclaration)type.ast() );
         return (T)this;
     }
@@ -1109,6 +1123,7 @@ public interface _type<AST extends TypeDeclaration, T extends _type>
     }
 
     /**
+     * 
      * When we initialize or "import" the body of code for a _type... i.e.
      * <PRE>
      * //create the _class from the name, and anonymous object body
@@ -1133,9 +1148,11 @@ public interface _type<AST extends TypeDeclaration, T extends _type>
      * {@link java.lang.reflect.Method}s, and {@link java.lang.reflect.Constructor}s,
      * that exist in the anonymous object body, (as well as the declared interfaces and extended classes)
      * and create a Set of classes that represent these runtime Classes (to add via _import)
-     *
-     * NOTE: we chaeck each of the
-     *
+     *    
+     * TODO: ???? What about RuntimeAnnotations? (on each type, method, parameter, etc.
+     * should I include the imports for these things?? and when... 
+     * for right now NO, but possible in the future
+     * 
      * </PRE>
      * @param anonymousObjectBody an anonymous Object
      * @return a Set<Class> containing the surface level classes that should be automatically
@@ -1203,10 +1220,10 @@ public interface _type<AST extends TypeDeclaration, T extends _type>
      */
     interface _hasTypes{
 
-        /** list all of the {@link _type}s */
+        /** @return list all of the {@link _type}s */
         List<_type> list();
 
-        /** container of Types that is empty */
+        /** @return container of Types that is empty */
         boolean isEmpty();
     }
 
@@ -1216,34 +1233,79 @@ public interface _type<AST extends TypeDeclaration, T extends _type>
      */
     interface _hasImplements<T extends _type & _hasImplements> {
 
-        boolean hasImplements();
+        //boolean hasImplements();
+        default boolean hasImplements(){
+            //return !((NodeWithImplements)((_type)this).ast()).getImplementedTypes().isEmpty();
+            return !listImplements().isEmpty();
+        }
+        
+        default boolean hasImplements( String str ){
+            try{
+                return _hasImplements.this.hasImplements( (ClassOrInterfaceType)Ast.typeRef( str ) );
+            }catch( Exception e){}
+            return false;
+        }
 
-        List<ClassOrInterfaceType> listImplements();
+        default boolean hasImplements( ClassOrInterfaceType ct ){
+            return ((NodeWithImplements)((_type)this).ast()).getImplementedTypes().contains(ct);
+            //return this.astEnum.getImplementedTypes().contains( ct );
+        }
+        
+        default boolean hasImplements( Class clazz ){
+            try{
+                _type t = ((_type)this);
+                
+                return _hasImplements.this.hasImplements( (ClassOrInterfaceType)Ast.typeRef( clazz ) ) ||
+                    t.hasImport( clazz ) && _hasImplements.this.hasImplements(clazz.getSimpleName() );
+            } catch( Exception e){ }
+            return false;
+        }
+    
+        default boolean hasImplements( _interface _i){
+            return hasImplements( _i.getFullName() );
+        }
+        
+        default List<ClassOrInterfaceType> listImplements(){
+            return ((NodeWithImplements)((_type)this).ast()).getImplementedTypes();
+        }
 
         default T implement( _interface..._interfaces ){
             Arrays.stream(_interfaces).forEach(i-> implement(i.getFullName() ) );
             return (T)this;
         }
+        
+        //boolean hasImplements( String str );
 
-        T implement( ClassOrInterfaceType... toImplement );
+        //boolean hasImplements( ClassOrInterfaceType ct );
 
-        T implement( Class... toImplement );
+        //boolean hasImplements( Class clazz );
+        
+        default T implement( ClassOrInterfaceType... toImplement ){
+            NodeWithImplements nwi = ((NodeWithImplements)((_type)this).ast());
+            Arrays.stream( toImplement ).forEach(i -> nwi.addImplementedType( i ) );
+            return (T)this;
+        }
+        
+        default T implement( Class... toImplement ){
+            NodeWithImplements nwi = ((NodeWithImplements)((_type)this).ast());
+            Arrays.stream( toImplement ).forEach(i -> nwi.addImplementedType( i ) );
+            return (T)this;
+        }
 
-        T implement( String... toImplement );
+        default T implement( String... toImplement ){
+            NodeWithImplements nwi = ((NodeWithImplements)((_type)this).ast());
+            Arrays.stream( toImplement ).forEach(i -> nwi.addImplementedType( i ) );
+            return (T)this;
+        }
+    
+        //T implement( ClassOrInterfaceType... toImplement );
+        //T implement( Class... toImplement );
+        //T implement( String... toImplement );
 
         T removeImplements( Class clazz);
 
         T removeImplements( ClassOrInterfaceType coit );
 
-        boolean isImplements( String str );
-
-        boolean isImplements( ClassOrInterfaceType ct );
-
-        boolean isImplements( Class clazz );
-
-        default boolean isImplements( _interface _i){
-            return isImplements( _i.getFullName() );
-        }
     }
 
     /**

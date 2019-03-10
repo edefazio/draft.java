@@ -114,6 +114,7 @@ public final class _constructor implements _anno._hasAnnos<_constructor>,
         return astCtor;
     }
 
+    /*
     @Override
     public _constructor javadoc( String... javadoc ) {
         astCtor.setJavadocComment( Text.combine( javadoc ) );
@@ -125,6 +126,7 @@ public final class _constructor implements _anno._hasAnnos<_constructor>,
         this.astCtor.setJavadocComment( astJavadocComment );
         return this;
     }
+    */
     
     @Override
     public boolean equals( Object obj ) {
@@ -205,6 +207,7 @@ public final class _constructor implements _anno._hasAnnos<_constructor>,
         return hash;
     }
 
+    /*
     @Override
     public boolean hasJavadoc() {
         return this.astCtor.getJavadocComment().isPresent();
@@ -220,6 +223,7 @@ public final class _constructor implements _anno._hasAnnos<_constructor>,
     public _javadoc getJavadoc() {
         return _javadoc.of( this.astCtor );
     }
+    */
 
     @Override
     public _constructor name( String name ) {
@@ -304,10 +308,12 @@ public final class _constructor implements _anno._hasAnnos<_constructor>,
         return true;
     }
 
+    /*
     @Override
     public boolean hasThrows() {
         return this.astCtor.getThrownExceptions().isNonEmpty();
     }
+    */
 
     @Override
     public _modifiers getModifiers() {
@@ -448,6 +454,7 @@ public final class _constructor implements _anno._hasAnnos<_constructor>,
      *
      * @author Eric
      * @param <T>
+     * @param <N> the AST node type (must implement NodeWithConstructors)
      */
     public interface _hasConstructors<T extends _hasConstructors & _type, N extends Node & NodeWithConstructors>
             extends _model {

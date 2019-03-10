@@ -179,9 +179,6 @@ public final class _body implements _model {
      */
     public interface _hasBody<T extends _hasBody>
             extends _model {
-
-        /** Returns NodeWithBody or NodeWithOptionalBody */
-        //Node ast();
         
         /**
          * @return gets the body
@@ -254,7 +251,7 @@ public final class _body implements _model {
          *
          * @return the modified T
          */
-        T clearBody();
+        T clearBody();        
 
         /**
          * Add Statements to the end of the BODY

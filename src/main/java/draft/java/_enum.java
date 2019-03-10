@@ -111,13 +111,13 @@ public final class _enum implements _type<EnumDeclaration, _enum>,_method._hasMe
         }
         Set<Class> importClasses = _type.inferImportsFrom(anonymousBody);
         _e.imports(importClasses.toArray(new Class[0]));
+        
         _e = _macro.to(anonymousBody.getClass(), _e);
         for(int i=0;i<typeFns.length; i++){
             _e = (_enum)typeFns[i].apply(_e);
         }
         return _e;
     }
-
 
     public _enum( EnumDeclaration astClass ){
         this.astEnum = astClass;
@@ -156,57 +156,8 @@ public final class _enum implements _type<EnumDeclaration, _enum>,_method._hasMe
     public _annos getAnnos() {
         return _annos.of(this.astEnum );
     }
-
-    @Override
-    public boolean hasImplements(){
-        return !this.astEnum.getImplementedTypes().isEmpty();
-    }
-
-    @Override
-    public boolean isImplements( String str ){
-        try{
-            return isImplements( (ClassOrInterfaceType)Ast.typeRef( str ) );
-        }catch( Exception e){}
-        return false;
-    }
-
-    @Override
-    public boolean isImplements( ClassOrInterfaceType ct ){
-        return this.astEnum.getImplementedTypes().contains( ct );
-    }
-
-    @Override
-    public boolean isImplements( Class clazz ){
-        try{
-            return isImplements( (ClassOrInterfaceType)Ast.typeRef( clazz ) ) ||
-                    this.hasImport( clazz ) && isImplements(clazz.getSimpleName() );
-        }catch( Exception e){ }
-        return false;
-    }
-
-    @Override
-    public NodeList<ClassOrInterfaceType> listImplements(){
-        return astEnum.getImplementedTypes();
-    }
-
-    @Override
-    public _enum implement( ClassOrInterfaceType... toImplement ){
-        Arrays.stream( toImplement ).forEach(i -> this.astEnum.addImplementedType( i ) );
-        return this;
-    }
-
-    @Override
-    public _enum implement( Class... toImplement ){
-        Arrays.stream( toImplement ).forEach(i -> this.astEnum.addImplementedType( i ) );
-        return this;
-    }
-
-    @Override
-    public _enum implement( String... toImplement ){
-        Arrays.stream( toImplement ).forEach(i -> this.astEnum.addImplementedType( i ) );
-        return this;
-    }
-
+    
+    /*
     @Override
     public boolean hasStaticBlock(){
         return this.astEnum.getMembers().stream().anyMatch( m -> m instanceof InitializerDeclaration );
@@ -225,7 +176,8 @@ public final class _enum implements _type<EnumDeclaration, _enum>,_method._hasMe
         bs.setStatements( Ast.blockStmt( content ).getStatements());
         return this;
     }
-
+    */
+    
     @Override
     public _staticBlock getStaticBlock(int index ){
         NodeList<BodyDeclaration<?>> mems = this.astEnum.getMembers();
@@ -239,6 +191,7 @@ public final class _enum implements _type<EnumDeclaration, _enum>,_method._hasMe
         }
         return null;
     }
+    
 
     @Override
     public List<_staticBlock> listStaticBlocks(){
@@ -259,6 +212,7 @@ public final class _enum implements _type<EnumDeclaration, _enum>,_method._hasMe
         return _ms;
     }
 
+    /*
     @Override
     public List<_method> listMethods( String name ){
         List<MethodDeclaration> mds = astEnum.getMethodsByName( name );
@@ -275,6 +229,7 @@ public final class _enum implements _type<EnumDeclaration, _enum>,_method._hasMe
         }
         return ms.get(0);
     }
+    */
 
     @Override
     public _enum method( MethodDeclaration method ) {
@@ -410,7 +365,6 @@ public final class _enum implements _type<EnumDeclaration, _enum>,_method._hasMe
         }
         return constant(_ct.ast());
     }
-
 
     public _enum constant ( EnumConstantDeclaration constant ) {
         this.astEnum.addEntry( constant );
@@ -662,6 +616,7 @@ public final class _enum implements _type<EnumDeclaration, _enum>,_method._hasMe
             return astConstant;
         }        
 
+        /*
         @Override
         public boolean hasJavadoc(){
             return this.astConstant.getJavadocComment().isPresent();
@@ -683,7 +638,8 @@ public final class _enum implements _type<EnumDeclaration, _enum>,_method._hasMe
             this.astConstant.removeJavaDocComment();
             return this;
         }
-
+        */
+        
         public boolean hasArguments(){
             return this.astConstant.getArguments().size() > 0;
         }
@@ -806,11 +762,13 @@ public final class _enum implements _type<EnumDeclaration, _enum>,_method._hasMe
             return listArguments().get( index );
         }
 
+        /*
         @Override
         public _constant javadoc( String... content ) {
             this.astConstant.setJavadocComment( Text.combine( content ) );
             return this;
         }
+        */
 
         @Override
         public _annos getAnnos() {
@@ -863,11 +821,13 @@ public final class _enum implements _type<EnumDeclaration, _enum>,_method._hasMe
             return ms;
         }
 
+        /*
         @Override
         public _constant fields( FieldDeclaration field ) {
             this.astConstant.getClassBody().add( field );
             return this;
         }
+        */
 
         @Override
         public String getName(){
@@ -1210,7 +1170,6 @@ public final class _enum implements _type<EnumDeclaration, _enum>,_method._hasMe
             }
         }
     }
-    
     
     public static _enumInspect INSPECT_ENUM = new _enumInspect();
     
