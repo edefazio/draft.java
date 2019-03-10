@@ -1,8 +1,11 @@
 package draft.java;
 
+import com.github.javaparser.ast.NodeList;
+import com.github.javaparser.ast.body.BodyDeclaration;
 import com.github.javaparser.ast.body.InitializerDeclaration;
 import com.github.javaparser.ast.body.TypeDeclaration;
 import com.github.javaparser.ast.comments.JavadocComment;
+import com.github.javaparser.ast.nodeTypes.NodeWithMembers;
 import com.github.javaparser.ast.stmt.BlockStmt;
 import com.github.javaparser.ast.stmt.Statement;
 import draft.Text;
@@ -178,16 +181,46 @@ public final class _staticBlock
     public interface _hasStaticBlock<T extends _hasStaticBlock & _type>
             extends _model {
 
-        /** returns the static Blocks on the _type (ordered by when they are declared) */
-        List<_staticBlock> listStaticBlocks();
+        /** 
+         * returns the static Blocks on the _type (ordered by when they are declared) 
+         * @return 
+         */
+        default List<_staticBlock> listStaticBlocks(){
+            NodeWithMembers nwm = (NodeWithMembers)((_node)this).ast();
+            List<_staticBlock> sbs = new ArrayList<>();
+            NodeList<BodyDeclaration<?>> mems = nwm.getMembers();
+            for( BodyDeclaration mem : mems ){
+                if( mem instanceof InitializerDeclaration){
+                    sbs.add(new _staticBlock( (InitializerDeclaration)mem));
+                }
+            }
+            return sbs;
+        }
 
+        /**
+         * @param index 
+         * @return the index<SUP>th</SUP> static block declared in the _type 
+         */
+        //_staticBlock getStaticBlock( int index );
+        
+        default _staticBlock getStaticBlock(int index ){
+            NodeWithMembers nwm = (NodeWithMembers)((_node)this).ast();
+            NodeList<BodyDeclaration<?>> mems = nwm.getMembers();
+            for( BodyDeclaration mem : mems ){
+                if( mem instanceof InitializerDeclaration){
+                    if( index == 0 ){
+                        return new _staticBlock( (InitializerDeclaration)mem);
+                    }
+                    index --;
+                }
+            }
+            return null;
+        }
+        
         /** returns the static Blocks on the _type matching the matchFn */
         default List<_staticBlock> listStaticBlocks( Predicate<_staticBlock>_staticBlockMatchFn){
             return listStaticBlocks().stream().filter(_staticBlockMatchFn).collect(Collectors.toList());
         }
-
-        /** @return the index<SUP>th</SUP> static block declared in the _type */
-        _staticBlock getStaticBlock( int index );
 
         /** adds a Static block based on th body of the lambda */
         default T staticBlock( Expr.Command command ){

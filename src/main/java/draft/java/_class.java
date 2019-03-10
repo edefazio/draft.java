@@ -553,32 +553,6 @@ public final class _class implements _type<ClassOrInterfaceDeclaration, _class>,
     }
     
     @Override
-    public _staticBlock getStaticBlock(int index ){
-        NodeList<BodyDeclaration<?>> mems = this.astClass.getMembers();
-        for( BodyDeclaration mem : mems ){
-            if( mem instanceof InitializerDeclaration){
-                if( index == 0 ){
-                    return new _staticBlock( (InitializerDeclaration)mem);
-                }
-                index --;
-            }
-        }
-        return null;
-    }
-
-    @Override
-    public List<_staticBlock> listStaticBlocks(){
-        List<_staticBlock> sbs = new ArrayList<>();
-        NodeList<BodyDeclaration<?>> mems = this.astClass.getMembers();
-        for( BodyDeclaration mem : mems ){
-            if( mem instanceof InitializerDeclaration){
-                sbs.add( new _staticBlock( (InitializerDeclaration)mem));
-            }
-        }
-        return sbs;
-    }
-
-    @Override
     public List<_member> listMembers(){
         List<_member> _mems = new ArrayList<>();
         forFields( f-> _mems.add( f));

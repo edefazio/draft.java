@@ -153,34 +153,7 @@ public final class _enum implements _type<EnumDeclaration, _enum>,_method._hasMe
     public _annos getAnnos() {
         return _annos.of(this.astEnum );
     }
-    
-    @Override
-    public _staticBlock getStaticBlock(int index ){
-        NodeList<BodyDeclaration<?>> mems = this.astEnum.getMembers();
-        for( BodyDeclaration mem : mems ){
-            if( mem instanceof InitializerDeclaration){
-                if( index == 0 ){
-                    return new _staticBlock( (InitializerDeclaration)mem);
-                }
-                index --;
-            }
-        }
-        return null;
-    }
-    
-
-    @Override
-    public List<_staticBlock> listStaticBlocks(){
-        List<_staticBlock> sbs = new ArrayList<>();
-        NodeList<BodyDeclaration<?>> mems = this.astEnum.getMembers();
-        for( BodyDeclaration mem : mems ){
-            if( mem instanceof InitializerDeclaration){
-                sbs.add(new _staticBlock( (InitializerDeclaration)mem));
-            }
-        }
-        return sbs;
-    }
-
+   
     @Override
     public List<_method> listMethods() {
         List<_method> _ms = new ArrayList<>();
