@@ -88,13 +88,6 @@ public final class _parameter
     }
 
     @Override
-    public boolean isType( Class clazz ) {
-        //Type t = Ast.typeRef( clazz.getSimpleName() );
-        return this.astParameter.getTypeAsString().equals( clazz.getSimpleName() )
-                || this.astParameter.getTypeAsString().equals( clazz.getCanonicalName() );
-    }
-
-    @Override
     public boolean isType( String type ) {
         Type t = Ast.typeRef( type );
         return this.astParameter.getType().equals( t );
@@ -243,7 +236,6 @@ public final class _parameter
          */
         NodeWithParameters ast();
         
-
         default _parameter getParameter( int index ){
             return _parameter.of( ast().getParameter( index ) );
         }
@@ -349,8 +341,7 @@ public final class _parameter
             return getParameters().isVarArg();
         }
     }
-
-    
+   
     /**
      *
      * Parameter is the AST node TYPE (the syntax and storage TYPE in the AST)
@@ -450,7 +441,6 @@ public final class _parameter
             }
             return -1;
         }
-
         
         public _typeRef[] types(){
             _typeRef[] ts = new _typeRef[count()];

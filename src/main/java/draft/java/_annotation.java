@@ -669,36 +669,6 @@ public final class _annotation
             return null;
         }
 
-        /*
-        @Override
-        public _javadoc getJavadoc() {
-            return _javadoc.of(this.ast());
-        }
-
-        @Override
-        public _element removeJavadoc(){
-            this.ast().removeJavaDocComment();
-            return this;
-        }
-
-        @Override
-        public boolean hasJavadoc(){
-            return this.ast().getJavadoc().isPresent();
-        }
-
-        @Override
-        public _element javadoc( String... content ) {
-            this.ast().setJavadocComment( Text.combine(content));
-            return this;
-        }
-        
-        @Override
-        public _element javadoc( JavadocComment astJavadocComment ){
-            this.ast().setJavadocComment( astJavadocComment );
-            return this;
-        }
-        */
-
         @Override
         public _annos getAnnos() {
             return _annos.of(this.astAnnMember );

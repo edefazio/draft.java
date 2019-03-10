@@ -588,29 +588,6 @@ public final class _modifiers
         }
 
     }
-
-    /**
-     * Verify that one list of _constructor is equivalent to another list of _constructor
-     
-    public static _java.Semantic<Collection<Modifier>> EQIVALENT_MODIFIERS_LIST = 
-            (Collection<Modifier> o1, Collection<Modifier> o2) -> {
-        if( o1 == null ){
-            return o2 == null;
-        }
-        if( o1.size() != o2.size()){
-            return false;
-        }
-        Set<Modifier> tm = new HashSet<>();
-        Set<Modifier> om = new HashSet<>();
-        tm.addAll(o1);
-        om.addAll(o2);
-        return Objects.equals(tm, om);
-    };
-    
-    public static boolean equivalent( Collection<Modifier> left, Collection<Modifier> right){
-        return EQIVALENT_MODIFIERS_LIST.equivalent(left, right);
-    }
-    */
     
     interface _hasFinal<T extends _hasFinal> {
 

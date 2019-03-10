@@ -286,32 +286,6 @@ public final class _field
         return _typeRef.of(astVar.getType());
     }
 
-    /*
-    @Override
-    public boolean isType(Class clazz) {
-        try {
-            return this.astVar.getType().equals(Ast.typeRef(clazz.getSimpleName()))
-                    || this.astVar.getType().equals(Ast.typeRef(clazz.getCanonicalName()));
-        } catch (Exception e) {
-        }
-        return false;
-    }
-
-    @Override
-    public boolean isType(Type type) {
-        return this.astVar.getType().equals(type);
-    }
-
-    @Override
-    public boolean isType(String type) {
-        try {
-            return this.astVar.getType().equals(Ast.typeRef(type));
-        } catch (Exception e) {
-        }
-        return false;
-    }
-    */
-
     @Override
     public _modifiers getModifiers() {
         return _modifiers.of(getFieldDeclaration());

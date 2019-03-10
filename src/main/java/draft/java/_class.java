@@ -607,20 +607,6 @@ public final class _class implements _type<ClassOrInterfaceDeclaration, _class>,
         }
         return sbs;
     }
-    
-    /*
-    @Override
-    public _class removeStaticBlock( _staticBlock _sb ){
-        this.listStaticBlocks(sb -> sb.equals(_sb))
-                .forEach(s -> s.ast().removeForced() );        
-        return this;
-    }
-    */
-
-    @Override
-    public _class removeStaticBlock( InitializerDeclaration astSb ){
-        return removeStaticBlock( _staticBlock.of(astSb));        
-    }
 
     @Override
     public List<_member> listMembers(){
@@ -813,18 +799,6 @@ public final class _class implements _type<ClassOrInterfaceDeclaration, _class>,
 
     public _class removeTypeParameter( TypeParameter tp ){
         this.astClass.getTypeParameters().remove(tp);
-        return this;
-    }
-
-    /**
-     * Apply customization macros to this _class and return the result
-     * @param customMacros macros to customize the _class
-     * @return the modified _class
-     */
-    public _class customize( _macro<_class>...customMacros ){
-        for(int i=0;i<customMacros.length;i++){
-            customMacros[i].apply(this);
-        }
         return this;
     }
 

@@ -188,34 +188,6 @@ public final class _method
         return astMethod;
     }
 
-    /*
-    @Override
-    public _method javadoc(String... javadoc) {
-        astMethod.setJavadocComment(Text.combine(javadoc));
-        return this;
-    }
-
-    @Override
-    public _method javadoc(JavadocComment astJavadocComment) {
-        this.astMethod.setJavadocComment(astJavadocComment);
-        return this;
-    }
-
-    @Override
-    public _method removeJavadoc() {
-        this.astMethod.removeJavaDocComment();
-        return this;
-    }
-
-    @Override
-    public boolean isVarArg() {
-        if (!this.astMethod.getParameters().isEmpty()) {
-            return astMethod.getParameter(astMethod.getParameters().size() - 1).isVarArgs();
-        }
-        return false;
-    }
-    */
-
     public boolean is(String... methodDecl) {
         try {
             _method _mm = of(methodDecl);
@@ -331,19 +303,7 @@ public final class _method
                 Ast.typeHash(astMethod.getType()));
         return hash;
     }
-
-    /*
-    @Override
-    public boolean hasJavadoc() {
-        return this.astMethod.getJavadocComment().isPresent();
-    }
-
-    @Override
-    public _javadoc getJavadoc() {
-        return _javadoc.of(this.astMethod);
-    }
-    */
-
+    
     @Override
     public _method type(Type type) {
         this.astMethod.setType(type);
@@ -387,13 +347,6 @@ public final class _method
         return this.astMethod.getTypeParameters().isNonEmpty();
     }
 
-    /*
-    @Override
-    public boolean hasParameters() {
-        return this.astMethod.getParameters().isNonEmpty();
-    }
-    */
-
     public _diff diff(_method right) {
         return INSPECT_METHOD.diff(this, right);
     }
@@ -436,31 +389,11 @@ public final class _method
         }
         return true;
     }
-    /*
-    @Override
-    public _method addParameters(Parameter... parameters) {
-        Arrays.stream(parameters).forEach(p -> addParameter(p));
-        return this;
-    }
-
-    @Override
-    public _method addParameter(Parameter parameter) {
-        this.astMethod.addParameter(parameter);
-        return this;
-    }
-    */
 
     @Override
     public _body getBody() {
         return _body.of(this.astMethod);
     }
-
-    /*
-    @Override
-    public boolean hasThrows() {
-        return this.astMethod.getThrownExceptions().isNonEmpty();
-    }
-    */
 
     @Override
     public _modifiers getModifiers() {
@@ -492,14 +425,6 @@ public final class _method
     public String getName() {
         return astMethod.getNameAsString();
     }
-
-    /*
-    @Override
-    public _method setParameters(NodeList<Parameter> astPs){
-        this.astMethod.setParameters(astPs);
-        return this;        
-    }
-    */
     
     @Override
     public _parameters getParameters() {

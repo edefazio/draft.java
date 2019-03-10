@@ -1,6 +1,5 @@
 package draft.java;
 
-import draft.DraftException;
 import draft.java._java.Component;
 import draft.java._java._path;
 

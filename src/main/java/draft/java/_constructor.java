@@ -4,7 +4,6 @@ import com.github.javaparser.ast.Modifier;
 import com.github.javaparser.ast.Node;
 import com.github.javaparser.ast.NodeList;
 import com.github.javaparser.ast.body.*;
-import com.github.javaparser.ast.comments.JavadocComment;
 import com.github.javaparser.ast.expr.LambdaExpr;
 import com.github.javaparser.ast.expr.ObjectCreationExpr;
 import com.github.javaparser.ast.nodeTypes.NodeWithConstructors;
@@ -113,20 +112,6 @@ public final class _constructor implements _anno._hasAnnos<_constructor>,
     public ConstructorDeclaration ast() {
         return astCtor;
     }
-
-    /*
-    @Override
-    public _constructor javadoc( String... javadoc ) {
-        astCtor.setJavadocComment( Text.combine( javadoc ) );
-        return this;
-    }
-
-    @Override
-    public _constructor javadoc( JavadocComment astJavadocComment ){
-        this.astCtor.setJavadocComment( astJavadocComment );
-        return this;
-    }
-    */
     
     @Override
     public boolean equals( Object obj ) {
@@ -206,24 +191,6 @@ public final class _constructor implements _anno._hasAnnos<_constructor>,
                 this.getReceiverParameter() );
         return hash;
     }
-
-    /*
-    @Override
-    public boolean hasJavadoc() {
-        return this.astCtor.getJavadocComment().isPresent();
-    }
-
-    @Override
-    public _constructor removeJavadoc() {
-        this.astCtor.removeJavaDocComment();
-        return this;
-    }
-
-    @Override
-    public _javadoc getJavadoc() {
-        return _javadoc.of( this.astCtor );
-    }
-    */
 
     @Override
     public _constructor name( String name ) {
@@ -307,13 +274,6 @@ public final class _constructor implements _anno._hasAnnos<_constructor>,
     public boolean hasBody() {
         return true;
     }
-
-    /*
-    @Override
-    public boolean hasThrows() {
-        return this.astCtor.getThrownExceptions().isNonEmpty();
-    }
-    */
 
     @Override
     public _modifiers getModifiers() {
@@ -566,6 +526,7 @@ public final class _constructor implements _anno._hasAnnos<_constructor>,
         default T constructor(String ctor){
             return constructor( new String[]{ctor});
         }
+        
         /**
          * builds a {@link _constructor} from a String and adds it to the
          *
@@ -730,7 +691,7 @@ public final class _constructor implements _anno._hasAnnos<_constructor>,
             }
             Optional<_constructor> oc = 
                 lcs.stream().filter(
-                    c -> c.getName().equals(ct) 
+                    c -> c.getName().equals(ct.getName()) 
                             && c.getParameters().hasParametersOfType(_trs)).findFirst();
             if( oc.isPresent() ){
                 return oc.get();

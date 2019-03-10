@@ -3,14 +3,11 @@ package draft.java;
 import com.github.javaparser.StaticJavaParser;
 import com.github.javaparser.ast.*;
 import com.github.javaparser.ast.body.*;
-import com.github.javaparser.ast.comments.JavadocComment;
 import com.github.javaparser.ast.expr.Expression;
 import com.github.javaparser.ast.expr.ObjectCreationExpr;
-import com.github.javaparser.ast.stmt.BlockStmt;
 import com.github.javaparser.ast.type.ClassOrInterfaceType;
 import com.github.javaparser.printer.PrettyPrinterConfiguration;
 import draft.DraftException;
-import draft.Text;
 import draft.java._anno.*;
 import draft.java._inspect._diff;
 import draft.java._java.Component;
@@ -157,27 +154,6 @@ public final class _enum implements _type<EnumDeclaration, _enum>,_method._hasMe
         return _annos.of(this.astEnum );
     }
     
-    /*
-    @Override
-    public boolean hasStaticBlock(){
-        return this.astEnum.getMembers().stream().anyMatch( m -> m instanceof InitializerDeclaration );
-    }
-
-    @Override
-    public _enum staticBlock(BlockStmt block){
-        BlockStmt bs = this.astEnum.addStaticInitializer();
-        bs.setStatements( block.getStatements());
-        return this;
-    }
-
-    @Override
-    public _enum staticBlock(String... content){
-        BlockStmt bs = this.astEnum.addStaticInitializer();
-        bs.setStatements( Ast.blockStmt( content ).getStatements());
-        return this;
-    }
-    */
-    
     @Override
     public _staticBlock getStaticBlock(int index ){
         NodeList<BodyDeclaration<?>> mems = this.astEnum.getMembers();
@@ -211,25 +187,6 @@ public final class _enum implements _type<EnumDeclaration, _enum>,_method._hasMe
         astEnum.getMethods().forEach( m-> _ms.add(_method.of( m ) ) );
         return _ms;
     }
-
-    /*
-    @Override
-    public List<_method> listMethods( String name ){
-        List<MethodDeclaration> mds = astEnum.getMethodsByName( name );
-        List<_method>ms = new ArrayList<>();
-        mds.forEach( m-> ms.add(_method.of(m)));
-        return ms;
-    }
-
-    @Override
-    public _method getMethod( String methodName ){
-        List<_method> ms = listMethods( methodName );
-        if( ms.isEmpty()){
-            return null;
-        }
-        return ms.get(0);
-    }
-    */
 
     @Override
     public _enum method( MethodDeclaration method ) {
@@ -615,30 +572,6 @@ public final class _enum implements _type<EnumDeclaration, _enum>,_method._hasMe
         public EnumConstantDeclaration ast(){
             return astConstant;
         }        
-
-        /*
-        @Override
-        public boolean hasJavadoc(){
-            return this.astConstant.getJavadocComment().isPresent();
-        }
-
-        @Override
-        public _javadoc getJavadoc() {
-            return _javadoc.of(this.astConstant);
-        }
-
-        @Override
-        public _constant javadoc( JavadocComment astJavadocComment ){
-            this.astConstant.setJavadocComment( astJavadocComment );
-            return this;
-        }
-        
-        @Override
-        public _constant removeJavadoc(){
-            this.astConstant.removeJavaDocComment();
-            return this;
-        }
-        */
         
         public boolean hasArguments(){
             return this.astConstant.getArguments().size() > 0;
@@ -762,14 +695,6 @@ public final class _enum implements _type<EnumDeclaration, _enum>,_method._hasMe
             return listArguments().get( index );
         }
 
-        /*
-        @Override
-        public _constant javadoc( String... content ) {
-            this.astConstant.setJavadocComment( Text.combine( content ) );
-            return this;
-        }
-        */
-
         @Override
         public _annos getAnnos() {
             return _annos.of(this.astConstant );
@@ -820,14 +745,6 @@ public final class _enum implements _type<EnumDeclaration, _enum>,_method._hasMe
                     });
             return ms;
         }
-
-        /*
-        @Override
-        public _constant fields( FieldDeclaration field ) {
-            this.astConstant.getClassBody().add( field );
-            return this;
-        }
-        */
 
         @Override
         public String getName(){

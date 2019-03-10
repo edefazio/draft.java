@@ -192,8 +192,6 @@ public final class _typeParameter
             try {
                 _typeParameters _tps = _typeParameters.of(typeParameters);
                 return _tps.equals(this);
-                //NodeList<TypeParameter> ntp = Ast.TYPE_PARAMETERS( TYPE_PARAMETERS );
-                //return ntp.typesEqual( this.astNodeWithTypeParams.getTypeParameters() );
             }
             catch( Exception e ) {
             }
@@ -207,7 +205,6 @@ public final class _typeParameter
             Set<_typeParameter> _tps = new HashSet<>();
             this.astNodeWithTypeParams.getTypeParameters().forEach( t -> _tps.add( _typeParameter.of( (TypeParameter)t)) );
             hash = 29 * hash + Objects.hashCode( _tps );
-            //hash = 29 * hash + Objects.hashCode( this.astNodeWithTypeParams.getTypeParameters() );
             return hash;
         }
 
@@ -229,21 +226,12 @@ public final class _typeParameter
             Set<_typeParameter> _tps = new HashSet<>();
             this.astNodeWithTypeParams.getTypeParameters().forEach( t -> _tps.add( _typeParameter.of( (TypeParameter)t) ) );
 
-            //Set<_typeParameter> _tps = new HashSet<>();
-            //this.astNodeWithTypeParams.getTypeParameters().forEach( t -> _tps.add( _typeParameter.of( (TypeParameter)t) ) );
-
             for(int i=0; i<other.astNodeWithTypeParams.getTypeParameters().size(); i++){
                 _typeParameter _tp = _typeParameter.of( other.astNodeWithTypeParams.getTypeParameter(i));
                 if( ! _tps.contains(_tp) ){
-                    //System.out.println("Donest contain "+ _tp);
                     return false;
                 }
             }
-            /*
-            if( !Objects.typesEqual( this.astNodeWithTypeParams.getTypeParameters(), other.astNodeWithTypeParams.getTypeParameters() ) ) {
-                return false;
-            }
-            */
             return true;
         }
 
