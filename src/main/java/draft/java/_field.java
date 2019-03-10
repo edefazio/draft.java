@@ -188,7 +188,7 @@ public final class _field
     @Override
     public _annos getAnnos() {
 
-        if (this.astVar != null && this.astVar.getParentNode().isPresent()) {
+        if( this.getFieldDeclaration() != null && this.astVar != null && this.astVar.getParentNode().isPresent()) {
 
             return _annos.of(getFieldDeclaration());
         }
@@ -232,7 +232,10 @@ public final class _field
 
     @Override
     public _javadoc getJavadoc() {
-        return _javadoc.of(getFieldDeclaration());
+        if( this.getFieldDeclaration() != null){
+            return _javadoc.of(getFieldDeclaration());
+        }
+        return null;
     }
 
     @Override
@@ -312,18 +315,26 @@ public final class _field
         if (!Ast.typesEqual(this.astVar.getType(), other.astVar.getType())) {
             return false;
         }
-        if (!Ast.modifiersEqual(getFieldDeclaration(), other.getFieldDeclaration())) {
-            return false;
-        }
-        if (!Ast.annotationsEqual(getFieldDeclaration(), other.getFieldDeclaration())) {
+        if (!Objects.equals(getInit(), other.getInit())) {
             return false;
         }
         if (!Objects.equals(getJavadoc(), other.getJavadoc())) {
             return false;
         }
-        if (!Objects.equals(getInit(), other.getInit())) {
-            return false;
-        }
+        if(this.getFieldDeclaration() != null) {
+            if( other.getFieldDeclaration() != null ){
+                if (!Ast.modifiersEqual(getFieldDeclaration(), other.getFieldDeclaration())) {
+                    return false;
+                }
+                if (!Ast.annotationsEqual(getFieldDeclaration(), other.getFieldDeclaration())) {
+                    return false;
+                }
+            }
+        } else{
+            //if this is ONLY a var
+            return other.getFieldDeclaration() == null || 
+                    other.getAnnos().isEmpty() && other.getModifiers().ast().isEmpty();
+        }       
         return true;
     }
 
@@ -355,41 +366,49 @@ public final class _field
     }
 
     public boolean isPublic() {
-        return getFieldDeclaration().isPublic() || getEffectiveModifiers().contains(Modifier.publicModifier());
+        return this.getFieldDeclaration() != null && 
+                getFieldDeclaration().isPublic() || getEffectiveModifiers().contains(Modifier.publicModifier());
     }
 
     public boolean isDefaultAccess() {
-        return !this.getFieldDeclaration().isPublic()
+        return this.getFieldDeclaration() != null 
+                && !this.getFieldDeclaration().isPublic()
                 && !this.getFieldDeclaration().isPrivate()
                 && !this.getFieldDeclaration().isProtected();
     }
 
     public boolean isProtected() {
-        return this.getFieldDeclaration().isProtected();
+        return this.getFieldDeclaration() != null && this.getFieldDeclaration().isProtected();
     }
 
     public boolean isPrivate() {
-        return this.getFieldDeclaration().isPrivate();
+        return this.getFieldDeclaration() != null && this.getFieldDeclaration().isPrivate();
     }
 
     @Override
     public boolean isStatic() {
-        return this.getFieldDeclaration().isStatic() || getEffectiveModifiers().contains(Modifier.staticModifier());
+        return this.getFieldDeclaration() != null &&  this.getFieldDeclaration().isStatic() || getEffectiveModifiers().contains(Modifier.staticModifier());
     }
 
     @Override
     public boolean isFinal() {
-        return this.getFieldDeclaration().isFinal() || getEffectiveModifiers().contains(Modifier.finalModifier());
+        return this.getFieldDeclaration() != null && this.getFieldDeclaration().isFinal() || getEffectiveModifiers().contains(Modifier.finalModifier());
     }
 
     @Override
     public boolean isVolatile() {
-        return this.getFieldDeclaration().isVolatile();
+        if(this.getFieldDeclaration() != null) {
+            return this.getFieldDeclaration().isVolatile();
+        }
+        return false;
     }
 
     @Override
     public boolean isTransient() {
-        return this.getFieldDeclaration().isTransient();
+        if(this.getFieldDeclaration() != null) {
+            return this.getFieldDeclaration().isTransient();
+        }
+        return false;
     }
 
     public _field setPublic() {
@@ -426,26 +445,6 @@ public final class _field
             this.getFieldDeclaration().setPublic(false);
         }
         return this;
-    }
-
-    @Override
-    public _field setStatic() {
-        return setStatic(true);
-    }
-
-    @Override
-    public _field setFinal() {
-        return setFinal(true);
-    }
-
-    @Override
-    public _field setVolatile() {
-        return setVolatile(true);
-    }
-
-    @Override
-    public _field setTransient() {
-        return setTransient(true);
     }
 
     @Override
@@ -664,7 +663,6 @@ public final class _field
         }
 
         default T field(_field _f) {
-
             return field(_f.astVar);
         }
 

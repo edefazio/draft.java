@@ -455,22 +455,7 @@ public final class _method
         }
         return this.astMethod.isAbstract();
     }
-
-    @Override
-    public boolean isNative() {
-        return this.astMethod.isNative();
-    }
-
-    @Override
-    public boolean isSynchronized() {
-        return this.astMethod.isSynchronized();
-    }
-
-    @Override
-    public boolean isStrictFp() {
-        return this.astMethod.isStrictfp();
-    }
-
+    
     @Override
     public boolean isFinal() {
         return this.astMethod.isFinal();
@@ -505,48 +490,11 @@ public final class _method
     }
 
     @Override
-    public _method setStatic() {
-        return setStatic(true);
-    }
-
-    @Override
     public _method setAbstract() {
         this.astMethod.removeBody();
         return setAbstract(true);
     }
-
-    @Override
-    public _method setSynchronized() {
-        return setSynchronized(true);
-    }
-
-    @Override
-    public _method setFinal() {
-        return setFinal(true);
-    }
-
-    @Override
-    public _method setNative() {
-        return setNative(true);
-    }
-
-    @Override
-    public _method setStrictFp() {
-        return setStrictFp(true);
-    }
-
-    @Override
-    public _method setNative(boolean toSet) {
-        this.astMethod.setNative(toSet);
-        return this;
-    }
-
-    @Override
-    public _method setStatic(boolean toSet) {
-        this.astMethod.setStatic(toSet);
-        return this;
-    }
-
+    
     @Override
     public _method setAbstract(boolean toSet) {
         this.astMethod.setAbstract(toSet);
@@ -557,19 +505,7 @@ public final class _method
         }
         return this;
     }
-
-    @Override
-    public _method setSynchronized(boolean toSet) {
-        this.astMethod.setSynchronized(toSet);
-        return this;
-    }
-
-    @Override
-    public _method setStrictFp(boolean toSet) {
-        this.astMethod.setStrictfp(toSet);
-        return this;
-    }
-
+    
     @Override
     public _method setFinal(boolean toSet) {
         this.astMethod.setFinal(toSet);
@@ -817,6 +753,10 @@ public final class _method
          * _method.of( "public static final void print", ()->{
          * System.out.println(1); });
          *
+         * @param <A>
+         * @param <B>
+         * @param signature
+         * @param parametersAndBody
          * @return
          */
         default <A extends Object, B extends Object> T method(String signature, Function<A, B> parametersAndBody) {
@@ -828,6 +768,11 @@ public final class _method
         /**
          * ( "public static final void print", ()->{ System.out.println(1); });
          *
+         * @param <A>
+         * @param <B>
+         * @param <C>
+         * @param signature
+         * @param parametersAndBody
          * @return
          */
         default <A extends Object, B extends Object, C extends Object> T method(String signature, BiFunction<A, B, C> parametersAndBody) {

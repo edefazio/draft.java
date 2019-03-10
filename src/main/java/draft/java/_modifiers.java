@@ -466,8 +466,8 @@ public final class _modifiers
      * @param <T> the target TYPE
      */
     public interface _hasModifiers<T extends _hasModifiers>
-            extends _model {
-
+        extends _model {
+        
         /**
          * gets the explicitly set modifiers for the node
          * @return the explicitly set modifiers
@@ -593,72 +593,138 @@ public final class _modifiers
 
         boolean isFinal();
 
-        T setFinal();
+        default T setFinal(){
+            return setFinal(true);
+        }
 
         T setFinal( boolean toSet );
     }
 
-    interface _hasStatic<T extends _hasStatic> {
+    interface _hasStatic<T extends _hasStatic>  extends _hasModifiers<T> {
 
         boolean isStatic();
 
-        T setStatic();
+        default T setStatic(){
+            return setStatic(true);
+        }
 
-        T setStatic( boolean toSet );
+        default T setStatic( boolean toSet ){
+            _node n = (_node)this;
+            NodeWithModifiers nwm = (NodeWithModifiers)n.ast();
+            nwm.setModifier(Modifier.Keyword.STATIC, toSet);
+            return (T)this;
+        }
     }
 
-    interface _hasSynchronized<T extends _hasSynchronized> {
+    interface _hasSynchronized<T extends _hasSynchronized> extends _hasModifiers<T> {
 
-        boolean isSynchronized();
+        //boolean isSynchronized();
+        default boolean isSynchronized(){
+            return getModifiers().node.hasModifier(Modifier.Keyword.SYNCHRONIZED );
+        }
 
-        T setSynchronized();
+        default T setSynchronized(){
+            return setSynchronized(true);
+        }
 
-        T setSynchronized( boolean toSet );
+        default T setSynchronized( boolean toSet ){
+            _node n = (_node)this;
+            NodeWithModifiers nwm = (NodeWithModifiers)n.ast();
+            nwm.setModifier(Modifier.Keyword.SYNCHRONIZED, toSet);
+            return (T)this;
+        }
     }
 
-    interface _hasAbstract<T extends _hasAbstract> {
+    interface _hasAbstract<T extends _hasAbstract> extends _hasModifiers<T> {
 
         boolean isAbstract();
 
-        T setAbstract();
+        default T setAbstract(){
+            return setAbstract(true);
+        }
 
-        T setAbstract( boolean toSet );
+        default T setAbstract( boolean toSet ){
+            _node n = (_node)this;
+            NodeWithModifiers nwm = (NodeWithModifiers)n.ast();
+            nwm.setModifier(Modifier.Keyword.ABSTRACT, toSet);
+            return (T)this;
+        }
     }
 
-    interface _hasVolatile<T extends _hasVolatile> {
+    interface _hasVolatile<T extends _hasVolatile> extends _hasModifiers<T> {
 
-        boolean isVolatile();
+        default boolean isVolatile(){
+            return getModifiers().node.hasModifier(Modifier.Keyword.VOLATILE );
+        }
 
-        T setVolatile();
+        default T setVolatile(){
+            return setVolatile(true);
+        }
 
-        T setVolatile( boolean toSet );
+        default T setVolatile( boolean toSet ){
+           _node n = (_node)this;
+            NodeWithModifiers nwm = (NodeWithModifiers)n.ast();
+            nwm.setModifier(Modifier.Keyword.VOLATILE, toSet);
+            return (T)this; 
+        }
     }
 
-    interface _hasNative<T extends _hasNative> {
+    interface _hasNative<T extends _hasNative>  extends _hasModifiers<T> {
 
-        boolean isNative();
+        //boolean isNative();
+        default boolean isNative(){
+            return getModifiers().node.hasModifier(Modifier.Keyword.NATIVE );
+        }
 
-        T setNative();
+        default T setNative(){
+            return setNative(true);
+        }
 
-        T setNative( boolean toSet );
+        default T setNative( boolean toSet ){
+            _node n = (_node)this;
+            NodeWithModifiers nwm = (NodeWithModifiers)n.ast();
+            nwm.setModifier(Modifier.Keyword.NATIVE, toSet);
+            return (T)this;
+        }
     }
 
-    interface _hasTransient<T extends _hasTransient> {
+    interface _hasTransient<T extends _hasTransient>  extends _hasModifiers<T> {
 
-        boolean isTransient();
+        //boolean isTransient();
+        
+        default boolean isTransient(){
+            return getModifiers().node.hasModifier(Modifier.Keyword.TRANSIENT );
+        }
 
-        T setTransient();
+        default T setTransient(){
+            return setTransient(true);
+        }
 
-        T setTransient( boolean toSet );
+        default T setTransient( boolean toSet ){
+            _node n = (_node)this;
+            NodeWithModifiers nwm = (NodeWithModifiers)n.ast();
+            nwm.setModifier(Modifier.Keyword.TRANSIENT, toSet);
+            return (T)this;
+        }
     }
 
-    interface _hasStrictFp<T extends _hasStrictFp> {
+    interface _hasStrictFp<T extends _hasStrictFp>  extends _hasModifiers<T> {
 
-        boolean isStrictFp();
+        //boolean isStrictFp();
+        default boolean isStrictFp(){
+            return getModifiers().node.hasModifier(Modifier.Keyword.STRICTFP );
+        }
 
-        T setStrictFp();
+        default T setStrictFp(){
+            return setStrictFp(true);
+        }
 
-        T setStrictFp( boolean toSet );
+        default T setStrictFp( boolean toSet ){
+            _node n = (_node)this;
+            NodeWithModifiers nwm = (NodeWithModifiers)n.ast();
+            nwm.setModifier(Modifier.Keyword.STRICTFP, toSet);
+            return (T)this;
+        }
     }
     
     public static final _modifiersInspect INSPECT_MODIFIERS = 

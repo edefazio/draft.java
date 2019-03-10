@@ -681,7 +681,8 @@ public final class _class implements _type<ClassOrInterfaceDeclaration, _class>,
     public boolean isStatic(){
         return this.astClass.isStatic();
     }
-
+    
+    /*
     @Override
     public _class setStatic(){
         return setStatic(true);
@@ -691,7 +692,7 @@ public final class _class implements _type<ClassOrInterfaceDeclaration, _class>,
     public _class setAbstract(){
         return setAbstract(true);
     }
-
+    
     @Override
     public _class setFinal(){
         return setFinal(true);
@@ -708,7 +709,8 @@ public final class _class implements _type<ClassOrInterfaceDeclaration, _class>,
         this.astClass.setAbstract(toSet);
         return this;
     }
-
+    */
+    
     @Override
     public _class setFinal(boolean toSet){
         this.astClass.setFinal(toSet);

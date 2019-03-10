@@ -21,8 +21,8 @@ import java.util.stream.Collectors;
  * @author Eric
  */
 public final class _parameter
-        implements _namedType<_parameter>, _anno._hasAnnos<_parameter>, _hasFinal<_parameter>,
-        _node<Parameter> {
+    implements _namedType<_parameter>, _anno._hasAnnos<_parameter>, 
+        _hasFinal<_parameter>, _node<Parameter> {
 
     public static _parameter of( Class type, String name ) {
         return of( new Parameter( Ast.typeRef( type ), name ) );
@@ -197,12 +197,6 @@ public final class _parameter
     }
 
     @Override
-    public _parameter setFinal() {
-        this.astParameter.setFinal( true );
-        return this;
-    }
-
-    @Override
     public _parameter setFinal( boolean toSet ) {
         this.astParameter.setFinal( toSet );
         return this;
@@ -212,7 +206,7 @@ public final class _parameter
     public Map<_java.Component, Object> componentsMap( ) {
         Map<_java.Component, Object> parts = new HashMap<>();
         parts.put( _java.Component.FINAL, isFinal() );
-        parts.put(_java.Component.ANNOS, getAnnos() );
+        parts.put( _java.Component.ANNOS, getAnnos() );
         parts.put( _java.Component.TYPE, getType() );
         parts.put( _java.Component.NAME, getName() );
         parts.put( _java.Component.VAR_ARG, isVarArg() );

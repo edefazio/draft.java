@@ -251,7 +251,6 @@ public final class _throws
             Arrays.stream(throwExceptions).forEach(t -> addThrows(t));
             return (T)this;
         }
-
     
         default T addThrows(Class<? extends Throwable> throwException) {
             getThrows().astNodeWithThrows.addThrownException((ReferenceType) Ast.typeRef(throwException));
