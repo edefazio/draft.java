@@ -49,7 +49,7 @@ public final class _staticBlock
         return this.astStaticInit;
     }
 
-    private final InitializerDeclaration astStaticInit;
+    public final InitializerDeclaration astStaticInit;
 
     @Override
     public _body getBody() {

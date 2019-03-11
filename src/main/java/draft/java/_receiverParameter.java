@@ -32,7 +32,7 @@ public final class _receiverParameter
         return new _receiverParameter( rp );
     }
 
-    private final ReceiverParameter astReceiverParam;
+    public final ReceiverParameter astReceiverParam;
 
     public _receiverParameter( ReceiverParameter rp ) {
         this.astReceiverParam = rp;

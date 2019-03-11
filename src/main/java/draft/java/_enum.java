@@ -539,7 +539,7 @@ public final class _enum implements _type<EnumDeclaration, _enum>,_method._hasMe
             this.astConstant = ecd;
         }
 
-        private final EnumConstantDeclaration astConstant;
+        public final EnumConstantDeclaration astConstant;
 
         @Override
         public EnumConstantDeclaration ast(){

@@ -671,7 +671,6 @@ public final class _modifiers
 
     interface _hasNative<T extends _hasNative>  extends _hasModifiers<T> {
 
-        //boolean isNative();
         default boolean isNative(){
             return getModifiers().node.hasModifier(Modifier.Keyword.NATIVE );
         }
@@ -690,8 +689,6 @@ public final class _modifiers
 
     interface _hasTransient<T extends _hasTransient>  extends _hasModifiers<T> {
 
-        //boolean isTransient();
-        
         default boolean isTransient(){
             return getModifiers().node.hasModifier(Modifier.Keyword.TRANSIENT );
         }
