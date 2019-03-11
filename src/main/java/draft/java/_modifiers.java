@@ -4,7 +4,6 @@ import com.github.javaparser.ast.NodeList;
 import com.github.javaparser.ast.nodeTypes.NodeWithModifiers;
 import com.github.javaparser.ast.Modifier;
 import java.util.*;
-import draft.java._java._path;
 
 /**
  * I find the default AST implementation (the EnumSet<Modifier>)
@@ -618,7 +617,6 @@ public final class _modifiers
 
     interface _hasSynchronized<T extends _hasSynchronized> extends _hasModifiers<T> {
 
-        //boolean isSynchronized();
         default boolean isSynchronized(){
             return getModifiers().node.hasModifier(Modifier.Keyword.SYNCHRONIZED );
         }
@@ -707,7 +705,6 @@ public final class _modifiers
 
     interface _hasStrictFp<T extends _hasStrictFp>  extends _hasModifiers<T> {
 
-        //boolean isStrictFp();
         default boolean isStrictFp(){
             return getModifiers().node.hasModifier(Modifier.Keyword.STRICTFP );
         }
@@ -721,94 +718,6 @@ public final class _modifiers
             NodeWithModifiers nwm = (NodeWithModifiers)n.ast();
             nwm.setModifier(Modifier.Keyword.STRICTFP, toSet);
             return (T)this;
-        }
-    }
-    
-    public static final _modifiersInspect INSPECT_MODIFIERS = 
-        new _modifiersInspect();
-    
-    public static class _modifiersInspect implements _inspect<_modifiers>,  
-            _differ<NodeList<Modifier>,_node>{
-       
-        @Override
-        public boolean equivalent(_modifiers left, _modifiers right) {
-            return Objects.equals(left, right);
-        }
-
-        @Override
-        public _inspect._diff diff( _java._inspector _ins, _path path, _inspect._diff dt, _modifiers left, _modifiers right) {
-            if( !equivalent( left, right)){
-                dt.add(path.in( _java.Component.MODIFIERS), left, right);
-            }
-            return dt;
-        }
-
-        @Override
-        public <R extends _node> _dif diff(_path path, build dt, R leftRoot, R rightRoot, NodeList<Modifier> left, NodeList<Modifier> right) {
-            if( !Objects.equals( left, right )){
-                dt.node( new _changeModifiers(path.in(_java.Component.MODIFIERS), (_hasModifiers)leftRoot, (_hasModifiers)rightRoot) );
-            }
-            return (_dif)dt;
-        }
-        
-        public static class _changeModifiers 
-                implements _delta<_hasModifiers>, _change<NodeList<Modifier>>{
-
-            public _path path;
-            public _hasModifiers leftRoot;
-            public _hasModifiers rightRoot;
-            public NodeList<Modifier> left;
-            public NodeList<Modifier> right;
-            
-            public _changeModifiers( _path path, _hasModifiers leftRoot, _hasModifiers rightRoot){
-                this.path = path;
-                this.leftRoot = leftRoot;
-                this.rightRoot = rightRoot;
-                this.left = leftRoot.getEffectiveModifiers();
-                this.right = rightRoot.getEffectiveModifiers();
-            }
-            
-            @Override
-            public _hasModifiers leftRoot() {
-                return leftRoot;
-            }
-
-            @Override
-            public _hasModifiers rightRoot() {
-                return rightRoot;
-            }
-
-            @Override
-            public _path path() {
-                return path;
-            }
-
-            @Override
-            public NodeList<Modifier> left() {
-                return left;
-            }
-
-            @Override
-            public NodeList<Modifier> right() {
-                return right;
-            }
-
-            @Override
-            public void keepLeft() {
-                leftRoot.modifiers(left);
-                rightRoot.modifiers(left);
-            }
-
-            @Override
-            public void keepRight() {
-                leftRoot.modifiers(right);
-                rightRoot.modifiers(right);
-            }            
-            
-            @Override
-            public String toString(){
-                return "   ~ "+path;
-            }
         }
     }
 }

@@ -10,13 +10,10 @@ import com.github.javaparser.ast.nodeTypes.NodeWithStatements;
 import com.github.javaparser.ast.stmt.*;
 import com.github.javaparser.printer.PrettyPrinterConfiguration;
 import draft.DraftException;
-import draft.java._inspect._diff;
-import draft.java._java._path;
 
 import java.util.*;
 import java.util.function.Function;
 import java.util.function.Predicate;
-import name.fraser.neil.plaintext.diff_match_patch;
 
 /**
  * The "body" part of methods, constructors, and static blocks (i.e.
@@ -500,107 +497,5 @@ public final class _body implements _model {
             }
             return null;
         }
-    }
-
-    /**
-     * Diff this _body against the right _body and return a diff-tree
-     * containing the changes (add, remove, edit)s that would be applied to this
-     * in order to transform it to the right _element
-     *
-     * @param right the "right" / or target _body to diff / transform to
-     * @return the changes required to make this to the right _body
-     */
-    public _diff diff(_body right) {
-        return INSPECT_BODY.diff(this, right);
-    }
-
-    /**
-     * Diff left _body against the right _body and return a diff-tree
-     * containing the changes (add, remove, edit)s that would be applied to this
-     * in order to transform it to the right _element
-     *
-     * @param left the starting _body
-     * @param right the target _body to diff / transform to
-     * @return the changes required to make this left to the right _body
-     */
-    public static _diff diff(_body left, _body right) {
-        return INSPECT_BODY.diff(left, right);
-    }
-    
-    public static final _bodyInspect INSPECT_BODY
-            = new _bodyInspect();
-
-    public static class _bodyInspect implements _inspect<_body>, _differ<_body, _node> {
-
-        private static final diff_match_patch BODY_TEXT_DIFF = new diff_match_patch();
-
-        @Override
-        public boolean equivalent(_body left, _body right) {
-            return Objects.equals(left, right);
-        }
-
-        @Override
-        public <R extends _node> _dif diff(_path path, build dt, R leftRoot, R rightRoot, _body left, _body right) {
-            if( left == right ){
-                return (_dif)dt;
-            }
-            String leftSer = left.toString(Ast.PRINT_NO_COMMENTS);
-            String rightSer = right.toString(Ast.PRINT_NO_COMMENTS);
-            
-            if (!Objects.equals(leftSer, rightSer)) {
-                //ok. we know at least one diff (other than comments) are in the text
-                // lets diff the originals WITH comments
-
-                // NOTE: we treat code DIFFERENTLY than other objects that are diffedbecause 
-                // diffs in code can cross object boundaries and it's not as "clean"
-                // as simply having members with properties because of the nature of code
-                // instead we have a _textDiff which encapsulates the apparent changes
-                // the text has to undergo to get from LEFT, to RIGHT and incorporates               
-                // the Edit Distance between two bodies of text
-                LinkedList<diff_match_patch.Diff> diffs = BODY_TEXT_DIFF.diff_main(left.toString(), right.toString());
-                
-                //_path path, _hasBody _leftRoot, _hasBody _rightRoot, LinkedList<Diff> diffs ){
-                dt.node( new _differ._editNode(path.in(_java.Component.BODY), (_hasBody)leftRoot, (_hasBody)rightRoot, diffs ) );
-                
-                //dt.addEdit(path.in(_java.Component.BODY), diffs, left, right);
-                //_textDiff td = new _textDiff(diffs);
-
-                //dt.add(path.in(_java.Component.BODY), td, td);                
-            }
-            return (_dif)dt;            
-        }
-        
-        @Override
-        public _inspect._diff diff(_java._inspector _ins, _path path, _inspect._diff dt, _body left, _body right) {
-            if (!left.isPresent()) {
-                if (!right.isPresent()) {
-                    return dt;
-                } else {
-                    return dt.add(path.in(_java.Component.BODY), left, right);
-                }
-            }
-            if (!right.isPresent()) {
-                return dt.add(path.in(_java.Component.BODY), left, right);
-            }
-            String leftSer = left.toString(Ast.PRINT_NO_COMMENTS);
-            String rightSer = right.toString(Ast.PRINT_NO_COMMENTS);
-            if (!Objects.equals(leftSer, rightSer)) {
-                //ok. we know at least one diff (other than comments) are in the text
-                // lets diff the originals WITH comments
-
-                // NOTE: we treat code DIFFERENTLY than other objects that are diffedbecause 
-                // diffs in code can cross object boundaries and it's not as "clean"
-                // as simply having members with properties because of the nature of code
-                // instead we have a _textDiff which encapsulates the apparent changes
-                // the text has to undergo to get from LEFT, to RIGHT and incorporates               
-                // the Edit Distance between two bodies of text
-                LinkedList<diff_match_patch.Diff> diffs = BODY_TEXT_DIFF.diff_main(left.toString(), right.toString());
-                dt.addEdit(path.in(_java.Component.BODY), diffs, left, right);
-                //_textDiff td = new _textDiff(diffs);
-
-                //dt.add(path.in(_java.Component.BODY), td, td);                
-            }
-            return dt;
-        }  
-    }
+    }    
 }

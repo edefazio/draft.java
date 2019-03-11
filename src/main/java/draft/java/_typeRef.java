@@ -265,37 +265,4 @@ public final class _typeRef<T extends Type>
             return true;
         }
     }
-    
-    public static final _typeRefInspect INSPECT_TYPE_REF = new _typeRefInspect();
-    
-    public static class _typeRefInspect
-        implements _inspect<_typeRef>, _differ<_typeRef, _node> {
-
-        String name = _java.Component.TYPE.getName();
-        
-        public _typeRefInspect(){ 
-        }
-        
-        @Override
-        public boolean equivalent(_typeRef left, _typeRef right) {            
-            return Objects.equals(left, right);
-        }
-        
-        
-        @Override
-        public _inspect._diff diff( _java._inspector _ins, _path path, _inspect._diff dt, _typeRef left, _typeRef right) { 
-            if( !equivalent(left, right) ){
-                dt.add(path.in(_java.Component.TYPE), left, right);
-            }            
-            return dt;
-        }
-
-        @Override
-        public <R extends _node> _dif diff(_path path, build dt, R leftRoot, R rightRoot, _typeRef left, _typeRef right) {
-            if( !Objects.equals( left, right) ){
-                dt.node(new _change_type( path.in(Component.TYPE), (_namedType)leftRoot, (_namedType)rightRoot) );            
-            }
-            return (_dif)dt;
-        }
-    }
 }

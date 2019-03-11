@@ -10,7 +10,6 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 
-import draft.java._java._path;
 import draft.java._anno.*;
 import draft.java._model.*;
 
@@ -204,106 +203,5 @@ public final class _receiverParameter
             }
             return (T) this;
         }    
-    }
-    
-    public static final _receiverParameterInspect INSPECT_RECEIVER_PARAMETER = 
-        new _receiverParameterInspect();
-    
-    public static class _receiverParameterInspect
-        implements _inspect<_receiverParameter>, _differ<_receiverParameter,_node>  {
-
-        public static final String name = _java.Component.RECEIVER_PARAMETER.getName();
-        
-        @Override
-        public boolean equivalent(_receiverParameter left, _receiverParameter right) {
-            return Objects.equals( left, right);
-        }
-
-        @Override
-        public _inspect._diff diff(_java._inspector _ins, _path path, _inspect._diff dt,  _receiverParameter left, _receiverParameter right) {
-            if( !equivalent( left, right )){
-                if(left == null){
-                    return dt.add(path.in(_java.Component.RECEIVER_PARAMETER), null, right);                    
-                }
-                if(right == null){
-                    return dt.add(path.in(_java.Component.RECEIVER_PARAMETER), left, null);                                        
-                }                
-                _ins.INSPECT_NAME.diff(_ins, path.in(_java.Component.RECEIVER_PARAMETER), dt, left.getName(), right.getName());
-                _ins.INSPECT_TYPE_REF.diff(_ins, path.in(_java.Component.RECEIVER_PARAMETER), dt, left.getType(), right.getType());
-                _ins.INSPECT_ANNOS.diff(_ins, path.in(_java.Component.RECEIVER_PARAMETER), dt, left.getAnnos(), right.getAnnos());
-            }
-            return dt;            
-        }
-
-        @Override
-        public <R extends _node> _dif diff(_path path, build dt, R leftRoot, R rightRoot, _receiverParameter left, _receiverParameter right) {
-            if( !equivalent( left, right )){
-                dt.node(new change_receiverParameter(path.in(_java.Component.RECEIVER_PARAMETER), (_hasReceiverParameter)leftRoot,(_hasReceiverParameter)rightRoot ) );                
-            }
-            return (_dif)dt;      
-        }
-        
-        public static class change_receiverParameter implements _delta<_hasReceiverParameter>, _change<ReceiverParameter>{
-
-            public _path path;
-            public _hasReceiverParameter leftRoot;
-            public _hasReceiverParameter rightRoot;
-            public ReceiverParameter left;
-            public ReceiverParameter right;
-            
-            public change_receiverParameter(_path path, _hasReceiverParameter leftRoot, _hasReceiverParameter rightRoot ){
-                this.path = path;
-                this.leftRoot = leftRoot;
-                this.rightRoot = rightRoot;
-                if( leftRoot.hasReceiverParameter()){
-                    this.left = leftRoot.getReceiverParameter().astReceiverParam.clone();
-                }
-                if( rightRoot.hasReceiverParameter() ){
-                    this.right = rightRoot.getReceiverParameter().astReceiverParam.clone();
-                }
-            }
-            
-            @Override
-            public _hasReceiverParameter leftRoot() {
-                return leftRoot;
-            }
-
-            @Override
-            public _hasReceiverParameter rightRoot() {
-                return rightRoot;
-            }
-
-            @Override
-            public _path path() {
-                return path;
-            }
-
-            @Override
-            public ReceiverParameter left() {
-                return left;
-            }
-
-            @Override
-            public ReceiverParameter right() {
-                return right;
-            }
-
-            @Override
-            public void keepLeft() {
-                leftRoot.receiverParameter(left);
-                rightRoot.receiverParameter(left);
-            }
-
-            @Override
-            public void keepRight() {
-                leftRoot.receiverParameter(right);
-                rightRoot.receiverParameter(right);
-            }            
-            
-            @Override
-            public String toString(){
-                return "   ~ "+path;
-            }
-        }        
-    }
+    }    
 }

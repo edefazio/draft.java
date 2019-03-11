@@ -5,8 +5,6 @@ import com.github.javaparser.ast.body.MethodDeclaration;
 import com.github.javaparser.ast.nodeTypes.NodeWithThrownExceptions;
 import com.github.javaparser.ast.type.ReferenceType;
 import draft.Text;
-import draft.java._java._path;
-import static draft.java.Ast.typesEqual;
 import java.util.*;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
@@ -278,114 +276,6 @@ public final class _throws
         default T removeThrow( Class<? extends Throwable> thrownClass ){
             getThrows().list( t -> t.is(thrownClass.getCanonicalName()) ).forEach( t -> t.ast().remove() );
             return (T)this;
-        }
-    }
-    
-    public static final _throwsInspect INSPECT_THROWS = new _throwsInspect();
-    
-    public static class _throwsInspect
-        implements _inspect<_throws>, _differ<_throws, _node> {
-
-        String name = _java.Component.THROWS.getName();
-        
-        public _throwsInspect(){ 
-        }
-        
-        @Override
-        public boolean equivalent(_throws left, _throws right) {
-            return Objects.equals(left, right);
-        }
-        
-        @Override
-        public _inspect._diff diff( _java._inspector _ins, _path path, _inspect._diff dt, _throws left, _throws right) {
-            //List<ObjectDiff.Entry> des = new ArrayList<>();
-            for(int i=0; i<left.count();i++){
-                ReferenceType cit = left.get(i);
-                if( ! right.ast().stream().filter( c-> typesEqual(c, cit) ).findFirst().isPresent()){
-                    dt.add( path.in(_java.Component.THROWS), cit, null ); 
-                }
-            }
-            for(int i=0; i<right.count();i++){
-                ReferenceType cit = right.get(i);
-                if( ! left.ast().stream().filter( c-> typesEqual(c, cit) ).findFirst().isPresent()){
-                    dt.add( path.in(_java.Component.THROWS), null, cit ); 
-                }
-            }
-            return dt;
-        }
-        
-        public boolean equivalent(NodeList<ReferenceType>left, NodeList<ReferenceType> right) {            
-            return Ast.typesEqual(left, right);
-        }
-
-        @Override
-        public <R extends _node> _dif diff(_path path, build dt, R leftRoot, R rightRoot, _throws left, _throws right) {
-            if( !Objects.equals( left, right)){
-                dt.node( new _change_throws(path.in(_java.Component.THROWS), (_hasThrows)leftRoot, (_hasThrows)rightRoot ) );
-            }
-            return (_dif)dt;
-        }
-
-        public static class _change_throws
-                implements _delta<_hasThrows>, _change<List<ReferenceType>>{
-
-            public _path path;
-            public _hasThrows leftRoot;
-            public _hasThrows rightRoot;
-            public NodeList<ReferenceType> left;
-            public NodeList<ReferenceType> right;
-            
-            public _change_throws(_path p, _hasThrows leftRoot, _hasThrows rightRoot){
-                this.path = p;
-                this.leftRoot = leftRoot;
-                this.rightRoot = rightRoot;
-                left = new NodeList<>();
-                left.addAll( leftRoot.getThrows().astNodeWithThrows.getThrownExceptions() );
-                right = new NodeList<>();
-                right.addAll( rightRoot.getThrows().astNodeWithThrows.getThrownExceptions() );
-            }
-            
-            @Override
-            public _hasThrows leftRoot() {
-                return leftRoot;
-            }
-
-            @Override
-            public _hasThrows rightRoot() {
-                return rightRoot;
-            }
-
-            @Override
-            public _path path() {
-                return this.path;
-            }
-
-            @Override
-            public List<ReferenceType> left() {
-                return left;
-            }
-
-            @Override
-            public List<ReferenceType> right() {
-                return right;
-            }
-
-            @Override
-            public void keepLeft() {
-                leftRoot.setThrows(left);
-                rightRoot.setThrows(left);
-            }
-
-            @Override
-            public void keepRight() {
-                leftRoot.setThrows( right );
-                rightRoot.setThrows( right );
-            }
-            
-            @Override
-            public String toString(){
-                return "   ~ "+ path;
-            }
         }
     }
 }

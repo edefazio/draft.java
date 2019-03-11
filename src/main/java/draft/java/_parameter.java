@@ -9,7 +9,6 @@ import draft.Text;
 import draft.java._modifiers._hasFinal;
 import draft.java._anno.*;
 import draft.java._model.*;
-import draft.java._java._path;
 import java.util.*;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
@@ -595,110 +594,5 @@ public final class _parameter
         public NodeWithParameters astHolder() {
             return this.astNodeWithParams;
         }
-    }
-    
-    /**
-     * Inspects parameters
-     */
-    public static final _parametersInspect INSPECT_PARAMETERS = 
-        new _parametersInspect();
-
-    public static class _parametersInspect 
-            implements _inspect<_parameters>, _differ<_parameters,_node> {
-
-        @Override
-        public boolean equivalent(_parameters left, _parameters right) {
-            return Objects.equals(left, right);
-        }
-
-        @Override
-        public _inspect._diff diff( _java._inspector _ins, _path path, _inspect._diff dt, _parameters left, _parameters right) {
-            for(int i=0;i<left.count();i++){
-                _parameter _l = left.get(i);
-                _parameter _r = null;
-                if( i < right.count() ){
-                    _r = right.get(i);
-                }
-                if( !Objects.equals(left, right) ){
-                    dt.add(path.in(_java.Component.PARAMETER, i+""), _l, _r);
-                }                
-            }
-            if( right.count() > left.count() ){
-                for(int i=left.count(); i<right.count(); i++){
-                    _parameter _r = right.get(i);
-                    dt.add(path.in( _java.Component.PARAMETER,i+""), null, _r);
-                }
-            }
-            return dt;
-        }        
-
-        @Override
-        public <R extends _node> _dif diff(_path path, build dt, R leftRoot, R rightRoot, _parameters left, _parameters right) {
-            if( !Objects.equals(left, right )){
-                dt.node(new _changeParameters(path.in(_java.Component.PARAMETERS),(_hasParameters)leftRoot,(_hasParameters)rightRoot) );
-            }
-            return (_dif)dt;            
-        }
-        
-        public static class _changeParameters 
-                implements _delta<_hasParameters>, _change<_parameters> {
-
-            public _path path;
-            public _hasParameters leftRoot;
-            public _hasParameters rightRoot;
-            public _parameters left;
-            public _parameters right;
-            
-            public _changeParameters(_path path, _hasParameters leftRoot, _hasParameters rightRoot){
-                this.path = path;
-                this.leftRoot = leftRoot;
-                this.rightRoot = rightRoot;
-                this.left = leftRoot.getParameters().copy();
-                this.right = rightRoot.getParameters().copy();
-            }
-            
-            @Override
-            public _hasParameters leftRoot() {
-                return leftRoot;
-            }
-
-            @Override
-            public _hasParameters rightRoot() {
-                return rightRoot;
-            }
-
-            @Override
-            public _path path() {
-                return path;
-            }
-
-            @Override
-            public _parameters left() {
-                return left;
-            }
-
-            @Override
-            public _parameters right() {
-                return right;
-            }
-
-            @Override
-            public void keepLeft() {
-                leftRoot.setParameters( left);
-                rightRoot.setParameters( left );
-            }
-
-            @Override
-            public void keepRight() {
-                leftRoot.setParameters( right );
-                rightRoot.setParameters( right );
-            }
-            
-            @Override
-            public String toString(){
-                return "   ~ "+path;
-            }
-            
-        }
-    }   
+    }    
 }

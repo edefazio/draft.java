@@ -8,8 +8,6 @@ import com.github.javaparser.ast.type.ClassOrInterfaceType;
 
 import draft.java._anno.*;
 import draft.DraftException;
-import draft.java._inspect._diff;
-import draft.java._java._path;
 import draft.java.io._in;
 import draft.java.macro._macro;
 import draft.java.macro._remove;
@@ -682,35 +680,6 @@ public final class _class implements _type<ClassOrInterfaceDeclaration, _class>,
         return this.astClass.isStatic();
     }
     
-    /*
-    @Override
-    public _class setStatic(){
-        return setStatic(true);
-    }
-
-    @Override
-    public _class setAbstract(){
-        return setAbstract(true);
-    }
-    
-    @Override
-    public _class setFinal(){
-        return setFinal(true);
-    }
-
-    @Override
-    public _class setStatic(boolean toSet){
-        this.astClass.setStatic(toSet);
-        return this;
-    }
-
-    @Override
-    public _class setAbstract(boolean toSet){
-        this.astClass.setAbstract(toSet);
-        return this;
-    }
-    */
-    
     @Override
     public _class setFinal(boolean toSet){
         this.astClass.setFinal(toSet);
@@ -855,88 +824,5 @@ public final class _class implements _type<ClassOrInterfaceDeclaration, _class>,
                 tf, tm, tc, tn);
 
         return hash;
-    }
-    
-    /**
-     * Diff this _class against the right _class and return a diff-tree
-     * containing the changes (add, remove, edit)s that would be applied to this
-     * in order to transform it to the right _class
-     *
-     * @param right the "right" / or target _class to diff / transform to
-     * @return the changes required to make this to the right _class
-     */
-    public _diff diff(_class right) {
-        return INSPECT_CLASS.diff(this, right);
-    }
-
-    /**
-     * Diff left _class against the right _class and return a diff-tree
-     * containing the changes (add, remove, edit)s that would be applied to left
-     * in order to transform it to the right _class
-     *
-     * @param left the starting _class
-     * @param right the target _class to diff / transform to
-     * @return the changes required to make this left to the right _class
-     */
-    public static _diff diff(_class left, _class right) {
-        return INSPECT_CLASS.diff(left, right);
-    }
-    
-    public static _classInspect INSPECT_CLASS = new _classInspect();
-    
-    public static class _classInspect implements _inspect<_class>, _differ<_class, _node> {
-
-        @Override
-        public boolean equivalent(_class left, _class right) {
-            return Objects.equals(left,right);
-        }
-
-        @Override
-        public _diff diff( _java._inspector _ins, _path path, _diff dt, _class left, _class right) {
-            if( left == null){
-                if( right == null){
-                    return dt;
-                }
-                return dt.add( path.in(_java.Component.CLASS, right.getName()), null, right);
-            }
-            if( right == null){
-                return dt.add( path.in(_java.Component.CLASS, left.getName()), left, null);
-            }
-            _ins.INSPECT_PACKAGE_NAME.diff(_ins, path, dt, left.getPackage(), right.getPackage() );
-            _ins.INSPECT_IMPORTS.diff(_ins, path,dt, left.listImports(), right.listImports() );
-            _ins.INSPECT_ANNOS.diff(_ins, path, dt, left.getAnnos(), right.getAnnos());          
-            _ins.INSPECT_EXTENDS.diff(_ins, path, dt, left.listExtends(), right.listExtends());          
-            _ins.INSPECT_IMPLEMENTS.diff(_ins, path, dt, left.listImplements(), right.listImplements());  
-            _ins.INSPECT_JAVADOC.diff(_ins, path, dt, left.getJavadoc(), right.getJavadoc());  
-            _ins.INSPECT_TYPE_PARAMETERS.diff(_ins, path, dt, left.getTypeParameters(), right.getTypeParameters());  
-            _ins.INSPECT_STATIC_BLOCKS.diff(_ins, path, dt, left.listStaticBlocks(), right.listStaticBlocks());            
-            _ins.INSPECT_NAME.diff(_ins, path, dt, left.getName(), right.getName());
-            _ins.INSPECT_MODIFIERS.diff(_ins, path, dt, left.getModifiers(), right.getModifiers());
-            _ins.INSPECT_CONSTRUCTORS.diff(_ins, path, dt, left.listConstructors(), right.listConstructors());
-            _ins.INSPECT_METHODS.diff(_ins, path, dt, left.listMethods(), right.listMethods() );
-            _ins.INSPECT_FIELDS.diff(_ins, path, dt, left.listFields(), right.listFields() );
-            
-            _ins.INSPECT_NESTS.diff(_ins, path, dt, left.listNests(), right.listNests());
-            return dt;
-        }
-
-        @Override
-        public <R extends _node> _dif diff(_path path, build dt, R leftRoot, R rightRoot, _class left, _class right) {
-            _java.INSPECT_PACKAGE.diff(path, dt, leftRoot, rightRoot, left.getPackage(), right.getPackage() );
-            _type.INSPECT_IMPORTS.diff(path,dt, leftRoot, rightRoot, left.listImports(), right.listImports() );
-            _javadoc.INSPECT_JAVADOC.diff( path, dt, leftRoot, rightRoot, left.getJavadoc(), right.getJavadoc());  
-            _anno.INSPECT_ANNOS.diff(path, dt, leftRoot, rightRoot, left.getAnnos(), right.getAnnos());                      
-            _modifiers.INSPECT_MODIFIERS.diff(path, dt, leftRoot, rightRoot, left.getEffectiveModifiers(), right.getEffectiveModifiers());
-            _java.INSPECT_NAME.diff(path, dt, leftRoot, rightRoot, left.getName(), right.getName());
-            _typeParameter.INSPECT_TYPE_PARAMETERS.diff(path, dt, leftRoot, rightRoot,left.getTypeParameters(), right.getTypeParameters());  
-            _type.INSPECT_EXTENDS.diff(path, dt, leftRoot, rightRoot, left.listExtends(), right.listExtends());          
-            _type.INSPECT_IMPLEMENTS.diff(path, dt, leftRoot, rightRoot, left.listImplements(), right.listImplements());  
-            _staticBlock.INSPECT_STATIC_BLOCKS.diff(path, dt, leftRoot, rightRoot,left.listStaticBlocks(), right.listStaticBlocks());              
-            _constructor.INSPECT_CONSTRUCTORS.diff(path, dt, left, right,left.listConstructors(), right.listConstructors());
-            _method.INSPECT_METHODS.diff(path, dt, leftRoot, rightRoot, left.listMethods(), right.listMethods() );
-            _field.INSPECT_FIELDS.diff(path, dt, leftRoot, rightRoot, left.listFields(), right.listFields() );
-            _type.INSPECT_NESTS.diff(path, dt, leftRoot, rightRoot, left.listNests(), right.listNests());            
-            return (_dif)dt;
-        }
     }    
 }
