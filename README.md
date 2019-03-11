@@ -3,7 +3,7 @@
 
 <H3>requirements</H3>
 <P>draft.java runs on JDK 8 or later.<SUP>*(runtime compilation requires the JDK rather than the JRE)</SUP> 
-draft.java depends only on the (fantastic) <A HREF="http://javaparser.org/">JavaParser</A> core (3.12.0 or later) library for transforming Java source code into ASTs. draft.java also integrates well with the JShell environment for "live" code generation / modification and scripting.  draft.java can generate source code for ANY version of Java (Java 1.0 - 12).</P>  
+draft.java depends only on the (fantastic) <A HREF="http://javaparser.org/">JavaParser</A> core (3.13.2 or later) library for transforming Java source code into ASTs. draft.java also integrates well with the JShell environment for "live" code generation / modification and scripting.  draft.java can generate source code for ANY version of Java (Java 1.0 - 12).</P>  
 
 ```xml
 <dependency>
@@ -14,7 +14,7 @@ draft.java depends only on the (fantastic) <A HREF="http://javaparser.org/">Java
 <dependency>
     <groupId>com.github.javaparser</groupId>
     <artifactId>javaparser-core</artifactId>
-    <version>3.12.0</version>
+    <version>3.13.2</version>
 </dependency>
 ```          
 
