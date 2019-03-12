@@ -26,6 +26,29 @@ import java.util.concurrent.atomic.AtomicBoolean;
  */
 public class _classTest extends TestCase {
     
+    public void testToString(){
+        _class _c = _class.of("C", new Object(){
+            int x = 100, y = 200;
+            public String toString(){
+                return "("+x+","+y+")";
+            }            
+        });
+        
+        assertEquals("(100,200)", _proxy.of(_c).toString());
+        
+        _c = _class.of("C", new Object(){
+            int x = 100, y = 200;
+            
+            @_ctor public void m(int x, int y){
+                this.x = x; this.y = y;
+            }
+            
+            public String toString(){
+                return "("+x+","+y+")";
+            }            
+        });
+        assertEquals("(1,2)", _proxy.of(_c, 1,2).toString());
+    }
 
     public interface ChumbaWomba{
         Map m(UUID u) throws IOException;
