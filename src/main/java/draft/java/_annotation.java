@@ -352,7 +352,7 @@ public final class _annotation
         Set<_field> tf = new HashSet<>();
         Set<_field> of = new HashSet<>();
         tf.addAll( this.listFields() );
-        tf.addAll( other.listFields() );
+        of.addAll( other.listFields() );
 
         if( !Objects.equals( tf, of)){
             return false;

@@ -477,7 +477,7 @@ public enum _java {
          * 
          * we build this as we traverse the class (when identifying diffs)
          */ 
-        List<_java.Component> componentPath;
+        public List<_java.Component> componentPath;
         
         /**
          * The identifying String of a member component (usually the name of the member) 
@@ -486,7 +486,7 @@ public enum _java {
          * 
          * //NOTE: can be empty for non-named components (i.e. EXTENDS, IMPLEMENTS, etc.)
          */
-        List<String> idPath;
+        public List<String> idPath;
         
         /**
          * build a new empty path

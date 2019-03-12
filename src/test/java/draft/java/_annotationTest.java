@@ -16,6 +16,17 @@ import test.subpkg.ann2;
  */
 public class _annotationTest extends TestCase  {
 
+    public void testEquality(){
+        _field _f1 = _field.of("public static final int f = 123;");
+        _field _f2 = _field.of("public static final int f = 123;");
+        assertEquals( _f1, _f2);
+        
+        _annotation _a = _annotation.of("@interface nested { public static final int f = 123; }");
+        _annotation _a2 = _annotation.of("@interface nested { public static final int f = 123; }");
+        
+        assertEquals( _a, _a2);
+    }
+    
     public void testTargets(){
         _annotation _a = _annotation.of("aaaa.bbbb.A").targets(ElementType.CONSTRUCTOR );
         System.out.println( _a);
