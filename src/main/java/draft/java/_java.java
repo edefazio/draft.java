@@ -672,7 +672,9 @@ public enum _java {
         
         /** 
          * Build and return a new _path that follows the current path down one component 
-         * 
+         * @param component the next component part
+         * @param id the id for the component
+         * @return a new _path advanced to the next component/id
          */
         public _path in(_java.Component component, String id){
             _path _p = new _path(this);
