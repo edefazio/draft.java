@@ -9,6 +9,7 @@ import com.github.javaparser.ast.type.ClassOrInterfaceType;
 import draft.java._anno.*;
 import draft.DraftException;
 import draft.java.io._in;
+import draft.java.macro._ctor;
 import draft.java.macro._macro;
 import draft.java.macro._remove;
 
@@ -268,14 +269,14 @@ public final class _class implements _type<ClassOrInterfaceDeclaration, _class>,
         _class _c = _class.of(signature);
         Class theClass = anonymousClassBody.getClass();
 
-        //interfaces
+        //interfaces to implement
         if(theClass.getInterfaces().length > 0){
             for(int i=0; i< theClass.getInterfaces().length; i++){
                 _c.imports(theClass.getInterfaces()[i]);
                 _c.implement(theClass.getInterfaces()[i]);
             }
         }
-        //extends
+        //extends to extend
         if( theClass.getSuperclass() != Object.class ){
             _c.imports(theClass.getSuperclass());
             _c.extend(theClass.getSuperclass());
@@ -285,13 +286,30 @@ public final class _class implements _type<ClassOrInterfaceDeclaration, _class>,
         if( oce.getAnonymousClassBody().isPresent() ) {
             NodeList<BodyDeclaration<?>> bds = oce.getAnonymousClassBody().get();
             for (int i = 0; i <bds.size(); i++){
-                _c.ast().addMember( bds.get(i));
+                // check if the class has (one or more) void methods named the same as 
+                // the Class name (these "methods" are really "constructors"
+                BodyDeclaration bd = bds.get(i);
+                if( bd instanceof MethodDeclaration ){
+                    MethodDeclaration md = (MethodDeclaration)bd;
+                    if( md.getNameAsString().equals(_c.getName() ) && md.getType().isVoidType() ){
+                        //this is REALLY a method that is a constructor
+                        _c.ast().addMember( _ctor.Macro.fromMethod(md) );
+                    } else{
+                        _c.ast().addMember( bd );    
+                    }
+                } else{
+                    _c.ast().addMember( bd );
+                }
             }
         }
         //add imports from methods return types parametder types
         Set<Class>toImport = _type.inferImportsFrom(anonymousClassBody);
 
         _c.imports(toImport.toArray(new Class[0]));
+        
+
+        
+        
         //we process the ANNOTATIONS on the TYPE
         _macro.to( theClass, _c);
         for(int i=0;i<typeFn.length; i++){

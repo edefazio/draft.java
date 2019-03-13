@@ -36,10 +36,25 @@ public class _classTest extends TestCase {
         
         assertEquals("(100,200)", _proxy.of(_c).toString());
         
+        _c = _class.of("C")
+            .fields("int x=100,y=200;")
+            .method("public String toString(){",
+                    "return \"(\"+x+\",\"+y+\")\";",
+                    "}")
+            .constructor("(){}")
+            .constructor("(int x, int y){ this.x = x; this.y = y;}");
+        
+        assertEquals("(1,2)", _proxy.of(_c, 1,2).toString());
+        
         _c = _class.of("C", new Object(){
             int x = 100, y = 200;
             
-            @_ctor public void m(int x, int y){
+            /**
+             * Note this is an "implied constructor,
+             * it is VOID, and it's name "C" is the name of the type
+             * it's converted into a constructor when we create the _class
+             */
+            public void C(int x, int y){
                 this.x = x; this.y = y;
             }
             
@@ -48,6 +63,8 @@ public class _classTest extends TestCase {
             }            
         });
         assertEquals("(1,2)", _proxy.of(_c, 1,2).toString());
+        
+        
     }
 
     public interface ChumbaWomba{
