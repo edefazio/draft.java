@@ -266,17 +266,17 @@ public final class _parameter
         }
 
         default List<_parameter> listParameters(
-                Predicate<? super _parameter> paramMatchFn ) {
+                Predicate<_parameter> paramMatchFn ) {
             return getParameters().list( paramMatchFn );
         }
 
-        default T forParameters( Consumer<? super _parameter> paramActionFn ) {
+        default T forParameters( Consumer<_parameter> paramActionFn ) {
             listParameters().forEach( paramActionFn );
             return (T)this;
         }
 
-        default T forParameters( Predicate<? super _parameter> paramMatchFn,
-                                 Consumer<? super _parameter> paramActionFn ) {
+        default T forParameters( Predicate<_parameter> paramMatchFn,
+                                 Consumer<_parameter> paramActionFn ) {
             listParameters( paramMatchFn ).forEach( paramActionFn );
             return (T)this;
         }
