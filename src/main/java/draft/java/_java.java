@@ -433,16 +433,15 @@ public enum _java {
      * 
      * for example:
      * <PRE>
-     * (ALLCAPS = _java.COMPONENT, (inside parenthesis = id)
      * 
-     * CLASS[MyClass].NAME                          : the name of class MyClass
-     * INTERFACE[I].EXTENDS                         : the extends on the interface I
-     * ENUM[Scope].IMPLEMENTS                       : the implements on the enum Scope
-     * ANNOTATION[Retain].FIELD[hops].INIT          : init of a field hops on the annotation Retain
-     * CLASS[MyClass].METHOD[m(int)].PARAMETER[0]   : the first parameter on method m(int) in class MyClass
+     * class[MyClass].name                          : the name of class MyClass
+     * interface[I].extends                         : the extends on the interface I
+     * enum[Scope].implements                       : the implements on the enum Scope
+     * annotation[Retain].field[hops].init          : init of a field hops on the annotation Retain
+     * class[MyClass].method[m(int)].parameter[0]   : the first parameter on method m(int) in class MyClass
      * 
      * //if we have nested components it can get interesting (omit Component for brevity) 
-     * ENUM[E].NEST.CLASS[inner].METHOD[m()].BODY   : (the method body on a nested class within an enum)
+     * enum[E].nest.class[inner].method[m()].body   : (the method body on a nested class within an enum)
      * </PRE>
      */
     public static class _path{
@@ -507,18 +506,27 @@ public enum _java {
             idPath.addAll(original.idPath);
         }
 
-        /** Build and return a new _path that follows the current path down one component */
+        /** 
+         * Build and return a new _path that follows the current path 
+         * down one component
+         * @param component 
+         * @return a new _path that has a leaf node at the component
+         */
         public _path in( _java.Component component){
             return in( component, "");            
         }
         
+        /**
+         * How many "nodes" are in the path
+         * @return the number of nodes in the path
+         */
         public int size(){
             return this.componentPath.size();
         }
         
         /**
          * get the leaf (last component) component in the path
-         * @return the last component in the path (only null if the path is empty)
+         * @return the last component in the path (null if the path is empty)
          */
         public Component leaf(){
             if( !this.componentPath.isEmpty() ){
@@ -529,7 +537,7 @@ public enum _java {
         
         /**
          * Gets the last id in the path (note: may be empty string, null if the path is empty)
-         * @return the last id of the path
+         * @return the last id of the path or null if path is empty
          */
         public String leafId(){
             if( !this.idPath.isEmpty() ){
@@ -537,7 +545,58 @@ public enum _java {
             }
             return null;
         }
-         
+        
+        /**
+         * does the path at index  have the id provided?
+         * @param index the index of the path (0 based)
+         * @param id the id
+         * @return true if the same, false otherwise
+         */
+        public boolean is( int index, String id){
+            if( index <= this.size() && index >=0 ){
+                return this.idPath.get(index).equals(id);         
+            }
+            return false;
+        }
+        
+        /**
+         * does the path at index have the component provided
+         * @param index the index from the start of the path (0-based)
+         * @param component the component type expected
+         * @return true if the component at 
+         */
+        public boolean is( int index, Component component){
+            if( index <= this.size()  && index >=0 ){
+                return this.componentPath.get(index).equals(component);                        
+            }
+            return false;
+        }
+        
+        /**
+         * does the path at index have the component and id provided
+         * @param index the index from the start of the path (0-based)
+         * @param component the component type expected
+         * @param id the expected id
+         * @return true if the component at index has the component and id provided, false otherwise
+         */
+        public boolean is( int index, Component component, String id){
+            if( index <= this.size()  && index >=0 ){
+                return this.componentPath.get(index).equals(component) &&
+                    this.idPath.get(index).equals(id);
+            }
+            return false;
+        }
+        
+        /**
+         * Does the leaf part of the path have the provided component and id
+         * @param component the component
+         * @param id the id
+         * @return true if the path has the leaf at component and id
+         */
+        public boolean isLeaf(Component component, String id){
+            return component.equals( leaf() )&& id.equals(leafId());
+        }
+        
         /**
          * @param component the component
          * @return is the last component in the path this component? 
@@ -586,15 +645,35 @@ public enum _java {
         }
         
         /**
-         * does the path contain this component anywhere?
-         * @param component
-         * @return 
+         * does the path contain this component (anywhere?)
+         * @param component component to look for
+         * @return true if the component occurs anywhere in the path
          */
         public boolean has(Component component){
             return componentPath.contains(component);
         }
         
-        /** Build and return a new _path that follows the current path down one component */
+        /**
+         * does the path contain a part that has this exact component and id
+         * @param component the component we are looking for 
+         * @param id the path we are looking for
+         * @return true if the path contains part with this component & id, 
+         * false otherwise
+         */
+        public boolean has(Component component, String id){
+            for(int i=0;i<size(); i++){
+                if( this.componentPath.get(i).equals(component) 
+                        && this.idPath.get(i).equals(id)){
+                    return true;
+                }
+            }
+            return false;
+        }
+        
+        /** 
+         * Build and return a new _path that follows the current path down one component 
+         * 
+         */
         public _path in(_java.Component component, String id){
             _path _p = new _path(this);
             _p.componentPath.add(component);
