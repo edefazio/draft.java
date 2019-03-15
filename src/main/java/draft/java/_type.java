@@ -223,11 +223,17 @@ public interface _type<AST extends TypeDeclaration & NodeWithJavadoc & NodeWithM
      * remove one or more members (_field, _method, _constructor) from the _type and return the modified _type
      * @param _members members to be removed
      * @return the modified T
-     */
+    
     default T remove( _model._member..._members ){
-        Arrays.stream(_members).forEach( _m -> this.ast().remove( _m.ast() ) );
+        //need a different equality
+        
+        
+        Arrays.stream(_members).forEach( _m -> {
+            if(this.equals(_m)){ } this.ast().remove( _m.ast() ) 
+                });
         return (T)this;
     }
+    */ 
     
     /**
      * Apply a single type Function to the type and return the modified _type
@@ -350,14 +356,20 @@ public interface _type<AST extends TypeDeclaration & NodeWithJavadoc & NodeWithM
      * @return the modified TYPE
      */
     default T setPackage( String packageName ){
-        if( !this.isTopClass() ){
+        //if( !this.isTopClass() ){
+        //    System.out.println( "trying to set the package on non top level class");
+        //    return (T) this;
+            /*
             CompilationUnit astRoot = new CompilationUnit();
             astRoot.setPackageDeclaration(packageName);
             astRoot.addType(ast());
             return (T) this;
-        }
+            */
+        //}
         CompilationUnit cu = findCompilationUnit();
+        System.out.println("BEFORE SIZE " + listNests().size());
         cu.setPackageDeclaration( packageName );
+        System.out.println("AFTER SIZE " + listNests().size());
         return (T)this;
     }
 
@@ -1040,6 +1052,7 @@ public interface _type<AST extends TypeDeclaration & NodeWithJavadoc & NodeWithM
                 }
             }
             else if ( t instanceof EnumDeclaration ){
+                //System.out.println( "ADDING ENUM NEST "+ ((EnumDeclaration) t).getNameAsString());
                 nests.add( _enum.of( (EnumDeclaration)t));
             }
             else{
