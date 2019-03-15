@@ -428,9 +428,11 @@ public final class _enum implements _type<EnumDeclaration, _enum>,_method._hasMe
     }
 
     public _enum removeConstant( _constant _c ){
-        if( listConstants().contains(_c) ){
-            _c.ast().removeForced();
-        }
+        forConstants( c -> {
+            if( c.equals( _c) ){                
+                c.ast().remove();
+            }
+        });        
         return this;
     }
 
