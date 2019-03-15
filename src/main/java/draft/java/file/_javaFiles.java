@@ -52,7 +52,7 @@ public final class _javaFiles
     public final String locationName;
     public final boolean isOutputLocation;
 
-    private final List<_javaFile> javaFiles = new ArrayList<_javaFile>();
+    private final List<_javaFile> javaFiles = new ArrayList<>();
 
 
     public static _javaFiles of(  ){
@@ -123,18 +123,22 @@ public final class _javaFiles
         return this;
     }
 
+    @Override
     public boolean isEmpty() {
         return count() == 0;
     }
 
+    @Override
     public String getName() {
         return this.locationName;
     }
 
+    @Override
     public boolean isOutputLocation() {
         return this.isOutputLocation && this.isOpen.get();
     }
 
+    @Override
     public String toString() {
         return "_javaFiles " + this.getName() + " output " + this.isOutputLocation
                 + "\n" + listTypeNames();
@@ -245,7 +249,7 @@ public final class _javaFiles
         if( !this.isOpen.get() ){
             throw new DraftException("CLOSED, could not accept types");
         }
-        List<_type> ts = new ArrayList<_type>();
+        List<_type> ts = new ArrayList<>();
         for(int i=0;i<_types.length;i++){
             _javaFile _toReplace = getFile( _types[i].getFullName() );
             if( _toReplace != null ){
@@ -352,6 +356,7 @@ public final class _javaFiles
     /**
      * @return List of all "top level" (non-nested) {@link _type}s`
      */
+    @Override
     public List<_type> list() {
         return list(false);
     }
@@ -367,6 +372,7 @@ public final class _javaFiles
      * _jfs.listAt
      * </PRE>
      * @param <T> the specific _type (_class, _interface, _enum, _annotation)
+     * @param _typeClass
      * @param _typeMatchFn matching function
      * @param includeNestedTypes whether to matching function tests nested types
      * (not just the Top level classes)
@@ -375,7 +381,7 @@ public final class _javaFiles
     public <T extends _type> List<T> list(
             Class<T> _typeClass, Predicate<? super T> _typeMatchFn, boolean includeNestedTypes ){
 
-        List<T> _types = new ArrayList<T>();
+        List<T> _types = new ArrayList<>();
         for(int i=0;i<this.javaFiles.size();i++){
             _type _t = javaFiles.get( i ).type;
             if( _t != null ){
@@ -416,7 +422,7 @@ public final class _javaFiles
      * @return listAt of all "top-level" _type declarations
      */
     public List<_type> list(boolean includeNestedTypes ){
-        List<_type> _types = new ArrayList<_type>();
+        List<_type> _types = new ArrayList<>();
         for(int i=0;i<this.javaFiles.size();i++){
             if( javaFiles.get( i ).type != null ){
                 if( includeNestedTypes ){
@@ -471,7 +477,7 @@ public final class _javaFiles
     }
 
     public List<String> listTypeNames(boolean includeNestedClasses) {
-        List<String> names = new ArrayList<String>();
+        List<String> names = new ArrayList<>();
         for(int i=0;i<this.javaFiles.size();i++){
             if( javaFiles.get( i ).type != null ){
                 if( includeNestedClasses ){
@@ -496,7 +502,7 @@ public final class _javaFiles
 
     public List<_type> list(String pkgName, boolean includeSubPkgs, boolean includeNestedTypes ) {
 
-        List<_type> _types = new ArrayList<_type>();
+        List<_type> _types = new ArrayList<>();
 
         for(int i=0;i<this.javaFiles.size();i++){
             _type _t = javaFiles.get( i ).type;
@@ -540,7 +546,7 @@ public final class _javaFiles
 
     public List<_javaFile> listFiles( String pkgName, boolean includeSubPkgs ) {
 
-        List<_javaFile> _javaFilesByPackage = new ArrayList<_javaFile>();
+        List<_javaFile> _javaFilesByPackage = new ArrayList<>();
 
         _type[] _types = list().toArray(new _type[ 0 ] );
         for( int i = 0; i < _types.length; i++ ) {
@@ -579,6 +585,7 @@ public final class _javaFiles
         return _javaFilesByPackage;
     }
 
+    @Override
     public Iterator<_javaFile> iterator() {
         return listFiles(null, true).iterator();
     }
