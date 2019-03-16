@@ -684,6 +684,16 @@ public final class _anno
             getAnnos().remove(astAnn);
             return (T)this;
         }
+        
+        /**
+         * remove the annotation and return the modified T
+         * @param _a
+         * @return the modified T
+         */
+        default T removeAnno( _anno _a ){
+            return removeAnno( _a.ast() );            
+        }
+        
 
         /**
          * removeAll all _anno that accept the _annoMatchFn
