@@ -180,15 +180,15 @@ public interface _type<AST extends TypeDeclaration & NodeWithJavadoc & NodeWithM
      * Sets the header comment as the block comment provided
      * (Assuming the _type is a top level type... (i.e. not a nested type)
      * (this is for setting /resetting the copywrite, etc.)
-     * @param blockComment the comment (i.e. the copyright)
+     * @param astBlockComment the comment (i.e. the copyright)
      * @return the modified T
      */
-    default T setHeaderComment( BlockComment blockComment ){
+    default T setHeaderComment( BlockComment astBlockComment ){
         if( isTopClass() ){
             if( ast().getComment().isPresent()){
                 ast().removeComment();
             }
-            ast().setComment(blockComment);
+            ast().setComment(astBlockComment);
         }
         return (T)this;
     }
@@ -218,40 +218,24 @@ public interface _type<AST extends TypeDeclaration & NodeWithJavadoc & NodeWithM
         }  );
         return (T)this;
     }
-
-    /**
-     * remove one or more members (_field, _method, _constructor) from the _type and return the modified _type
-     * @param _members members to be removed
-     * @return the modified T
-    
-    default T remove( _model._member..._members ){
-        //need a different equality
-        
-        
-        Arrays.stream(_members).forEach( _m -> {
-            if(this.equals(_m)){ } this.ast().remove( _m.ast() ) 
-                });
-        return (T)this;
-    }
-    */ 
     
     /**
      * Apply a single type Function to the type and return the modified _type
-     * @param typeFn the function on the type
+     * @param _typeFn the function on the type
      * @return the modified type
      */
-    default T apply( Function<_type, _type> typeFn ){
-        return (T)typeFn.apply(this);
+    default T apply( Function<_type, _type> _typeFn ){
+        return (T)_typeFn.apply(this);
     }
     
     /**
      * Apply each of the Macros and return the modified T
-     * @param typeFn all of the macros to execute
+     * @param _typeFn all of the macros to execute
      * @return the modified T after applying the macros
      */
-    default T apply( Function<_type, _type>...typeFn ){
-        for(int i=0; i < typeFn.length; i++){
-            typeFn[i].apply(this);
+    default T apply( Function<_type, _type>..._typeFn ){
+        for(int i=0; i < _typeFn.length; i++){
+            _typeFn[i].apply(this);
         }
         return (T)this;
     }
@@ -259,11 +243,11 @@ public interface _type<AST extends TypeDeclaration & NodeWithJavadoc & NodeWithM
     /**
      * list all the members that match the predicate
      *
-     * @param memberMatchFn
+     * @param _memberMatchFn
      * @return matching members
      */
-    default List<_member> listMembers( Predicate<_member> memberMatchFn ){
-        return listMembers().stream().filter(memberMatchFn).collect(Collectors.toList());
+    default List<_member> listMembers( Predicate<_member> _memberMatchFn ){
+        return listMembers().stream().filter(_memberMatchFn).collect(Collectors.toList());
     }
 
     /**
@@ -288,22 +272,23 @@ public interface _type<AST extends TypeDeclaration & NodeWithJavadoc & NodeWithM
      * Builds the full NAME for the TYPE based on it's nest position within a class
      * (and its package)
      *
+     * @param astType
      * @return the full NAME of the TYPE (separated by '.'s)
      */
-    static String getFullName(TypeDeclaration td){
-        if( td.isTopLevelType() ){
-            if( td.findCompilationUnit().get().getPackageDeclaration().isPresent()) {
-                String pkgName = td.findCompilationUnit().get().getPackageDeclaration().get().getNameAsString();
-                return pkgName +"."+ td.getNameAsString();
+    static String getFullName(TypeDeclaration astType){
+        if( astType.isTopLevelType() ){
+            if( astType.findCompilationUnit().get().getPackageDeclaration().isPresent()) {
+                String pkgName = astType.findCompilationUnit().get().getPackageDeclaration().get().getNameAsString();
+                return pkgName +"."+ astType.getNameAsString();
             }
-            return td.getNameAsString(); //top level TYPE but no package declaration
+            return astType.getNameAsString(); //top level TYPE but no package declaration
         }
-        if(!td.getParentNode().isPresent()){
-            return td.getNameAsString();
+        if(!astType.getParentNode().isPresent()){
+            return astType.getNameAsString();
         }
         //prefix back to parents
-        String name = td.getNameAsString();
-        Node n = td.getParentNode().get();
+        String name = astType.getNameAsString();
+        Node n = astType.getParentNode().get();
         if( n instanceof TypeDeclaration ){
             return getFullName( (TypeDeclaration)n)+"."+name;
         }
@@ -367,9 +352,9 @@ public interface _type<AST extends TypeDeclaration & NodeWithJavadoc & NodeWithM
             */
         //}
         CompilationUnit cu = findCompilationUnit();
-        System.out.println("BEFORE SIZE " + listNests().size());
+        //System.out.println("BEFORE SIZE " + listNests().size());
         cu.setPackageDeclaration( packageName );
-        System.out.println("AFTER SIZE " + listNests().size());
+        //System.out.println("AFTER SIZE " + listNests().size());
         return (T)this;
     }
 
@@ -460,6 +445,28 @@ public interface _type<AST extends TypeDeclaration & NodeWithJavadoc & NodeWithM
         return (T)this;
     }
 
+    /**
+     * Apply some function to all Imports
+     * @param astImportActionFn the action fn to apply to all imports
+     * @return the T
+     */
+    default T forImports(Consumer<ImportDeclaration> astImportActionFn ){
+        listImports().forEach(astImportActionFn);
+        return (T)this;
+    }
+    
+    /**
+     * Select some imports based on the astImportPredicate and apply the 
+     * astImportActionFn on the selected Imports
+     * @param astImportPredicate selects the Imports to act on
+     * @param astImportActionFn function to apply to the imports
+     * @return the T
+     */
+    default T forImports( Predicate<ImportDeclaration> astImportPredicate, Consumer<ImportDeclaration> astImportActionFn ){
+        listImports(astImportPredicate).forEach(astImportActionFn);
+        return (T)this;
+    }
+    
     default List<ImportDeclaration> listImports(){
         CompilationUnit cu = findCompilationUnit();
         if( cu != null ){
@@ -1228,11 +1235,15 @@ public interface _type<AST extends TypeDeclaration & NodeWithJavadoc & NodeWithM
     /**
      * A container for {@link _type}s
      */
-    interface _hasTypes{
+    interface _hasTypes extends _model{
 
         /** @return list all of the {@link _type}s */
         List<_type> list();
 
+        default List<_type> list(Predicate<_type> _typePredicate ){
+            return list().stream().filter(_typePredicate).collect(Collectors.toList());
+        }
+         
         /** @return container of Types that is empty */
         boolean isEmpty();
     }
