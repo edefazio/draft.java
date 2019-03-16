@@ -426,6 +426,24 @@ public enum _java {
             }
             return null;
         }
+        
+        /**
+         * Returns the appropriate Component based on the _type
+         * @param t the type instance
+         * @return the Component 
+         */
+        public static Component getComponent( _type t){
+            if( t instanceof _class){
+                return Component.CLASS;
+            }
+            if( t instanceof _interface){
+                return Component.INTERFACE;
+            }
+            if( t instanceof _enum){
+                return Component.ENUM;
+            }
+            return Component.ANNOTATION;        
+        }
     }
 
     /**
