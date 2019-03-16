@@ -46,7 +46,7 @@ public class $exprTest extends TestCase {
 
         }
         _class _c = _class.of(G.class);
-        assertEquals(4, $e.selectAllIn(_c).size());
+        assertEquals(4, $e.listSelectedIn(_c).size());
     }
 
     public void testExprOf(){
@@ -118,7 +118,7 @@ public class $exprTest extends TestCase {
                 System.out.println("another method"+6+" values");
             }
         }
-        List<$expr.Select<IntegerLiteralExpr>> sel =  e.selectAllIn( _class.of(C.class) );
+        List<$expr.Select<IntegerLiteralExpr>> sel =  e.listSelectedIn( _class.of(C.class) );
         assertEquals(6, sel.size()); //verify that I have (6) selections
 
         //System.out.println(">>"+ sel.get(0).tokens );
@@ -131,7 +131,7 @@ public class $exprTest extends TestCase {
 
         //use forAllIn to
         List<Integer>ints = new ArrayList<>();
-        e.forAllIn(_class.of(C.class), ie -> ints.add(ie.asInt()));
+        e.forIn(_class.of(C.class), ie -> ints.add(ie.asInt()));
         assertTrue( ints.contains(1) && ints.contains(2) && ints.contains(3) && ints.contains(4) && ints.contains(5) && ints.contains(6));
     }
 }

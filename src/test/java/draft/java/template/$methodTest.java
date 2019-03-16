@@ -98,9 +98,9 @@ public class $methodTest extends TestCase {
 
 
         //find all (3) getter METHODS in the TYPE above
-        assertEquals( 3, $get.selectAllIn(_c).size());
+        assertEquals( 3, $get.listSelectedIn(_c).size());
         assertEquals( $get.select(_c.getMethod("getX") ).method, Ast.method("public int getX(){ return x; }") );
-        assertEquals( 3, $set.selectAllIn(_c).size());
+        assertEquals( 3, $set.listSelectedIn(_c).size());
 
         //print all get METHODS
         $get.forSelectedIn(_c, g -> System.out.println( g.method ));

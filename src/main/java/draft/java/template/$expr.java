@@ -373,12 +373,12 @@ public final class $expr <T extends Expression>
     }
 
     @Override
-    public List<T> findAllIn(_model._node _t ){
-        return findAllIn( _t.ast() );
+    public List<T> listIn(_model._node _t ){
+        return listIn( _t.ast() );
     }
 
     @Override
-    public List<T> findAllIn(Node rootNode ){
+    public List<T> listIn(Node rootNode ){
         List<T> typesList = new ArrayList<>();
         rootNode.walk(this.expressionClass, t->{
             if( this.matches(t) ){
@@ -389,7 +389,7 @@ public final class $expr <T extends Expression>
     }
 
     @Override
-    public <N extends Node> N forAllIn(N n, Consumer<T> expressionActionFn){
+    public <N extends Node> N forIn(N n, Consumer<T> expressionActionFn){
         n.walk(this.expressionClass, e-> {
             Tokens tokens = this.stencil.deconstruct( e.toString());
             if( tokens != null ){
@@ -400,7 +400,7 @@ public final class $expr <T extends Expression>
     }
 
     @Override
-    public <M extends _model._node> M forAllIn(M _t, Consumer<T> expressionActionFn){
+    public <M extends _model._node> M forIn(M _t, Consumer<T> expressionActionFn){
         Walk.in( _t, this.expressionClass, e -> {
             Tokens tokens = this.stencil.deconstruct( e.toString());
             if( tokens != null ){
@@ -411,7 +411,7 @@ public final class $expr <T extends Expression>
     }
 
     @Override
-    public List<Select<T>> selectAllIn(Node n ){
+    public List<Select<T>> listSelectedIn(Node n ){
         List<Select<T>>sts = new ArrayList<>();
         n.walk(this.expressionClass, e-> {
             Select s = select( e );
@@ -423,7 +423,7 @@ public final class $expr <T extends Expression>
     }
 
     @Override
-    public List<Select<T>> selectAllIn(_model._node _t ){
+    public List<Select<T>> listSelectedIn(_model._node _t ){
         List<Select<T>>sts = new ArrayList<>();
         Walk.in( _t, this.expressionClass, e -> {
             Select s = select( e );

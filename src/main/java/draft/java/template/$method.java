@@ -333,7 +333,7 @@ public final class $method
         return null;
     }
 
-    public List<Select> selectAllIn(Node n){
+    public List<Select> listSelectedIn(Node n){
         List<Select>sts = new ArrayList<>();
         n.walk(MethodDeclaration.class, m-> {
             Select sel = select( m );
@@ -344,7 +344,7 @@ public final class $method
         return sts;
     }
 
-    public List<Select> selectAllIn(_model._node _t){
+    public List<Select> listSelectedIn(_model._node _t){
         List<Select>sts = new ArrayList<>();
         Walk.in( _t, MethodDeclaration.class, m -> {
             Select sel = select( m );
@@ -394,7 +394,7 @@ public final class $method
         return n;
     }
 
-    public <N extends Node> N forAllIn(N n, Consumer<_method> _methodActionFn){
+    public <N extends Node> N forIn(N n, Consumer<_method> _methodActionFn){
         n.walk(MethodDeclaration.class, e-> {
             Tokens tokens = this.deconstruct( e );
             if( tokens != null ){
@@ -404,7 +404,7 @@ public final class $method
         return n;
     }
 
-    public  <T extends _model._node> T forAllIn(T _t, Consumer<_method> _methodActionFn){
+    public  <T extends _model._node> T forIn(T _t, Consumer<_method> _methodActionFn){
         Walk.in(_t, MethodDeclaration.class, e -> {
             Tokens tokens = this.deconstruct( e );
             if( tokens != null ){
@@ -414,11 +414,11 @@ public final class $method
         return _t;
     }
 
-    public List<_method> findAllIn(_model._node _t ){
-        return findAllIn( _t.ast() );
+    public List<_method> listIn(_model._node _t ){
+        return listIn( _t.ast() );
     }
 
-    public List<_method> findAllIn(Node rootNode ){
+    public List<_method> listIn(Node rootNode ){
         List<_method> typesList = new ArrayList<>();
         rootNode.walk(MethodDeclaration.class, m->{
             if( this.matches(m) ){

@@ -27,15 +27,15 @@ public class $typeRefTest extends TestCase {
             }
         }
         _class _c = _class.of(F.class);
-        assertEquals( "expected (4) instance of int in _c", 4, $t.selectAllIn(_c).size());
+        assertEquals( "expected (4) instance of int in _c", 4, $t.listSelectedIn(_c).size());
         $t.replaceIn(_c, float.class); //change all int TYPE references to float
         //System.out.println( _c );
-        assertEquals( "expected (0) instance of int in _c", 0, $t.selectAllIn(_c).size());
-        assertEquals( "expected (4) instance of float in _c", 4, $typeRef.of(float.class).selectAllIn(_c).size());
+        assertEquals( "expected (0) instance of int in _c", 0, $t.listSelectedIn(_c).size());
+        assertEquals( "expected (4) instance of float in _c", 4, $typeRef.of(float.class).listSelectedIn(_c).size());
 
         //find all float types in _c and replaceIn them with double
         $typeRef.of(float.class).replaceIn(_c, double.class);
-        assertEquals( "expected (4) instance of double in _class", 4, $typeRef.of(double.class).selectAllIn(_c).size());
+        assertEquals( "expected (4) instance of double in _class", 4, $typeRef.of(double.class).listSelectedIn(_c).size());
     }
 
 
@@ -52,7 +52,7 @@ public class $typeRefTest extends TestCase {
         $typeRef $anyTreeSet = $typeRef.of("TreeSet<$any$>");
         _class _c = _class.of(FF.class);
         //verify I can find a
-        assertEquals(4, $anyTreeSet.selectAllIn(_c).size());
+        assertEquals(4, $anyTreeSet.listSelectedIn(_c).size());
 
         $anyTreeSet.replaceIn(_c, $typeRef.of("HashSet<$any$>") ); //convert TreeSet to HashSet
         //System.out.println( _c );

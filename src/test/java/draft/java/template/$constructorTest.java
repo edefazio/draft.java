@@ -140,18 +140,18 @@ public class $constructorTest extends TestCase {
             Y(){ }
         }
         _class _c = _class.of(Y.class);
-        assertNotNull( $noArgNoBody.selectAllIn(_c).get(0) );
+        assertNotNull( $noArgNoBody.listSelectedIn(_c).get(0) );
 
         class Z{
             Z(){
             }
         }
         _c = _class.of(Z.class);
-        assertTrue( $noArgNoBody.selectAllIn(_c).size() == 1 );
+        assertTrue( $noArgNoBody.listSelectedIn(_c).size() == 1 );
 
-        System.out.println( $noArgNoBody.selectAllIn(_c) );
+        System.out.println( $noArgNoBody.listSelectedIn(_c) );
 
-        assertTrue( $noArgNoBody.selectAllIn(_c).get(0).tokens.has("name", "Z"));
+        assertTrue( $noArgNoBody.listSelectedIn(_c).get(0).tokens.has("name", "Z"));
         //$c.select(_constructor.of("public "))
     }
 

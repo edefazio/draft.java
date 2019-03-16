@@ -83,7 +83,7 @@ public class _replaceSystemOutWithLog implements _macro<_type> {
 
     @Override
     public _type apply(_type _t) {
-        if( $anySystemOut.findAllIn(_t).size() > 0 ) {
+        if( $anySystemOut.listIn(_t).size() > 0 ) {
             _field _f = _t.getField(preDefinedLoggerMatcher);
             if( _f == null ){ /* we didnt find a matching logger, create & add a new one*/
                 adHocLoggerImports.forEach(i -> _t.imports(i) ); /* add all Logger imports */

@@ -66,8 +66,8 @@ public class _autoHashCodeTest extends TestCase {
         _autoHashCode.Macro.to(_c);
         _method _m = _c.getMethod("hashCode");
 
-        assertEquals( 1, $stmt.of("int hash = $any$;").findAllIn(_m).size() );
-        assertEquals( 1, $stmt.of("int prime = $any$;").findAllIn(_m).size() );
+        assertEquals( 1, $stmt.of("int hash = $any$;").listIn(_m).size() );
+        assertEquals( 1, $stmt.of("int prime = $any$;").listIn(_m).size() );
 
         $stmt $st = $stmt.of("hash = hash * prime + $fieldHash$;");
 
@@ -75,7 +75,7 @@ public class _autoHashCodeTest extends TestCase {
         //assertEquals( 4, l.size());
 
         //verify that
-        List<$stmt.Select> ss = $st.selectAllIn(_m);
+        List<$stmt.Select> ss = $st.listSelectedIn(_m);
         assertTrue( ss.stream().filter(s-> s.tokens.has("fieldHash", Expr.of("( b ? 1 : 0 )").toString())).findAny().isPresent());
         assertTrue( ss.stream().filter(s-> s.tokens.has("fieldHash", "i") ).findAny().isPresent()); //int
         assertTrue( ss.stream().filter(s-> s.tokens.has("fieldHash", "by") ).findAny().isPresent()); //ibyte

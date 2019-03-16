@@ -264,12 +264,12 @@ public class $field
     }
 
     @Override
-    public List<_field> findAllIn(_model._node _t ){
-        return findAllIn( _t.ast() );
+    public List<_field> listIn(_model._node _t ){
+        return listIn( _t.ast() );
     }
 
     @Override
-    public List<_field> findAllIn(Node rootNode ){
+    public List<_field> listIn(Node rootNode ){
         List<_field> fieldsList = new ArrayList<>();
         rootNode.walk(VariableDeclarator.class, v->{
             if( this.matches(v) ){
@@ -280,7 +280,7 @@ public class $field
     }
 
     @Override
-    public List<Select> selectAllIn(Node n ){
+    public List<Select> listSelectedIn(Node n ){
         List<Select>sts = new ArrayList<>();
         n.walk(VariableDeclarator.class, e-> {
             Select s = select( e );
@@ -292,7 +292,7 @@ public class $field
     }
 
     @Override
-    public List<Select> selectAllIn(_model._node _t ){
+    public List<Select> listSelectedIn(_model._node _t ){
         List<Select>sts = new ArrayList<>();
         Walk.in( _t, VariableDeclarator.class, e -> {
             Select s = select( e );
@@ -366,7 +366,7 @@ public class $field
     }
 
     @Override
-    public <N extends Node> N forAllIn(N n, Consumer<_field> _fieldActionFn){
+    public <N extends Node> N forIn(N n, Consumer<_field> _fieldActionFn){
         n.walk(VariableDeclarator.class, e-> {
             //Tokens tokens = this.stencil.partsMap( e.toString());
             Select sel = select( e );
@@ -378,7 +378,7 @@ public class $field
     }
 
     @Override
-    public <M extends _model._node> M forAllIn(M m, Consumer<_field> _fieldActionFn){
+    public <M extends _model._node> M forIn(M m, Consumer<_field> _fieldActionFn){
         Walk.in( m, VariableDeclarator.class, e-> {
             Tokens tokens = this.stencil.deconstruct( e.toString());
             if( tokens != null ){

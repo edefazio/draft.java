@@ -299,12 +299,12 @@ public final class $constructor
     }
 
     @Override
-    public List<_constructor> findAllIn(_model._node _t ){
-        return findAllIn( _t.ast() );
+    public List<_constructor> listIn(_model._node _t ){
+        return listIn( _t.ast() );
     }
 
     @Override
-    public List<_constructor> findAllIn(Node rootNode ){
+    public List<_constructor> listIn(Node rootNode ){
         List<_constructor> typesList = new ArrayList<>();
         rootNode.walk(ConstructorDeclaration.class, t->{
             if( this.matches(t) ){
@@ -315,7 +315,7 @@ public final class $constructor
     }
 
     @Override
-    public List<Select> selectAllIn(Node n){
+    public List<Select> listSelectedIn(Node n){
         List<Select>sts = new ArrayList<>();
         n.walk(ConstructorDeclaration.class, c-> {
             Select sel = select( c );
@@ -327,7 +327,7 @@ public final class $constructor
     }
 
     @Override
-    public List<Select> selectAllIn(_model._node _t){
+    public List<Select> listSelectedIn(_model._node _t){
         List<Select>sts = new ArrayList<>();
         Walk.in(_t, ConstructorDeclaration.class, c-> {
             Select sel = select( c );
@@ -339,7 +339,7 @@ public final class $constructor
     }
 
     @Override
-    public <N extends Node> N forAllIn(N n, Consumer<_constructor> _constructorActionFn ){
+    public <N extends Node> N forIn(N n, Consumer<_constructor> _constructorActionFn ){
         n.walk( ConstructorDeclaration.class, c-> {
             Select s = select( c );
             if( s != null ){
@@ -350,7 +350,7 @@ public final class $constructor
     }
 
     @Override
-    public <M extends _model._node> M forAllIn(M _t, Consumer<_constructor> _constructorActionFn ){
+    public <M extends _model._node> M forIn(M _t, Consumer<_constructor> _constructorActionFn ){
         Walk.in(_t, _constructor.class, c-> {
             Select s = select( c );
             if( s != null ){
@@ -362,13 +362,13 @@ public final class $constructor
 
     @Override
     public <M extends _model._node> M removeIn(M _t ){
-        selectAllIn(_t).forEach(s -> s.ctor.remove() );
+        listSelectedIn(_t).forEach(s -> s.ctor.remove() );
         return _t;
     }
 
     @Override
     public <N extends Node> N removeIn(N node ){
-        selectAllIn(node).forEach(s -> s.ctor.remove() );
+        listSelectedIn(node).forEach(s -> s.ctor.remove() );
         return node;
     }
 

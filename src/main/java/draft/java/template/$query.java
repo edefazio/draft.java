@@ -17,17 +17,17 @@ public interface $query<Q> {
     /** 
      * Find and return a List of all matching node types within _t 
      * 
-     * @param _j the root _java model node to start the search (i.e. _class, _method, _
-     * @return a List of <Q> that match the query
+     * @param _n the root _java model node to start the search (i.e. _class, _method, _
+     * @return a List of Q that match the query
      */
-    List<Q> findAllIn(_model._node _j );
+    List<Q> listIn(_model._node _n );
 
     /**
      * 
      * @param astRootNode the root AST node to start the search
-     * @return a List of <Q> matching the query
+     * @return a List of Q matching the query
      */
-    List<Q> findAllIn(Node astRootNode );
+    List<Q> listIn(Node astRootNode );
 
     /**
      * return the selections (containing the node and deconstructed parts)
@@ -35,15 +35,15 @@ public interface $query<Q> {
      * @param astRootNode the node to start the search (TypeDeclaration, MethodDeclaration)
      * @return the selected
      */
-    List<? extends selected> selectAllIn(Node astRootNode);
+    List<? extends selected> listSelectedIn(Node astRootNode);
 
     /**
      * return the selections (containing the node and deconstructed parts)
      * of all matching entities within the _j
-     * @param _j the java entity (_type, _method, etc.) where to start the search
+     * @param _n the java entity (_type, _method, etc.) where to start the search
      * @return a list of the selected
      */
-    List<? extends selected> selectAllIn(_model._node _j );
+    List<? extends selected> listSelectedIn(_model._node _n);
 
     /**
      * Remove all matching occurrences of the template in the node and return the
@@ -56,11 +56,11 @@ public interface $query<Q> {
 
     /**
      *
-     * @param _j the root java node to start from (_type, _method, etc.)
+     * @param _n the root java node to start from (_type, _method, etc.)
      * @param <M> the TYPE of model node
      * @return the modified model node
      */
-    <M extends _model._node> M removeIn(M _j );
+    <M extends _model._node> M removeIn(M _n );
 
 
     /**
@@ -70,16 +70,16 @@ public interface $query<Q> {
      * @param modelActionFn the function to run upon each encounter with a matching node
      * @return the modified astRootNode
      */
-    <N extends Node> N forAllIn(N astRootNode, Consumer<Q> modelActionFn);
+    <N extends Node> N forIn(N astRootNode, Consumer<Q> modelActionFn);
 
     /**
      * Find and execute a function on all of the matching occurrences within astRootNode
      * @param <M>
-     * @param _j the java node to start the walk
+     * @param _n the java node to start the walk
      * @param modelActionFn the function to run on all matching entities
      * @return  the modified _java node
      */
-    <M extends _model._node> M forAllIn(M _j, Consumer<Q> modelActionFn);
+    <M extends _model._node> M forIn(M _n, Consumer<Q> modelActionFn);
 
     /**
      * Replace all occurences of the template in the code with the replacement

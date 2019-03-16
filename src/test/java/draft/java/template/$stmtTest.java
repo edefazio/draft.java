@@ -36,7 +36,7 @@ public class $stmtTest extends TestCase {
         }
         $stmt $s = $stmt.of( ($any$)-> System.out.println($any$));
         _class _c = _class.of(L.class);
-        assertEquals( 2, $s.selectAllIn(_c).size());
+        assertEquals( 2, $s.listSelectedIn(_c).size());
     }
 
     public void testReplaceStmt(){
@@ -53,7 +53,7 @@ public class $stmtTest extends TestCase {
         $s.replaceAllIn(_c, $r);
 
         //verify we can match the (2) replacements
-        assertEquals( 2, $r.selectAllIn(_c).size());
+        assertEquals( 2, $r.listSelectedIn(_c).size());
         System.out.println( _c );
     }
 
@@ -86,7 +86,7 @@ public class $stmtTest extends TestCase {
         System.out.println( _c );
 
         //verify we can match the (2) replacements
-        assertEquals( 2, $r.selectAllIn(_c).size());
+        assertEquals( 2, $r.listSelectedIn(_c).size());
         System.out.println( _c );
     }
 
@@ -205,7 +205,7 @@ public class $stmtTest extends TestCase {
                 System.out.println("another method"+4+" values");
             }
         }
-        List<$stmt.Select> sel =  s.selectAllIn( _class.of(C.class) );
+        List<$stmt.Select> sel =  s.listSelectedIn( _class.of(C.class) );
         assertEquals(4, sel.size());
     }
 }

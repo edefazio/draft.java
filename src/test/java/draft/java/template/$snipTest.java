@@ -237,7 +237,7 @@ public class $snipTest extends TestCase {
                 System.out.println(2);
             }
         }
-        List<$snip.Select> ss = $snip.of( (Object $any$)-> System.out.println($any$) ).selectAllIn( _class.of(F.class) );
+        List<$snip.Select> ss = $snip.of( (Object $any$)-> System.out.println($any$) ).listSelectedIn( _class.of(F.class) );
         assertEquals(2, ss.size());
         assertEquals( ss.get(0).statements.get(0), Stmt.of( ()-> System.out.println(1)));
         assertEquals( ss.get(1).statements.get(0), Stmt.of( ()-> System.out.println(2)));
@@ -259,7 +259,7 @@ public class $snipTest extends TestCase {
                 System.out.println(3);
             }
         }
-        ss = $snip.of( (Object $any$)-> System.out.println($any$) ).selectAllIn( _class.of(G.class) );
+        ss = $snip.of( (Object $any$)-> System.out.println($any$) ).listSelectedIn( _class.of(G.class) );
 
         assertEquals(3, ss.size());
         assertTrue( $stmt.of( ()-> System.out.println(1) ).matches( ss.get(0).statements.get(0) ));

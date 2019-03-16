@@ -391,7 +391,7 @@ public final class $snip implements Template<List<Statement>>, $query<List<State
     }
 
     @Override
-    public List<List<Statement>> findAllIn(Node node ){
+    public List<List<Statement>> listIn(Node node ){
         List<List<Statement>>sts = new ArrayList<>();
         node.walk(this.$sts.get(0).statementClass, st -> {
             Select sel = select( (Statement)st );
@@ -403,7 +403,7 @@ public final class $snip implements Template<List<Statement>>, $query<List<State
     }
 
     @Override
-    public List<List<Statement>> findAllIn(_model._node _le ){
+    public List<List<Statement>> listIn(_model._node _le ){
         List<List<Statement>>sts = new ArrayList<>();
         Walk.in( _le, this.$sts.get(0).statementClass, st -> {
             Select sel = select( (Statement)st );
@@ -415,7 +415,7 @@ public final class $snip implements Template<List<Statement>>, $query<List<State
     }
 
     @Override
-    public <M extends _model._node> M forAllIn(M _le, Consumer<List<Statement>> statementsConsumer ){
+    public <M extends _model._node> M forIn(M _le, Consumer<List<Statement>> statementsConsumer ){
         Walk.in( _le, this.$sts.get(0).statementClass, st -> {
             Select sel = select( (Statement)st );
             if( sel != null ){
@@ -426,7 +426,7 @@ public final class $snip implements Template<List<Statement>>, $query<List<State
     }
 
     @Override
-    public <N extends Node> N forAllIn(N node, Consumer<List<Statement>> statementsConsumer ){
+    public <N extends Node> N forIn(N node, Consumer<List<Statement>> statementsConsumer ){
         node.walk(this.$sts.get(0).statementClass, st -> {
             Select sel = select( (Statement)st );
             if( sel != null ){
@@ -438,7 +438,7 @@ public final class $snip implements Template<List<Statement>>, $query<List<State
 
 
     @Override
-    public List<Select> selectAllIn(_model._node _le ){
+    public List<Select> listSelectedIn(_model._node _le ){
         List<Select>sts = new ArrayList<>();
         Walk.in( _le, this.$sts.get(0).statementClass, st -> {
             Select sel = select( (Statement)st );
@@ -450,7 +450,7 @@ public final class $snip implements Template<List<Statement>>, $query<List<State
     }
 
     @Override
-    public List<Select> selectAllIn(Node node ){
+    public List<Select> listSelectedIn(Node node ){
         List<Select>sts = new ArrayList<>();
         node.walk(this.$sts.get(0).statementClass, st -> {
             Select sel = select( (Statement)st );
@@ -463,13 +463,13 @@ public final class $snip implements Template<List<Statement>>, $query<List<State
 
     @Override
     public <N extends Node> N removeIn( N node ){
-        selectAllIn( node ).forEach(s -> s.statements.forEach(st-> st.removeForced()));
+        listSelectedIn( node ).forEach(s -> s.statements.forEach(st-> st.removeForced()));
         return node;
     }
 
     @Override
     public <M extends _model._node> M removeIn( M _m ){
-        selectAllIn( _m ).forEach(s -> s.statements.forEach(st-> st.removeForced()));
+        listSelectedIn( _m ).forEach(s -> s.statements.forEach(st-> st.removeForced()));
         return _m;
     }
 

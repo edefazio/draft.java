@@ -186,12 +186,12 @@ public final class $anno
     }
 
     @Override
-    public List<_anno> findAllIn(_model._node _t ){
-        return findAllIn( _t.ast() );
+    public List<_anno> listIn(_model._node _t ){
+        return listIn( _t.ast() );
     }
 
     @Override
-    public List<_anno> findAllIn(Node rootNode ){
+    public List<_anno> listIn(Node rootNode ){
         List<_anno> typesList = new ArrayList<>();
         rootNode.walk(AnnotationExpr.class, t->{
             if( this.matches(t) ){
@@ -202,7 +202,7 @@ public final class $anno
     }
 
     @Override
-    public List<Select> selectAllIn(Node n ){
+    public List<Select> listSelectedIn(Node n ){
         List<Select>sts = new ArrayList<>();
         n.walk(AnnotationExpr.class, e-> {
             Select s = select( e );
@@ -214,7 +214,7 @@ public final class $anno
     }
 
     @Override
-    public List<Select> selectAllIn(_model._node _m ){
+    public List<Select> listSelectedIn(_model._node _m ){
         List<Select>sts = new ArrayList<>();
         Walk.in( _m, AnnotationExpr.class, e -> {
             Select s = select( e );
@@ -278,7 +278,7 @@ public final class $anno
         });
         return _m;
     }
-
+    
     public <N extends Node> N replaceIn(N node, $anno $a ){
         node.walk(AnnotationExpr.class, e-> {
             Select sel = select( e );
@@ -310,7 +310,7 @@ public final class $anno
     }
 
     @Override
-    public <N extends Node> N forAllIn(N node, Consumer<_anno> _annoActionFn){
+    public <N extends Node> N forIn(N node, Consumer<_anno> _annoActionFn){
         node.walk(AnnotationExpr.class, e-> {
             Tokens tokens = this.annoStencil.deconstruct( e.toString());
             if( tokens != null ){
@@ -321,7 +321,7 @@ public final class $anno
     }
 
     @Override
-    public <M extends _model._node> M forAllIn(M _m, Consumer<_anno> _annoActionFn){
+    public <M extends _model._node> M forIn(M _m, Consumer<_anno> _annoActionFn){
         Walk.in( _m, AnnotationExpr.class, e -> {
             Tokens tokens = annoStencil.deconstruct( e.toString());
             if( tokens != null ){

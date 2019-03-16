@@ -417,7 +417,7 @@ public final class $stmt<T extends Statement>
     }
 
     @Override
-    public List<T> findAllIn(Node n){
+    public List<T> listIn(Node n){
         List<T>sts = new ArrayList<>();
         n.walk( this.statementClass,
                 st -> {
@@ -430,7 +430,7 @@ public final class $stmt<T extends Statement>
     }
 
     @Override
-    public List<T> findAllIn(_model._node _le ){
+    public List<T> listIn(_model._node _le ){
         List<T>sts = new ArrayList<>();
         Walk.in( _le, this.statementClass, st->{
             Select s = select( st);
@@ -442,7 +442,7 @@ public final class $stmt<T extends Statement>
     }
 
     @Override
-    public <N extends Node> N forAllIn(N n, Consumer<T> statementActionFn){
+    public <N extends Node> N forIn(N n, Consumer<T> statementActionFn){
         n.walk(this.statementClass, e-> {
             Tokens tokens = this.stencil.deconstruct( e.toString());
             if( tokens != null ){
@@ -453,7 +453,7 @@ public final class $stmt<T extends Statement>
     }
 
     @Override
-    public <M extends _model._node> M forAllIn(M _le, Consumer<T> statementActionFn){
+    public <M extends _model._node> M forIn(M _le, Consumer<T> statementActionFn){
         Walk.in( _le, this.statementClass, e->{
             Tokens tokens = this.stencil.deconstruct( e.toString());
             if( tokens != null ){
@@ -484,7 +484,7 @@ public final class $stmt<T extends Statement>
     }
 
     @Override
-    public List<Select<T>> selectAllIn(Node n ){
+    public List<Select<T>> listSelectedIn(Node n ){
         List<Select<T>>sts = new ArrayList<>();
         n.walk(this.statementClass, st-> {
             Tokens tokens = this.stencil.deconstruct( st.toString(NO_COMMENTS));
@@ -500,7 +500,7 @@ public final class $stmt<T extends Statement>
             .setPrintComments(false).setPrintJavadoc(false);
 
     @Override
-    public List<Select<T>> selectAllIn(_model._node _t ){
+    public List<Select<T>> listSelectedIn(_model._node _t ){
         List<Select<T>>sts = new ArrayList<>();
         Walk.in( _t, this.statementClass, st->{
             Tokens tokens = this.stencil.deconstruct(st.toString(NO_COMMENTS));
@@ -513,13 +513,13 @@ public final class $stmt<T extends Statement>
 
     @Override
     public <T extends _model._node> T removeIn(T _e ){
-        this.selectAllIn(_e).forEach(s-> s.statement.removeForced() );
+        this.listSelectedIn(_e).forEach(s-> s.statement.removeForced() );
         return _e;
     }
 
     @Override
     public <N extends Node> N removeIn(N node ){
-        this.selectAllIn(node).forEach(s-> s.statement.removeForced() );
+        this.listSelectedIn(node).forEach(s-> s.statement.removeForced() );
         return node;
     }
 
