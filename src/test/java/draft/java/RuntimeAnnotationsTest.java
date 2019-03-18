@@ -11,7 +11,7 @@ public class RuntimeAnnotationsTest extends TestCase {
 
     public void test_imports(){
         @_promote("aaaa.bbbb")
-        @_import( {UUID.class, Map.class})
+        @_importClass( {UUID.class, Map.class})
         class C{
             UUID u = UUID.randomUUID();
         }

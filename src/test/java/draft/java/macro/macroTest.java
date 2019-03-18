@@ -199,7 +199,7 @@ public class macroTest extends TestCase {
 
 
     public void testImport(){
-        @_import( Map.class )
+        @_importClass( Map.class )
         class C{
 
         }

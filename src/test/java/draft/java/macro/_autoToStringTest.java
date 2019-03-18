@@ -10,7 +10,7 @@ public class _autoToStringTest extends TestCase {
     public void testAutoToString(){
         @_promote("fffff")
         @_autoToString
-        @_import(UUID.class)
+        @_importClass(UUID.class)
         class V{
             public int a= 1,b=2,c=3;
             public int[] x= {1,2,3};

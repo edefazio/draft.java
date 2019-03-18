@@ -200,12 +200,12 @@ public class _classTest extends TestCase {
                 .main( "out.println(111);");
         _javac.of(_c);
 
-        _c = _class.of("G").importPackages("java.util")
+        _c = _class.of("G").imports("java.util.*")
                 .main(()-> System.out.println(UUID.randomUUID()));
         _javac.of(_c);
         //_proxy.of(_c).main();
 
-        _c = _class.of("J").importPackages(UUID.class, File.class)
+        _c = _class.of("J").imports("java.util.*", "java.io.*")
                 .field("Map m = new HashMap();")
                 .field("File f = null;")
                 .main(()-> System.out.println(UUID.randomUUID()))
@@ -661,7 +661,7 @@ public class _classTest extends TestCase {
         assertFalse( _c.isPublic());
         assertFalse( _c.isPrivate());
         assertFalse( _c.isProtected());
-        assertTrue( _c.isDefaultAccess());
+        assertTrue( _c.isPackagePrivate());
         assertFalse( _c.isStatic());
         assertFalse( _c.isFinal());
         assertFalse( _c.isAbstract());

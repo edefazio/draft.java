@@ -12,7 +12,7 @@ import java.util.Set;
 public class _localClassTest extends TestCase {
 
     @_package("som.pkg")
-    @_import({Map.class, List.class, Set.class, HashSet.class})
+    @_importClass({Map.class, List.class, Set.class, HashSet.class})
     @_replace({"target","replaced"})
     @_non_static @_public @_final
     private static class Baseline{
