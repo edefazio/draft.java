@@ -427,6 +427,14 @@ public enum _java {
             return null;
         }
         
+        public static <N extends _node> Component of( Class<N> nodeClass ){
+            Optional<Component> op = Arrays.stream(Component.values()).filter(p -> p.implementationClass.equals(nodeClass) ).findFirst();
+            if (op.isPresent()) {
+                return op.get();
+            }
+            return null;
+        }
+        
         /**
          * Returns the appropriate Component based on the _type
          * @param t the type instance
@@ -607,6 +615,22 @@ public enum _java {
         }
         
         /**
+         * 
+         * @param <N>
+         * @param index
+         * @param clazz
+         * @param id
+         * @return 
+         */
+        public <N extends _node> boolean is( int index, Class<N> clazz, String id){
+             if( index <= this.size()  && index >=0 ){
+                return this.componentPath.get(index).implementationClass.equals(clazz) &&
+                    this.idPath.get(index).equals(id);
+            }
+            return false;            
+        }
+                
+        /**
          * Does the leaf part of the path have the provided component and id
          * @param component the component
          * @param id the id
@@ -617,11 +641,32 @@ public enum _java {
         }
         
         /**
+         * 
+         * @param <N>
+         * @param clazz
+         * @param id
+         * @return 
+         */
+        public <N extends _node> boolean isLeaf( Class<N> clazz, String id){
+            return leaf().implementationClass.equals(clazz) && leaf().name.equals(id);
+        }
+        
+        /**
          * @param component the component
          * @return is the last component in the path this component? 
          */
         public boolean isLeaf( Component component ){
             return component.equals(leaf());
+        }
+        
+        /**
+         * 
+         * @param <N>
+         * @param clazz
+         * @return 
+         */
+        public <N extends _node> boolean isLeaf( Class<N> clazz ){
+            return leaf().implementationClass.equals(clazz);
         }
         
         /** 
@@ -673,6 +718,21 @@ public enum _java {
         }
         
         /**
+         * id there a
+         * @param <N>
+         * @param clazz
+         * @return 
+         */
+        public <N extends _node> boolean has( Class<N> clazz ){
+            for(int i=0;i<size(); i++){
+                if( this.componentPath.get(i).implementationClass.equals(clazz) ){
+                    return true;
+                }
+            }
+            return false;
+        }
+        
+        /**
          * does the path contain a part that has this exact component and id
          * @param component the component we are looking for 
          * @param id the path we are looking for
@@ -683,6 +743,23 @@ public enum _java {
             for(int i=0;i<size(); i++){
                 if( this.componentPath.get(i).equals(component) 
                         && this.idPath.get(i).equals(id)){
+                    return true;
+                }
+            }
+            return false;
+        }
+        
+        /**
+         * 
+         * @param <N>
+         * @param clazz
+         * @param id
+         * @return 
+         */
+        public <N extends _node> boolean has( Class<N> clazz, String id ){
+            for(int i=0;i<size(); i++){
+                if( this.componentPath.get(i).implementationClass.equals(clazz) 
+                        && this.idPath.get(i).equals(id)) {
                     return true;
                 }
             }
