@@ -38,6 +38,10 @@ public enum Expr {
      * (Used when we pass in Lambdas to the {@link Expr#lambda(TriFunction)}  
      * operation
      * {@link com.github.javaparser.ast.expr.LambdaExpr}
+     * @param <A>
+     * @param <B>
+     * @param <C>
+     * @param <D>
      */
     @FunctionalInterface
     public interface TriFunction<A,B,C,D>{
@@ -49,6 +53,11 @@ public enum Expr {
      * (Used when we pass in Lambdas to the {@link Expr#lambda(QuadFunction)} 
      * operation)
      * {@link com.github.javaparser.ast.expr.LambdaExpr}
+     * @param <A>
+     * @param <B>
+     * @param <C>
+     * @param <D>
+     * @param <E>
      */
     @FunctionalInterface
     public interface QuadFunction<A,B,C,D,E>{
@@ -60,6 +69,9 @@ public enum Expr {
      * (Used when we pass in Lambdas to the {@link Expr#lambda(TriConsumer)} 
      * operation)
      * {@link com.github.javaparser.ast.expr.LambdaExpr}
+     * @param <T>
+     * @param <U>
+     * @param <V>
      */
     @FunctionalInterface
     public interface TriConsumer<T,U,V>{
@@ -71,6 +83,10 @@ public enum Expr {
      * (Used when we pass in Lambdas to the {@link Expr#lambda(QuadConsumer)} 
      * operation
      * {@link com.github.javaparser.ast.expr.LambdaExpr}
+     * @param <T>
+     * @param <V>
+     * @param <U>
+     * @param <Z>
      */
     @FunctionalInterface
     public interface QuadConsumer<T,U,V,Z>{
@@ -103,6 +119,7 @@ public enum Expr {
      * assertEquals( Stmt.of("System.out.println(1);"), le.getBody().getStatement(0) );
      * </PRE>
      * NOTE: the source of the calling method must be resolveable via draft
+     * @param <T>
      * @see draft.java.io._io#addInFilePath(java.lang.String) 
      * @see draft.java.io._io#addInProject(java.lang.String) 
      * @param c the runtime Lambda Expression
@@ -269,7 +286,7 @@ public enum Expr {
         return lambda(ste, _io.IN_DEFAULT );
     }
 
- /**
+    /**
      * Resolves and returns the AST LambdaExpr representing lambda expression 
      * that is referenced from this stackTraceElement line
      * for example:
@@ -452,9 +469,7 @@ public enum Expr {
 
     /**
      * Return the AST (ObjectCreationExpr) for the .java SOURCE code 
-     * of the Runtime Anonymous Object passed in.
-     * 
-     * for instance:
+     * of the Runtime Anonymous Object passed in.for instance:
      * <PRE>
      * //return the ObjectCreationExpr (the AST for the Runtime Object passed in)
      * ObjectCreationExpr oce = Expr.anonymousObject( new Object(){ int x,y;} );
@@ -476,6 +491,7 @@ public enum Expr {
      * {@link draft.java.io._io._config#inProjectsPath(java.lang.String)}    
      * </UL>
      * 
+     * @param resolver the resolver for the source code
      * @see draft.java.io._io._config#inFilesPath(java.lang.String)
      * @see draft.java.io._io._config#inProjectsPath(java.lang.String)
      * @param ste the stackTraceElement line referring to the lone of code where the
@@ -772,11 +788,12 @@ public enum Expr {
     }
 
     /**
-     * Builds a lambda expression from the *CODE* passed in... i,.e.
-     * <PRE>
+     * Builds a lambda expression from the *CODE* passed in...i,.e.<PRE>
      * Expr.lamdba( ()-> assert(true) );  will return the same as
      * Expr.lambda("()->assert(true)");
      * </PRE>
+     * @param <T>
+     * @param <U>
      * @param c a lambda
      * @return the LambdaExpr instance
      */
@@ -786,11 +803,13 @@ public enum Expr {
     }
 
     /**
-     * Builds a lambda expression from the *CODE* passed in... i,.e.
-     * <PRE>
+     * Builds a lambda expression from the *CODE* passed in...i,.e.<PRE>
      * Expr.lamdba( ()-> assert(true) );  will return the same as
      * Expr.lambda("()->assert(true)");
      * </PRE>
+     * @param <T>
+     * @param <U>
+     * @param <V>
      * @param c a lambda
      * @return the LambdaExpr instance
      */
@@ -800,11 +819,14 @@ public enum Expr {
     }
 
     /**
-     * Builds a lambda expression from the *CODE* passed in... i,.e.
-     * <PRE>
+     * Builds a lambda expression from the *CODE* passed in...i,.e.<PRE>
      * Expr.lamdba( ()-> assert(true) );  will return the same as
      * Expr.lambda("()->assert(true)");
      * </PRE>
+     * @param <T>
+     * @param <U>
+     * @param <V>
+     * @param <W>
      * @param c a lambda
      * @return the LambdaExpr instance
      */
@@ -814,11 +836,15 @@ public enum Expr {
     }
 
     /**
-     * Builds a lambda expression from the *CODE* passed in... i,.e.
-     * <PRE>
+     * Builds a lambda expression from the *CODE* passed in...i,.e.<PRE>
      * Expr.lamdba( ()-> assert(true) );  will return the same as
      * Expr.lambda("()->assert(true)");
      * </PRE>
+     * @param <T>
+     * @param <U>
+     * @param <V>
+     * @param <W>
+     * @param <X>
      * @param c a lambda
      * @return the LambdaExpr instance
      */
@@ -828,11 +854,11 @@ public enum Expr {
     }
 
     /**
-     * Builds a lambda expression from the *CODE* passed in... i,.e.
-     * <PRE>
+     * Builds a lambda expression from the *CODE* passed in...i,.e.<PRE>
      * Expr.lamdba( ()-> assert(true) );  will return the same as
      * Expr.lambda("()->assert(true)");
      * </PRE>
+     * @param <T>
      * @param c a lambda
      * @return the LambdaExpr instance
      */
@@ -842,11 +868,12 @@ public enum Expr {
     }
 
     /**
-     * Builds a lambda expression from the *CODE* passed in... i,.e.
-     * <PRE>
+     * Builds a lambda expression from the *CODE* passed in...i,.e.<PRE>
      * Expr.lamdba( ()-> assert(true) );  will return the same as
      * Expr.lambda("()->assert(true)");
      * </PRE>
+     * @param <T>
+     * @param <U>
      * @param c a lambda
      * @return the LambdaExpr instance
      */
@@ -856,11 +883,13 @@ public enum Expr {
     }
 
     /**
-     * Builds a lambda expression from the *CODE* passed in... i,.e.
-     * <PRE>
+     * Builds a lambda expression from the *CODE* passed in...i,.e.<PRE>
      * Expr.lamdba( ()-> assert(true) );  will return the same as
      * Expr.lambda("()->assert(true)");
      * </PRE>
+     * @param <T>
+     * @param <U>
+     * @param <V>
      * @param c a lambda
      * @return the LambdaExpr instance
      */
@@ -870,11 +899,14 @@ public enum Expr {
     }
 
     /**
-     * Builds a lambda expression from the *CODE* passed in... i,.e.
-     * <PRE>
+     * Builds a lambda expression from the *CODE* passed in...i,.e.<PRE>
      * Expr.lamdba( ()-> assert(true) );  will return the same as
      * Expr.lambda("()->assert(true)");
      * </PRE>
+     * @param <A>
+     * @param <B>
+     * @param <C>
+     * @param <D>
      * @param c a lambda
      * @return the LambdaExpr instance
      */
