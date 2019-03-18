@@ -15,6 +15,7 @@ import com.github.javaparser.ast.stmt.LocalClassDeclarationStmt;
 import com.github.javaparser.ast.type.ClassOrInterfaceType;
 import draft.DraftException;
 import draft.Text;
+import draft.java._import._imports;
 import draft.java._model.*;
 import draft.java.io._in;
 import draft.java.io._io;
@@ -340,21 +341,9 @@ public interface _type<AST extends TypeDeclaration & NodeWithJavadoc & NodeWithM
      * @param packageName
      * @return the modified TYPE
      */
-    default T setPackage( String packageName ){
-        //if( !this.isTopClass() ){
-        //    System.out.println( "trying to set the package on non top level class");
-        //    return (T) this;
-            /*
-            CompilationUnit astRoot = new CompilationUnit();
-            astRoot.setPackageDeclaration(packageName);
-            astRoot.addType(ast());
-            return (T) this;
-            */
-        //}
+    default T setPackage( String packageName ){        
         CompilationUnit cu = findCompilationUnit();
-        //System.out.println("BEFORE SIZE " + listNests().size());
-        cu.setPackageDeclaration( packageName );
-        //System.out.println("AFTER SIZE " + listNests().size());
+        cu.setPackageDeclaration( packageName );        
         return (T)this;
     }
 
@@ -398,28 +387,36 @@ public interface _type<AST extends TypeDeclaration & NodeWithJavadoc & NodeWithM
     }
 
     /**
-     * Remove imports based on a predicate
-     * @param importMatchFn filter for deciding which imports to removeIn
+     * remove imports based on predicate
+     * @param _importMatchFn filter for deciding which imports to removeIn
      * @return the modified TYPE
      */
-    default T removeImports( Predicate<ImportDeclaration> importMatchFn ){
-        removeImports( listImports( importMatchFn ));
+    default T removeImports( Predicate<_import> _importMatchFn ){
+        getImports().remove(_importMatchFn );
+        //removeImports( listImports( _importMatchFn ));
         return (T)this;
     }
-
+    
     /**
      * removeIn imports by classes
      * @param clazzes
      * @return
      */
     default T removeImports( Class...clazzes ){
-        ImportDeclaration[] ids = new ImportDeclaration[clazzes.length];
-        for(int i=0;i<clazzes.length;i++){
-            ids[i] = new ImportDeclaration(clazzes[i].getCanonicalName(), false, false);
-        }
-        return removeImports( ids );
+        _imports.of(findCompilationUnit()).remove(clazzes);
+        return (T)this;        
     }
 
+    default T removeImports( _import...toRemove ){
+        _imports.of(findCompilationUnit()).remove(toRemove);
+        return (T)this;
+    }
+    
+    default T removeImports( _type..._typesToRemove ){
+        getImports().remove(_typesToRemove);        
+        return (T)this;
+    }
+    
     /**
      *
      * @param toRemove the ImportDeclarations to removeIn
@@ -444,29 +441,45 @@ public interface _type<AST extends TypeDeclaration & NodeWithJavadoc & NodeWithM
         }
         return (T)this;
     }
-
+    
     /**
-     * Apply some function to all Imports
-     * @param astImportActionFn the action fn to apply to all imports
+     * Select some imports based on the astImportPredicate and apply the 
+     * astImportActionFn on the selected Imports
+     * @param _importActionFn function to apply to the imports
      * @return the T
      */
-    default T forImports(Consumer<ImportDeclaration> astImportActionFn ){
-        listImports().forEach(astImportActionFn);
+    default T forImports( Consumer<_import> _importActionFn ){
+        _imports.of(findCompilationUnit()).forEach(_importActionFn);
+        //listImports(_importMatchFn).forEach(astImportActionFn);
         return (T)this;
     }
     
     /**
      * Select some imports based on the astImportPredicate and apply the 
      * astImportActionFn on the selected Imports
-     * @param astImportPredicate selects the Imports to act on
-     * @param astImportActionFn function to apply to the imports
+     * @param _importMatchFn selects the Imports to act on
+     * @param _importActionFn function to apply to the imports
      * @return the T
      */
-    default T forImports( Predicate<ImportDeclaration> astImportPredicate, Consumer<ImportDeclaration> astImportActionFn ){
-        listImports(astImportPredicate).forEach(astImportActionFn);
+    default T forImports( Predicate<_import> _importMatchFn, Consumer<_import> _importActionFn ){
+        _imports.of(findCompilationUnit()).forEach(_importMatchFn, _importActionFn);
+        //listImports(_importMatchFn).forEach(astImportActionFn);
         return (T)this;
     }
     
+    /**
+     * Gets the _imports abstraction for the _type
+     * @return the imports abstraction
+     */
+    default _imports getImports(){
+        //CompilationUnit cu = ;
+        //if( cu != null ){
+        //    return _imports.of( cu );
+        //}
+        return _imports.of(findCompilationUnit());
+    }
+    
+    //TODO get rid of this in place of _imports, or getImports()
     default List<ImportDeclaration> listImports(){
         CompilationUnit cu = findCompilationUnit();
         if( cu != null ){
@@ -477,54 +490,30 @@ public interface _type<AST extends TypeDeclaration & NodeWithJavadoc & NodeWithM
 
     
     default boolean hasImport( _type _t ){
-        return _type.this.hasImport( _t.getFullName() );
+        return hasImport( _t.getFullName() );
     }
 
+    /**
+     * class or method name
+     * <PRE>
+     * 
+     * </PRE>
+     * @param className
+     * @return 
+     */
     default boolean hasImport(String className){
-        int dotIndex = className.lastIndexOf( '.' );
-        if( dotIndex > 1 ){
-            String packageName = className.substring( 0, dotIndex );
-            String simpleClassName =  className.substring( dotIndex + 1 );
-            if( !listImports( i-> i.getNameAsString().equals( packageName ) && i.isAsterisk() ).isEmpty() ){
-                return true;
-            }
-            //check exact import
-            if( !listImports( i-> i.getNameAsString().equals( className ) ).isEmpty() ){
-                return true;
-            }
-        }
-        return false;
+        return _imports.of(findCompilationUnit()).hasImport(className);        
     }
 
     default boolean hasImports( Class...clazzes ){
-        return Arrays.stream(clazzes).allMatch(i -> hasImport(i) );
+        return _imports.of(findCompilationUnit()).hasImports(clazzes);
     }
     
-    default boolean hasImport(Class clazz ){
-        if( clazz.isMemberClass() ){
-            //check exact import
-            if( !listImports( i-> i.getNameAsString().equals( clazz.getCanonicalName() ) ).isEmpty() ){
-                return true;
-            }
-            return false;
-        }else{
-            if( clazz.getPackage() != null ) {
-                String packageName = clazz.getPackage().getName();
-                List<ImportDeclaration> li = listImports();
-                //check star import
-                if (!listImports(i -> i.getNameAsString().equals(packageName) && i.isAsterisk()).isEmpty()) {
-                    return true;
-                }
-                //check exact import
-                if (!listImports(i -> i.getNameAsString().equals(clazz.getCanonicalName())).isEmpty()){ 
-                    return true;
-                }
-            }
-        }
-        return false;
+    default boolean hasImport(Class clazz ){        
+        return _imports.of(findCompilationUnit()).hasImport(clazz);        
     }
 
-    default List<ImportDeclaration> listImports( Predicate<ImportDeclaration> importMatchFn){
+    default List<ImportDeclaration> listImports( Predicate<ImportDeclaration> importMatchFn){        
         List<ImportDeclaration> is = listImports();
         return is.stream().filter( importMatchFn ).collect(Collectors.toList());
     }
@@ -566,6 +555,7 @@ public interface _type<AST extends TypeDeclaration & NodeWithJavadoc & NodeWithM
         }
         return (T)this;
     }
+    
 
     /**
      * Statically import all of the
@@ -599,7 +589,7 @@ public interface _type<AST extends TypeDeclaration & NodeWithJavadoc & NodeWithM
      * </PRE>
      * @param clazzes classes whos packahes will be imported
      * @return the modified T
-     */
+     
     default T importPackages( Class...clazzes){
         Arrays.stream(clazzes).forEach( c-> {
             if( c.getPackage() != null ) {
@@ -608,12 +598,13 @@ public interface _type<AST extends TypeDeclaration & NodeWithJavadoc & NodeWithM
             });
         return (T)this;
     }
+    */ 
 
     /**
      * Wildcard import the classeses in the Packages provided
      * @param packageNames
      * @return
-     */
+     
     default T importPackages( String...packageNames ){
         CompilationUnit cu = findCompilationUnit();
         if( cu != null ){
@@ -623,6 +614,7 @@ public interface _type<AST extends TypeDeclaration & NodeWithJavadoc & NodeWithM
         }
         return (T)this;
     }
+    **/
 
     /**
      *
@@ -681,6 +673,7 @@ public interface _type<AST extends TypeDeclaration & NodeWithJavadoc & NodeWithM
             Arrays.stream( importDecls ).forEach( c-> cu.addImport( c ) );
             return (T)this;
         }
+        //return (T) this;
         throw new DraftException("No AST CompilationUnit of class "+ getName()+" to add imports");
     }
 
@@ -690,6 +683,7 @@ public interface _type<AST extends TypeDeclaration & NodeWithJavadoc & NodeWithM
             Arrays.stream( importStatements ).forEach( c-> cu.addImport( Ast.importDeclaration( c ) ) );
             return (T)this;
         }
+        //return (T) this;
         throw new DraftException("No AST CompilationUnit of "+ getName()+" to add imports");
     }
 
@@ -731,7 +725,18 @@ public interface _type<AST extends TypeDeclaration & NodeWithJavadoc & NodeWithM
         return this.ast().isPublic();
     }
 
-    default boolean isDefaultAccess(){
+    /**
+     * Is this type of "package private" accessibility
+     * (i.e. it does NOT have public private or protected modifier)
+     * <PRE>
+     * interface F{}
+     * class C{}
+     * @interface A{}
+     * enum E{}
+     * </PRE>
+     * @return 
+     */
+    default boolean isPackagePrivate(){
         return !this.ast().isProtected() &&
                 !this.ast().isPrivate() &&
                 !this.ast().isPublic();
@@ -772,7 +777,16 @@ public interface _type<AST extends TypeDeclaration & NodeWithJavadoc & NodeWithM
         this.ast().setProtected(false);
         return (T)this;
     }
-    default T setDefaultAccess(){
+    /**
+     * Sets the type to be package private (i.e. NO public, protected or private modifier)
+     * i.e.
+     * <PRE>
+     * class P{
+     * }
+     * </PRE>
+     * @return the modified T
+     */
+    default T setPackagePrivate(){
         this.ast().setPublic(false);
         this.ast().setPrivate(false);
         this.ast().setProtected(false);
@@ -820,7 +834,10 @@ public interface _type<AST extends TypeDeclaration & NodeWithJavadoc & NodeWithM
 
     /**
      *
+     * @param _fieldMatchFn
+     * @return 
      */
+    @Override
     default List<_field> listFields( Predicate<_field> _fieldMatchFn ){
         return listFields().stream().filter(_fieldMatchFn).collect(Collectors.toList());
     }
@@ -844,7 +861,6 @@ public interface _type<AST extends TypeDeclaration & NodeWithJavadoc & NodeWithM
     default T forMembers( Consumer<_member> _memberAction ){
         return forMembers( t-> true, _memberAction );
     }
-
 
     /**
      * returns a _type or a nested _type if
