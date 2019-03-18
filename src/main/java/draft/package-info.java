@@ -70,15 +70,15 @@
  * _project.of(_c).main();
  * </PRE>
  * 
- * <PRE>
+ * <PRE> 
  * you__________
  *   |          |
- *   |    ----draft
- *   |   /      |
- *   |  /------AST
- *   | /        |     
- *   |---------->---------->
- * source   compiler     binary
+ *   |    ----draft---------------- 
+ *   |   /      |       \          \
+ *   |  /------AST       \          \
+ *   | /        |         \          \
+ *   |---------->---------->---------->
+ * .java     [javac]     .class     [JVM]
  * </PRE>
  */
 package draft;
