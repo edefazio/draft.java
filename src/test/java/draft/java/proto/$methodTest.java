@@ -1,5 +1,6 @@
-package draft.java.template;
+package draft.java.proto;
 
+import draft.java.proto.$method;
 import draft.java.Ast;
 import draft.java._class;
 import draft.java._field;

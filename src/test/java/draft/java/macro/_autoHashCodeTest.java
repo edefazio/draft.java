@@ -6,7 +6,7 @@ import draft.java._class;
 import draft.java._method;
 import draft.java.runtime._project;
 import draft.java.runtime._proxy;
-import draft.java.template.$stmt;
+import draft.java.proto.$stmt;
 import junit.framework.TestCase;
 
 import java.util.List;

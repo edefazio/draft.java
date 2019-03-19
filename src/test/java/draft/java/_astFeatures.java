@@ -9,7 +9,7 @@ import draft.java.macro._package;
 import draft.java.macro._replaceSystemOutWithLog;
 import draft.java.runtime._javac;
 import draft.java.runtime._project;
-import draft.java.template.$stmt;
+import draft.java.proto.$stmt;
 import junit.framework.TestCase;
 
 import java.util.ArrayList;

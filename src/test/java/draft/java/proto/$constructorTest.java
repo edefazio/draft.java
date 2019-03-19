@@ -1,5 +1,6 @@
-package draft.java.template;
+package draft.java.proto;
 
+import draft.java.proto.$constructor;
 import draft.java.Expr;
 import draft.java.Stmt;
 import draft.java._class;

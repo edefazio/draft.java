@@ -3,7 +3,7 @@ package draft.java.macro;
 import draft.java._anno._hasAnnos;
 import draft.java._class;
 import draft.java._type;
-import draft.java.template.$stmt;
+import draft.java.proto.$stmt;
 import junit.framework.TestCase;
 
 import java.lang.annotation.ElementType;

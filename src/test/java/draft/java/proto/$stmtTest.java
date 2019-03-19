@@ -1,5 +1,7 @@
-package draft.java.template;
+package draft.java.proto;
 
+import draft.java.proto.$snip;
+import draft.java.proto.$stmt;
 import com.github.javaparser.ast.stmt.Statement;
 import draft.Stencil;
 import draft.Tokens;

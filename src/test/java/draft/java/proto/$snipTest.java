@@ -1,5 +1,7 @@
-package draft.java.template;
+package draft.java.proto;
 
+import draft.java.proto.$snip;
+import draft.java.proto.$stmt;
 import com.github.javaparser.ast.stmt.AssertStmt;
 import com.github.javaparser.ast.stmt.BlockStmt;
 import com.github.javaparser.ast.stmt.ExpressionStmt;

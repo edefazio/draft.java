@@ -1,4 +1,4 @@
-package draft.java.template;
+package draft.java.proto;
 
 import com.github.javaparser.ast.Node;
 

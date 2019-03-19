@@ -6,9 +6,9 @@ import draft.Stencil;
 import draft.java.Ast;
 import draft.java._field;
 import draft.java._type;
-import draft.java.template.$field;
-import draft.java.template.$snip;
-import draft.java.template.$stmt;
+import draft.java.proto.$field;
+import draft.java.proto.$snip;
+import draft.java.proto.$stmt;
 
 import java.util.Arrays;
 import java.util.List;

@@ -1,5 +1,6 @@
-package draft.java.template;
+package draft.java.proto;
 
+import draft.java.proto.$anno;
 import draft.java._anno;
 import draft.java._class;
 import junit.framework.TestCase;

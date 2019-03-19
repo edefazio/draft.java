@@ -3,8 +3,8 @@ package draft.java.macro;
 import com.github.javaparser.ast.stmt.BlockStmt;
 import draft.Tokens;
 import draft.java.*;
-import draft.java.template.$method;
-import draft.java.template.$stmt;
+import draft.java.proto.$method;
+import draft.java.proto.$stmt;
 
 import java.lang.annotation.* ;
 import java.util.List;

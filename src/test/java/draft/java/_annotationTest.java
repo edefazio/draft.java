@@ -4,7 +4,7 @@ import com.github.javaparser.ast.expr.IntegerLiteralExpr;
 import draft.java._annotation._element;
 import java.util.List;
 
-import draft.java.template.$expr;
+import draft.java.proto.$expr;
 import java.lang.annotation.ElementType;
 import junit.framework.TestCase;
 import test.ComplexAnnotationType;

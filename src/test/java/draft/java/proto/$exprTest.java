@@ -1,4 +1,4 @@
-package draft.java.template;
+package draft.java.proto;
 
 import com.github.javaparser.ast.expr.IntegerLiteralExpr;
 import draft.java.Expr;
@@ -15,9 +15,7 @@ public class $exprTest extends TestCase {
             @aa(2) 
             int a = 1;
             int b = 3 + 4;
-        });
-        
-        
+        });        
         assertEquals( 1, $expr.list(_c, Expr.of(2) ).size());
         assertEquals( 4, $expr.of(2).$("2", "number").listIn(_c).size());
     }

@@ -1,4 +1,4 @@
-package draft.java.template;
+package draft.java.proto;
 
 import draft.java.Ast;
 import draft.java.Stmt;

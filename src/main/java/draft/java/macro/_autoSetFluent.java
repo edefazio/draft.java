@@ -1,7 +1,7 @@
 package draft.java.macro;
 
 import draft.java.*;
-import draft.java.template.$method;
+import draft.java.proto.$method;
 
 import java.lang.annotation.*;
 import java.util.List;
