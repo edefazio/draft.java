@@ -20,6 +20,13 @@ public class _importTest extends TestCase {
         _import _i = _import.of("java.util.*");
     }
     
+    public void testToString(){
+        assertEquals("import java.io.IOException;", _import.of(IOException.class).toString().trim());
+        _class _c = _class.of("C").imports(IOException.class, Map.class);
+        System.out.println( _c.getImports().toString().trim() );
+        assertEquals("import java.io.IOException;"+System.lineSeparator() + "import java.util.Map;", _c.getImports().toString().trim());
+        //assertEquals("import java.io.IOException;", _c.getImports().toString().trim());
+    }
     public void setStaticWildcardImport(){
         _import _i = _import.of(Ast.class).setStatic(true).setWildcard(true);
         

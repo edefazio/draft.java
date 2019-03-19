@@ -10,6 +10,56 @@ import draft.java.runtime._javac;
 import junit.framework.TestCase;
 
 public class $methodTest extends TestCase {
+    
+    public void testStaticMethodReplaceRemoveList(){
+        $method $set = $method.of(
+            "public void set$Name$($type$ $name$){",
+            "this.$name$ = $name$;",
+            "}");
+        
+        $method $setFleunt = $method.of(
+            "public $className$ set$Name$( $type$ $name$ ){",
+            "this.$name$ = $name$;",
+            "return this;",
+            "}");
+        
+        class Loc{
+            int x;
+            String y;
+            
+            public void setX(int x){
+                //comment
+                this.x = x;
+            }
+            
+            public void setY(String y){
+                
+                this.y = y;
+                
+            }
+        }
+        _class _c = _class.of(Loc.class);
+        //verify we can find (2) set methods
+        assertEquals(2, $set.listIn(_c).size());
+        
+        //remove 'em
+        $set.removeIn(_c);
+        
+        //verify they are removed
+        assertEquals(0, $set.listIn(_c).size());
+        
+        //rebuild
+        _c = _class.of(Loc.class);
+        
+        // call replace with a setFluent prototype
+        $set.replaceIn(_c, $setFleunt.assign$("className", "Loc") );
+        
+        //verify there are no simple sets left 
+        assertEquals(0, $set.listIn(_c).size());
+        
+        //verify there are (2) setFluents
+        assertEquals(2, $setFleunt.listIn(_c).size());        
+    }
 
     public void testAnonymousBodyWithMacros(){
         $method $m = $method.of(new Object(){

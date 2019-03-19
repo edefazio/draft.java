@@ -16,6 +16,60 @@ import java.util.function.Consumer;
 public final class $expr <T extends Expression>
         implements Template<T>, $query<T>  {
 
+    /**
+     * 
+     * @param <N>
+     * @param rootNode
+     * @param source
+     * @return 
+     */
+    public static final <N extends _model._node> List<_anno> list( N rootNode, String source ){
+        return $expr.of(source).listIn(rootNode);
+    }
+    
+    /**
+     * 
+     * @param <N>
+     * @param rootNode
+     * @param astExpr
+     * @return 
+     */
+    public static final <N extends _model._node> List<_anno> list( N rootNode, Expression astExpr ){
+        return $expr.of(astExpr).listIn(rootNode);
+    }    
+    
+    public static final <N extends _model._node> List<_anno> list( N rootNode, $expr astExpr ){
+        return astExpr.listIn(rootNode);
+    }
+    
+    /**
+     * 
+     * @param <M>
+     * @param rootNode
+     * @param source
+     * @param target
+     * @return 
+     */
+    public static final <M extends _model._node> M replace(M rootNode, Expression source, Expression target){
+        return (M)$expr.of(source)
+            .replaceIn(rootNode, $expr.of(target));
+    }
+    
+    /**
+     * 
+     * @param <M>
+     * @param rootNode
+     * @param source
+     * @param target
+     * @return 
+     */
+    public static final <M extends _model._node> M replace( 
+        M rootNode, String source, String target){
+        
+        return (M)$expr.of(source)
+            .replaceIn(rootNode, $expr.of(target));
+    }
+    
     public static $expr of( String...code ){
         return new $expr(Expr.of(code));
     }

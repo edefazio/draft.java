@@ -7,7 +7,9 @@ import com.github.javaparser.ast.stmt.Statement;
 import draft.Tokens;
 import draft.java.Ast;
 import draft.java.Stmt;
+import draft.java._body;
 import draft.java._class;
+import draft.java._method;
 import junit.framework.TestCase;
 
 import java.util.*;
@@ -124,8 +126,23 @@ public class $snipTest extends TestCase {
             }
         }
         _class _c = _class.of(D.class);
-        $s.replaceAllIn(_c, $r);
-        System.out.println( _c );
+        $s.replaceIn(_c, $r);
+        assertTrue( _c.getMethod("g").getBody().is( 
+            "System.out.println(\"hey\");", 
+            "System.out.println(\"hey\");", 
+            "System.out.println(\"this\");",
+            "System.out.println(\"this\");") );
+        //System.out.println( _c );
+        
+        _c = _class.of(D.class);
+        $snip.replace( _c, "System.out.println($i$);", "{System.out.println($i$); System.out.println($i$);}" );
+        //System.out.println( _c );
+
+        assertTrue( _c.getMethod("g").getBody().is( 
+            "System.out.println(\"hey\");", 
+            "System.out.println(\"hey\");", 
+            "System.out.println(\"this\");",
+            "System.out.println(\"this\");") );
     }
 
     public void test$snipRep(){
@@ -151,7 +168,7 @@ public class $snipTest extends TestCase {
         }
         _class _c = _class.of(L.class);
 
-        $s.replaceAllIn( _c, $dbl );
+        $s.replaceIn( _c, $dbl );
 
         System.out.println( _c );
         /*

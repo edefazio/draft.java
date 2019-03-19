@@ -8,6 +8,8 @@ import draft.*;
 import draft.java.Ast;
 import draft.java.Walk;
 import draft.java._model;
+import draft.java._model._node;
+import draft.java._typeRef;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -15,13 +17,100 @@ import java.util.Map;
 import java.util.function.Consumer;
 
 /**
- * Template for a Java Type
+ * Template for a Java Type Reference
  *
  * @param <T> the underlying Expression TYPE
  */
 public final class $typeRef<T extends Type>
         implements Template<T>, $query<T>{
 
+     /**
+     * 
+     * @param <N>
+     * @param rootNode
+     * @param target
+     * @return 
+     */
+    public static final <N extends _node> List<_typeRef> list( N rootNode, String target ){
+        return $typeRef.of(target).listIn(rootNode);
+    }
+    
+    /**
+     * 
+     * @param <N>
+     * @param rootNode
+     * @param target
+     * @return 
+     */
+    public static final <N extends _node> List<_typeRef> list( N rootNode, Class target ){
+        return $typeRef.of(target).listIn(rootNode);
+    }
+        
+    /**
+     * 
+     * @param <N>
+     * @param rootNode
+     * @param target
+     * @return 
+     */
+    public static final <N extends _node> List<_typeRef> list( N rootNode, _typeRef target ){
+        return $typeRef.of(target).listIn(rootNode);
+    }
+    
+    
+    /**
+     * 
+     * @param <N>
+     * @param rootNode
+     * @param source
+     * @param target
+     * @return 
+     */
+    public static final <N extends _node> N replace(N rootNode, _typeRef source, _typeRef target){
+        return (N)$typeRef.of(source)
+            .replaceIn(rootNode, $typeRef.of(target));
+    }
+    
+    /**
+     * 
+     * @param <N>
+     * @param rootNode
+     * @param source
+     * @param target
+     * @return 
+     */
+    public static final <N extends _node> N replace(N rootNode, Type source, Type target){
+        return (N)$typeRef.of(source)
+            .replaceIn(rootNode, $typeRef.of(target));
+    }
+
+    /**
+     * 
+     * @param <N>
+     * @param rootNode
+     * @param source
+     * @param target
+     * @return 
+     */
+    public static final <N extends _node> N replace(N rootNode, String source, String target){
+        return (N)$typeRef.of(source)
+            .replaceIn(rootNode, $typeRef.of(target));
+    }
+    
+    /**
+     * 
+     * @param <N>
+     * @param rootNode
+     * @param sourceType
+     * @param targetType
+     * @return 
+     */
+    public static final <N extends _node> N replace( N rootNode, Class sourceType, Class targetType){
+        
+        return (N)$typeRef.of(sourceType)
+            .replaceIn(rootNode, $typeRef.of(targetType));
+    }
+    
     public static $typeRef of(String code ){
         return new $typeRef(Ast.typeRef(code));
     }
@@ -32,6 +121,10 @@ public final class $typeRef<T extends Type>
 
     public static $typeRef of(Type t ){
         return new $typeRef( t );
+    }
+    
+    public static $typeRef of( _typeRef t){
+        return new $typeRef(t.ast());
     }
 
     public static $typeRef booleanType = of(PrimitiveType.booleanType());

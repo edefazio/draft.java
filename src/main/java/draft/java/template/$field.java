@@ -8,6 +8,7 @@ import com.github.javaparser.ast.expr.ObjectCreationExpr;
 import com.github.javaparser.printer.PrettyPrinterConfiguration;
 import draft.*;
 import draft.java.*;
+import draft.java._model._node;
 import draft.java.macro._macro;
 import draft.java.macro._remove;
 
@@ -21,6 +22,91 @@ import java.util.function.Consumer;
 public class $field
     implements Template<_field>, $query<_field> {
 
+     /**
+     * 
+     * @param <N>
+     * @param rootNode
+     * @param source
+     * @return 
+     */
+    public static final <N extends _node> List<_field> list( N rootNode, String source ){
+        return $field.of(source).listIn(rootNode);
+    }
+    
+    /**
+     * 
+     * @param <N>
+     * @param rootNode
+     * @param source
+     * @return 
+     */
+    public static final <N extends _node> List<_field> list( N rootNode, _field source ){
+        return $field.of(source).listIn(rootNode);
+    }
+    
+    /**
+     * Removes all occurrences of the source anno in the rootNode (recursively)
+     * @param <N>
+     * @param rootNode
+     * @param source
+     * @return the modified N
+     */
+    public static final <N extends _node> N remove( N rootNode, _field source ){
+        return $field.of(source).removeIn(rootNode);
+    }
+    
+    /**
+     * 
+     * @param <N>
+     * @param rootNode
+     * @param source
+     * @return 
+     */
+    public static final <N extends _node> N remove( N rootNode, String source ){
+        return $field.of(source).removeIn(rootNode);
+    }
+    
+    /**
+     * 
+     * @param <N>
+     * @param rootNode
+     * @param source
+     * @param target
+     * @return 
+     */
+    public static final <N extends _node> N replace(N rootNode, _field source, _field target){
+        return $field.of(source)
+            .replaceIn(rootNode, $field.of(target));
+    }
+    
+    /**
+     * 
+     * @param <N>
+     * @param rootNode
+     * @param source
+     * @param target
+     * @return 
+     */
+    public static final <N extends _node> N replace(N rootNode, String source, String target){
+        return $field.of(_field.of(source))
+            .replaceIn(rootNode, $field.of(_field.of(target)));
+    }
+    
+    /**
+     * 
+     * @param <N>
+     * @param rootNode
+     * @param source
+     * @param target
+     * @return 
+     */
+    public static final <N extends _node> N replace( 
+        N rootNode, FieldDeclaration source, FieldDeclaration target){
+        
+        return $field.of(source)
+            .replaceIn(rootNode, $field.of(target));
+    }
+    
     public static $field of( Object anonymousObject ){
         StackTraceElement ste = Thread.currentThread().getStackTrace()[2];
         ObjectCreationExpr oce = Expr.anonymousObject(ste);

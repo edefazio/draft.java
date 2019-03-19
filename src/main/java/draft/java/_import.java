@@ -56,6 +56,13 @@ public class _import implements _model {
     /** the underlying ast import declaration */
     public ImportDeclaration astId;
 
+    /**
+     * 
+     * @return 
+     */
+    public ImportDeclaration ast(){
+        return astId;
+    }
     
     public _import(ImportDeclaration astId) {
         this.astId = astId;
@@ -238,6 +245,11 @@ public class _import implements _model {
     @Override
     public int hashCode() {
         return this.astId.hashCode();
+    }
+    
+    @Override
+    public String toString(){
+        return this.astId.toString();
     }
 
     /**
@@ -478,5 +490,12 @@ public class _import implements _model {
             
             return Objects.equals(t, o);                
         }        
+        
+        @Override
+        public String toString(){
+            StringBuilder sb = new StringBuilder();
+            this.astCompilationUnit.getImports().forEach(i -> sb.append( i.toString() ) );
+            return sb.toString();
+        }
     }
 }

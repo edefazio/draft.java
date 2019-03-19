@@ -10,6 +10,18 @@ import java.util.List;
 
 public class $exprTest extends TestCase {
 
+    public void testStatic$expr(){
+        _class _c = _class.of("C", new Object(){
+            @aa(2) 
+            int a = 1;
+            int b = 3 + 4;
+        });
+        
+        
+        assertEquals( 1, $expr.list(_c, Expr.of(2) ).size());
+        assertEquals( 4, $expr.of(2).$("2", "number").listIn(_c).size());
+    }
+    
     @interface aa{
         int value();
     }

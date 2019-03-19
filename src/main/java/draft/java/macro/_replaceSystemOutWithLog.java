@@ -90,7 +90,7 @@ public class _replaceSystemOutWithLog implements _macro<_type> {
                 _f = adHocLogger.fill(_t.getFullName()); /* create a clone/copy for this _field */
                 _t.field( _f ); /* add logger field to the TYPE */
             }
-            $anySystemOut.replaceAllIn(_t, $snip.of( loggerStatementsFormat )
+            $anySystemOut.replaceIn(_t, $snip.of( loggerStatementsFormat )
                     .assign$("name", _f.getName() ) );
         }
         return _t;

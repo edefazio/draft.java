@@ -7,12 +7,12 @@ import com.github.javaparser.ast.stmt.*;
 import com.github.javaparser.printer.PrettyPrinterConfiguration;
 import draft.*;
 import draft.java.*;
+import draft.java._model._node;
 
 import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
-//import java.util.function.Function;
 
 /**
  * Template of a Java {@link Statement} that can be
@@ -22,6 +22,76 @@ import java.util.function.Consumer;
 public final class $stmt<T extends Statement>
         implements Template<T>, $query<T> {
 
+     /**
+     * 
+     * @param <N>
+     * @param rootNode
+     * @param source
+     * @return 
+     */
+    public static final <N extends _node> List<Statement> list( N rootNode, String source ){
+        return $stmt.of(source).listIn(rootNode);
+    }
+    
+    /**
+     * 
+     * @param <N>
+     * @param rootNode
+     * @param source
+     * @return 
+     */
+    public static final <N extends _node> List<Statement> list( N rootNode, Statement source ){
+        return $stmt.of(source).listIn(rootNode);
+    }
+    
+    /**
+     * Removes all occurrences of the source anno in the rootNode (recursively)
+     * @param <N>
+     * @param rootNode
+     * @param source
+     * @return the modified N
+     */
+    public static final <N extends _node> N remove( N rootNode, Statement source ){
+        return (N)$stmt.of(source).removeIn(rootNode);
+    }
+    
+    /**
+     * 
+     * @param <N>
+     * @param rootNode
+     * @param source
+     * @return 
+     */
+    public static final <N extends _node> N remove( N rootNode, String source ){
+        return (N)$stmt.of(source).removeIn(rootNode);
+    }    
+    
+    /**
+     * 
+     * @param <N>
+     * @param rootNode
+     * @param source
+     * @param target
+     * @return 
+     */
+    public static final <N extends _node> N replace(N rootNode, Statement source, Statement target){
+        return (N)$stmt.of(source)
+            .replaceIn(rootNode, $stmt.of(target));
+    }    
+
+    /**
+     * 
+     * @param <N>
+     * @param rootNode
+     * @param source
+     * @param target
+     * @return 
+     */
+    public static final <N extends _node> N replace(N rootNode, String source, String target){
+        return (N)$stmt.of(source)
+            .replaceIn(rootNode, $stmt.of(target));
+    }    
+    
     private static $stmt fromStackTrace( StackTraceElement ste ){
         Statement st = Stmt.from( ste );
         return new $stmt( st );
@@ -523,12 +593,12 @@ public final class $stmt<T extends Statement>
         return node;
     }
 
-    public <T extends _model._node> T replaceAllIn(T _le, $stmt $repl ){
+    public <T extends _model._node> T replaceIn(T _le, $stmt $repl ){
         $snip $sn = new $snip($repl);
-        return replaceAllIn(_le, $sn);
+        return replaceIn(_le, $sn);
     }
 
-    public <T extends _model._node> T replaceAllIn(T _le, $snip $repl ){
+    public <T extends _model._node> T replaceIn(T _le, $snip $repl ){
         AtomicInteger ai = new AtomicInteger(0);
         Walk.in( _le, this.statementClass, st->{
             $stmt.Select sel = select( st );

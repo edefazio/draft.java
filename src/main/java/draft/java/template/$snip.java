@@ -8,6 +8,7 @@ import com.github.javaparser.ast.nodeTypes.NodeWithStatements;
 import com.github.javaparser.ast.stmt.*;
 import draft.*;
 import draft.java.*;
+import draft.java._model._node;
 import draft.java.macro._remove;
 
 import java.util.*;
@@ -25,6 +26,25 @@ import java.util.function.Function;
  */
 public final class $snip implements Template<List<Statement>>, $query<List<Statement>> {
 
+    public static final <N extends _node> N replace( N root, String[] sourceSnip, String[] targetSnip){
+        $snip.of(sourceSnip).replaceIn(root, $snip.of(targetSnip));
+        return root;
+    } 
+        
+    public static final <N extends _node> N replace( N root, String sourceSnip, String targetSnip){
+        $snip.of(sourceSnip).replaceIn(root, $snip.of(targetSnip));
+        return root;
+    } 
+    
+    public static final <N extends _node> N remove( N root, String... targetSnip){
+        $snip.of(targetSnip).removeIn(root);
+        return root;
+    }
+    
+    public static final <N extends _node> List<List<Statement>> list( N root, String... targetSnip){
+        return $snip.of(targetSnip).listIn(root);
+    }
+    
     List<$stmt> $sts = new ArrayList<>();
 
     /**
@@ -403,7 +423,7 @@ public final class $snip implements Template<List<Statement>>, $query<List<State
     }
 
     @Override
-    public List<List<Statement>> listIn(_model._node _le ){
+    public List<List<Statement>> listIn(_node _le ){
         List<List<Statement>>sts = new ArrayList<>();
         Walk.in( _le, this.$sts.get(0).statementClass, st -> {
             Select sel = select( (Statement)st );
@@ -415,7 +435,7 @@ public final class $snip implements Template<List<Statement>>, $query<List<State
     }
 
     @Override
-    public <M extends _model._node> M forIn(M _le, Consumer<List<Statement>> statementsConsumer ){
+    public <M extends _node> M forIn(M _le, Consumer<List<Statement>> statementsConsumer ){
         Walk.in( _le, this.$sts.get(0).statementClass, st -> {
             Select sel = select( (Statement)st );
             if( sel != null ){
@@ -438,7 +458,7 @@ public final class $snip implements Template<List<Statement>>, $query<List<State
 
 
     @Override
-    public List<Select> listSelectedIn(_model._node _le ){
+    public List<Select> listSelectedIn(_node _le ){
         List<Select>sts = new ArrayList<>();
         Walk.in( _le, this.$sts.get(0).statementClass, st -> {
             Select sel = select( (Statement)st );
@@ -468,17 +488,17 @@ public final class $snip implements Template<List<Statement>>, $query<List<State
     }
 
     @Override
-    public <M extends _model._node> M removeIn( M _m ){
+    public <M extends _node> M removeIn( M _m ){
         listSelectedIn( _m ).forEach(s -> s.statements.forEach(st-> st.removeForced()));
         return _m;
     }
 
-    public <N extends Node> N replaceAllIn(N n, $stmt $repl ){
+    public <N extends Node> N replaceIn(N n, $stmt $repl ){
         $snip $sn = new $snip($repl);
-        return replaceAllIn(n, $sn);
+        return $snip.this.replaceIn(n, $sn);
     }
 
-    public <N extends Node> N replaceAllIn(N n, $snip $repl ){
+    public <N extends Node> N replaceIn(N n, $snip $repl ){
         AtomicInteger ai = new AtomicInteger(0);
 
         n.walk(this.$sts.get(0).statementClass, st-> {
@@ -512,7 +532,7 @@ public final class $snip implements Template<List<Statement>>, $query<List<State
             }
         });
 
-        _model._node _le = (_model._node)_java.of(n);
+        _node _le = (_node)_java.of(n);
         if( n instanceof _body._hasBody){
             for(int i=0;i< ai.get(); i++){
                 ((_body._hasBody)_le).flattenLabel("$replacement$");
@@ -524,12 +544,12 @@ public final class $snip implements Template<List<Statement>>, $query<List<State
         return n;
     }
 
-    public <M extends _model._node> M replaceAllIn(M _le, $stmt $repl ){
+    public <M extends _node> M replaceIn(M _le, $stmt $repl ){
         $snip $sn = new $snip($repl);
-        return replaceAllIn(_le, $sn);
+        return $snip.this.replaceIn(_le, $sn);
     }
 
-    public <M extends _model._node> M replaceAllIn(M _le, $snip $repl ){
+    public <M extends _node> M replaceIn(M _le, $snip $repl ){
         AtomicInteger ai = new AtomicInteger(0);
 
         Walk.in(_le, this.$sts.get(0).statementClass, st-> {
@@ -584,7 +604,7 @@ public final class $snip implements Template<List<Statement>>, $query<List<State
         return n;
     }
 
-    public <M extends _model._node> M forSelectedIn(M _hb, Consumer<Select>selectedAction ){
+    public <M extends _node> M forSelectedIn(M _hb, Consumer<Select>selectedAction ){
         Walk.in(_hb, this.$sts.get(0).statementClass, st-> {
             Select sel = select( (Statement)st );
             if( sel != null ){

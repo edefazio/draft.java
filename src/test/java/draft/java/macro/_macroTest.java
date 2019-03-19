@@ -144,7 +144,7 @@ public class _macroTest extends TestCase {
             }
         }
         _class _c = _class.of(C.class);
-        $from.replaceAllIn(_c, $to);
+        $from.replaceIn(_c, $to);
         System.out.println( _c );
     }
 }

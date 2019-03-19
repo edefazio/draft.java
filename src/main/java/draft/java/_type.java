@@ -519,7 +519,7 @@ public interface _type<AST extends TypeDeclaration & NodeWithJavadoc & NodeWithM
     }
 
     /**
-     * Creates Wildcard static imports
+     * Adds static wildcard imports for all Classes
      * @param wildcardStaticImports a list of classes that will WildcardImports
      * @return the T
      */
@@ -527,11 +527,17 @@ public interface _type<AST extends TypeDeclaration & NodeWithJavadoc & NodeWithM
         CompilationUnit cu = findCompilationUnit();
         if( cu != null ){
             Arrays.stream(wildcardStaticImports).forEach( i -> {
+                ImportDeclaration id = Ast.importDeclaration(i);
+                id.setAsterisk(true);
+                id.setStatic(true);
+                cu.addImport( id );
+                /*
                 if( i.isArray() ){
                     cu.addImport(new ImportDeclaration((i.getComponentType().getCanonicalName()), true, true));
                 } else {
                     cu.addImport(new ImportDeclaration(i.getCanonicalName(), true, true));
                 }
+                */
             });
         }
         return (T)this;
@@ -539,18 +545,25 @@ public interface _type<AST extends TypeDeclaration & NodeWithJavadoc & NodeWithM
 
     /**
      *
-     * @param staticImports
+     * @param staticWildcardImports
      * @return
      */
-    default T importStatic( String...staticImports){
+    default T importStatic( String...staticWildcardImports){
         CompilationUnit cu = findCompilationUnit();
         if( cu != null ){
-            Arrays.stream(staticImports).forEach( i -> {
+            Arrays.stream(staticWildcardImports).forEach( i -> {
+                ImportDeclaration id = Ast.importDeclaration(i);
+                id.setStatic(true);
+                id.setAsterisk(true);
+                cu.addImport(id);
+                /*
                 if( i.endsWith(".*")) {
+                    ImportDeclaration id = Ast.importDeclaration(i);
                     cu.addImport(new ImportDeclaration(i.substring(0, i.length() - 2), true, true));
                 } else{
                     cu.addImport(new ImportDeclaration(i, true, false));
                 }
+                */
             });
         }
         return (T)this;
@@ -571,50 +584,6 @@ public interface _type<AST extends TypeDeclaration & NodeWithJavadoc & NodeWithM
         }
         return (T)this;
     }
-
-    /**
-     * Create wildcard imports for the packages of all Classes
-     * for instance:
-     * <PRE>
-     * _class.of("aaaa.C").importPackages( Map.class, IOException.class );
-     * //represents
-     * package aaa;
-     *
-     * import java.util.*;
-     * import java.io.*;
-     *
-     * public class C{
-     *
-     * }
-     * </PRE>
-     * @param clazzes classes whos packahes will be imported
-     * @return the modified T
-     
-    default T importPackages( Class...clazzes){
-        Arrays.stream(clazzes).forEach( c-> {
-            if( c.getPackage() != null ) {
-                importPackages(c.getPackage().getName());
-            }
-            });
-        return (T)this;
-    }
-    */ 
-
-    /**
-     * Wildcard import the classeses in the Packages provided
-     * @param packageNames
-     * @return
-     
-    default T importPackages( String...packageNames ){
-        CompilationUnit cu = findCompilationUnit();
-        if( cu != null ){
-            Arrays.stream(packageNames).forEach( p -> {
-                cu.addImport(new ImportDeclaration(p, false, true));
-            });
-        }
-        return (T)this;
-    }
-    **/
 
     /**
      *

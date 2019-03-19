@@ -2,6 +2,7 @@ package draft.java.template;
 
 import com.github.javaparser.ast.Node;
 import com.github.javaparser.ast.NodeList;
+import com.github.javaparser.ast.body.AnnotationDeclaration;
 import com.github.javaparser.ast.body.BodyDeclaration;
 import com.github.javaparser.ast.expr.AnnotationExpr;
 import com.github.javaparser.ast.expr.ObjectCreationExpr;
@@ -10,6 +11,8 @@ import draft.java.Expr;
 import draft.java.Walk;
 import draft.java._anno;
 import draft.java._model;
+import draft.java._model._node;
+import java.lang.annotation.Annotation;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -21,8 +24,94 @@ import java.util.function.Consumer;
  *
  */
 public final class $anno
-        implements Template<_anno>, $query<_anno> {
+    implements Template<_anno>, $query<_anno> {
 
+    /**
+     * 
+     * @param <N>
+     * @param rootNode
+     * @param source
+     * @return 
+     */
+    public static final <N extends _node> List<_anno> list( N rootNode, String source ){
+        return $anno.of(source).listIn(rootNode);
+    }
+    
+    /**
+     * 
+     * @param <N>
+     * @param rootNode
+     * @param source
+     * @return 
+     */
+    public static final <N extends _node> List<_anno> list( N rootNode, _anno source ){
+        return $anno.of(source).listIn(rootNode);
+    }
+    
+    /**
+     * Removes all occurrences of the source anno in the rootNode (recursively)
+     * @param <N>
+     * @param rootNode
+     * @param source
+     * @return the modified N
+     */
+    public static final <N extends _node> N remove( N rootNode, _anno source ){
+        return $anno.of(source).removeIn(rootNode);
+    }
+    
+    /**
+     * 
+     * @param <N>
+     * @param rootNode
+     * @param source
+     * @return 
+     */
+    public static final <N extends _node> N remove( N rootNode, String source ){
+        return $anno.of(source).removeIn(rootNode);
+    }
+    
+    /**
+     * 
+     * @param <N>
+     * @param rootNode
+     * @param source
+     * @param target
+     * @return 
+     */
+    public static final <N extends _node> N replace(N rootNode, _anno source, _anno target){
+        return $anno.of(source)
+            .replaceIn(rootNode, $anno.of(target));
+    }
+    
+    /**
+     * 
+     * @param <N>
+     * @param rootNode
+     * @param source
+     * @param target
+     * @return 
+     */
+    public static final <N extends _node> N replace(N rootNode, AnnotationDeclaration source, AnnotationDeclaration target){
+        return $anno.of(_anno.of(source))
+            .replaceIn(rootNode, $anno.of(_anno.of(target)));
+    }
+    
+    /**
+     * 
+     * @param <N>
+     * @param rootNode
+     * @param sourceAnno
+     * @param targetAnno
+     * @return 
+     */
+    public static final <N extends _node> N replace( 
+        N rootNode, Class<? extends Annotation>sourceAnno, 
+        Class<? extends Annotation>targetAnno){
+        
+        return $anno.of(sourceAnno)
+            .replaceIn(rootNode, $anno.of(targetAnno));
+    }
+    
     public static $anno of( String code){
         return of( new String[]{code} );
     }
@@ -32,6 +121,9 @@ public final class $anno
         return new $anno( _a.toString().trim() ); //, _a.ast().getClass() );
     }
 
+    public static $anno of( _anno _a){
+        return new $anno( _a.toString().trim() ); 
+    }
     
     public static $anno of( Object anonymousObjectWithAnnotation ){
         StackTraceElement ste = Thread.currentThread().getStackTrace()[2];
@@ -41,10 +133,10 @@ public final class $anno
         return of( _anno.of(bd.getAnnotation(0) ) );        
     }
     
-    public static $anno of( _anno _a){
-        return new $anno( _a.toString() ); //, _a.ast().getClass() );
+    public static $anno of( Class<? extends Annotation> a){
+        return of( _anno.of(a) );
     }
-
+    
     private Stencil annoStencil;
 
     private $anno( String stencil) {

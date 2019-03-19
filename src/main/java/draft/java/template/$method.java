@@ -6,6 +6,7 @@ import com.github.javaparser.ast.expr.*;
 import com.github.javaparser.ast.stmt.*;
 import draft.*;
 import draft.java.*;
+import draft.java._model._node;
 import draft.java.macro._macro;
 import draft.java.macro._remove;
 
@@ -17,8 +18,60 @@ import java.util.function.*;
  * Template for a Java {@link _method}
  */
 public final class $method
-        implements Template<_method>, $query<_method> {
-
+    implements Template<_method>, $query<_method> {
+    
+    /**
+     * 
+     * @param <N>
+     * @param rootNode
+     * @param source
+     * @return 
+     */
+    public static final <N extends _model._node> List<_method> list( N rootNode, String source ){
+        return $method.of(source).listIn(rootNode);
+    }
+    
+    /**
+     * 
+     * @param <N>
+     * @param rootNode
+     * @param source
+     * @return 
+     */
+    public static final <N extends _model._node> List<_method> list( N rootNode, _method source ){
+        return $method.of(source).listIn(rootNode);
+    }
+    
+    /**
+     * Removes all occurrences of the source anno in the rootNode (recursively)
+     * @param <N>
+     * @param rootNode
+     * @param source
+     * @return the modified N
+     */
+    public static final <N extends _model._node> N remove( N rootNode, _method source ){
+        return $method.of(source).removeIn(rootNode);
+    }
+    
+    /**
+     * 
+     * @param <N>
+     * @param rootNode
+     * @param source
+     * @return 
+     */
+    public static final <N extends _model._node> N remove( N rootNode, String... source ){
+        return $method.of(source).removeIn(rootNode);
+    }
+    
+    public static final <N extends _node> N replace( N rootNode, _method source, _method replacement ){
+        return $method.of(source).replaceIn(rootNode, replacement);
+    }
+    
+    public static final <N extends _node> N replace( N rootNode, String[] protoMethod, String[] replacementMethod ){
+        return $method.of(protoMethod).replaceIn(rootNode, replacementMethod);
+    }
+    
     public static $method of( String methodDeclaration ){
         return of( new String[]{methodDeclaration});
     }
@@ -73,6 +126,10 @@ public final class $method
     /**
      * $method.of( "public static final void print", ()->{ System.out.println(1); });
      *
+     * @param <T>
+     * @param <U>
+     * @param signature
+     * @param parametersAndBody
      * @return
      */
     public static <T extends Object, U extends Object> $method  of( String signature, Function<T,U> parametersAndBody){
@@ -84,6 +141,11 @@ public final class $method
     /**
      * $method.of( "public static final void print", ()->{ System.out.println(1); });
      *
+     * @param <T>
+     * @param <U>
+     * @param <V>
+     * @param signature
+     * @param parametersAndBody
      * @return
      */
     public static <T extends Object, U extends Object, V extends Object> $method of( String signature, BiFunction<T,U,V> parametersAndBody){
@@ -333,6 +395,7 @@ public final class $method
         return null;
     }
 
+    @Override
     public List<Select> listSelectedIn(Node n){
         List<Select>sts = new ArrayList<>();
         n.walk(MethodDeclaration.class, m-> {
@@ -344,6 +407,7 @@ public final class $method
         return sts;
     }
 
+    @Override
     public List<Select> listSelectedIn(_model._node _t){
         List<Select>sts = new ArrayList<>();
         Walk.in( _t, MethodDeclaration.class, m -> {
@@ -373,7 +437,27 @@ public final class $method
         });
         return _t;
     }
+    
+    public  <T extends _model._node> T replaceIn( T _t, $method $replace ){
+        return forSelectedIn( _t, s -> {
+            _method repl = $replace.construct(s.tokens);
+            s.method.replace(repl.ast());
+        });
+    }
 
+    public  <T extends _model._node> T replaceIn( T _t, String... replacementMethod ){
+        return replaceIn( _t, $method.of(replacementMethod));        
+    }
+    
+    public  <T extends _model._node> T replaceIn( T _t, _method method ){
+        return replaceIn( _t, $method.of(method));        
+    }
+    
+    public  <T extends _model._node> T replaceIn( T _t, MethodDeclaration astMethod ){
+        return replaceIn( _t, $method.of(astMethod));        
+    }
+    
+    @Override
     public <M extends _model._node> M removeIn(M _m ){
         Walk.in(_m, MethodDeclaration.class, e-> {
             Tokens tokens = this.deconstruct( e );
@@ -384,6 +468,7 @@ public final class $method
         return _m;
     }
 
+    @Override
     public <N extends Node> N removeIn(N n ){
         n.walk(MethodDeclaration.class, e-> {
             Tokens tokens = this.deconstruct( e );
@@ -394,6 +479,7 @@ public final class $method
         return n;
     }
 
+    @Override
     public <N extends Node> N forIn(N n, Consumer<_method> _methodActionFn){
         n.walk(MethodDeclaration.class, e-> {
             Tokens tokens = this.deconstruct( e );
@@ -404,6 +490,7 @@ public final class $method
         return n;
     }
 
+    @Override
     public  <T extends _model._node> T forIn(T _t, Consumer<_method> _methodActionFn){
         Walk.in(_t, MethodDeclaration.class, e -> {
             Tokens tokens = this.deconstruct( e );
@@ -414,10 +501,12 @@ public final class $method
         return _t;
     }
 
+    @Override
     public List<_method> listIn(_model._node _t ){
         return listIn( _t.ast() );
     }
 
+    @Override
     public List<_method> listIn(Node rootNode ){
         List<_method> typesList = new ArrayList<>();
         rootNode.walk(MethodDeclaration.class, m->{
@@ -427,6 +516,7 @@ public final class $method
         } );
         return typesList;
     }
+    
 
     public static class Select implements $query.selected {
         public MethodDeclaration method;

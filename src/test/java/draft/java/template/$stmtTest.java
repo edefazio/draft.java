@@ -37,6 +37,7 @@ public class $stmtTest extends TestCase {
         $stmt $s = $stmt.of( ($any$)-> System.out.println($any$));
         _class _c = _class.of(L.class);
         assertEquals( 2, $s.listSelectedIn(_c).size());
+        assertEquals( 2, $stmt.list(_c, "System.out.println($any$);" ).size() );
     }
 
     public void testReplaceStmt(){
@@ -50,10 +51,15 @@ public class $stmtTest extends TestCase {
             }
         }
         _class _c = _class.of( L.class);
-        $s.replaceAllIn(_c, $r);
-
+        $s.replaceIn(_c, $r);
+        
         //verify we can match the (2) replacements
         assertEquals( 2, $r.listSelectedIn(_c).size());
+        
+        //static replace/ list
+        _c = _class.of(L.class);
+        $stmt.replace(_c, "System.out.println($any$);", "System.out.print($any$);");
+        assertEquals( 2, $stmt.list(_c, "System.out.print($any$);").size() );
         System.out.println( _c );
     }
 
@@ -81,7 +87,7 @@ public class $stmtTest extends TestCase {
             }
         }
         _class _c = _class.of( L.class);
-        $s.replaceAllIn(_c, $r);
+        $s.replaceIn(_c, $r);
 
         System.out.println( _c );
 
@@ -90,6 +96,9 @@ public class $stmtTest extends TestCase {
         System.out.println( _c );
     }
 
+    /**
+     * Make sure we can match statements with/ without comments
+     */
     public void testMatchComment(){
         $stmt $commA = $stmt.of( ($any$)-> {
             /* comment */
