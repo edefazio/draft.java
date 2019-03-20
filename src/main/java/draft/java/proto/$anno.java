@@ -91,6 +91,19 @@ public final class $anno
      * @param target
      * @return 
      */
+    public static final <N extends _node> N replace(N rootNode, String source, String target){
+        return $anno.of(source)
+            .replaceIn(rootNode, $anno.of(target));
+    }
+    
+    /**
+     * 
+     * @param <N>
+     * @param rootNode
+     * @param source
+     * @param target
+     * @return 
+     */
     public static final <N extends _node> N replace(N rootNode, AnnotationDeclaration source, AnnotationDeclaration target){
         return $anno.of(_anno.of(source))
             .replaceIn(rootNode, $anno.of(_anno.of(target)));
