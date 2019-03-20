@@ -3,10 +3,7 @@ package draft.java.proto;
 import com.github.javaparser.ast.ImportDeclaration;
 import com.github.javaparser.ast.Node;
 import draft.*;
-import draft.java.Ast;
-import draft.java._import;
-import draft.java._model;
-import draft.java._type;
+import draft.java.*;
 
 import java.util.*;
 import java.util.function.Consumer;
@@ -34,6 +31,38 @@ public final class $import
     public static final <T extends _type> T replace( T _type, Class source, Class target ){
         return $import.of(_import.of(source))
             .replaceIn(_type, _import.of(target));
+    }
+
+    public static final <T extends _type> T remove( T _type, _import _target){
+        return $import.of(_target).removeIn(_type);
+    }
+    
+    public static final <T extends _type> T remove( T _type, String targetImport ){
+        return $import.of(targetImport).removeIn(_type);
+    }
+    
+    public static final <T extends _type> T remove( T _type, ImportDeclaration target ){
+        return $import.of(_import.of(target)).removeIn(_type);
+    }
+    
+    public static final <T extends _type> T remove( T _type, Class target ){
+        return $import.of(_import.of(target)).removeIn(_type);
+    }
+    
+    public static final <T extends _type> List<_import> list( T _type, _import _target){
+        return $import.of(_target).listIn(_type);
+    }
+    
+    public static final <T extends _type> List<_import> list( T _type, String targetImport ){
+        return $import.of(targetImport).listIn(_type);
+    }
+    
+    public static final <T extends _type> List<_import> list( T _type, ImportDeclaration target ){
+        return $import.of(_import.of(target)).listIn(_type);
+    }
+    
+    public static final <T extends _type> List<_import> list( T _type, Class target ){
+        return $import.of(_import.of(target)).listIn(_type);
     }
     
     
@@ -86,8 +115,6 @@ public final class $import
      * @return Tokens from the stencil, or null if the expression doesnt match
      */
     public Tokens deconstruct(ImportDeclaration astImport ){
-        //System.out.println("Stencil :" + importStencil +"\"");
-        //System.out.println("STR     :" + astImport.toString().trim() +"\"");
         return importStencil.deconstruct( astImport.toString().trim() );
     }
 
@@ -230,16 +257,6 @@ public final class $import
             return listSelectedIn( ((_type)_m).findCompilationUnit() );
         }
         return Collections.EMPTY_LIST;
-        /*
-        List<Select>sts = new ArrayList<>();
-        Walk.in( _m, ImportDeclaration.class, e -> {
-            Select s = select( e );
-            if( s != null ){
-                sts.add( s);
-            }
-        });
-        return sts;
-        */
     }
 
     /**
@@ -273,14 +290,6 @@ public final class $import
             removeIn( _t.findCompilationUnit() );
             return _m;
         }
-        /*
-        Walk.in( _m, ImportDeclaration.class, e-> {
-            Select sel = select( e );
-            if( sel != null ){
-                sel.astImport.removeForced();
-            }
-        });
-        */
         return _m;
     }
 
@@ -297,14 +306,6 @@ public final class $import
             _type _t = (_type)_m;
             replaceIn( _t.findCompilationUnit(), $import.of( _i ) );
         }
-        /*
-        Walk.in(_m, ImportDeclaration.class, e-> {
-            Select sel = select( e );
-            if( sel != null ){
-                sel.astImport.replace( _i.ast() );
-            }
-        });
-        */
         return _m;
     }
         
@@ -322,24 +323,13 @@ public final class $import
              _type _t = (_type)_m;
             replaceIn( _t.findCompilationUnit(), $i );
         }
-        /*
-        Walk.in(_m, ImportDeclaration.class, e-> {
-            Select sel = select( e );
-            if( sel != null ){
-                sel.astImport.replace($i.construct(sel.tokens).ast() );
-            }
-        });
-*/
         return _m;
     }
     
     public <N extends Node> N replaceIn(N node, $import $i ){
-        //System.out.println( "IN HERE "+ node.getClass() );
         node.walk(ImportDeclaration.class, e-> {
-            //System.out.println( "Chcking "+ e);
             Select sel = select( e );
             if( sel != null ){
-                //System.out.println( "Got Here "+ sel);
                 sel.astImport.replace($i.construct(sel.tokens).ast() );
             }
         });
@@ -351,14 +341,6 @@ public final class $import
             _type _t = (_type)_m;
             forSelectedIn( _t.findCompilationUnit(), selectConsumer );
         }
-        /*
-        Walk.in( _m, ImportDeclaration.class, e-> {
-            Select sel = select( e );
-            if( sel != null ){
-                selectConsumer.accept( sel );
-            }
-        });
-        */
         return _m;
     }
 
@@ -389,15 +371,6 @@ public final class $import
             forIn( ((_type) _m).findCompilationUnit(), _importActionFn);
         }
         return _m;
-        /*
-        Walk.in(_m, ImportDeclaration.class, e -> {
-            Tokens tokens = importStencil.deconstruct( e.toString());
-            if( tokens != null ){
-                _importActionFn.accept( _import.of(e) );
-            }
-        });
-        return _m;
-        */
     }
 
     public static class Select implements $query.selected {
