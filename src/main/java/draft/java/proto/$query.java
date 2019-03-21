@@ -81,23 +81,6 @@ public interface $query<Q> {
      */
     <M extends _model._node> M forIn(M _n, Consumer<Q> modelActionFn);
 
-    /**
-     * Replace all occurences of the template in the code with the replacement
-     * (composing the replacement from the Deconstruct tokens in the source)
-     *
-     * @return
-
-    <M extends _model._node> M replaceIn(M _m, Template<Q> $replaceTemplate );
-
-
-    <N extends Node> N replaceIn(N node, Template<Q> $replaceTemplate );
-
-    //<M extends _model._node> M forSelectedIn(M _m, Consumer<? extends selected> selectConsumer );
-    //<N extends Node> N forSelectedIn(N node, Consumer<? extends selected> selectConsumer );
-    */
-
-
-
     interface selected{
         //Tokens getTokens();
     }

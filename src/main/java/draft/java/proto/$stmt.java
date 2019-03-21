@@ -13,6 +13,7 @@ import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
+import java.util.function.Predicate;
 
 /**
  * Template of a Java {@link Statement} that can be
@@ -125,7 +126,6 @@ public final class $stmt<T extends Statement>
     public static $stmt of(String...statement ){
         Statement st = Stmt.of(statement);
         return new $stmt( st );
-        //return new $stmt(st.getClass(), st.removeComment().toString());
     }
 
     public static $stmt of(Statement st ){
@@ -255,13 +255,19 @@ public final class $stmt<T extends Statement>
     /**
      * IF the statement has a comment, it is stored separately, because,
      * in situations where we are composing the statement, we want to construct the
-     *
      */
     public Stencil commentStencil;
 
+    /**
+     * Optional matching predicate applied to matches to ensure 
+     * not only pattern match
+     */
+    public Predicate<T> constraint = t-> true;
+    
     /** The stencil representing the statement */
     public Stencil stencil;
 
+    /** the class of the statement */
     public Class<T> statementClass;
 
     public $stmt( T st ){
@@ -273,18 +279,11 @@ public final class $stmt<T extends Statement>
         this.stencil = Stencil.of( st.toString(NO_COMMENTS) );
     }
 
-    /*
-    public $stmt(Class<T>statementClass, Stencil stencil ){
-        this.statementClass = statementClass;
-        this.stencil = stencil;
+    public $stmt constraint( Predicate<T> constraint){
+        this.constraint = constraint;
+        return this;
     }
-
-    public $stmt(Class<T>statementClass, String stencil ){
-        this.statementClass = statementClass;
-        this.stencil = Stencil.of(stencil);
-    }
-    */
-
+    
     @Override
     public T fill(Object...values){
         if( this.commentStencil != null ){
@@ -440,8 +439,12 @@ public final class $stmt<T extends Statement>
      * @return Tokens from the stencil, or null if the statement doesnt match
      */
     public Tokens deconstruct( Statement statement ){
+        
         //System.out.println("Here");
         if( statementClass.isAssignableFrom(statement.getClass())){
+            if( ! constraint.test((T) statement)){
+                return null;
+            }
             //System.out.println("Same stmt");
             if( !this.stencil.getTextBlanks().hasBlanks()){ //if it's a static template
                 //System.out.println("Static template");
@@ -514,7 +517,7 @@ public final class $stmt<T extends Statement>
     @Override
     public <N extends Node> N forIn(N n, Consumer<T> statementActionFn){
         n.walk(this.statementClass, e-> {
-            Tokens tokens = this.stencil.deconstruct( e.toString());
+            Tokens tokens = deconstruct( e );
             if( tokens != null ){
                 statementActionFn.accept( e);
             }
@@ -525,7 +528,7 @@ public final class $stmt<T extends Statement>
     @Override
     public <M extends _model._node> M forIn(M _le, Consumer<T> statementActionFn){
         Walk.in( _le, this.statementClass, e->{
-            Tokens tokens = this.stencil.deconstruct( e.toString());
+            Tokens tokens = deconstruct( e );
             if( tokens != null ){
                 statementActionFn.accept( (T)e);
             }
@@ -557,7 +560,7 @@ public final class $stmt<T extends Statement>
     public List<Select<T>> listSelectedIn(Node n ){
         List<Select<T>>sts = new ArrayList<>();
         n.walk(this.statementClass, st-> {
-            Tokens tokens = this.stencil.deconstruct( st.toString(NO_COMMENTS));
+            Tokens tokens = deconstruct( st );
             if( tokens != null ){
                 sts.add( new Select( (T)st, tokens) );
             }
@@ -573,7 +576,7 @@ public final class $stmt<T extends Statement>
     public List<Select<T>> listSelectedIn(_model._node _t ){
         List<Select<T>>sts = new ArrayList<>();
         Walk.in( _t, this.statementClass, st->{
-            Tokens tokens = this.stencil.deconstruct(st.toString(NO_COMMENTS));
+            Tokens tokens = deconstruct(st);
             if (tokens != null) {
                 sts.add(new Select(st, tokens));
             }

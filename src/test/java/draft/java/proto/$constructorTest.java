@@ -1,7 +1,5 @@
 package draft.java.proto;
 
-import draft.java.proto.$constructor;
-import draft.java.Expr;
 import draft.java.Stmt;
 import draft.java._class;
 import draft.java._constructor;
@@ -11,6 +9,11 @@ import junit.framework.TestCase;
 
 public class $constructorTest extends TestCase {
 
+    public void testNoArgConstructor(){
+        $constructor $c = $constructor.of( "public $name$(){ assert(1==1); }" ).$(Stmt.of("assert(1==1);"), "body");
+        assertTrue($c.matches(_constructor.of("public C(){}")));
+    }
+    
     /**
      * Verify
      */

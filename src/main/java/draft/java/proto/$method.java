@@ -90,7 +90,6 @@ public final class $method
                 oce.getAnonymousClassBody().get().stream().filter(m -> m instanceof MethodDeclaration &&
                 !m.isAnnotationPresent(_remove.class) ).findFirst().get();
         return of( _macro.to(anonymousObjectContainingMethod.getClass(), _method.of( theMethod ) ));
-        //return of( _method.of(theMethod) );
     }
 
     public static $method of(String signature, Expr.Command body ){
@@ -170,17 +169,26 @@ public final class $method
         return new $method( _m);
     }
 
-    public static $method of( Class clazz, String name ){
-         _method._hasMethods  _hm = (_method._hasMethods)_type.of(clazz);
-         return of( _hm.getMethod(name) );
+    public static $method of( _method _m, Predicate<_method> constraint){
+        return new $method( _m).constraint(constraint);
     }
+        
+    public static $method of( Class clazz, String name ){
+        _method._hasMethods  _hm = (_method._hasMethods)_type.of(clazz);
+        return of( _hm.getMethod(name) );
+    }       
 
     public static $method of( String...code ){
         return new $method(_method.of(code));
     }
+    
+    public static $method of( String code, Predicate<_method> constraint ){
+        return new $method(_method.of(code)).constraint(constraint);
+    }
 
-    private Stencil signatureStencil;
-    private $snip $body;
+    public Predicate<_method> constraint;
+    public Stencil signatureStencil;
+    public $snip $body;
 
     public $method( _method _m ){
         //System.out.println( "CREATING "+ _m );
@@ -194,6 +202,11 @@ public final class $method
         }
     }
 
+    public $method constraint( Predicate<_method> constraint){
+        this.constraint = constraint;
+        return this;
+    }
+    
     @Override
     public List<String> list$Normalized(){
         List<String>normalized$ = new ArrayList<>();
@@ -274,6 +287,9 @@ public final class $method
     }
     
     public Tokens deconstruct( MethodDeclaration astTarget ){
+        if( !this.constraint.test(_method.of(astTarget))){
+            return null;
+        }
         if( astTarget.getBody().isPresent()){
             if( this.$body == null) {
                 return null; //the target has a BODY, the template doesnt

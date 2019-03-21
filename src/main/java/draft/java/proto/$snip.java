@@ -44,8 +44,8 @@ public final class $snip implements Template<List<Statement>>, $query<List<State
     public static final <N extends _node> List<List<Statement>> list( N root, String... targetSnip){
         return $snip.of(targetSnip).listIn(root);
     }
-    
-    List<$stmt> $sts = new ArrayList<>();
+        
+    public List<$stmt> $sts = new ArrayList<>();
 
     /**
      * Build a dynamic code snippet based on the content of a method defined within an anonymous Object
@@ -73,9 +73,9 @@ public final class $snip implements Template<List<Statement>>, $query<List<State
         //find the first method that doesnt have removeIn on it and has a BODY
         // to get it's contents
         MethodDeclaration theMethod = (MethodDeclaration)
-                oce.getAnonymousClassBody().get().stream().filter(m -> m instanceof MethodDeclaration &&
-                        !m.isAnnotationPresent(_remove.class) &&
-                        ((MethodDeclaration) m).getBody().isPresent()).findFirst().get();
+            oce.getAnonymousClassBody().get().stream().filter(m -> m instanceof MethodDeclaration &&
+                !m.isAnnotationPresent(_remove.class) &&
+                ((MethodDeclaration) m).getBody().isPresent()).findFirst().get();
         return of( theMethod.getBody().get());
     }
 
@@ -113,7 +113,6 @@ public final class $snip implements Template<List<Statement>>, $query<List<State
         StackTraceElement ste = Thread.currentThread().getStackTrace()[2];
         return of( Expr.lambda(ste));
     }
-
 
     public static <T extends Object, U extends Object, V extends Object, Z extends Object>$snip of( Expr.QuadConsumer<T,U,V,Z> c ){
         StackTraceElement ste = Thread.currentThread().getStackTrace()[2];

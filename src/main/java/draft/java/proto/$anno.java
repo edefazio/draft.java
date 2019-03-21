@@ -18,6 +18,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Consumer;
+import java.util.function.Predicate;
 
 /**
  * Template for an {@link _anno}
@@ -129,13 +130,21 @@ public final class $anno
         return of( new String[]{code} );
     }
     
+    public static $anno of( String code, Predicate<_anno> constraint){
+        return of( new String[]{code} ).constraint(constraint);
+    }
+    
     public static $anno of( String...code){
         _anno _a = _anno.of( code );
         return new $anno( _a.toString().trim() ); //, _a.ast().getClass() );
     }
 
-    public static $anno of( _anno _a){
+    public static $anno of( _anno _a ){
         return new $anno( _a.toString().trim() ); 
+    }
+    
+    public static $anno of( _anno _a, Predicate<_anno> constraint ){
+        return new $anno( _a.toString().trim() ).constraint(constraint);
     }
     
     public static $anno of( Object anonymousObjectWithAnnotation ){
@@ -150,22 +159,30 @@ public final class $anno
         return of( _anno.of(a) );
     }
     
-    private Stencil annoStencil;
+    /** An additional Match constraint (By default always true) */
+    public Predicate<_anno> constraint = a-> true;
+    
+    public Stencil annoStencil;
 
     private $anno( String stencil) {
         this.annoStencil = Stencil.of(stencil );
     }
 
+    public $anno constraint( Predicate<_anno> constraint ){
+        this.constraint = constraint;
+        return this;
+    }
+    
     public boolean matches( String...annotation ){
         return matches(_anno.of(annotation));
     }
 
     public boolean matches( AnnotationExpr expression ){
-        return annoStencil.deconstruct( expression.toString() ) != null;
+        return deconstruct( expression ) != null;
     }
 
     public boolean matches( _anno _a){
-        return annoStencil.deconstruct( _a.toString() ) != null;
+        return deconstruct( _a ) != null;
     }
 
     /**
@@ -175,7 +192,10 @@ public final class $anno
      * @return Tokens from the stencil, or null if the expression doesnt match
      */
     public Tokens deconstruct(_anno _a ){
-        return annoStencil.deconstruct( _a.toString() );
+        if( this.constraint.test(_a) ){
+            return annoStencil.deconstruct( _a.toString() );
+        }
+        return null;
     }
 
     /**
@@ -185,7 +205,7 @@ public final class $anno
      * @return Tokens from the stencil, or null if the expression doesnt match
      */
     public Tokens deconstruct(AnnotationExpr a ){
-        return annoStencil.deconstruct( a.toString() );
+        return deconstruct( _anno.of(a) );
     }
 
     @Override
@@ -297,13 +317,13 @@ public final class $anno
 
     @Override
     public List<_anno> listIn(Node rootNode ){
-        List<_anno> typesList = new ArrayList<>();
+        List<_anno> annosList = new ArrayList<>();
         rootNode.walk(AnnotationExpr.class, t->{
             if( this.matches(t) ){
-                typesList.add(_anno.of(t));
+                annosList.add(_anno.of(t));
             }
         } );
-        return typesList;
+        return annosList;
     }
 
     @Override
@@ -417,7 +437,7 @@ public final class $anno
     @Override
     public <N extends Node> N forIn(N node, Consumer<_anno> _annoActionFn){
         node.walk(AnnotationExpr.class, e-> {
-            Tokens tokens = this.annoStencil.deconstruct( e.toString());
+            Tokens tokens = deconstruct( e );
             if( tokens != null ){
                 _annoActionFn.accept( _anno.of(e));
             }
@@ -428,7 +448,7 @@ public final class $anno
     @Override
     public <M extends _model._node> M forIn(M _m, Consumer<_anno> _annoActionFn){
         Walk.in( _m, AnnotationExpr.class, e -> {
-            Tokens tokens = annoStencil.deconstruct( e.toString());
+            Tokens tokens =  deconstruct( e );
             if( tokens != null ){
                 _annoActionFn.accept( _anno.of(e) );
             }

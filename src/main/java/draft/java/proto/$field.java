@@ -14,6 +14,7 @@ import draft.java.macro._remove;
 
 import java.util.*;
 import java.util.function.Consumer;
+import java.util.function.Predicate;
 
 /**
  * Template for a {@link _field}
@@ -121,6 +122,11 @@ public class $field
     public static $field of( String code ){
         return of( new String[]{code});
     }
+    
+    public static $field of( String code, Predicate<_field> constraint){
+        return of( new String[]{code}).constraint(constraint);
+    }
+    
     public static $field of(String...code){
         _field _f = _field.of( code );
         return new $field( _f );
@@ -130,12 +136,22 @@ public class $field
         return new $field( _f  );
     }
 
-    private Stencil stencil;
-    private Stencil commentStencil;
+    public static $field of(_field _f, Predicate<_field> constraint){
+        return new $field( _f  ).constraint(constraint);
+    }
+    
+    public Predicate<_field> constraint;
+    public Stencil stencil;
+    public Stencil commentStencil;
 
     public static final PrettyPrinterConfiguration NO_COMMENTS = new PrettyPrinterConfiguration()
             .setPrintComments(false).setPrintJavadoc(false);
 
+    public $field constraint( Predicate<_field> constraint){
+        this.constraint = constraint;
+        return this;
+    }
+    
     private $field( _field _f ){
         if( _f.getFieldDeclaration().hasJavaDocComment() ){
             Comment c = _f.getFieldDeclaration().getComment().get();
@@ -143,16 +159,14 @@ public class $field
         }
         stencil = Stencil.of( _f.getFieldDeclaration().toString(NO_COMMENTS) );
     }
-    //private $field(String stencil) {
-    //    this.stencil = Stencil.of(stencil );
-    //}
+    
 
     public boolean matches( String...field ){
         return matches(_field.of(field));
     }
 
     public boolean matches( FieldDeclaration expression ){
-        return $field.this.deconstruct( expression ) != null;
+        return deconstruct( expression ) != null;
     }
 
     public boolean matches( VariableDeclarator var ){
@@ -160,7 +174,7 @@ public class $field
     }
 
     public boolean matches( _field _f){
-        return deconstruct(_f.ast() ) != null;
+        return this.constraint.test(_f) && deconstruct(_f.ast() ) != null;
     }
 
     /**
@@ -187,9 +201,12 @@ public class $field
         /** this is painful, but hopefully not too common */
         for(int i=0; i< astFieldDeclaration.getVariables().size();i++){
             //I need to build separate FieldDeclarations
-            Tokens tks = $field.this.deconstruct( _field.of( astFieldDeclaration.getModifiers()+" "+astFieldDeclaration.getVariable( i ) +";").getFieldDeclaration() );
-            if( tks != null ){
-                return tks;
+            _field _f = _field.of( astFieldDeclaration.getModifiers()+" "+astFieldDeclaration.getVariable( i ) +";");
+            if( this.constraint.test(_f)) {
+                Tokens tks = deconstruct( _f.getFieldDeclaration() );
+                if( tks != null ){
+                    return tks;
+                }
             }
         }
         return null;
@@ -201,7 +218,10 @@ public class $field
         }
         FieldDeclaration fd = (FieldDeclaration) varD.getParentNode().get();
         _field _f = _field.of( fd.getModifiers()+" "+varD+";" );
-        return this.stencil.deconstruct(_f.toString(Ast.PRINT_NO_ANNOTATIONS_OR_COMMENTS));
+        if( this.constraint.test( _f) ){
+            return this.stencil.deconstruct(_f.toString(Ast.PRINT_NO_ANNOTATIONS_OR_COMMENTS));
+        }
+        return null;
     }
 
     @Override
@@ -466,7 +486,7 @@ public class $field
     @Override
     public <M extends _model._node> M forIn(M m, Consumer<_field> _fieldActionFn){
         Walk.in( m, VariableDeclarator.class, e-> {
-            Tokens tokens = this.stencil.deconstruct( e.toString());
+            Tokens tokens = deconstruct( e );
             if( tokens != null ){
                 _fieldActionFn.accept( _field.of(e) );
             }

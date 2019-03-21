@@ -15,6 +15,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Consumer;
+import java.util.function.Predicate;
 
 /**
  * Template for a Java Type Reference
@@ -115,6 +116,10 @@ public final class $typeRef<T extends Type>
         return new $typeRef(Ast.typeRef(code));
     }
 
+    public static $typeRef of(String code, Predicate<_typeRef> constraint){
+        return new $typeRef(Ast.typeRef(code)).constraint(constraint);
+    }
+    
     public static $typeRef of( Class typeClass ){
         return of( Ast.typeRef(typeClass) );
     }
@@ -122,9 +127,17 @@ public final class $typeRef<T extends Type>
     public static $typeRef of(Type t ){
         return new $typeRef( t );
     }
+
+    public static $typeRef of(Type t, Predicate<_typeRef> constraint){
+        return new $typeRef( t ).constraint(constraint);
+    }
     
     public static $typeRef of( _typeRef t){
         return new $typeRef(t.ast());
+    }
+    
+    public static $typeRef of( _typeRef t, Predicate<_typeRef> constraint){
+        return new $typeRef(t.ast()).constraint(constraint);
     }
 
     public static $typeRef booleanType = of(PrimitiveType.booleanType());
@@ -137,6 +150,7 @@ public final class $typeRef<T extends Type>
     public static $typeRef doubleType = of(PrimitiveType.doubleType());
 
 
+    public Predicate<T> constraint;
     public Class<T> typeClass;
     public Stencil stencil;
 
@@ -145,11 +159,16 @@ public final class $typeRef<T extends Type>
         this.stencil = Stencil.of( ex.toString() );
     }
 
-    public $typeRef(Class<T>expressionClass, String stencil ){
-        this.typeClass = expressionClass;
+    public $typeRef(Class<T>typeClass, String stencil ){
+        this.typeClass = typeClass;
         this.stencil = Stencil.of(stencil);
     }
 
+    public $typeRef constraint(Predicate<T> constraint){
+        this.constraint = constraint;
+        return this;
+    }
+    
     @Override
     public T fill(Object...values){
         String str = stencil.fill(Translator.DEFAULT_TRANSLATOR, values);
@@ -262,7 +281,9 @@ public final class $typeRef<T extends Type>
      */
     public Tokens deconstruct( Type t ){
         if( typeClass.isAssignableFrom(t.getClass())){
-            return stencil.deconstruct( t.toString() );
+            if( this.constraint.test( (T)t ) ) {
+                return stencil.deconstruct( t.toString() );
+            }
         }
         return null;
     }
@@ -360,7 +381,7 @@ public final class $typeRef<T extends Type>
      */
     public <M extends _model._node> M replaceIn(M _t, $typeRef $replacementType){
         Walk.in(_t, this.typeClass, e -> {
-            Tokens tokens = this.stencil.deconstruct( e.toString());
+            Tokens tokens = deconstruct( e );
             if( tokens != null ){
                 if( !e.replace($replacementType.construct(tokens))){
                     throw new DraftException("unable to replaceIn "+ e + " in "+ _t+" with "+$replacementType);
@@ -373,7 +394,7 @@ public final class $typeRef<T extends Type>
     @Override
     public <N extends Node> N removeIn(N node ){
         node.walk(this.typeClass, e -> {
-            Tokens tokens = this.stencil.deconstruct( e.toString());
+            Tokens tokens = deconstruct( e );
             if( tokens != null ){
                 e.removeForced();
             }
@@ -384,7 +405,7 @@ public final class $typeRef<T extends Type>
     @Override
     public <M extends _model._node> M removeIn(M _t ){
         Walk.in( _t, this.typeClass, e -> {
-            Tokens tokens = this.stencil.deconstruct( e.toString());
+            Tokens tokens = deconstruct( e );
             if( tokens != null ){
                 e.removeForced();
             }
@@ -395,7 +416,7 @@ public final class $typeRef<T extends Type>
     @Override
     public <N extends Node> N forIn(N n, Consumer<T> expressionActionFn){
         n.walk(this.typeClass, e-> {
-            Tokens tokens = this.stencil.deconstruct( e.toString());
+            Tokens tokens = deconstruct( e );
             if( tokens != null ){
                 expressionActionFn.accept( e);
             }
@@ -406,7 +427,7 @@ public final class $typeRef<T extends Type>
     @Override
     public <M extends _model._node> M forIn(M _t, Consumer<T> expressionActionFn){
         Walk.in( _t, this.typeClass, e -> {
-            Tokens tokens = this.stencil.deconstruct( e.toString());
+            Tokens tokens = deconstruct( e );
             if( tokens != null ){
                 expressionActionFn.accept( e);
             }

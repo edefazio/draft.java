@@ -7,6 +7,7 @@ import draft.java.*;
 
 import java.util.*;
 import java.util.function.Consumer;
+import java.util.function.Predicate;
 
 /**
  * Template for an {@link _anno}
@@ -65,10 +66,14 @@ public final class $import
         return $import.of(_import.of(target)).listIn(_type);
     }
     
-    
     public static $import of( String code){
         _import _i = _import.of( code );
         return new $import( _i.toString().trim() );
+    }
+    
+    public static $import of( String code, Predicate<_import> constraint){
+        _import _i = _import.of( code );
+        return new $import( _i.toString().trim() ).constraint(constraint);
     }
     
     public static $import of( Class clazz ){
@@ -76,26 +81,41 @@ public final class $import
         return new $import( _i.toString().trim() );
     }
     
+    public static $import of( Class clazz, Predicate<_import> constraint){
+        _import _i = _import.of( clazz );
+        return new $import( _i.toString().trim() ).constraint(constraint);
+    }
+    
     public static $import of( _import _i){
         return new $import( _i.toString().trim() );
     }
 
-    private Stencil importStencil;
+    public static $import of( _import _i, Predicate<_import> constraint){
+        return new $import( _i.toString().trim() ).constraint(constraint);
+    }
+    
+    public Predicate<_import> constraint;
+    public Stencil importStencil;
 
     private $import( String stencil) {
         this.importStencil = Stencil.of(stencil.trim());
     }
 
+    public $import constraint( Predicate<_import> constraint ){
+        this.constraint = constraint;
+        return this;
+    }
+    
     public boolean matches( String imports ){
         return matches( _import.of(imports) );
     }
 
     public boolean matches( ImportDeclaration importDeclaration ){
-        return importStencil.deconstruct( importDeclaration.toString().trim() ) != null;
+        return deconstruct( importDeclaration ) != null;
     }
 
     public boolean matches( _import _i){
-        return importStencil.deconstruct( _i.toString().trim() ) != null;
+        return deconstruct( _i ) != null;
     }
 
     /**
@@ -105,7 +125,10 @@ public final class $import
      * @return Tokens from the stencil, or null if the expression doesnt match
      */
     public Tokens deconstruct(_import _i ){
-        return importStencil.deconstruct( _i.toString().trim() );
+        if( this.constraint.test(_i)){
+            return importStencil.deconstruct( _i.toString().trim() );
+        }
+        return null;
     }
 
     /**
@@ -115,7 +138,10 @@ public final class $import
      * @return Tokens from the stencil, or null if the expression doesnt match
      */
     public Tokens deconstruct(ImportDeclaration astImport ){
-        return importStencil.deconstruct( astImport.toString().trim() );
+        if(this.constraint.test(_import.of(astImport))){
+            return importStencil.deconstruct( astImport.toString().trim() );
+        }
+        return null;
     }
 
     @Override
@@ -357,7 +383,7 @@ public final class $import
     @Override
     public <N extends Node> N forIn(N node, Consumer<_import> _importActionFn){
         node.walk(ImportDeclaration.class, e-> {
-            Tokens tokens = this.importStencil.deconstruct( e.toString());
+            Tokens tokens = deconstruct( e );
             if( tokens != null ){
                 _importActionFn.accept( _import.of(e));
             }

@@ -16,6 +16,7 @@ import draft.java.macro._remove;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.Consumer;
+import java.util.function.Predicate;
 
 /**
  * Template for a Java constructor
@@ -26,21 +27,32 @@ public final class $constructor
 
     public Stencil javadocStencil;
 
+    /** Additional matching constraint on the constructor */
+    public Predicate<_constructor> constraint = t -> true;
+    
     public Stencil signatureStencil;
     public $snip $body;
 
     public static $constructor of(_constructor _c ){
-        return new $constructor( _c);
+        return new $constructor( _c, t->true);
+    }
+    
+    public static $constructor of(_constructor _c, Predicate<_constructor> constraint ){
+        return new $constructor( _c, constraint);
     }
 
     public static $constructor of(String...code ){
-        return new $constructor(_constructor.of(code));
+        return new $constructor(_constructor.of(code), t-> true);
     }
 
     public static $constructor of( String ctorDeclaration ){
         return of( new String[]{ctorDeclaration});
     }
 
+    public static $constructor of( String ctorDeclaration, Predicate<_constructor> constraint ){
+        return new $constructor( _constructor.of( ctorDeclaration), constraint );
+    }
+    
     /**
      * Pass in an anonymous Object containing the method to import
      * NOTE: if the anonymous Object contains more than one method, ENSURE only one method
@@ -70,7 +82,7 @@ public final class $constructor
         return of( _ct );
     }
 
-    private $constructor(_constructor _c ){
+    private $constructor(_constructor _c, Predicate<_constructor> constraint){
         if( _c.hasBody() ) {
             this.$body = $snip.of(_c.getBody());
             _constructor _cp = _c.copy();
@@ -82,7 +94,16 @@ public final class $constructor
             this.signatureStencil = Stencil.of( _c.toString() );
             this.$body = null; //no BODY
         }
+        if(constraint != null ){
+            this.constraint = constraint;
+        }
     }
+    
+    public $constructor constraint( Predicate<_constructor> constraint ){
+        this.constraint = constraint;
+        return this;
+    }
+    
 
     @Override
     public List<String> list$Normalized(){
@@ -260,11 +281,14 @@ public final class $constructor
     
     
     public Tokens deconstruct( _constructor _ctor ){
-        return deconstruct( _ctor.ast() );
+        return deconstruct( _ctor.ast() );                
     }
     
     // NOTE we dont check the Javadoc for deconstruct
     public Tokens deconstruct( ConstructorDeclaration astTarget ){
+        if( !this.constraint.test( _constructor.of(astTarget))){
+            return null;
+        }
         Tokens ts = null;
         if( astTarget.getBody().isEmpty() ){
             ts = new Tokens();
