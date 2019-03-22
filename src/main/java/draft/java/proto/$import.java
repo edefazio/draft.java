@@ -94,7 +94,7 @@ public final class $import
         return new $import( _i.toString().trim() ).constraint(constraint);
     }
     
-    public Predicate<_import> constraint;
+    public Predicate<_import> constraint = t-> true;
     public Stencil importStencil;
 
     private $import( String stencil) {
