@@ -512,6 +512,10 @@ public interface _type<AST extends TypeDeclaration & NodeWithJavadoc & NodeWithM
     default boolean hasImport(Class clazz ){        
         return _imports.of(findCompilationUnit()).hasImport(clazz);        
     }
+    
+    default boolean hasImport( _import _i){
+        return listImports( i -> i.equals(_i.ast())).size() > 0;
+    }
 
     default List<ImportDeclaration> listImports( Predicate<ImportDeclaration> importMatchFn){        
         List<ImportDeclaration> is = listImports();
