@@ -3,6 +3,7 @@ package draft.java.proto;
 import com.github.javaparser.ast.Node;
 import com.github.javaparser.ast.comments.Comment;
 import com.github.javaparser.ast.expr.Expression;
+import com.github.javaparser.ast.expr.LambdaExpr;
 import com.github.javaparser.ast.stmt.*;
 import com.github.javaparser.printer.PrettyPrinterConfiguration;
 import draft.*;
@@ -23,7 +24,42 @@ import java.util.function.Predicate;
 public final class $stmt<T extends Statement>
         implements Template<T>, $query<T> {
 
-     /**
+    /**
+     * Does this stmt template appear in the root node?
+     * @param rootNode where to look
+     * @param code the code of the Statement we're looking for
+     * @return true if found else false
+     */
+    public static final boolean isIn( _node rootNode, String... code ){
+        return isIn( rootNode, Stmt.of(code));
+    }
+    
+    /**
+     * Does this stmt template appear in the root node?
+     * @param rootNode where to look
+     * @param code the code of the Statement we're looking for
+     * @return true if found else false
+     */
+    public static final boolean isIn( _node rootNode, Statement code ){
+        return isIn( rootNode, $stmt.of(code));
+    }
+    
+    public static final boolean isIn( _node rootNode, Expr.Command c ){
+        LambdaExpr le = Expr.lambda( Thread.currentThread().getStackTrace()[2] );
+        return isIn( rootNode, $stmt.of(le.getBody()));
+    }
+    
+    /**
+     * Does this stmt template appear in the root node?
+     * @param rootNode where to look
+     * @param code the code of the Statement we're looking for
+     * @return true if found else false
+     */
+    public static final boolean isIn( _node rootNode, $stmt code){
+        return list(rootNode, code).size() > 0;
+    }    
+    
+    /**
      * 
      * @param <N>
      * @param rootNode
@@ -43,6 +79,17 @@ public final class $stmt<T extends Statement>
      */
     public static final <N extends _node> List<Statement> list( N rootNode, Statement source ){
         return $stmt.of(source).listIn(rootNode);
+    }
+    
+    /**
+     * 
+     * @param <N>
+     * @param rootNode
+     * @param source
+     * @return 
+     */
+    public static final <N extends _node> List<Statement> list( N rootNode, $stmt source ){
+        return source.listIn(rootNode);
     }
     
     /**
