@@ -184,18 +184,22 @@ public class _import implements _model {
     }
 
     private static boolean hasImport(ImportDeclaration astId, String importClass) {
-        int openParenIndex = importClass.indexOf("(");
-        if( openParenIndex > 0 ){
-            importClass = importClass.substring(0, openParenIndex).trim();
+        ImportDeclaration testAstId = null;
+        try{
+            testAstId = Ast.importDeclaration(importClass);
         }
-        if( astId.getNameAsString().equals(importClass) ){
+        catch(Exception e ){
+            return false;
+        }
+        if( astId.equals(testAstId) ){
+            return true;
+        }
+        if( astId.getNameAsString().equals(testAstId.getNameAsString()) ){
             return true;
         }
         if (astId.isAsterisk()) {
-            //System.out.println(astId.getNameAsString());
             if (importClass.startsWith(astId.getNameAsString())) {
                 String ln = importClass.substring(astId.getNameAsString().length() + 1);
-                //System.out.println(ln);
                 return !ln.contains(".");
             }            
         }
