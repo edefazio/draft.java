@@ -844,6 +844,10 @@ public enum Ast {
         if (code.length() == 0) {
             return null;
         }
+        int openParenIndex = code.indexOf("(");
+        if( openParenIndex > 0 ){
+            code = code.substring(0, openParenIndex).trim();
+        }
         int idx = code.indexOf('['); //if it's an array remove the things
         if (idx > 0) {
             code = code.substring(0, idx);
