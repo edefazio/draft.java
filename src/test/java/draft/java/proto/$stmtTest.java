@@ -1,9 +1,6 @@
 package draft.java.proto;
 
-import draft.java.proto.$snip;
-import draft.java.proto.$stmt;
 import com.github.javaparser.ast.stmt.Statement;
-import draft.Stencil;
 import draft.Tokens;
 import draft.java.Stmt;
 import draft.java._class;
@@ -14,6 +11,21 @@ import java.util.function.Consumer;
 
 public class $stmtTest extends TestCase {
 
+    public void testStaticIsInListLambda(){
+        _class _c = _class.of("C");
+        
+        assertFalse($stmt.isIn(_c, (Object $any$)->System.out.println($any$) ));
+        _c = _class.of("C", new Object() { 
+            void m(){
+                System.out.println(1);
+            }
+        });
+        
+        assertTrue($stmt.isIn(_c, (Object $any$)->System.out.println($any$) ));
+        
+        assertNotNull( $stmt.of(($any$)->System.out.println($any$)).listIn(_c) );
+    }
+    
     public @interface r{
 
     }

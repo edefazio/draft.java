@@ -23,58 +23,80 @@ public final class $method
     /**
      * 
      * @param <N>
-     * @param rootNode
-     * @param source
+     * @param _n
+     * @param proto
      * @return 
      */
-    public static final <N extends _model._node> List<_method> list( N rootNode, String source ){
-        return $method.of(source).listIn(rootNode);
+    public static final <N extends _node> List<_method> list( N _n, String proto ){
+        return $method.of(proto).listIn(_n);
     }
     
     /**
      * 
      * @param <N>
-     * @param rootNode
-     * @param source
+     * @param _n
+     * @param _proto
      * @return 
      */
-    public static final <N extends _model._node> List<_method> list( N rootNode, _method source ){
-        return $method.of(source).listIn(rootNode);
+    public static final <N extends _node> List<_method> list( N _n, _method _proto ){
+        return $method.of(_proto).listIn(_n);
     }
     
     /**
      * Removes all occurrences of the source anno in the rootNode (recursively)
      * @param <N>
-     * @param rootNode
-     * @param source
+     * @param _n
+     * @param _proto
      * @return the modified N
      */
-    public static final <N extends _model._node> N remove( N rootNode, _method source ){
-        return $method.of(source).removeIn(rootNode);
+    public static final <N extends _node> N remove( N _n, _method _proto ){
+        return $method.of(_proto).removeIn(_n);
     }
     
     /**
      * 
      * @param <N>
-     * @param rootNode
-     * @param source
+     * @param _n
+     * @param proto
      * @return 
      */
-    public static final <N extends _model._node> N remove( N rootNode, String... source ){
-        return $method.of(source).removeIn(rootNode);
+    public static final <N extends _node> N remove( N _n, String... proto ){
+        return $method.of(proto).removeIn(_n);
     }
     
-    public static final <N extends _node> N replace( N rootNode, _method source, _method replacement ){
-        return $method.of(source).replaceIn(rootNode, replacement);
+    /**
+     * 
+     * @param <N>
+     * @param _n
+     * @param _protoSource
+     * @param _protoReplacement
+     * @return 
+     */
+    public static final <N extends _node> N replace( N _n, _method _protoSource, _method _protoReplacement ){
+        return $method.of(_protoSource).replaceIn(_n, _protoReplacement);
     }
     
-    public static final <N extends _node> N replace( N rootNode, String[] protoMethod, String[] replacementMethod ){
-        return $method.of(protoMethod).replaceIn(rootNode, replacementMethod);
+    /**
+     * 
+     * @param <N>
+     * @param _n
+     * @param protoMethod
+     * @param replacementMethod
+     * @return 
+     */
+    public static final <N extends _node> N replace( N _n, String[] protoMethod, String[] replacementMethod ){
+        return $method.of(protoMethod).replaceIn(_n, replacementMethod);
     }
     
-    public static $method of( String methodDeclaration ){
-        return of( new String[]{methodDeclaration});
+    /**
+     * 
+     * @param protoMethod
+     * @return 
+     */
+    public static $method of( String protoMethod ){
+        return of(new String[]{protoMethod});
     }
+    
     /**
      * Pass in an anonymous Object containing the method to import
      * NOTE: if the anonymous Object contains more than one method, ENSURE only one method
@@ -92,30 +114,70 @@ public final class $method
         return of( _macro.to(anonymousObjectContainingMethod.getClass(), _method.of( theMethod ) ));
     }
 
+    /**
+     * 
+     * @param signature
+     * @param body
+     * @return 
+     */
     public static $method of(String signature, Expr.Command body ){
         LambdaExpr le = Expr.lambda(Thread.currentThread().getStackTrace()[2]);
         _method _m = _method.fromSignature( signature );
         return of( _method.updateBody(_m, le) );
     }
 
+    /**
+     * 
+     * @param <A>
+     * @param signature
+     * @param body
+     * @return 
+     */
     public static <A extends Object> $method of(String signature, Consumer<A> body ){
         LambdaExpr le = Expr.lambda(Thread.currentThread().getStackTrace()[2]);
         _method _m = _method.fromSignature( signature );
         return of( _method.updateBody(_m, le) );
     }
 
+    /**
+     * 
+     * @param <A>
+     * @param <B>
+     * @param signature
+     * @param body
+     * @return 
+     */
     public static <A extends Object, B extends Object> $method of(String signature, BiConsumer<A, B> body ){
         LambdaExpr le = Expr.lambda(Thread.currentThread().getStackTrace()[2]);
         _method _m = _method.fromSignature( signature );
         return of( _method.updateBody(_m, le) );
     }
 
+    /**
+     * 
+     * @param <A>
+     * @param <B>
+     * @param <C>
+     * @param signature
+     * @param body
+     * @return 
+     */
     public static <A extends Object, B extends Object, C extends Object> $method of(String signature, Expr.TriConsumer<A, B, C> body ){
         LambdaExpr le = Expr.lambda(Thread.currentThread().getStackTrace()[2]);
         _method _m = _method.fromSignature( signature );
         return of( _method.updateBody(_m, le) );
     }
 
+    /**
+     * 
+     * @param <A>
+     * @param <B>
+     * @param <C>
+     * @param <D>
+     * @param signature
+     * @param body
+     * @return 
+     */
     public static <A extends Object, B extends Object, C extends Object, D extends Object> $method of(String signature, Expr.QuadConsumer<A, B, C, D> body ){
         LambdaExpr le = Expr.lambda(Thread.currentThread().getStackTrace()[2]);
         _method _m = _method.fromSignature( signature );
@@ -153,55 +215,113 @@ public final class $method
         return of(_method.updateBody(_m, le));
     }
 
+    /**
+     * 
+     * @param <A>
+     * @param <B>
+     * @param <C>
+     * @param <D>
+     * @param signature
+     * @param parametersAndBody
+     * @return 
+     */
     public static <A extends Object, B extends Object, C extends Object, D extends Object> $method of( String signature, Expr.TriFunction<A,B,C,D> parametersAndBody){
         LambdaExpr le = Expr.lambda(Thread.currentThread().getStackTrace()[2]);
         _method _m = _method.fromSignature( signature );
         return of(_method.updateBody(_m, le));
     }
 
+    /**
+     * 
+     * @param <A>
+     * @param <B>
+     * @param <C>
+     * @param <D>
+     * @param <E>
+     * @param signature
+     * @param parametersAndBody
+     * @return 
+     */
     public static <A extends Object, B extends Object, C extends Object, D extends Object, E extends Object> $method of( String signature, Expr.QuadFunction<A,B,C,D,E> parametersAndBody){
         LambdaExpr le = Expr.lambda(Thread.currentThread().getStackTrace()[2]);
         _method _m = _method.fromSignature( signature );
         return of(_method.updateBody(_m, le));
     }
 
+    /**
+     * 
+     * @param _m
+     * @return 
+     */
     public static $method of( _method _m ){
         return new $method( _m);
     }
 
+    /**
+     * 
+     * @param _m
+     * @param constraint
+     * @return 
+     */
     public static $method of( _method _m, Predicate<_method> constraint){
         return new $method( _m).constraint(constraint);
     }
         
+    /**
+     * 
+     * @param clazz
+     * @param name
+     * @return 
+     */
     public static $method of( Class clazz, String name ){
         _method._hasMethods  _hm = (_method._hasMethods)_type.of(clazz);
         return of( _hm.getMethod(name) );
     }       
 
-    public static $method of( String...code ){
-        return new $method(_method.of(code));
+    /**
+     * 
+     * @param proto
+     * @return 
+     */
+    public static $method of( String...proto ){
+        return new $method(_method.of(proto));
     }
     
-    public static $method of( String code, Predicate<_method> constraint ){
-        return new $method(_method.of(code)).constraint(constraint);
+    /**
+     * 
+     * @param proto
+     * @param constraint
+     * @return 
+     */
+    public static $method of( String proto, Predicate<_method> constraint ){
+        return new $method(_method.of(proto)).constraint(constraint);
     }
 
     public Predicate<_method> constraint;
     public Stencil signatureStencil;
     public $snip $body;
 
-    public $method( _method _m ){
+    /**
+     * 
+     * @param _proto 
+     */
+    public $method( _method _proto ){
         //System.out.println( "CREATING "+ _m );
-        if( _m.hasBody() ) {
-            this.$body = $snip.of(_m.getBody());
-            _method _cp = _m.copy();
+        if( _proto.hasBody() ) {
+            this.$body = $snip.of(_proto.getBody());
+            _method _cp = _proto.copy();
             this.signatureStencil = Stencil.of( _cp.setBody("").toString() );
         } else {
-            this.signatureStencil = Stencil.of( _m.toString() );
+            this.signatureStencil = Stencil.of(_proto.toString() );
             this.$body = null; //no BODY
         }
     }
 
+    /**
+     * 
+     * @param constraint
+     * @return 
+     */
     public $method constraint( Predicate<_method> constraint){
         this.constraint = constraint;
         return this;
@@ -247,8 +367,13 @@ public final class $method
         return $method.this.construct( Translator.DEFAULT_TRANSLATOR, keyValues );
     }
 
-    public _method construct(_model._node model ){
-        return $method.this.construct( model.componentize() );
+    /**
+     * 
+     * @param _n
+     * @return 
+     */
+    public _method construct(_model._node _n ){
+        return $method.this.construct(_n.componentize() );
     }
 
     @Override
@@ -282,10 +407,20 @@ public final class $method
 
     public static final BlockStmt EMPTY = Stmt.block("{}");
 
+    /**
+     * 
+     * @param _m
+     * @return 
+     */
     public Tokens deconstruct( _method _m ){
         return deconstruct(_m.ast() );
     }
     
+    /**
+     * 
+     * @param astTarget
+     * @return 
+     */
     public Tokens deconstruct( MethodDeclaration astTarget ){
         if( !this.constraint.test(_method.of(astTarget))){
             return null;
@@ -372,6 +507,12 @@ public final class $method
         return assign$( translator, Tokens.of( keyValues ) );
     }
 
+    /**
+     * 
+     * @param translator
+     * @param kvs
+     * @return 
+     */
     public $method assign$( Translator translator, Tokens kvs ) {
         this.$body = this.$body.assign$(translator,kvs);
         this.signatureStencil = this.signatureStencil.assign$(translator,kvs);
@@ -386,23 +527,49 @@ public final class $method
         return this;
     }
 
+    /**
+     * 
+     * @param expr
+     * @param $name
+     * @return 
+     */
     public $method $(Expression expr, String $name ){
         String exprString = expr.toString();
         return $(exprString, $name);
     }
 
+    /**
+     * 
+     * @param _m
+     * @return 
+     */
     public boolean matches( _method _m ){
         return deconstruct( _m.ast() ) != null;
     }
 
-    public boolean matches( MethodDeclaration astM ){
-        return deconstruct( astM ) != null;
+    /**
+     * 
+     * @param astMethod
+     * @return 
+     */
+    public boolean matches( MethodDeclaration astMethod ){
+        return deconstruct(astMethod ) != null;
     }
 
+    /**
+     * 
+     * @param _m
+     * @return 
+     */
     public Select select( _method _m){
         return select( _m.ast());
     }
 
+    /**
+     * 
+     * @param astMethod
+     * @return 
+     */
     public Select select( MethodDeclaration astMethod){
         Tokens ts = deconstruct( astMethod );
         if( ts != null ){
@@ -411,6 +578,32 @@ public final class $method
         return null;
     }
 
+    /**
+     * Returns the first _method that matches the pattern and constraint
+     * @param _n the _java node
+     * @return  the first _method that matches (or null if none found)
+     */
+    public _method firstIn( _model._node _n ){
+        Optional<MethodDeclaration> f = _n.ast().findFirst(MethodDeclaration.class, s -> this.matches(s) );         
+        if( f.isPresent()){
+            return _method.of(f.get());
+        }
+        return null;
+    }
+
+    /**
+     * Returns the first _method that matches the pattern and constraint
+     * @param astNode the node to look through
+     * @return  the first _method that matches (or null if none found)
+     */
+    public _method firstIn( Node astNode ){
+        Optional<MethodDeclaration> f = astNode.findFirst(MethodDeclaration.class, s -> this.matches(s) );         
+        if( f.isPresent()){
+            return _method.of(f.get());
+        }
+        return null;
+    }
+    
     @Override
     public List<Select> listSelectedIn(Node n){
         List<Select>sts = new ArrayList<>();
@@ -424,9 +617,9 @@ public final class $method
     }
 
     @Override
-    public List<Select> listSelectedIn(_model._node _t){
+    public List<Select> listSelectedIn(_node _n){
         List<Select>sts = new ArrayList<>();
-        Walk.in( _t, MethodDeclaration.class, m -> {
+        Walk.in(_n, MethodDeclaration.class, m -> {
             Select sel = select( m );
             if( sel != null ){
                 sts.add(sel);
@@ -435,97 +628,125 @@ public final class $method
         return sts;
     }
 
-    public <N extends Node> N forSelectedIn(N  n, Consumer<Select> selectedActionFn ){
-        n.walk( MethodDeclaration.class, m-> {
+    public <N extends Node> N forSelectedIn(N astNode, Consumer<Select> selectedActionFn ){
+        astNode.walk( MethodDeclaration.class, m-> {
             Select s = select( m );
             if( s != null ){
                 selectedActionFn.accept( s );
             }
         });
-        return n;
+        return astNode;
     }
-    public <T extends _model._node> T forSelectedIn(T _t, Consumer<Select> selectedActionFn ){
-        Walk.in( _t, _method.class, m ->{
+    public <N extends _node> N forSelectedIn(N _n, Consumer<Select> selectedActionFn ){
+        Walk.in(_n, _method.class, m ->{
             Select s = select( m );
             if( s != null ){
                 selectedActionFn.accept( s );
             }
         });
-        return _t;
+        return _n;
     }
     
-    public  <T extends _model._node> T replaceIn( T _t, $method $replace ){
-        return forSelectedIn( _t, s -> {
+    /**
+     * 
+     * @param <N>
+     * @param _n
+     * @param $replace
+     * @return 
+     */
+    public <N extends _node> N replaceIn( N _n, $method $replace ){
+        return forSelectedIn(_n, s -> {
             _method repl = $replace.construct(s.tokens);
             s.method.replace(repl.ast());
         });
     }
 
-    public  <T extends _model._node> T replaceIn( T _t, String... replacementMethod ){
-        return replaceIn( _t, $method.of(replacementMethod));        
+    /**
+     * 
+     * @param <N>
+     * @param _n
+     * @param replacementProto
+     * @return 
+     */
+    public <N extends _node> N replaceIn( N _n, String... replacementProto ){
+        return replaceIn(_n, $method.of(replacementProto));        
     }
     
-    public  <T extends _model._node> T replaceIn( T _t, _method method ){
-        return replaceIn( _t, $method.of(method));        
+    /**
+     * 
+     * @param <N>
+     * @param _n
+     * @param method
+     * @return 
+     */
+    public <N extends _node> N replaceIn( N _n, _method method ){
+        return replaceIn(_n, $method.of(method));        
     }
     
-    public  <T extends _model._node> T replaceIn( T _t, MethodDeclaration astMethod ){
-        return replaceIn( _t, $method.of(astMethod));        
+    /**
+     * 
+     * @param <N>
+     * @param _n
+     * @param astMethod
+     * @return 
+     */
+    public <N extends _node> N replaceIn( N _n, MethodDeclaration astMethod ){
+        return replaceIn(_n, $method.of(astMethod));        
     }
     
     @Override
-    public <M extends _model._node> M removeIn(M _m ){
-        Walk.in(_m, MethodDeclaration.class, e-> {
+    public <N extends _node> N removeIn(N _n ){
+        Walk.in(_n, MethodDeclaration.class, e-> {
             Tokens tokens = this.deconstruct( e );
             if( tokens != null ){
                 e.removeForced();
             }
         });
-        return _m;
+        return _n;
     }
 
     @Override
-    public <N extends Node> N removeIn(N n ){
-        n.walk(MethodDeclaration.class, e-> {
+    public <N extends Node> N removeIn(N astNode){
+        astNode.walk(MethodDeclaration.class, e-> {
             Tokens tokens = this.deconstruct( e );
             if( tokens != null ){
                 e.removeForced();
             }
         });
-        return n;
+        return astNode;
     }
 
     @Override
-    public <N extends Node> N forIn(N n, Consumer<_method> _methodActionFn){
-        n.walk(MethodDeclaration.class, e-> {
+    public <N extends Node> N forIn(N astNode, Consumer<_method> _methodActionFn){
+        astNode.walk(MethodDeclaration.class, e-> {
             Tokens tokens = this.deconstruct( e );
             if( tokens != null ){
                 _methodActionFn.accept( _method.of(e) );
             }
         });
-        return n;
+        return astNode;
     }
 
     @Override
-    public  <T extends _model._node> T forIn(T _t, Consumer<_method> _methodActionFn){
-        Walk.in(_t, MethodDeclaration.class, e -> {
+    public <N extends _node> N forIn(N _n, Consumer<_method> _methodActionFn){
+        Walk.in(_n, MethodDeclaration.class, e -> {
             Tokens tokens = this.deconstruct( e );
             if( tokens != null ){
                 _methodActionFn.accept( _method.of(e) );
             }
         });
-        return _t;
+        return _n;
     }
 
     @Override
-    public List<_method> listIn(_model._node _t ){
-        return listIn( _t.ast() );
+    public List<_method> listIn(_node _n ){
+        return listIn(_n.ast() );
     }
 
     @Override
-    public List<_method> listIn(Node rootNode ){
+    public List<_method> listIn(Node astNode ){
         List<_method> typesList = new ArrayList<>();
-        rootNode.walk(MethodDeclaration.class, m->{
+        astNode.walk(MethodDeclaration.class, m->{
             if( this.matches(m) ){
                 typesList.add( _method.of(m));
             }

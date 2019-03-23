@@ -492,6 +492,22 @@ public interface _type<AST extends TypeDeclaration & NodeWithJavadoc & NodeWithM
     default boolean hasImport( _type _t ){
         return hasImport( _t.getFullName() );
     }
+    
+    /**
+     * Does this class statically import this class
+     * i.e.
+     * <PRE>
+     * _class _c = _class.of("A").imports("import static draft.java.Ast.*;");
+     * assertTrue( _c.hasImportStatic(Ast.class));
+     * </PRE>
+     * 
+     * @param clazz
+     * @return 
+     */
+    default boolean hasImportStatic( Class clazz ){
+        return listImports().stream().filter(i -> i.isAsterisk() && i.isStatic() && i.getNameAsString().equals(clazz.getCanonicalName()))
+                .findFirst().isPresent();
+    }
 
     /**
      * class or method name

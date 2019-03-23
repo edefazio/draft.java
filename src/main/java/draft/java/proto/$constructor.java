@@ -10,6 +10,7 @@ import com.github.javaparser.ast.stmt.BlockStmt;
 import com.github.javaparser.ast.stmt.Statement;
 import draft.*;
 import draft.java.*;
+import draft.java._model._node;
 import draft.java.macro._ctor;
 import draft.java.macro._remove;
 
@@ -45,12 +46,12 @@ public final class $constructor
         return new $constructor(_constructor.of(code), t-> true);
     }
 
-    public static $constructor of( String ctorDeclaration ){
-        return of( new String[]{ctorDeclaration});
+    public static $constructor of( String protoCtor ){
+        return of(new String[]{protoCtor});
     }
 
-    public static $constructor of( String ctorDeclaration, Predicate<_constructor> constraint ){
-        return new $constructor( _constructor.of( ctorDeclaration), constraint );
+    public static $constructor of( String protoCtor, Predicate<_constructor> constraint ){
+        return new $constructor( _constructor.of(protoCtor), constraint );
     }
     
     /**
@@ -82,16 +83,16 @@ public final class $constructor
         return of( _ct );
     }
 
-    private $constructor(_constructor _c, Predicate<_constructor> constraint){
-        if( _c.hasBody() ) {
-            this.$body = $snip.of(_c.getBody());
-            _constructor _cp = _c.copy();
+    private $constructor(_constructor _protoCtor, Predicate<_constructor> constraint){
+        if( _protoCtor.hasBody() ) {
+            this.$body = $snip.of(_protoCtor.getBody());
+            _constructor _cp = _protoCtor.copy();
             if(_cp.ast().getJavadocComment().isPresent() ){
                 this.javadocStencil = Stencil.of(Ast.getContent( _cp.ast().getJavadocComment().get() ));
             }
             this.signatureStencil = Stencil.of( _cp.setBody("").toString(Ast.PRINT_NO_COMMENTS) );
         } else {
-            this.signatureStencil = Stencil.of( _c.toString() );
+            this.signatureStencil = Stencil.of(_protoCtor.toString() );
             this.$body = null; //no BODY
         }
         if(constraint != null ){
@@ -198,7 +199,7 @@ public final class $constructor
         return $constructor.this.construct( Translator.DEFAULT_TRANSLATOR, keyValues );
     }
 
-    public _constructor construct( _model._node model ){
+    public _constructor construct( _node model ){
         return $constructor.this.construct(model.componentize());
     }
 
@@ -270,10 +271,37 @@ public final class $constructor
         return null;
     }
 
+    /**
+     * Returns the first _constructor that matches the pattern and constraint
+     * @param _n the _java node
+     * @return  the first _constructor that matches (or null if none found)
+     */
+    public _constructor firstIn( _node _n ){
+        Optional<ConstructorDeclaration> f = _n.ast().findFirst(ConstructorDeclaration.class, s -> this.matches(s) );         
+        if( f.isPresent()){
+            return _constructor.of(f.get());
+        }
+        return null;
+    }
+
+    /**
+     * Returns the first _constructor that matches the pattern and constraint
+     * @param astNode the node to look through
+     * @return  the first _constructor that matches (or null if none found)
+     */
+    public _constructor firstIn( Node astNode ){
+        Optional<ConstructorDeclaration> f = astNode.findFirst(ConstructorDeclaration.class, s -> this.matches(s) );         
+        if( f.isPresent()){
+            return _constructor.of(f.get());
+        }
+        return null;
+    }
+    
     @Override
     public String toString(){
         if( this.javadocStencil != null ){
-            return this.javadocStencil.toString() +System.lineSeparator() + this.signatureStencil.toString()+System.lineSeparator()+
+            return this.javadocStencil.toString() +System.lineSeparator() 
+                    + this.signatureStencil.toString()+System.lineSeparator() +
                     this.$body.toString();
         }
         return this.signatureStencil.toString()+System.lineSeparator()+ this.$body.toString();
@@ -323,7 +351,7 @@ public final class $constructor
     }
 
     @Override
-    public List<_constructor> listIn(_model._node _t ){
+    public List<_constructor> listIn(_node _t ){
         return listIn( _t.ast() );
     }
 
@@ -351,7 +379,7 @@ public final class $constructor
     }
 
     @Override
-    public List<Select> listSelectedIn(_model._node _t){
+    public List<Select> listSelectedIn(_node _t){
         List<Select>sts = new ArrayList<>();
         Walk.in(_t, ConstructorDeclaration.class, c-> {
             Select sel = select( c );
@@ -374,7 +402,7 @@ public final class $constructor
     }
 
     @Override
-    public <M extends _model._node> M forIn(M _t, Consumer<_constructor> _constructorActionFn ){
+    public <M extends _node> M forIn(M _t, Consumer<_constructor> _constructorActionFn ){
         Walk.in(_t, _constructor.class, c-> {
             Select s = select( c );
             if( s != null ){
@@ -385,7 +413,7 @@ public final class $constructor
     }
 
     @Override
-    public <M extends _model._node> M removeIn(M _t ){
+    public <M extends _node> M removeIn(M _t ){
         listSelectedIn(_t).forEach(s -> s.ctor.remove() );
         return _t;
     }
@@ -406,7 +434,7 @@ public final class $constructor
         return n;
     }
 
-    public <M extends _model._node> M forSelectedIn(M _t, Consumer<Select> selectedActionFn ){
+    public <M extends _node> M forSelectedIn(M _t, Consumer<Select> selectedActionFn ){
         Walk.in(_t, _constructor.class, c-> {
             Select s = select( c );
             if( s != null ){

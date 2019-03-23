@@ -12,9 +12,7 @@ import draft.java._model._node;
 
 import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
-import java.util.function.BiConsumer;
-import java.util.function.Consumer;
-import java.util.function.Predicate;
+import java.util.function.*;
 
 /**
  * Template of a Java {@link Statement} that can be
@@ -26,277 +24,431 @@ public final class $stmt<T extends Statement>
 
     /**
      * Does this stmt template appear in the root node?
-     * @param rootNode where to look
-     * @param code the code of the Statement we're looking for
+     * @param _n where to look
+     * @param proto the code of the Statement we're looking for
      * @return true if found else false
      */
-    public static final boolean isIn( _node rootNode, String... code ){
-        return isIn( rootNode, Stmt.of(code));
+    public static final boolean isIn( _node _n, String... proto ){
+        return isIn(_n, Stmt.of(proto));
     }
     
     /**
      * Does this stmt template appear in the root node?
-     * @param rootNode where to look
-     * @param code the code of the Statement we're looking for
+     * @param _n where to look
+     * @param proto the code of the Statement we're looking for
      * @return true if found else false
      */
-    public static final boolean isIn( _node rootNode, Statement code ){
-        return isIn( rootNode, $stmt.of(code));
+    public static final boolean isIn( _node _n, Statement proto ){
+        return isIn(_n, $stmt.of(proto));
     }
     
-    public static final boolean isIn( _node rootNode, Expr.Command c ){
+    /**
+     * 
+     * @param _n
+     * @param proto
+     * @return 
+     */
+    public static final boolean isIn( _node _n, Expr.Command proto ){
         LambdaExpr le = Expr.lambda( Thread.currentThread().getStackTrace()[2] );
-        return isIn( rootNode, $stmt.of(le.getBody()));
+        return isIn(_n, $stmt.of(le.getBody()));
+    }
+    
+    /**
+     * 
+     * @param <T>
+     * @param _n
+     * @param proto
+     * @return 
+     */
+    public static final <T extends Object> boolean isIn( _node _n, Consumer<T> proto ){
+        LambdaExpr le = Expr.lambda( Thread.currentThread().getStackTrace()[2] );
+        return isIn(_n, $stmt.of(le.getBody()));
+    }
+    
+    /**
+     * 
+     * @param <A>
+     * @param <B>
+     * @param _n
+     * @param proto
+     * @return 
+     */
+    public static final <A extends Object, B extends Object> boolean isIn( _node _n, BiConsumer<A,B> proto ){
+        LambdaExpr le = Expr.lambda( Thread.currentThread().getStackTrace()[2] );
+        return isIn(_n, $stmt.of(le.getBody()));
+    }
+    
+    /**
+     * 
+     * @param <A>
+     * @param <B>
+     * @param _n
+     * @param proto
+     * @return 
+     */
+    public static final <A extends Object, B extends Object> boolean isIn( _node _n, Function<A,B> proto ){
+        LambdaExpr le = Expr.lambda( Thread.currentThread().getStackTrace()[2] );
+        return isIn(_n, $stmt.of(le.getBody()));
+    }
+    
+    /**
+     * 
+     * @param <A>
+     * @param <B>
+     * @param <C>
+     * @param _n
+     * @param proto
+     * @return 
+     */
+    public static final <A extends Object, B extends Object, C extends Object> boolean isIn( _node _n, BiFunction<A,B,C> proto ){
+        LambdaExpr le = Expr.lambda( Thread.currentThread().getStackTrace()[2] );
+        return isIn(_n, $stmt.of(le.getBody()));
     }
     
     /**
      * Does this stmt template appear in the root node?
-     * @param rootNode where to look
-     * @param code the code of the Statement we're looking for
+     * @param _n where to look
+     * @param proto the code of the Statement we're looking for
      * @return true if found else false
      */
-    public static final boolean isIn( _node rootNode, $stmt code){
-        return list(rootNode, code).size() > 0;
+    public static final boolean isIn( _node _n, $stmt proto){
+        return list(_n, proto).size() > 0;
     }    
     
     /**
      * 
      * @param <N>
-     * @param rootNode
-     * @param source
+     * @param _n
+     * @param proto
      * @return 
      */
-    public static final <N extends _node> List<Statement> list( N rootNode, String source ){
-        return $stmt.of(source).listIn(rootNode);
+    public static final <N extends _node> List<Statement> list( N _n, String proto ){
+        return $stmt.of(proto).listIn(_n);
     }
     
     /**
      * 
      * @param <N>
-     * @param rootNode
-     * @param source
+     * @param _n
+     * @param proto
      * @return 
      */
-    public static final <N extends _node> List<Statement> list( N rootNode, Statement source ){
-        return $stmt.of(source).listIn(rootNode);
+    public static final <N extends _node> List<Statement> list( N _n, Statement proto ){
+        return $stmt.of(proto).listIn(_n);
     }
     
     /**
      * 
      * @param <N>
-     * @param rootNode
-     * @param source
+     * @param _n
+     * @param proto
      * @return 
      */
-    public static final <N extends _node> List<Statement> list( N rootNode, $stmt source ){
-        return source.listIn(rootNode);
+    public static final <N extends _node> List<Statement> list( N _n, $stmt proto ){
+        return proto.listIn(_n);
     }
     
     /**
      * Removes all occurrences of the source anno in the rootNode (recursively)
      * @param <N>
-     * @param rootNode
-     * @param source
+     * @param _n
+     * @param proto
      * @return the modified N
      */
-    public static final <N extends _node> N remove( N rootNode, Statement source ){
-        return (N)$stmt.of(source).removeIn(rootNode);
+    public static final <N extends _node> N remove( N _n, Statement proto ){
+        return (N)$stmt.of(proto).removeIn(_n);
     }
     
     /**
      * 
      * @param <N>
-     * @param rootNode
-     * @param source
+     * @param _n
+     * @param proto
      * @return 
      */
-    public static final <N extends _node> N remove( N rootNode, String source ){
-        return (N)$stmt.of(source).removeIn(rootNode);
+    public static final <N extends _node> N remove( N _n, String proto ){
+        return (N)$stmt.of(proto).removeIn(_n);
     }    
     
     /**
      * 
      * @param <N>
-     * @param rootNode
-     * @param source
-     * @param target
+     * @param _n
+     * @param protoTarget
+     * @param protoReplacement
      * @return 
      */
-    public static final <N extends _node> N replace(N rootNode, Statement source, Statement target){
-        return (N)$stmt.of(source)
-            .replaceIn(rootNode, $stmt.of(target));
+    public static final <N extends _node> N replace(N _n, Statement protoTarget, Statement protoReplacement){
+        return (N)$stmt.of(protoTarget)
+            .replaceIn(_n, $stmt.of(protoReplacement));
     }    
 
     /**
      * 
      * @param <N>
-     * @param rootNode
-     * @param source
-     * @param target
+     * @param _n
+     * @param protoTarget
+     * @param protoReplacement
      * @return 
      */
-    public static final <N extends _node> N replace(N rootNode, String source, String target){
-        return (N)$stmt.of(source)
-            .replaceIn(rootNode, $stmt.of(target));
+    public static final <N extends _node> N replace(N _n, String protoTarget, String protoReplacement){
+        return (N)$stmt.of(protoTarget)
+            .replaceIn(_n, $stmt.of(protoReplacement));
     }    
     
+    /**
+     * 
+     * @param ste
+     * @return 
+     */
     private static $stmt fromStackTrace( StackTraceElement ste ){
         Statement st = Stmt.from( ste );
         return new $stmt( st );
     }
 
-    public static <T extends Object>  $stmt of( Expr.Command c ){
+    /**
+     * 
+     * @param <T>
+     * @param proto
+     * @return 
+     */
+    public static <T extends Object>  $stmt of( Expr.Command proto ){
         StackTraceElement ste = Thread.currentThread().getStackTrace()[2];
         return fromStackTrace( ste );
     }
 
-    public static <T extends Object>  $stmt of( Consumer<T> c ){
+    /**
+     * 
+     * @param <T>
+     * @param proto
+     * @return 
+     */
+    public static <T extends Object>  $stmt of( Consumer<T> proto ){
         StackTraceElement ste = Thread.currentThread().getStackTrace()[2];
         return fromStackTrace( ste );
     }
 
-    public static <T extends Object, U extends Object>  $stmt of( BiConsumer<T,U> c ){
+    /**
+     * 
+     * @param <T>
+     * @param <U>
+     * @param proto
+     * @return 
+     */
+    public static <T extends Object, U extends Object>  $stmt of( BiConsumer<T,U> proto ){
         StackTraceElement ste = Thread.currentThread().getStackTrace()[2];
         return fromStackTrace( ste );
     }
 
-    public static <T extends Object, U extends Object, V extends Object>  $stmt of(Expr.TriConsumer<T, U, V> c ){
+    /**
+     * 
+     * @param <T>
+     * @param <U>
+     * @param <V>
+     * @param proto
+     * @return 
+     */
+    public static <T extends Object, U extends Object, V extends Object>  $stmt of(Expr.TriConsumer<T, U, V> proto ){
         StackTraceElement ste = Thread.currentThread().getStackTrace()[2];
         return fromStackTrace( ste );
     }
 
-    public static <T extends Object, U extends Object, V extends Object, X extends Object>  $stmt of(Expr.QuadConsumer<T, U, V, X> c ){
+    /**
+     * 
+     * @param <T>
+     * @param <U>
+     * @param <V>
+     * @param <X>
+     * @param proto
+     * @return 
+     */
+    public static <T extends Object, U extends Object, V extends Object, X extends Object> $stmt of(Expr.QuadConsumer<T, U, V, X> proto ){
         StackTraceElement ste = Thread.currentThread().getStackTrace()[2];
         return fromStackTrace( ste );
     }
 
-    public static $stmt of(String...statement ){
-        Statement st = Stmt.of(statement);
+    /**
+     * 
+     * @param proto
+     * @return 
+     */
+    public static $stmt of(String...proto ){
+        Statement st = Stmt.of(proto);
         return new $stmt( st );
     }
 
-    public static $stmt of(Statement st ){
-        return new $stmt(st); //.getClass(), st.toString());
+    /**
+     * 
+     * @param astProto
+     * @return 
+     */
+    public static $stmt of(Statement astProto ){
+        return new $stmt(astProto); //.getClass(), st.toString());
     }
 
     /**
      * i.e."assert(1==1);"
-     * @param code
+     * @param proto
      * @return and AssertStmt with the code
      */
-    public static $stmt<AssertStmt> assertStmt(String... code ) {
-        return new $stmt( Stmt.assertStmt(code));
+    public static $stmt<AssertStmt> assertStmt(String... proto ) {
+        return new $stmt( Stmt.assertStmt(proto));
     }
 
     /**
      * NOTE: If you omit the opening and closing braces { }, they will be added
      *
      * i.e."{ int i=1; return i;}"
-     * @param code the code making up the blockStmt
+     * @param proto the code making up the blockStmt
      * @return the BlockStmt
      */
-    public static $stmt<BlockStmt> block(String... code ) {
-        return new $stmt( Stmt.block(code));
+    public static $stmt<BlockStmt> block(String... proto ) {
+        return new $stmt( Stmt.block(proto));
     }
 
     /**
      * i.e."break;" or "break outer;"
-     * @param code String representing the break of
+     * @param proto String representing the break of
      * @return the breakStmt
      */
-    public static $stmt<BreakStmt> breakStmt(String... code ) {
-        return new $stmt( Stmt.breakStmt(code));
+    public static $stmt<BreakStmt> breakStmt(String... proto ) {
+        return new $stmt( Stmt.breakStmt(proto));
     }
 
-    /** i.e. "continue outer;" */
-    public static $stmt<ContinueStmt> continueStmt(String... code ) {
-        return new $stmt( Stmt.continueStmt(code));
+    /** 
+     * i.e."continue outer;" 
+     * @param proto
+     * @return 
+     */
+    public static $stmt<ContinueStmt> continueStmt(String... proto ) {
+        return new $stmt( Stmt.continueStmt(proto));
     }
 
-    /** i.e. "do{ System.out.println(1); }while( a < 100 );" */
-    public static $stmt<DoStmt> doStmt(String... code ) {
-        return new $stmt( Stmt.doStmt(code));
+    /** 
+     * i.e."do{ System.out.println(1); }while( a < 100 );" 
+     * @param proto
+     * @return 
+     */
+    public static $stmt<DoStmt> doStmt(String... proto ) {
+        return new $stmt( Stmt.doStmt(proto));
     }
 
-    /** i.e. "this(100,2900);" */
-    public static $stmt<ExplicitConstructorInvocationStmt> ctorInvocationStmt(String... code ) {
-        return new $stmt( Stmt.ctorInvocationStmt(code));
+    /** 
+     * i.e."this(100,2900);" 
+     * @param proto
+     * @return 
+     */
+    public static $stmt<ExplicitConstructorInvocationStmt> ctorInvocationStmt(String... proto ) {
+        return new $stmt( Stmt.ctorInvocationStmt(proto));
     }
 
-    /** i.e. "s += t;" */
-    public static $stmt<ExpressionStmt> expressionStmt( String... code ) {
-        return new $stmt( Stmt.expressionStmt(code));
+    /** 
+     * i.e."s += t;" 
+     * @param proto
+     * @return 
+     */
+    public static $stmt<ExpressionStmt> expressionStmt( String... proto ) {
+        return new $stmt( Stmt.expressionStmt(proto));
     }
 
-    /** i.e. "for(int i=0; i<100;i++) {...}" */
-    public static $stmt<ForStmt> forStmt( String... code ) {
-        return new $stmt( Stmt.forStmt(code));
+    /** 
+     * i.e."for(int i=0; i<100;i++) {...}" 
+     * @param proto
+     * @return 
+     */
+    public static $stmt<ForStmt> forStmt( String... proto ) {
+        return new $stmt( Stmt.forStmt(proto));
     }
 
-    /** i.e. "for(String element:arr){...}" */
-    public static $stmt<ForEachStmt> forEachStmt( String... code ) {
-        return new $stmt( Stmt.forEachStmt(code));
+    /** 
+     * i.e."for(String element:arr){...}" 
+     * @param proto
+     * @return 
+     */
+    public static $stmt<ForEachStmt> forEachStmt( String... proto ) {
+        return new $stmt( Stmt.forEachStmt(proto));
     }
 
-    /** i.e. "if(a==1){...}" */
-    public static $stmt<IfStmt> ifStmt( String... code ) {
-        return new $stmt( Stmt.ifStmt(code));
+    /** 
+     * i.e."if(a==1){...}" 
+     * @param proto
+     * @return 
+     */
+    public static $stmt<IfStmt> ifStmt( String... proto ) {
+        return new $stmt( Stmt.ifStmt(proto));
     }
 
-    /** i.e. "outer:   start = getValue();" */
-    public static $stmt<LabeledStmt> labeledStmt( String... code ) {
-        return new $stmt( Stmt.labeledStmt(code));
+    /** 
+     * i.e."outer:   start = getValue();" 
+     * @param proto
+     * @return 
+     */
+    public static $stmt<LabeledStmt> labeledStmt( String... proto ) {
+        return new $stmt( Stmt.labeledStmt(proto));
     }
 
     /**
      * Converts from a String to a LocalClass
      * i.e. "class C{ int a, b; }"
-     * @param code the code that represents a local class
+     * @param proto the code that represents a local class
      * @return the AST implementation
      */
-    public static $stmt<LocalClassDeclarationStmt> localClass( String... code ) {
-        return new $stmt( Stmt.localClass( code));
+    public static $stmt<LocalClassDeclarationStmt> localClass( String... proto ) {
+        return new $stmt( Stmt.localClass( proto));
     }
 
-    /** i.e. "return VALUE;" */
-    public static $stmt<ReturnStmt> returnStmt( String... code ) {
-        return new $stmt( Stmt.returnStmt(code));
+    /** 
+     * i.e."return VALUE;" 
+     * @param proto
+     * @return 
+     */
+    public static $stmt<ReturnStmt> returnStmt( String... proto ) {
+        return new $stmt( Stmt.returnStmt(proto));
     }
 
     /**
-     *
-     * case 1: return 1;
-     *
-     * case 2: case 3: System.out.println(23); break;
-     *
-     * @param code
-     * @return
-
-    public static $stmt<SwitchEntryStmt> switchCaseStmt(String... code ) {
-        return new $stmt( Stmt.switchCaseStmt(code));
-    }
-    */
-
-    public static $stmt<SwitchStmt> switchStmt( String... code ) {
-        return new $stmt( Stmt.switchStmt(code));
+     * 
+     * @param proto
+     * @return 
+     */
+    public static $stmt<SwitchStmt> switchStmt( String... proto ) {
+        return new $stmt( Stmt.switchStmt(proto));
     }
 
-    public static $stmt<SynchronizedStmt> synchronizedStmt( String... code ) {
-        return new $stmt( Stmt.synchronizedStmt(code));
+    /**
+     * 
+     * @param proto
+     * @return 
+     */
+    public static $stmt<SynchronizedStmt> synchronizedStmt( String... proto ) {
+        return new $stmt( Stmt.synchronizedStmt(proto));
     }
 
-    public static $stmt<ThrowStmt> throwStmt( String... code ) {
-        return new $stmt( Stmt.throwStmt(code));
+    /**
+     * 
+     * @param proto
+     * @return 
+     */
+    public static $stmt<ThrowStmt> throwStmt( String... proto ) {
+        return new $stmt( Stmt.throwStmt(proto));
     }
 
-    /** i.e. "try{ clazz.getMethod("fieldName"); }" */
-    public static $stmt<TryStmt> tryStmt( String... code ) {
-        return new $stmt( Stmt.tryStmt(code));
+    /** 
+     * i.e."try{ clazz.getMethod("fieldName"); }" 
+     * @param proto
+     * @return 
+     */
+    public static $stmt<TryStmt> tryStmt( String... proto ) {
+        return new $stmt( Stmt.tryStmt(proto));
     }
 
-    /** i.e. "while(i< 1) { ... }"*/
-    public static $stmt<WhileStmt> whileStmt( String... code ) {
-        return new $stmt( Stmt.whileStmt(code));
+    /** 
+     * i.e."while(i< 1) { ...}"
+     * @param proto
+     * @return 
+     */
+    public static $stmt<WhileStmt> whileStmt( String... proto ) {
+        return new $stmt( Stmt.whileStmt(proto));
     }
 
     /**
@@ -326,6 +478,11 @@ public final class $stmt<T extends Statement>
         this.stencil = Stencil.of( st.toString(NO_COMMENTS) );
     }
 
+    /**
+     * 
+     * @param constraint
+     * @return 
+     */
     public $stmt constraint( Predicate<T> constraint){
         this.constraint = constraint;
         return this;
@@ -350,6 +507,12 @@ public final class $stmt<T extends Statement>
         return this;
     }
 
+    /**
+     * 
+     * @param expr
+     * @param $name
+     * @return 
+     */
     public $stmt $(Expression expr, String $name ){
         String exprString = expr.toString();
         return $(exprString, $name);
@@ -371,11 +534,16 @@ public final class $stmt<T extends Statement>
         return (T)Stmt.of( stencil.construct( Tokens.of(keyValues)));
     }
 
-    public T construct( _model._node model ){
+    /**
+     * 
+     * @param _n
+     * @return 
+     */
+    public T construct( _node _n ){
         if( this.commentStencil != null ){
-            return (T)Stmt.of( Stencil.of(commentStencil, stencil).construct(model.componentize()) );
+            return (T)Stmt.of(Stencil.of(commentStencil, stencil).construct(_n.componentize()) );
         }
-        return (T)$stmt.this.construct(model.componentize());
+        return (T)$stmt.this.construct(_n.componentize());
     }
 
     @Override
@@ -402,10 +570,20 @@ public final class $stmt<T extends Statement>
         return (T)Stmt.of(stencil.construct( t, tokens ));
     }
 
+    /**
+     * 
+     * @param stmt
+     * @return 
+     */
     public boolean matches( String...stmt ){
         return matches( Stmt.of(stmt));
     }
 
+    /**
+     * 
+     * @param statement
+     * @return 
+     */
     public boolean matches( Statement statement ){
         return deconstruct(statement) != null;
     }
@@ -460,6 +638,12 @@ public final class $stmt<T extends Statement>
         return assign$( translator, Tokens.of( keyValues ) );
     }
 
+    /**
+     * 
+     * @param translator
+     * @param kvs
+     * @return 
+     */
     public $stmt assign$( Translator translator, Tokens kvs ) {
         if( this.commentStencil != null ){
             this.commentStencil = this.commentStencil.assign$(translator, kvs);
@@ -470,10 +654,15 @@ public final class $stmt<T extends Statement>
         return this;
     }
 
-    public Select<T> select( Statement st ){
-        Tokens ts = deconstruct( st );
+    /**
+     * 
+     * @param astStmt
+     * @return 
+     */
+    public Select<T> select( Statement astStmt ){
+        Tokens ts = deconstruct(astStmt );
         if( ts != null ){
-            return new Select( st, ts );
+            return new Select( astStmt, ts );
         }
         return null;
     }
@@ -481,78 +670,91 @@ public final class $stmt<T extends Statement>
     /**
      * Deconstruct the statement into tokens, or return null if the statement doesnt match
      *
-     *
-     * @param statement the statement to partsMap
+     * @param astStmt the statement to partsMap
      * @return Tokens from the stencil, or null if the statement doesnt match
      */
-    public Tokens deconstruct( Statement statement ){
+    public Tokens deconstruct( Statement astStmt ){
         
-        //System.out.println("Here");
-        if( statementClass.isAssignableFrom(statement.getClass())){
-            if( ! constraint.test((T) statement)){
+        if( statementClass.isAssignableFrom(astStmt.getClass())){
+            if( ! constraint.test((T) astStmt)){
                 return null;
             }
-            //System.out.println("Same stmt");
             if( !this.stencil.getTextBlanks().hasBlanks()){ //if it's a static template
-                //System.out.println("Static template");
-                //System.out.println( "testing "+statement+" against "+stencil.getTextBlanks().getFixedText());
-                if( statement.getComment().isPresent() ){ //removeIn any comments before checking
-                    //System.out.println("Static With Comments");
-                    Tokens tks = stencil.deconstruct( statement.toString());
+                if( astStmt.getComment().isPresent() ){ //removeIn any comments before checking                    
+                    Tokens tks = stencil.deconstruct(astStmt.toString());
                     if( tks != null ){
                         return tks;
                     }
                     //if the statement HAS a comment and the template does not
-                    Statement cpy = statement.clone();
+                    Statement cpy = astStmt.clone();
                     cpy.removeComment();
-                    //System.out.println( "testing "+cpy+" against "+stencil.getTextBlanks().getFixedText());
                     if( cpy.toString().trim().equals(stencil.getTextBlanks().getFixedText().trim())){
                         return new Tokens();
                     }
-                }else if( statement.toString().equals(stencil.getTextBlanks().getFixedText())){
+                }else if( astStmt.toString().equals(stencil.getTextBlanks().getFixedText())){
                     return new Tokens();
                 }
                 return null;
             }
-            //System.out.println( "correct TYPE");
-            if( !statement.getComment().isPresent() ) {
-                //System.out.println( "checking >>>"+ statement.toString()+"<<");
-                //System.out.println( "with     >>>"+ stencil.toString() +"<<");
-                return stencil.deconstruct(statement.toString().trim());
+            if( !astStmt.getComment().isPresent() ) {
+                return stencil.deconstruct(astStmt.toString().trim());
             } else{
-                Tokens ts = stencil.deconstruct(statement.toString());
+                Tokens ts = stencil.deconstruct(astStmt.toString());
                 if( ts != null ){
                     return ts;
                 }
-                Statement cpy = statement.clone();
+                Statement cpy = astStmt.clone();
                 cpy.removeComment();
-                //System.out.println( "testing "+cpy+" against "+stencil.getTextBlanks().getFixedText());
                 ts = stencil.deconstruct(cpy.toString().trim());
                 return ts;
             }
-            //System.out.println( "got "+ ts +"");
-            //return ts;
         }
         return null;
     }
 
     @Override
-    public List<T> listIn(Node n){
+    public List<T> listIn(Node astNode){
         List<T>sts = new ArrayList<>();
-        n.walk( this.statementClass,
-                st -> {
-                    Select s = select( (Statement)st);
-                    if( s != null ){
-                        sts.add( (T)s.statement );
-                    }
-                });
+        astNode.walk( this.statementClass,
+            st -> {
+                Select s = select( (Statement)st);
+                if( s != null ){
+                    sts.add( (T)s.statement );
+                }
+            });
         return sts;
     }
 
+    /**
+     * Returns the first Statement that matches the 
+     * @param _n
+     * @return 
+     */
+    public T firstIn( _node _n ){
+        Optional<T> f = _n.ast().findFirst(this.statementClass, s -> this.matches(s) );         
+        if( f.isPresent()){
+            return f.get();
+        }
+        return null;
+    }
+
+    /**
+     * Returns the first Statement that matches the 
+     * @param astNode the 
+     * @return 
+     */
+    public T firstIn( Node astNode ){
+        Optional<T> f = astNode.findFirst(this.statementClass, s -> this.matches(s) );         
+        if( f.isPresent()){
+            return f.get();
+        }
+        return null;
+    }    
+    
     @Override
-    public List<T> listIn(_model._node _le ){
+    public List<T> listIn(_node _n ){
         List<T>sts = new ArrayList<>();
-        Walk.in( _le, this.statementClass, st->{
+        Walk.in(_n, this.statementClass, st->{
             Select s = select( st);
             if (s != null) {
                 sts.add((T) s.statement);
@@ -562,51 +764,65 @@ public final class $stmt<T extends Statement>
     }
 
     @Override
-    public <N extends Node> N forIn(N n, Consumer<T> statementActionFn){
-        n.walk(this.statementClass, e-> {
+    public <N extends Node> N forIn(N astNode, Consumer<T> statementActionFn){
+        astNode.walk(this.statementClass, e-> {
             Tokens tokens = deconstruct( e );
             if( tokens != null ){
                 statementActionFn.accept( e);
             }
         });
-        return n;
+        return astNode;
     }
 
     @Override
-    public <M extends _model._node> M forIn(M _le, Consumer<T> statementActionFn){
-        Walk.in( _le, this.statementClass, e->{
+    public <N extends _node> N forIn(N _n, Consumer<T> statementActionFn){
+        Walk.in(_n, this.statementClass, e->{
             Tokens tokens = deconstruct( e );
             if( tokens != null ){
                 statementActionFn.accept( (T)e);
             }
         });
-        return _le;
+        return _n;
     }
 
-    public <N extends Node> N forSelectedIn(N n, Consumer<Select<T>> selectedActionFn){
-        n.walk(this.statementClass, e-> {
+    /**
+     * 
+     * @param <N>
+     * @param astNode
+     * @param selectedActionFn
+     * @return 
+     */
+    public <N extends Node> N forSelectedIn(N astNode, Consumer<Select<T>> selectedActionFn){
+        astNode.walk(this.statementClass, e-> {
             Select<T> sel = select( e );
             if( sel != null ){
                 selectedActionFn.accept( sel );
             }
         });
-        return n;
+        return astNode;
     }
 
-    public <M extends _model._node> M forSelectedIn(M _le, Consumer<Select<T>> selectedActionFn){
-        Walk.in( _le, this.statementClass, e->{
+    /**
+     * 
+     * @param <N>
+     * @param _n
+     * @param selectedActionFn
+     * @return 
+     */
+    public <N extends _node> N forSelectedIn(N _n, Consumer<Select<T>> selectedActionFn){
+        Walk.in(_n, this.statementClass, e->{
             Select<T> sel = select( e );
             if( sel != null ){
                 selectedActionFn.accept( sel );
             }
         });
-        return _le;
+        return _n;
     }
 
     @Override
-    public List<Select<T>> listSelectedIn(Node n ){
+    public List<Select<T>> listSelectedIn(Node astNode ){
         List<Select<T>>sts = new ArrayList<>();
-        n.walk(this.statementClass, st-> {
+        astNode.walk(this.statementClass, st-> {
             Tokens tokens = deconstruct( st );
             if( tokens != null ){
                 sts.add( new Select( (T)st, tokens) );
@@ -620,9 +836,9 @@ public final class $stmt<T extends Statement>
             .setPrintComments(false).setPrintJavadoc(false);
 
     @Override
-    public List<Select<T>> listSelectedIn(_model._node _t ){
+    public List<Select<T>> listSelectedIn(_node _n ){
         List<Select<T>>sts = new ArrayList<>();
-        Walk.in( _t, this.statementClass, st->{
+        Walk.in(_n, this.statementClass, st->{
             Tokens tokens = deconstruct(st);
             if (tokens != null) {
                 sts.add(new Select(st, tokens));
@@ -632,29 +848,43 @@ public final class $stmt<T extends Statement>
     }
 
     @Override
-    public <T extends _model._node> T removeIn(T _e ){
-        this.listSelectedIn(_e).forEach(s-> s.statement.removeForced() );
-        return _e;
+    public <N extends _node> N removeIn(N _n ){
+        this.listSelectedIn(_n).forEach(s-> s.statement.removeForced() );
+        return _n;
     }
 
     @Override
-    public <N extends Node> N removeIn(N node ){
-        this.listSelectedIn(node).forEach(s-> s.statement.removeForced() );
-        return node;
+    public <N extends Node> N removeIn(N astNode ){
+        this.listSelectedIn(astNode).forEach(s-> s.statement.removeForced() );
+        return astNode;
     }
 
-    public <T extends _model._node> T replaceIn(T _le, $stmt $repl ){
+    /**
+     * 
+     * @param <N>
+     * @param _n
+     * @param $repl
+     * @return 
+     */
+    public <N extends _node> N replaceIn(N _n, $stmt $repl ){
         $snip $sn = new $snip($repl);
-        return replaceIn(_le, $sn);
+        return replaceIn(_n, $sn);
     }
 
-    public <T extends _model._node> T replaceIn(T _le, $snip $repl ){
+    /**
+     * 
+     * @param <N>
+     * @param _n
+     * @param $protoReplacement
+     * @return 
+     */
+    public <N extends _node> N replaceIn(N _n, $snip $protoReplacement ){
         AtomicInteger ai = new AtomicInteger(0);
-        Walk.in( _le, this.statementClass, st->{
+        Walk.in(_n, this.statementClass, st->{
             $stmt.Select sel = select( st );
             if( sel != null ){
                 //construct the replacement snippet
-                List<Statement> replacements = $repl.construct( sel.tokens );
+                List<Statement> replacements = $protoReplacement.construct( sel.tokens );
 
                 //Statement firstStmt = sel.statements.get(0);
                 //Node par = firstStmt.getParentNode().get();
@@ -677,17 +907,17 @@ public final class $stmt<T extends Statement>
                 //System.out.println("PAR AFTER Remove "+ par );
             }
         });
-        if( _le instanceof _body._hasBody){
+        if( _n instanceof _body._hasBody){
             for(int i=0;i< ai.get(); i++){
-                ((_body._hasBody)_le).flattenLabel("$replacement$");
+                ((_body._hasBody)_n).flattenLabel("$replacement$");
             }
-        } else if( _le instanceof _type ){
-            ((_type)_le).flattenLabel("$replacement$");
+        } else if( _n instanceof _type ){
+            ((_type)_n).flattenLabel("$replacement$");
             for(int i=0;i< ai.get(); i++){
-                ((_type)_le).flattenLabel("$replacement$");
+                ((_type)_n).flattenLabel("$replacement$");
             }
         }
-        return (T)_le;
+        return (N)_n;
     }
     @Override
     public String toString(){

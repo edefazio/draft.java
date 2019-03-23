@@ -14,6 +14,7 @@ import draft.java._typeRef;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
 
@@ -25,117 +26,153 @@ import java.util.function.Predicate;
 public final class $typeRef<T extends Type>
         implements Template<T>, $query<T>{
 
-     /**
+    /**
      * 
      * @param <N>
-     * @param rootNode
-     * @param target
+     * @param _n
+     * @param proto
      * @return 
      */
-    public static final <N extends _node> List<_typeRef> list( N rootNode, String target ){
-        return $typeRef.of(target).listIn(rootNode);
+    public static final <N extends _node> List<_typeRef> list( N _n, String proto ){
+        return $typeRef.of(proto).listIn(_n);
     }
     
     /**
      * 
      * @param <N>
-     * @param rootNode
-     * @param target
+     * @param _n
+     * @param proto
      * @return 
      */
-    public static final <N extends _node> List<_typeRef> list( N rootNode, Class target ){
-        return $typeRef.of(target).listIn(rootNode);
+    public static final <N extends _node> List<_typeRef> list( N _n, Class proto ){
+        return $typeRef.of(proto).listIn(_n);
     }
         
     /**
      * 
      * @param <N>
-     * @param rootNode
-     * @param target
+     * @param _n
+     * @param proto
      * @return 
      */
-    public static final <N extends _node> List<_typeRef> list( N rootNode, _typeRef target ){
-        return $typeRef.of(target).listIn(rootNode);
-    }
-    
-    
-    /**
-     * 
-     * @param <N>
-     * @param rootNode
-     * @param source
-     * @param target
-     * @return 
-     */
-    public static final <N extends _node> N replace(N rootNode, _typeRef source, _typeRef target){
-        return (N)$typeRef.of(source)
-            .replaceIn(rootNode, $typeRef.of(target));
-    }
+    public static final <N extends _node> List<_typeRef> list( N _n, _typeRef proto ){
+        return $typeRef.of(proto).listIn(_n);
+    }    
     
     /**
      * 
      * @param <N>
-     * @param rootNode
-     * @param source
-     * @param target
+     * @param _n
+     * @param protoSource
+     * @param protoTarget
      * @return 
      */
-    public static final <N extends _node> N replace(N rootNode, Type source, Type target){
-        return (N)$typeRef.of(source)
-            .replaceIn(rootNode, $typeRef.of(target));
+    public static final <N extends _node> N replace(N _n, _typeRef protoSource, _typeRef protoTarget){
+        return (N)$typeRef.of(protoSource)
+            .replaceIn(_n, $typeRef.of(protoTarget));
+    }
+    
+    /**
+     * 
+     * @param <N>
+     * @param _n
+     * @param protoSource
+     * @param protoTarget
+     * @return 
+     */
+    public static final <N extends _node> N replace(N _n, Type protoSource, Type protoTarget){
+        return (N)$typeRef.of(protoSource)
+            .replaceIn(_n, $typeRef.of(protoTarget));
     }
 
     /**
      * 
      * @param <N>
-     * @param rootNode
-     * @param source
-     * @param target
+     * @param _n
+     * @param protoSource
+     * @param protoTarget
      * @return 
      */
-    public static final <N extends _node> N replace(N rootNode, String source, String target){
-        return (N)$typeRef.of(source)
-            .replaceIn(rootNode, $typeRef.of(target));
+    public static final <N extends _node> N replace(N _n, String protoSource, String protoTarget){
+        return (N)$typeRef.of(protoSource)
+            .replaceIn(_n, $typeRef.of(protoTarget));
     }
     
     /**
      * 
      * @param <N>
-     * @param rootNode
+     * @param _n
      * @param sourceType
      * @param targetType
      * @return 
      */
-    public static final <N extends _node> N replace( N rootNode, Class sourceType, Class targetType){
-        
+    public static final <N extends _node> N replace( N _n, Class sourceType, Class targetType){        
         return (N)$typeRef.of(sourceType)
-            .replaceIn(rootNode, $typeRef.of(targetType));
+            .replaceIn(_n, $typeRef.of(targetType));
     }
     
-    public static $typeRef of(String code ){
-        return new $typeRef(Ast.typeRef(code));
+    /**
+     * 
+     * @param proto
+     * @return 
+     */
+    public static $typeRef of(String proto ){
+        return new $typeRef(Ast.typeRef(proto));
     }
 
-    public static $typeRef of(String code, Predicate<_typeRef> constraint){
-        return new $typeRef(Ast.typeRef(code)).constraint(constraint);
+    /**
+     * 
+     * @param proto
+     * @param constraint
+     * @return 
+     */
+    public static $typeRef of(String proto, Predicate<_typeRef> constraint){
+        return new $typeRef(Ast.typeRef(proto)).constraint(constraint);
     }
     
+    /**
+     * 
+     * @param typeClass
+     * @return 
+     */
     public static $typeRef of( Class typeClass ){
         return of( Ast.typeRef(typeClass) );
     }
 
-    public static $typeRef of(Type t ){
-        return new $typeRef( t );
+    /**
+     * 
+     * @param astType
+     * @return 
+     */
+    public static $typeRef of(Type astType ){
+        return new $typeRef( astType );
     }
 
-    public static $typeRef of(Type t, Predicate<_typeRef> constraint){
-        return new $typeRef( t ).constraint(constraint);
+    /**
+     * 
+     * @param astType
+     * @param constraint
+     * @return 
+     */
+    public static $typeRef of(Type astType, Predicate<_typeRef> constraint){
+        return new $typeRef( astType ).constraint(constraint);
     }
     
-    public static $typeRef of( _typeRef t){
-        return new $typeRef(t.ast());
+    /**
+     * 
+     * @param _protoType
+     * @return 
+     */
+    public static $typeRef of( _typeRef _protoType){
+        return new $typeRef(_protoType.ast());
     }
     
+    /**
+     * 
+     * @param t
+     * @param constraint
+     * @return 
+     */
     public static $typeRef of( _typeRef t, Predicate<_typeRef> constraint){
         return new $typeRef(t.ast()).constraint(constraint);
     }
@@ -152,18 +189,32 @@ public final class $typeRef<T extends Type>
 
     public Predicate<T> constraint;
     public Class<T> typeClass;
-    public Stencil stencil;
+    public Stencil typeStencil;
 
-    public $typeRef(T ex){
-        this.typeClass = (Class<T>)ex.getClass();
-        this.stencil = Stencil.of( ex.toString() );
+    /**
+     * 
+     * @param astProtoType 
+     */
+    public $typeRef(T astProtoType){
+        this.typeClass = (Class<T>)astProtoType.getClass();
+        this.typeStencil = Stencil.of(astProtoType.toString() );
     }
 
+    /**
+     * 
+     * @param typeClass
+     * @param stencil 
+     */
     public $typeRef(Class<T>typeClass, String stencil ){
         this.typeClass = typeClass;
-        this.stencil = Stencil.of(stencil);
+        this.typeStencil = Stencil.of(stencil);
     }
 
+    /**
+     * 
+     * @param constraint
+     * @return 
+     */
     public $typeRef constraint(Predicate<T> constraint){
         this.constraint = constraint;
         return this;
@@ -171,18 +222,24 @@ public final class $typeRef<T extends Type>
     
     @Override
     public T fill(Object...values){
-        String str = stencil.fill(Translator.DEFAULT_TRANSLATOR, values);
+        String str = typeStencil.fill(Translator.DEFAULT_TRANSLATOR, values);
         return (T)Ast.typeRef( str );
     }
 
     @Override
     public $typeRef $(String target, String $name ) {
-        this.stencil = this.stencil.$(target, $name);
+        this.typeStencil = this.typeStencil.$(target, $name);
         return this;
     }
 
+    /**
+     * 
+     * @param e
+     * @param $name
+     * @return 
+     */
     public $typeRef $(Expression e, String $name){
-        this.stencil = this.stencil.$(e.toString(), $name);
+        this.typeStencil = this.typeStencil.$(e.toString(), $name);
         return this;
     }
 
@@ -220,86 +277,137 @@ public final class $typeRef<T extends Type>
         return assign$( translator, Tokens.of( keyValues ) );
     }
 
+    /**
+     * 
+     * @param translator
+     * @param kvs
+     * @return 
+     */
     public $typeRef assign$( Translator translator, Tokens kvs ) {
-        this.stencil.assign$(translator,kvs);
+        this.typeStencil.assign$(translator,kvs);
         return this;
     }
 
-
     @Override
     public T fill(Translator t, Object...values){
-        return (T)Ast.typeRef( stencil.fill(t, values));
+        return (T)Ast.typeRef(typeStencil.fill(t, values));
     }
 
     @Override
     public T construct( Object...keyValues ){
-        return (T)Ast.typeRef( stencil.construct( Tokens.of(keyValues)));
+        return (T)Ast.typeRef(typeStencil.construct( Tokens.of(keyValues)));
     }
 
-    public T construct( _model._node model ){
-        return (T)$typeRef.this.construct(model.componentize());
+    /**
+     * 
+     * @param _n
+     * @return 
+     */
+    public T construct( _node _n ){
+        return (T)$typeRef.this.construct(_n.componentize());
     }
 
     @Override
     public T construct( Translator t, Object...keyValues ){
-        return (T)Ast.typeRef( stencil.construct( t, Tokens.of(keyValues) ));
+        return (T)Ast.typeRef(typeStencil.construct( t, Tokens.of(keyValues) ));
     }
 
     @Override
     public T construct( Map<String,Object> tokens ){
-        return (T)Ast.typeRef(stencil.construct( Translator.DEFAULT_TRANSLATOR, tokens ));
+        return (T)Ast.typeRef(typeStencil.construct( Translator.DEFAULT_TRANSLATOR, tokens ));
     }
 
     @Override
     public T construct( Translator t, Map<String,Object> tokens ){
-        return (T)Ast.typeRef(stencil.construct( t, tokens ));
+        return (T)Ast.typeRef(typeStencil.construct( t, tokens ));
     }
 
+    /**
+     * 
+     * @param type
+     * @return 
+     */
     public boolean matches( String type ){
         return deconstruct( Ast.typeRef(type)) != null;
     }
 
-    public boolean matches( Type type ){
-        return deconstruct(type) != null;
+    /**
+     * 
+     * @param astType
+     * @return 
+     */
+    public boolean matches( Type astType ){
+        return deconstruct(astType) != null;
     }
 
     @Override
     public List<String> list$(){
-        return this.stencil.list$();
+        return this.typeStencil.list$();
     }
 
     @Override
     public List<String> list$Normalized(){
-        return this.stencil.list$Normalized();
+        return this.typeStencil.list$Normalized();
     }
 
     /**
      * Deconstruct the expression into tokens, or return null if the statement doesnt match
      *
-     * @param t TYPE instance
+     * @param astType TYPE instance
      * @return Tokens from the stencil, or null if the expression doesnt match
      */
-    public Tokens deconstruct( Type t ){
-        if( typeClass.isAssignableFrom(t.getClass())){
-            if( this.constraint.test( (T)t ) ) {
-                return stencil.deconstruct( t.toString() );
+    public Tokens deconstruct( Type astType ){
+        if( typeClass.isAssignableFrom(astType.getClass())){
+            if( this.constraint.test((T)astType ) ) {
+                return typeStencil.deconstruct(astType.toString() );
             }
         }
         return null;
     }
 
-    public Select select( Type t){
-        Tokens ts = this.deconstruct(t);
+    /**
+     * 
+     * @param astType
+     * @return 
+     */
+    public Select select( Type astType){
+        Tokens ts = this.deconstruct(astType);
         if( ts != null){
-            return new Select( t, ts );
+            return new Select( astType, ts );
+        }
+        return null;
+    }
+    
+    /**
+     * Returns the first Type that matches the pattern and constraint
+     * @param _n the _java node
+     * @return  the first Type that matches (or null if none found)
+     */
+    public T firstIn( _node _n ){
+        Optional<T> f = _n.ast().findFirst(this.typeClass, s -> this.matches(s) );         
+        if( f.isPresent()){
+            return f.get();
+        }
+        return null;
+    }
+
+    /**
+     * Returns the first Type that matches the pattern and constraint
+     * @param astNode the node to look through
+     * @return  the first Type that matches (or null if none found)
+     */
+    public T firstIn( Node astNode ){
+        Optional<T> f = astNode.findFirst(this.typeClass, s -> this.matches(s) );         
+        if( f.isPresent()){
+            return f.get();
         }
         return null;
     }
 
     @Override
-    public List<Select<T>> listSelectedIn(Node n ){
+    public List<Select<T>> listSelectedIn(Node astNode ){
         List<Select<T>>sts = new ArrayList<>();
-        n.walk(this.typeClass, e-> {
+        astNode.walk(this.typeClass, e-> {
             Select s = select( e );
             if( s != null ){
                 sts.add( s);
@@ -309,39 +417,53 @@ public final class $typeRef<T extends Type>
     }
 
     @Override
-    public List<Select<T>> listSelectedIn(_model._node _t ){
-        return listSelectedIn( _t.ast() );
+    public List<Select<T>> listSelectedIn(_node _n ){
+        return listSelectedIn(_n.ast() );
     }
 
-    public <M extends _model._node> M forSelectedIn(M _le, Consumer<Select> selectConsumer ){
-        Walk.in( _le, this.typeClass, e-> {
+    /**
+     * 
+     * @param <N>
+     * @param _n
+     * @param selectConsumer
+     * @return 
+     */
+    public <N extends _node> N forSelectedIn(N _n, Consumer<Select> selectConsumer ){
+        Walk.in(_n, this.typeClass, e-> {
             Select sel = select( e );
             if( sel != null ){
                 selectConsumer.accept( sel );
             }
         });
-        return _le;
+        return _n;
     }
 
-    public <N extends Node> N forSelectedIn(N n, Consumer<Select> selectConsumer ){
-        n.walk(this.typeClass, e-> {
+    /**
+     * 
+     * @param <N>
+     * @param astNode
+     * @param selectConsumer
+     * @return 
+     */
+    public <N extends Node> N forSelectedIn(N astNode, Consumer<Select> selectConsumer ){
+        astNode.walk(this.typeClass, e-> {
             Select sel = select( e );
             if( sel != null ){
                 selectConsumer.accept( sel );
             }
         });
-        return n;
+        return astNode;
     }
 
     @Override
-    public List<T> listIn(_model._node _t ){
-        return listIn( _t.ast() );
+    public List<T> listIn(_node _n ){
+        return listIn( _n.ast() );
     }
 
     @Override
-    public List<T> listIn(Node rootNode ){
+    public List<T> listIn(Node astNode ){
         List<T> typesList = new ArrayList<>();
-        rootNode.walk(this.typeClass, t->{
+        astNode.walk(this.typeClass, t->{
             if( this.matches(t) ){
                 typesList.add(t);
             }
@@ -349,19 +471,19 @@ public final class $typeRef<T extends Type>
         return typesList;
     }
 
-    public <M extends _model._node> M replaceIn(M _t, Class replacementType){
-        return replaceIn( _t, $typeRef.of(replacementType));
+    public <N extends _node> N replaceIn(N _n, Class replacementType){
+        return replaceIn( _n, $typeRef.of(replacementType));
     }
 
     /**
      * Find and replaceIn
-     * @param _t
-     * @param replacementType
-     * @param <M>
+     * @param _n
+     * @param astReplacementType
+     * @param <N>
      * @return
      */
-    public <M extends _model._node> M replaceIn(M _t, Type replacementType){
-        return replaceIn( _t, $typeRef.of(replacementType));
+    public <N extends _node> N replaceIn(N _n, Type astReplacementType){
+        return replaceIn(_n, $typeRef.of(astReplacementType));
     }
 
     /**
@@ -374,70 +496,70 @@ public final class $typeRef<T extends Type>
      * _c = $typeRef.of("TreeSet<$key$>").replaceIn(_c, $typeRef.of("HashSet<$key$>"));
      * </PRE>
      *
-     * @param _t
+     * @param _n
      * @param $replacementType the template for the replacement TYPE
-     * @param <M>
+     * @param <N>
      * @return
      */
-    public <M extends _model._node> M replaceIn(M _t, $typeRef $replacementType){
-        Walk.in(_t, this.typeClass, e -> {
+    public <N extends _node> N replaceIn(N _n, $typeRef $replacementType){
+        Walk.in(_n, this.typeClass, e -> {
             Tokens tokens = deconstruct( e );
             if( tokens != null ){
                 if( !e.replace($replacementType.construct(tokens))){
-                    throw new DraftException("unable to replaceIn "+ e + " in "+ _t+" with "+$replacementType);
+                    throw new DraftException("unable to replaceIn "+ e + " in "+ _n+" with "+$replacementType);
                 }
             }
         });
-        return _t;
+        return _n;
     }
 
     @Override
-    public <N extends Node> N removeIn(N node ){
-        node.walk(this.typeClass, e -> {
+    public <N extends Node> N removeIn(N astNode ){
+        astNode.walk(this.typeClass, e -> {
             Tokens tokens = deconstruct( e );
             if( tokens != null ){
                 e.removeForced();
             }
         });
-        return node;
+        return astNode;
     }
 
     @Override
-    public <M extends _model._node> M removeIn(M _t ){
-        Walk.in( _t, this.typeClass, e -> {
+    public <N extends _node> N removeIn(N _n ){
+        Walk.in(_n, this.typeClass, e -> {
             Tokens tokens = deconstruct( e );
             if( tokens != null ){
                 e.removeForced();
             }
         });
-        return _t;
+        return _n;
     }
 
     @Override
-    public <N extends Node> N forIn(N n, Consumer<T> expressionActionFn){
-        n.walk(this.typeClass, e-> {
+    public <N extends Node> N forIn(N astNode, Consumer<T> expressionActionFn){
+        astNode.walk(this.typeClass, e-> {
             Tokens tokens = deconstruct( e );
             if( tokens != null ){
                 expressionActionFn.accept( e);
             }
         });
-        return n;
+        return astNode;
     }
 
     @Override
-    public <M extends _model._node> M forIn(M _t, Consumer<T> expressionActionFn){
-        Walk.in( _t, this.typeClass, e -> {
+    public <N extends _node> N forIn(N _n, Consumer<T> expressionActionFn){
+        Walk.in(_n, this.typeClass, e -> {
             Tokens tokens = deconstruct( e );
             if( tokens != null ){
                 expressionActionFn.accept( e);
             }
         });
-        return _t;
+        return _n;
     }
 
     @Override
     public String toString() {
-        return "(" + this.typeClass.getSimpleName() + ") : \"" + this.stencil + "\"";
+        return "(" + this.typeClass.getSimpleName() + ") : \"" + this.typeStencil + "\"";
     }
 
     public static class Select<T extends Type> implements $query.selected {
@@ -451,9 +573,9 @@ public final class $typeRef<T extends Type>
         @Override
         public String toString(){
             return "$typeRef.Select {"+ System.lineSeparator()+
-                    Text.indent( type.toString() )+ System.lineSeparator()+
-                    Text.indent( "TOKENS : " + tokens) + System.lineSeparator()+
-                    "}";
+                Text.indent( type.toString() )+ System.lineSeparator()+
+                Text.indent( "TOKENS : " + tokens) + System.lineSeparator()+
+                "}";
         }
     }
 }
