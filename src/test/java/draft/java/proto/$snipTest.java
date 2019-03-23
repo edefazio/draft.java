@@ -1,7 +1,5 @@
 package draft.java.proto;
 
-import draft.java.proto.$snip;
-import draft.java.proto.$stmt;
 import com.github.javaparser.ast.stmt.AssertStmt;
 import com.github.javaparser.ast.stmt.BlockStmt;
 import com.github.javaparser.ast.stmt.ExpressionStmt;
@@ -9,9 +7,7 @@ import com.github.javaparser.ast.stmt.Statement;
 import draft.Tokens;
 import draft.java.Ast;
 import draft.java.Stmt;
-import draft.java._body;
 import draft.java._class;
-import draft.java._method;
 import junit.framework.TestCase;
 
 import java.util.*;
