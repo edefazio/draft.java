@@ -31,9 +31,21 @@ public final class $constructor
     /** Additional matching constraint on the constructor */
     public Predicate<_constructor> constraint = t -> true;
     
+    /**
+     * 
+     */
     public Stencil signatureStencil;
+    
+    /**
+     * 
+     */
     public $snip $body;
 
+    /**
+     * 
+     * @param _c
+     * @return 
+     */
     public static $constructor of(_constructor _c ){
         return new $constructor( _c, t->true);
     }
@@ -100,12 +112,16 @@ public final class $constructor
         }
     }
     
+    /**
+     * 
+     * @param constraint
+     * @return 
+     */
     public $constructor constraint( Predicate<_constructor> constraint ){
         this.constraint = constraint;
         return this;
     }
     
-
     @Override
     public List<String> list$Normalized(){
         List<String>normalized$ = new ArrayList<>();
@@ -169,6 +185,12 @@ public final class $constructor
         return assign$( translator, Tokens.of( keyValues ) );
     }
 
+    /**
+     * 
+     * @param translator
+     * @param kvs
+     * @return 
+     */
     public $constructor assign$( Translator translator, Tokens kvs ) {
         if(this.javadocStencil != null ){
             this.javadocStencil = this.javadocStencil.assign$(translator,kvs);
@@ -199,6 +221,11 @@ public final class $constructor
         return $constructor.this.construct( Translator.DEFAULT_TRANSLATOR, keyValues );
     }
 
+    /**
+     * 
+     * @param model
+     * @return 
+     */
     public _constructor construct( _node model ){
         return $constructor.this.construct(model.componentize());
     }
@@ -241,28 +268,60 @@ public final class $constructor
         return this;
     }
 
+    /**
+     * 
+     * @param expr
+     * @param $name
+     * @return 
+     */
     public $constructor $(Expression expr, String $name ){
         String exprString = expr.toString();
         return $(exprString, $name);
     }
 
+    /**
+     * 
+     * @param st
+     * @param $name
+     * @return 
+     */
     public $constructor $(Statement st, String $name ){
         String exprString = st.toString();
         return $(exprString, $name);
     }
 
+    /**
+     * 
+     * @param _m
+     * @return 
+     */
     public boolean matches( _constructor _m ){
         return deconstruct( _m.ast() ) != null;
     }
 
-    public boolean matches(ConstructorDeclaration astM ){
-        return deconstruct( astM ) != null;
+    /**
+     * 
+     * @param astCtor
+     * @return 
+     */
+    public boolean matches(ConstructorDeclaration astCtor ){
+        return deconstruct(astCtor ) != null;
     }
 
+    /**
+     * 
+     * @param _c
+     * @return 
+     */
     public Select select( _constructor _c){
         return select( _c.ast());
     }
 
+    /**
+     * 
+     * @param astCtor
+     * @return 
+     */
     public Select select( ConstructorDeclaration astCtor){
         Tokens ts = deconstruct( astCtor );
         if( ts != null ){
@@ -307,12 +366,21 @@ public final class $constructor
         return this.signatureStencil.toString()+System.lineSeparator()+ this.$body.toString();
     }
     
-    
+    /**
+     * 
+     * @param _ctor
+     * @return 
+     */
     public Tokens deconstruct( _constructor _ctor ){
         return deconstruct( _ctor.ast() );                
     }
     
-    // NOTE we dont check the Javadoc for deconstruct
+    /**
+     * 
+     * NOTE we dont check the Javadoc for deconstruct
+     * @param astTarget
+     * @return 
+     */
     public Tokens deconstruct( ConstructorDeclaration astTarget ){
         if( !this.constraint.test( _constructor.of(astTarget))){
             return null;
@@ -424,6 +492,13 @@ public final class $constructor
         return node;
     }
 
+    /**
+     * 
+     * @param <N>
+     * @param n
+     * @param selectedActionFn
+     * @return 
+     */
     public <N extends Node> N forSelectedIn(N n, Consumer<Select> selectedActionFn ){
         n.walk( ConstructorDeclaration.class, c-> {
             Select s = select( c );
@@ -434,6 +509,13 @@ public final class $constructor
         return n;
     }
 
+    /**
+     * 
+     * @param <M>
+     * @param _t
+     * @param selectedActionFn
+     * @return 
+     */
     public <M extends _node> M forSelectedIn(M _t, Consumer<Select> selectedActionFn ){
         Walk.in(_t, _constructor.class, c-> {
             Select s = select( c );

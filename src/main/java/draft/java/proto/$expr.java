@@ -16,119 +16,145 @@ import java.util.function.Predicate;
  * @param <T> the underlying Expression TYPE
  */
 public final class $expr <T extends Expression>
-        implements Template<T>, $query<T>  {
+        implements Template<T>, $query<T> {
     
     /**
      * find the first occurring instance of a matching expression within the rootNode
      * @param <N>
      * @param <E>
-     * @param rootNode
+     * @param _n
      * @param protoExpr
      * @return the first matching expression or null if none found
      */
-    public static final <N extends _node, E extends Expression> E first( N rootNode, String protoExpr ){
-        return (E) $expr.of(protoExpr).firstIn(rootNode);
+    public static final <N extends _node, E extends Expression> E first( N _n, String protoExpr ){
+        return (E) $expr.of(protoExpr).firstIn(_n);
     }
     
     /**
      * 
      * @param <N>
      * @param <E>
-     * @param rootNode
+     * @param _n
      * @param astProtoExpr
      * @return 
      */
-    public static final <N extends _node, E extends Expression> E first( N rootNode, E astProtoExpr ){
-        return (E)$expr.of(astProtoExpr).firstIn(rootNode);
+    public static final <N extends _node, E extends Expression> E first( N _n, E astProtoExpr ){
+        return (E)$expr.of(astProtoExpr).firstIn(_n);
+    }  
+    
+    /**
+     * find the first occurring instance of a matching expression within the rootNode
+     * @param <N>
+     * @param <E>
+     * @param _n
+     * @param protoExpr
+     * @param constraint
+     * @return the first matching expression or null if none found
+     */
+    public static final <N extends _node, E extends Expression> E first( N _n, String protoExpr, Predicate<E> constraint){
+        return (E) $expr.of(protoExpr, constraint).firstIn(_n);
+    }
+    
+    /**
+     * 
+     * @param <N>
+     * @param <E>
+     * @param _n
+     * @param astProtoExpr
+     * @param constraint
+     * @return 
+     */
+    public static final <N extends _node, E extends Expression> E first( N _n, E astProtoExpr, Predicate<E> constraint){
+        return (E)$expr.of(astProtoExpr, constraint).firstIn(_n);
     }  
     
     /**
      * 
      * @param <N>
      * @param <E>
-     * @param rootNode
+     * @param _n
      * @param protoExpr
      * @return 
      */
-    public static final <N extends _node, E extends Expression> List<E> list( N rootNode, String protoExpr ){
-        return (List<E>)$expr.of(protoExpr).listIn(rootNode);
+    public static final <N extends _node, E extends Expression> List<E> list( N _n, String protoExpr ){
+        return (List<E>)$expr.of(protoExpr).listIn(_n);
     }
     
     /**
      * 
      * @param <N>
      * @param <E>
-     * @param rootNode
+     * @param _n
      * @param protoExpr
      * @param constraint
      * @return 
      */
-    public static final <N extends _node, E extends Expression> List<E> list( N rootNode, String protoExpr, Predicate<E> constraint){
-        return (List<E>)$expr.of(protoExpr, constraint).listIn(rootNode);
+    public static final <N extends _node, E extends Expression> List<E> list( N _n, String protoExpr, Predicate<E> constraint){
+        return (List<E>)$expr.of(protoExpr, constraint).listIn(_n);
     }
     
     /**
      * 
      * @param <N>
      * @param <E>
-     * @param rootNode
+     * @param _n
      * @param astProtoExpr
      * @return 
      */
-    public static final <N extends _node, E extends Expression> List<E> list( N rootNode, E astProtoExpr ){
-        return $expr.of(astProtoExpr).listIn(rootNode);
+    public static final <N extends _node, E extends Expression> List<E> list( N _n, E astProtoExpr ){
+        return $expr.of(astProtoExpr).listIn(_n);
     }    
     
     /**
      * 
      * @param <N>
      * @param <E>
-     * @param rootNode
+     * @param _n
      * @param astProtoExpr
      * @param constraint
      * @return 
      */
-    public static final <N extends _node, E extends Expression> List<E> list( N rootNode, E astProtoExpr, Predicate<E> constraint){
-        return $expr.of(astProtoExpr, constraint).listIn(rootNode);
+    public static final <N extends _node, E extends Expression> List<E> list( N _n, E astProtoExpr, Predicate<E> constraint){
+        return $expr.of(astProtoExpr, constraint).listIn(_n);
     }  
     
     /**
      * 
      * @param <N>
      * @param <E>
-     * @param rootNode
+     * @param _n
      * @param astProtoExpr
      * @return 
      */
-    public static final <N extends _node, E extends Expression> List<E> list( N rootNode, $expr<E> astProtoExpr ){
-        return (List<E>)astProtoExpr.listIn(rootNode);
+    public static final <N extends _node, E extends Expression> List<E> list( N _n, $expr<E> astProtoExpr ){
+        return (List<E>)astProtoExpr.listIn(_n);
     }
     
     /**
      * 
-     * @param <M>
-     * @param rootNode
+     * @param <N>
+     * @param _n
      * @param protoSource
      * @param protoTarget
      * @return 
      */
-    public static final <M extends _node> M replace(M rootNode, Expression protoSource, Expression protoTarget){
-        return (M)$expr.of(protoSource)
-            .replaceIn(rootNode, $expr.of(protoTarget));
+    public static final <N extends _node> N replace(N _n, Expression protoSource, Expression protoTarget){
+        return (N)$expr.of(protoSource)
+            .replaceIn(_n, $expr.of(protoTarget));
     }
     
     /**
      * 
-     * @param <M>
-     * @param rootNode
+     * @param <N>
+     * @param _n
      * @param protoSource
      * @param protoTarget
      * @return 
      */
-    public static final <M extends _node> M replace( M rootNode, String protoSource, String protoTarget){
+    public static final <N extends _node> N replace( N _n, String protoSource, String protoTarget){
         
-        return (M)$expr.of(protoSource)
-            .replaceIn(rootNode, $expr.of(protoTarget));
+        return (N)$expr.of(protoSource)
+            .replaceIn(_n, $expr.of(protoTarget));
     }
     
     /**
@@ -967,8 +993,7 @@ public final class $expr <T extends Expression>
     public static $expr<UnaryExpr> unary( String... proto ) {
         return new $expr( Expr.unary( proto ) );
     }
-
-    
+   
     /** 
      *  i.e."!true"
      * @param proto 
@@ -999,6 +1024,7 @@ public final class $expr <T extends Expression>
     }
     
     public Class<T> expressionClass;
+    
     public Stencil exprPattern;
     
     /**
@@ -1008,16 +1034,30 @@ public final class $expr <T extends Expression>
      */
     public Predicate<T> constraint = (t)->true;
 
-    public $expr(T ex){
-        this.expressionClass = (Class<T>)ex.getClass();
-        this.exprPattern = Stencil.of( ex.toString() );
+    /**
+     * 
+     * @param expressionProto 
+     */
+    public $expr(T expressionProto){
+        this.expressionClass = (Class<T>)expressionProto.getClass();
+        this.exprPattern = Stencil.of(expressionProto.toString() );
     }
 
+    /**
+     * 
+     * @param expressionClass
+     * @param stencil 
+     */
     public $expr(Class<T>expressionClass, String stencil ){
         this.expressionClass = expressionClass;
         this.exprPattern = Stencil.of(stencil);
     }
 
+    /**
+     * 
+     * @param constraint
+     * @return 
+     */
     public $expr constraint( Predicate<T> constraint){
         this.constraint = constraint;
         return this;
@@ -1035,6 +1075,12 @@ public final class $expr <T extends Expression>
         return this;
     }
 
+    /**
+     * 
+     * @param e
+     * @param $name
+     * @return 
+     */
     public $expr<T> $( Expression e, String $name){
         this.exprPattern = this.exprPattern.$(e.toString(), $name);
         return this;
@@ -1074,6 +1120,12 @@ public final class $expr <T extends Expression>
         return assign$( translator, Tokens.of( keyValues ) );
     }
 
+    /**
+     * 
+     * @param translator
+     * @param kvs
+     * @return 
+     */
     public $expr assign$( Translator translator, Tokens kvs ) {
         this.exprPattern = this.exprPattern.assign$(translator,kvs);
         return this;
@@ -1089,9 +1141,13 @@ public final class $expr <T extends Expression>
         return (T)Expr.of(exprPattern.construct( Tokens.of(keyValues)));
     }
 
-
-    public T construct( _node model ){
-        return (T)$expr.this.construct(model.componentize());
+    /**
+     * 
+     * @param _n
+     * @return 
+     */
+    public T construct( _node _n ){
+        return (T)$expr.this.construct(_n.componentize());
     }
 
     @Override
@@ -1109,10 +1165,20 @@ public final class $expr <T extends Expression>
         return (T)Expr.of(exprPattern.construct( t, tokens ));
     }
 
+    /**
+     * 
+     * @param expression
+     * @return 
+     */
     public boolean matches( String...expression ){
         return deconstruct( Expr.of(expression)) != null;
     }
 
+    /**
+     * 
+     * @param expression
+     * @return 
+     */
     public boolean matches( Expression expression ){
         return deconstruct(expression) != null;
     }
@@ -1127,6 +1193,11 @@ public final class $expr <T extends Expression>
         return this.exprPattern.list$Normalized();
     }
 
+    /**
+     * 
+     * @param expression
+     * @return 
+     */
     public Tokens deconstruct( String... expression ){
         return deconstruct( Expr.of(expression) );
     }
@@ -1154,6 +1225,11 @@ public final class $expr <T extends Expression>
         return null;
     }
 
+    /**
+     * 
+     * @param e
+     * @return 
+     */
     public Select select( Expression e){
         Tokens ts = this.deconstruct(e);
         if( ts != null){
@@ -1189,14 +1265,14 @@ public final class $expr <T extends Expression>
     }
     
     @Override
-    public List<T> listIn(_node _t ){
-        return listIn( _t.ast() );
+    public List<T> listIn(_node _n ){
+        return listIn(_n.ast() );
     }
 
     @Override
-    public List<T> listIn(Node rootNode ){
+    public List<T> listIn(Node astNode ){
         List<T> typesList = new ArrayList<>();
-        rootNode.walk(this.expressionClass, t->{
+        astNode.walk(this.expressionClass, t->{
             if( this.matches(t) ){
                 typesList.add(t);
             }
@@ -1205,31 +1281,31 @@ public final class $expr <T extends Expression>
     }
 
     @Override
-    public <N extends Node> N forIn(N n, Consumer<T> expressionActionFn){
-        n.walk(this.expressionClass, e-> {
+    public <N extends Node> N forIn(N astNode, Consumer<T> expressionActionFn){
+        astNode.walk(this.expressionClass, e-> {
             Tokens tokens = deconstruct( e );
             if( tokens != null ){
                 expressionActionFn.accept( e);
             }
         });
-        return n;
+        return astNode;
     }
 
     @Override
-    public <M extends _model._node> M forIn(M _t, Consumer<T> expressionActionFn){
-        Walk.in( _t, this.expressionClass, e -> {
+    public <N extends _node> N forIn(N _n, Consumer<T> expressionActionFn){
+        Walk.in(_n, this.expressionClass, e -> {
             Tokens tokens = deconstruct( e );
             if( tokens != null ){
                 expressionActionFn.accept( e);
             }
         });
-        return _t;
+        return _n;
     }
 
     @Override
-    public List<Select<T>> listSelectedIn(Node n ){
+    public List<Select<T>> listSelectedIn(Node astNode ){
         List<Select<T>>sts = new ArrayList<>();
-        n.walk(this.expressionClass, e-> {
+        astNode.walk(this.expressionClass, e-> {
             Select s = select( e );
             if( s != null ){
                 sts.add( s);
@@ -1239,9 +1315,9 @@ public final class $expr <T extends Expression>
     }
 
     @Override
-    public List<Select<T>> listSelectedIn(_node _t ){
+    public List<Select<T>> listSelectedIn(_node _n ){
         List<Select<T>>sts = new ArrayList<>();
-        Walk.in( _t, this.expressionClass, e -> {
+        Walk.in(_n, this.expressionClass, e -> {
             Select s = select( e );
             if( s != null ){
                 sts.add( s);
@@ -1251,69 +1327,104 @@ public final class $expr <T extends Expression>
     }
 
     @Override
-    public <N extends Node> N removeIn(N node){
-        node.walk( this.expressionClass, e-> {
+    public <N extends Node> N removeIn(N astNode){
+        astNode.walk( this.expressionClass, e-> {
             Select sel = select( e );
             if( sel != null ){
                 sel.expression.removeForced();
             }
         });
-        return node;
+        return astNode;
     }
 
     @Override
-    public <M extends _node> M removeIn(M _model){
-        Walk.in( _model, this.expressionClass, e-> {
+    public <N extends _node> N removeIn(N _n){
+        Walk.in(_n, this.expressionClass, e-> {
             Select sel = select( e );
             if( sel != null ){
                 sel.expression.removeForced();
             }
         });
-        return _model;
+        return _n;
     }
 
-    public <M extends _node> M replaceIn(M _le, Node replacement ){
-        Walk.in( _le, this.expressionClass, e-> {
+    /**
+     * 
+     * @param <N>
+     * @param _n
+     * @param replacement
+     * @return 
+     */
+    public <N extends _node> N replaceIn(N _n, Node replacement ){
+        Walk.in(_n, this.expressionClass, e-> {
             Select sel = select( e );
             if( sel != null ){
                 sel.expression.replace( replacement );
             }
         });
-        return _le;
+        return _n;
     }
 
-    public <M extends _node> M replaceIn(M _le, String replaceExpression ){
-        return replaceIn( _le, $expr.of(replaceExpression) );
+    /**
+     * 
+     * @param <N>
+     * @param _n
+     * @param protoReplaceExpr
+     * @return 
+     */
+    public <N extends _node> N replaceIn(N _n, String protoReplaceExpr ){
+        return replaceIn(_n, $expr.of(protoReplaceExpr) );
     }
     
-    public <M extends _node> M replaceIn(M _le, $expr $repl ){
-        Walk.in(_le, this.expressionClass, e-> {
+    /**
+     * 
+     * @param <N>
+     * @param _n
+     * @param $repl
+     * @return 
+     */
+    public <N extends _node> N replaceIn(N _n, $expr $repl ){
+        Walk.in(_n, this.expressionClass, e-> {
             Select sel = select( e );
             if( sel != null ){
                 sel.expression.replace($repl.construct(sel.tokens));
             }
         });
-        return _le;
+        return _n;
     }
 
-    public <M extends _node> M forSelectedIn(M _le, Consumer<Select> selectConsumer ){
-        Walk.in( _le, this.expressionClass, e-> {
+    /**
+     * 
+     * @param <N>
+     * @param _n
+     * @param selectConsumer
+     * @return 
+     */
+    public <N extends _node> N forSelectedIn(N _n, Consumer<Select> selectConsumer ){
+        Walk.in(_n, this.expressionClass, e-> {
             Select sel = select( e );
             if( sel != null ){
                 selectConsumer.accept( sel );
             }
         });
-        return _le;
+        return _n;
     }
 
-    public <N extends Node> N forSelectedIn(N n, Consumer<Select> selectConsumer ){
-        n.walk(this.expressionClass, e-> {
+    /**
+     * 
+     * @param <N>
+     * @param astNode
+     * @param selectConsumer
+     * @return 
+     */
+    public <N extends Node> N forSelectedIn(N astNode, Consumer<Select> selectConsumer ){
+        astNode.walk(this.expressionClass, e-> {
             Select sel = select( e );
             if( sel != null ){
                 selectConsumer.accept( sel );
             }
         });
-        return n;
+        return astNode;
     }
 
     @Override
@@ -1321,6 +1432,10 @@ public final class $expr <T extends Expression>
         return "(" + this.expressionClass.getSimpleName() + ") : \"" + this.exprPattern + "\"";
     }
 
+    /**
+     * 
+     * @param <T> 
+     */
     public static class Select<T extends Expression> implements $query.selected {
         public T expression;
         public Tokens tokens;

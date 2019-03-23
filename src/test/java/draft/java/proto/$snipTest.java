@@ -281,10 +281,14 @@ public class $snipTest extends TestCase {
         ss = $snip.of( (Object $any$)-> System.out.println($any$) ).listSelectedIn( _class.of(G.class) );
 
         assertEquals(3, ss.size());
-        assertTrue( $stmt.of( ()-> System.out.println(1) ).matches( ss.get(0).statements.get(0) ));
-        assertTrue(  $stmt.of( ()-> System.out.println(2) ).matches( ss.get(1).statements.get(0)));
-        assertTrue(  $stmt.of( ()-> System.out.println(3) ).matches( ss.get(2).statements.get(0)));
+        assertTrue( $stmt.of( Stmt.of(()-> System.out.println(1) )).matches( ss.get(0).statements.get(0) ));
+        assertTrue( $stmt.of( Stmt.of(()-> System.out.println(2) )).matches( ss.get(1).statements.get(0)));
+        assertTrue( $stmt.of( Stmt.of(()-> System.out.println(3) )).matches( ss.get(2).statements.get(0)));
 
+        assertTrue( $stmt.of( ()-> System.out.println(1) ).matches( ss.get(0).statements.get(0)));
+        assertTrue( $stmt.of( ()-> System.out.println(2) ).matches( ss.get(1).statements.get(0)));
+        assertTrue( $stmt.of( ()-> System.out.println(3) ).matches( ss.get(2).statements.get(0)));
+        
         assertTrue( ss.get(0).tokens.has("any", "1"));
         assertTrue( ss.get(1).tokens.has("any", "2"));
         assertTrue( ss.get(2).tokens.has("any", "3"));

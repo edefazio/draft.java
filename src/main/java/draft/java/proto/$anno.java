@@ -20,22 +20,52 @@ import java.util.function.*;
 public final class $anno
     implements Template<_anno>, $query<_anno> {
 
+    /**
+     * 
+     * @param <N>
+     * @param rootNode
+     * @param proto
+     * @return 
+     */
     public static final <N extends _node> _anno first( N rootNode, String proto ){
         return $anno.of(proto).firstIn(rootNode);
     }
     
+    /**
+     * 
+     * @param <N>
+     * @param astNode
+     * @param proto
+     * @return 
+     */
     public static final <N extends _node> _anno first( Node astNode, String proto ){
         return $anno.of(proto).firstIn(astNode);
     }
     
+    /**
+     * 
+     * @param <N>
+     * @param rootNode
+     * @param proto
+     * @param constraint
+     * @return 
+     */
     public static final <N extends _node> _anno first( N rootNode, String proto, Predicate<_anno> constraint){
         return $anno.of(proto, constraint).firstIn(rootNode);
     }
     
+    /**
+     * 
+     * @param <N>
+     * @param astNode
+     * @param proto
+     * @param constraint
+     * @return 
+     */
     public static final <N extends _node> _anno first( Node astNode, String proto,Predicate<_anno>constraint){
         return $anno.of(proto, constraint).firstIn(astNode);
     }
-    
+       
     //?? TODO add constraint parameter at end (make it a vararg?)
     /**
      * lists all occurrences of annos that match the 

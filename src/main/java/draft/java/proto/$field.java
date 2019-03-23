@@ -23,48 +23,86 @@ import java.util.function.Predicate;
 public class $field
     implements Template<_field>, $query<_field> {
 
-     /**
+    
+    /**
      * 
      * @param <N>
-     * @param _rootNode
+     * @param _n
      * @param proto
      * @return 
      */
-    public static final <N extends _node> List<_field> list( N _rootNode, String proto ){
-        return $field.of(proto).listIn(_rootNode);
+    public static final <N extends _node> List<_field> list( N _n, String proto ){
+        return $field.of(proto).listIn(_n);
     }
     
     /**
      * 
      * @param <N>
-     * @param _rootNode
+     * @param _n
+     * @param proto
+     * @param constraint
+     * @return 
+     */
+    public static final <N extends _node> List<_field> list( N _n, String proto, Predicate<_field> constraint){
+        return $field.of(proto, constraint).listIn(_n);
+    }
+    
+    
+    /**
+     * 
+     * @param <N>
+     * @param _n
      * @param proto
      * @return 
      */
-    public static final <N extends _node> List<_field> list( N _rootNode, _field proto ){
-        return $field.of(proto).listIn(_rootNode);
+    public static final <N extends _node> List<_field> list( N _n, _field proto ){
+        return $field.of(proto).listIn(_n);
     }
     
     /**
-     * Removes all occurrences of the source anno in the rootNode (recursively)
+     * 
      * @param <N>
-     * @param _rootNode
+     * @param _n
+     * @param proto
+     * @param constraint
+     * @return 
+     */
+    public static final <N extends _node> List<_field> list( N _n, _field proto, Predicate<_field> constraint){
+        return $field.of(proto, constraint).listIn(_n);
+    }
+    
+    /**
+     * Removes all occurrences of the source field in the rootNode (recursively)
+     * @param <N>
+     * @param _n
      * @param proto
      * @return the modified N
      */
-    public static final <N extends _node> N remove( N _rootNode, _field proto ){
-        return $field.of(proto).removeIn(_rootNode);
+    public static final <N extends _node> N remove( N _n, _field proto ){
+        return $field.of(proto).removeIn(_n);
+    }
+    
+    /**
+     * Removes all occurrences of the source field in the rootNode (recursively)
+     * @param <N>
+     * @param _n
+     * @param proto
+     * @param constraint
+     * @return the modified N
+     */
+    public static final <N extends _node> N remove( N _n, _field proto, Predicate<_field> constraint){
+        return $field.of(proto, constraint).removeIn(_n);
     }
     
     /**
      * 
      * @param <N>
-     * @param _rootNode
+     * @param _n
      * @param proto
      * @return 
      */
-    public static final <N extends _node> N remove( N _rootNode, String proto ){
-        return $field.of(proto).removeIn(_rootNode);
+    public static final <N extends _node> N remove( N _n, String proto ){
+        return $field.of(proto).removeIn(_n);
     }
     
     /**
@@ -166,7 +204,7 @@ public class $field
         return new $field( _protoField  ).constraint(constraint);
     }
     
-    public Predicate<_field> constraint;
+    public Predicate<_field> constraint = t -> true;
     public Stencil fieldStencil;
     public Stencil commentStencil;
 
@@ -239,6 +277,7 @@ public class $field
      * @return Tokens from the stencil, or null if the expression doesnt match
      */
     public Tokens deconstruct(FieldDeclaration astFieldDeclaration ){
+        
         if( astFieldDeclaration.getVariables().size() == 1 ){
             return fieldStencil.deconstruct( astFieldDeclaration.toString(Ast.PRINT_NO_ANNOTATIONS_OR_COMMENTS ) );
         }
@@ -317,7 +356,6 @@ public class $field
     @Override
     public _field fill(Object... values) {
         return fill( Translator.DEFAULT_TRANSLATOR, values );
-        //return _field.of( stencil.fill(Translator.DEFAULT_TRANSLATOR, values));
     }
 
     @Override

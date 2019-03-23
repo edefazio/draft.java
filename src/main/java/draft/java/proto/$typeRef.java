@@ -7,14 +7,10 @@ import com.github.javaparser.ast.type.Type;
 import draft.*;
 import draft.java.Ast;
 import draft.java.Walk;
-import draft.java._model;
 import draft.java._model._node;
 import draft.java._typeRef;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
 
@@ -185,7 +181,6 @@ public final class $typeRef<T extends Type>
     public static $typeRef longType = of(PrimitiveType.longType());
     public static $typeRef floatType = of(PrimitiveType.floatType());
     public static $typeRef doubleType = of(PrimitiveType.doubleType());
-
 
     public Predicate<T> constraint;
     public Class<T> typeClass;
@@ -471,6 +466,13 @@ public final class $typeRef<T extends Type>
         return typesList;
     }
 
+    /**
+     * 
+     * @param <N>
+     * @param _n
+     * @param replacementType
+     * @return 
+     */
     public <N extends _node> N replaceIn(N _n, Class replacementType){
         return replaceIn( _n, $typeRef.of(replacementType));
     }
@@ -562,6 +564,10 @@ public final class $typeRef<T extends Type>
         return "(" + this.typeClass.getSimpleName() + ") : \"" + this.typeStencil + "\"";
     }
 
+    /**
+     * 
+     * @param <T> 
+     */
     public static class Select<T extends Type> implements $query.selected {
         public T type;
         public Tokens tokens;

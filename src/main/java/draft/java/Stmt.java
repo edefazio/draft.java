@@ -52,14 +52,13 @@ public enum Stmt {
 
     /**
      * Resolves and returns the AST Statement representing the body of the 
-     * lambda expression.
-     * for example:
-     * <PRE>
+     * lambda expression.for example:<PRE>
      * //call the method f with a lambdaExpression
      * Statement st = Stmt.of( (String s) -> System.out.println(s) );
      * assertEquals( Stmt.of("System.out.println(s);"), st );    
      * </PRE>
      * NOTE: the source of the calling method must be resolveable via draft
+     * @param <T>
      * @see draft.java.io._io#addInFilePath(java.lang.String) 
      * @see draft.java.io._io#addInProject(java.lang.String) 
      * 
@@ -73,14 +72,13 @@ public enum Stmt {
 
     /**
      * Resolves and returns the AST Statement representing the body of the 
-     * lambda expression.
-     * for example:
-     * <PRE>
+     * lambda expression.for example:<PRE>
      * //call the method f with a lambdaExpression
      * Statement st = Stmt.of( (String s) -> System.out.println(s) );
      * assertEquals( Stmt.of("System.out.println(s);"), st );    
      * </PRE>
      * NOTE: the source of the calling method must be resolveable via draft
+     * @param <T>
      * @see draft.java.io._io#addInFilePath(java.lang.String) 
      * @see draft.java.io._io#addInProject(java.lang.String) 
      * 
@@ -94,14 +92,14 @@ public enum Stmt {
 
     /**
      * Resolves and returns the AST Statement representing the body of the 
-     * lambda expression.
-     * for example:
-     * <PRE>
+     * lambda expression.for example:<PRE>
      * //call the method f with a lambdaExpression
      * Statement st = Stmt.of( (String s) -> System.out.println(s) );
      * assertEquals( Stmt.of("System.out.println(s);"), st );    
      * </PRE>
      * NOTE: the source of the calling method must be resolveable via draft
+     * @param <T>
+     * @param <U>
      * @see draft.java.io._io#addInFilePath(java.lang.String) 
      * @see draft.java.io._io#addInProject(java.lang.String) 
      * 
@@ -115,14 +113,15 @@ public enum Stmt {
 
     /**
      * Resolves and returns the AST Statement representing the body of the 
-     * lambda expression.
-     * for example:
-     * <PRE>
+     * lambda expression.for example:<PRE>
      * //call the method f with a lambdaExpression
      * Statement st = Stmt.of( (String s) -> System.out.println(s) );
      * assertEquals( Stmt.of("System.out.println(s);"), st );    
      * </PRE>
      * NOTE: the source of the calling method must be resolveable via draft
+     * @param <T>
+     * @param <U>
+     * @param <V>
      * @see draft.java.io._io#addInFilePath(java.lang.String) 
      * @see draft.java.io._io#addInProject(java.lang.String) 
      * 
@@ -136,14 +135,16 @@ public enum Stmt {
 
     /**
      * Resolves and returns the AST Statement representing the body of the 
-     * lambda expression.
-     * for example:
-     * <PRE>
+     * lambda expression.for example:<PRE>
      * //call the method f with a lambdaExpression
      * Statement st = Stmt.of( (String s) -> System.out.println(s) );
      * assertEquals( Stmt.of("System.out.println(s);"), st );    
      * </PRE>
      * NOTE: the source of the calling method must be resolveable via draft
+     * @param <T>
+     * @param <U>
+     * @param <V>
+     * @param <W>
      * @see draft.java.io._io#addInFilePath(java.lang.String) 
      * @see draft.java.io._io#addInProject(java.lang.String) 
      * 

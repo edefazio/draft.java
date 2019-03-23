@@ -11,110 +11,252 @@ import java.util.function.Consumer;
 import java.util.function.Predicate;
 
 /**
- * Template for an {@link _anno}
+ * Template for an import declaration on a Jav top level type 
  *
  */
 public final class $import
     implements Template<_import>, $query<_import> {
 
+    /**
+     * 
+     * @param <T>
+     * @param _type
+     * @param _protoSource
+     * @param _protoTarget
+     * @return 
+     */
     public static final <T extends _type> T replace( T _type, _import _protoSource, _import _protoTarget ){
         return $import.of(_protoSource).replaceIn(_type, _protoTarget);
     }
     
+    /**
+     * 
+     * @param <T>
+     * @param _type
+     * @param protoSource
+     * @param protoTarget
+     * @return 
+     */
     public static final <T extends _type> T replace( T _type, String protoSource, String protoTarget ){
         return $import.of(protoSource).replaceIn(_type, protoTarget);
     }
     
+    /**
+     * 
+     * @param <T>
+     * @param _type
+     * @param astProtoSource
+     * @param astProtoTarget
+     * @return 
+     */
     public static final <T extends _type> T replace( T _type, ImportDeclaration astProtoSource, ImportDeclaration astProtoTarget ){
         return $import.of(_import.of(astProtoSource))
                 .replaceIn(_type, _import.of(astProtoTarget));
     }
     
+    /**
+     * 
+     * @param <T>
+     * @param _type
+     * @param protoSource
+     * @param protoTarget
+     * @return 
+     */
     public static final <T extends _type> T replace( T _type, Class protoSource, Class protoTarget ){
         return $import.of(_import.of(protoSource))
             .replaceIn(_type, _import.of(protoTarget));
     }
 
+    /**
+     * 
+     * @param <T>
+     * @param _type
+     * @param _protoTarget
+     * @return 
+     */
     public static final <T extends _type> T remove( T _type, _import _protoTarget){
         return $import.of(_protoTarget).removeIn(_type);
     }
     
+    /**
+     * 
+     * @param <T>
+     * @param _type
+     * @param protoTarget
+     * @return 
+     */
     public static final <T extends _type> T remove( T _type, String protoTarget ){
         return $import.of(protoTarget).removeIn(_type);
     }
     
+    /**
+     * 
+     * @param <T>
+     * @param _type
+     * @param astProtoTarget
+     * @return 
+     */
     public static final <T extends _type> T remove( T _type, ImportDeclaration astProtoTarget ){
         return $import.of(_import.of(astProtoTarget)).removeIn(_type);
     }
     
+    /**
+     * 
+     * @param <T>
+     * @param _type
+     * @param target
+     * @return 
+     */
     public static final <T extends _type> T remove( T _type, Class target ){
         return $import.of(_import.of(target)).removeIn(_type);
     }
     
+    /**
+     * 
+     * @param <T>
+     * @param _type
+     * @param _protoTarget
+     * @return 
+     */
     public static final <T extends _type> List<_import> list( T _type, _import _protoTarget){
         return $import.of(_protoTarget).listIn(_type);
     }
     
+    /**
+     * 
+     * @param <T>
+     * @param _type
+     * @param protoTargetImport
+     * @return 
+     */
     public static final <T extends _type> List<_import> list( T _type, String protoTargetImport ){
         return $import.of(protoTargetImport).listIn(_type);
     }
     
+    /**
+     * 
+     * @param <T>
+     * @param _type
+     * @param astProtoTarget
+     * @return 
+     */
     public static final <T extends _type> List<_import> list( T _type, ImportDeclaration astProtoTarget ){
         return $import.of(_import.of(astProtoTarget)).listIn(_type);
     }
     
+    /**
+     * 
+     * @param <T>
+     * @param _type
+     * @param target
+     * @return 
+     */
     public static final <T extends _type> List<_import> list( T _type, Class target ){
         return $import.of(_import.of(target)).listIn(_type);
     }
     
+    /**
+     * 
+     * @param proto
+     * @return 
+     */
     public static $import of( String proto){
         _import _i = _import.of(proto );
         return new $import( _i.toString().trim() );
     }
     
+    /**
+     * 
+     * @param proto
+     * @param constraint
+     * @return 
+     */
     public static $import of( String proto, Predicate<_import> constraint){
         _import _i = _import.of(proto );
         return new $import( _i.toString().trim() ).constraint(constraint);
     }
     
+    /**
+     * 
+     * @param clazz
+     * @return 
+     */
     public static $import of( Class clazz ){
         _import _i = _import.of( clazz );
         return new $import( _i.toString().trim() );
     }
     
+    /**
+     * 
+     * @param clazz
+     * @param constraint
+     * @return 
+     */
     public static $import of( Class clazz, Predicate<_import> constraint){
         _import _i = _import.of( clazz );
         return new $import( _i.toString().trim() ).constraint(constraint);
     }
     
+    /**
+     * 
+     * @param _proto
+     * @return 
+     */
     public static $import of( _import _proto){
         return new $import( _proto.toString().trim() );
     }
 
+    /**
+     * 
+     * @param _proto
+     * @param constraint
+     * @return 
+     */
     public static $import of( _import _proto, Predicate<_import> constraint){
         return new $import( _proto.toString().trim() ).constraint(constraint);
     }
     
     public Predicate<_import> constraint = t-> true;
-    public Stencil importStencil;
+        
+    public Stencil importPattern;
 
     private $import( String stencil) {
-        this.importStencil = Stencil.of(stencil.trim());
+        this.importPattern = Stencil.of(stencil.trim());
     }
 
+    /**
+     * 
+     * @param constraint
+     * @return 
+     */
     public $import constraint( Predicate<_import> constraint ){
         this.constraint = constraint;
         return this;
     }
     
+    /**
+     * 
+     * @param imports
+     * @return 
+     */
     public boolean matches( String imports ){
         return matches( _import.of(imports) );
     }
 
+    /**
+     * 
+     * @param astImport
+     * @return 
+     */
     public boolean matches( ImportDeclaration astImport ){
         return deconstruct(astImport ) != null;
     }
 
+    /**
+     * 
+     * @param _i
+     * @return 
+     */
     public boolean matches( _import _i){
         return deconstruct( _i ) != null;
     }
@@ -127,7 +269,7 @@ public final class $import
      */
     public Tokens deconstruct(_import _i ){
         if( this.constraint.test(_i)){
-            return importStencil.deconstruct( _i.toString().trim() );
+            return importPattern.deconstruct( _i.toString().trim() );
         }
         return null;
     }
@@ -140,49 +282,49 @@ public final class $import
      */
     public Tokens deconstruct(ImportDeclaration astImport ){
         if(this.constraint.test(_import.of(astImport))){
-            return importStencil.deconstruct( astImport.toString().trim() );
+            return importPattern.deconstruct( astImport.toString().trim() );
         }
         return null;
     }
 
     @Override
     public String toString() {
-        return "($import) : \"" + this.importStencil + "\"";
+        return "($import) : \"" + this.importPattern + "\"";
     }
 
     @Override
     public _import construct(Translator translator, Map<String, Object> keyValues) {
-        return _import.of(importStencil.construct(translator, keyValues));
+        return _import.of(importPattern.construct(translator, keyValues));
     }
 
     @Override
     public _import construct(Map<String, Object> keyValues) {
-        return _import.of(importStencil.construct(Translator.DEFAULT_TRANSLATOR, keyValues));
+        return _import.of(importPattern.construct(Translator.DEFAULT_TRANSLATOR, keyValues));
     }
 
     @Override
     public _import construct(Object... keyValues) {
-        return _import.of(importStencil.construct(Translator.DEFAULT_TRANSLATOR, keyValues));
+        return _import.of(importPattern.construct(Translator.DEFAULT_TRANSLATOR, keyValues));
     }
 
     @Override
     public _import construct(Translator translator, Object... keyValues) {
-        return _import.of(importStencil.construct(translator, keyValues));
+        return _import.of(importPattern.construct(translator, keyValues));
     }
 
     @Override
     public _import fill(Object... values) {
-        return _import.of(importStencil.fill(Translator.DEFAULT_TRANSLATOR, values));
+        return _import.of(importPattern.fill(Translator.DEFAULT_TRANSLATOR, values));
     }
 
     @Override
     public _import fill(Translator translator, Object... values) {
-        return _import.of(importStencil.fill(translator, values));
+        return _import.of(importPattern.fill(translator, values));
     }
 
     @Override
     public $import $(String target, String $Name) {
-        this.importStencil = this.importStencil.$(target, $Name);
+        this.importPattern = this.importPattern.$(target, $Name);
         return this;
     }
 
@@ -221,18 +363,18 @@ public final class $import
     }
 
     public $import assign$( Translator translator, Tokens kvs ) {
-        this.importStencil = this.importStencil.assign$(translator,kvs);
+        this.importPattern = this.importPattern.assign$(translator,kvs);
         return this;
     }
 
     @Override
     public List<String> list$() {
-        return this.importStencil.list$();
+        return this.importPattern.list$();
     }
 
     @Override
     public List<String> list$Normalized() {
-        return this.importStencil.list$Normalized();
+        return this.importPattern.list$Normalized();
     }
 
     /**
@@ -460,14 +602,14 @@ public final class $import
     }
 
     @Override
-    public <N extends Node> N forIn(N node, Consumer<_import> _importActionFn){
-        node.walk(ImportDeclaration.class, e-> {
+    public <N extends Node> N forIn(N astNode, Consumer<_import> _importActionFn){
+        astNode.walk(ImportDeclaration.class, e-> {
             Tokens tokens = deconstruct( e );
             if( tokens != null ){
                 _importActionFn.accept( _import.of(e));
             }
         });
-        return node;
+        return astNode;
     }
 
     @Override

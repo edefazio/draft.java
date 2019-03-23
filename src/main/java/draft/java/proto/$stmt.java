@@ -8,6 +8,10 @@ import com.github.javaparser.ast.stmt.*;
 import com.github.javaparser.printer.PrettyPrinterConfiguration;
 import draft.*;
 import draft.java.*;
+import draft.java.Expr.QuadConsumer;
+import draft.java.Expr.QuadFunction;
+import draft.java.Expr.TriConsumer;
+import draft.java.Expr.TriFunction;
 import draft.java._model._node;
 
 import java.util.*;
@@ -106,6 +110,36 @@ public final class $stmt<T extends Statement>
     }
     
     /**
+     * 
+     * @param <A>
+     * @param <B>
+     * @param <C>
+     * @param <D>
+     * @param _n
+     * @param proto
+     * @return 
+     */
+    public static final <A extends Object, B extends Object, C extends Object, D extends Object> boolean isIn( _node _n, TriFunction<A,B,C,D> proto ){
+        LambdaExpr le = Expr.lambda( Thread.currentThread().getStackTrace()[2] );
+        return isIn(_n, $stmt.of(le.getBody()));
+    }
+    
+        /**
+     * 
+     * @param <A>
+     * @param <B>
+     * @param <C>
+     * @param <D>
+     * @param _n
+     * @param proto
+     * @return 
+     */
+    public static final <A extends Object, B extends Object, C extends Object, D extends Object, E extends Object> boolean isIn( _node _n, QuadFunction<A,B,C,D,E> proto ){
+        LambdaExpr le = Expr.lambda( Thread.currentThread().getStackTrace()[2] );
+        return isIn(_n, $stmt.of(le.getBody()));
+    }
+    
+    /**
      * Does this stmt template appear in the root node?
      * @param _n where to look
      * @param proto the code of the Statement we're looking for
@@ -115,6 +149,141 @@ public final class $stmt<T extends Statement>
         return list(_n, proto).size() > 0;
     }    
     
+    /**
+     * Does this stmt template appear in the root node?
+     * @param <T>
+     * @param _n where to look
+     * @param proto the code of the Statement we're looking for
+     * @return true if found else false
+     */
+    public static final <T extends Statement> T first( _node _n, String... proto ){
+        return (T)$stmt.of(proto).firstIn(_n);
+    }
+    
+    /**
+     * Does this stmt template appear in the root node?
+     * @param <T>
+     * @param _n where to look
+     * @param proto the code of the Statement we're looking for
+     * @return true if found else false
+     */
+    public static final <T extends Statement> T first( _node _n, Statement proto ){
+        return (T)$stmt.of(proto).firstIn(_n);
+    }
+    
+    /**
+     * 
+     * @param <T>
+     * @param _n
+     * @param proto
+     * @return 
+     */
+    public static final <T extends Statement> T first( _node _n, Expr.Command proto ){
+        LambdaExpr le = Expr.lambda( Thread.currentThread().getStackTrace()[2] );
+        return (T)$stmt.of(le.getBody()).firstIn(_n);
+    }
+    
+    /**
+     * 
+     * @param <A>
+     * @param <T>
+     * @param _n
+     * @param proto
+     * @return 
+     */
+    public static final <A extends Object, T extends Statement> T first( _node _n, Consumer<A> proto ){
+        LambdaExpr le = Expr.lambda( Thread.currentThread().getStackTrace()[2] );
+        return (T)$stmt.of(le.getBody()).firstIn(_n);
+    }
+    
+    /**
+     * 
+     * @param <A>
+     * @param <B>
+     * @param <T>
+     * @param _n
+     * @param proto
+     * @return 
+     */
+    public static final <A extends Object, B extends Object, T extends Statement> T first( _node _n, BiConsumer<A,B> proto ){
+        LambdaExpr le = Expr.lambda( Thread.currentThread().getStackTrace()[2] );
+        return (T)$stmt.of(le.getBody()).firstIn(_n);
+    }
+    
+    /**
+     * 
+     * @param <A>
+     * @param <B>
+     * @param <T>
+     * @param _n
+     * @param proto
+     * @return 
+     */
+    public static final <A extends Object, B extends Object, T extends Statement> T first( _node _n, Function<A,B> proto ){
+        LambdaExpr le = Expr.lambda( Thread.currentThread().getStackTrace()[2] );
+        return (T)$stmt.of(le.getBody()).firstIn(_n);
+    }
+    
+    /**
+     * 
+     * @param <A>
+     * @param <B>
+     * @param <C>
+     * @param <T>
+     * @param _n
+     * @param proto
+     * @return 
+     */
+    public static final <A extends Object, B extends Object, C extends Object, T extends Statement> T first( _node _n, BiFunction<A,B,C> proto ){
+        LambdaExpr le = Expr.lambda( Thread.currentThread().getStackTrace()[2] );
+        return (T)$stmt.of(le.getBody()).firstIn(_n);
+    }
+    
+    /**
+     * 
+     * @param <A>
+     * @param <B>
+     * @param <C>
+     * @param <D>
+     * @param <T>
+     * @param _n
+     * @param proto
+     * @return 
+     */
+    public static final <A extends Object, B extends Object, C extends Object, D extends Object, T extends Statement> T first( _node _n, TriFunction<A,B,C,D> proto ){
+        LambdaExpr le = Expr.lambda( Thread.currentThread().getStackTrace()[2] );
+        return (T)$stmt.of(le.getBody()).firstIn(_n);
+    }
+    
+    /**
+     * 
+     * @param <A>
+     * @param <B>
+     * @param <C>
+     * @param <D>
+     * @param <E>
+     * @param <T>
+     * @param _n
+     * @param proto
+     * @return 
+     */
+    public static final <A extends Object, B extends Object, C extends Object, D extends Object, E extends Object, T extends Statement> T first( _node _n, QuadFunction<A,B,C,D,E> proto ){
+        LambdaExpr le = Expr.lambda( Thread.currentThread().getStackTrace()[2] );
+        return (T) $stmt.of(le.getBody()) 
+                .firstIn( _n );
+    }
+    
+    /**
+     * Does this stmt template appear in the root node?
+     * @param <T>
+     * @param _n where to look
+     * @param proto the code of the Statement we're looking for
+     * @return true if found else false
+     */
+    public static final <T extends Statement> T first( _node _n, $stmt<T> proto){
+        return proto.firstIn(_n);
+    }    
+       
     /**
      * 
      * @param <N>
@@ -211,12 +380,12 @@ public final class $stmt<T extends Statement>
      * @param <T>
      * @param proto
      * @return 
-     */
+     */ 
     public static <T extends Object>  $stmt of( Expr.Command proto ){
         StackTraceElement ste = Thread.currentThread().getStackTrace()[2];
         return fromStackTrace( ste );
     }
-
+    
     /**
      * 
      * @param <T>
@@ -226,8 +395,7 @@ public final class $stmt<T extends Statement>
     public static <T extends Object>  $stmt of( Consumer<T> proto ){
         StackTraceElement ste = Thread.currentThread().getStackTrace()[2];
         return fromStackTrace( ste );
-    }
-
+    } 
     /**
      * 
      * @param <T>
@@ -248,7 +416,7 @@ public final class $stmt<T extends Statement>
      * @param proto
      * @return 
      */
-    public static <T extends Object, U extends Object, V extends Object>  $stmt of(Expr.TriConsumer<T, U, V> proto ){
+    public static <T extends Object, U extends Object, V extends Object>  $stmt of(TriConsumer<T, U, V> proto ){
         StackTraceElement ste = Thread.currentThread().getStackTrace()[2];
         return fromStackTrace( ste );
     }
@@ -262,7 +430,7 @@ public final class $stmt<T extends Statement>
      * @param proto
      * @return 
      */
-    public static <T extends Object, U extends Object, V extends Object, X extends Object> $stmt of(Expr.QuadConsumer<T, U, V, X> proto ){
+    public static <T extends Object, U extends Object, V extends Object, X extends Object> $stmt of(QuadConsumer<T, U, V, X> proto ){
         StackTraceElement ste = Thread.currentThread().getStackTrace()[2];
         return fromStackTrace( ste );
     }
@@ -279,13 +447,39 @@ public final class $stmt<T extends Statement>
 
     /**
      * 
+     * @param proto
+     * @param constraint
+     * @return 
+     
+    public static $stmt of(String proto, Predicate<Statement> constraint){
+        Statement st = Stmt.of(proto);
+        return new $stmt( st ).constraint(constraint);
+    }
+    */ 
+    
+    /**
+     * 
+     * @param <T>
      * @param astProto
      * @return 
-     */
+     */ 
     public static $stmt of(Statement astProto ){
-        return new $stmt(astProto); //.getClass(), st.toString());
+        return new $stmt<>(astProto);
     }
+     
 
+    /**
+     * 
+     * @param <T>
+     * @param astProto
+     * @param constraint
+     * @return 
+     
+    public static <T extends Statement> $stmt<T> of(T astProto, Predicate<T> constraint){
+        return new $stmt<>(astProto).constraint(constraint);
+    }
+    * */
+    
     /**
      * i.e."assert(1==1);"
      * @param proto

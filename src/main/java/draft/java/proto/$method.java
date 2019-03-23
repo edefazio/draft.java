@@ -439,15 +439,12 @@ public final class $method
 
             if( ts != null ){
                 final Tokens toks = ts;
-                //System.out.println( "BODY IS THE SAME");
-                //System.out.println( this.signatureStencil );
-
+                
                 //we have to clone to check signature equality, also removeIn JAVADOC and BODY
                 String signature = astTarget.clone()
                         .setBody(EMPTY) //make the clones' BODY empty
                         .removeComment() //removeIn any comments/JAVADOC from the clone
                         .toString();
-                //System.out.println( "STR "+str );
                 Tokens tss = this.signatureStencil.deconstruct( signature );
                 if( tss == null ){
                     return null;

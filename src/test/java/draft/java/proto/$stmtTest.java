@@ -23,7 +23,7 @@ public class $stmtTest extends TestCase {
         
         assertTrue($stmt.isIn(_c, (Object $any$)->System.out.println($any$) ));
         
-        assertNotNull( $stmt.of(($any$)->System.out.println($any$)).listIn(_c) );
+        assertNotNull( $stmt.of(($any$)->System.out.println($any$)).listIn(_c));
     }
     
     public @interface r{
@@ -36,7 +36,8 @@ public class $stmtTest extends TestCase {
     }
 
     public void testLabelStmt(){
-        $stmt $s = $stmt.of( ($any$)-> {label: System.out.println($any$);} );
+        Stmt.of( (Object $any$)-> {label: System.out.println($any$);} );
+        $stmt $s = $stmt.of((Object $any$)-> {label: System.out.println($any$);});
         Statement s = $s.construct( "$any$" , 100);
 
         assertEquals( Stmt.of( "label: System.out.println(100);"), s );
@@ -48,15 +49,15 @@ public class $stmtTest extends TestCase {
         class L{
             Consumer<String> c = (String g)-> {System.out.println(g); System.out.println(1);};
         }
-        $stmt $s = $stmt.of( ($any$)-> System.out.println($any$));
+        $stmt $s = $stmt.of(($any$)-> System.out.println($any$));
         _class _c = _class.of(L.class);
         assertEquals( 2, $s.listSelectedIn(_c).size());
         assertEquals( 2, $stmt.list(_c, "System.out.println($any$);" ).size() );
     }
 
     public void testReplaceStmt(){
-        $stmt $s = $stmt.of( ($any$)-> System.out.println($any$) );
-        $stmt $r = $stmt.of( ($any$)-> System.out.print($any$) );
+        $stmt $s = $stmt.of(($any$)-> System.out.println($any$) );
+        $stmt $r = $stmt.of(($any$)-> System.out.print($any$) );
         class L{
             void f(){
                 System.out.println(1);
@@ -124,10 +125,12 @@ public class $stmtTest extends TestCase {
     }
 
     public void testMatchWithComments(){
+        //$stmt $s = $stmt.of( Stmt.of( ()-> System.out.println(1) ));
         $stmt $s = $stmt.of( ()-> System.out.println(1) );
         Tokens tokens = $s.deconstruct(Stmt.of( ()-> System.out.println(1) ));
         assertNotNull( tokens );
 
+        //$s = $stmt.of( ($any$)-> System.out.println($any$) );
         $s = $stmt.of( ($any$)-> System.out.println($any$) );
         tokens = $s.deconstruct(Stmt.of( ()-> System.out.println(1) ));
         assertNotNull( tokens );
