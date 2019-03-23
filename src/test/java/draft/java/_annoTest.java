@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package draft.java;
 
 import com.github.javaparser.ast.body.FieldDeclaration;
@@ -15,6 +10,20 @@ import junit.framework.TestCase;
  */
 public class _annoTest extends TestCase {
 
+    public void testAnnoHasAttr(){
+        _anno _a = _anno.of("a(1)");
+        _anno _b = _anno.of("a(x=1)");
+        assertTrue( _a.hasValue(Expr.of(1)) );
+        assertTrue( _a.hasValue(1) );
+        assertTrue( _b.hasValue(Expr.of(1)) );
+        assertTrue( _b.hasValue(1) );
+        
+        assertTrue( _b.hasAttr("x=1") );
+        //assertTrue( _b.hasAttr("x", 1) );
+        
+        
+    }
+    
     public void testPattern(){
         String pattern = "\\$?\\d+\\$";
         String className = "draft.java._classTest$1$Hoverboard";
@@ -92,7 +101,7 @@ public class _annoTest extends TestCase {
         _anno _a = new _anno(fd.getAnnotation( 0 ));
 
         //to a Single Value Annotation
-        _a.setValue( 0, "100" );
+        _a.setValue( 0, 100 );
         assertEquals( _a.getValue( 0 ), Expr.of(100) );
 
         //to a Normal Annotation
@@ -124,7 +133,7 @@ public class _annoTest extends TestCase {
         //the underlying field has to change the implementation from
         FieldDeclaration fd = Ast.field( "@a(1) public int i=100;");
         _anno _a = new _anno(fd.getAnnotation( 0 ));
-        _a.addAttr( "Key", "1000" );
+        _a.addAttr( "Key", 1000 );
 
         assertTrue( _a.is("@a(Key=1000)"));
 
@@ -134,7 +143,7 @@ public class _annoTest extends TestCase {
         AnnotationExpr ae = fd.getAnnotation(0).clone();
         System.out.println( ae.getParentNode().isPresent() );
         _anno _aNoParent = new _anno(ae);
-        _aNoParent.addAttr( "Key", "9999" );
+        _aNoParent.addAttr( "Key", 9999 );
         assertTrue( _aNoParent.is("@a(Key=9999)") );
         //System.out.println( _aNoParent );
     }
