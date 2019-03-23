@@ -16,6 +16,26 @@ public class $annoTest extends TestCase {
         String string();
     }
 
+    public void testFirst(){
+        @name(2)
+        class C{
+            @name(3)
+            int g =1;
+        }
+        
+        _class _c = _class.of(C.class);
+        assertNotNull( $anno.first(_c, "name($any$)") );
+        
+        //verify that we can find 
+        assertNotNull( $anno.first(_c, "name($any$)", 
+                //there is an Integer attribute value that is odd
+                (a)-> a.hasValue(e -> e.isIntegerLiteralExpr() && e.asIntegerLiteralExpr().asInt() % 2 == 1)) );
+        
+        assertNotNull( $anno.first(_c, "name($any$)", (a) -> a.hasValue(3)) );
+        assertNotNull( $anno.first(_c, "name(3)"));        
+        assertNotNull( $anno.first(_c, "name(3)", _a-> _a.hasValue(3)) );
+    }
+     
     public void testStatic$anno(){
         $anno $a = $anno.of("@name");
         assertEquals( _anno.of("@name"), $a.construct());
