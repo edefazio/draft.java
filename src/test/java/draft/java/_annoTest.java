@@ -18,9 +18,14 @@ public class _annoTest extends TestCase {
      * Verify that the anno:
      * _anno _a = _anno.of("a(1)");
      * //is equal to 
-     * _anno _b = _anno.of("a(value=1)");     
+     * _anno _b = _anno.of("a(value=1)");    
+     * 
+     * the first anno:
+     * @a(1)
+     * 
+     * has a single attr that has an implied attr name "value"
      */
-    public void testEqualsExplicitVsImplicitValueAttr(){
+    public void testEqualsExplicitVsImpliedValueAttr(){
         
         @i(1)
         class c{}
@@ -34,11 +39,11 @@ public class _annoTest extends TestCase {
         //the runtime values of these annotations is equal
         assertEquals( ii, i2);
         
-        
         _anno _a = _anno.of("a(1)");     
         _anno _b = _anno.of("a(value=1)");
         
-        assertEquals(_a, _b);
+        assertEquals(_a, _b);        
+        assertEquals(_a.hashCode(), _b.hashCode());
     }
     
     public void testAnnoHasAttr(){

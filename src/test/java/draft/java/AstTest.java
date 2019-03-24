@@ -33,6 +33,21 @@ import java.util.function.Consumer;
  */
 public class AstTest extends TestCase {
 
+    public void testAnnoExprEqualsAndHash(){
+        _anno _a = _anno.of("a(1)");
+        _anno _b = _anno.of("a(value=1)");
+        
+        assertEquals( _a, _b);
+        assertEquals(_a.hashCode(), _b.hashCode());
+        
+        assertNotSame(_a.ast(), _b.ast() );
+        
+        //make sure I can equate them to be equal
+        assertTrue( Ast.annotationEqual(_a.ast(), _b.ast()) );
+        assertEquals( Ast.annotationHash(_a.ast() ), Ast.annotationHash( _b.ast() ) );
+        
+    }
+    
     public static class F{
         
         static int a(){
