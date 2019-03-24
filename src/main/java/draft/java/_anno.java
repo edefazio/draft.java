@@ -1085,6 +1085,11 @@ public final class _anno
             list( annotationClazz ).forEach(_annoAction );
         }
 
+        /**
+         * does this String array represent ALL of the annos? 
+         * @param annos
+         * @return 
+         */
         public boolean is( String... annos ) {
             try {
                 return _annos.of( annos ).equals( this );

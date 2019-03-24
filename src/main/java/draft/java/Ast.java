@@ -2550,10 +2550,6 @@ public enum Ast {
                 return false;
             }
         }
-        //same NAME
-        //if( !left.getName().equals( right.getName() ) ) {
-        //    return false;
-        //}
         Set<MemberValuePair> lps = new HashSet<>();
         Set<MemberValuePair> rps = new HashSet<>();
         
@@ -2570,27 +2566,7 @@ public enum Ast {
         } else if( right instanceof NormalAnnotationExpr ){
             rps.addAll(((NormalAnnotationExpr) right).asNormalAnnotationExpr().getPairs());
         }
-        //System.out.println( lps );
-        //System.out.println( rps );
         return lps.equals(rps);
-        /*
-        
-        //same values (Need to check if they are out of order in NormalAnnotationExpr
-        // i.e. @a(x=1,y=2) == @a(y=2,x=1) same contents, out of order
-        if (left instanceof NormalAnnotationExpr) {
-            NormalAnnotationExpr ta = (NormalAnnotationExpr) left;
-            NormalAnnotationExpr oa = (NormalAnnotationExpr) right;
-
-            if (ta.getPairs().size() != oa.getPairs().size()) {
-                return false;
-            }
-            //see if I can find a pair in one that is not equal to the other
-            //if so, they are unequal
-            return !ta.getPairs().stream().filter(m -> !oa.getPairs().contains(m)).findFirst().isPresent();
-        } else { //marker annotation
-            return left.equals(right);
-        }
-        */
     }
 
     /**
@@ -2715,7 +2691,14 @@ public enum Ast {
                 //we ALSO have t
                 return Objects.hash(normalizedName, annotationHash((AnnotationExpr) memberValue));
             }
-            return Objects.hash(normalizedName, memberValue);
+            //Set<MemberValuePair> mvps = new HashSet<>();
+            Set<Integer> memberValueHashes = new HashSet<>(); //Hash them all
+            memberValueHashes.add( memberValueHash(new MemberValuePair("value", memberValue) ) );
+            //we want this: 
+            // @a(1)
+            //to be the same as:
+            // @a(value=1)
+            return Objects.hash(normalizedName, memberValueHashes);
         }
         //it's a marker annotation
         return Objects.hash(normalizeName(ae.getNameAsString()));
