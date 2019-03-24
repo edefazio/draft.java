@@ -249,13 +249,24 @@ public final class $anno
     }
     
     public static $anno of( Class<? extends Annotation> a){
-        return of( _anno.of(a) );
+        $anno $a = of( _anno.of(a) );
+        $a.fullyQualifiedStencil = Stencil.of("@"+a.getCanonicalName());
+        return $a;
     }
     
     /** An additional Match constraint (By default always true) */
     public Predicate<_anno> constraint = a-> true;
     
     public Stencil annoStencil;
+    
+    /** 
+     * An "alternate" Stencil, only used for matching purposes when the _anno
+     * is defined via a fully qualified path, 
+     * i.e. @my.path.a()
+     * verses the more simple: 
+     * @a() 
+     */
+    public Stencil fullyQualifiedStencil = null;
 
     private $anno( String stencil) {
         this.annoStencil = Stencil.of(stencil );
@@ -306,7 +317,13 @@ public final class $anno
      */
     public Tokens deconstruct(_anno _a ){
         if( this.constraint.test(_a) ){
-            return annoStencil.deconstruct( _a.toString() );
+            Tokens r = annoStencil.deconstruct( _a.toString() ); 
+            if( r != null){
+                return r;
+            }
+            if( this.fullyQualifiedStencil != null) {
+                return this.fullyQualifiedStencil.deconstruct(_a.toString());
+            }
         }
         return null;
     }

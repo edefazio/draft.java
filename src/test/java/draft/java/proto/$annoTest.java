@@ -1,12 +1,58 @@
 package draft.java.proto;
 
-import draft.java.proto.$anno;
 import draft.java._anno;
 import draft.java._class;
+import java.util.regex.Pattern;
 import junit.framework.TestCase;
 
 public class $annoTest extends TestCase {
 
+    @interface R{ }
+    @interface S{ }
+    
+    public void testRegex(){
+       Pattern p = Pattern.compile("([0-9]+)(?:st|nd|rd|th)");
+       assertTrue( p.matcher("1st").matches() );     
+       //assertTrue( p.matcher("1").matches() );     
+       //assertTrue( p.matcher("11").matches() );     
+       assertTrue( p.matcher("2nd").matches() );     
+       
+       //Pattern p2 = Pattern.compile("(@)(?:draft.java.proto.$annoTest.)(R)");
+       //Pattern p2 = Pattern.compile("\\@(?:draft.java.proto.$annoTest.)?(R)");
+       //assertTrue(p2.matcher("@R").matches());
+       
+       Pattern p3 = Pattern.compile( 
+            Pattern.quote("@") + 
+            "(?:"+ Pattern.quote("draft.java.proto.$annoTest.") + ")?" +
+            Pattern.quote("R") );
+       
+        assertFalse(p3.matcher("@S").matches());
+        
+        assertTrue(p3.matcher("@R").matches());
+        assertTrue(p3.matcher("@draft.java.proto.$annoTest.R").matches());       
+        assertFalse(p3.matcher("@draft.java.proto.$annoTestw.R").matches());       
+    }
+    
+    /**
+     * Verify I can match $anno with Class based on simple and/or
+     * fully qualified annotations
+     */
+    public void testFullyQualified(){        
+        // when I do this, I need to change the regex as EITHER
+        // 
+        $anno $a = $anno.of(R.class);
+        
+        @draft.java.proto.$annoTest.R
+        class C{}        
+        _class _c = _class.of(C.class);        
+        assertNotNull( $a.firstIn(_c) );
+        
+        @R
+        class D{}        
+        _class _d = _class.of(D.class);        
+        assertNotNull( $a.firstIn(_d) );                
+    }
+    
     @interface name{
         int value() default 1;
         String prefix() default "";
