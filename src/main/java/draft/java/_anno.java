@@ -102,6 +102,9 @@ public final class _anno
             n.getPairs().forEach( e -> keys.add( e.getNameAsString() ) );
             return keys;
         }
+        if( this.astAnno instanceof SingleMemberAnnotationExpr ){
+            return List.of("value");
+        }
         return new ArrayList<>();
     }
 
@@ -146,7 +149,7 @@ public final class _anno
      * @param astExpr
      * @return 
      */
-    public boolean hasValue( Expression astExpr){
+    public boolean hasValue(Expression astExpr){
         return listValues().stream().filter(e -> e.equals(astExpr) ).findFirst().isPresent();        
     }
 
@@ -248,6 +251,10 @@ public final class _anno
                 return getValue(i).equals(astExpr) ;
             }
         } 
+        //if the attrName is "value" 
+        if(attrName.equals("value") && !this.hasKeys() && this.hasValues()){
+            return getValue(0).equals(astExpr);
+        }
         return false;
     }
 
@@ -265,6 +272,10 @@ public final class _anno
                 return astExprMatchFn.test( getValue(i) );
             }
         } 
+        //if the attrName is "value" 
+        if(attrName.equals("value") && !this.hasKeys() && this.hasValues()){
+            return astExprMatchFn.test( getValue(0) );
+        }
         return false;
     }
     
@@ -291,12 +302,15 @@ public final class _anno
                 return om.get().getValue();
             }
         }
+        if( this.astAnno instanceof SingleMemberAnnotationExpr && name.equals("value") ){
+            return getValue(0);
+        }
         return null;
     }
 
     public boolean is( AnnotationExpr astExpr ){
         try {
-            return _anno.of(astExpr ).equals( this );
+            return _anno.of(astExpr).equals( this );
         }
         catch( Exception e ) {
             return false;
@@ -321,7 +335,8 @@ public final class _anno
             m.put(_java.Component.KEY_VALUES, nae.getPairs() );
         } else if( this.astAnno instanceof SingleMemberAnnotationExpr){
             SingleMemberAnnotationExpr se = (SingleMemberAnnotationExpr)this.astAnno;
-            m.put(_java.Component.VALUE, se.getMemberValue());
+            m.put(_java.Component.KEY_VALUES, new MemberValuePair("value", se.getMemberValue() ) );
+            //m.put(_java.Component.VALUE, se.getMemberValue());
         }
         return m;
     }
@@ -566,8 +581,11 @@ public final class _anno
             return 31 * name.hashCode() + 15;
         }
         if( this.astAnno instanceof SingleMemberAnnotationExpr){
-            return Objects.hash(name, 
-                    this.astAnno.asSingleMemberAnnotationExpr().getMemberValue() );
+            Set<MemberValuePair> mvp = new HashSet<>();
+            mvp.add(new MemberValuePair( "value", this.astAnno.asSingleMemberAnnotationExpr().getMemberValue()));            
+            return Objects.hash(name, mvp );    
+            //return Objects.hash(name, 
+            //        this.astAnno.asSingleMemberAnnotationExpr().getMemberValue() );
         }        
         Set<MemberValuePair> mvp = new HashSet<>();
         this.astAnno.asNormalAnnotationExpr().getPairs().forEach(p -> mvp.add(p) );        

@@ -10,6 +10,37 @@ import junit.framework.TestCase;
  */
 public class _annoTest extends TestCase {
 
+    @interface i {
+        int value();
+    }
+    
+    /**
+     * Verify that the anno:
+     * _anno _a = _anno.of("a(1)");
+     * //is equal to 
+     * _anno _b = _anno.of("a(value=1)");     
+     */
+    public void testEqualsExplicitVsImplicitValueAttr(){
+        
+        @i(1)
+        class c{}
+        
+        @i(value=1)
+        class d{}
+        
+        i ii = c.class.getDeclaredAnnotation(i.class);
+        i i2 = d.class.getDeclaredAnnotation(i.class);
+        
+        //the runtime values of these annotations is equal
+        assertEquals( ii, i2);
+        
+        
+        _anno _a = _anno.of("a(1)");     
+        _anno _b = _anno.of("a(value=1)");
+        
+        assertEquals(_a, _b);
+    }
+    
     public void testAnnoHasAttr(){
         _anno _a = _anno.of("a(1)");
         _anno _b = _anno.of("a(x=1)");

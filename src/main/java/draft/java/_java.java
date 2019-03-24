@@ -351,7 +351,8 @@ public enum _java {
         KEY_VALUES("keyValues", List.class, MemberValuePair.class), //anno
         //KeyValue
         KEY_VALUE("keyValue", MemberValuePair.class), //anno
-        VALUE("value", Expression.class), //anno
+        
+        //VALUE("value", Expression.class), //anno
         PACKAGE_NAME("package", PackageDeclaration.class),
         IMPORTS("imports", List.class, ImportDeclaration.class),
         //IMPORT

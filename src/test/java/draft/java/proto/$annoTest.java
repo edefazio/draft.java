@@ -15,7 +15,22 @@ public class $annoTest extends TestCase {
     @interface name2{
         String string();
     }
+    
+    @interface num{
+        int x();
+    }
+    
+    @interface val{
+        float value();
+    }
 
+    public void testN(){
+        @val(3.1f)
+        @num(x=2)
+        class C{
+            
+        }
+    }
     public void testFirst(){
         @name(2)
         class C{

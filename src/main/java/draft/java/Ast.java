@@ -1923,6 +1923,15 @@ public enum Ast {
             Predicate<N> nodeMatchFn,
             Consumer<N> nodeActionFn) {
 
+        astRootNode.walk(traversal, 
+            n -> {
+                if( targetNodeClass.isAssignableFrom(n.getClass())) {
+                    if (nodeMatchFn.test((N) n)) {
+                        nodeActionFn.accept((N) n);
+                    }
+                }
+            });
+        /*
         astRootNode.stream(traversal).forEach(n -> {
             if (targetNodeClass.isAssignableFrom(n.getClass())) {
                 if (nodeMatchFn.test((N) n)) {
@@ -1930,6 +1939,7 @@ public enum Ast {
                 }
             }
         });
+        */
         return astRootNode;
     }
 
@@ -2519,10 +2529,7 @@ public enum Ast {
         if (left == right) { //short curcuit if same implementation
             return true;
         }
-        //same impl
-        if (left.getClass() != right.getClass()) {
-            return false;
-        }
+        
         //if EITHER (NOT BOTH, or NEITHER) are fully qualified
         if (isFullyQualified(left.getNameAsString())
                 ^ isFullyQualified(right.getNameAsString())) {
@@ -2534,7 +2541,10 @@ public enum Ast {
             if (rightSimple.indexOf('.') > 0) {
                 rightSimple = rightSimple.substring(rightSimple.lastIndexOf('.') + 1);
             }
-            return Objects.equals(leftSimple, rightSimple);
+            //return Objects.equals(leftSimple, rightSimple);
+            if( ! Objects.equals(leftSimple, rightSimple)){
+                return false;
+            }
         } else {
             if (!left.getName().equals(right.getName())) {
                 return false;
@@ -2544,7 +2554,27 @@ public enum Ast {
         //if( !left.getName().equals( right.getName() ) ) {
         //    return false;
         //}
-
+        Set<MemberValuePair> lps = new HashSet<>();
+        Set<MemberValuePair> rps = new HashSet<>();
+        
+        if( left instanceof SingleMemberAnnotationExpr ){            
+            lps.add(new MemberValuePair( "value", 
+                left.asSingleMemberAnnotationExpr().getMemberValue()) );            
+        } else if( left instanceof NormalAnnotationExpr ){
+            lps.addAll(((NormalAnnotationExpr) left).asNormalAnnotationExpr().getPairs());
+        }
+        
+        if( right instanceof SingleMemberAnnotationExpr ){            
+            rps.add(new MemberValuePair( "value", 
+                right.asSingleMemberAnnotationExpr().getMemberValue()) );            
+        } else if( right instanceof NormalAnnotationExpr ){
+            rps.addAll(((NormalAnnotationExpr) right).asNormalAnnotationExpr().getPairs());
+        }
+        //System.out.println( lps );
+        //System.out.println( rps );
+        return lps.equals(rps);
+        /*
+        
         //same values (Need to check if they are out of order in NormalAnnotationExpr
         // i.e. @a(x=1,y=2) == @a(y=2,x=1) same contents, out of order
         if (left instanceof NormalAnnotationExpr) {
@@ -2560,6 +2590,7 @@ public enum Ast {
         } else { //marker annotation
             return left.equals(right);
         }
+        */
     }
 
     /**
