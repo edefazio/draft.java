@@ -376,6 +376,9 @@ public final class $anno
     @Override
     public $anno $(String target, String $Name) {
         this.annoStencil = this.annoStencil.$(target, $Name);
+        if(this.fullyQualifiedStencil != null){
+            this.fullyQualifiedStencil = this.fullyQualifiedStencil.$(target, $Name);
+        }
         return this;
     }
 
@@ -421,6 +424,9 @@ public final class $anno
      */
     public $anno assign$( Translator translator, Tokens kvs ) {
         this.annoStencil = this.annoStencil.assign$(translator,kvs);
+        if(this.fullyQualifiedStencil != null){
+            this.fullyQualifiedStencil = this.fullyQualifiedStencil.assign$(translator, kvs);
+        }        
         return this;
     }
 
@@ -499,7 +505,7 @@ public final class $anno
     }
 
     @Override
-    public List<Select> listSelectedIn(Node n ){
+    public List<Select> selectListIn(Node n ){
         List<Select>sts = new ArrayList<>();
         n.walk(AnnotationExpr.class, e-> {
             Select s = select( e );
@@ -511,7 +517,7 @@ public final class $anno
     }
 
     @Override
-    public List<Select> listSelectedIn(_node _m ){
+    public List<Select> selectListIn(_node _m ){
         List<Select>sts = new ArrayList<>();
         Walk.in( _m, AnnotationExpr.class, e -> {
             Select s = select( e );
@@ -570,7 +576,7 @@ public final class $anno
         Walk.in(_m, AnnotationExpr.class, e-> {
             Select sel = select( e );
             if( sel != null ){
-                sel.expression.replace($a.construct(sel.tokens).ast() );
+                sel.expression.replace($a.construct(sel.clauses).ast() );
             }
         });
         return _m;
@@ -587,7 +593,7 @@ public final class $anno
         node.walk(AnnotationExpr.class, e-> {
             Select sel = select( e );
             if( sel != null ){
-                sel.expression.replace($a.construct(sel.tokens).ast() );
+                sel.expression.replace($a.construct(sel.clauses).ast() );
             }
         });
         return node;
@@ -651,17 +657,17 @@ public final class $anno
 
     public static class Select implements $query.selected {
         public AnnotationExpr expression;
-        public Tokens tokens;
+        public Clauses clauses;
 
         public Select( AnnotationExpr expression, Tokens tokens){
             this.expression = expression;
-            this.tokens = tokens;
+            this.clauses = Clauses.of( tokens);
         }
         @Override
         public String toString(){
             return "$anno.Select {"+ System.lineSeparator()+
                     Text.indent( expression.toString() )+ System.lineSeparator()+
-                    Text.indent( "TOKENS : " + tokens) + System.lineSeparator()+
+                    Text.indent( "TOKENS : " + clauses) + System.lineSeparator()+
                     "}";
         }
     }

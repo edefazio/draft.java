@@ -1303,7 +1303,7 @@ public final class $expr <T extends Expression>
     }
 
     @Override
-    public List<Select<T>> listSelectedIn(Node astNode ){
+    public List<Select<T>> selectListIn(Node astNode ){
         List<Select<T>>sts = new ArrayList<>();
         astNode.walk(this.expressionClass, e-> {
             Select s = select( e );
@@ -1315,7 +1315,7 @@ public final class $expr <T extends Expression>
     }
 
     @Override
-    public List<Select<T>> listSelectedIn(_node _n ){
+    public List<Select<T>> selectListIn(_node _n ){
         List<Select<T>>sts = new ArrayList<>();
         Walk.in(_n, this.expressionClass, e -> {
             Select s = select( e );
@@ -1387,7 +1387,7 @@ public final class $expr <T extends Expression>
         Walk.in(_n, this.expressionClass, e-> {
             Select sel = select( e );
             if( sel != null ){
-                sel.expression.replace($repl.construct(sel.tokens));
+                sel.expression.replace($repl.construct(sel.clauses));
             }
         });
         return _n;
@@ -1438,18 +1438,18 @@ public final class $expr <T extends Expression>
      */
     public static class Select<T extends Expression> implements $query.selected {
         public T expression;
-        public Tokens tokens;
+        public Clauses clauses;
 
         public Select( T expression, Tokens tokens){
             this.expression = expression;
-            this.tokens = tokens;
+            this.clauses = Clauses.of(tokens);
         }
         
         @Override
         public String toString(){
             return "$expr.Select{"+ System.lineSeparator()+
                     Text.indent( expression.toString() )+ System.lineSeparator()+
-                    Text.indent( "TOKENS : " + tokens) + System.lineSeparator()+
+                    Text.indent( "CLAUSES : " + clauses) + System.lineSeparator()+
                     "}";
         }
     }

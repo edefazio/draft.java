@@ -11,17 +11,131 @@ import java.util.function.Consumer;
 
 public class $stmtTest extends TestCase {
 
+    public void test$protoQueryTutorial(){
+        _class _c = _class.of("C", new Object(){
+            void m(){
+                //comment
+                assertTrue( true );
+                assertTrue(1==1);
+                System.out.println( "Hello World!" );
+            }
+        });
+        //the easy things should be easy
+        assertNotNull( $stmt.first(_c, "assertTrue(true);"));
+        assertTrue( $stmt.list(_c, "assertTrue(true);").size() ==1);
+
+        
+        $stmt.replace(_c, "assertTrue(true);", "Assert.assertTrue(true);");
+        $stmt.remove(_c, "Assert.assertTrue(true);");
+        
+        assertNull($stmt.first(_c, "Assert.assertTrue(true);"));
+    }
+    
+    
+    public void test$protoQueryTutorialInstance(){
+        _class _c = _class.of("C", new Object(){
+            void m(){
+                //comment
+                assertTrue( true );
+                assertTrue(1==1);
+            }
+        });
+        $stmt $assertTrue = $stmt.of( ()->assertTrue(true));
+        
+        //the easy things should be easy
+        assertNotNull( $assertTrue.firstIn(_c));
+        assertTrue( $assertTrue.listIn(_c).size() ==1);
+        
+        $assertTrue.replaceIn(_c, "Assert.assertTrue(true);");
+        $assertTrue.removeIn(_c);
+        
+        assertNull($stmt.first(_c, "Assert.assertTrue(true);"));        
+    }
+    
+    public void test$ProtoWildcardVariablesAndSelect(){
+        _class _c = _class.of("C", new Object(){
+            void m(){
+                //comment
+                assertTrue( true );
+                assertTrue(1==1);
+                System.out.println("Hello World!");
+            }
+        });
+        
+        $stmt $assertAny = $stmt.of("assertTrue($any$);");
+        //this produces the same result just using the lambda as input 
+        $assertAny = $stmt.of( (Boolean $any$)->assertTrue($any$));
+        
+        //here we match BOTH assert statements because the $any$ wildcard/variable
+        //will match any String argument pattern inside the ()'s
+        // we match: assertTrue( true ); & assertTrue(1==1)
+        assertTrue( $assertAny.listIn(_c).size() == 2 );
+        
+        assertTrue( $assertAny.firstIn(_c).getComment().isPresent());
+        
+        
+        //Here we use the "select"          
+        assertTrue( $assertAny.selectFirstIn(_c).clauses.is("any", "true"));
+        
+        //you can statically query for 
+        assertTrue( $stmt.selectFirst(_c, "assertTrue($any$);").statement.getComment().isPresent());
+        assertTrue( $stmt.selectList(_c, "assertTrue($any$);").size() ==2);
+        
+        
+        
+        
+    }
+    
+    public void testFullApi(){
+        _class _c = _class.of("C", new Object(){
+            void m(){
+                //comment
+                assertTrue( true );
+                assertTrue(1==1);
+            }
+        });
+        //the easy things should be easy
+        assertNotNull( $stmt.first(_c, "assertTrue(true);"));
+        assertTrue( $stmt.list(_c, "assertTrue(true);").size() ==1);
+        assertTrue( $stmt.selectFirst(_c, "assertTrue(true);").statement.getComment().isPresent());
+        $stmt.replace(_c, "assertTrue(true);", "Assert.assertTrue(true);");
+        $stmt.remove(_c, "Assert.assertTrue(true);");
+        
+        
+        
+        
+        $stmt.first(_c, "assertTrue($any$);");
+        $stmt.of( ()-> assertTrue(true) ).firstIn(_c);
+        $stmt.of( ()-> assertTrue(true) ).$("true", "any").firstIn(_c);
+        
+        $stmt.of( ($any$)-> assertNotNull($any$) ).firstIn(_c);
+        
+        
+        
+        $stmt.first(_c, "assertTrue(1==1);" );
+        $stmt.first(_c, "assertTrue( $obj$.equals($obj$) );" );
+        
+        $stmt.first(_c, "assertTrue( $obj$.equals($obj$) );" );
+        $stmt.first(_c, "assertTrue( $a$.equals($b$) );" );
+        
+    }
+    
     public void testStaticIsInListLambda(){
         _class _c = _class.of("C");
         
-        assertFalse($stmt.isIn(_c, (Object $any$)->System.out.println($any$) ));
+        assertNull($stmt.first(_c, "System.out.println($any$);" ));
+        
         _c = _class.of("C", new Object() { 
             void m(){
                 System.out.println(1);
             }
         });
         
-        assertTrue($stmt.isIn(_c, (Object $any$)->System.out.println($any$) ));
+
+                
+        assertNotNull($stmt.first(_c, "System.out.println($any$);" ));
+        
+        assertNotNull($stmt.selectList(_c, "System.out.println($any$);").get(0));
         
         assertNotNull( $stmt.of(($any$)->System.out.println($any$)).listIn(_c));
     }
@@ -51,7 +165,7 @@ public class $stmtTest extends TestCase {
         }
         $stmt $s = $stmt.of(($any$)-> System.out.println($any$));
         _class _c = _class.of(L.class);
-        assertEquals( 2, $s.listSelectedIn(_c).size());
+        assertEquals( 2, $s.selectListIn(_c).size());
         assertEquals( 2, $stmt.list(_c, "System.out.println($any$);" ).size() );
     }
 
@@ -69,7 +183,7 @@ public class $stmtTest extends TestCase {
         $s.replaceIn(_c, $r);
         
         //verify we can match the (2) replacements
-        assertEquals( 2, $r.listSelectedIn(_c).size());
+        assertEquals( 2, $r.selectListIn(_c).size());
         
         //static replace/ list
         _c = _class.of(L.class);
@@ -107,7 +221,7 @@ public class $stmtTest extends TestCase {
         System.out.println( _c );
 
         //verify we can match the (2) replacements
-        assertEquals( 2, $r.listSelectedIn(_c).size());
+        assertEquals( 2, $r.selectListIn(_c).size());
         System.out.println( _c );
     }
 
@@ -231,7 +345,7 @@ public class $stmtTest extends TestCase {
                 System.out.println("another method"+4+" values");
             }
         }
-        List<$stmt.Select> sel =  s.listSelectedIn( _class.of(C.class) );
+        List<$stmt.Select> sel =  s.selectListIn( _class.of(C.class) );
         assertEquals(4, sel.size());
     }
 }

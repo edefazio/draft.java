@@ -435,7 +435,7 @@ public final class $constructor
     }
 
     @Override
-    public List<Select> listSelectedIn(Node n){
+    public List<Select> selectListIn(Node n){
         List<Select>sts = new ArrayList<>();
         n.walk(ConstructorDeclaration.class, c-> {
             Select sel = select( c );
@@ -447,7 +447,7 @@ public final class $constructor
     }
 
     @Override
-    public List<Select> listSelectedIn(_node _t){
+    public List<Select> selectListIn(_node _t){
         List<Select>sts = new ArrayList<>();
         Walk.in(_t, ConstructorDeclaration.class, c-> {
             Select sel = select( c );
@@ -482,13 +482,13 @@ public final class $constructor
 
     @Override
     public <M extends _node> M removeIn(M _t ){
-        listSelectedIn(_t).forEach(s -> s.ctor.remove() );
+        selectListIn(_t).forEach(s -> s.ctor.remove() );
         return _t;
     }
 
     @Override
     public <N extends Node> N removeIn(N node ){
-        listSelectedIn(node).forEach(s -> s.ctor.remove() );
+        selectListIn(node).forEach(s -> s.ctor.remove() );
         return node;
     }
 
@@ -530,18 +530,18 @@ public final class $constructor
 
     public static class Select implements $query.selected {
         public ConstructorDeclaration ctor;
-        public Tokens tokens;
+        public Clauses clauses;
 
         public Select( ConstructorDeclaration astCtor, Tokens tokens ){
             this.ctor = astCtor;
-            this.tokens = tokens;
+            this.clauses = Clauses.of(tokens);
         }
 
         @Override
         public String toString(){
             return "$constructor.Select{"+ System.lineSeparator()+
                     Text.indent( ctor.toString() )+ System.lineSeparator()+
-                    Text.indent( "TOKENS : " + tokens) + System.lineSeparator()+
+                    Text.indent( "CLAUSES : " + clauses) + System.lineSeparator()+
                     "}";
         }
     }

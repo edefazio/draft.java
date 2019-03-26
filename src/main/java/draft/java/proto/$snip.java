@@ -443,7 +443,7 @@ public final class $snip implements Template<List<Statement>>, $query<List<State
     public Tokens deconstruct( Statement statement ){
         Select s  = select( statement );
         if( s != null ){
-            return s.tokens;
+            return s.clauses.asTokens();
         }
         return null;
     }
@@ -535,7 +535,7 @@ public final class $snip implements Template<List<Statement>>, $query<List<State
     }
 
     @Override
-    public List<Select> listSelectedIn(_node _n ){
+    public List<Select> selectListIn(_node _n ){
         List<Select>sts = new ArrayList<>();
         Walk.in(_n, this.$sts.get(0).statementClass, st -> {
             Select sel = select( (Statement)st );
@@ -547,7 +547,7 @@ public final class $snip implements Template<List<Statement>>, $query<List<State
     }
 
     @Override
-    public List<Select> listSelectedIn(Node astNode ){
+    public List<Select> selectListIn(Node astNode ){
         List<Select>sts = new ArrayList<>();
         astNode.walk(this.$sts.get(0).statementClass, st -> {
             Select sel = select( (Statement)st );
@@ -560,13 +560,13 @@ public final class $snip implements Template<List<Statement>>, $query<List<State
 
     @Override
     public <N extends Node> N removeIn( N astNode ){
-        listSelectedIn(astNode ).forEach(s -> s.statements.forEach(st-> st.removeForced()));
+        selectListIn(astNode ).forEach(s -> s.statements.forEach(st-> st.removeForced()));
         return astNode;
     }
 
     @Override
     public <N extends _node> N removeIn( N _n ){
-        listSelectedIn(_n ).forEach(s -> s.statements.forEach(st-> st.removeForced()));
+        selectListIn(_n ).forEach(s -> s.statements.forEach(st-> st.removeForced()));
         return _n;
     }
 
@@ -596,7 +596,7 @@ public final class $snip implements Template<List<Statement>>, $query<List<State
             Select sel = select( (Statement)st );
             if( sel != null ){
                 //constrct the replacement snippet
-                List<Statement> replacements = $repl.construct( sel.tokens );
+                List<Statement> replacements = $repl.construct( sel.clauses );
                 Statement firstStmt = sel.statements.get(0);
                 Node par = firstStmt.getParentNode().get();
                 NodeWithStatements parentNode = (NodeWithStatements)par;
@@ -662,7 +662,7 @@ public final class $snip implements Template<List<Statement>>, $query<List<State
             Select sel = select( (Statement)st );
             if( sel != null ){
                 //construct the replacement snippet
-                List<Statement> replacements = $repl.construct( sel.tokens );
+                List<Statement> replacements = $repl.construct( sel.clauses );
                 Statement firstStmt = sel.statements.get(0);
                 Node par = firstStmt.getParentNode().get();
                 NodeWithStatements parentNode = (NodeWithStatements)par;
@@ -742,11 +742,11 @@ public final class $snip implements Template<List<Statement>>, $query<List<State
 
     public static class Select implements $query.selected {
         public List<Statement> statements;
-        public Tokens tokens;
+        public Clauses clauses;
 
         public Select( List<Statement> statements, Tokens tokens){
             this.statements = statements;
-            this.tokens = tokens;
+            this.clauses = Clauses.of(tokens);
         }
 
         @Override
@@ -755,7 +755,7 @@ public final class $snip implements Template<List<Statement>>, $query<List<State
             this.statements.forEach( s -> sb.append(s).append( System.lineSeparator()) );
             return "$snip.Selected{"+ System.lineSeparator()+
                     Text.indent( sb.toString() )+ System.lineSeparator()+
-                    Text.indent( "TOKENS : " + tokens) + System.lineSeparator()+
+                    Text.indent( "CLAUSES : " + clauses) + System.lineSeparator()+
                     "}";
         }
     }

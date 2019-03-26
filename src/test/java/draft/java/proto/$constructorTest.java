@@ -65,9 +65,20 @@ public class $constructorTest extends TestCase {
             }
         );
 
-        System.out.println( $ct.signatureStencil );
-        System.out.println( $ct.construct() );
+        //System.out.println( $ct.signatureStencil );
+        //System.out.println( $ct.construct() );
+        //System.out.println( $ct.construct() );
 
+        _constructor _c1 =  $ct.construct();
+        _constructor _c2 =  $ct.construct();
+        
+        assertEquals( _c1, _c2);
+        
+        //System.out.println( "START");
+        assertTrue( _c1.is( _c2.toString() ));
+        //System.out.println( "END");
+        
+        
         assertTrue(
                 $ct.construct().is("public ct(int a, String name){",
                 "this.a = a;",
@@ -144,18 +155,18 @@ public class $constructorTest extends TestCase {
             Y(){ }
         }
         _class _c = _class.of(Y.class);
-        assertNotNull( $noArgNoBody.listSelectedIn(_c).get(0) );
+        assertNotNull( $noArgNoBody.selectListIn(_c).get(0) );
 
         class Z{
             Z(){
             }
         }
         _c = _class.of(Z.class);
-        assertTrue( $noArgNoBody.listSelectedIn(_c).size() == 1 );
+        assertTrue( $noArgNoBody.selectListIn(_c).size() == 1 );
 
-        System.out.println( $noArgNoBody.listSelectedIn(_c) );
+        System.out.println( $noArgNoBody.selectListIn(_c) );
 
-        assertTrue( $noArgNoBody.listSelectedIn(_c).get(0).tokens.has("name", "Z"));
+        assertTrue( $noArgNoBody.selectListIn(_c).get(0).clauses.is("name", "Z"));
         //$c.select(_constructor.of("public "))
     }
 
@@ -166,8 +177,8 @@ public class $constructorTest extends TestCase {
 
         assertTrue( $oneArgInit.matches(_constructor.of("A(String s){ this.s = s;}") ));
 
-        assertTrue( $oneArgInit.select(_constructor.of("A(String s){ this.s = s;}") ).tokens.has("ctorName", "A") );
-        assertTrue( $oneArgInit.select(_constructor.of("A(String s){ this.s = s;}") ).tokens.has("type", "String") );
-        assertTrue( $oneArgInit.select(_constructor.of("A(String s){ this.s = s;}") ).tokens.has("name", "s") );
+        assertTrue( $oneArgInit.select(_constructor.of("A(String s){ this.s = s;}") ).clauses.is("ctorName", "A") );
+        assertTrue( $oneArgInit.select(_constructor.of("A(String s){ this.s = s;}") ).clauses.is("type", "String") );
+        assertTrue( $oneArgInit.select(_constructor.of("A(String s){ this.s = s;}") ).clauses.is("name", "s") );
     }
 }

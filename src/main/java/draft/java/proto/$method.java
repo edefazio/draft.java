@@ -602,7 +602,7 @@ public final class $method
     }
     
     @Override
-    public List<Select> listSelectedIn(Node n){
+    public List<Select> selectListIn(Node n){
         List<Select>sts = new ArrayList<>();
         n.walk(MethodDeclaration.class, m-> {
             Select sel = select( m );
@@ -614,7 +614,7 @@ public final class $method
     }
 
     @Override
-    public List<Select> listSelectedIn(_node _n){
+    public List<Select> selectListIn(_node _n){
         List<Select>sts = new ArrayList<>();
         Walk.in(_n, MethodDeclaration.class, m -> {
             Select sel = select( m );
@@ -653,7 +653,7 @@ public final class $method
      */
     public <N extends _node> N replaceIn( N _n, $method $replace ){
         return forSelectedIn(_n, s -> {
-            _method repl = $replace.construct(s.tokens);
+            _method repl = $replace.construct(s.clauses);
             s.method.replace(repl.ast());
         });
     }
@@ -754,17 +754,17 @@ public final class $method
 
     public static class Select implements $query.selected {
         public MethodDeclaration method;
-        public Tokens tokens;
+        public Clauses clauses;
 
         public Select( MethodDeclaration astMethod, Tokens tokens ){
             this.method = astMethod;
-            this.tokens = tokens;
+            this.clauses = Clauses.of(tokens);
         }
 
         public String toString(){
             return "$method.Select{"+ System.lineSeparator()+
                     Text.indent( method.toString() )+ System.lineSeparator()+
-                    Text.indent( "TOKENS : " + tokens) + System.lineSeparator()+
+                    Text.indent( "CLAUSES : " + clauses) + System.lineSeparator()+
                     "}";
         }
     }

@@ -1,13 +1,10 @@
 package draft.java.proto;
 
-import draft.java.proto.$import;
-import draft.java.Ast;
 import draft.java._class;
 import java.util.Map;
 import junit.framework.TestCase;
 import org.hamcrest.MatcherAssert;
 import org.junit.Assert;
-import static draft.java.Ast.variable;
 /**
  *
  * @author Eric

@@ -126,7 +126,7 @@ public final class _constructor implements _anno._hasAnnos<_constructor>,
         final _constructor other = (_constructor)obj;
         if( this.astCtor == other.astCtor ) {
             return true; //two _constructor instances pointing to same ConstructorDeclaration instance
-        }
+        }        
         if( !Ast.annotationsEqual( this.astCtor, other.astCtor)) {
             return false;
         }
@@ -255,6 +255,8 @@ public final class _constructor implements _anno._hasAnnos<_constructor>,
             return equals(_ct);
         }
         catch(Exception e){
+            //System.out.println( "Expecetion"+ e);
+            //e.printStackTrace();
             return false;
         }
     }

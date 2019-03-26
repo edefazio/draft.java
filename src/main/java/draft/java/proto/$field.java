@@ -526,7 +526,7 @@ public class $field
     }
 
     @Override
-    public List<Select> listSelectedIn(Node astNode ){
+    public List<Select> selectListIn(Node astNode ){
         List<Select>sts = new ArrayList<>();
         astNode.walk(VariableDeclarator.class, e-> {
             Select s = select( e );
@@ -538,7 +538,7 @@ public class $field
     }
 
     @Override
-    public List<Select> listSelectedIn(_node _n ){
+    public List<Select> selectListIn(_node _n ){
         List<Select>sts = new ArrayList<>();
         Walk.in(_n, VariableDeclarator.class, e -> {
             Select s = select( e );
@@ -582,7 +582,7 @@ public class $field
         astNode.walk(VariableDeclarator.class, e-> {
             Select sel = select( e );
             if( sel != null ){
-                sel._f.ast().replace($replaceProto.construct(sel.tokens).ast() );
+                sel._f.ast().replace($replaceProto.construct(sel.clauses).ast() );
             }
         });
         return astNode;
@@ -599,7 +599,7 @@ public class $field
         Walk.in(_le, VariableDeclarator.class, e-> {
             Select sel = select( e );
             if( sel != null ){
-                sel._f.ast().replace($replaceProto.construct(sel.tokens).ast() );
+                sel._f.ast().replace($replaceProto.construct(sel.clauses).ast() );
             }
         });
         return _le;
@@ -657,18 +657,18 @@ public class $field
 
     public static class Select implements $query.selected {
         public _field _f;
-        public Tokens tokens;
+        public Clauses clauses;
 
         public Select( _field _f, Tokens tokens){
             this._f = _f;
-            this.tokens = tokens;
+            this.clauses = Clauses.of(tokens);
         }
         
         @Override
         public String toString(){
             return "$field.Select{"+ System.lineSeparator()+
                     Text.indent( _f.toString() )+ System.lineSeparator()+
-                    Text.indent( "TOKENS : " + tokens) + System.lineSeparator()+
+                    Text.indent( "CLAUSES : " + clauses) + System.lineSeparator()+
                     "}";
         }
     }

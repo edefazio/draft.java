@@ -445,7 +445,7 @@ public final class $import
     }
 
     @Override
-    public List<Select> listSelectedIn( Node astRootNode ){
+    public List<Select> selectListIn( Node astRootNode ){
         List<Select>sts = new ArrayList<>();
         astRootNode.walk(ImportDeclaration.class, e-> {
             Select s = select( e );
@@ -457,9 +457,9 @@ public final class $import
     }
 
     @Override
-    public List<Select> listSelectedIn( _node _n ){
+    public List<Select> selectListIn( _node _n ){
         if( _n instanceof _type ){
-            return listSelectedIn(((_type)_n).findCompilationUnit() );
+            return selectListIn(((_type)_n).findCompilationUnit() );
         }
         return Collections.EMPTY_LIST;
     }
@@ -563,7 +563,7 @@ public final class $import
         astNode.walk(ImportDeclaration.class, e-> {
             Select sel = select( e );
             if( sel != null ){
-                sel.astImport.replace($i.construct(sel.tokens).ast() );
+                sel.astImport.replace($i.construct(sel.clauses).ast() );
             }
         });
         return astNode;
@@ -622,17 +622,17 @@ public final class $import
 
     public static class Select implements $query.selected {
         public ImportDeclaration astImport;
-        public Tokens tokens;
+        public Clauses clauses;
 
         public Select( ImportDeclaration astImport, Tokens tokens){
             this.astImport = astImport;
-            this.tokens = tokens;
+            this.clauses = Clauses.of( tokens );
         }
         @Override
         public String toString(){
             return "$import.Select {"+ System.lineSeparator()+
                     Text.indent( astImport.toString() )+ System.lineSeparator()+
-                    Text.indent( "TOKENS : " + tokens) + System.lineSeparator()+
+                    Text.indent( "CLAUSES : " + clauses) + System.lineSeparator()+
                     "}";
         }
     }

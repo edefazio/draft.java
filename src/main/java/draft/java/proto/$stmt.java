@@ -3,15 +3,12 @@ package draft.java.proto;
 import com.github.javaparser.ast.Node;
 import com.github.javaparser.ast.comments.Comment;
 import com.github.javaparser.ast.expr.Expression;
-import com.github.javaparser.ast.expr.LambdaExpr;
 import com.github.javaparser.ast.stmt.*;
 import com.github.javaparser.printer.PrettyPrinterConfiguration;
 import draft.*;
 import draft.java.*;
 import draft.java.Expr.QuadConsumer;
-import draft.java.Expr.QuadFunction;
 import draft.java.Expr.TriConsumer;
-import draft.java.Expr.TriFunction;
 import draft.java._model._node;
 
 import java.util.*;
@@ -19,138 +16,58 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.*;
 
 /**
- * Template of a Java {@link Statement} that can be
+ * Prototype of a Java {@link Statement} that provides operations for 
+ * constructing, analyzing, extracting, removing, replacing / etc. Statement
+ * type nodes within the AST.
  *
- * @param <T>
+ * <PRE>
+ * $stmt
+ * CONSTRUCT
+ *     .construct([Translator], Tokens) build & return 
+ *     .fill([Translator], values)
+ * PARAMETERIZE
+ *     .$(Tokens)
+ *     .assign$([translator], target, value)
+ * MATCH
+ *     .constraint(Predicate<T>) //set the matching constraint
+ *     .matches(Statement)
+ *     .select(Statement)
+ *     .deconstruct( Statement )
+ * QUERY       
+ *     .first/.firstIn(_node, proto) find the first matching statement in
+ *     .list/.listIn(_node, proto, Predicate<>) list all matches in        
+ *     .selectFirst/.selectFirstIn(_node, proto) return the first "selection" match
+ *     .selectList/.selectListIn(_node, proto) return a list of selection matches
+ * MODIFY
+ *     .remove/.removeIn(_node, proto)
+ *     .replace/.replaceIn(_node, protoTarget, protoReplacement)
+ *     .forIn(_node, Consumer<T>)
+ *     .forSelectedIn(_node, Consumer<T>) 
+ *</PRE>      
+ * @param <T> underlying Statement implementation type
  */
 public final class $stmt<T extends Statement>
-        implements Template<T>, $query<T> {
-
-    /**
-     * Does this stmt template appear in the root node?
-     * @param _n where to look
-     * @param proto the code of the Statement we're looking for
-     * @return true if found else false
-     */
-    public static final boolean isIn( _node _n, String... proto ){
-        return isIn(_n, Stmt.of(proto));
-    }
+    implements Template<T>, $query<T> {
     
     /**
-     * Does this stmt template appear in the root node?
-     * @param _n where to look
-     * @param proto the code of the Statement we're looking for
-     * @return true if found else false
-     */
-    public static final boolean isIn( _node _n, Statement proto ){
-        return isIn(_n, $stmt.of(proto));
-    }
-    
-    /**
-     * 
-     * @param _n
-     * @param proto
-     * @return 
-     */
-    public static final boolean isIn( _node _n, Expr.Command proto ){
-        LambdaExpr le = Expr.lambda( Thread.currentThread().getStackTrace()[2] );
-        return isIn(_n, $stmt.of(le.getBody()));
-    }
-    
-    /**
-     * 
+     * Return the first statement matching the lambda
      * @param <T>
-     * @param _n
-     * @param proto
-     * @return 
-     */
-    public static final <T extends Object> boolean isIn( _node _n, Consumer<T> proto ){
-        LambdaExpr le = Expr.lambda( Thread.currentThread().getStackTrace()[2] );
-        return isIn(_n, $stmt.of(le.getBody()));
-    }
-    
-    /**
-     * 
-     * @param <A>
-     * @param <B>
-     * @param _n
-     * @param proto
-     * @return 
-     */
-    public static final <A extends Object, B extends Object> boolean isIn( _node _n, BiConsumer<A,B> proto ){
-        LambdaExpr le = Expr.lambda( Thread.currentThread().getStackTrace()[2] );
-        return isIn(_n, $stmt.of(le.getBody()));
-    }
-    
-    /**
-     * 
-     * @param <A>
-     * @param <B>
-     * @param _n
-     * @param proto
-     * @return 
-     */
-    public static final <A extends Object, B extends Object> boolean isIn( _node _n, Function<A,B> proto ){
-        LambdaExpr le = Expr.lambda( Thread.currentThread().getStackTrace()[2] );
-        return isIn(_n, $stmt.of(le.getBody()));
-    }
-    
-    /**
-     * 
-     * @param <A>
-     * @param <B>
-     * @param <C>
-     * @param _n
-     * @param proto
-     * @return 
-     */
-    public static final <A extends Object, B extends Object, C extends Object> boolean isIn( _node _n, BiFunction<A,B,C> proto ){
-        LambdaExpr le = Expr.lambda( Thread.currentThread().getStackTrace()[2] );
-        return isIn(_n, $stmt.of(le.getBody()));
-    }
-    
-    /**
-     * 
-     * @param <A>
-     * @param <B>
-     * @param <C>
-     * @param <D>
-     * @param _n
-     * @param proto
-     * @return 
-     */
-    public static final <A extends Object, B extends Object, C extends Object, D extends Object> boolean isIn( _node _n, TriFunction<A,B,C,D> proto ){
-        LambdaExpr le = Expr.lambda( Thread.currentThread().getStackTrace()[2] );
-        return isIn(_n, $stmt.of(le.getBody()));
-    }
-    
-        /**
-     * 
-     * @param <A>
-     * @param <B>
-     * @param <C>
-     * @param <D>
-     * @param _n
-     * @param proto
-     * @return 
-     */
-    public static final <A extends Object, B extends Object, C extends Object, D extends Object, E extends Object> boolean isIn( _node _n, QuadFunction<A,B,C,D,E> proto ){
-        LambdaExpr le = Expr.lambda( Thread.currentThread().getStackTrace()[2] );
-        return isIn(_n, $stmt.of(le.getBody()));
-    }
-    
-    /**
-     * Does this stmt template appear in the root node?
      * @param _n where to look
-     * @param proto the code of the Statement we're looking for
+     * @param statementMatchFn
      * @return true if found else false
      */
-    public static final boolean isIn( _node _n, $stmt proto){
-        return list(_n, proto).size() > 0;
-    }    
+    public static final <T extends Statement> T first( _node _n, Predicate<T> statementMatchFn ){
+        Optional<Node> os = _n.ast().stream().filter(n -> n instanceof Statement 
+                &&  statementMatchFn.test( (T)n) )
+                .findFirst();
+        if( os.isPresent() ){
+            return (T)os.get();
+        }
+        return null;
+    }
     
     /**
-     * Does this stmt template appear in the root node?
+     * Return the first instance matching the proto and return it or null
      * @param <T>
      * @param _n where to look
      * @param proto the code of the Statement we're looking for
@@ -159,118 +76,17 @@ public final class $stmt<T extends Statement>
     public static final <T extends Statement> T first( _node _n, String... proto ){
         return (T)$stmt.of(proto).firstIn(_n);
     }
-    
+
     /**
-     * Does this stmt template appear in the root node?
+     * Return the first instance matching the proto and return it or null
      * @param <T>
      * @param _n where to look
      * @param proto the code of the Statement we're looking for
+     * @param constraint
      * @return true if found else false
      */
-    public static final <T extends Statement> T first( _node _n, Statement proto ){
-        return (T)$stmt.of(proto).firstIn(_n);
-    }
-    
-    /**
-     * 
-     * @param <T>
-     * @param _n
-     * @param proto
-     * @return 
-     */
-    public static final <T extends Statement> T first( _node _n, Expr.Command proto ){
-        LambdaExpr le = Expr.lambda( Thread.currentThread().getStackTrace()[2] );
-        return (T)$stmt.of(le.getBody()).firstIn(_n);
-    }
-    
-    /**
-     * 
-     * @param <A>
-     * @param <T>
-     * @param _n
-     * @param proto
-     * @return 
-     */
-    public static final <A extends Object, T extends Statement> T first( _node _n, Consumer<A> proto ){
-        LambdaExpr le = Expr.lambda( Thread.currentThread().getStackTrace()[2] );
-        return (T)$stmt.of(le.getBody()).firstIn(_n);
-    }
-    
-    /**
-     * 
-     * @param <A>
-     * @param <B>
-     * @param <T>
-     * @param _n
-     * @param proto
-     * @return 
-     */
-    public static final <A extends Object, B extends Object, T extends Statement> T first( _node _n, BiConsumer<A,B> proto ){
-        LambdaExpr le = Expr.lambda( Thread.currentThread().getStackTrace()[2] );
-        return (T)$stmt.of(le.getBody()).firstIn(_n);
-    }
-    
-    /**
-     * 
-     * @param <A>
-     * @param <B>
-     * @param <T>
-     * @param _n
-     * @param proto
-     * @return 
-     */
-    public static final <A extends Object, B extends Object, T extends Statement> T first( _node _n, Function<A,B> proto ){
-        LambdaExpr le = Expr.lambda( Thread.currentThread().getStackTrace()[2] );
-        return (T)$stmt.of(le.getBody()).firstIn(_n);
-    }
-    
-    /**
-     * 
-     * @param <A>
-     * @param <B>
-     * @param <C>
-     * @param <T>
-     * @param _n
-     * @param proto
-     * @return 
-     */
-    public static final <A extends Object, B extends Object, C extends Object, T extends Statement> T first( _node _n, BiFunction<A,B,C> proto ){
-        LambdaExpr le = Expr.lambda( Thread.currentThread().getStackTrace()[2] );
-        return (T)$stmt.of(le.getBody()).firstIn(_n);
-    }
-    
-    /**
-     * 
-     * @param <A>
-     * @param <B>
-     * @param <C>
-     * @param <D>
-     * @param <T>
-     * @param _n
-     * @param proto
-     * @return 
-     */
-    public static final <A extends Object, B extends Object, C extends Object, D extends Object, T extends Statement> T first( _node _n, TriFunction<A,B,C,D> proto ){
-        LambdaExpr le = Expr.lambda( Thread.currentThread().getStackTrace()[2] );
-        return (T)$stmt.of(le.getBody()).firstIn(_n);
-    }
-    
-    /**
-     * 
-     * @param <A>
-     * @param <B>
-     * @param <C>
-     * @param <D>
-     * @param <E>
-     * @param <T>
-     * @param _n
-     * @param proto
-     * @return 
-     */
-    public static final <A extends Object, B extends Object, C extends Object, D extends Object, E extends Object, T extends Statement> T first( _node _n, QuadFunction<A,B,C,D,E> proto ){
-        LambdaExpr le = Expr.lambda( Thread.currentThread().getStackTrace()[2] );
-        return (T) $stmt.of(le.getBody()) 
-                .firstIn( _n );
+    public static final <T extends Statement> T first( _node _n, String proto, Predicate<T>constraint){
+        return (T)$stmt.of(proto).constraint(constraint).firstIn(_n);
     }
     
     /**
@@ -283,27 +99,114 @@ public final class $stmt<T extends Statement>
     public static final <T extends Statement> T first( _node _n, $stmt<T> proto){
         return proto.firstIn(_n);
     }    
-       
+           
+    /**
+     * Does this stmt template appear in the root node?
+     * @param <T>
+     * @param _n where to look
+     * @param proto the code of the Statement we're looking for
+     * @return true if found else false
+     */
+    public static final <T extends Statement> Select<T> selectFirst( _node _n, String... proto ){
+        return (Select<T>)$stmt.of(proto).selectFirstIn(_n);
+    }
+    
+    /**
+     * Does this stmt template appear in the root node?
+     * @param <T>
+     * @param _n where to look
+     * @param proto the code of the Statement we're looking for
+     * @return true if found else false
+     */
+    public static final <T extends Statement> Select<T> selectFirst( _node _n, T proto ){
+        return (Select<T>)$stmt.of(proto).selectFirstIn(_n);
+    }
+    
+    /**
+     * Does this stmt template appear in the root node?
+     * @param <T>
+     * @param _n where to look
+     * @param proto the code of the Statement we're looking for
+     * @return true if found else false
+     */
+    public static final <T extends Statement> Select<T> selectFirst( _node _n, $stmt<T> proto){
+        return proto.selectFirstIn(_n);
+    }
+    
+    /**
+     * Returns a lkist of Select<T> that occur in the _node _n
+     * @param <T>
+     * @param _n where to look
+     * @param $proto the prototype of the Statement we're looking for
+     * @return a List of Select<T>
+     */
+    public static final <T extends Statement> List<Select<T>> selectList( _node _n, $stmt<T> $proto){
+        return $proto.selectListIn(_n);
+    }
+    
+    public static final <T extends Statement, N extends _node> List<Select<T>> selectList( N _n, String proto ){
+        return $stmt.of(proto).selectListIn(_n);
+    }
+    
+    /**
+     * Does this stmt template appear in the root node?
+     * @param <T>
+     * @param _n where to look
+     * @param proto the code of the Statement we're looking for
+     * @return true if found else false
+     */
+    public static final <T extends Statement> List<Select<T>> selectList( _node _n, String... proto ){
+        return $stmt.of(proto).selectListIn(_n);
+    }
+    
     /**
      * 
      * @param <N>
+     * @param <T>
      * @param _n
      * @param proto
      * @return 
      */
-    public static final <N extends _node> List<Statement> list( N _n, String proto ){
+    public static final <N extends _node, T extends Statement> List<T> list( N _n, String proto ){
         return $stmt.of(proto).listIn(_n);
     }
     
     /**
      * 
      * @param <N>
+     * @param <T>
+     * @param _n
+     * @param proto
+     * @param constraint
+     * @return 
+     */
+    public static final <N extends _node, T extends Statement> List<T> list( N _n, String proto, Predicate<T> constraint){
+        return $stmt.of(proto).constraint(constraint).listIn(_n);
+    }
+    
+    /**
+     * 
+     * @param <N>
+     * @param <T>
      * @param _n
      * @param proto
      * @return 
      */
-    public static final <N extends _node> List<Statement> list( N _n, Statement proto ){
+    public static final <N extends _node, T extends Statement> List<T> list( N _n, T proto ){
         return $stmt.of(proto).listIn(_n);
+    }
+    
+    /**
+     * 
+     * @param <N>
+     * @param <T>
+     * @param _n
+     * @param proto
+     * @param constraint
+     * @return 
+     */
+    public static final <N extends _node, T extends Statement> List<T> list( N _n, T proto, Predicate<T> constraint){
+        return $stmt.of(proto).constraint(constraint).listIn(_n);
     }
     
     /**
@@ -316,15 +219,16 @@ public final class $stmt<T extends Statement>
     public static final <N extends _node> List<Statement> list( N _n, $stmt proto ){
         return proto.listIn(_n);
     }
-    
+        
     /**
-     * Removes all occurrences of the source anno in the rootNode (recursively)
+     * Removes all occurrences of the proto Statement in the node (recursively)
      * @param <N>
+     * @param <T>
      * @param _n
      * @param proto
      * @return the modified N
      */
-    public static final <N extends _node> N remove( N _n, Statement proto ){
+    public static final <N extends _node, T extends Statement> N remove( N _n, T proto ){
         return (N)$stmt.of(proto).removeIn(_n);
     }
     
@@ -342,12 +246,26 @@ public final class $stmt<T extends Statement>
     /**
      * 
      * @param <N>
+     * @param <T>
      * @param _n
-     * @param protoTarget
-     * @param protoReplacement
+     * @param proto
+     * @param constraint
      * @return 
      */
-    public static final <N extends _node> N replace(N _n, Statement protoTarget, Statement protoReplacement){
+    public static final <N extends _node, T extends Statement> N remove( N _n, String proto, Predicate<T> constraint){
+        return (N)$stmt.of(proto).constraint(constraint).removeIn(_n);
+    }   
+    
+    /**
+     * 
+     * @param <N>
+     * @param <T>
+     * @param _n
+     * @param protoTarget
+     * @param protoReplacement the prototype/statement to replace
+     * @return 
+     */
+    public static final <N extends _node,T extends Statement> N replace(N _n, T protoTarget, Statement protoReplacement){
         return (N)$stmt.of(protoTarget)
             .replaceIn(_n, $stmt.of(protoReplacement));
     }    
@@ -396,6 +314,7 @@ public final class $stmt<T extends Statement>
         StackTraceElement ste = Thread.currentThread().getStackTrace()[2];
         return fromStackTrace( ste );
     } 
+    
     /**
      * 
      * @param <T>
@@ -444,42 +363,16 @@ public final class $stmt<T extends Statement>
         Statement st = Stmt.of(proto);
         return new $stmt( st );
     }
-
-    /**
-     * 
-     * @param proto
-     * @param constraint
-     * @return 
-     
-    public static $stmt of(String proto, Predicate<Statement> constraint){
-        Statement st = Stmt.of(proto);
-        return new $stmt( st ).constraint(constraint);
-    }
-    */ 
     
     /**
      * 
-     * @param <T>
      * @param astProto
      * @return 
      */ 
-    public static $stmt of(Statement astProto ){
+    public static<T extends Statement> $stmt of(Statement astProto ){
         return new $stmt<>(astProto);
     }
      
-
-    /**
-     * 
-     * @param <T>
-     * @param astProto
-     * @param constraint
-     * @return 
-     
-    public static <T extends Statement> $stmt<T> of(T astProto, Predicate<T> constraint){
-        return new $stmt<>(astProto).constraint(constraint);
-    }
-    * */
-    
     /**
      * i.e."assert(1==1);"
      * @param proto
@@ -924,6 +817,32 @@ public final class $stmt<T extends Statement>
      * @param _n
      * @return 
      */
+    public Select<T> selectFirstIn( _node _n ){
+        Optional<T> f = _n.ast().findFirst(this.statementClass, s -> this.matches(s) );         
+        if( f.isPresent()){
+            return this.select( f.get() );
+        }
+        return null;
+    }
+
+    /**
+     * Returns the first Statement that matches the 
+     * @param astNode the 
+     * @return a Select containing the Statement and the key value pairs from the prototype
+     */
+    public Select<T> selectFirstIn( Node astNode ){
+        Optional<T> f = astNode.findFirst(this.statementClass, s -> this.matches(s) );         
+        if( f.isPresent()){
+            return this.select(f.get());
+        }
+        return null;
+    }
+    
+    /**
+     * Returns the first Statement that matches the 
+     * @param _n
+     * @return 
+     */
     public T firstIn( _node _n ){
         Optional<T> f = _n.ast().findFirst(this.statementClass, s -> this.matches(s) );         
         if( f.isPresent()){
@@ -1014,7 +933,7 @@ public final class $stmt<T extends Statement>
     }
 
     @Override
-    public List<Select<T>> listSelectedIn(Node astNode ){
+    public List<Select<T>> selectListIn(Node astNode ){
         List<Select<T>>sts = new ArrayList<>();
         astNode.walk(this.statementClass, st-> {
             Tokens tokens = deconstruct( st );
@@ -1030,7 +949,7 @@ public final class $stmt<T extends Statement>
             .setPrintComments(false).setPrintJavadoc(false);
 
     @Override
-    public List<Select<T>> listSelectedIn(_node _n ){
+    public List<Select<T>> selectListIn(_node _n ){
         List<Select<T>>sts = new ArrayList<>();
         Walk.in(_n, this.statementClass, st->{
             Tokens tokens = deconstruct(st);
@@ -1043,13 +962,13 @@ public final class $stmt<T extends Statement>
 
     @Override
     public <N extends _node> N removeIn(N _n ){
-        this.listSelectedIn(_n).forEach(s-> s.statement.removeForced() );
+        this.selectListIn(_n).forEach(s-> s.statement.removeForced() );
         return _n;
     }
 
     @Override
     public <N extends Node> N removeIn(N astNode ){
-        this.listSelectedIn(astNode).forEach(s-> s.statement.removeForced() );
+        this.selectListIn(astNode).forEach(s-> s.statement.removeForced() );
         return astNode;
     }
 
@@ -1069,6 +988,18 @@ public final class $stmt<T extends Statement>
      * 
      * @param <N>
      * @param _n
+     * @param replacement
+     * @return 
+     */
+    public <N extends _node> N replaceIn(N _n, String... replacement ){
+        $snip $sn = $snip.of(replacement);
+        return replaceIn(_n, $sn);
+    }    
+
+    /**
+     * 
+     * @param <N>
+     * @param _n
      * @param $protoReplacement
      * @return 
      */
@@ -1078,7 +1009,7 @@ public final class $stmt<T extends Statement>
             $stmt.Select sel = select( st );
             if( sel != null ){
                 //construct the replacement snippet
-                List<Statement> replacements = $protoReplacement.construct( sel.tokens );
+                List<Statement> replacements = $protoReplacement.construct( sel.clauses );
 
                 //Statement firstStmt = sel.statements.get(0);
                 //Node par = firstStmt.getParentNode().get();
@@ -1120,18 +1051,18 @@ public final class $stmt<T extends Statement>
 
     public static class Select<T extends Statement> implements $query.selected {
         public T statement;
-        public Tokens tokens;
+        public Clauses clauses;
 
         public Select( T statement, Tokens tokens){
             this.statement = statement;
-            this.tokens = tokens;
+            this.clauses = Clauses.of( tokens );
         }
 
         @Override
         public String toString(){
             return "$stmt{"+ System.lineSeparator()+
                     Text.indent( statement.toString() )+ System.lineSeparator()+
-                    Text.indent( "TOKENS : " + tokens) + System.lineSeparator()+
+                    Text.indent( "CLAUSES : " + clauses) + System.lineSeparator()+
                     "}";
         }
     }

@@ -15,7 +15,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
  *
  * @author Eric
  */
-public final class Tokens implements Map<String,Object>{
+public class Tokens implements Map<String,Object>{
 
     private final Map<String,Object> kvMap;
 

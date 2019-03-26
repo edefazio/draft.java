@@ -173,14 +173,14 @@ public final class $typeRef<T extends Type>
         return new $typeRef(t.ast()).constraint(constraint);
     }
 
-    public static $typeRef booleanType = of(PrimitiveType.booleanType());
-    public static $typeRef charType = of(PrimitiveType.charType());
-    public static $typeRef byteType = of(PrimitiveType.byteType());
-    public static $typeRef shortType = of(PrimitiveType.shortType());
-    public static $typeRef intType = of(PrimitiveType.intType());
-    public static $typeRef longType = of(PrimitiveType.longType());
-    public static $typeRef floatType = of(PrimitiveType.floatType());
-    public static $typeRef doubleType = of(PrimitiveType.doubleType());
+    public static final $typeRef booleanType = of(PrimitiveType.booleanType());
+    public static final $typeRef charType = of(PrimitiveType.charType());
+    public static final $typeRef byteType = of(PrimitiveType.byteType());
+    public static final $typeRef shortType = of(PrimitiveType.shortType());
+    public static final $typeRef intType = of(PrimitiveType.intType());
+    public static final $typeRef longType = of(PrimitiveType.longType());
+    public static final $typeRef floatType = of(PrimitiveType.floatType());
+    public static final $typeRef doubleType = of(PrimitiveType.doubleType());
 
     public Predicate<T> constraint;
     public Class<T> typeClass;
@@ -229,12 +229,12 @@ public final class $typeRef<T extends Type>
 
     /**
      * 
-     * @param e
+     * @param astExpr
      * @param $name
      * @return 
      */
-    public $typeRef $(Expression e, String $name){
-        this.typeStencil = this.typeStencil.$(e.toString(), $name);
+    public $typeRef $(Expression astExpr, String $name){
+        this.typeStencil = this.typeStencil.$(astExpr.toString(), $name);
         return this;
     }
 
@@ -400,7 +400,7 @@ public final class $typeRef<T extends Type>
     }
 
     @Override
-    public List<Select<T>> listSelectedIn(Node astNode ){
+    public List<Select<T>> selectListIn(Node astNode ){
         List<Select<T>>sts = new ArrayList<>();
         astNode.walk(this.typeClass, e-> {
             Select s = select( e );
@@ -412,8 +412,8 @@ public final class $typeRef<T extends Type>
     }
 
     @Override
-    public List<Select<T>> listSelectedIn(_node _n ){
-        return listSelectedIn(_n.ast() );
+    public List<Select<T>> selectListIn(_node _n ){
+        return selectListIn(_n.ast() );
     }
 
     /**
@@ -570,17 +570,17 @@ public final class $typeRef<T extends Type>
      */
     public static class Select<T extends Type> implements $query.selected {
         public T type;
-        public Tokens tokens;
+        public Clauses clauses;
 
         public Select( T type, Tokens tokens){
             this.type = type;
-            this.tokens = tokens;
+            this.clauses = Clauses.of( tokens );
         }
         @Override
         public String toString(){
             return "$typeRef.Select {"+ System.lineSeparator()+
                 Text.indent( type.toString() )+ System.lineSeparator()+
-                Text.indent( "TOKENS : " + tokens) + System.lineSeparator()+
+                Text.indent( "CLAUSES : " + clauses) + System.lineSeparator()+
                 "}";
         }
     }

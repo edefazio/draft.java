@@ -44,7 +44,7 @@ public class $exprTest extends TestCase {
         assertNotNull($e.select(Expr.of("1 + 2")));
 
         //select returns the selected tokens
-        assertTrue($e.select(Expr.of("1 * 2")).tokens.has("op", "*"));
+        assertTrue($e.select(Expr.of("1 * 2")).clauses.is("op", "*"));
 
         $e = $expr.of("$a$ + $b$");
         @aa(1 + 2)
@@ -56,7 +56,7 @@ public class $exprTest extends TestCase {
 
         }
         _class _c = _class.of(G.class);
-        assertEquals(4, $e.listSelectedIn(_c).size());
+        assertEquals(4, $e.selectListIn(_c).size());
     }
 
     public void testExprOf(){
@@ -128,16 +128,16 @@ public class $exprTest extends TestCase {
                 System.out.println("another method"+6+" values");
             }
         }
-        List<$expr.Select<IntegerLiteralExpr>> sel =  e.listSelectedIn( _class.of(C.class) );
+        List<$expr.Select<IntegerLiteralExpr>> sel =  e.selectListIn( _class.of(C.class) );
         assertEquals(6, sel.size()); //verify that I have (6) selections
 
         //System.out.println(">>"+ sel.get(0).tokens );
-        assertTrue(sel.get(0).tokens.has("val", "1"));
-        assertTrue(sel.get(1).tokens.has("val", "2"));
-        assertTrue(sel.get(2).tokens.has("val", "3"));
-        assertTrue(sel.get(3).tokens.has("val", "4"));
-        assertTrue(sel.get(4).tokens.has("val", "5"));
-        assertTrue(sel.get(5).tokens.has("val", "6"));
+        assertTrue(sel.get(0).clauses.is("val", "1"));
+        assertTrue(sel.get(1).clauses.is("val", "2"));
+        assertTrue(sel.get(2).clauses.is("val", "3"));
+        assertTrue(sel.get(3).clauses.is("val", "4"));
+        assertTrue(sel.get(4).clauses.is("val", "5"));
+        assertTrue(sel.get(5).clauses.is("val", "6"));
 
         //use forAllIn to
         List<Integer>ints = new ArrayList<>();

@@ -75,19 +75,19 @@ public class _autoHashCodeTest extends TestCase {
         //assertEquals( 4, l.size());
 
         //verify that
-        List<$stmt.Select> ss = $st.listSelectedIn(_m);
-        assertTrue( ss.stream().filter(s-> s.tokens.has("fieldHash", Expr.of("( b ? 1 : 0 )").toString())).findAny().isPresent());
-        assertTrue( ss.stream().filter(s-> s.tokens.has("fieldHash", "i") ).findAny().isPresent()); //int
-        assertTrue( ss.stream().filter(s-> s.tokens.has("fieldHash", "by") ).findAny().isPresent()); //ibyte
-        assertTrue( ss.stream().filter(s-> s.tokens.has("fieldHash", "ss") ).findAny().isPresent()); //short
-        assertTrue( ss.stream().filter(s-> s.tokens.has("fieldHash", "c") ).findAny().isPresent()); //char
-        assertTrue( ss.stream().filter(s-> s.tokens.has("fieldHash", "Float.floatToIntBits(f)") ).findAny().isPresent()); //float
-        assertTrue( ss.stream().filter(s-> s.tokens.has("fieldHash", "(int) (Double.doubleToLongBits(d) ^ (Double.doubleToLongBits(d) >>> 32))")).findAny().isPresent());
-        assertTrue( ss.stream().filter(s-> s.tokens.has("fieldHash", "(int) (l ^ (l >>> 32))")).findAny().isPresent());
+        List<$stmt.Select> ss = $st.selectListIn(_m);
+        assertTrue( ss.stream().filter(s-> s.clauses.is("fieldHash", Expr.of("( b ? 1 : 0 )").toString())).findAny().isPresent());
+        assertTrue( ss.stream().filter(s-> s.clauses.is("fieldHash", "i") ).findAny().isPresent()); //int
+        assertTrue( ss.stream().filter(s-> s.clauses.is("fieldHash", "by") ).findAny().isPresent()); //ibyte
+        assertTrue( ss.stream().filter(s-> s.clauses.is("fieldHash", "ss") ).findAny().isPresent()); //short
+        assertTrue( ss.stream().filter(s-> s.clauses.is("fieldHash", "c") ).findAny().isPresent()); //char
+        assertTrue( ss.stream().filter(s-> s.clauses.is("fieldHash", "Float.floatToIntBits(f)") ).findAny().isPresent()); //float
+        assertTrue( ss.stream().filter(s-> s.clauses.is("fieldHash", "(int) (Double.doubleToLongBits(d) ^ (Double.doubleToLongBits(d) >>> 32))")).findAny().isPresent());
+        assertTrue( ss.stream().filter(s-> s.clauses.is("fieldHash", "(int) (l ^ (l >>> 32))")).findAny().isPresent());
 
-        assertTrue( ss.stream().filter(s-> s.tokens.has("fieldHash", "java.util.Arrays.hashCode(bys)")).findAny().isPresent());
-        assertTrue( ss.stream().filter(s-> s.tokens.has("fieldHash", "java.util.Objects.hashCode(str)")).findAny().isPresent());
-        assertTrue( ss.stream().filter(s-> s.tokens.has("fieldHash", "java.util.Arrays.deepHashCode(uuids)")).findAny().isPresent());
+        assertTrue( ss.stream().filter(s-> s.clauses.is("fieldHash", "java.util.Arrays.hashCode(bys)")).findAny().isPresent());
+        assertTrue( ss.stream().filter(s-> s.clauses.is("fieldHash", "java.util.Objects.hashCode(str)")).findAny().isPresent());
+        assertTrue( ss.stream().filter(s-> s.clauses.is("fieldHash", "java.util.Arrays.deepHashCode(uuids)")).findAny().isPresent());
     }
 
     /**

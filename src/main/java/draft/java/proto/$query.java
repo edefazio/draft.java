@@ -1,10 +1,23 @@
 package draft.java.proto;
 
 import com.github.javaparser.ast.Node;
+import com.github.javaparser.ast.expr.Expression;
+import com.github.javaparser.ast.stmt.Statement;
+import draft.Tokens;
+import draft.java.Ast;
+import draft.java.Expr;
+import draft.java.Stmt;
 
 import draft.java._model;
+import draft.java._model._node;
+import draft.java._typeRef;
+import java.util.Collection;
+import java.util.Collections;
 
 import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Set;
 import java.util.function.Consumer;
 
 /**
@@ -15,12 +28,12 @@ import java.util.function.Consumer;
 public interface $query<Q> {
 
     /** 
-     * Find and return a List of all matching node types within _t 
+     * Find and return a List of all matching node types within _n 
      * 
      * @param _n the root _java model node to start the search (i.e. _class, _method, _
      * @return a List of Q that match the query
      */
-    List<Q> listIn(_model._node _n );
+    List<Q> listIn(_node _n );
 
     /**
      * 
@@ -35,7 +48,7 @@ public interface $query<Q> {
      * @param astRootNode the node to start the search (TypeDeclaration, MethodDeclaration)
      * @return the selected
      */
-    List<? extends selected> listSelectedIn(Node astRootNode);
+    List<? extends selected> selectListIn(Node astRootNode);
 
     /**
      * return the selections (containing the node and deconstructed parts)
@@ -43,7 +56,7 @@ public interface $query<Q> {
      * @param _n the java entity (_type, _method, etc.) where to start the search
      * @return a list of the selected
      */
-    List<? extends selected> listSelectedIn(_model._node _n);
+    List<? extends selected> selectListIn(_node _n);
 
     /**
      * Remove all matching occurrences of the template in the node and return the
@@ -57,30 +70,230 @@ public interface $query<Q> {
     /**
      *
      * @param _n the root java node to start from (_type, _method, etc.)
-     * @param <M> the TYPE of model node
+     * @param <N> the TYPE of model node
      * @return the modified model node
      */
-    <M extends _model._node> M removeIn(M _n );
-
+    <N extends _node> N removeIn(N _n );
 
     /**
      * Find and execute a function on all of the matching occurrences within astRootNode
      * @param <N>
      * @param astRootNode the node to search through (CompilationUnit, MethodDeclaration, etc.)
-     * @param modelActionFn the function to run upon each encounter with a matching node
+     * @param _nodeActionFn the function to run upon each encounter with a matching node
      * @return the modified astRootNode
      */
-    <N extends Node> N forIn(N astRootNode, Consumer<Q> modelActionFn);
+    <N extends Node> N forIn(N astRootNode, Consumer<Q> _nodeActionFn);
 
     /**
      * Find and execute a function on all of the matching occurrences within astRootNode
-     * @param <M>
+     * @param <N>
      * @param _n the java node to start the walk
-     * @param modelActionFn the function to run on all matching entities
+     * @param _nodeActionFn the function to run on all matching entities
      * @return  the modified _java node
      */
-    <M extends _model._node> M forIn(M _n, Consumer<Q> modelActionFn);
+    <N extends _node> N forIn(N _n, Consumer<Q> _nodeActionFn);
 
+    /**
+     * These things aren't "tokens"
+     * They are 
+     * criterion
+     * properties
+     * parameters
+     * arguments
+     * 
+     * clause
+     * 
+     */
+    public static class Clauses implements Map<String,Object>{
+        
+        /** 
+         */
+        private Tokens tokens;
+        
+        public static Clauses of( Tokens ts ){
+            return new Clauses(ts);
+        }
+        
+        public Clauses( Tokens ts ){
+            this.tokens = ts;
+        }
+        
+        public Object get( String key ){
+            return tokens.get(key);
+        }
+        
+        public Tokens asTokens(){
+            return tokens;
+        }
+        
+        public Expression expr(String key){
+            Object obj = get(key);
+            if( obj == null || obj.toString().trim().length() == 0 ){
+                return null;
+            }
+            return Expr.of( obj.toString() );
+        }
+        
+        public Statement stmt(String key){
+            Object obj = get(key);
+            if( obj == null || obj.toString().trim().length() == 0 ){
+                return null;
+            }
+            return Stmt.of( obj.toString() );
+        }
+        
+        public _typeRef type(String key){
+            Object obj = get(key);
+            if( obj == null || obj.toString().trim().length() == 0 ){
+                return null;
+            }
+            return _typeRef.of( obj.toString() );
+        }
+        
+        public List<Statement> stmts( String key ){
+            Object obj = get(key);
+            if( obj == null){ 
+                return null;
+            }
+            if(obj.toString().trim().length() == 0 ){
+                return Collections.EMPTY_LIST;
+            }
+            return Stmt.block( obj.toString() ).getStatements();            
+        }
+        
+        /** 
+         * check that it has this this exact key VALUE combination
+         * @param key     
+         * @param value     
+         * @return true if 
+         */
+        public boolean is( String key, String value){
+            Object obj = get(key);
+            if( obj == null){ 
+                return false;
+            }
+            return obj.toString().equals( value );
+        }
+
+        
+        /** 
+         * is the clause with the key equal to the expression?
+         * @param key     
+         * @param exp     
+         * @return true if 
+         */
+        public boolean is( String key, Expression exp){
+            Expression ex = expr(key);
+            return exp.equals(ex);
+        }        
+
+        /** 
+         * is the clause with the key equal to the expression?
+         * @param key     
+         * @param st     
+         * @return true if 
+         */
+        public boolean is( String key, Statement st){
+            Statement stmt = stmt(key);
+            return stmt.toString(Ast.PRINT_NO_COMMENTS).equals(st.toString(Ast.PRINT_NO_COMMENTS));
+        }        
+        
+        @Override
+        public boolean equals(Object o ){
+            if( o == null || !o.getClass().equals( Clauses.class ) ) {
+                return false;
+            }
+            Clauses co = (Clauses)o;
+            return Objects.equals( co.tokens, tokens);            
+        }
+
+        public boolean is( Clauses cs ){
+            return this.equals(cs );
+        }
+        
+        public boolean is( Tokens tks ){
+            return this.equals(Clauses.of( tks) );
+        }
+
+        public boolean is( Object...keyValues ){
+            try{
+                return is( Tokens.of(keyValues));
+            }catch(Exception e){
+                return false;
+            }
+        }
+
+        @Override
+        public int hashCode(){
+            return this.tokens.hashCode();
+        }
+
+        @Override
+        public String toString(){
+            return this.tokens.toString();
+        }
+
+        @Override
+        public int size() {
+            return tokens.size();
+        }
+
+        @Override
+        public boolean isEmpty() {
+            return tokens.isEmpty();
+        }
+
+        @Override
+        public boolean containsKey(Object key) {
+            return tokens.containsKey(key);
+        }
+
+        @Override
+        public boolean containsValue(Object value) {
+            return tokens.containsValue(value);
+        }
+
+        @Override
+        public Object get(Object key) {
+            return tokens.get(key);
+        }
+
+        @Override
+        public Object put(String key, Object value) {
+            return tokens.put(key, value);
+        }
+
+        @Override
+        public Object remove(Object key) {
+            return tokens.remove(key);
+        }
+
+        @Override
+        public void putAll(Map<? extends String, ? extends Object> m) {
+            tokens.putAll(m);
+        }
+
+        @Override
+        public void clear() {
+            tokens.clear();
+        }
+
+        @Override
+        public Set<String> keySet() {
+            return tokens.keySet();
+        }
+
+        @Override
+        public Collection<Object> values() {
+            return tokens.values();
+        }
+
+        @Override
+        public Set<Entry<String, Object>> entrySet() {
+            return tokens.entrySet();
+        }
+    }
+    
     interface selected{
         //Tokens getTokens();
     }

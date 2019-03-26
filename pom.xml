@@ -3,8 +3,35 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>draft</groupId>
     <artifactId>draft.java</artifactId>
-    <version>1.0</version>
     <packaging>jar</packaging>
+    
+    <name>draft.java</name>
+    <version>1.0</version>
+    <description>API to generate .java source code (like JavaPoet), 
+        analyze and modify .java source code (like JQuery) 
+        and compile/run/test source code at runtime.
+    </description>
+    
+    <developers>
+        <developer>
+            <id>Eric</id>
+            <name>M. Eric DeFazio</name>
+            <email>eric@adlib.dev</email>
+            <url>http://adlib.dev</url>
+            <timezone>Eastern Standard Time</timezone>
+        </developer>
+    </developers>
+    
+     <scm>
+        <url>http://github.com/edefazio/draft.java</url>
+        <connection>scm:git:https://github.com/edefazio/draft.java</connection>
+        <developerConnection>scm:git:https://github.com/edefazio/draft.java</developerConnection>
+    </scm>
+    <issueManagement>
+        <system>GitHub Issue Tracker</system>
+        <url>https://github.com/edefazio/draft.java/issues</url>
+    </issueManagement>
+    
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <maven.compiler.source>8</maven.compiler.source>

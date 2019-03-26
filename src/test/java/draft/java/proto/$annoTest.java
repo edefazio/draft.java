@@ -108,10 +108,10 @@ public class $annoTest extends TestCase {
             @name void m(){}
         }
         _class _c = _class.of(C.class);
-        assertEquals( 3, $a.listSelectedIn(_c).size() );
+        assertEquals( 3, $a.selectListIn(_c).size() );
         _c = $a.replaceIn(_c, $anno.of("@name2"));
-        assertEquals( 0, $a.listSelectedIn(_c).size() ); //verify they are all changed
-        assertEquals( 3, $anno.of("@name2").listSelectedIn(_c).size() ); //verify they are all changed
+        assertEquals( 0, $a.selectListIn(_c).size() ); //verify they are all changed
+        assertEquals( 3, $anno.of("@name2").selectListIn(_c).size() ); //verify they are all changed
     }
 
     public void testDynamicAnno(){
@@ -120,7 +120,7 @@ public class $annoTest extends TestCase {
 
         assertTrue( $a.matches( _anno.of("@name(prefix=\"1\")") ));
 
-        assertTrue( $a.select(_anno.of("@name(prefix=\"1\")") ).tokens.is("any", "\"1\"") );
+        assertTrue( $a.select(_anno.of("@name(prefix=\"1\")") ).clauses.is("any", "\"1\"") );
 
         assertTrue($a.deconstruct(_anno.of("@name(prefix=\"ABCD\")")).is("any", "\"ABCD\""));
         assertTrue( $a.list$().contains("any"));
@@ -132,7 +132,7 @@ public class $annoTest extends TestCase {
             @name(prefix="Mrs.") void m(){}
         }
         _class _c = _class.of(C.class);
-        assertEquals( 2, $a.listSelectedIn(_c).size());
+        assertEquals( 2, $a.selectListIn(_c).size());
 
         // In this case, it'd be better to just use Walk
         // Here we Transpose the property information from @NAME to the @name2 annotation

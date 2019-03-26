@@ -2334,11 +2334,13 @@ public enum Ast {
      * @return the merged nodelist (target) with all of the added Modifier s
      */
     public static NodeList<Modifier> merge(NodeList<Modifier> target, NodeList<Modifier> source) {
-        source.forEach(m -> {
-            if (!target.contains(m)) {
-                target.add(m);
-            }
-        });
+        if( source != null ){
+            source.forEach(m -> {
+                if (!target.contains(m)) {
+                    target.add(m);
+                }
+            });
+        }
         return target;
     }
 
