@@ -137,10 +137,10 @@ public class ManualTest extends TestCase {
         _c.getMethod("foo").add($a.construct("init", 100));
         
         //use the $a prototype to select the statement "int a = 100;"
-        assertNotNull( $a.selectFirstIn(_c).statement );
+        assertNotNull($a.selectFirstIn(_c).astStatement );
         
         //a select contains the "read/extract" the init parameterized value
-        assertNotNull( $a.selectFirstIn(_c).clauses.is("init", "100") );
+        assertNotNull( $a.selectFirstIn(_c).args.is("init", "100") );
         
         //find/match and statement assignment of int a to any value
         assertNotNull($a.firstIn(_c));
@@ -151,7 +151,6 @@ public class ManualTest extends TestCase {
         assertNotNull($a.removeIn(_c));
                 
         //find any assignment of the variable a to any value
-        assertNull($stmt.first(_c, "$type$ a = $init$;"));
-        
+        assertNull($stmt.first(_c, "$type$ a = $init$;"));        
     }
 }

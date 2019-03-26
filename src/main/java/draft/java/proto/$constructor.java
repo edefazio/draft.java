@@ -463,7 +463,7 @@ public final class $constructor
         n.walk( ConstructorDeclaration.class, c-> {
             Select s = select( c );
             if( s != null ){
-                _constructorActionFn.accept( _constructor.of(s.ctor) );
+                _constructorActionFn.accept( _constructor.of(s.astCtor) );
             }
         });
         return n;
@@ -474,7 +474,7 @@ public final class $constructor
         Walk.in(_t, _constructor.class, c-> {
             Select s = select( c );
             if( s != null ){
-                _constructorActionFn.accept( _constructor.of( s.ctor) );
+                _constructorActionFn.accept( _constructor.of(s.astCtor) );
             }
         });
         return _t;
@@ -482,13 +482,13 @@ public final class $constructor
 
     @Override
     public <M extends _node> M removeIn(M _t ){
-        selectListIn(_t).forEach(s -> s.ctor.remove() );
+        selectListIn(_t).forEach(s -> s.astCtor.remove() );
         return _t;
     }
 
     @Override
     public <N extends Node> N removeIn(N node ){
-        selectListIn(node).forEach(s -> s.ctor.remove() );
+        selectListIn(node).forEach(s -> s.astCtor.remove() );
         return node;
     }
 
@@ -527,22 +527,44 @@ public final class $constructor
     }
 
     private static final BlockStmt EMPTY = Stmt.block("{}");
-
-    public static class Select implements $query.selected {
-        public ConstructorDeclaration ctor;
-        public Clauses clauses;
+   
+    /**
+     * A Matched Selection result returned from matching a prototype $constructor
+     * inside of some Node or _node
+     */    
+    public static class Select implements $query.selected, 
+            $query.selectedAstNode<ConstructorDeclaration>, 
+            $query.selected_model<_constructor> {
+        
+        public final ConstructorDeclaration astCtor;
+        public final $args args;
 
         public Select( ConstructorDeclaration astCtor, Tokens tokens ){
-            this.ctor = astCtor;
-            this.clauses = Clauses.of(tokens);
+            this.astCtor = astCtor;
+            this.args = $args.of(tokens);
         }
 
         @Override
+        public $args getArgs(){
+            return args;
+        }
+        
+        @Override
         public String toString(){
             return "$constructor.Select{"+ System.lineSeparator()+
-                    Text.indent( ctor.toString() )+ System.lineSeparator()+
-                    Text.indent( "CLAUSES : " + clauses) + System.lineSeparator()+
+                    Text.indent(astCtor.toString() )+ System.lineSeparator()+
+                    Text.indent("ARGS : " + args) + System.lineSeparator()+
                     "}";
+        }
+        
+        @Override
+        public ConstructorDeclaration ast(){
+            return astCtor;
+        } 
+        
+        @Override
+        public _constructor model() {
+            return _constructor.of(astCtor);
         }
     }
 }

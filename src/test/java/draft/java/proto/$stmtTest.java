@@ -75,10 +75,10 @@ public class $stmtTest extends TestCase {
         
         
         //Here we use the "select"          
-        assertTrue( $assertAny.selectFirstIn(_c).clauses.is("any", "true"));
+        assertTrue( $assertAny.selectFirstIn(_c).args.is("any", "true"));
         
         //you can statically query for 
-        assertTrue( $stmt.selectFirst(_c, "assertTrue($any$);").statement.getComment().isPresent());
+        assertTrue( $stmt.selectFirst(_c, "assertTrue($any$);").astStatement.getComment().isPresent());
         assertTrue( $stmt.selectList(_c, "assertTrue($any$);").size() ==2);
         
         
@@ -97,7 +97,7 @@ public class $stmtTest extends TestCase {
         //the easy things should be easy
         assertNotNull( $stmt.first(_c, "assertTrue(true);"));
         assertTrue( $stmt.list(_c, "assertTrue(true);").size() ==1);
-        assertTrue( $stmt.selectFirst(_c, "assertTrue(true);").statement.getComment().isPresent());
+        assertTrue( $stmt.selectFirst(_c, "assertTrue(true);").astStatement.getComment().isPresent());
         $stmt.replace(_c, "assertTrue(true);", "Assert.assertTrue(true);");
         $stmt.remove(_c, "Assert.assertTrue(true);");
         

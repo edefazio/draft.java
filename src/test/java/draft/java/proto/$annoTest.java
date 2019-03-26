@@ -1,12 +1,30 @@
 package draft.java.proto;
 
+import com.github.javaparser.ast.expr.IntegerLiteralExpr;
 import draft.java._anno;
 import draft.java._class;
+import java.util.function.Predicate;
 import java.util.regex.Pattern;
 import junit.framework.TestCase;
 
 public class $annoTest extends TestCase {
 
+    public void testSelectlistQuery(){
+        
+        class C{
+            int i = 1;
+            int j = 2;            
+            
+        }             
+        
+        Predicate<IntegerLiteralExpr> p = (IntegerLiteralExpr i)-> i.asInt() % 2 == 1;
+        $expr.intLiteral( p );
+        $expr $e = $expr.of(1).$("1", "num");
+        
+        
+        
+    }
+    
     @interface R{ }
     @interface S{ }
     
@@ -120,7 +138,7 @@ public class $annoTest extends TestCase {
 
         assertTrue( $a.matches( _anno.of("@name(prefix=\"1\")") ));
 
-        assertTrue( $a.select(_anno.of("@name(prefix=\"1\")") ).clauses.is("any", "\"1\"") );
+        assertTrue( $a.select(_anno.of("@name(prefix=\"1\")") ).args.is("any", "\"1\"") );
 
         assertTrue($a.deconstruct(_anno.of("@name(prefix=\"ABCD\")")).is("any", "\"ABCD\""));
         assertTrue( $a.list$().contains("any"));

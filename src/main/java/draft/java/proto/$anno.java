@@ -13,6 +13,31 @@ import java.util.function.*;
 
 /**
  * Template for an {@link _anno}
+  * <PRE>
+ * $stmt
+ * CONSTRUCT
+ *     .construct([Translator], Tokens) build & return 
+ *     .fill([Translator], values)
+ * PARAMETERIZE
+ *     .$(Tokens)
+ *     .assign$([translator], target, value)
+ * MATCH
+ *     .constraint(Predicate<T>) //set the matching constraint
+ *     .matches(Statement)
+ *     .select(Statement)
+ *     .deconstruct( Statement )
+ * QUERY       
+ *     .first/.firstIn(_node, proto) find the first matching statement in
+ *     .list/.listIn(_node, proto, Predicate<>) list all matches in        
+ *     .selectFirst/.selectFirstIn(_node, proto) return the first "selection" match
+ *     .selectList/.selectListIn(_node, proto) return a list of selection matches
+ * MODIFY
+ *     .remove/.removeIn(_node, proto)
+ *     .replace/.replaceIn(_node, protoTarget, protoReplacement)
+ *     .forIn(_node, Consumer<T>)
+ *     .forSelectedIn(_node, Consumer<T>) 
+ *</PRE> 
+ * 
  * provides:
  * $anno.first( _c, "");
  * 
@@ -540,7 +565,7 @@ public final class $anno
         node.walk( AnnotationExpr.class, e-> {
             Select sel = select( e );
             if( sel != null ){
-                sel.expression.removeForced();
+                sel.astAnno.removeForced();
             }
         });
         return node;
@@ -557,7 +582,7 @@ public final class $anno
         Walk.in( _m, AnnotationExpr.class, e-> {
             Select sel = select( e );
             if( sel != null ){
-                sel.expression.removeForced();
+                sel.astAnno.removeForced();
             }
         });
         return _m;
@@ -576,7 +601,7 @@ public final class $anno
         Walk.in(_m, AnnotationExpr.class, e-> {
             Select sel = select( e );
             if( sel != null ){
-                sel.expression.replace($a.construct(sel.clauses).ast() );
+                sel.astAnno.replace($a.construct(sel.args).ast() );
             }
         });
         return _m;
@@ -593,7 +618,7 @@ public final class $anno
         node.walk(AnnotationExpr.class, e-> {
             Select sel = select( e );
             if( sel != null ){
-                sel.expression.replace($a.construct(sel.clauses).ast() );
+                sel.astAnno.replace($a.construct(sel.args).ast() );
             }
         });
         return node;
@@ -655,20 +680,44 @@ public final class $anno
         return _m;
     }
 
-    public static class Select implements $query.selected {
-        public AnnotationExpr expression;
-        public Clauses clauses;
+    /**
+     * A Matched Selection result returned from matching a prototype $anno
+     * inside of some Node or _node
+     */
+    public static class Select 
+        implements $query.selected, selected_model<_anno>, selectedAstNode<AnnotationExpr> {
+        
+        public final AnnotationExpr astAnno;
+        public final $args args;
 
         public Select( AnnotationExpr expression, Tokens tokens){
-            this.expression = expression;
-            this.clauses = Clauses.of( tokens);
+            this.astAnno = expression;
+            this.args = $args.of( tokens);
         }
+        
+        @Override
+        public $args getArgs(){
+            return args;
+        }
+        
         @Override
         public String toString(){
             return "$anno.Select {"+ System.lineSeparator()+
-                    Text.indent( expression.toString() )+ System.lineSeparator()+
-                    Text.indent( "TOKENS : " + clauses) + System.lineSeparator()+
+                    Text.indent(astAnno.toString() )+ System.lineSeparator()+
+                    Text.indent("ARGS : " + args) + System.lineSeparator()+
                     "}";
         }
+
+        
+        @Override
+        public AnnotationExpr ast(){
+            return astAnno;
+        } 
+        
+        @Override
+        public _anno model() {
+            return _anno.of(astAnno);
+        }
+        
     }
 }

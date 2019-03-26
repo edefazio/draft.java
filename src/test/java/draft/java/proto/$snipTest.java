@@ -192,8 +192,8 @@ public class $snipTest extends TestCase {
         _class _c = _class.of(L.class);
         $s.forSelectedIn( _c, ($snip.Select s) -> {
             //rearrage the order of the statements, first the println then the assert
-            s.statements.get(0).replace( $s.$sts.get(1).construct(s.clauses) );
-            s.statements.get(1).replace( $s.$sts.get(0).construct(s.clauses) );
+            s.statements.get(0).replace( $s.$sts.get(1).construct(s.args) );
+            s.statements.get(1).replace( $s.$sts.get(0).construct(s.args) );
         });
         assertTrue( _c.getMethod("m").getBody().getStatement(1) instanceof ExpressionStmt );
         assertTrue( _c.getMethod("m").getBody().getStatement(2) instanceof AssertStmt);
@@ -219,7 +219,7 @@ public class $snipTest extends TestCase {
         $snip.Select ss = $s.select( bs.getStatement(0 ) );
 
         assertNotNull( ss );
-        assertTrue( ss.clauses.is("i", "1"));
+        assertTrue( ss.args.is("i", "1"));
         assertEquals( Stmt.of( ()-> {/** comment 1 */ assert 1 > 0;} ), ss.statements.get(0));
         assertEquals( Stmt.of( () -> {
             // comment 2
@@ -256,8 +256,8 @@ public class $snipTest extends TestCase {
         assertEquals(2, ss.size());
         assertEquals( ss.get(0).statements.get(0), Stmt.of( ()-> System.out.println(1)));
         assertEquals( ss.get(1).statements.get(0), Stmt.of( ()-> System.out.println(2)));
-        assertTrue( ss.get(0).clauses.is("any", "1"));
-        assertTrue( ss.get(1).clauses.is("any", "2"));
+        assertTrue( ss.get(0).args.is("any", "1"));
+        assertTrue( ss.get(1).args.is("any", "2"));
 
         //verify we can match Statements EVEN WITH COMMENTS
         class G{
@@ -285,9 +285,9 @@ public class $snipTest extends TestCase {
         assertTrue( $stmt.of( ()-> System.out.println(2) ).matches( ss.get(1).statements.get(0)));
         assertTrue( $stmt.of( ()-> System.out.println(3) ).matches( ss.get(2).statements.get(0)));
         
-        assertTrue( ss.get(0).clauses.is("any", "1"));
-        assertTrue( ss.get(1).clauses.is("any", "2"));
-        assertTrue( ss.get(2).clauses.is("any", "3"));
+        assertTrue( ss.get(0).args.is("any", "1"));
+        assertTrue( ss.get(1).args.is("any", "2"));
+        assertTrue( ss.get(2).args.is("any", "3"));
 
     }
 

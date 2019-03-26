@@ -443,7 +443,7 @@ public final class $snip implements Template<List<Statement>>, $query<List<State
     public Tokens deconstruct( Statement statement ){
         Select s  = select( statement );
         if( s != null ){
-            return s.clauses.asTokens();
+            return s.args.asTokens();
         }
         return null;
     }
@@ -596,7 +596,7 @@ public final class $snip implements Template<List<Statement>>, $query<List<State
             Select sel = select( (Statement)st );
             if( sel != null ){
                 //constrct the replacement snippet
-                List<Statement> replacements = $repl.construct( sel.clauses );
+                List<Statement> replacements = $repl.construct(sel.args );
                 Statement firstStmt = sel.statements.get(0);
                 Node par = firstStmt.getParentNode().get();
                 NodeWithStatements parentNode = (NodeWithStatements)par;
@@ -662,7 +662,7 @@ public final class $snip implements Template<List<Statement>>, $query<List<State
             Select sel = select( (Statement)st );
             if( sel != null ){
                 //construct the replacement snippet
-                List<Statement> replacements = $repl.construct( sel.clauses );
+                List<Statement> replacements = $repl.construct(sel.args );
                 Statement firstStmt = sel.statements.get(0);
                 Node par = firstStmt.getParentNode().get();
                 NodeWithStatements parentNode = (NodeWithStatements)par;
@@ -740,13 +740,21 @@ public final class $snip implements Template<List<Statement>>, $query<List<State
         return "$snip { "+ System.lineSeparator() + Text.indent( sb.toString() ) +"}";
     }
 
+    /**
+     * A Matched Selection result returned from matching a prototype $field
+     * inside of some Node or _node
+     */
     public static class Select implements $query.selected {
         public List<Statement> statements;
-        public Clauses clauses;
+        public $args args;
 
+        public $args getArgs(){
+            return args;
+        }
+        
         public Select( List<Statement> statements, Tokens tokens){
             this.statements = statements;
-            this.clauses = Clauses.of(tokens);
+            this.args = $args.of(tokens);
         }
 
         @Override
@@ -755,7 +763,7 @@ public final class $snip implements Template<List<Statement>>, $query<List<State
             this.statements.forEach( s -> sb.append(s).append( System.lineSeparator()) );
             return "$snip.Selected{"+ System.lineSeparator()+
                     Text.indent( sb.toString() )+ System.lineSeparator()+
-                    Text.indent( "CLAUSES : " + clauses) + System.lineSeparator()+
+                    Text.indent("args : " + args) + System.lineSeparator()+
                     "}";
         }
     }

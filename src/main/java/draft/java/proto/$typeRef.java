@@ -568,20 +568,37 @@ public final class $typeRef<T extends Type>
      * 
      * @param <T> 
      */
-    public static class Select<T extends Type> implements $query.selected {
-        public T type;
-        public Clauses clauses;
+    public static class Select<T extends Type> implements $query.selected, 
+            $query.selectedAstNode<T>, $query.selected_model<_typeRef> {
+        public T astType;
+        public $args args;
 
         public Select( T type, Tokens tokens){
-            this.type = type;
-            this.clauses = Clauses.of( tokens );
+            this.astType = type;
+            this.args = $args.of( tokens );
         }
+        
+        @Override
+        public $args getArgs(){
+            return args;
+        } 
+        
         @Override
         public String toString(){
             return "$typeRef.Select {"+ System.lineSeparator()+
-                Text.indent( type.toString() )+ System.lineSeparator()+
-                Text.indent( "CLAUSES : " + clauses) + System.lineSeparator()+
+                Text.indent(astType.toString() )+ System.lineSeparator()+
+                Text.indent("ARGS : " + args) + System.lineSeparator()+
                 "}";
+        }
+
+        @Override
+        public T ast() {
+            return astType;
+        }
+
+        @Override
+        public _typeRef model() {
+            return _typeRef.of(astType);
         }
     }
 }

@@ -150,16 +150,16 @@ public class $methodTest extends TestCase {
 
         //find all (3) getter METHODS in the TYPE above
         assertEquals( 3, $get.selectListIn(_c).size());
-        assertEquals( $get.select(_c.getMethod("getX") ).method, Ast.method("public int getX(){ return x; }") );
+        assertEquals($get.select(_c.getMethod("getX") ).astMethod, Ast.method("public int getX(){ return x; }") );
         assertEquals( 3, $set.selectListIn(_c).size());
 
         //print all get METHODS
-        $get.forSelectedIn(_c, g -> System.out.println( g.method ));
+        $get.forSelectedIn(_c, g -> System.out.println(g.astMethod ));
 
         //convert all void set METHODS to fluent set METHODS
         $set.forSelectedIn(_c, s-> {
-            s.method.setType( _c.getName() );
-            s.method.getBody().get().addStatement("return this;");
+            s.astMethod.setType( _c.getName() );
+            s.astMethod.getBody().get().addStatement("return this;");
         });
         _javac.of( _c );
 

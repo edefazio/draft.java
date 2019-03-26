@@ -582,7 +582,7 @@ public class $field
         astNode.walk(VariableDeclarator.class, e-> {
             Select sel = select( e );
             if( sel != null ){
-                sel._f.ast().replace($replaceProto.construct(sel.clauses).ast() );
+                sel._f.ast().replace($replaceProto.construct(sel.args).ast() );
             }
         });
         return astNode;
@@ -599,7 +599,7 @@ public class $field
         Walk.in(_le, VariableDeclarator.class, e-> {
             Select sel = select( e );
             if( sel != null ){
-                sel._f.ast().replace($replaceProto.construct(sel.clauses).ast() );
+                sel._f.ast().replace($replaceProto.construct(sel.args).ast() );
             }
         });
         return _le;
@@ -655,21 +655,42 @@ public class $field
         return _n;
     }
 
-    public static class Select implements $query.selected {
-        public _field _f;
-        public Clauses clauses;
+    /**
+     * A Matched Selection result returned from matching a prototype $field
+     * inside of some Node or _node
+     */
+    public static class Select implements $query.selected, 
+            $query.selectedAstNode<VariableDeclarator>, 
+            $query.selected_model<_field> {
+        
+        public final _field _f;
+        public final $args args;
 
         public Select( _field _f, Tokens tokens){
             this._f = _f;
-            this.clauses = Clauses.of(tokens);
+            this.args = $args.of(tokens);
+        }
+        
+        public $args getArgs(){
+            return args;
         }
         
         @Override
         public String toString(){
             return "$field.Select{"+ System.lineSeparator()+
                     Text.indent( _f.toString() )+ System.lineSeparator()+
-                    Text.indent( "CLAUSES : " + clauses) + System.lineSeparator()+
+                    Text.indent("CLAUSES : " + args) + System.lineSeparator()+
                     "}";
+        }
+
+        @Override
+        public VariableDeclarator ast() {
+            return _f.ast();
+        }
+
+        @Override
+        public _field model() {
+            return _f;
         }
     }
 }

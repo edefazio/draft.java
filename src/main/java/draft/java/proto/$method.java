@@ -653,8 +653,8 @@ public final class $method
      */
     public <N extends _node> N replaceIn( N _n, $method $replace ){
         return forSelectedIn(_n, s -> {
-            _method repl = $replace.construct(s.clauses);
-            s.method.replace(repl.ast());
+            _method repl = $replace.construct(s.args);
+            s.astMethod.replace(repl.ast());
         });
     }
 
@@ -752,20 +752,43 @@ public final class $method
     }
     
 
-    public static class Select implements $query.selected {
-        public MethodDeclaration method;
-        public Clauses clauses;
+    /**
+     * A Matched Selection result returned from matching a prototype $method
+     * inside of some Node or _node
+     */
+    public static class Select implements $query.selected, 
+            $query.selectedAstNode<MethodDeclaration>, 
+            $query.selected_model<_method> {
+        
+        public final MethodDeclaration astMethod;
+        public final $args args;
 
         public Select( MethodDeclaration astMethod, Tokens tokens ){
-            this.method = astMethod;
-            this.clauses = Clauses.of(tokens);
+            this.astMethod = astMethod;
+            this.args = $args.of(tokens);
         }
 
+        @Override
+        public $args getArgs(){
+            return args;
+        }
+        
+        @Override
         public String toString(){
             return "$method.Select{"+ System.lineSeparator()+
-                    Text.indent( method.toString() )+ System.lineSeparator()+
-                    Text.indent( "CLAUSES : " + clauses) + System.lineSeparator()+
+                    Text.indent(astMethod.toString() )+ System.lineSeparator()+
+                    Text.indent("ARGS : " + args) + System.lineSeparator()+
                     "}";
+        }
+
+        @Override
+        public MethodDeclaration ast() {
+            return astMethod;
+        }
+
+        @Override
+        public _method model() {
+            return _method.of(astMethod);
         }
     }
 }

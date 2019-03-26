@@ -100,26 +100,31 @@ public interface $query<Q> {
      * properties
      * parameters
      * arguments
+     * features
+     * part
+     * 
+     * name value
      * 
      * clause
      * 
      */
-    public static class Clauses implements Map<String,Object>{
+    public static class $args implements Map<String,Object>{
         
-        /** 
+        /**
+         * 
          */
         private Tokens tokens;
         
-        public static Clauses of( Tokens ts ){
-            return new Clauses(ts);
+        public static $args of( Tokens ts ){
+            return new $args(ts);
         }
         
-        public Clauses( Tokens ts ){
+        public $args( Tokens ts ){
             this.tokens = ts;
         }
         
-        public Object get( String key ){
-            return tokens.get(key);
+        public Object get( String name ){
+            return tokens.get(name);
         }
         
         public Tokens asTokens(){
@@ -200,19 +205,19 @@ public interface $query<Q> {
         
         @Override
         public boolean equals(Object o ){
-            if( o == null || !o.getClass().equals( Clauses.class ) ) {
+            if( o == null || !o.getClass().equals($args.class ) ) {
                 return false;
             }
-            Clauses co = (Clauses)o;
+            $args co = ($args)o;
             return Objects.equals( co.tokens, tokens);            
         }
 
-        public boolean is( Clauses cs ){
+        public boolean is( $args cs ){
             return this.equals(cs );
         }
         
         public boolean is( Tokens tks ){
-            return this.equals(Clauses.of( tks) );
+            return this.equals($args.of( tks) );
         }
 
         public boolean is( Object...keyValues ){
@@ -294,7 +299,25 @@ public interface $query<Q> {
         }
     }
     
-    interface selected{
-        //Tokens getTokens();
+    /**
+     * a selected entity from a prototype uery
+     * @param <T> 
+     */
+    interface selected<T> {
+        
+        
+        $args getArgs();        
+    }
+    
+    interface selectedAstNode<N extends Node>{
+        
+        /** return the selected AST Node */
+        N ast();
+    }
+    
+    interface selected_model<M extends _model>{
+        
+        /** return the selected node as a _model (i.e. _method for a MethodDeclaration)*/
+        M model();
     }
 }

@@ -806,7 +806,7 @@ public final class $stmt<T extends Statement>
             st -> {
                 Select s = select( (Statement)st);
                 if( s != null ){
-                    sts.add( (T)s.statement );
+                    sts.add( (T)s.astStatement );
                 }
             });
         return sts;
@@ -870,7 +870,7 @@ public final class $stmt<T extends Statement>
         Walk.in(_n, this.statementClass, st->{
             Select s = select( st);
             if (s != null) {
-                sts.add((T) s.statement);
+                sts.add((T) s.astStatement);
             }
         });
         return sts;
@@ -962,13 +962,13 @@ public final class $stmt<T extends Statement>
 
     @Override
     public <N extends _node> N removeIn(N _n ){
-        this.selectListIn(_n).forEach(s-> s.statement.removeForced() );
+        this.selectListIn(_n).forEach(s-> s.astStatement.removeForced() );
         return _n;
     }
 
     @Override
     public <N extends Node> N removeIn(N astNode ){
-        this.selectListIn(astNode).forEach(s-> s.statement.removeForced() );
+        this.selectListIn(astNode).forEach(s-> s.astStatement.removeForced() );
         return astNode;
     }
 
@@ -1009,7 +1009,7 @@ public final class $stmt<T extends Statement>
             $stmt.Select sel = select( st );
             if( sel != null ){
                 //construct the replacement snippet
-                List<Statement> replacements = $protoReplacement.construct( sel.clauses );
+                List<Statement> replacements = $protoReplacement.construct(sel.args );
 
                 //Statement firstStmt = sel.statements.get(0);
                 //Node par = firstStmt.getParentNode().get();
@@ -1025,7 +1025,7 @@ public final class $stmt<T extends Statement>
                 for(int i=0;i<replacements.size(); i++){
                     ls.getStatement().asBlockStmt().addStatement( replacements.get(i) );
                 }
-                sel.statement.replace( ls );
+                sel.astStatement.replace( ls );
                 //parentNode.addStatement(addIndex +1, ls);
                 //removeIn all but the first statement
                 //sel.statements.forEach( s-> s.removeIn() );
@@ -1049,21 +1049,31 @@ public final class $stmt<T extends Statement>
         return "("+this.statementClass.getSimpleName()+") : \""+ this.stencil+"\"";
     }
 
-    public static class Select<T extends Statement> implements $query.selected {
-        public T statement;
-        public Clauses clauses;
+    public static class Select<T extends Statement> implements $query.selected, 
+            $query.selectedAstNode<T> {
+        public T astStatement;
+        public $args args;
 
         public Select( T statement, Tokens tokens){
-            this.statement = statement;
-            this.clauses = Clauses.of( tokens );
+            this.astStatement = statement;
+            this.args = $args.of( tokens );
+        }
+        
+        public $args getArgs(){
+            return args;
+        }
+        
+        @Override
+        public String toString(){
+            return "$stmt.Select{"+ System.lineSeparator()+
+                    Text.indent(astStatement.toString() )+ System.lineSeparator()+
+                    Text.indent("Args : " + args) + System.lineSeparator()+
+                    "}";
         }
 
         @Override
-        public String toString(){
-            return "$stmt{"+ System.lineSeparator()+
-                    Text.indent( statement.toString() )+ System.lineSeparator()+
-                    Text.indent( "CLAUSES : " + clauses) + System.lineSeparator()+
-                    "}";
+        public T ast() {
+            return astStatement;
         }
     }
 }

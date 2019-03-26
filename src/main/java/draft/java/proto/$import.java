@@ -563,7 +563,7 @@ public final class $import
         astNode.walk(ImportDeclaration.class, e-> {
             Select sel = select( e );
             if( sel != null ){
-                sel.astImport.replace($i.construct(sel.clauses).ast() );
+                sel.astImport.replace($i.construct(sel.args).ast() );
             }
         });
         return astNode;
@@ -620,20 +620,43 @@ public final class $import
         return _m;
     }
 
-    public static class Select implements $query.selected {
-        public ImportDeclaration astImport;
-        public Clauses clauses;
+    /**
+     * A Matched Selection result returned from matching a prototype $import
+     * inside of some CompilationUnit
+     */
+    public static class Select implements $query.selected, 
+        $query.selectedAstNode<ImportDeclaration>, 
+        $query.selected_model<_import> {
+    
+        public final ImportDeclaration astImport;
+        public final $args args;
 
         public Select( ImportDeclaration astImport, Tokens tokens){
             this.astImport = astImport;
-            this.clauses = Clauses.of( tokens );
+            this.args = $args.of( tokens );
         }
+        
+        @Override
+        public $args getArgs(){
+            return args;
+        }
+        
         @Override
         public String toString(){
             return "$import.Select {"+ System.lineSeparator()+
-                    Text.indent( astImport.toString() )+ System.lineSeparator()+
-                    Text.indent( "CLAUSES : " + clauses) + System.lineSeparator()+
-                    "}";
+                Text.indent( astImport.toString() )+ System.lineSeparator()+
+                Text.indent("ARGS : " + args) + System.lineSeparator()+
+                "}";
+        }
+
+        @Override
+        public ImportDeclaration ast() {
+            return astImport;
+        }
+
+        @Override
+        public _import model() {
+            return _import.of(astImport);
         }
     }
 }
