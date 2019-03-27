@@ -123,6 +123,9 @@ public final class _anno
     public <E extends Expression> List<E> listValues( Class<E> expressionClass,
                                                       Predicate<E> astExprMatchFn ) {
         List<E> values = new ArrayList<>();
+        if( this.astAnno instanceof MarkerAnnotationExpr ){
+            return values;
+        }
         if( this.astAnno instanceof NormalAnnotationExpr ) {
             NormalAnnotationExpr n = (NormalAnnotationExpr)this.astAnno;
             n.getPairs().forEach(a -> {

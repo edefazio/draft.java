@@ -1,6 +1,5 @@
 package draft.java.proto;
 
-import com.github.javaparser.ast.expr.ArrayAccessExpr;
 import com.github.javaparser.ast.expr.IntegerLiteralExpr;
 import draft.java.Expr;
 import draft.java._class;
@@ -8,6 +7,8 @@ import junit.framework.TestCase;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Predicate;
+import static junit.framework.TestCase.assertNotNull;
 
 public class $exprTest extends TestCase {
 
@@ -155,10 +156,42 @@ public class $exprTest extends TestCase {
         assertTrue( $expr.replace(_c, "1", "2").getField("i").initIs(2));
         
         assertTrue($expr.list(_c, "2").size() == 1);
+        
+        //assertTrue( $expr.list(_c, "2").size() == 1 );
+        
+        //look for every literal
+        $expr $bin = 
+            $expr.binary("$a$ > $b$", 
+                b-> b.getLeft().isIntegerLiteralExpr() && b.getRight().isIntegerLiteralExpr());
+        assertTrue($bin.matches("3 > 2"));
+        assertFalse($bin.matches("3L > 2"));
+        
+        
+        
         /*
         assertTrue( 
                 $expr.of("a[$any$]")
                 .constraint( (ArrayAccessExpr a) -> a.getIndex().isIntegerLiteralExpr() ).matches("a[1]"));
         */
+    }
+    
+     public void testSelectlistQuery(){
+        
+        class C{
+            int i = 1;
+            int j = 2;            
+            
+        }             
+        _class _c = _class.of(C.class);
+        assertNotNull( $expr.intLiteral("2").firstIn(_c));        
+        assertNotNull( $expr.intLiteral(1).firstIn(_c));                
+        
+        Predicate<IntegerLiteralExpr> p = (IntegerLiteralExpr i)-> i.asInt() % 2 == 1;
+        $expr.intLiteral( p );
+        
+        assertNotNull( $expr.intLiteral( (i)-> i.asInt() % 2 == 1 ).firstIn(_c)); 
+               
+        $expr $e = $expr.of(1).$("1", "num");
+        
     }
 }

@@ -1,54 +1,55 @@
 package draft.java.proto;
 
-import com.github.javaparser.ast.expr.IntegerLiteralExpr;
+import draft.java.Expr;
 import draft.java._anno;
 import draft.java._class;
-import java.util.function.Predicate;
 import java.util.regex.Pattern;
 import junit.framework.TestCase;
 
 public class $annoTest extends TestCase {
-
-    public void testSelectlistQuery(){
+ 
+    @interface R{ int value() default 10; }
+    @interface S{ Class[] clazz() default String.class; }
+   
+    public void testMatchClass(){
         
-        class C{
-            int i = 1;
-            int j = 2;            
-            
-        }             
+        assertTrue($anno.of(R.class).matches("R"));
+        assertTrue($anno.of(R.class).matches("@draft.java.proto.$annoTest.R"));
         
-        Predicate<IntegerLiteralExpr> p = (IntegerLiteralExpr i)-> i.asInt() % 2 == 1;
-        $expr.intLiteral( p );
-        $expr $e = $expr.of(1).$("1", "num");
+        assertTrue($anno.of(R.class).matches("R()"));
+        assertTrue($anno.of(R.class).matches("@draft.java.proto.$annoTest.R()"));
         
+        assertTrue($anno.of(R.class).matches("R(1)"));
+        assertTrue($anno.of(R.class).matches("@draft.java.proto.$annoTest.R(2)"));        
         
+        assertTrue($anno.of(R.class).matches("R(value=1)"));
+        assertTrue($anno.of(R.class).matches("@draft.java.proto.$annoTest.R(value=2)"));   
         
-    }
-    
-    @interface R{ }
-    @interface S{ }
-    
-    public void testRegex(){
-       Pattern p = Pattern.compile("([0-9]+)(?:st|nd|rd|th)");
-       assertTrue( p.matcher("1st").matches() );     
-       //assertTrue( p.matcher("1").matches() );     
-       //assertTrue( p.matcher("11").matches() );     
-       assertTrue( p.matcher("2nd").matches() );     
+        assertTrue($anno.of(R.class, "()").matches("@draft.java.proto.$annoTest.R()"));   
+        assertTrue($anno.of(R.class, "()").matches("R()"));   
+        
+        assertTrue($anno.of(R.class, "($any$)").matches("@draft.java.proto.$annoTest.R()"));   
+        assertTrue($anno.of(R.class, "($any$)").matches("R()"));   
+        
+        assertTrue($anno.of(R.class, "($any$)").matches("@draft.java.proto.$annoTest.R(1)"));   
+        assertTrue($anno.of(R.class, "($any$)").matches("R(2)"));
+        
+        assertTrue($anno.of(R.class, "($any$)").select("@draft.java.proto.$annoTest.R(1)").is("any", Expr.of(1) ) );   
+        assertTrue($anno.of(R.class, "($any$)").select("@draft.java.proto.$annoTest.R(1)").is("any", "1" ) );  
        
-       //Pattern p2 = Pattern.compile("(@)(?:draft.java.proto.$annoTest.)(R)");
-       //Pattern p2 = Pattern.compile("\\@(?:draft.java.proto.$annoTest.)?(R)");
-       //assertTrue(p2.matcher("@R").matches());
-       
-       Pattern p3 = Pattern.compile( 
-            Pattern.quote("@") + 
-            "(?:"+ Pattern.quote("draft.java.proto.$annoTest.") + ")?" +
-            Pattern.quote("R") );
-       
-        assertFalse(p3.matcher("@S").matches());
+        assertTrue($anno.of(R.class, "($any$)").select("@draft.java.proto.$annoTest.R(1)").is("any", Expr.of(1) ) );   
+        assertTrue($anno.of(R.class, "($any$)").select("@draft.java.proto.$annoTest.R(1)").is("any", "1" ) );  
         
-        assertTrue(p3.matcher("@R").matches());
-        assertTrue(p3.matcher("@draft.java.proto.$annoTest.R").matches());       
-        assertFalse(p3.matcher("@draft.java.proto.$annoTestw.R").matches());       
+        
+        
+        assertTrue($anno.of(R.class, "($any$)").matches("R(2)"));
+        
+        assertTrue($anno.of(S.class, "($any$)").matches("S()"));
+        assertTrue($anno.of(S.class, "($any$)").matches("S(Float.class)"));
+        assertTrue($anno.of(S.class, "($any$)", a-> a.hasValue(v -> v.isClassExpr())).matches("@S(Float.class)"));
+        assertFalse($anno.of(S.class, "($any$)", a-> a.hasValue(v -> v.isClassExpr())).matches("@S"));
+        assertFalse($anno.of(S.class, "($any$)", a-> a.hasValue(v -> v.isClassExpr())).matches("@S({Float.class, String.class})"));
+        
     }
     
     /**
@@ -162,4 +163,26 @@ public class $annoTest extends TestCase {
     }
 
 
+     public void testRegex(){
+       Pattern p = Pattern.compile("([0-9]+)(?:st|nd|rd|th)");
+       assertTrue( p.matcher("1st").matches() );     
+       //assertTrue( p.matcher("1").matches() );     
+       //assertTrue( p.matcher("11").matches() );     
+       assertTrue( p.matcher("2nd").matches() );     
+       
+       //Pattern p2 = Pattern.compile("(@)(?:draft.java.proto.$annoTest.)(R)");
+       //Pattern p2 = Pattern.compile("\\@(?:draft.java.proto.$annoTest.)?(R)");
+       //assertTrue(p2.matcher("@R").matches());
+       
+       Pattern p3 = Pattern.compile( 
+            Pattern.quote("@") + 
+            "(?:"+ Pattern.quote("draft.java.proto.$annoTest.") + ")?" +
+            Pattern.quote("R") );
+       
+        assertFalse(p3.matcher("@S").matches());
+        
+        assertTrue(p3.matcher("@R").matches());
+        assertTrue(p3.matcher("@draft.java.proto.$annoTest.R").matches());       
+        assertFalse(p3.matcher("@draft.java.proto.$annoTestw.R").matches());       
+    }
 }

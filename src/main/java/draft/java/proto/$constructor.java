@@ -20,7 +20,7 @@ import java.util.function.Consumer;
 import java.util.function.Predicate;
 
 /**
- * Template for a Java constructor
+ * Prototype for a Java constructor
  *
  */
 public final class $constructor
@@ -31,14 +31,10 @@ public final class $constructor
     /** Additional matching constraint on the constructor */
     public Predicate<_constructor> constraint = t -> true;
     
-    /**
-     * 
-     */
+    /** stencil for the signature of the constructor */
     public Stencil signatureStencil;
     
-    /**
-     * 
-     */
+    /** stencil for the body of the constructor */
     public $snip $body;
 
     /**
@@ -64,6 +60,11 @@ public final class $constructor
 
     public static $constructor of( String protoCtor, Predicate<_constructor> constraint ){
         return new $constructor( _constructor.of(protoCtor), constraint );
+    }
+    
+    public static $constructor of( Predicate<_constructor> constraint ){
+        return new $constructor( _constructor.of("c(){}"), constraint )
+                .$(_constructor.of("c(){}").toString(), "any");
     }
     
     /**
@@ -223,11 +224,11 @@ public final class $constructor
 
     /**
      * 
-     * @param model
+     * @param _n
      * @return 
      */
-    public _constructor construct( _node model ){
-        return $constructor.this.construct(model.componentize());
+    public _constructor construct( _node _n ){
+        return $constructor.this.construct(_n.componentize());
     }
 
     @Override
@@ -270,33 +271,33 @@ public final class $constructor
 
     /**
      * 
-     * @param expr
+     * @param astExpr
      * @param $name
      * @return 
      */
-    public $constructor $(Expression expr, String $name ){
-        String exprString = expr.toString();
+    public $constructor $(Expression astExpr, String $name ){
+        String exprString = astExpr.toString();
         return $(exprString, $name);
     }
 
     /**
      * 
-     * @param st
+     * @param astStmt
      * @param $name
      * @return 
      */
-    public $constructor $(Statement st, String $name ){
-        String exprString = st.toString();
+    public $constructor $(Statement astStmt, String $name ){
+        String exprString = astStmt.toString();
         return $(exprString, $name);
     }
 
     /**
      * 
-     * @param _m
+     * @param _ctor
      * @return 
      */
-    public boolean matches( _constructor _m ){
-        return deconstruct( _m.ast() ) != null;
+    public boolean matches( _constructor _ctor ){
+        return deconstruct(_ctor.ast() ) != null;
     }
 
     /**
@@ -445,14 +446,14 @@ public final class $constructor
     }
 
     @Override
-    public List<_constructor> listIn(_node _t ){
-        return listIn( _t.ast() );
+    public List<_constructor> listIn(_node _n ){
+        return listIn(_n.ast() );
     }
 
     @Override
-    public List<_constructor> listIn(Node rootNode ){
+    public List<_constructor> listIn(Node astNode){
         List<_constructor> typesList = new ArrayList<>();
-        rootNode.walk(ConstructorDeclaration.class, t->{
+        astNode.walk(ConstructorDeclaration.class, t->{
             if( this.matches(t) ){
                 typesList.add(_constructor.of(t));
             }
@@ -461,9 +462,9 @@ public final class $constructor
     }
 
     @Override
-    public List<Select> selectListIn(Node n){
+    public List<Select> selectListIn(Node astNode){
         List<Select>sts = new ArrayList<>();
-        n.walk(ConstructorDeclaration.class, c-> {
+        astNode.walk(ConstructorDeclaration.class, c-> {
             Select sel = select( c );
             if( sel != null ){
                 sts.add(sel);
@@ -473,9 +474,9 @@ public final class $constructor
     }
 
     @Override
-    public List<Select> selectListIn(_node _t){
+    public List<Select> selectListIn(_node _n){
         List<Select>sts = new ArrayList<>();
-        Walk.in(_t, ConstructorDeclaration.class, c-> {
+        Walk.in(_n, ConstructorDeclaration.class, c-> {
             Select sel = select( c );
             if( sel != null ){
                 sts.add(sel);
@@ -485,71 +486,71 @@ public final class $constructor
     }
 
     @Override
-    public <N extends Node> N forIn(N n, Consumer<_constructor> _constructorActionFn ){
-        n.walk( ConstructorDeclaration.class, c-> {
+    public <N extends Node> N forIn(N astNode, Consumer<_constructor> _constructorActionFn ){
+        astNode.walk( ConstructorDeclaration.class, c-> {
             Select s = select( c );
             if( s != null ){
                 _constructorActionFn.accept( _constructor.of(s.astCtor) );
             }
         });
-        return n;
+        return astNode;
     }
 
     @Override
-    public <M extends _node> M forIn(M _t, Consumer<_constructor> _constructorActionFn ){
-        Walk.in(_t, _constructor.class, c-> {
+    public <N extends _node> N forIn(N _n, Consumer<_constructor> _constructorActionFn ){
+        Walk.in(_n, _constructor.class, c-> {
             Select s = select( c );
             if( s != null ){
                 _constructorActionFn.accept( _constructor.of(s.astCtor) );
             }
         });
-        return _t;
+        return _n;
     }
 
     @Override
-    public <M extends _node> M removeIn(M _t ){
-        selectListIn(_t).forEach(s -> s.astCtor.remove() );
-        return _t;
+    public <N extends _node> N removeIn(N _n ){
+        selectListIn(_n).forEach(s -> s.astCtor.remove() );
+        return _n;
     }
 
     @Override
-    public <N extends Node> N removeIn(N node ){
-        selectListIn(node).forEach(s -> s.astCtor.remove() );
-        return node;
+    public <N extends Node> N removeIn(N astNode ){
+        selectListIn(astNode).forEach(s -> s.astCtor.remove() );
+        return astNode;
     }
 
     /**
      * 
      * @param <N>
-     * @param n
+     * @param astNode
      * @param selectedActionFn
      * @return 
      */
-    public <N extends Node> N forSelectedIn(N n, Consumer<Select> selectedActionFn ){
-        n.walk( ConstructorDeclaration.class, c-> {
+    public <N extends Node> N forSelectedIn(N astNode, Consumer<Select> selectedActionFn ){
+        astNode.walk( ConstructorDeclaration.class, c-> {
             Select s = select( c );
             if( s != null ){
                 selectedActionFn.accept( s );
             }
         });
-        return n;
+        return astNode;
     }
 
     /**
      * 
-     * @param <M>
-     * @param _t
+     * @param <N>
+     * @param _n
      * @param selectedActionFn
      * @return 
      */
-    public <M extends _node> M forSelectedIn(M _t, Consumer<Select> selectedActionFn ){
-        Walk.in(_t, _constructor.class, c-> {
+    public <N extends _node> N forSelectedIn(N _n, Consumer<Select> selectedActionFn ){
+        Walk.in(_n, _constructor.class, c-> {
             Select s = select( c );
             if( s != null ){
                 selectedActionFn.accept( s );
             }
         });
-        return _t;
+        return _n;
     }
 
     private static final BlockStmt EMPTY = Stmt.block("{}");

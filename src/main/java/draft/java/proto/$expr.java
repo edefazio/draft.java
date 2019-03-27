@@ -67,6 +67,56 @@ public final class $expr <T extends Expression>
     public static final <N extends _node, E extends Expression> E first( N _n, E astProtoExpr, Predicate<E> constraint){
         return (E)$expr.of(astProtoExpr, constraint).firstIn(_n);
     }  
+   
+    /**
+     * find the first occurring instance of a matching expression within the rootNode
+     * @param <N>
+     * @param <E>
+     * @param _n
+     * @param protoExpr
+     * @return the first matching expression or null if none found
+     */
+    public static final <N extends _node, E extends Expression> Select<E> selectFirst( N _n, String protoExpr ){
+        return (Select<E>)$expr.of(protoExpr).selectFirstIn(_n);
+    }
+    
+    /**
+     * 
+     * @param <N>
+     * @param <E>
+     * @param _n
+     * @param astProtoExpr
+     * @return 
+     */
+    public static final <N extends _node, E extends Expression> Select<E> selectFirst( N _n, E astProtoExpr ){
+        return $expr.of(astProtoExpr).selectFirstIn(_n);
+    }  
+    
+    /**
+     * find the first occurring instance of a matching expression within the rootNode
+     * @param <N>
+     * @param <E>
+     * @param _n
+     * @param protoExpr
+     * @param constraint
+     * @return the first matching expression or null if none found
+     */
+    public static final <N extends _node, E extends Expression> Select<E> seleectFirst( N _n, String protoExpr, Predicate<E> constraint){
+        return $expr.of(protoExpr, constraint).selectFirstIn(_n);
+    }
+    
+    /**
+     * 
+     * @param <N>
+     * @param <E>
+     * @param _n
+     * @param astProtoExpr
+     * @param constraint
+     * @return 
+     */
+    public static final <N extends _node, E extends Expression> Select<E> selectFirst( N _n, E astProtoExpr, Predicate<E> constraint){
+        return $expr.of(astProtoExpr, constraint).selectFirstIn(_n);
+    }
     
     /**
      * 
@@ -159,16 +209,16 @@ public final class $expr <T extends Expression>
     
     /**
      * 
-     * @param expr
+     * @param astExpr
      * @param protoSource
      * @param protoTarget
      * @return 
      */
-    public static final Expression replace( Expression expr, String protoSource, String protoTarget){
-        Tokens ts = $expr.of(protoSource).deconstruct(expr);
+    public static final Expression replace( Expression astExpr, String protoSource, String protoTarget){
+        Tokens ts = $expr.of(protoSource).deconstruct(astExpr);
         if( ts != null ){
             Expression t = $expr.of(protoTarget).construct(ts);
-            expr.replace(t);
+            astExpr.replace(t);
             return t;
         }
         return null;
@@ -225,7 +275,6 @@ public final class $expr <T extends Expression>
         return new $expr<>( Expr.arrayAccess(proto) );
     }
     
-    
     /**
      * i.e."arr[3]"
      * @param constraint
@@ -255,7 +304,6 @@ public final class $expr <T extends Expression>
         return new $expr<>( Expr.arrayCreation(proto ) );
     }
     
-    
     /**
      * i.e."new Obj[]", "new int[][]"
      * @param constraint
@@ -265,7 +313,6 @@ public final class $expr <T extends Expression>
         return new $expr<>( Expr.arrayCreation("new int[]")).$(Expr.of("new int[]"), "any").constraint(constraint);
     }
     
-
     /**
      * i.e."new Obj[]", "new int[][]"
      * @param proto
@@ -612,7 +659,6 @@ public final class $expr <T extends Expression>
     
     /**
      * 
-     * @param proto
      * @param constraint
      * @return 
      */
@@ -739,7 +785,6 @@ public final class $expr <T extends Expression>
     
     /**
      * 
-     * @param d
      * @param constraint
      * @return 
      */
@@ -1227,7 +1272,6 @@ public final class $expr <T extends Expression>
    
     /** 
      *  i.e."!true"
-     * @param proto 
      * @param constraint 
      * @return  
      */
@@ -1286,11 +1330,11 @@ public final class $expr <T extends Expression>
 
     /**
      * 
-     * @param expressionProto 
+     * @param astExpressionProto 
      */
-    public $expr(T expressionProto){
-        this.expressionClass = (Class<T>)expressionProto.getClass();
-        this.exprPattern = Stencil.of(expressionProto.toString() );
+    public $expr(T astExpressionProto){
+        this.expressionClass = (Class<T>)astExpressionProto.getClass();
+        this.exprPattern = Stencil.of(astExpressionProto.toString() );
     }
 
     /**
@@ -1327,12 +1371,12 @@ public final class $expr <T extends Expression>
 
     /**
      * 
-     * @param e
+     * @param astExpr
      * @param $name
      * @return 
      */
-    public $expr<T> $( Expression e, String $name){
-        this.exprPattern = this.exprPattern.$(e.toString(), $name);
+    public $expr<T> $( Expression astExpr, String $name){
+        this.exprPattern = this.exprPattern.$(astExpr.toString(), $name);
         return this;
     }
 
@@ -1426,11 +1470,11 @@ public final class $expr <T extends Expression>
 
     /**
      * 
-     * @param expression
+     * @param astExpr
      * @return 
      */
-    public boolean matches( Expression expression ){
-        return deconstruct(expression) != null;
+    public boolean matches( Expression astExpr ){
+        return deconstruct(astExpr) != null;
     }
 
     @Override
@@ -1455,35 +1499,35 @@ public final class $expr <T extends Expression>
     /**
      * Deconstruct the expression into tokens, or return null if the statement doesnt match
      *
-     * @param expression expression
+     * @param astExpr expression
      * @return Tokens from the stencil, or null if the expression doesnt match
      */
-    public Tokens deconstruct( Expression expression ){
-        if( expressionClass.isAssignableFrom(expression.getClass()) 
-                && constraint.test( (T)expression)){
+    public Tokens deconstruct( Expression astExpr ){
+        if( expressionClass.isAssignableFrom(astExpr.getClass()) 
+                && constraint.test((T)astExpr)){
             //slight modification..
-            if( expression instanceof LiteralStringValueExpr ) {
+            if( astExpr instanceof LiteralStringValueExpr ) {
                 //there is an issue here the lowercase and uppercase Expressions 1.23d =/= 1.23D (which they are equivalent
                 //need to handle postfixes 1.2f, 2.3d, 1000l
                 //need to handle postfixes 1.2F, 2.3D, 1000L
             }
-            if( expression instanceof DoubleLiteralExpr ){
-                DoubleLiteralExpr dle = (DoubleLiteralExpr)expression;
+            if( astExpr instanceof DoubleLiteralExpr ){
+                DoubleLiteralExpr dle = (DoubleLiteralExpr)astExpr;
             }
-            return exprPattern.deconstruct( expression.toString() );
+            return exprPattern.deconstruct(astExpr.toString() );
         }
         return null;
     }
 
     /**
      * 
-     * @param e
+     * @param astExpr
      * @return 
      */
-    public Select select( Expression e){
-        Tokens ts = this.deconstruct(e);
+    public Select select( Expression astExpr){
+        Tokens ts = this.deconstruct(astExpr);
         if( ts != null){
-            return new Select( e, ts );
+            return new Select( astExpr, ts );
         }
         return null;
     }
@@ -1510,6 +1554,32 @@ public final class $expr <T extends Expression>
         Optional<T> f = astNode.findFirst(this.expressionClass, s -> this.matches(s) );         
         if( f.isPresent()){
             return f.get();
+        }
+        return null;
+    }
+    
+    /**
+     * Returns the first Expression that matches the pattern and constraint
+     * @param _n the _java node
+     * @return  the first Expression that matches (or null if none found)
+     */
+    public Select<T> selectFirstIn( _node _n ){
+        Optional<T> f = _n.ast().findFirst(this.expressionClass, s -> this.matches(s) );         
+        if( f.isPresent()){
+            return select(f.get());
+        }
+        return null;
+    }
+
+    /**
+     * Returns the first Expression that matches the pattern and constraint
+     * @param astNode the node to look through
+     * @return  the first Expression that matches (or null if none found)
+     */
+    public Select<T> selectFirstIn( Node astNode ){
+        Optional<T> f = astNode.findFirst(this.expressionClass, s -> this.matches(s) );         
+        if( f.isPresent()){
+            return select(f.get());
         }
         return null;
     }
@@ -1602,14 +1672,14 @@ public final class $expr <T extends Expression>
      * 
      * @param <N>
      * @param _n
-     * @param replacement
+     * @param astExprReplace
      * @return 
      */
-    public <N extends _node> N replaceIn(N _n, Node replacement ){
+    public <N extends _node> N replaceIn(N _n, Node astExprReplace ){
         Walk.in(_n, this.expressionClass, e-> {
             Select sel = select( e );
             if( sel != null ){
-                sel.astExpression.replace( replacement );
+                sel.astExpression.replace(astExprReplace );
             }
         });
         return _n;
@@ -1683,8 +1753,8 @@ public final class $expr <T extends Expression>
     }
 
     /**
-     * A Matched Selection result returned from matching a prototype $field
-     * inside of some Node or _node
+     * A Matched Selection result returned from matching a prototype $expr
+     * inside of some (Ast)Node or (_java)_node
      * @param <T> expression type
      */
     public static class Select<T extends Expression> implements $query.selected<T>,
@@ -1693,8 +1763,8 @@ public final class $expr <T extends Expression>
         public final T astExpression;
         public final $args args;
 
-        public Select( T expression, Tokens tokens){
-            this.astExpression = expression;
+        public Select( T astExpr, Tokens tokens){
+            this.astExpression = astExpr;
             this.args = $args.of(tokens);
         }
         
@@ -1706,9 +1776,9 @@ public final class $expr <T extends Expression>
         @Override
         public String toString(){
             return "$expr.Select{"+ System.lineSeparator()+
-                    Text.indent(astExpression.toString() )+ System.lineSeparator()+
-                    Text.indent("ARGS : " + args) + System.lineSeparator()+
-                    "}";
+                Text.indent(astExpression.toString() )+ System.lineSeparator()+
+                Text.indent("ARGS : " + args) + System.lineSeparator()+
+                "}";
         }
 
         @Override

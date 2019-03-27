@@ -180,7 +180,20 @@ public interface $query<Q> {
             }
             return obj.toString().equals( value );
         }
-
+               
+        /** 
+         * is the clause with the key equal to the Type?
+         * @param key     
+         * @param astType     
+         * @return true if 
+         */
+        public boolean is( String key, Type astType){
+            return is( key, _typeRef.of(astType));             
+        }   
+        
+        public boolean is(String key, _typeRef _t){
+            return type(key).equals(_t);            
+        }
         
         /** 
          * is the clause with the key equal to the expression?
@@ -228,8 +241,6 @@ public interface $query<Q> {
             $args co = ($args)o;
             return Objects.equals( co.tokens, tokens);            
         }
-
-        
 
         @Override
         public int hashCode(){
@@ -320,6 +331,14 @@ public interface $query<Q> {
         
         default _typeRef type(String key){
             return getArgs().type(key);
+        }
+        
+        default boolean isExpr(String key, String expressionValue){
+            try{
+                return getArgs().is(key, Expr.of(expressionValue));
+            }catch(Exception e){
+                return false;
+            }            
         }
         
         default boolean is(String key, String value){

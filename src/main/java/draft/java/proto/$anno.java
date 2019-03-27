@@ -48,12 +48,12 @@ public final class $anno
     /**
      * 
      * @param <N>
-     * @param rootNode
+     * @param _n
      * @param proto
      * @return 
      */
-    public static final <N extends _node> _anno first( N rootNode, String proto ){
-        return $anno.of(proto).firstIn(rootNode);
+    public static final <N extends _node> _anno first( N _n, String proto ){
+        return $anno.of(proto).firstIn(_n);
     }
     
     /**
@@ -70,13 +70,13 @@ public final class $anno
     /**
      * 
      * @param <N>
-     * @param rootNode
+     * @param _n
      * @param proto
      * @param constraint
      * @return 
      */
-    public static final <N extends _node> _anno first( N rootNode, String proto, Predicate<_anno> constraint){
-        return $anno.of(proto, constraint).firstIn(rootNode);
+    public static final <N extends _node> _anno first( N _n, String proto, Predicate<_anno> constraint){
+        return $anno.of(proto, constraint).firstIn(_n);
     }
     
     /**
@@ -94,12 +94,12 @@ public final class $anno
     /**
      * 
      * @param <N>
-     * @param rootNode
+     * @param _n
      * @param proto
      * @return 
      */
-    public static final <N extends _node> Select selectFirst( N rootNode, String proto ){
-        return $anno.of(proto).selectFirstIn(rootNode);
+    public static final <N extends _node> Select selectFirst( N _n, String proto ){
+        return $anno.of(proto).selectFirstIn(_n);
     }
     
     /**
@@ -116,13 +116,13 @@ public final class $anno
     /**
      * 
      * @param <N>
-     * @param rootNode
+     * @param _n
      * @param proto
      * @param constraint
      * @return 
      */
-    public static final <N extends _node> Select selectFirst( N rootNode, String proto, Predicate<_anno> constraint){
-        return $anno.of(proto, constraint).selectFirstIn(rootNode);
+    public static final <N extends _node> Select selectFirst( N _n, String proto, Predicate<_anno> constraint){
+        return $anno.of(proto, constraint).selectFirstIn(_n);
     }
     
     /**
@@ -142,194 +142,194 @@ public final class $anno
     /**
      * lists all occurrences of annos that match the 
      * @param <N>
-     * @param rootNode
+     * @param _n
      * @param proto
      * @return 
      */
-    public static final <N extends _node> List<_anno> list( N rootNode, String proto ){
-        return $anno.of(proto).listIn(rootNode);
+    public static final <N extends _node> List<_anno> list( N _n, String proto ){
+        return $anno.of(proto).listIn(_n);
     }
     
     /**
      * lists all occurrences of annos that match the 
      * @param <N>
-     * @param rootNode
+     * @param _n
      * @param proto
      * @param constraint
      * @return 
      */
-    public static final <N extends _node> List<_anno> list( N rootNode, String proto, Predicate<_anno> constraint){
-        return $anno.of(proto, constraint).listIn(rootNode);
+    public static final <N extends _node> List<_anno> list( N _n, String proto, Predicate<_anno> constraint){
+        return $anno.of(proto, constraint).listIn(_n);
     }
     
     /**
      * 
      * @param <N>
-     * @param rootNode
+     * @param _n
      * @param _proto
      * @return 
      */
-    public static final <N extends _node> List<_anno> list( N rootNode, _anno _proto ){
-        return $anno.of(_proto).listIn(rootNode);
+    public static final <N extends _node> List<_anno> list( N _n, _anno _proto ){
+        return $anno.of(_proto).listIn(_n);
     }
     
     /**
      * 
      * @param <N>
-     * @param rootNode
+     * @param _n
      * @param _proto
      * @param constraint
      * @return 
      */
-    public static final <N extends _node> List<_anno> list( N rootNode, _anno _proto, Predicate<_anno> constraint){
-        return $anno.of(_proto, constraint).listIn(rootNode);
+    public static final <N extends _node> List<_anno> list( N _n, _anno _proto, Predicate<_anno> constraint){
+        return $anno.of(_proto, constraint).listIn(_n);
     }
     
     /**
      * lists all occurrences of annos that match the 
      * @param <N>
-     * @param rootNode
+     * @param _n
      * @param proto
      * @return 
      */
-    public static final <N extends _node> List<Select> selectList( N rootNode, String proto ){
-        return $anno.of(proto).selectListIn(rootNode);
+    public static final <N extends _node> List<Select> selectList( N _n, String proto ){
+        return $anno.of(proto).selectListIn(_n);
     }
     
     /**
      * lists all occurrences of annos that match the 
      * @param <N>
-     * @param rootNode
+     * @param _n
      * @param proto
      * @param constraint
      * @return 
      */
-    public static final <N extends _node> List<Select> selectList( N rootNode, String proto, Predicate<_anno> constraint){
-        return $anno.of(proto, constraint).selectListIn(rootNode);
+    public static final <N extends _node> List<Select> selectList( N _n, String proto, Predicate<_anno> constraint){
+        return $anno.of(proto, constraint).selectListIn(_n);
     }
     
     /**
      * 
      * @param <N>
-     * @param rootNode
+     * @param _n
      * @param _proto
      * @return 
      */
-    public static final <N extends _node> List<Select> selectlist( N rootNode, _anno _proto ){
-        return $anno.of(_proto).selectListIn(rootNode);
+    public static final <N extends _node> List<Select> selectList( N _n, _anno _proto ){
+        return $anno.of(_proto).selectListIn(_n);
     }
     
     /**
      * 
      * @param <N>
-     * @param rootNode
+     * @param _n
      * @param _proto
      * @param constraint
      * @return 
      */
-    public static final <N extends _node> List<Select> selectList( N rootNode, _anno _proto, Predicate<_anno> constraint){
-        return $anno.of(_proto, constraint).selectListIn(rootNode);
+    public static final <N extends _node> List<Select> selectList( N _n, _anno _proto, Predicate<_anno> constraint){
+        return $anno.of(_proto, constraint).selectListIn(_n);
     }
     
     /**
      * Removes all occurrences of the source anno in the rootNode (recursively)
      * @param <N>
-     * @param rootNode
+     * @param _n
      * @param _proto
      * @return the modified N
      */
-    public static final <N extends _node> N remove( N rootNode, _anno _proto ){
-        return $anno.of(_proto).removeIn(rootNode);
+    public static final <N extends _node> N remove( N _n, _anno _proto ){
+        return $anno.of(_proto).removeIn(_n);
     }
     
     /**
      * Removes all occurrences of the source anno in the rootNode (recursively)
      * @param <N>
-     * @param rootNode
+     * @param _n
      * @param _proto
      * @param constraint
      * @return the modified N
      */
-    public static final <N extends _node> N remove( N rootNode, _anno _proto, Predicate<_anno> constraint){
-        return $anno.of(_proto, constraint).removeIn(rootNode);
+    public static final <N extends _node> N remove( N _n, _anno _proto, Predicate<_anno> constraint){
+        return $anno.of(_proto, constraint).removeIn(_n);
     }
     
     /**
      * 
      * @param <N>
-     * @param rootNode
+     * @param _n
      * @param proto
      * @return 
      */
-    public static final <N extends _node> N remove( N rootNode, String proto ){
-        return $anno.of(proto).removeIn(rootNode);
+    public static final <N extends _node> N remove( N _n, String proto ){
+        return $anno.of(proto).removeIn(_n);
     }
     
     /**
      * 
      * @param <N>
-     * @param rootNode
+     * @param _n
      * @param proto
      * @param constraint
      * @return 
      */
-    public static final <N extends _node> N remove( N rootNode, String proto, Predicate<_anno> constraint){
-        return $anno.of(proto, constraint).removeIn(rootNode);
+    public static final <N extends _node> N remove( N _n, String proto, Predicate<_anno> constraint){
+        return $anno.of(proto, constraint).removeIn(_n);
     }
     
     /**
      * 
      * @param <N>
-     * @param rootNode
+     * @param _n
      * @param sourceProto
      * @param targetProto
      * @return 
      */
-    public static final <N extends _node> N replace(N rootNode, _anno sourceProto, _anno targetProto){
+    public static final <N extends _node> N replace(N _n, _anno sourceProto, _anno targetProto){
         return $anno.of(sourceProto)
-            .replaceIn(rootNode, $anno.of(targetProto));
+            .replaceIn(_n, $anno.of(targetProto));
     }
     
     /**
      * 
      * @param <N>
-     * @param rootNode
+     * @param _n
      * @param sourceProto
      * @param targetProto
      * @return 
      */
-    public static final <N extends _node> N replace(N rootNode, String sourceProto, String targetProto){
+    public static final <N extends _node> N replace(N _n, String sourceProto, String targetProto){
         return $anno.of(sourceProto)
-            .replaceIn(rootNode, $anno.of(targetProto));
+            .replaceIn(_n, $anno.of(targetProto));
     }
     
     /**
      * 
      * @param <N>
-     * @param rootNode
+     * @param _n
      * @param astSourceProto
      * @param astTargetProto
      * @return 
      */
-    public static final <N extends _node> N replace(N rootNode, AnnotationDeclaration astSourceProto, AnnotationDeclaration astTargetProto){
+    public static final <N extends _node> N replace(N _n, AnnotationDeclaration astSourceProto, AnnotationDeclaration astTargetProto){
         return $anno.of(_anno.of(astSourceProto))
-            .replaceIn(rootNode, $anno.of(_anno.of(astTargetProto)));
+            .replaceIn(_n, $anno.of(_anno.of(astTargetProto)));
     }
     
     /**
      * 
      * @param <N>
-     * @param rootNode
+     * @param _n
      * @param sourceProto
      * @param targetProto
      * @return 
      */
     public static final <N extends _node> N replace( 
-        N rootNode, Class<? extends Annotation>sourceProto, 
+        N _n, Class<? extends Annotation>sourceProto, 
         Class<? extends Annotation>targetProto){
         
         return $anno.of(sourceProto)
-            .replaceIn(rootNode, $anno.of(targetProto));
+            .replaceIn(_n, $anno.of(targetProto));
     }
     
     public static $anno of( String code){
@@ -395,16 +395,6 @@ public final class $anno
     
     public Stencil annoStencil;
     
-    /** 
-     * An "alternate" Stencil, only used for matching purposes when the _anno
-     * is defined via a fully qualified path, 
-     * i.e. @my.path.a()
-     * verses the more simple: 
-     * @a() 
-     
-    public Stencil fullyQualifiedStencil = null;
-    */
-    
     private $anno( String stencil) {
         this.annoStencil = Stencil.of(stencil );
     }
@@ -430,11 +420,11 @@ public final class $anno
 
     /**
      * 
-     * @param expression
+     * @param astAnnoExpr
      * @return 
      */
-    public boolean matches( AnnotationExpr expression ){
-        return deconstruct( expression ) != null;
+    public boolean matches( AnnotationExpr astAnnoExpr ){
+        return deconstruct(astAnnoExpr ) != null;
     }
 
     /**
@@ -465,11 +455,11 @@ public final class $anno
     /**
      * Deconstruct the expression into tokens, or return null if the statement doesnt match
      *
-     * @param a
+     * @param astAnnoExpr
      * @return Tokens from the stencil, or null if the expression doesnt match
      */
-    public Tokens deconstruct(AnnotationExpr a ){
-        return deconstruct( _anno.of(a) );
+    public Tokens deconstruct(AnnotationExpr astAnnoExpr ){
+        return deconstruct(_anno.of(astAnnoExpr) );
     }
 
     @Override
@@ -592,13 +582,13 @@ public final class $anno
     
     /**
      * 
-     * @param e
+     * @param astExpr
      * @return 
      */
-    public Select select(AnnotationExpr e){
-        Tokens ts = this.deconstruct(e);
+    public Select select(AnnotationExpr astExpr){
+        Tokens ts = this.deconstruct(astExpr);
         if( ts != null){
-            return new Select( e, ts );
+            return new Select( astExpr, ts );
         }
         return null;
     }
@@ -658,8 +648,8 @@ public final class $anno
     
     
     @Override
-    public List<_anno> listIn(_node _t ){
-        return listIn( _t.ast() );
+    public List<_anno> listIn(_node _n ){
+        return listIn(_n.ast() );
     }
 
     @Override
@@ -674,9 +664,9 @@ public final class $anno
     }
 
     @Override
-    public List<Select> selectListIn(Node n ){
+    public List<Select> selectListIn(Node astNode ){
         List<Select>sts = new ArrayList<>();
-        n.walk(AnnotationExpr.class, e-> {
+        astNode.walk(AnnotationExpr.class, e-> {
             Select s = select( e );
             if( s != null ){
                 sts.add( s);
@@ -686,9 +676,9 @@ public final class $anno
     }
 
     @Override
-    public List<Select> selectListIn(_node _m ){
+    public List<Select> selectListIn(_node _n ){
         List<Select>sts = new ArrayList<>();
-        Walk.in( _m, AnnotationExpr.class, e -> {
+        Walk.in(_n, AnnotationExpr.class, e -> {
             Select s = select( e );
             if( s != null ){
                 sts.add( s);
@@ -700,128 +690,128 @@ public final class $anno
     /**
      * Remove all matching occurrences of the template in the node and return the
      * modified node
-     * @param node the root node to start search
+     * @param astNode the root node to start search
      * @param <N> the input node TYPE
      * @return the modified node
      */
     @Override
-    public <N extends Node> N removeIn(N node ){
-        node.walk( AnnotationExpr.class, e-> {
+    public <N extends Node> N removeIn(N astNode ){
+        astNode.walk( AnnotationExpr.class, e-> {
             Select sel = select( e );
             if( sel != null ){
                 sel.astAnno.removeForced();
             }
         });
-        return node;
+        return astNode;
     }
 
     /**
      *
-     * @param _m the root model node to start from
-     * @param <M> the TYPE of model node
+     * @param _n the root model node to start from
+     * @param <N> the TYPE of model node
      * @return the modified model node
      */
     @Override
-    public <M extends _node> M removeIn(M _m ){
-        Walk.in( _m, AnnotationExpr.class, e-> {
+    public <N extends _node> N removeIn(N _n ){
+        Walk.in(_n, AnnotationExpr.class, e-> {
             Select sel = select( e );
             if( sel != null ){
                 sel.astAnno.removeForced();
             }
         });
-        return _m;
+        return _n;
     }
 
     /**
      * Replace all occurrences of the template in the code with the replacement
      * (composing the replacement from the constructed tokens in the source)
      *
-     * @param _m the model to find replacements
+     * @param _n the model to find replacements
      * @param $a the template to be constructed as the replacement
-     * @param <M> the TYPE of model
+     * @param <N> the TYPE of model
      * @return
      */
-    public <M extends _node> M replaceIn(M _m, $anno $a ){
-        Walk.in(_m, AnnotationExpr.class, e-> {
+    public <N extends _node> N replaceIn(N _n, $anno $a ){
+        Walk.in(_n, AnnotationExpr.class, e-> {
             Select sel = select( e );
             if( sel != null ){
                 sel.astAnno.replace($a.construct(sel.args).ast() );
             }
         });
-        return _m;
+        return _n;
     }
     
     /**
      * 
      * @param <N>
-     * @param node
+     * @param astNode
      * @param $a
      * @return 
      */
-    public <N extends Node> N replaceIn(N node, $anno $a ){
-        node.walk(AnnotationExpr.class, e-> {
+    public <N extends Node> N replaceIn(N astNode, $anno $a ){
+        astNode.walk(AnnotationExpr.class, e-> {
             Select sel = select( e );
             if( sel != null ){
                 sel.astAnno.replace($a.construct(sel.args).ast() );
             }
         });
-        return node;
-    }
-
-    /**
-     * 
-     * @param <M>
-     * @param _m
-     * @param selectConsumer
-     * @return 
-     */
-    public <M extends _node> M forSelectedIn(M _m, Consumer<Select> selectConsumer ){
-        Walk.in( _m, AnnotationExpr.class, e-> {
-            Select sel = select( e );
-            if( sel != null ){
-                selectConsumer.accept( sel );
-            }
-        });
-        return _m;
+        return astNode;
     }
 
     /**
      * 
      * @param <N>
-     * @param node
+     * @param _n
      * @param selectConsumer
      * @return 
      */
-    public <N extends Node> N forSelectedIn(N node, Consumer<Select> selectConsumer ){
-        node.walk(AnnotationExpr.class, e-> {
+    public <N extends _node> N forSelectedIn(N _n, Consumer<Select> selectConsumer ){
+        Walk.in(_n, AnnotationExpr.class, e-> {
             Select sel = select( e );
             if( sel != null ){
                 selectConsumer.accept( sel );
             }
         });
-        return node;
+        return _n;
+    }
+
+    /**
+     * 
+     * @param <N>
+     * @param astNode
+     * @param selectConsumer
+     * @return 
+     */
+    public <N extends Node> N forSelectedIn(N astNode, Consumer<Select> selectConsumer ){
+        astNode.walk(AnnotationExpr.class, e-> {
+            Select sel = select( e );
+            if( sel != null ){
+                selectConsumer.accept( sel );
+            }
+        });
+        return astNode;
     }
 
     @Override
-    public <N extends Node> N forIn(N node, Consumer<_anno> _annoActionFn){
-        node.walk(AnnotationExpr.class, e-> {
-            Tokens tokens = deconstruct( e );
+    public <N extends Node> N forIn(N astNode, Consumer<_anno> _annoActionFn){
+        astNode.walk(AnnotationExpr.class, a-> {
+            Tokens tokens = deconstruct(a );
             if( tokens != null ){
-                _annoActionFn.accept( _anno.of(e));
+                _annoActionFn.accept(_anno.of(a));
             }
         });
-        return node;
+        return astNode;
     }
 
     @Override
-    public <M extends _node> M forIn(M _m, Consumer<_anno> _annoActionFn){
-        Walk.in( _m, AnnotationExpr.class, e -> {
-            Tokens tokens =  deconstruct( e );
+    public <N extends _node> N forIn(N _n, Consumer<_anno> _annoActionFn){
+        Walk.in(_n, AnnotationExpr.class, a -> {
+            Tokens tokens =  deconstruct(a );
             if( tokens != null ){
-                _annoActionFn.accept( _anno.of(e) );
+                _annoActionFn.accept(_anno.of(a) );
             }
         });
-        return _m;
+        return _n;
     }
 
     /**
@@ -847,9 +837,9 @@ public final class $anno
         @Override
         public String toString(){
             return "$anno.Select {"+ System.lineSeparator()+
-                    Text.indent(astAnno.toString() )+ System.lineSeparator()+
-                    Text.indent("ARGS : " + args) + System.lineSeparator()+
-                    "}";
+                Text.indent(astAnno.toString() )+ System.lineSeparator()+
+                Text.indent("ARGS : " + args) + System.lineSeparator()+
+                "}";
         }
 
         
@@ -861,7 +851,6 @@ public final class $anno
         @Override
         public _anno model() {
             return _anno.of(astAnno);
-        }
-        
+        }        
     }
 }
