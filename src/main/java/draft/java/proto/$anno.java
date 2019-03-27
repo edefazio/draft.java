@@ -90,6 +90,53 @@ public final class $anno
     public static final <N extends _node> _anno first( Node astNode, String proto,Predicate<_anno>constraint){
         return $anno.of(proto, constraint).firstIn(astNode);
     }
+         
+    /**
+     * 
+     * @param <N>
+     * @param rootNode
+     * @param proto
+     * @return 
+     */
+    public static final <N extends _node> Select selectFirst( N rootNode, String proto ){
+        return $anno.of(proto).selectFirstIn(rootNode);
+    }
+    
+    /**
+     * 
+     * @param <N>
+     * @param astNode
+     * @param proto
+     * @return 
+     */
+    public static final <N extends _node> Select selectFirst( Node astNode, String proto ){
+        return $anno.of(proto).selectFirstIn(astNode);
+    }
+    
+    /**
+     * 
+     * @param <N>
+     * @param rootNode
+     * @param proto
+     * @param constraint
+     * @return 
+     */
+    public static final <N extends _node> Select selectFirst( N rootNode, String proto, Predicate<_anno> constraint){
+        return $anno.of(proto, constraint).selectFirstIn(rootNode);
+    }
+    
+    /**
+     * 
+     * @param <N>
+     * @param astNode
+     * @param proto
+     * @param constraint
+     * @return 
+     */
+    public static final <N extends _node> Select selectFirst( Node astNode, String proto,Predicate<_anno>constraint){
+        return $anno.of(proto, constraint).selectFirstIn(astNode);
+    }
+    
        
     //?? TODO add constraint parameter at end (make it a vararg?)
     /**
@@ -136,6 +183,52 @@ public final class $anno
      */
     public static final <N extends _node> List<_anno> list( N rootNode, _anno _proto, Predicate<_anno> constraint){
         return $anno.of(_proto, constraint).listIn(rootNode);
+    }
+    
+    /**
+     * lists all occurrences of annos that match the 
+     * @param <N>
+     * @param rootNode
+     * @param proto
+     * @return 
+     */
+    public static final <N extends _node> List<Select> selectList( N rootNode, String proto ){
+        return $anno.of(proto).selectListIn(rootNode);
+    }
+    
+    /**
+     * lists all occurrences of annos that match the 
+     * @param <N>
+     * @param rootNode
+     * @param proto
+     * @param constraint
+     * @return 
+     */
+    public static final <N extends _node> List<Select> selectList( N rootNode, String proto, Predicate<_anno> constraint){
+        return $anno.of(proto, constraint).selectListIn(rootNode);
+    }
+    
+    /**
+     * 
+     * @param <N>
+     * @param rootNode
+     * @param _proto
+     * @return 
+     */
+    public static final <N extends _node> List<Select> selectlist( N rootNode, _anno _proto ){
+        return $anno.of(_proto).selectListIn(rootNode);
+    }
+    
+    /**
+     * 
+     * @param <N>
+     * @param rootNode
+     * @param _proto
+     * @param constraint
+     * @return 
+     */
+    public static final <N extends _node> List<Select> selectList( N rootNode, _anno _proto, Predicate<_anno> constraint){
+        return $anno.of(_proto, constraint).selectListIn(rootNode);
     }
     
     /**
@@ -499,6 +592,20 @@ public final class $anno
         }
         return null;
     }
+    
+    /**
+     * Returns the first _anno that matches the pattern and constraint
+     * @param _n the _java node
+     * @return  the first _anno that matches (or null if none found)
+     */
+    public Select selectFirstIn( _node _n ){
+        Optional<AnnotationExpr> f = _n.ast().findFirst(AnnotationExpr.class, s -> this.matches(s) );         
+        if( f.isPresent()){
+            return select(f.get());
+        }
+        return null;
+    }
+    
 
     /**
      * Returns the first _anno that matches the pattern and constraint
@@ -512,6 +619,20 @@ public final class $anno
         }
         return null;
     }
+    
+    /**
+     * Returns the first $anno.Select that matches the pattern and constraint
+     * @param astNode the node to look through
+     * @return a Select the first _anno that matches (or null if none found)
+     */
+    public Select selectFirstIn( Node astNode ){
+        Optional<AnnotationExpr> f = astNode.findFirst(AnnotationExpr.class, s -> this.matches(s) );         
+        if( f.isPresent()){
+            return select(f.get());
+        }
+        return null;
+    }
+    
     
     @Override
     public List<_anno> listIn(_node _t ){

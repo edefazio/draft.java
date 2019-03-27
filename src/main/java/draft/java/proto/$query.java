@@ -3,6 +3,7 @@ package draft.java.proto;
 import com.github.javaparser.ast.Node;
 import com.github.javaparser.ast.expr.Expression;
 import com.github.javaparser.ast.stmt.Statement;
+import com.github.javaparser.ast.type.Type;
 import draft.Tokens;
 import draft.java.Ast;
 import draft.java.Expr;
@@ -203,15 +204,6 @@ public interface $query<Q> {
             return stmt.toString(Ast.PRINT_NO_COMMENTS).equals(st.toString(Ast.PRINT_NO_COMMENTS));
         }        
         
-        @Override
-        public boolean equals(Object o ){
-            if( o == null || !o.getClass().equals($args.class ) ) {
-                return false;
-            }
-            $args co = ($args)o;
-            return Objects.equals( co.tokens, tokens);            
-        }
-
         public boolean is( $args cs ){
             return this.equals(cs );
         }
@@ -227,6 +219,17 @@ public interface $query<Q> {
                 return false;
             }
         }
+        
+        @Override
+        public boolean equals(Object o ){
+            if( o == null || !o.getClass().equals($args.class ) ) {
+                return false;
+            }
+            $args co = ($args)o;
+            return Objects.equals( co.tokens, tokens);            
+        }
+
+        
 
         @Override
         public int hashCode(){
@@ -305,8 +308,35 @@ public interface $query<Q> {
      */
     interface selected<T> {
         
-        
         $args getArgs();        
+        
+        default Expression expr(String key){
+            return getArgs().expr(key);            
+        }
+        
+        default Statement stmt(String key){
+            return getArgs().stmt(key);
+        }
+        
+        default _typeRef type(String key){
+            return getArgs().type(key);
+        }
+        
+        default boolean is(String key, String value){
+            return getArgs().is(key, value);
+        }
+        
+        default boolean is(String key, Expression value){
+            return getArgs().is(key, value);
+        }
+        
+        default boolean is(String key, Statement value){
+            return getArgs().is(key, value);
+        }
+        
+        default boolean is(String key, Type value){
+            return getArgs().is(key, value);
+        }
     }
     
     interface selectedAstNode<N extends Node>{

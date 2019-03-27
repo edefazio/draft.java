@@ -356,6 +356,32 @@ public final class $constructor
         return null;
     }
     
+    /**
+     * Returns the first _constructor that matches the pattern and constraint
+     * @param _n the _java node
+     * @return  the first _constructor that matches (or null if none found)
+     */
+    public Select selectFirstIn( _node _n ){
+        Optional<ConstructorDeclaration> f = _n.ast().findFirst(ConstructorDeclaration.class, s -> this.matches(s) );         
+        if( f.isPresent()){
+            return select(f.get());
+        }
+        return null;
+    }
+
+    /**
+     * Returns the first _constructor that matches the pattern and constraint
+     * @param astNode the node to look through
+     * @return  the first _constructor that matches (or null if none found)
+     */
+    public Select selectFirstIn( Node astNode ){
+        Optional<ConstructorDeclaration> f = astNode.findFirst(ConstructorDeclaration.class, s -> this.matches(s) );         
+        if( f.isPresent()){
+            return select(f.get());
+        }
+        return null;
+    }
+    
     @Override
     public String toString(){
         if( this.javadocStencil != null ){

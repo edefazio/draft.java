@@ -1,5 +1,6 @@
 package draft.java.proto;
 
+import com.github.javaparser.ast.expr.ArrayAccessExpr;
 import com.github.javaparser.ast.expr.IntegerLiteralExpr;
 import draft.java.Expr;
 import draft.java._class;
@@ -143,5 +144,21 @@ public class $exprTest extends TestCase {
         List<Integer>ints = new ArrayList<>();
         e.forIn(_class.of(C.class), ie -> ints.add(ie.asInt()));
         assertTrue( ints.contains(1) && ints.contains(2) && ints.contains(3) && ints.contains(4) && ints.contains(5) && ints.contains(6));
+    }
+    
+    public void testAPI(){
+        
+        assertTrue($expr.arrayAccess(a -> a.getIndex().isIntegerLiteralExpr() ).matches("a[1]"));
+        assertTrue($expr.arrayAccess("a[$any$]", a -> a.getIndex().isIntegerLiteralExpr() ).matches("a[1]"));
+        assertFalse($expr.arrayAccess("a[$any$]", a -> a.getIndex().isIntegerLiteralExpr() ).matches("a[b.count()]"));
+        _class _c = _class.of("C").field("int i=1;");
+        assertTrue( $expr.replace(_c, "1", "2").getField("i").initIs(2));
+        
+        assertTrue($expr.list(_c, "2").size() == 1);
+        /*
+        assertTrue( 
+                $expr.of("a[$any$]")
+                .constraint( (ArrayAccessExpr a) -> a.getIndex().isIntegerLiteralExpr() ).matches("a[1]"));
+        */
     }
 }

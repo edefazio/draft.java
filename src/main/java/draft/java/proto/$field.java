@@ -23,7 +23,6 @@ import java.util.function.Predicate;
 public class $field
     implements Template<_field>, $query<_field> {
 
-    
     /**
      * 
      * @param <N>
@@ -47,7 +46,6 @@ public class $field
         return $field.of(proto, constraint).listIn(_n);
     }
     
-    
     /**
      * 
      * @param <N>
@@ -70,6 +68,148 @@ public class $field
     public static final <N extends _node> List<_field> list( N _n, _field proto, Predicate<_field> constraint){
         return $field.of(proto, constraint).listIn(_n);
     }
+          
+    /**
+     * 
+     * @param <N>
+     * @param _n
+     * @param proto
+     * @return 
+     */
+    public static final <N extends _node> _field first( N _n, String proto ){
+        return $field.of(proto).firstIn(_n);
+    }
+    
+    /**
+     * 
+     * @param <N>
+     * @param _n
+     * @param proto
+     * @param constraint
+     * @return 
+     */
+    public static final <N extends _node> _field first( N _n, String proto, Predicate<_field> constraint){
+        return $field.of(proto, constraint).firstIn(_n);
+    }
+    
+    /**
+     * 
+     * @param <N>
+     * @param _n
+     * @param proto
+     * @return 
+     */
+    public static final <N extends _node> _field first( N _n, _field proto ){
+        return $field.of(proto).firstIn(_n);
+    }
+    
+    /**
+     * 
+     * @param <N>
+     * @param _n
+     * @param proto
+     * @param constraint
+     * @return 
+     */
+    public static final <N extends _node> _field first( N _n, _field proto, Predicate<_field> constraint){
+        return $field.of(proto, constraint).firstIn(_n);
+    }
+       
+    
+    
+    /**
+     * 
+     * @param <N>
+     * @param _n
+     * @param proto
+     * @return 
+     */
+    public static final <N extends _node> Select selectFirst( N _n, String proto ){
+        return $field.of(proto).selectFirstIn(_n);
+    }
+    
+    /**
+     * 
+     * @param <N>
+     * @param _n
+     * @param proto
+     * @param constraint
+     * @return 
+     */
+    public static final <N extends _node> Select selectFirst( N _n, String proto, Predicate<_field> constraint){
+        return $field.of(proto, constraint).selectFirstIn(_n);
+    }
+    
+    /**
+     * 
+     * @param <N>
+     * @param _n
+     * @param proto
+     * @return 
+     */
+    public static final <N extends _node> Select selectFirst( N _n, _field proto ){
+        return $field.of(proto).selectFirstIn(_n);
+    }
+    
+    /**
+     * 
+     * @param <N>
+     * @param _n
+     * @param proto
+     * @param constraint
+     * @return 
+     */
+    public static final <N extends _node> Select selectFirst( N _n, _field proto, Predicate<_field> constraint){
+        return $field.of(proto, constraint).selectFirstIn(_n);
+    }
+    
+    
+    /**
+     * 
+     * @param <N>
+     * @param _n
+     * @param proto
+     * @return 
+     */
+    public static final <N extends _node> List<Select> selectList( N _n, String proto ){
+        return $field.of(proto).selectListIn(_n);
+    }
+    
+    /**
+     * 
+     * @param <N>
+     * @param _n
+     * @param proto
+     * @param constraint
+     * @return 
+     */
+    public static final <N extends _node> List<Select> selectList( N _n, String proto, Predicate<_field> constraint){
+        return $field.of(proto, constraint).selectListIn(_n);
+    }
+    
+    /**
+     * 
+     * @param <N>
+     * @param _n
+     * @param proto
+     * @return 
+     */
+    public static final <N extends _node> List<Select> selectList( N _n, _field proto ){
+        return $field.of(proto).selectListIn(_n);
+    }
+    
+    /**
+     * 
+     * @param <N>
+     * @param _n
+     * @param proto
+     * @param constraint
+     * @return 
+     */
+    public static final <N extends _node> List<Select> selectList( N _n, _field proto, Predicate<_field> constraint){
+        return $field.of(proto, constraint).selectListIn(_n);
+    }
+    
     
     /**
      * Removes all occurrences of the source field in the rootNode (recursively)
@@ -509,6 +649,32 @@ public class $field
         return null;
     }
     
+    /**
+     * Returns the first _field that matches the pattern and constraint
+     * @param _n the _java node
+     * @return  the first _field that matches (or null if none found)
+     */
+    public Select selectFirstIn( _node _n ){
+        Optional<VariableDeclarator> f = _n.ast().findFirst(VariableDeclarator.class, s -> this.matches(s) );         
+        if( f.isPresent()){
+            return select(f.get());
+        }
+        return null;
+    }
+
+    /**
+     * Returns the first _field that matches the pattern and constraint
+     * @param astNode the node to look through
+     * @return  the first _field that matches (or null if none found)
+     */
+    public Select selectFirstIn( Node astNode ){
+        Optional<VariableDeclarator> f = astNode.findFirst(VariableDeclarator.class, s -> this.matches(s) );         
+        if( f.isPresent()){
+            return select(f.get());
+        }
+        return null;
+    }
+    
     @Override
     public List<_field> listIn(_node _n ){
         return listIn(_n.ast() );
@@ -622,6 +788,13 @@ public class $field
         return _n;
     }
 
+    /**
+     * 
+     * @param <N>
+     * @param astNode
+     * @param selectConsumer
+     * @return 
+     */
     public <N extends Node> N forSelectedIn(N astNode, Consumer<Select> selectConsumer ){
         astNode.walk(VariableDeclarator.class, e-> {
             Select sel = select( e );
@@ -671,6 +844,7 @@ public class $field
             this.args = $args.of(tokens);
         }
         
+        @Override
         public $args getArgs(){
             return args;
         }
@@ -679,7 +853,7 @@ public class $field
         public String toString(){
             return "$field.Select{"+ System.lineSeparator()+
                     Text.indent( _f.toString() )+ System.lineSeparator()+
-                    Text.indent("CLAUSES : " + args) + System.lineSeparator()+
+                    Text.indent("ARGS : " + args) + System.lineSeparator()+
                     "}";
         }
 

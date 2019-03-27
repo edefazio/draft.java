@@ -152,6 +152,42 @@ public final class _field
         return Objects.equals(this.getInit(), e);
     }
 
+    public boolean initIs(boolean b) {
+        return Objects.equals(this.getInit(), Expr.of(b));
+    }
+
+    public boolean initIs(byte b) {
+        return Objects.equals(this.getInit(),Expr.of(b));
+    }
+
+    public boolean initIs(short s) {
+        return Objects.equals(this.getInit(),Expr.of(s));
+    }
+
+    public boolean initIs(int i) {
+        return Objects.equals(this.getInit(),Expr.of(i));
+    }
+
+    public boolean initIs(char c) {
+        return Objects.equals(this.getInit(),Expr.of(c));
+    }
+
+    public boolean initIs(float f) {
+        return Objects.equals(this.getInit(),Expr.of(f));
+    }
+
+    public boolean initIs(double d) {
+        return Objects.equals(this.getInit(),Expr.of(d));
+    }
+
+    public boolean initIs(long l) {
+        return Objects.equals(this.getInit(),Expr.of(l));
+    }
+
+    public boolean initIs(String init) {
+        return Objects.equals(this.getInit(),Expr.stringLiteral(init));
+    }
+    
     public boolean hasInit() {
         return this.astVar.getInitializer().isPresent();
     }

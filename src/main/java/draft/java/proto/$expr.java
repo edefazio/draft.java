@@ -258,7 +258,6 @@ public final class $expr <T extends Expression>
     
     /**
      * i.e."new Obj[]", "new int[][]"
-     * @param proto
      * @param constraint
      * @return 
      */

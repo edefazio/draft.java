@@ -155,6 +155,51 @@ public final class $import
         return $import.of(_import.of(target)).listIn(_type);
     }
     
+    
+     /**
+     * 
+     * @param <T>
+     * @param _type
+     * @param _protoTarget
+     * @return 
+     */
+    public static final <T extends _type> List<Select> selectList( T _type, _import _protoTarget){
+        return $import.of(_protoTarget).selectListIn(_type);
+    }
+    
+    /**
+     * 
+     * @param <T>
+     * @param _type
+     * @param protoTargetImport
+     * @return 
+     */
+    public static final <T extends _type> List<Select> selectList( T _type, String protoTargetImport ){
+        return $import.of(protoTargetImport).selectListIn(_type);
+    }
+    
+    /**
+     * 
+     * @param <T>
+     * @param _type
+     * @param astProtoTarget
+     * @return 
+     */
+    public static final <T extends _type> List<Select> selectList( T _type, ImportDeclaration astProtoTarget ){
+        return $import.of(_import.of(astProtoTarget)).selectListIn(_type);
+    }
+    
+    /**
+     * 
+     * @param <T>
+     * @param _type
+     * @param target
+     * @return 
+     */
+    public static final <T extends _type> List<Select> selectList( T _type, Class target ){
+        return $import.of(_import.of(target)).selectListIn(_type);
+    }
+    
     /**
      * 
      * @param proto
@@ -421,6 +466,32 @@ public final class $import
         Optional<ImportDeclaration> f = astNode.findFirst(ImportDeclaration.class, s -> this.matches(s) );         
         if( f.isPresent()){
             return _import.of(f.get());
+        }
+        return null;
+    }
+    
+    /**
+     * Returns the first _import that matches the pattern and constraint
+     * @param _n the _java node
+     * @return  the first _import that matches (or null if none found)
+     */
+    public Select selectFirstIn( _node _n ){
+        Optional<ImportDeclaration> f = _n.ast().findFirst(ImportDeclaration.class, s -> this.matches(s) );         
+        if( f.isPresent()){
+            return select(f.get());
+        }
+        return null;
+    }
+
+    /**
+     * Returns the first _import that matches the pattern and constraint
+     * @param astNode the node to look through
+     * @return  the first _import that matches (or null if none found)
+     */
+    public Select selectFirstIn( Node astNode ){
+        Optional<ImportDeclaration> f = astNode.findFirst(ImportDeclaration.class, s -> this.matches(s) );         
+        if( f.isPresent()){
+            return select(f.get());
         }
         return null;
     }

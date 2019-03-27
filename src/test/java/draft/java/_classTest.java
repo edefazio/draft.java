@@ -824,7 +824,7 @@ public class _classTest extends TestCase {
         assertTrue( _f.getModifiers().is( "public static final"));
         assertTrue( _f.isType( "List<String>"));
         assertTrue( _f.getName().equals( "l"));
-        assertTrue( _f.initIs("new ArrayList<>()"));
+        assertTrue( _f.initIs(Expr.of("new ArrayList<>()")));
         System.out.println( _c.listFields());
         
         assertTrue(_c.hasJavadoc());
