@@ -353,6 +353,10 @@ public final class $anno
         return new $anno( _a.toString().trim() ).constraint(constraint);
     }
     
+    public static $anno of( Predicate<_anno> constraint ){
+        return new $anno( "@a" ).$("@a", "amy").constraint(constraint);
+    }
+    
     /**
      * 
      * @param anonymousObjectWithAnnotation
@@ -366,9 +370,23 @@ public final class $anno
         return of( _anno.of(bd.getAnnotation(0) ) );        
     }
     
-    public static $anno of( Class<? extends Annotation> a){
-        $anno $a = of( _anno.of(a) );
-        $a.fullyQualifiedStencil = Stencil.of("@"+a.getCanonicalName());
+    public static $anno of( Class<? extends Annotation> clazz){
+        return $anno.of( a -> a.isInstance(clazz) );         
+    }
+    
+    public static $anno of( Class<? extends Annotation> clazz, String argumentStencil ){
+        if( !argumentStencil.trim().startsWith("(") ){
+            argumentStencil = "("+ argumentStencil + ")";
+        }
+        $anno $a = $anno.of("@$annotationName$"+argumentStencil).constraint(a -> a.isInstance(clazz));
+        return $a;
+    }
+    
+    public static $anno of( Class<? extends Annotation> clazz, String argumentStencil, Predicate<_anno> constraint){
+        if( !argumentStencil.trim().startsWith("(") ){
+            argumentStencil = "("+ argumentStencil + ")";
+        }
+        $anno $a = $anno.of("@$annotationName$"+argumentStencil).constraint(a -> a.isInstance(clazz) && constraint.test(a));
         return $a;
     }
     
@@ -383,9 +401,10 @@ public final class $anno
      * i.e. @my.path.a()
      * verses the more simple: 
      * @a() 
-     */
+     
     public Stencil fullyQualifiedStencil = null;
-
+    */
+    
     private $anno( String stencil) {
         this.annoStencil = Stencil.of(stencil );
     }
@@ -438,10 +457,7 @@ public final class $anno
             Tokens r = annoStencil.deconstruct( _a.toString() ); 
             if( r != null){
                 return r;
-            }
-            if( this.fullyQualifiedStencil != null) {
-                return this.fullyQualifiedStencil.deconstruct(_a.toString());
-            }
+            }            
         }
         return null;
     }
@@ -493,10 +509,7 @@ public final class $anno
 
     @Override
     public $anno $(String target, String $Name) {
-        this.annoStencil = this.annoStencil.$(target, $Name);
-        if(this.fullyQualifiedStencil != null){
-            this.fullyQualifiedStencil = this.fullyQualifiedStencil.$(target, $Name);
-        }
+        this.annoStencil = this.annoStencil.$(target, $Name);        
         return this;
     }
 
@@ -541,10 +554,7 @@ public final class $anno
      * @return 
      */
     public $anno assign$( Translator translator, Tokens kvs ) {
-        this.annoStencil = this.annoStencil.assign$(translator,kvs);
-        if(this.fullyQualifiedStencil != null){
-            this.fullyQualifiedStencil = this.fullyQualifiedStencil.assign$(translator, kvs);
-        }        
+        this.annoStencil = this.annoStencil.assign$(translator,kvs);          
         return this;
     }
 
@@ -567,6 +577,19 @@ public final class $anno
         return select( _a.ast() );
     }
 
+    /**
+     * 
+     * @param anno
+     * @return 
+     */
+    public Select select(String anno){
+        try{
+            return select( _anno.of(anno));
+        }catch(Exception e){
+            return null;
+        }
+    }
+    
     /**
      * 
      * @param e
