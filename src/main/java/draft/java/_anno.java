@@ -66,7 +66,7 @@ public final class _anno
     public static _anno of( AnnotationExpr astAnno ) {
         return new _anno( astAnno );
     }
-
+    
     private AnnotationExpr astAnno;
 
     public _anno( AnnotationExpr astAnno ) {
@@ -92,7 +92,7 @@ public final class _anno
 
     public boolean isInstance( Class clazz ) {
         String str = this.astAnno.getNameAsString();
-        return str.equals( clazz.getName() ) || str.equals( clazz.getSimpleName() );
+        return str.equals( clazz.getCanonicalName() ) || str.equals( clazz.getSimpleName() );
     }
 
     public List<String> listKeys() {
