@@ -24,6 +24,14 @@ import java.util.List;
 @Ast.cache
 public class ExprTest extends TestCase {
 
+    public void testArrayExpr(){
+        Expr.of(new int[]{1,2,3});
+        Expr.of(new float[]{1.0f,2.0f,3.0f});
+        Expr.of(new double[]{1.0,2.0,3.0});
+        Expr.of(new boolean[]{true});
+        Expr.of(new char[]{'a'});
+    }
+    
     public void testRuntimeAnonymousClass(){
         ObjectCreationExpr oce = Expr.anonymousObject( new Object(){
             int x,y,z;

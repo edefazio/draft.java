@@ -2,6 +2,7 @@ package draft.java.proto;
 
 import com.github.javaparser.ast.stmt.Statement;
 import draft.Tokens;
+import draft.java.Expr;
 import draft.java.Stmt;
 import draft.java._class;
 import junit.framework.TestCase;
@@ -11,6 +12,7 @@ import java.util.function.Consumer;
 
 public class $stmtTest extends TestCase {
 
+    
     public void test$protoQueryTutorial(){
         _class _c = _class.of("C", new Object(){
             void m(){
@@ -21,9 +23,8 @@ public class $stmtTest extends TestCase {
             }
         });
         //the easy things should be easy
-        assertNotNull( $stmt.first(_c, "assertTrue(true);"));
+        assertTrue( $stmt.first(_c, "assertTrue(true);").getComment().isPresent());
         assertTrue( $stmt.list(_c, "assertTrue(true);").size() ==1);
-
         
         $stmt.replace(_c, "assertTrue(true);", "Assert.assertTrue(true);");
         $stmt.remove(_c, "Assert.assertTrue(true);");
@@ -47,7 +48,7 @@ public class $stmtTest extends TestCase {
         assertTrue( $assertTrue.listIn(_c).size() ==1);
         
         $assertTrue.replaceIn(_c, "Assert.assertTrue(true);");
-        $assertTrue.removeIn(_c);
+        $assertTrue.remove(_c, "Assert.assertTrue(true);");
         
         assertNull($stmt.first(_c, "Assert.assertTrue(true);"));        
     }
@@ -74,16 +75,23 @@ public class $stmtTest extends TestCase {
         assertTrue( $assertAny.firstIn(_c).getComment().isPresent());
         
         
-        //Here we use the "select"          
+        //using "select" will parse . match and return the variables          
         assertTrue( $assertAny.selectFirstIn(_c).args.is("any", "true"));
+        assertTrue( $assertAny.selectFirstIn(_c).args.is("any", true));
         
-        //you can statically query for 
+        //you can statically query for a Select object which wraps the result
         assertTrue( $stmt.selectFirst(_c, "assertTrue($any$);").astStatement.getComment().isPresent());
-        assertTrue( $stmt.selectList(_c, "assertTrue($any$);").size() ==2);
+        assertTrue( $stmt.selectList(_c, "assertTrue($any$);").size() ==2);     
         
+        //System.out.println( $stmt.selectFirst(_c, "System.out.println($any$);") );
+        //What is GREAT about Select is that we can look at/verify the wildcard variables 
+        assertTrue( $stmt.selectFirst(_c, "System.out.println($any$);").is("any", "Hello World!"));     
+        assertTrue( $stmt.selectFirst(_c, "assertTrue( $a$ == $b$ );")
+                .is("a", 1,"b", 1) );       
         
+        //$expr.of(new int[]{1,2,3}).listIn(_c);
         
-        
+        assertEquals( 2, $expr.of(1).listIn(_c).size());
     }
     
     public void testFullApi(){
@@ -101,16 +109,11 @@ public class $stmtTest extends TestCase {
         $stmt.replace(_c, "assertTrue(true);", "Assert.assertTrue(true);");
         $stmt.remove(_c, "Assert.assertTrue(true);");
         
-        
-        
-        
         $stmt.first(_c, "assertTrue($any$);");
         $stmt.of( ()-> assertTrue(true) ).firstIn(_c);
         $stmt.of( ()-> assertTrue(true) ).$("true", "any").firstIn(_c);
         
         $stmt.of( ($any$)-> assertNotNull($any$) ).firstIn(_c);
-        
-        
         
         $stmt.first(_c, "assertTrue(1==1);" );
         $stmt.first(_c, "assertTrue( $obj$.equals($obj$) );" );

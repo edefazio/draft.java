@@ -2,8 +2,11 @@ package draft.java.proto;
 
 import com.github.javaparser.ast.Node;
 import com.github.javaparser.ast.expr.Expression;
+import com.github.javaparser.ast.expr.NullLiteralExpr;
+import com.github.javaparser.ast.expr.StringLiteralExpr;
 import com.github.javaparser.ast.stmt.Statement;
 import com.github.javaparser.ast.type.Type;
+import draft.DraftException;
 import draft.Tokens;
 import draft.java.Ast;
 import draft.java.Expr;
@@ -160,7 +163,7 @@ public interface $query<Q> {
          * @param key     
          * @param value     
          * @return true if 
-         */
+         
         public boolean is( String key, String value){
             Object obj = get(key);
             if( obj == null){ 
@@ -168,6 +171,7 @@ public interface $query<Q> {
             }
             return obj.toString().equals( value );
         }
+        */ 
                
         /** 
          * is the clause with the key equal to the Type?
@@ -213,12 +217,56 @@ public interface $query<Q> {
             return this.equals($args.of( tks) );
         }
 
-        public boolean is( Object...keyValues ){
-            try{
-                return is( Tokens.of(keyValues));
-            }catch(Exception e){
-                return false;
+        
+        public boolean is( String key, Object value ){
+            //this matches nullExpr or simply not there
+            Object o = get(key);
+            
+            if( value == null || value instanceof NullLiteralExpr ){                
+                if( !( o == null || o instanceof NullLiteralExpr || o.equals("null"))){
+                    return false;
+                }
+                return true;
+            }            
+            if( value instanceof String && o instanceof String){
+                //System.out.println("both equals String"+ value +" "+o );
+                String v = (String)value;
+                String s = (String)o;
+                
+                if( s.startsWith("\"") && s.endsWith("\"") ){
+                    return v.equals( s.substring(1, s.length() -1) );
+                }
+                return o.equals(value);
             }
+            if( value instanceof Expression ){
+                return Expr.equatesTo((Expression)value, get(key) );
+            }
+            else if( value instanceof String ){                
+                try{
+                    return Expr.equatesTo( Expr.of( (String)value ), o);
+                }
+                catch(Exception e){
+                    
+                }
+                return Objects.equals( value, get(key) );
+            }      
+            else if( o.getClass().equals( value.getClass()) ){
+                return o.equals(value);
+            }
+            return value.toString().equals( o);
+        }
+        
+        public boolean is( Object...keyValues ){
+            if( keyValues.length % 2 == 1){
+                throw new DraftException("Expected an even number of key values, got ("+ keyValues.length+")");
+            }
+            for(int i=0; i<keyValues.length; i+=2){
+                String key = keyValues[i].toString();
+                if( ! is( key, get(key))){
+                    return false;
+                }
+            }
+            return true;
         }
         
         @Override
@@ -327,6 +375,10 @@ public interface $query<Q> {
             }catch(Exception e){
                 return false;
             }            
+        }
+        
+        default boolean is(Object...keyValues ){
+            return getArgs().is(keyValues);
         }
         
         default boolean is(String key, String value){

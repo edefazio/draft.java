@@ -712,6 +712,89 @@ public enum Expr {
     public static DoubleLiteralExpr of( float d ){
         return new DoubleLiteralExpr( d );
     }
+    public static ArrayInitializerExpr arrayInitializer( int[] intArray ){
+        return of( intArray);
+    }
+    public static ArrayInitializerExpr of( int[] intArray ){
+        StringBuilder sb = new StringBuilder();
+        sb.append("{ ");
+        for(int i=0;i<intArray.length;i++){
+            if( i > 0 ){
+                sb.append(",");
+            }
+            sb.append( intArray[i] );
+        }
+        sb.append(" }");
+        return arrayInitializer( sb.toString() );
+    }
+    
+    public static ArrayInitializerExpr arrayInitializer( float[] floatArray ){
+        return of( floatArray);
+    }
+    public static ArrayInitializerExpr of( float[] array ){
+        StringBuilder sb = new StringBuilder();
+        sb.append("{ ");
+        for(int i=0;i<array.length;i++){
+            if( i > 0 ){
+                sb.append(",");
+            }
+            sb.append( array[i] ).append("f");
+        }
+        sb.append(" }");
+        return arrayInitializer( sb.toString() );
+    }
+    
+    public static ArrayInitializerExpr arrayInitializer( double[] array ){
+        return of( array);
+    }
+    
+    public static ArrayInitializerExpr of( double[] array ){
+        StringBuilder sb = new StringBuilder();
+        sb.append("{ ");
+        for(int i=0;i<array.length;i++){
+            if( i > 0 ){
+                sb.append(",");
+            }
+            sb.append( array[i] ).append("d");
+        }
+        sb.append(" }");
+        return arrayInitializer( sb.toString() );
+    }
+
+    public static ArrayInitializerExpr arrayInitializer( boolean[] array ){
+        return of( array);
+    }
+    
+    public static ArrayInitializerExpr of( boolean[] array ){
+        StringBuilder sb = new StringBuilder();
+        sb.append("{ ");
+        for(int i=0;i<array.length;i++){
+            if( i > 0 ){
+                sb.append(",");
+            }
+            sb.append( array[i] );
+        }
+        sb.append(" }");
+        return arrayInitializer( sb.toString() );
+    }
+    
+    public static ArrayInitializerExpr arrayInitializer( char[] array ){
+        return of( array );
+    }
+    
+    public static ArrayInitializerExpr of( char[] array ){
+        StringBuilder sb = new StringBuilder();
+        sb.append("{ ");
+        for(int i=0;i<array.length;i++){
+            if( i > 0 ){
+                sb.append(",");
+            }
+            sb.append("'").append( array[i] ).append("'");
+        }
+        sb.append(" }");
+        return arrayInitializer( sb.toString() );
+    }
+    
 
     public static DoubleLiteralExpr doubleLiteral( float d ) {
         return new DoubleLiteralExpr( d );
@@ -1042,5 +1125,62 @@ public enum Expr {
 
     public static VariableDeclarationExpr varDecl( String... code ) {
         return StaticJavaParser.parseVariableDeclarationExpr( Text.combine( code ));
+    }    
+    
+    
+    /**
+     * 
+     * @param exp
+     * @param o could be another expression, a String, or a value (integer, Float, array, etc.)
+     * @return 
+     */
+    public static boolean equatesTo (Expression exp, Object o) {
+        if( o == null || o instanceof NullLiteralExpr || o.equals("null") ) {
+            return exp.equals( new NullLiteralExpr() );
+        }
+        else if( o instanceof Expression ){
+            return Objects.equals( exp, o );
+        }   
+        else if( o instanceof String ){
+            try{
+                Expression e = Expr.of( (String)o);
+                return exp.equals(e);
+            }catch(Exception e){
+                if( exp instanceof StringLiteralExpr ){
+                    return Objects.equals( exp, Expr.stringLiteral(o.toString()) );
+                }
+            }
+        }
+        //handle All Wrapper types
+        else if( o instanceof Number ||  o instanceof Boolean ){ //Int Float, etc.
+            return Objects.equals( Expr.of(o.toString()), exp );
+        }
+        else if(o instanceof Character ){
+            return Objects.equals( Expr.charLiteral( (Character)o), exp );
+        }
+        //arrays?
+        else if( o.getClass().isArray() ){
+            if( o.getClass().getComponentType().isPrimitive() ){
+                Class ct = o.getClass().getComponentType();
+                if( ct == int.class ){
+                    return Objects.equals(exp, Expr.of( (int[])o) );
+                }
+                if( ct == float.class ){
+                    return Objects.equals(exp, Expr.of( (float[])o) );
+                }
+                if( ct == double.class ){
+                    return Objects.equals(exp, Expr.of( (double[])o) );
+                }
+                if( ct == boolean.class ){
+                    return Objects.equals(exp, Expr.of( (boolean[])o) );
+                }
+                if( ct == char.class ){
+                    return Objects.equals(exp, Expr.of( (char[])o) );
+                }
+                throw new DraftException("Only simple primitive types supported");                
+            } 
+        }
+        return false;
     }
+    
 }
