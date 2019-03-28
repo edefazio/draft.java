@@ -71,8 +71,41 @@ public final class $snip implements Template<List<Statement>>, $query<List<State
      * @param proto
      * @return 
      */
+    public static final <N extends _node> List<Statement> first( N _n, String... proto){
+        return $snip.of(proto).firstIn(_n);
+    }
+    
+    /**
+     * 
+     * @param <N>
+     * @param _n
+     * @param proto
+     * @return 
+     */
+    public static final <N extends _node> Select selectFirst( N _n, String... proto){
+        return $snip.of(proto).selectFirstIn(_n);
+    }
+    
+    /**
+     * 
+     * @param <N>
+     * @param _n
+     * @param proto
+     * @return 
+     */
     public static final <N extends _node> List<List<Statement>> list( N _n, String... proto){
         return $snip.of(proto).listIn(_n);
+    }
+    
+    /**
+     * 
+     * @param <N>
+     * @param _n
+     * @param proto
+     * @return 
+     */
+    public static final <N extends _node> List<Select> selectList( N _n, String... proto){
+        return $snip.of(proto).selectListIn(_n);
     }
         
     public List<$stmt> $sts = new ArrayList<>();
@@ -123,7 +156,6 @@ public final class $snip implements Template<List<Statement>>, $query<List<State
         return of( Expr.lambda(ste));
     }
 
-
     public static <T extends Object, U extends Object>  $snip of( Function<T,U> c ){
         StackTraceElement ste = Thread.currentThread().getStackTrace()[2];
         return of( Expr.lambda(ste));
@@ -149,8 +181,8 @@ public final class $snip implements Template<List<Statement>>, $query<List<State
         return of( Expr.lambda(ste));
     }
 
-    public static $snip of( LambdaExpr le ){
-        Statement st = Stmt.from(le);
+    public static $snip of( LambdaExpr astLambda ){
+        Statement st = Stmt.from(astLambda);
         return new $snip(st);
     }
 
@@ -158,9 +190,9 @@ public final class $snip implements Template<List<Statement>>, $query<List<State
         return of( _b.ast() );
     }
 
-    public static $snip of(BlockStmt body ){
+    public static $snip of(BlockStmt astBlockStmt ){
         $snip $s = new $snip();
-        body.getStatements().forEach(s -> $s.add(s));
+        astBlockStmt.getStatements().forEach(s -> $s.add(s));
         return $s;
     }
 
@@ -192,8 +224,8 @@ public final class $snip implements Template<List<Statement>>, $query<List<State
         add($st);
     }
 
-    public $snip add(Statement protoStmt){
-        $sts.add(new $stmt(protoStmt) );
+    public $snip add(Statement astProtoStmt){
+        $sts.add(new $stmt(astProtoStmt) );
         return this;
     }
 
@@ -326,21 +358,21 @@ public final class $snip implements Template<List<Statement>>, $query<List<State
 
     /**
      * 
-     * @param model
+     * @param _n
      * @return 
      */
-    public List<Statement> construct( _node model ){
-        return $snip.this.construct(model.componentize());
+    public List<Statement> construct( _node _n ){
+        return construct(_n.componentize());
     }
 
     @Override
     public List<Statement> construct( Map<String,Object> tokens ){
-       return $snip.this.construct( Translator.DEFAULT_TRANSLATOR, tokens );
+       return construct( Translator.DEFAULT_TRANSLATOR, tokens );
     }
 
     @Override
     public List<Statement> construct( Translator t, Object...keyValues ){
-        return $snip.this.construct( t, Tokens.of(keyValues ) );
+        return construct( t, Tokens.of(keyValues ) );
     }
 
     @Override
@@ -390,20 +422,25 @@ public final class $snip implements Template<List<Statement>>, $query<List<State
         return sts;
     }
 
-    public Select select( Statement statement ){
+    /**
+     * 
+     * @param astStmt
+     * @return 
+     */
+    public Select select( Statement astStmt ){
         int idx = 0;
         List<Statement> ss = new ArrayList<>();
-        ss.add(statement);
+        ss.add(astStmt);
         if( this.$sts.size() > 1  ){
-            if( !statement.getParentNode().isPresent() ) {
+            if( !astStmt.getParentNode().isPresent() ) {
                 //System.out.println("cant be match, no parent");
                 return null; //cant be
             }
-            NodeWithStatements nws = (NodeWithStatements)statement.getParentNode().get();
+            NodeWithStatements nws = (NodeWithStatements)astStmt.getParentNode().get();
             List<Statement>childs = nws.getStatements();
             //List<Node> childs =
             //        statement.getParentNode().get().getChildNodes();
-            idx = childs.indexOf(statement);
+            idx = childs.indexOf(astStmt);
             if( childs.size() - idx < this.$sts.size() ){
                 //System.out.println("cant be a match, b/c not enough sibling nodes to match $snip");
                 return null; //cant be a match, b/c not enough sibling nodes to match $snip
@@ -437,11 +474,11 @@ public final class $snip implements Template<List<Statement>>, $query<List<State
      * Deconstruct the statement(s) into tokens, or return null if the statement 
      * doesnt match
      *
-     * @param statement the statement to partsMap
+     * @param astStmt the statement to partsMap
      * @return Tokens from the stencil, or null if the statement doesnt match
      */
-    public Tokens deconstruct( Statement statement ){
-        Select s  = select( statement );
+    public Tokens deconstruct( Statement astStmt ){
+        Select s  = select(astStmt );
         if( s != null ){
             return s.args.asTokens();
         }
@@ -459,11 +496,11 @@ public final class $snip implements Template<List<Statement>>, $query<List<State
 
     /**
      * 
-     * @param statement
+     * @param astStmt
      * @return 
      */
-    public boolean matches( Statement statement ){
-        return deconstruct(statement) != null;
+    public boolean matches( Statement astStmt ){
+        return deconstruct(astStmt) != null;
     }
 
     /**
@@ -471,7 +508,7 @@ public final class $snip implements Template<List<Statement>>, $query<List<State
      * @param _n the _java node
      * @return  the first List<Statement>  that matches (or null if none found)
      */
-    public List<Statement> firstIn( _model._node _n ){
+    public List<Statement> firstIn( _node _n ){
         return firstIn(_n.ast());        
     }
 
@@ -498,6 +535,31 @@ public final class $snip implements Template<List<Statement>>, $query<List<State
             }
         });
         return sts;
+    }
+    
+    /**
+     * 
+     * @param _n
+     * @return 
+     */
+    public Select selectFirstIn( _node _n){
+        return selectFirstIn( _n.ast());
+    }
+    
+    /**
+     * 
+     * @param astNode the top ast node to run
+     * @return the Select
+     */
+    public Select selectFirstIn( Node astNode ){
+        Optional<Node> os = astNode.stream().filter(
+                n -> n instanceof Statement &&
+                    select( (Statement)n ) !=null ).findFirst();
+        
+        if( os.isPresent() ){
+            return select( (Statement)os.get());
+        }
+        return null;
     }
 
     @Override
@@ -748,6 +810,7 @@ public final class $snip implements Template<List<Statement>>, $query<List<State
         public List<Statement> statements;
         public $args args;
 
+        @Override
         public $args getArgs(){
             return args;
         }
@@ -762,9 +825,9 @@ public final class $snip implements Template<List<Statement>>, $query<List<State
             StringBuilder sb = new StringBuilder();
             this.statements.forEach( s -> sb.append(s).append( System.lineSeparator()) );
             return "$snip.Selected{"+ System.lineSeparator()+
-                    Text.indent( sb.toString() )+ System.lineSeparator()+
-                    Text.indent("args : " + args) + System.lineSeparator()+
-                    "}";
+                Text.indent( sb.toString() )+ System.lineSeparator()+
+                Text.indent("args : " + args) + System.lineSeparator()+
+                "}";
         }
     }
 }

@@ -114,8 +114,6 @@ public class $field
     public static final <N extends _node> _field first( N _n, _field proto, Predicate<_field> constraint){
         return $field.of(proto, constraint).firstIn(_n);
     }
-       
-    
     
     /**
      * 

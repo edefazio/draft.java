@@ -95,18 +95,6 @@ public interface $query<Q> {
     <N extends _node> N forIn(N _n, Consumer<Q> _nodeActionFn);
 
     /**
-     * These things aren't "tokens"
-     * They are 
-     * criterion
-     * properties
-     * parameters
-     * arguments
-     * features
-     * part
-     * 
-     * name value
-     * 
-     * clause
      * 
      */
     public static class $args implements Map<String,Object>{

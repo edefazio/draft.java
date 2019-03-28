@@ -29,6 +29,145 @@ public final class $typeRef<T extends Type>
      * @param proto
      * @return 
      */
+    public static final <N extends _node> _typeRef first( N _n, String proto ){
+        return $typeRef.of(proto).firstIn(_n);
+    }
+    
+    /**
+     * 
+     * @param <N>
+     * @param _n
+     * @param proto
+     * @return 
+     */
+    public static final <N extends _node> _typeRef first( N _n, Class proto ){
+        return $typeRef.of(proto).firstIn(_n);
+    }
+        
+    /**
+     * 
+     * @param <N>
+     * @param _n
+     * @param proto
+     * @return 
+     */
+    public static final <N extends _node> _typeRef first( N _n, _typeRef proto ){
+        return $typeRef.of(proto).firstIn(_n);
+    }    
+    
+    /**
+     * 
+     * @param <N>
+     * @param _n
+     * @param proto
+     * @param constraint
+     * @return 
+     */
+    public static final <N extends _node> _typeRef first( N _n, String proto, Predicate<_typeRef> constraint){
+        return $typeRef.of(proto).constraint(constraint).firstIn(_n);
+    }
+    
+    /**
+     * 
+     * @param <N>
+     * @param _n
+     * @param proto
+     * @param constraint
+     * @return 
+     */
+    public static final <N extends _node> _typeRef first( N _n, Class proto, Predicate<_typeRef> constraint ){
+        return $typeRef.of(proto).constraint(constraint).firstIn(_n);
+    }
+        
+    /**
+     * 
+     * @param <N>
+     * @param _n
+     * @param proto
+     * @param constraint
+     * @return 
+     */
+    public static final <N extends _node> _typeRef first( N _n, _typeRef proto,Predicate<_typeRef> constraint){
+        return $typeRef.of(proto).constraint(constraint).firstIn(_n);
+    }
+    
+    
+     /**
+     * 
+     * @param <N>
+     * @param _n
+     * @param proto
+     * @return 
+     */
+    public static final <N extends _node> Select selectFirst( N _n, String proto ){
+        return $typeRef.of(proto).selectFirstIn(_n);
+    }
+    
+    /**
+     * 
+     * @param <N>
+     * @param _n
+     * @param proto
+     * @return 
+     */
+    public static final <N extends _node> Select selectFirst( N _n, Class proto ){
+        return $typeRef.of(proto).selectFirstIn(_n);
+    }
+        
+    /**
+     * 
+     * @param <N>
+     * @param _n
+     * @param proto
+     * @return 
+     */
+    public static final <N extends _node> Select selectFirst( N _n, _typeRef proto ){
+        return $typeRef.of(proto).selectFirstIn(_n);
+    }    
+    
+    /**
+     * 
+     * @param <N>
+     * @param _n
+     * @param proto
+     * @param constraint
+     * @return 
+     */
+    public static final <N extends _node> Select selectFirst( N _n, String proto, Predicate<_typeRef> constraint){
+        return $typeRef.of(proto).constraint(constraint).selectFirstIn(_n);
+    }
+    
+    /**
+     * 
+     * @param <N>
+     * @param _n
+     * @param proto
+     * @param constraint
+     * @return 
+     */
+    public static final <N extends _node> Select selectFirst( N _n, Class proto, Predicate<_typeRef> constraint ){
+        return $typeRef.of(proto).constraint(constraint).selectFirstIn(_n);
+    }
+        
+    /**
+     * 
+     * @param <N>
+     * @param _n
+     * @param proto
+     * @param constraint
+     * @return 
+     */
+    public static final <N extends _node> Select selectFirst( N _n, _typeRef proto,Predicate<_typeRef> constraint){
+        return $typeRef.of(proto).constraint(constraint).selectFirstIn(_n);
+    }
+    
+    /**
+     * 
+     * @param <N>
+     * @param _n
+     * @param proto
+     * @return 
+     */
     public static final <N extends _node> List<_typeRef> list( N _n, String proto ){
         return $typeRef.of(proto).listIn(_n);
     }
@@ -54,6 +193,117 @@ public final class $typeRef<T extends Type>
     public static final <N extends _node> List<_typeRef> list( N _n, _typeRef proto ){
         return $typeRef.of(proto).listIn(_n);
     }    
+    
+    
+    /**
+     * 
+     * @param <N>
+     * @param _n
+     * @param proto
+     * @param constraint
+     * @return 
+     */
+    public static final <N extends _node> List<_typeRef> list( N _n, String proto, Predicate<_typeRef> constraint){
+        return $typeRef.of(proto).constraint(constraint).listIn(_n);
+    }
+    
+    /**
+     * 
+     * @param <N>
+     * @param _n
+     * @param proto
+     * @param constraint
+     * @return 
+     */
+    public static final <N extends _node> List<_typeRef> list( N _n, Class proto, Predicate<_typeRef> constraint ){
+        return $typeRef.of(proto).constraint(constraint).listIn(_n);
+    }
+        
+    /**
+     * 
+     * @param <N>
+     * @param _n
+     * @param proto
+     * @param constraint
+     * @return 
+     */
+    public static final <N extends _node> List<_typeRef> list( N _n, _typeRef proto,Predicate<_typeRef> constraint){
+        return $typeRef.of(proto).constraint(constraint).listIn(_n);
+    }
+
+    /**
+     * 
+     * @param <N>
+     * @param _n
+     * @param proto
+     * @return 
+     */
+    public static final <N extends _node> List<Select> selectList( N _n, String proto ){
+        return $typeRef.of(proto).selectListIn(_n);
+    }
+    
+    /**
+     * 
+     * @param <N>
+     * @param _n
+     * @param proto
+     * @return 
+     */
+    public static final <N extends _node> List<Select> selectList( N _n, Class proto ){
+        return $typeRef.of(proto).selectListIn(_n);
+    }
+        
+    /**
+     * 
+     * @param <N>
+     * @param _n
+     * @param proto
+     * @return 
+     */
+    public static final <N extends _node> List<Select> selectList( N _n, _typeRef proto ){
+        return $typeRef.of(proto).selectListIn(_n);
+    }    
+    
+    
+    /**
+     * 
+     * @param <N>
+     * @param _n
+     * @param proto
+     * @param constraint
+     * @return 
+     */
+    public static final <N extends _node> List<Select> selectList( N _n, String proto, Predicate<_typeRef> constraint){
+        return $typeRef.of(proto).constraint(constraint).selectListIn(_n);
+    }
+    
+    /**
+     * 
+     * @param <N>
+     * @param _n
+     * @param proto
+     * @param constraint
+     * @return 
+     */
+    public static final <N extends _node> List<Select> selectList( N _n, Class proto, Predicate<_typeRef> constraint ){
+        return $typeRef.of(proto).constraint(constraint).selectListIn(_n);
+    }
+        
+    /**
+     * 
+     * @param <N>
+     * @param _n
+     * @param proto
+     * @param constraint
+     * @return 
+     */
+    public static final <N extends _node> List<Select> selectList( N _n, _typeRef proto,Predicate<_typeRef> constraint){
+        return $typeRef.of(proto).constraint(constraint).selectListIn(_n);
+    }
+
+
+
+
     
     /**
      * 
@@ -331,6 +581,15 @@ public final class $typeRef<T extends Type>
      * @param astType
      * @return 
      */
+    public boolean matches( _typeRef _tr ){
+        return deconstruct(_tr) != null;
+    }
+    
+    /**
+     * 
+     * @param astType
+     * @return 
+     */
     public boolean matches( Type astType ){
         return deconstruct(astType) != null;
     }
@@ -345,6 +604,22 @@ public final class $typeRef<T extends Type>
         return this.typeStencil.list$Normalized();
     }
 
+    public Tokens deconstruct( String type ){
+        try{
+            return deconstruct(_typeRef.of(type));
+        }catch(Exception e){
+            return null;
+        }
+    }
+    /**
+     * 
+     * @param _tr
+     * @return 
+     */
+    public Tokens deconstruct( _typeRef _tr){
+        return deconstruct( _tr.ast() );
+    }
+    
     /**
      * Deconstruct the expression into tokens, or return null if the statement doesnt match
      *
@@ -359,7 +634,16 @@ public final class $typeRef<T extends Type>
         }
         return null;
     }
-
+    
+    /**
+     * 
+     * @param typeRef
+     * @return 
+     */
+    public Select select( _typeRef typeRef){
+        return select(typeRef.ast());
+    }
+    
     /**
      * 
      * @param astType
@@ -378,10 +662,10 @@ public final class $typeRef<T extends Type>
      * @param _n the _java node
      * @return  the first Type that matches (or null if none found)
      */
-    public T firstIn( _node _n ){
+    public _typeRef firstIn( _node _n ){
         Optional<T> f = _n.ast().findFirst(this.typeClass, s -> this.matches(s) );         
         if( f.isPresent()){
-            return f.get();
+            return _typeRef.of(f.get());
         }
         return null;
     }
@@ -391,10 +675,36 @@ public final class $typeRef<T extends Type>
      * @param astNode the node to look through
      * @return  the first Type that matches (or null if none found)
      */
-    public T firstIn( Node astNode ){
+    public _typeRef firstIn( Node astNode ){
         Optional<T> f = astNode.findFirst(this.typeClass, s -> this.matches(s) );         
         if( f.isPresent()){
-            return f.get();
+            return _typeRef.of(f.get());
+        }
+        return null;
+    }
+    
+    /**
+     * Returns the first Type that matches the pattern and constraint
+     * @param _n the _java node
+     * @return  the first Type that matches (or null if none found)
+     */
+    public Select selectFirstIn( _node _n ){
+        Optional<T> f = _n.ast().findFirst(this.typeClass, s -> this.matches(s) );         
+        if( f.isPresent()){
+            return select(f.get());
+        }
+        return null;
+    }
+
+    /**
+     * Returns the first Type that matches the pattern and constraint
+     * @param astNode the node to look through
+     * @return  the first Type that matches (or null if none found)
+     */
+    public Select selectFirstIn( Node astNode ){
+        Optional<T> f = astNode.findFirst(this.typeClass, s -> this.matches(s) );         
+        if( f.isPresent()){
+            return select(f.get());
         }
         return null;
     }

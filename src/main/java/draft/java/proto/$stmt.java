@@ -116,6 +116,18 @@ public final class $stmt<T extends Statement>
      * @param <T>
      * @param _n where to look
      * @param proto the code of the Statement we're looking for
+     * @param constraint
+     * @return true if found else false
+     */
+    public static final <T extends Statement> Select<T> selectFirst( _node _n, String proto, Predicate<T>constraint ){
+        return (Select<T>)$stmt.of(proto).constraint(constraint).selectFirstIn(_n);
+    }
+    
+    /**
+     * Does this stmt template appear in the root node?
+     * @param <T>
+     * @param _n where to look
+     * @param proto the code of the Statement we're looking for
      * @return true if found else false
      */
     public static final <T extends Statement> Select<T> selectFirst( _node _n, T proto ){
@@ -124,6 +136,18 @@ public final class $stmt<T extends Statement>
     
     /**
      * Does this stmt template appear in the root node?
+     * @param <T>
+     * @param _n where to look
+     * @param proto the code of the Statement we're looking for
+     * @param constraint
+     * @return true if found else false
+     */
+    public static final <T extends Statement> Select<T> selectFirst( _node _n, T proto, Predicate<T> constraint){
+        return (Select<T>)$stmt.of(proto).constraint(constraint).selectFirstIn(_n);
+    }
+    
+    /**
+     * return a Select of the first Stmt template appear in the root node?
      * @param <T>
      * @param _n where to look
      * @param proto the code of the Statement we're looking for
@@ -144,8 +168,29 @@ public final class $stmt<T extends Statement>
         return $proto.selectListIn(_n);
     }
     
+    /**
+     * 
+     * @param <T>
+     * @param <N>
+     * @param _n
+     * @param proto
+     * @return 
+     */
     public static final <T extends Statement, N extends _node> List<Select<T>> selectList( N _n, String proto ){
         return $stmt.of(proto).selectListIn(_n);
+    }
+    
+    /**
+     * 
+     * @param <T>
+     * @param <N>
+     * @param _n
+     * @param proto
+     * @param constraint
+     * @return 
+     */
+    public static final <T extends Statement, N extends _node> List<Select<T>> selectList( N _n, String proto, Predicate<T>constraint){
+        return $stmt.of(proto).constraint(constraint).selectListIn(_n);
     }
     
     /**
@@ -257,6 +302,42 @@ public final class $stmt<T extends Statement>
     }   
     
     /**
+     * Removes all occurrences of the proto Statement in the node (recursively)
+     * @param <N>
+     * @param <T>
+     * @param astNode
+     * @param proto
+     * @return the modified N
+     */
+    public static final <N extends Node, T extends Statement> N remove( N astNode, T proto ){
+        return (N)$stmt.of(proto).removeIn(astNode);
+    }
+    
+    /**
+     * 
+     * @param <N>
+     * @param astNode
+     * @param proto
+     * @return 
+     */
+    public static final <N extends Node> N remove( N astNode, String proto ){
+        return (N)$stmt.of(proto).removeIn(astNode);
+    }    
+    
+    /**
+     * 
+     * @param <N>
+     * @param <T>
+     * @param astNode
+     * @param proto
+     * @param constraint
+     * @return 
+     */
+    public static final <N extends Node, T extends Statement> N remove( N astNode, String proto, Predicate<T> constraint){
+        return (N)$stmt.of(proto).constraint(constraint).removeIn(astNode);
+    }   
+    
+    /**
      * 
      * @param <N>
      * @param <T>
@@ -281,7 +362,7 @@ public final class $stmt<T extends Statement>
     public static final <N extends _node> N replace(N _n, String protoTarget, String protoReplacement){
         return (N)$stmt.of(protoTarget)
             .replaceIn(_n, $stmt.of(protoReplacement));
-    }    
+    }            
     
     /**
      * 
@@ -369,7 +450,7 @@ public final class $stmt<T extends Statement>
      * @param astProto
      * @return 
      */ 
-    public static<T extends Statement> $stmt of(Statement astProto ){
+    public static $stmt of(Statement astProto ){
         return new $stmt<>(astProto);
     }
      
@@ -383,6 +464,28 @@ public final class $stmt<T extends Statement>
     }
 
     /**
+     * i.e."assert(1==1);"
+     * @param constraint
+     * @return and AssertStmt with the code
+     */
+    public static $stmt<AssertStmt> assertStmt(String proto, Predicate<AssertStmt> constraint) {
+        return new $stmt( Stmt.assertStmt(proto) ).constraint(constraint);
+    }
+    
+    /**
+     * NOTE: If you omit the opening and closing braces { }, they will be added
+     *
+     * i.e."{ int i=1; return i;}"
+     * @param constraint
+     * @return the BlockStmt
+     */
+    public static $stmt<BlockStmt> block(Predicate<BlockStmt> constraint) {
+        return new $stmt( Stmt.block("{ a(); }"))
+                .$(Stmt.block("{ a(); }"), "any")
+                .constraint(constraint);
+    }
+    
+    /**
      * NOTE: If you omit the opening and closing braces { }, they will be added
      *
      * i.e."{ int i=1; return i;}"
@@ -392,7 +495,31 @@ public final class $stmt<T extends Statement>
     public static $stmt<BlockStmt> block(String... proto ) {
         return new $stmt( Stmt.block(proto));
     }
+    
+    /**
+     * NOTE: If you omit the opening and closing braces { }, they will be added
+     *
+     * i.e."{ int i=1; return i;}"
+     * @param proto the code making up the blockStmt
+     * @param constraint
+     * @return the BlockStmt
+     */
+    public static $stmt<BlockStmt> block(String proto, Predicate<BlockStmt> constraint) {
+        return new $stmt( Stmt.block(proto)).constraint(constraint);
+    }
+    
 
+    /**
+     * i.e."break;" or "break outer;"
+     * @param constraint
+     * @return the breakStmt
+     */
+    public static $stmt<BreakStmt> breakStmt(Predicate<BreakStmt> constraint) {
+        return new $stmt( Stmt.breakStmt("break;"))
+                .$(Stmt.breakStmt("break;"), "any")
+                .constraint(constraint);
+    }
+    
     /**
      * i.e."break;" or "break outer;"
      * @param proto String representing the break of
@@ -402,6 +529,26 @@ public final class $stmt<T extends Statement>
         return new $stmt( Stmt.breakStmt(proto));
     }
 
+    /**
+     * i.e."break;" or "break outer;"
+     * @param proto String representing the break of
+     * @param constraint
+     * @return the breakStmt
+     */
+    public static $stmt<BreakStmt> breakStmt(String  proto, Predicate<BreakStmt> constraint) {
+        return new $stmt( Stmt.breakStmt(proto)).constraint(constraint);
+    }
+    
+    /** 
+     * i.e."continue outer;" 
+     * @param constraint
+     * @return 
+     */
+    public static $stmt<ContinueStmt> continueStmt(Predicate<ContinueStmt> constraint) {
+        return new $stmt( Stmt.continueStmt("continue r;")).
+                $(Stmt.continueStmt("continue r;"), "any").constraint(constraint);
+    }
+    
     /** 
      * i.e."continue outer;" 
      * @param proto
@@ -411,6 +558,27 @@ public final class $stmt<T extends Statement>
         return new $stmt( Stmt.continueStmt(proto));
     }
 
+    
+    /** 
+     * i.e."continue outer;" 
+     * @param proto
+     * @return 
+     */
+    public static $stmt<ContinueStmt> continueStmt(String proto, Predicate<ContinueStmt> constraint) {
+        return new $stmt( Stmt.continueStmt(proto)).constraint(constraint);
+    }
+    
+    
+    /** 
+     * i.e."do{ System.out.println(1); }while( a < 100 );" 
+     * @param constraint
+     * @return 
+     */
+    public static $stmt<DoStmt> doStmt(Predicate<DoStmt> constraint) {
+        return new $stmt( Stmt.doStmt("do{ a(); } while(a==1);") )
+                .$(Stmt.doStmt("do{ a(); } while(a==1);"), "any").constraint(constraint);
+    }
+    
     /** 
      * i.e."do{ System.out.println(1); }while( a < 100 );" 
      * @param proto
@@ -421,6 +589,26 @@ public final class $stmt<T extends Statement>
     }
 
     /** 
+     * i.e."do{ System.out.println(1); }while( a < 100 );" 
+     * @param proto
+     * @return 
+     */
+    public static $stmt<DoStmt> doStmt(String proto, Predicate<DoStmt> constraint) {
+        return new $stmt( Stmt.doStmt(proto)).constraint(constraint);
+    }
+    
+    /** 
+     * i.e."this(100,2900);" 
+     * @param constraint
+     * @return 
+     */
+    public static $stmt<ExplicitConstructorInvocationStmt> ctorInvocationStmt(Predicate<ExplicitConstructorInvocationStmt> constraint) {
+        return new $stmt( Stmt.ctorInvocationStmt("this(a);"))
+            .$(Stmt.ctorInvocationStmt("this(a);"), "any")
+            .constraint(constraint);
+    }
+    
+    /** 
      * i.e."this(100,2900);" 
      * @param proto
      * @return 
@@ -430,6 +618,27 @@ public final class $stmt<T extends Statement>
     }
 
     /** 
+     * i.e."this(100,2900);" 
+     * @param proto
+     * @param constraint
+     * @return 
+     */
+    public static $stmt<ExplicitConstructorInvocationStmt> ctorInvocationStmt(String proto, Predicate<ExplicitConstructorInvocationStmt> constraint) {
+        return new $stmt( Stmt.ctorInvocationStmt(proto)).constraint(constraint);
+    }
+    
+    /** 
+     * i.e."s += t;" 
+     * @param constraint
+     * @return 
+     */
+    public static $stmt<ExpressionStmt> expressionStmt( Predicate<ExpressionStmt> constraint) {
+        return new $stmt( Stmt.expressionStmt("a += t;"))
+                .$("a += t;", "any")
+                .constraint(constraint);
+    }
+    
+    /** 
      * i.e."s += t;" 
      * @param proto
      * @return 
@@ -437,7 +646,28 @@ public final class $stmt<T extends Statement>
     public static $stmt<ExpressionStmt> expressionStmt( String... proto ) {
         return new $stmt( Stmt.expressionStmt(proto));
     }
+    
+    /** 
+     * i.e."s += t;" 
+     * @param proto
+     * @param constraint
+     * @return 
+     */
+    public static $stmt<ExpressionStmt> expressionStmt( String proto, Predicate<ExpressionStmt> constraint) {
+        return new $stmt( Stmt.expressionStmt(proto)).constraint(constraint);
+    }
 
+    /** 
+     * i.e."for(int i=0; i<100;i++) {...}" 
+     * @param constraint
+     * @return 
+     */
+    public static $stmt<ForStmt> forStmt( Predicate<ForStmt> constraint ) {
+        return new $stmt( Stmt.forStmt("for(int i=0;i<1;i++){ a(); }"))
+                .$(Stmt.forStmt("for(int i=0;i<1;i++){ a(); }"), "any")
+                .constraint(constraint);
+    }
+    
     /** 
      * i.e."for(int i=0; i<100;i++) {...}" 
      * @param proto
@@ -446,7 +676,29 @@ public final class $stmt<T extends Statement>
     public static $stmt<ForStmt> forStmt( String... proto ) {
         return new $stmt( Stmt.forStmt(proto));
     }
+    
+    /** 
+     * i.e."for(int i=0; i<100;i++) {...}" 
+     * @param proto
+     * @param constraint
+     * @return 
+     */
+    public static $stmt<ForStmt> forStmt( String proto, Predicate<ForStmt> constraint ) {
+        return new $stmt( Stmt.forStmt(proto)).constraint(constraint);
+    }
+    
 
+    /** 
+     * i.e."for(String element:arr){...}" 
+     * @param constraint
+     * @return 
+     */
+    public static $stmt<ForEachStmt> forEachStmt( Predicate<ForEachStmt> constraint) {
+        return new $stmt( Stmt.forEachStmt("for(int i:arr){}"))
+                .$(Stmt.forEachStmt("for(int i:arr){}"), "any")
+                .constraint(constraint);
+    }
+    
     /** 
      * i.e."for(String element:arr){...}" 
      * @param proto
@@ -455,7 +707,27 @@ public final class $stmt<T extends Statement>
     public static $stmt<ForEachStmt> forEachStmt( String... proto ) {
         return new $stmt( Stmt.forEachStmt(proto));
     }
+    
+    /** 
+     * i.e."for(String element:arr){...}" 
+     * @param proto
+     * @return 
+     */
+    public static $stmt<ForEachStmt> forEachStmt( String proto, Predicate<ForEachStmt> constraint) {
+        return new $stmt( Stmt.forEachStmt(proto)).constraint(constraint);
+    }
 
+    /** 
+     * i.e."if(a==1){...}" 
+     * @param constraint
+     * @return 
+     */
+    public static $stmt<IfStmt> ifStmt(Predicate<IfStmt> constraint) {
+        return new $stmt( Stmt.ifStmt("if(a){ b(); }"))
+                .$(Stmt.of("if(a){ b();}"), "any")
+                .constraint(constraint);
+    }
+    
     /** 
      * i.e."if(a==1){...}" 
      * @param proto
@@ -464,7 +736,28 @@ public final class $stmt<T extends Statement>
     public static $stmt<IfStmt> ifStmt( String... proto ) {
         return new $stmt( Stmt.ifStmt(proto));
     }
+    
+    /** 
+     * i.e."if(a==1){...}" 
+     * @param proto
+     * @param constraint
+     * @return 
+     */
+    public static $stmt<IfStmt> ifStmt( String proto, Predicate<IfStmt> constraint) {
+        return new $stmt( Stmt.ifStmt(proto)).constraint(constraint);
+    }
+    
 
+    /** 
+     * i.e."outer:   start = getValue();" 
+     * @param constraint
+     * @return 
+     */
+    public static $stmt<LabeledStmt> labeledStmt( Predicate<LabeledStmt> constraint) {
+        return new $stmt( Stmt.labeledStmt("l: a();"))
+                .$(Stmt.labeledStmt("l:a();"), "any").constraint(constraint);
+    }
+    
     /** 
      * i.e."outer:   start = getValue();" 
      * @param proto
@@ -474,6 +767,27 @@ public final class $stmt<T extends Statement>
         return new $stmt( Stmt.labeledStmt(proto));
     }
 
+    /** 
+     * i.e."outer:   start = getValue();" 
+     * @param proto
+     * @return 
+     */
+    public static $stmt<LabeledStmt> labeledStmt( String proto, Predicate<LabeledStmt> constraint) {
+        return new $stmt( Stmt.labeledStmt(proto)).constraint(constraint);
+    }
+    
+    
+    /**
+     * i.e."class C{ int a, b; }"
+     * @param constraint
+     * @return the AST implementation
+     */
+    public static $stmt<LocalClassDeclarationStmt> localClass( Predicate<LocalClassDeclarationStmt> constraint) {
+        return new $stmt( Stmt.localClass( "class C{}"))
+                .$(Stmt.localClass("class C{}"), "any")
+                .constraint(constraint);
+    }
+    
     /**
      * Converts from a String to a LocalClass
      * i.e. "class C{ int a, b; }"
@@ -483,7 +797,29 @@ public final class $stmt<T extends Statement>
     public static $stmt<LocalClassDeclarationStmt> localClass( String... proto ) {
         return new $stmt( Stmt.localClass( proto));
     }
+    
+    /**
+     * Converts from a String to a LocalClass
+     * i.e."class C{ int a, b; }"
+     * @param proto the code that represents a local class
+     * @param constraint
+     * @return the AST implementation
+     */
+    public static $stmt<LocalClassDeclarationStmt> localClass( String proto, Predicate<LocalClassDeclarationStmt> constraint) {
+        return new $stmt( Stmt.localClass( proto)).constraint(constraint);
+    }
+    
 
+    /** 
+     * i.e."return VALUE;" 
+     * @param constraint
+     * @return 
+     */
+    public static $stmt<ReturnStmt> returnStmt( Predicate<ReturnStmt> constraint ) {
+        return new $stmt( Stmt.returnStmt("return a;"))
+                .$(Stmt.of("return a;"), "any").constraint(constraint);
+    }
+    
     /** 
      * i.e."return VALUE;" 
      * @param proto
@@ -491,6 +827,16 @@ public final class $stmt<T extends Statement>
      */
     public static $stmt<ReturnStmt> returnStmt( String... proto ) {
         return new $stmt( Stmt.returnStmt(proto));
+    }
+    
+    /** 
+     * i.e."return VALUE;" 
+     * @param proto
+     * @param constraint
+     * @return 
+     */
+    public static $stmt<ReturnStmt> returnStmt( String proto, Predicate<ReturnStmt> constraint ) {
+        return new $stmt( Stmt.returnStmt(proto)).constraint(constraint);
     }
 
     /**
@@ -505,12 +851,64 @@ public final class $stmt<T extends Statement>
     /**
      * 
      * @param proto
+     * @param constraint
+     * @return 
+     */
+    public static $stmt<SwitchStmt> switchStmt( String proto, Predicate<SwitchStmt> constraint) {
+        return new $stmt( Stmt.switchStmt(proto)).constraint(constraint);
+    }
+    
+    /**
+     * 
+     * @param constraint
+     * @return 
+     */
+    public static $stmt<SwitchStmt> switchStmt(Predicate<SwitchStmt> constraint) {
+        return new $stmt( Stmt.switchStmt("switch(a){ default : a(); }"))
+                .$(Stmt.of("switch(a){ default : a(); }"), "any")
+                .constraint(constraint);
+    }
+    
+    
+    /**
+     * 
+     * @param constraint
+     * @return 
+     */
+    public static $stmt<SynchronizedStmt> synchronizedStmt( Predicate<SynchronizedStmt> constraint ) {
+        return new $stmt( Stmt.synchronizedStmt("synchronized(a){ b();}") ).
+            $(Stmt.synchronizedStmt("synchronized(a){ b();}"), "any")
+            .constraint(constraint);
+    }
+    
+    /**
+     * 
+     * @param proto
      * @return 
      */
     public static $stmt<SynchronizedStmt> synchronizedStmt( String... proto ) {
         return new $stmt( Stmt.synchronizedStmt(proto));
     }
-
+    
+    /**
+     * 
+     * @param proto
+     * @param constraint
+     * @return 
+     */
+    public static $stmt<SynchronizedStmt> synchronizedStmt( String  proto, Predicate<SynchronizedStmt> constraint ) {
+        return new $stmt( Stmt.synchronizedStmt(proto)).constraint(constraint);
+    }
+    
+    /**
+     * 
+     * @param constraint
+     * @return 
+     */
+    public static $stmt<ThrowStmt> throwStmt( Predicate<ThrowStmt> constraint ) {
+        return new $stmt( Stmt.throwStmt("throw a;")).$(Stmt.throwStmt("throw a;"), "any").constraint(constraint);
+    }
+    
     /**
      * 
      * @param proto
@@ -519,7 +917,28 @@ public final class $stmt<T extends Statement>
     public static $stmt<ThrowStmt> throwStmt( String... proto ) {
         return new $stmt( Stmt.throwStmt(proto));
     }
+    
+    /**
+     * 
+     * @param proto
+     * @param constraint
+     * @return 
+     */
+    public static $stmt<ThrowStmt> throwStmt( String proto, Predicate<ThrowStmt> constraint) {
+        return new $stmt( Stmt.throwStmt(proto)).constraint(constraint);
+    }
 
+    /** 
+     * i.e."try{ clazz.getMethod("fieldName"); }" 
+     * @param constraint
+     * @return 
+     */
+    public static $stmt<TryStmt> tryStmt( Predicate<TryStmt> constraint ) {
+        return new $stmt( Stmt.tryStmt("try{ a(); }"))
+            .$(Stmt.tryStmt("try{ a();}"), "any")
+            .constraint(constraint);
+    }
+    
     /** 
      * i.e."try{ clazz.getMethod("fieldName"); }" 
      * @param proto
@@ -530,6 +949,15 @@ public final class $stmt<T extends Statement>
     }
 
     /** 
+     * i.e."try{ clazz.getMethod("fieldName"); }" 
+     * @param proto
+     * @return 
+     */
+    public static $stmt<TryStmt> tryStmt( String  proto, Predicate<TryStmt> constraint ) {
+        return new $stmt( Stmt.tryStmt(proto)).constraint(constraint);
+    }
+    
+    /** 
      * i.e."while(i< 1) { ...}"
      * @param proto
      * @return 
@@ -538,6 +966,26 @@ public final class $stmt<T extends Statement>
         return new $stmt( Stmt.whileStmt(proto));
     }
 
+    /** 
+     * i.e."while(i< 1) { ...}"
+     * @param proto
+     * @param constraint
+     * @return 
+     */
+    public static $stmt<WhileStmt> whileStmt( String proto, Predicate<WhileStmt> constraint ) {
+        return new $stmt( Stmt.whileStmt(proto)).constraint(constraint);
+    }
+
+    /** 
+     * i.e."while(i< 1) { ...}"
+     * @param constraint
+     * @return 
+     */
+    public static $stmt<WhileStmt> whileStmt( Predicate<WhileStmt> constraint ) {
+        return new $stmt( Stmt.whileStmt("while(true){a();}") ).
+                $(Stmt.whileStmt("while(true){a();}").toString(), "any").constraint(constraint);
+    }
+    
     /**
      * IF the statement has a comment, it is stored separately, because,
      * in situations where we are composing the statement, we want to construct the
@@ -604,6 +1052,17 @@ public final class $stmt<T extends Statement>
         String exprString = expr.toString();
         return $(exprString, $name);
     }
+    
+    /**
+     * 
+     * @param stmt
+     * @param $name
+     * @return 
+     */
+    public $stmt $(Statement stmt, String $name ){
+        String stmtString = stmt.toString( Ast.PRINT_NO_COMMENTS );
+        return $(stmtString, $name);
+    }
 
     @Override
     public T fill(Translator t, Object...values){
@@ -668,11 +1127,11 @@ public final class $stmt<T extends Statement>
 
     /**
      * 
-     * @param statement
+     * @param astStmt
      * @return 
      */
-    public boolean matches( Statement statement ){
-        return deconstruct(statement) != null;
+    public boolean matches( Statement astStmt ){
+        return deconstruct(astStmt) != null;
     }
 
     @Override
@@ -945,7 +1404,8 @@ public final class $stmt<T extends Statement>
     }
 
     /** Write the Statements without comments (for matching, comparison) */
-    public static final PrettyPrinterConfiguration NO_COMMENTS = new PrettyPrinterConfiguration()
+    public static final PrettyPrinterConfiguration NO_COMMENTS = 
+        new PrettyPrinterConfiguration()
             .setPrintComments(false).setPrintJavadoc(false);
 
     @Override
@@ -996,6 +1456,7 @@ public final class $stmt<T extends Statement>
         return replaceIn(_n, $sn);
     }    
 
+   
     /**
      * 
      * @param <N>
@@ -1044,21 +1505,27 @@ public final class $stmt<T extends Statement>
         }
         return (N)_n;
     }
+    
     @Override
     public String toString(){
         return "("+this.statementClass.getSimpleName()+") : \""+ this.stencil+"\"";
     }
 
+    /**
+     * 
+     * @param <T> 
+     */
     public static class Select<T extends Statement> implements $query.selected, 
             $query.selectedAstNode<T> {
         public T astStatement;
         public $args args;
 
-        public Select( T statement, Tokens tokens){
-            this.astStatement = statement;
+        public Select( T astStatement, Tokens tokens){
+            this.astStatement = astStatement;
             this.args = $args.of( tokens );
         }
         
+        @Override
         public $args getArgs(){
             return args;
         }
@@ -1066,9 +1533,9 @@ public final class $stmt<T extends Statement>
         @Override
         public String toString(){
             return "$stmt.Select{"+ System.lineSeparator()+
-                    Text.indent(astStatement.toString() )+ System.lineSeparator()+
-                    Text.indent("Args : " + args) + System.lineSeparator()+
-                    "}";
+                Text.indent(astStatement.toString() )+ System.lineSeparator()+
+                Text.indent("Args : " + args) + System.lineSeparator()+
+                "}";
         }
 
         @Override

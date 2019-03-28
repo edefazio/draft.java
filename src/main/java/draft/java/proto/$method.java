@@ -20,6 +20,7 @@ import java.util.function.*;
 public final class $method
     implements Template<_method>, $query<_method> {
     
+    
     /**
      * 
      * @param <N>
@@ -40,6 +41,30 @@ public final class $method
      */
     public static final <N extends _node> List<_method> list( N _n, _method _proto ){
         return $method.of(_proto).listIn(_n);
+    }
+    
+    /**
+     * 
+     * @param <N>
+     * @param _n
+     * @param proto
+     * @param constraint
+     * @return 
+     */
+    public static final <N extends _node> List<_method> list( N _n, String proto, Predicate<_method> constraint){
+        return $method.of(proto, constraint).listIn(_n);
+    }
+    
+    /**
+     * 
+     * @param <N>
+     * @param _n
+     * @param _proto
+     * @param constraint
+     * @return 
+     */
+    public static final <N extends _node> List<_method> list( N _n, _method _proto, Predicate<_method> constraint){
+        return $method.of(_proto, constraint).listIn(_n);
     }
     
     /**
@@ -306,7 +331,6 @@ public final class $method
      * @param _proto 
      */
     public $method( _method _proto ){
-        //System.out.println( "CREATING "+ _m );
         if( _proto.hasBody() ) {
             this.$body = $snip.of(_proto.getBody());
             _method _cp = _proto.copy();
@@ -372,7 +396,7 @@ public final class $method
      * @param _n
      * @return 
      */
-    public _method construct(_model._node _n ){
+    public _method construct(_node _n ){
         return $method.this.construct(_n.componentize() );
     }
 
@@ -526,12 +550,12 @@ public final class $method
 
     /**
      * 
-     * @param expr
+     * @param astExpr
      * @param $name
      * @return 
      */
-    public $method $(Expression expr, String $name ){
-        String exprString = expr.toString();
+    public $method $(Expression astExpr, String $name ){
+        String exprString = astExpr.toString();
         return $(exprString, $name);
     }
 
@@ -580,7 +604,7 @@ public final class $method
      * @param _n the _java node
      * @return  the first _method that matches (or null if none found)
      */
-    public _method firstIn( _model._node _n ){
+    public _method firstIn( _node _n ){
         Optional<MethodDeclaration> f = _n.ast().findFirst(MethodDeclaration.class, s -> this.matches(s) );         
         if( f.isPresent()){
             return _method.of(f.get());
@@ -601,10 +625,37 @@ public final class $method
         return null;
     }
     
+    
+    /**
+     * Returns the first _method that matches the pattern and constraint
+     * @param _n the _java node
+     * @return  the first _method that matches (or null if none found)
+     */
+    public Select selectFirstIn( _node _n ){
+        Optional<MethodDeclaration> f = _n.ast().findFirst(MethodDeclaration.class, s -> this.matches(s) );         
+        if( f.isPresent()){
+            return select(f.get());
+        }
+        return null;
+    }
+
+    /**
+     * Returns the first _method that matches the pattern and constraint
+     * @param astNode the node to look through
+     * @return  the first _method that matches (or null if none found)
+     */
+    public Select selectFirstIn( Node astNode ){
+        Optional<MethodDeclaration> f = astNode.findFirst(MethodDeclaration.class, s -> this.matches(s) );         
+        if( f.isPresent()){
+            return select(f.get());
+        }
+        return null;
+    }
+    
     @Override
-    public List<Select> selectListIn(Node n){
+    public List<Select> selectListIn(Node astNode){
         List<Select>sts = new ArrayList<>();
-        n.walk(MethodDeclaration.class, m-> {
+        astNode.walk(MethodDeclaration.class, m-> {
             Select sel = select( m );
             if( sel != null ){
                 sts.add(sel);
@@ -776,9 +827,9 @@ public final class $method
         @Override
         public String toString(){
             return "$method.Select{"+ System.lineSeparator()+
-                    Text.indent(astMethod.toString() )+ System.lineSeparator()+
-                    Text.indent("ARGS : " + args) + System.lineSeparator()+
-                    "}";
+                Text.indent(astMethod.toString() )+ System.lineSeparator()+
+                Text.indent("ARGS : " + args) + System.lineSeparator()+
+                "}";
         }
 
         @Override
