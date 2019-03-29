@@ -340,14 +340,17 @@ public final class _annotation
         if( !Objects.equals( this.getName(), other.getName()) ){
             return false;
         }
+        if( ! Ast.importsEqual( this.astAnnotation,other.astAnnotation ) ){
+            return false;
+        }
+        /*
         if( this.isTopClass() ){
             if( ! other.isTopClass() ){
                 return false;
             }
-            if( ! Ast.importsEqual( this.findCompilationUnit(), other.findCompilationUnit() ) ){
-                return false;
-            }
+            
         }
+        */
 
         Set<_field> tf = new HashSet<>();
         Set<_field> of = new HashSet<>();

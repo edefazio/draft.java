@@ -746,7 +746,7 @@ public final class _class implements _type<ClassOrInterfaceDeclaration, _class>,
         if( !Ast.typesEqual(this.getExtends(), other.getExtends()) ){
             return false;
         }
-        if( !Ast.importsEqual(this.listImports(), other.listImports())){
+        if( !Ast.importsEqual(this.listAstImports(), other.listAstImports())){
             return false;
         }
         if( !Ast.typesEqual( this.listImplements(), other.listImplements())){

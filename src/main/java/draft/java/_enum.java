@@ -326,6 +326,7 @@ public final class _enum implements _type<EnumDeclaration, _enum>,_method._hasMe
         if( !Objects.equals( this.getAnnos(), other.getAnnos() ) ) {
             return false;
         }
+        
         if( !Objects.equals( this.getJavadoc(), other.getJavadoc() ) ) {
             return false;
         }
@@ -477,7 +478,7 @@ public final class _enum implements _type<EnumDeclaration, _enum>,_method._hasMe
     public int hashCode() {
         int hash = 3;
         Set<ImportDeclaration> ti = new HashSet<>();
-        ti.addAll( this.listImports() );
+        ti.addAll( this.listAstImports() );
 
         Set<_constant> tc = new HashSet<>();
         tc.addAll( this.listConstants() );

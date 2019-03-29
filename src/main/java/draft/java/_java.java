@@ -354,7 +354,7 @@ public enum _java {
         
         //VALUE("value", Expression.class), //anno
         PACKAGE_NAME("package", PackageDeclaration.class),
-        IMPORTS("imports", List.class, ImportDeclaration.class),
+        IMPORTS("imports", List.class, _import.class),
         //IMPORT
         IMPORT("import", ImportDeclaration.class),
         ELEMENTS("elements", List.class, _annotation._element.class), //_annotation

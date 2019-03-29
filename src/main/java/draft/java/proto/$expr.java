@@ -7,6 +7,7 @@ import draft.java.*;
 import draft.java._model._node;
 
 import java.util.*;
+import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
 
@@ -1094,6 +1095,96 @@ public final class $expr <T extends Expression>
      */
     public static $expr<MethodCallExpr> methodCall( Predicate<MethodCallExpr> constraint ) {
         return new $expr( Expr.methodCall("a()" )).$(Expr.of("a()"), "any").constraint(constraint);
+    }
+    
+    /**
+     * Builds & returns a MethodCallExpr based on the FIRST method call inside
+     * the body of the lambda passed in
+     * 
+     * (SOURCE PASSING)
+     * 
+     * @param lambdaWithMethodCallInSource a lambda expression containing the 
+     * source with a METHOD CALL that will be converted into a MethodCallExpr
+     * Ast node
+     * @return the MethodCallExpr Ast Node representing the first method call
+     * in the lambda body
+     */
+    public static MethodCallExpr methodCall( Expr.Command lambdaWithMethodCallInSource ){
+        StackTraceElement ste = Thread.currentThread().getStackTrace()[2];
+        LambdaExpr astLambda = Expr.lambda(ste);
+        return astLambda.getBody().findFirst(MethodCallExpr.class).get();
+    }
+
+    /**
+     * Builds & returns a MethodCallExpr based on the FIRST method call inside
+     * the body of the lambda passed in
+     * 
+     * (SOURCE PASSING)
+     * 
+     * @param lambdaWithMethodCallInSource a lambda expression containing the 
+     * source with a METHOD CALL that will be converted into a MethodCallExpr
+     * Ast node
+     * @return the MethodCallExpr Ast Node representing the first method call
+     * in the lambda body
+     */
+    public static $expr<MethodCallExpr> methodCall( Consumer<? extends Object> lambdaWithMethodCallInSource ){
+        StackTraceElement ste = Thread.currentThread().getStackTrace()[2];
+        LambdaExpr astLambda = Expr.lambda(ste);
+        return $expr.of(astLambda.getBody().findFirst(MethodCallExpr.class).get());
+    }    
+    
+    /**
+     * Builds & returns a MethodCallExpr based on the FIRST method call inside
+     * the body of the lambda passed in
+     * 
+     * (SOURCE PASSING)
+     * 
+     * @param lambdaWithMethodCallInSource a lambda expression containing the 
+     * source with a METHOD CALL that will be converted into a MethodCallExpr
+     * Ast node
+     * @return the MethodCallExpr Ast Node representing the first method call
+     * in the lambda body
+     */
+    public static $expr<MethodCallExpr>  methodCall( BiConsumer<? extends Object,? extends Object> lambdaWithMethodCallInSource ){
+        StackTraceElement ste = Thread.currentThread().getStackTrace()[2];
+        LambdaExpr astLambda = Expr.lambda(ste);
+        return $expr.of(astLambda.getBody().findFirst(MethodCallExpr.class).get());
+    }  
+    
+    /**
+     * Builds & returns a MethodCallExpr based on the FIRST method call inside
+     * the body of the lambda passed in
+     * 
+     * (SOURCE PASSING)
+     * 
+     * @param lambdaWithMethodCallInSource a lambda expression containing the 
+     * source with a METHOD CALL that will be converted into a MethodCallExpr
+     * Ast node
+     * @return the MethodCallExpr Ast Node representing the first method call
+     * in the lambda body
+     */
+    public static $expr<MethodCallExpr> methodCall( Expr.TriConsumer<? extends Object,? extends Object, ? extends Object> lambdaWithMethodCallInSource ){
+        StackTraceElement ste = Thread.currentThread().getStackTrace()[2];
+        LambdaExpr astLambda = Expr.lambda(ste);
+        return $expr.of(astLambda.getBody().findFirst(MethodCallExpr.class).get());
+    }
+    
+    /**
+     * Builds & returns a MethodCallExpr based on the FIRST method call inside
+     * the body of the lambda passed in
+     * 
+     * (SOURCE PASSING)
+     * 
+     * @param lambdaWithMethodCallInSource a lambda expression containing the 
+     * source with a METHOD CALL that will be converted into a MethodCallExpr
+     * Ast node
+     * @return the MethodCallExpr Ast Node representing the first method call
+     * in the lambda body
+     */
+    public static $expr<MethodCallExpr> methodCall( Expr.QuadConsumer<? extends Object,? extends Object, ? extends Object, ? extends Object> lambdaWithMethodCallInSource ){
+        StackTraceElement ste = Thread.currentThread().getStackTrace()[2];
+        LambdaExpr astLambda = Expr.lambda(ste);
+        return $expr.of(astLambda.getBody().findFirst(MethodCallExpr.class).get());
     }
     
     /** 

@@ -480,14 +480,23 @@ public interface _type<AST extends TypeDeclaration & NodeWithJavadoc & NodeWithM
     }
     
     //TODO get rid of this in place of _imports, or getImports()
-    default List<ImportDeclaration> listImports(){
+    
+    default List<ImportDeclaration> listAstImports(){
         CompilationUnit cu = findCompilationUnit();
         if( cu != null ){
             return cu.getImports();
         }
         return new ArrayList<>();
     }
-
+    
+    default List<_import> listImports(){
+        return getImports().list();
+        //CompilationUnit cu = findCompilationUnit();
+        //if( cu != null ){
+        //    return cu.getImports();
+       // }
+       // return new ArrayList<>();
+    }
     
     default boolean hasImport( _type _t ){
         return hasImport( _t.getFullName() );
@@ -505,8 +514,10 @@ public interface _type<AST extends TypeDeclaration & NodeWithJavadoc & NodeWithM
      * @return 
      */
     default boolean hasImportStatic( Class clazz ){
-        return listImports().stream().filter(i -> i.isAsterisk() && i.isStatic() && i.getNameAsString().equals(clazz.getCanonicalName()))
-                .findFirst().isPresent();
+        //String canonicalName = clazz.getCanonicalName();
+        return !listImports( i -> i.isStatic() && i.isWildcard() && i.hasImport(clazz)).isEmpty();
+        //return listImports().stream().filter(i -> i.isAsterisk() && i.isStatic() && i.getNameAsString().equals(clazz.getCanonicalName()))
+        //        .findFirst().isPresent();
     }
 
     /**
@@ -529,14 +540,23 @@ public interface _type<AST extends TypeDeclaration & NodeWithJavadoc & NodeWithM
         return _imports.of(findCompilationUnit()).hasImport(clazz);        
     }
     
+    default boolean hasImport( Predicate<_import> _importMatchFn ){
+        return !listImports( _importMatchFn ).isEmpty();
+    }
+    
     default boolean hasImport( _import _i){
-        return listImports( i -> i.equals(_i.ast())).size() > 0;
+        return listImports( i -> i.equals(_i )).size() > 0;
     }
 
+    default List<_import> listImports( Predicate<_import> _importMatchFn ){
+        return this.getImports().list().stream().filter( _importMatchFn ).collect(Collectors.toList());
+    }
+    /*
     default List<ImportDeclaration> listImports( Predicate<ImportDeclaration> importMatchFn){        
         List<ImportDeclaration> is = listImports();
         return is.stream().filter( importMatchFn ).collect(Collectors.toList());
     }
+    */
 
     /**
      * Adds static wildcard imports for all Classes

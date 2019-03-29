@@ -519,7 +519,6 @@ public enum Expr {
                 (MethodCallExpr mce) -> ((MethodCallExpr)mce).getRange().get().begin.line <= ste.getLineNumber() &&
                         ((MethodCallExpr)mce).getRange().get().end.line >= ste.getLineNumber() &&
                         mce.getArguments().stream().filter( e-> e.isObjectCreationExpr() && e.asObjectCreationExpr().getAnonymousClassBody().isPresent() ).findFirst().isPresent()
-                        //Ast.first(Ast.WALK_DIRECT_CHILDREN, mce, Ast.OBJECT_CREATION_EXPR, oce-> oce.getAnonymousClassBody().isPresent()) != null
         );
         for(int i=0; i<mces.size();i++ ){
             //find the particular methodCall containing the anonymous Object being created
@@ -1039,8 +1038,7 @@ public enum Expr {
         StackTraceElement ste = Thread.currentThread().getStackTrace()[2];
         return lambda( ste );
     }
-
-    //Throw, Scychronized
+    
     public static final Class<LongLiteralExpr> LONG_LITERAL = LongLiteralExpr.class;
 
     public static LongLiteralExpr of(long l) {
@@ -1053,7 +1051,6 @@ public enum Expr {
 
     public static LongLiteralExpr longLiteral( String... code ) {
         return new LongLiteralExpr(Text.combine(code));
-        //return of( Expr.longLiteral( code) ).asLongLiteralExpr();
     }
 
     public static final Class<MethodCallExpr> METHOD_CALL = MethodCallExpr.class;
