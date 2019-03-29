@@ -337,6 +337,55 @@ public final class $import
     public static final <T extends _type> Select selectFirst( T _type, Class target ){
         return $import.of(target).selectFirstIn(_type);
     }
+               
+    /**
+     * 
+     * @param <T>
+     * @param _type
+     * @param _protoTarget
+     * @param constraint
+     * @return 
+     */
+    public static final <T extends _type> Select selectFirst( T _type, _import _protoTarget, Predicate<_import> constraint){
+        return $import.of(_protoTarget).constraint(constraint).selectFirstIn(_type);
+    }
+    
+    /**
+     * 
+     * @param <T>
+     * @param _type
+     * @param protoTargetImport
+     * @param constraint
+     * @return 
+     */
+    public static final <T extends _type> Select selectFirst( T _type, String protoTargetImport, Predicate<_import> constraint){
+        return $import.of(protoTargetImport).constraint(constraint).selectFirstIn(_type);
+    }
+    
+    /**
+     * 
+     * @param <T>
+     * @param _type
+     * @param astProtoTarget
+     * @param constraint
+     * @return 
+     */
+    public static final <T extends _type> Select selectFirst( T _type, ImportDeclaration astProtoTarget, Predicate<_import> constraint){
+        return $import.of(_import.of(astProtoTarget)).constraint(constraint).selectFirstIn(_type);
+    }
+    
+    /**
+     * 
+     * @param <T>
+     * @param _type
+     * @param target
+     * @param constraint
+     * @return 
+     */
+    public static final <T extends _type> Select selectFirst( T _type, Class target, Predicate<_import> constraint){
+        return $import.of(target).constraint(constraint).selectFirstIn(_type);
+    }
+    
     
     /**
      * 
@@ -430,6 +479,56 @@ public final class $import
      */
     public static final <T extends _type> T remove( T _type, Class target ){
         return $import.of(_import.of(target)).removeIn(_type);
+    }
+    
+    
+    
+    /**
+     * 
+     * @param <T>
+     * @param _type
+     * @param _protoTarget
+     * @param constraint
+     * @return 
+     */
+    public static final <T extends _type> T remove( T _type, _import _protoTarget, Predicate<_import> constraint){
+        return $import.of(_protoTarget).constraint(constraint).removeIn(_type);
+    }
+    
+    /**
+     * 
+     * @param <T>
+     * @param _type
+     * @param protoTarget
+     * @param constraint
+     * @return 
+     */
+    public static final <T extends _type> T remove( T _type, String protoTarget, Predicate<_import> constraint){
+        return $import.of(protoTarget).constraint(constraint).removeIn(_type);
+    }
+    
+    /**
+     * 
+     * @param <T>
+     * @param _type
+     * @param astProtoTarget
+     * @param constraint
+     * @return 
+     */
+    public static final <T extends _type> T remove( T _type, ImportDeclaration astProtoTarget, Predicate<_import> constraint){
+        return $import.of(_import.of(astProtoTarget)).constraint(constraint).removeIn(_type);
+    }
+    
+    /**
+     * 
+     * @param <T>
+     * @param _type
+     * @param target
+     * @param constraint
+     * @return 
+     */
+    public static final <T extends _type> T remove( T _type, Class target, Predicate<_import> constraint){
+        return $import.of(_import.of(target)).constraint(constraint).removeIn(_type);
     }
     
     /**
