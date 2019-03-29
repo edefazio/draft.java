@@ -7,14 +7,13 @@ import com.github.javaparser.ast.comments.JavadocComment;
 import com.github.javaparser.ast.comments.LineComment;
 import com.github.javaparser.ast.expr.LambdaExpr;
 import com.github.javaparser.ast.expr.ObjectCreationExpr;
-import com.github.javaparser.ast.stmt.BlockStmt;
+import com.github.javaparser.ast.expr.UnaryExpr;
 import com.github.javaparser.ast.type.UnknownType;
-import draft.DraftException;
-import draft.java.io._in;
-import draft.java.io._io;
 import junit.framework.TestCase;
 
 import java.util.Arrays;
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 
 /**
@@ -24,6 +23,19 @@ import java.util.List;
 @Ast.cache
 public class ExprTest extends TestCase {
 
+    public void testUnary(){
+        UnaryExpr ue = Expr.unary( ()->!true );
+        assertEquals( Expr.of("!true"), ue);
+        
+        Expr.instanceOf( ($any$)-> $any$ instanceof String );
+    }
+    public void testObjectCreation(){
+        ObjectCreationExpr oce = Expr.objectCreation( ()-> new HashMap() );
+        assertEquals( oce, Expr.objectCreation("new HashMap()"));
+        
+        assertEquals( Expr.of("List.of(1,2)"), Expr.methodCall(()-> List.of(1, 2) ) );
+    }
+    
     public void testArrayExpr(){
         Expr.of(new int[]{1,2,3});
         Expr.of(new float[]{1.0f,2.0f,3.0f});

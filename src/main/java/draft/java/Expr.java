@@ -811,6 +811,24 @@ public enum Expr {
     public static EnclosedExpr enclosedExpr( String... code ) {
         return of( code ).asEnclosedExpr();
     }
+    
+    /**
+     * Builds & returns a EnclosedExpr based on the FIRST method call inside
+     * the body of the lambda passed in
+     * 
+     * (SOURCE PASSING)
+     * 
+     * @param lambdaWithFieldAccessInSource a lambda expression containing the 
+     * source with a METHOD CALL that will be converted into a EnclosedExpr
+     * Ast node
+     * @return the EnclosedExpr Ast Node representing the first method call
+     * in the lambda body
+     */
+    public static EnclosedExpr enclosedExpr( Function<? extends Object,? extends Object> lambdaWithFieldAccessInSource ){
+        StackTraceElement ste = Thread.currentThread().getStackTrace()[2];
+        LambdaExpr astLambda = Expr.lambda(ste);
+        return astLambda.getBody().findFirst(EnclosedExpr.class).get();
+    }
 
     /**
      * person.NAME
@@ -822,12 +840,36 @@ public enum Expr {
     }
 
     /**
+     * Builds & returns a MethodCallExpr based on the FIRST method call inside
+     * the body of the lambda passed in
+     * 
+     * (SOURCE PASSING)
+     * 
+     * @param lambdaWithFieldAccessInSource a lambda expression containing the 
+     * source with a METHOD CALL that will be converted into a MethodCallExpr
+     * Ast node
+     * @return the FieldAccessExpr Ast Node representing the first method call
+     * in the lambda body
+     */
+    public static FieldAccessExpr fieldAccess( Function<? extends Object,? extends Object> lambdaWithFieldAccessInSource ){
+        StackTraceElement ste = Thread.currentThread().getStackTrace()[2];
+        LambdaExpr astLambda = Expr.lambda(ste);
+        return astLambda.getBody().findFirst(FieldAccessExpr.class).get();
+    }
+    
+    /**
      * <PRE>"v instanceof Serializable"</PRE>
      */
     public static final Class<InstanceOfExpr> INSTANCEOF = InstanceOfExpr.class;
 
     public static InstanceOfExpr instanceOf(String... code ) {
         return of( code ).asInstanceOfExpr();
+    }
+    
+    public static InstanceOfExpr instanceOf( Function<? extends Object, ? extends Object> fun ){
+        StackTraceElement ste = Thread.currentThread().getStackTrace()[2];
+        LambdaExpr le = lambda(ste);
+        return le.getBody().findFirst(InstanceOfExpr.class).get();
     }
 
     public static final Class<IntegerLiteralExpr> INT_LITERAL = IntegerLiteralExpr.class;
@@ -1020,6 +1062,96 @@ public enum Expr {
         return of( code ).asMethodCallExpr();
     }
 
+    /**
+     * Builds & returns a MethodCallExpr based on the FIRST method call inside
+     * the body of the lambda passed in
+     * 
+     * (SOURCE PASSING)
+     * 
+     * @param lambdaWithMethodCallInSource a lambda expression containing the 
+     * source with a METHOD CALL that will be converted into a MethodCallExpr
+     * Ast node
+     * @return the MethodCallExpr Ast Node representing the first method call
+     * in the lambda body
+     */
+    public static MethodCallExpr methodCall( Expr.Command lambdaWithMethodCallInSource ){
+        StackTraceElement ste = Thread.currentThread().getStackTrace()[2];
+        LambdaExpr astLambda = Expr.lambda(ste);
+        return astLambda.getBody().findFirst(MethodCallExpr.class).get();
+    }
+
+    /**
+     * Builds & returns a MethodCallExpr based on the FIRST method call inside
+     * the body of the lambda passed in
+     * 
+     * (SOURCE PASSING)
+     * 
+     * @param lambdaWithMethodCallInSource a lambda expression containing the 
+     * source with a METHOD CALL that will be converted into a MethodCallExpr
+     * Ast node
+     * @return the MethodCallExpr Ast Node representing the first method call
+     * in the lambda body
+     */
+    public static MethodCallExpr methodCall( Consumer<? extends Object> lambdaWithMethodCallInSource ){
+        StackTraceElement ste = Thread.currentThread().getStackTrace()[2];
+        LambdaExpr astLambda = Expr.lambda(ste);
+        return astLambda.getBody().findFirst(MethodCallExpr.class).get();
+    }    
+    
+    /**
+     * Builds & returns a MethodCallExpr based on the FIRST method call inside
+     * the body of the lambda passed in
+     * 
+     * (SOURCE PASSING)
+     * 
+     * @param lambdaWithMethodCallInSource a lambda expression containing the 
+     * source with a METHOD CALL that will be converted into a MethodCallExpr
+     * Ast node
+     * @return the MethodCallExpr Ast Node representing the first method call
+     * in the lambda body
+     */
+    public static MethodCallExpr methodCall( BiConsumer<? extends Object,? extends Object> lambdaWithMethodCallInSource ){
+        StackTraceElement ste = Thread.currentThread().getStackTrace()[2];
+        LambdaExpr astLambda = Expr.lambda(ste);
+        return astLambda.getBody().findFirst(MethodCallExpr.class).get();
+    }  
+    
+    /**
+     * Builds & returns a MethodCallExpr based on the FIRST method call inside
+     * the body of the lambda passed in
+     * 
+     * (SOURCE PASSING)
+     * 
+     * @param lambdaWithMethodCallInSource a lambda expression containing the 
+     * source with a METHOD CALL that will be converted into a MethodCallExpr
+     * Ast node
+     * @return the MethodCallExpr Ast Node representing the first method call
+     * in the lambda body
+     */
+    public static MethodCallExpr methodCall( TriConsumer<? extends Object,? extends Object, ? extends Object> lambdaWithMethodCallInSource ){
+        StackTraceElement ste = Thread.currentThread().getStackTrace()[2];
+        LambdaExpr astLambda = Expr.lambda(ste);
+        return astLambda.getBody().findFirst(MethodCallExpr.class).get();
+    }
+    
+    /**
+     * Builds & returns a MethodCallExpr based on the FIRST method call inside
+     * the body of the lambda passed in
+     * 
+     * (SOURCE PASSING)
+     * 
+     * @param lambdaWithMethodCallInSource a lambda expression containing the 
+     * source with a METHOD CALL that will be converted into a MethodCallExpr
+     * Ast node
+     * @return the MethodCallExpr Ast Node representing the first method call
+     * in the lambda body
+     */
+    public static MethodCallExpr methodCall( QuadConsumer<? extends Object,? extends Object, ? extends Object, ? extends Object> lambdaWithMethodCallInSource ){
+        StackTraceElement ste = Thread.currentThread().getStackTrace()[2];
+        LambdaExpr astLambda = Expr.lambda(ste);
+        return astLambda.getBody().findFirst(MethodCallExpr.class).get();
+    }
+    
     /** i.e. "String:toString" */
     public static final Class<MethodReferenceExpr> METHOD_REFERENCE = MethodReferenceExpr.class;
 
@@ -1075,6 +1207,23 @@ public enum Expr {
     public static ObjectCreationExpr objectCreation(String... code ) {
         return of( code ).asObjectCreationExpr();
     }
+    
+    /**
+     * accepts a lambda expression and (DOES NOT RUN IT) but rather
+     * reads the body code and returns 
+     * 
+     * i.e.
+     * <PRE>
+     * ObjectCreationExpression oce = Ast.objectCreation( ()-> new HashMap());
+     * </PRE>
+     * @param lambdaThatCreatesObject a supplier lambda expression that must contain a "new"
+     * @return the AST ObjectCreation Expression representing the new
+     */
+    public static ObjectCreationExpr objectCreation( Supplier<? extends Object> lambdaThatCreatesObject ) {
+        StackTraceElement ste = Thread.currentThread().getStackTrace()[2];
+        LambdaExpr le = lambda(ste);
+        return le.getBody().findFirst(ObjectCreationExpr.class).get();        
+    }
 
     public static final Class<StringLiteralExpr> STRING_LITERAL = StringLiteralExpr.class;
 
@@ -1114,10 +1263,27 @@ public enum Expr {
 
     public static final Class<UnaryExpr> UNARY = UnaryExpr.class;
 
+    /**
+     * accepts a lambda expression and (DOES NOT RUN IT) but rather
+     * reads the body code and returns 
+     * 
+     * i.e.
+     * <PRE>
+     * UnaryExpr oce = Ast.objectCreation( ()-> !true);
+     * </PRE>
+     * @param lambdaThatCreatesObject a supplier lambda expression that must contain a "new"
+     * @return the AST ObjectCreation Expression representing the new
+     */
+    public static UnaryExpr unary( Supplier<? extends Object> lambdaThatCreatesObject ) {
+        StackTraceElement ste = Thread.currentThread().getStackTrace()[2];
+        LambdaExpr le = lambda(ste);
+        return le.getBody().findFirst(UnaryExpr.class).get();        
+    }
+    
     public static UnaryExpr unary( String... code ) {
         return of( code ).asUnaryExpr();
     }
-
+    
     /**
      * int i = 1
      */
