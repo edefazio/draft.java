@@ -1,6 +1,7 @@
 package draft.java.proto;
 
 import draft.java._class;
+import java.net.URI;
 import java.util.Map;
 import junit.framework.TestCase;
 import org.hamcrest.MatcherAssert;
@@ -10,6 +11,26 @@ import org.junit.Assert;
  * @author Eric
  */
 public class $importTest extends TestCase {
+    
+    public void testMatchRegularOrStatic(){
+        _class _c = _class.of( "C").imports(Map.class);
+        
+        _class _cs = _class.of( "C").importStatic(Map.class);
+        //System.out.println( _class.of("C").importStatic(Map.class));
+        assertNotNull( $import.first(_cs, Map.class) );
+        assertNotNull( $import.first(_c, Map.class) );
+        assertNotNull( $import.selectFirst(_c, Map.class) );
+        assertNotNull( $import.selectFirst(_cs, Map.class) );
+        
+       
+    }
+    
+    public void testStaticAPI(){
+        _class _c = _class.of("C").imports(Map.class);
+        
+        assertNotNull( $import.first(_c, Map.class) );
+        assertNull( $import.first(_c, URI.class) );
+    }
     
     public void testConstantTemplate(){        
         _class _c = _class.of("C", new Object(){
