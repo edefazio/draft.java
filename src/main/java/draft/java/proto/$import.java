@@ -17,6 +17,189 @@ import java.util.function.Predicate;
 public final class $import
     implements Template<_import>, $query<_import> {
 
+        /**
+     * 
+     * @param <T>
+     * @param _type
+     * @param _protoTarget
+     * @return 
+     */
+    public static final <T extends _type> List<_import> list( T _type, _import _protoTarget){
+        return $import.of(_protoTarget).listIn(_type);
+    }
+    
+    /**
+     * 
+     * @param <T>
+     * @param _type
+     * @param protoTargetImport
+     * @return 
+     */
+    public static final <T extends _type> List<_import> list( T _type, String protoTargetImport ){
+        return $import.of(protoTargetImport).listIn(_type);
+    }
+    
+    /**
+     * 
+     * @param <T>
+     * @param _type
+     * @param astProtoTarget
+     * @return 
+     */
+    public static final <T extends _type> List<_import> list( T _type, ImportDeclaration astProtoTarget ){
+        return $import.of(_import.of(astProtoTarget)).listIn(_type);
+    }
+    
+    /**
+     * 
+     * @param <T>
+     * @param _type
+     * @param target
+     * @return 
+     */
+    public static final <T extends _type> List<_import> list( T _type, Class target ){
+        return $import.of(_import.of(target)).listIn(_type);
+    }
+    
+    /**
+     * 
+     * @param <T>
+     * @param _type
+     * @param _protoTarget
+     * @return 
+     */
+    public static final <T extends _type> List<Select> selectList( T _type, _import _protoTarget){
+        return $import.of(_protoTarget).selectListIn(_type);
+    }
+    
+    /**
+     * 
+     * @param <T>
+     * @param _type
+     * @param protoTargetImport
+     * @return 
+     */
+    public static final <T extends _type> List<Select> selectList( T _type, String protoTargetImport ){
+        return $import.of(protoTargetImport).selectListIn(_type);
+    }
+    
+    /**
+     * 
+     * @param <T>
+     * @param _type
+     * @param astProtoTarget
+     * @return 
+     */
+    public static final <T extends _type> List<Select> selectList( T _type, ImportDeclaration astProtoTarget ){
+        return $import.of(_import.of(astProtoTarget)).selectListIn(_type);
+    }
+    
+    /**
+     * 
+     * @param <T>
+     * @param _type
+     * @param target
+     * @return 
+     */
+    public static final <T extends _type> List<Select> selectList( T _type, Class target ){
+        return $import.of(_import.of(target)).selectListIn(_type);
+    }
+    
+    /**
+     * 
+     * @param <T>
+     * @param _type
+     * @param _protoTarget
+     * @return 
+     */
+    public static final <T extends _type> _import first( T _type, _import _protoTarget){
+        return $import.of(_protoTarget).firstIn(_type);
+    }
+    
+    /**
+     * 
+     * @param <T>
+     * @param _type
+     * @param protoTargetImport
+     * @return 
+     */
+    public static final <T extends _type> _import first( T _type, String protoTargetImport ){
+        return $import.of(protoTargetImport).firstIn(_type);
+    }
+    
+    /**
+     * 
+     * @param <T>
+     * @param _type
+     * @param astProtoTarget
+     * @return 
+     */
+    public static final <T extends _type> _import first( T _type, ImportDeclaration astProtoTarget ){
+        return $import.of(_import.of(astProtoTarget)).firstIn(_type);
+    }
+    
+    /**
+     * 
+     * @param <T>
+     * @param _type
+     * @param target
+     * @return 
+     */
+    public static final <T extends _type> _import first( T _type, Class target ){
+        return $import.of(_import.of(target)).firstIn(_type);
+    }
+    
+    
+     /**
+     * 
+     * @param <T>
+     * @param _type
+     * @param _protoTarget
+     * @return 
+     */
+    public static final <T extends _type> Select selectFirst( T _type, _import _protoTarget){
+        return $import.of(_protoTarget).selectFirstIn(_type);
+    }
+    
+    /**
+     * 
+     * @param <T>
+     * @param _type
+     * @param protoTargetImport
+     * @return 
+     */
+    public static final <T extends _type> Select selectFirst( T _type, String protoTargetImport ){
+        return $import.of(protoTargetImport).selectFirstIn(_type);
+    }
+    
+    /**
+     * 
+     * @param <T>
+     * @param _type
+     * @param astProtoTarget
+     * @return 
+     */
+    public static final <T extends _type> Select selectFirst( T _type, ImportDeclaration astProtoTarget ){
+        return $import.of(_import.of(astProtoTarget)).selectFirstIn(_type);
+    }
+    
+    /**
+     * 
+     * @param <T>
+     * @param _type
+     * @param target
+     * @return 
+     */
+    public static final <T extends _type> Select selectFirst( T _type, Class target ){
+        return $import.of(_import.of(target)).selectFirstIn(_type);
+    }
+    
+    
+    
+    
+    
+    
+    
     /**
      * 
      * @param <T>
@@ -111,94 +294,7 @@ public final class $import
         return $import.of(_import.of(target)).removeIn(_type);
     }
     
-    /**
-     * 
-     * @param <T>
-     * @param _type
-     * @param _protoTarget
-     * @return 
-     */
-    public static final <T extends _type> List<_import> list( T _type, _import _protoTarget){
-        return $import.of(_protoTarget).listIn(_type);
-    }
-    
-    /**
-     * 
-     * @param <T>
-     * @param _type
-     * @param protoTargetImport
-     * @return 
-     */
-    public static final <T extends _type> List<_import> list( T _type, String protoTargetImport ){
-        return $import.of(protoTargetImport).listIn(_type);
-    }
-    
-    /**
-     * 
-     * @param <T>
-     * @param _type
-     * @param astProtoTarget
-     * @return 
-     */
-    public static final <T extends _type> List<_import> list( T _type, ImportDeclaration astProtoTarget ){
-        return $import.of(_import.of(astProtoTarget)).listIn(_type);
-    }
-    
-    /**
-     * 
-     * @param <T>
-     * @param _type
-     * @param target
-     * @return 
-     */
-    public static final <T extends _type> List<_import> list( T _type, Class target ){
-        return $import.of(_import.of(target)).listIn(_type);
-    }
-    
-    
-     /**
-     * 
-     * @param <T>
-     * @param _type
-     * @param _protoTarget
-     * @return 
-     */
-    public static final <T extends _type> List<Select> selectList( T _type, _import _protoTarget){
-        return $import.of(_protoTarget).selectListIn(_type);
-    }
-    
-    /**
-     * 
-     * @param <T>
-     * @param _type
-     * @param protoTargetImport
-     * @return 
-     */
-    public static final <T extends _type> List<Select> selectList( T _type, String protoTargetImport ){
-        return $import.of(protoTargetImport).selectListIn(_type);
-    }
-    
-    /**
-     * 
-     * @param <T>
-     * @param _type
-     * @param astProtoTarget
-     * @return 
-     */
-    public static final <T extends _type> List<Select> selectList( T _type, ImportDeclaration astProtoTarget ){
-        return $import.of(_import.of(astProtoTarget)).selectListIn(_type);
-    }
-    
-    /**
-     * 
-     * @param <T>
-     * @param _type
-     * @param target
-     * @return 
-     */
-    public static final <T extends _type> List<Select> selectList( T _type, Class target ){
-        return $import.of(_import.of(target)).selectListIn(_type);
-    }
+
     
     /**
      * 
