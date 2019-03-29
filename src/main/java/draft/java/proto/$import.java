@@ -540,6 +540,15 @@ public final class $import
         _import _i = _import.of(proto );
         return new $import( _i  );
     }
+
+    /**
+     * 
+     * @param constraint
+     * @return 
+     */
+    public static $import of( Predicate<_import> constraint ){
+        return new $import( constraint );
+    }
     
     /**
      * 
@@ -551,6 +560,7 @@ public final class $import
         _import _i = _import.of(proto );
         return new $import( _i ).constraint(constraint);
     }
+    
     
     /**
      * 
@@ -600,6 +610,11 @@ public final class $import
         this.importPattern = Stencil.of( proto.getName() );
     }
 
+    private $import( Predicate<_import> constraint ){
+        this.importPattern = Stencil.of("$any$");
+        this.constraint = constraint;
+    }
+    
     /**
      * 
      * @param constraint

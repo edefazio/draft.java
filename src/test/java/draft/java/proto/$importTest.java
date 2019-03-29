@@ -22,6 +22,13 @@ public class $importTest extends TestCase {
         assertNotNull( $import.selectFirst(_c, Map.class) );
         assertNotNull( $import.selectFirst(_cs, Map.class) );
         
+        assertNotNull( $import.first(_cs, Map.class, i-> i.isStatic() && i.isWildcard()) );
+        assertNotNull( $import.first(_c, Map.class, i -> i.is(Map.class)) );
+        assertNotNull( $import.selectFirst(_c, Map.class, i-> i.is(Map.class)) );
+        assertNotNull( $import.selectFirst(_cs, Map.class, i-> i.isStatic()) );
+        
+        assertNotNull( $import.of(i-> i.isStatic()).firstIn(_cs) );
+        
        
     }
     
