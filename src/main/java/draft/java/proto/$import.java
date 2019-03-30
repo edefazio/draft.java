@@ -407,7 +407,7 @@ public final class $import
      * @param protoTarget
      * @return 
      */
-    public static final <T extends _type> T replace( T _type, String protoSource, String protoTarget ){
+    public static final <T extends _type> T replace( T _type, String protoSource, String protoTarget ){        
         return $import.of(protoSource).replaceIn(_type, protoTarget);
     }
     
@@ -537,7 +537,7 @@ public final class $import
      * @return 
      */
     public static $import of( String proto){
-        _import _i = _import.of(proto );
+        _import _i = _import.of( proto );
         return new $import( _i  );
     }
 
@@ -606,8 +606,17 @@ public final class $import
         
     public Stencil importPattern;
     
+    public boolean isStatic = false;
+    public boolean isWildcard = false;
+    
     private $import(_import proto ){
         this.importPattern = Stencil.of( proto.getName() );
+        if( proto.isStatic()){
+            this.isStatic = true;
+        }
+        if( proto.isWildcard() ){
+            this.isWildcard = true;
+        }        
     }
 
     private $import( Predicate<_import> constraint ){
@@ -616,12 +625,12 @@ public final class $import
     }
     
     /**
-     * 
+     * ADD a constraint
      * @param constraint
      * @return 
      */
     public $import constraint( Predicate<_import> constraint ){
-        this.constraint = constraint;
+        this.constraint = this.constraint.and(constraint);
         return this;
     }
     
@@ -660,7 +669,9 @@ public final class $import
      */
     public Tokens deconstruct(_import _i ){
         if( this.constraint.test(_i)){
-            return importPattern.deconstruct( _i.getName().trim() );
+            if( this.isStatic == _i.isStatic() && this.isWildcard == _i.isWildcard() ){
+                return importPattern.deconstruct( _i.getName().trim() );
+            }
         }
         return null;
     }
@@ -672,45 +683,55 @@ public final class $import
      * @return Tokens from the stencil, or null if the expression doesnt match
      */
     public Tokens deconstruct(ImportDeclaration astImport ){
-        if(this.constraint.test(_import.of(astImport))){            
-            return importPattern.deconstruct( astImport.getNameAsString().trim() );
+        if(this.constraint.test(_import.of(astImport))){ 
+            if( this.isStatic == astImport.isStatic() && this.isWildcard == astImport.isAsterisk()){
+                return importPattern.deconstruct( astImport.getNameAsString().trim() );
+            }
         }
         return null;
     }
 
     @Override
     public String toString() {
-        return "($import) : \"" + this.importPattern + "\"";
+        String stat = "";
+        String star = "";
+        if( isStatic ){
+            stat = " static ";
+        }
+        if( isWildcard ){
+            star = ".*";
+        }
+        return "($import) : \"" +stat + this.importPattern + star + "\"";
     }
 
     @Override
     public _import construct(Translator translator, Map<String, Object> keyValues) {
-        return _import.of(importPattern.construct(translator, keyValues));
+        return _import.of(importPattern.construct(translator, keyValues)).setStatic(this.isStatic).setWildcard(this.isWildcard);
     }
 
     @Override
     public _import construct(Map<String, Object> keyValues) {
-        return _import.of(importPattern.construct(Translator.DEFAULT_TRANSLATOR, keyValues));
+        return _import.of(importPattern.construct(Translator.DEFAULT_TRANSLATOR, keyValues)).setStatic(this.isStatic).setWildcard(this.isWildcard);
     }
 
     @Override
     public _import construct(Object... keyValues) {
-        return _import.of(importPattern.construct(Translator.DEFAULT_TRANSLATOR, keyValues));
+        return _import.of(importPattern.construct(Translator.DEFAULT_TRANSLATOR, keyValues)).setStatic(this.isStatic).setWildcard(this.isWildcard);
     }
 
     @Override
     public _import construct(Translator translator, Object... keyValues) {
-        return _import.of(importPattern.construct(translator, keyValues));
+        return _import.of(importPattern.construct(translator, keyValues)).setStatic(this.isStatic).setWildcard(this.isWildcard);
     }
 
     @Override
     public _import fill(Object... values) {
-        return _import.of(importPattern.fill(Translator.DEFAULT_TRANSLATOR, values));
+        return _import.of(importPattern.fill(Translator.DEFAULT_TRANSLATOR, values)).setStatic(this.isStatic).setWildcard(this.isWildcard);
     }
 
     @Override
     public _import fill(Translator translator, Object... values) {
-        return _import.of(importPattern.fill(translator, values));
+        return _import.of(importPattern.fill(translator, values)).setStatic(this.isStatic).setWildcard(this.isWildcard);
     }
 
     @Override
@@ -859,10 +880,10 @@ public final class $import
     }
 
     @Override
-    public List<_import> listIn(Node astRootNode ){
-        if( astRootNode.findCompilationUnit().isPresent()){
+    public List<_import> listIn(Node astNode ){
+        if( astNode.findCompilationUnit().isPresent()){
             List<_import> l = new ArrayList<>();
-            astRootNode.findCompilationUnit().get().walk(ImportDeclaration.class, t->{
+            astNode.findCompilationUnit().get().walk(ImportDeclaration.class, t->{
                 if( this.matches(t) ){
                     l.add(_import.of(t));
                 }
@@ -873,10 +894,10 @@ public final class $import
     }
 
     @Override
-    public List<Select> selectListIn( Node astRootNode ){
+    public List<Select> selectListIn( Node astNode ){
         List<Select>sts = new ArrayList<>();
-        if(astRootNode.findCompilationUnit().isPresent() ){
-            astRootNode.findCompilationUnit().get().walk(ImportDeclaration.class, e-> {
+        if(astNode.findCompilationUnit().isPresent() ){
+            astNode.findCompilationUnit().get().walk(ImportDeclaration.class, e-> {
                 Select s = select( e );
                 if( s != null ){
                     sts.add( s);

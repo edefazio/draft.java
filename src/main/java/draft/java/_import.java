@@ -79,6 +79,14 @@ public class _import implements _model {
 
     /**
      * Make this a wildcard import
+     * @return 
+     */
+    public _import setWildcard(){
+        return setWildcard(true);
+    }
+    
+    /**
+     * Make this a wildcard import
      *
      * @param isWildcard
      * @return
@@ -88,6 +96,14 @@ public class _import implements _model {
         return this;
     }
 
+    /**
+     * Make this a static import
+     * @return 
+     */
+    public _import setStatic(){
+        return setStatic(true);
+    }
+    
     /**
      *
      * @param isStatic whether to set this import as static

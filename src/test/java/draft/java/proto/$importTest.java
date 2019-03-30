@@ -1,9 +1,12 @@
 package draft.java.proto;
 
 import draft.java._class;
+import draft.java._import;
 import java.net.URI;
 import java.util.Map;
 import junit.framework.TestCase;
+import static junit.framework.TestCase.assertFalse;
+import static junit.framework.TestCase.assertTrue;
 import org.hamcrest.MatcherAssert;
 import org.junit.Assert;
 /**
@@ -11,6 +14,23 @@ import org.junit.Assert;
  * @author Eric
  */
 public class $importTest extends TestCase {
+    
+    public void testImportWildcardStaticAssertions(){
+        _class _c = _class.of("C").importStatic(Assert.class);
+        $import.replace( _c, _import.of(Assert.class).setStatic().setWildcard(), _import.of(MatcherAssert.class).setStatic().setWildcard() );
+        
+        assertFalse( _c.hasImport(Assert.class) );
+        assertTrue( _c.hasImportStatic(MatcherAssert.class));
+        assertTrue( _c.hasImport(MatcherAssert.class) );        
+        
+        _c = _class.of("C").importStatic(Assert.class);
+        $import.replace( _c, _import.of(Assert.class.getCanonicalName()).setStatic().setWildcard(), 
+                _import.of(MatcherAssert.class.getCanonicalName()).setStatic().setWildcard() );
+        
+        assertFalse( _c.hasImport(Assert.class) );
+        assertTrue( _c.hasImportStatic(MatcherAssert.class));
+        assertTrue( _c.hasImport(MatcherAssert.class) );        
+    }
     
     public void testMatchRegularOrStatic(){
         _class _c = _class.of( "C").imports(Map.class);
