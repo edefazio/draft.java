@@ -245,7 +245,7 @@ public final class $expr <T extends Expression>
     public static <T extends Expression> $expr<T> of( String proto, Predicate<T> constraint ){
         return new $expr<>( (T)Expr.of(proto)).constraint(constraint);
     }
- 
+    
     /**
      * 
      * @param <T>
@@ -1605,7 +1605,7 @@ public final class $expr <T extends Expression>
             if( astExpr instanceof DoubleLiteralExpr ){
                 DoubleLiteralExpr dle = (DoubleLiteralExpr)astExpr;
             }
-            return exprPattern.deconstruct(astExpr.toString() );
+            return exprPattern.deconstruct(astExpr.toString(Ast.PRINT_NO_COMMENTS) );
         }
         return null;
     }

@@ -2,6 +2,8 @@ package draft.java;
 
 import com.github.javaparser.*;
 import com.github.javaparser.ast.Node;
+import com.github.javaparser.ast.comments.BlockComment;
+import com.github.javaparser.ast.comments.JavadocComment;
 import com.github.javaparser.ast.expr.*;
 import com.github.javaparser.ast.stmt.Statement;
 import draft.DraftException;
@@ -547,6 +549,13 @@ public enum Expr {
         if( str.equals("super") ){
             return new SuperExpr();
         }
+        String comment = null;
+        int endComment = str.indexOf("*/");
+        if( str.startsWith("/*") && endComment > 0 ) {
+            //we need to manually "save" the comment
+            comment = str.substring(0, endComment + 2);
+            str = str.substring(endComment+2);
+        }
         //a frequent mistake I make is to end expressions with ";"
         // this will fix it...(no expressions end with ;, those are ExpressionStmt
         if( str.endsWith( ";" ) ) {
@@ -563,7 +572,17 @@ public enum Expr {
             return aie;
         }
         try{
-            return StaticJavaParser.parseExpression( str );
+            Expression e = StaticJavaParser.parseExpression( str );
+            if( comment != null ){
+                if( comment.startsWith("/**") ){
+                    JavadocComment jdc = new JavadocComment( comment.replace("/**", "" ).replace("*/", ""));    
+                    e.setComment( jdc);
+                } else{
+                    BlockComment bc = new BlockComment(comment.replace("/*", "" ).replace("*/", ""));                       
+                    e.setComment(bc);
+                }                
+            }
+            return e;
         }
         catch(ParseProblemException ppe){
             try {

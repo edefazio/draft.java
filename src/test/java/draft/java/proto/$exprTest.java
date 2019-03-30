@@ -1,5 +1,6 @@
 package draft.java.proto;
 
+import com.github.javaparser.StaticJavaParser;
 import com.github.javaparser.ast.expr.IntegerLiteralExpr;
 import draft.java.Expr;
 import draft.java._class;
@@ -12,6 +13,30 @@ import static junit.framework.TestCase.assertNotNull;
 
 public class $exprTest extends TestCase {
 
+    public void testGenericExpr(){
+        //LocalClassDeclarationExpr lc =  Expr.("class $any${}");
+        
+        //find EVERY lambda with a comment
+        $expr $anyLambda = $expr.of("($params$)->$body$", e -> e.getComment().isPresent() );
+        
+        System.out.println( Expr.lambda("/** comment */ ()->true") );
+        
+        assertTrue( $anyLambda.matches( Expr.lambda("/** comment */ ()->true") ) );
+        
+        assertTrue( $expr.lambda(l -> l.getComment().isPresent() ).matches("/** comment */ ()->true;") );
+        
+        /** A comment */
+        //lass C{}
+        
+        //this disregards comments
+        //StaticJavaParser.parseExpression(expression)
+        
+        
+        
+        //_class _c = _class.of($exprTest.class);
+        //assertNotNull( $anyLocal.firstIn(_c) );
+        
+    }
     public void testStatic$expr(){
         _class _c = _class.of("C", new Object(){
             @aa(2) 
@@ -21,6 +46,8 @@ public class $exprTest extends TestCase {
         assertEquals( 1, $expr.list(_c, Expr.of(2) ).size());
         assertEquals( 4, $expr.of(2).$("2", "number").listIn(_c).size());
     }
+    
+    
     
     @interface aa{
         int value();
