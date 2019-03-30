@@ -667,7 +667,7 @@ public interface _type<AST extends TypeDeclaration & NodeWithJavadoc & NodeWithM
                         cu.addImport(s.substring(0, s.indexOf('[')));
                     }
                     else {
-                        cu.addImport(classesToImport[i]);
+                        cu.addImport(cn);
                     }
                 }
             }
