@@ -307,9 +307,6 @@ public final class _class implements _type<ClassOrInterfaceDeclaration, _class>,
 
         _c.imports(toImport.toArray(new Class[0]));
         
-
-        
-        
         //we process the ANNOTATIONS on the TYPE
         _macro.to( theClass, _c);
         for(int i=0;i<typeFn.length; i++){
@@ -556,9 +553,7 @@ public final class _class implements _type<ClassOrInterfaceDeclaration, _class>,
 
     @Override
     public _class extend( Class toExtend ){
-        this.astClass.getExtendedTypes().clear();
-        this.astClass.addExtendedType( toExtend );
-        return this;
+        return extend( (ClassOrInterfaceType) Ast.typeRef(toExtend.getCanonicalName() ) );
     }
 
     @Override
