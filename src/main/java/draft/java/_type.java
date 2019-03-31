@@ -1326,7 +1326,13 @@ public interface _type<AST extends TypeDeclaration & NodeWithJavadoc & NodeWithM
         
         default T implement( Class... toImplement ){
             NodeWithImplements nwi = ((NodeWithImplements)((_type)this).ast());
-            Arrays.stream( toImplement ).forEach(i -> nwi.addImplementedType( i ) );
+            
+            //nwi.addImplementedType()
+            Arrays.stream( toImplement )
+                .forEach(i -> {
+                        ClassOrInterfaceType coit = (ClassOrInterfaceType)Ast.typeRef(i);                    
+                        nwi.addImplementedType( coit );                    
+                    });
             return (T)this;
         }
 
