@@ -481,8 +481,6 @@ public final class $import
         return $import.of(_import.of(target)).removeIn(_type);
     }
     
-    
-    
     /**
      * 
      * @param <T>
@@ -622,6 +620,24 @@ public final class $import
     private $import( Predicate<_import> constraint ){
         this.importPattern = Stencil.of("$any$");
         this.constraint = constraint;
+    }
+    
+    public $import setStatic(){
+        return setStatic(true);
+    }
+    
+    public $import setStatic( boolean isStatic ){
+        this.isStatic = isStatic;
+        return this;
+    }
+    
+    public $import setWildcard( ){
+        return setWildcard(true);
+    }
+    
+    public $import setWildcard( boolean isWildcard ){
+        this.isWildcard = isWildcard;
+        return this;
     }
     
     /**
