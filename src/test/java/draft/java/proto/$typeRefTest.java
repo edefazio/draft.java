@@ -1,14 +1,127 @@
 package draft.java.proto;
 
+import com.github.javaparser.ast.expr.Expression;
+import com.github.javaparser.ast.expr.MethodCallExpr;
 import draft.java.proto.$typeRef;
 import draft.java.Ast;
+import draft.java.Expr;
+import draft.java.Walk;
 import draft.java._class;
+import draft.java._typeRef;
 import junit.framework.TestCase;
 
 import java.util.*;
 
 public class $typeRefTest extends TestCase {
 
+    public static class OldT{
+        public static final int F = 1;
+        
+        public static final int m() {
+            return 2;
+        }
+    }
+    
+    public static class NewT{
+        public static final int F = 1;
+        
+        public static final int m() {
+            return 2;
+        }
+    }
+    
+    public void testFindAllTypeReferences(){
+        
+        _class _c = _class.of("AA", new Object(){
+            public OldT field = new OldT();
+            
+            public OldT method( OldT one ){
+                /** WORKING */                
+                draft.java.proto.$typeRefTest.OldT fv = new draft.java.proto.$typeRefTest.OldT();
+                
+                //annotation ?
+                draft.java.proto.$typeRefTest.OldT[] arr = new draft.java.proto.$typeRefTest.OldT[2];
+                
+                draft.java.proto.$typeRefTest.OldT rr = (draft.java.proto.$typeRefTest.OldT)one; //cast
+                
+                /* NOT WORKING  */
+                OldT var = new OldT();
+                
+                System.out.println( OldT.F ); //field access
+                OldT.m();
+                System.out.println( draft.java.proto.$typeRefTest.OldT.F ); //field access
+                draft.java.proto.$typeRefTest.OldT.m();
+                return var;
+            }            
+        });
+        
+        $typeRef.replace(_c, OldT.class, NewT.class );
+        System.out.println( _c );
+        
+        //assertEquals( 12, $typeRef.of(OldT.class).listIn(_c).size() );
+        
+        $typeRef $t = $typeRef.of("OldT");
+        $t.replaceIn(_c, _typeRef.of("NewT"));
+        
+        List<MethodCallExpr> ms = Walk.list(_c, Ast.METHOD_CALL_EXPR );
+        ms.forEach(m -> System.out.println( "METHOD SCOPE " + m.getScope().get().toString() ));
+        
+        Walk.in(_c, MethodCallExpr.class, mc -> {
+            if(mc.getScope().isPresent()){
+                if( mc.getScope().get().toString().equals("draft.java.proto.$typeRefTest.OldT")){
+                    mc.setScope(Expr.of("draft.java.proto.$typeRefTest.NewT"));
+                }
+                if( mc.getScope().get().toString().equals("OldT")){
+                    mc.setScope(Expr.of("NewT"));
+                }
+            }
+        });
+        
+        Walk.in(_c, Ast.FIELD_ACCESS_EXPR, mc -> {
+            if(mc.getScope().toString().equals("draft.java.proto.$typeRefTest.OldT")){
+                mc.setScope(Expr.of("draft.java.proto.$typeRefTest.NewT"));
+            }
+            if( mc.getScope().toString().equals("OldT")){
+                mc.setScope(Expr.of("NewT"));
+            }
+        });
+        
+        System.out.println( _c );
+        
+        System.out.println( "FOUND FIELDS + " + Walk.in(_c, Ast.FIELD_ACCESS_EXPR, f-> f.toString().equals( "draft.java.proto.$typeRefTest.OldT" ) ) );
+        System.out.println( "FOUND FIELDS + " + Walk.in(_c, Ast.FIELD_ACCESS_EXPR, f-> f.toString().equals( "OldT" ) ) );
+        System.out.println( "FOUND METHODS 1+ " + Walk.in(_c, Ast.METHOD_CALL_EXPR, m-> m.toString().equals( "draft.java.proto.$typeRefTest.OldT" ) ) );
+        
+        Walk.in( _c, Ast.METHOD_CALL_EXPR, mc -> mc.getScope().isPresent() && mc.getScope().get().toString().equals("draft.java.proto.$typeRefTest.OldT"), 
+                mc -> mc.setScope(Expr.of("draft.java.proto.$typeRefTest.OldT")));
+        
+        System.out.println( _c );
+        /*
+        System.out.println( "FOUND METHODS 2+ " + 
+                Walk.in(_c, 
+                    Ast.METHOD_CALL_EXPR, m -> true;
+                    //m -> m.getScope().isPresent() && 
+                     //   m.getScope().get().toString().equals( "OldT" ) 
+            ) 
+        );
+        */
+        /*
+        System.out.println( 
+                Walk.list(_c, Ast.FIELD_ACCESS_EXPR, f->{ 
+                    Expression s = f.getScope(); 
+                    System.out.println( "SCOPE CLASS " + s.getClass()+ " "+ f.getScope() );
+                    return s != null; }) );
+        */
+        //System.out.println( Walk.list(_c, Ast.TYPE ) );
+        //System.out.println( $typeRef.list(_c, "$any$", t-> true) );
+        
+        //_c = _class.of( $typeRefTest.class);
+        //_c = _class.of( II.class);
+        //$typeRef $t = $typeRef.of(OldT.class);
+        //$t.replaceIn(_c, NewT.class );
+        //System.out.println( _c );
+    }
+    
     public void testStaticCalls(){
         class F{
             int a;

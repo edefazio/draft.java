@@ -17,19 +17,19 @@ public class $importTest extends TestCase {
     
     public void testImportWildcardStaticAssertions(){
         _class _c = _class.of("C").importStatic(Assert.class);
-        $import.replace( _c, _import.of(Assert.class).setStatic().setWildcard(), _import.of(MatcherAssert.class).setStatic().setWildcard() );
+        $import.replace( _c, _import.of(Assert.class).setStatic().setWildcard(), 
+            _import.of(MatcherAssert.class).setStatic().setWildcard() );
         
         assertFalse( _c.hasImport(Assert.class) );
         assertTrue( _c.hasImportStatic(MatcherAssert.class));
         assertTrue( _c.hasImport(MatcherAssert.class) );        
         
-        _c = _class.of("C").importStatic(Assert.class);
-        $import.replace( _c, _import.of(Assert.class.getCanonicalName()).setStatic().setWildcard(), 
-                _import.of(MatcherAssert.class.getCanonicalName()).setStatic().setWildcard() );
+        _c = _class.of("C").imports(Assert.class);
+        $import.replace( _c, _import.of(Assert.class.getCanonicalName()), 
+            _import.of(MatcherAssert.class.getCanonicalName()) );
         
         assertFalse( _c.hasImport(Assert.class) );
-        assertTrue( _c.hasImportStatic(MatcherAssert.class));
-        assertTrue( _c.hasImport(MatcherAssert.class) );        
+        assertTrue( _c.hasImport(MatcherAssert.class));
     }
     
     public void testMatchRegularOrStatic(){

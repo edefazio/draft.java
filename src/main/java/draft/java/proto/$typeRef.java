@@ -300,10 +300,6 @@ public final class $typeRef<T extends Type>
     public static final <N extends _node> List<Select> selectList( N _n, _typeRef proto,Predicate<_typeRef> constraint){
         return $typeRef.of(proto).constraint(constraint).selectListIn(_n);
     }
-
-
-
-
     
     /**
      * 
@@ -432,7 +428,7 @@ public final class $typeRef<T extends Type>
     public static final $typeRef floatType = of(PrimitiveType.floatType());
     public static final $typeRef doubleType = of(PrimitiveType.doubleType());
 
-    public Predicate<T> constraint;
+    public Predicate<_typeRef> constraint = (t)-> true;
     public Class<T> typeClass;
     public Stencil typeStencil;
 
@@ -443,6 +439,7 @@ public final class $typeRef<T extends Type>
     public $typeRef(T astProtoType){
         this.typeClass = (Class<T>)astProtoType.getClass();
         this.typeStencil = Stencil.of(astProtoType.toString() );
+        System.out.println("TYPE STENCIL " +typeStencil);
     }
 
     /**
@@ -460,7 +457,7 @@ public final class $typeRef<T extends Type>
      * @param constraint
      * @return 
      */
-    public $typeRef constraint(Predicate<T> constraint){
+    public $typeRef constraint(Predicate<_typeRef> constraint){
         this.constraint = constraint;
         return this;
     }
@@ -617,7 +614,17 @@ public final class $typeRef<T extends Type>
      * @return 
      */
     public Tokens deconstruct( _typeRef _tr){
-        return deconstruct( _tr.ast() );
+        //System.out.println( "tryiong decons of " + _tr+ " "+ typeClass);
+        //if( typeClass.isAssignableFrom(astType.getClass())){
+        //System.out.println( "   Assignable " + typeClass);    
+        if( this.constraint.test(_tr ) ) {
+            //System.out.println( "      Passed const " + typeClass + " "+ typeStencil + " "+_tr );
+            Tokens ts = typeStencil.deconstruct(_tr.toString() );
+            //System.out.println( ts );
+            return ts;
+        }        
+        return null;
+        //return deconstruct( _tr.ast() );
     }
     
     /**
@@ -627,12 +634,19 @@ public final class $typeRef<T extends Type>
      * @return Tokens from the stencil, or null if the expression doesnt match
      */
     public Tokens deconstruct( Type astType ){
+        return deconstruct( _typeRef.of(astType ));
+        /*
+        System.out.println( "tryiong decons of " + astType+ " "+ typeClass);
         if( typeClass.isAssignableFrom(astType.getClass())){
+            System.out.println( "   Assignable " + typeClass);    
             if( this.constraint.test((T)astType ) ) {
+                System.out.println( "      Passed const " + typeClass + " "+ typeStencil );
+                
                 return typeStencil.deconstruct(astType.toString() );
             }
         }
         return null;
+        */
     }
     
     /**
@@ -784,6 +798,17 @@ public final class $typeRef<T extends Type>
      * @return 
      */
     public <N extends _node> N replaceIn(N _n, Class replacementType){
+        return replaceIn( _n, $typeRef.of(replacementType));
+    }
+    
+    /**
+     * 
+     * @param <N>
+     * @param _n
+     * @param replacementType
+     * @return 
+     */
+    public <N extends _node> N replaceIn(N _n, _typeRef replacementType){
         return replaceIn( _n, $typeRef.of(replacementType));
     }
 

@@ -26,6 +26,33 @@ import java.util.concurrent.atomic.AtomicBoolean;
  */
 public class _classTest extends TestCase {
     
+    
+    interface MemberI{ }
+    
+    interface $Member{        
+        interface MemberMember{}
+    }
+    
+    public static class $Base{
+        public static class Mem{
+            
+        }
+    }
+    
+    /**
+     * We previously had issues with classes that started with $ for 
+     * implementing and extending (expecially for MEMBER CLASSES)
+     * this will test those scenarios
+     * Classes that start with a 
+     */
+    public void testImplementMemberClass(){
+        _class _c = _class.of("C")
+                .implement(MemberI.class).implement($Member.class).implement($Member.MemberMember.class);
+        _c = _class.of("C").extend($Base.class);
+        _c = _class.of("C").extend($Base.Mem.class);
+        System.out.println( _c );
+    }
+    
     public void testToString(){
         _class _c = _class.of("C", new Object(){
             int x = 100, y = 200;

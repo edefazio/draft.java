@@ -22,6 +22,17 @@ import test.subpkg.ann2;
  */
 public class _interfaceTest extends TestCase {
 
+    interface MemberI{ }
+    
+    interface $Member{        
+        interface MemberMember{}
+    }
+    
+    public void testExtendsMemberWith$(){
+        _interface _i = _interface.of("I")
+                .extend(MemberI.class, $Member.class, $Member.MemberMember.class);
+    }
+    
     public void testInterfaceViaAnonymousObject(){
         _interface _i = _interface.of("I", new Object(){
 

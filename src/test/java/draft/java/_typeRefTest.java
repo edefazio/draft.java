@@ -19,6 +19,13 @@ import static junit.framework.TestCase.assertEquals;
  */
 public class _typeRefTest extends TestCase {
 
+    public void testSimplify(){
+        _typeRef _tr = _typeRef.of("java.util.List<java.util.Map>");
+        assertTrue( _tr.is(Ast.typeRef("List<Map>")));
+        assertEquals( "List<Map>", _tr.normalized());
+        
+    }
+    
     public void testLocalAnonymousTypeRefEquality(){
        String className = "draft.java._classTest$1$Hoverboard";
        _typeRef _tr = _typeRef.of(className);

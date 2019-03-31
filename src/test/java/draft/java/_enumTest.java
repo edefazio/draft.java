@@ -17,7 +17,18 @@ import test.ComplexEnum;
  * @author Eric
  */
 public class _enumTest extends TestCase {
-
+    
+    interface MemberI{ }
+    
+    interface $Member{        
+        interface MemberMember{}
+    }
+    
+    public void testImplementMemberClass(){
+        _enum _e = _enum.of("E").implement(MemberI.class).implement($Member.class).implement($Member.MemberMember.class);
+        System.out.println( _e );
+    }
+    
 
     public void testConstants(){
         _enum _e = _enum.of("Suit").constants("Hearts","Clubs","Spades","Diamonds");
