@@ -198,15 +198,21 @@ public final class _interface implements _type<ClassOrInterfaceDeclaration, _int
         return this;
     }
 
+    
+    public _interface extend( Class...toExtends ){
+        Arrays.stream(toExtends).forEach( e -> extend( (ClassOrInterfaceType)Ast.typeRef(e) ) );
+        return this;
+    }
+    
     @Override
     public _interface extend( Class toExtend ){
-        this.astInterface.addExtendedType( toExtend );
+        this.astInterface.addExtendedType( (ClassOrInterfaceType)Ast.typeRef(toExtend) );
         this.astInterface.tryAddImportToParentCompilationUnit(toExtend);
         return this;
     }
 
     @Override
-    public _interface extend( String  toExtend ){
+    public _interface extend( String toExtend ){
         this.astInterface.addExtendedType( toExtend);
         return this;
     }
