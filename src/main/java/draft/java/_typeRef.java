@@ -139,6 +139,77 @@ public final class _typeRef<T extends Type>
         Deconstructed od = Deconstructed.of(other.astType.toString() );
         return td.equals( od );
     }
+    
+    /**
+     * returns a normalized String version of this _typeRef
+     * 
+     * When we normalize, we take any"Fully qualified" parts and convert them to
+     * non fully qualified...
+     * i.e.
+     * <PRE>
+     * assertEqauls( _typeRef.of("java.util.List<java.util.Map>").normalize(), 
+     *     "List<Map>");
+     * </PRE>
+     * @return 
+     */
+    public String normalized(){
+        return Normalizer.of( this.astType.toString() );        
+    }
+    
+    private static class Normalizer{
+        /**
+         * When we create a Local Class and ask for it's name, it will have
+         * this weird "$#$" qualifier, where # is some number...
+         * Here is an example:
+         * <PRE>
+         * draft.java._classTest$1$Hoverboard
+         * </PRE>
+         * ...well we want to identify these patterns and convert them into dots
+         * draft.java._classTest.Hoverboard
+         */
+        public static final String LOCAL_CLASS_NAME_PACKAGE_PATTERN = "\\$?\\d+\\$";
+        
+        private static String normalize( String s ) {
+            if( s.length() == 0 ){
+                return s;
+            }
+            /*
+            look for the tell-tale local anonymous package pattern $#$ wheren # is a number... like "$1$" in :
+            "draft.java._classTest$1$Hoverboard"
+            ...and replace it with a '.'
+            */
+            s = s.replaceAll(LOCAL_CLASS_NAME_PACKAGE_PATTERN, ".");
+            int idx = s.lastIndexOf( '.' );
+            if( idx < 0 ) {
+                return s;
+            }
+            return s.substring( idx + 1 );
+        }
+        
+        public static String of( String str ) {
+            String currentToken = "";
+            StringBuilder sb = new StringBuilder();
+            for( int i = 0; i < str.length(); i++ ) {
+                char c = str.charAt( i );
+                switch( c ) {
+                    case '<':
+                    case '&':
+                    case '>':
+                    case '|':
+                    case ',':   
+                        sb.append( normalize(currentToken) );  //normalize previous token                      
+                        sb.append( c );
+                        currentToken = "";
+                        break;
+                    default:
+                        currentToken += c;
+                        break;
+                }
+            }
+            sb.append( normalize(currentToken) );            
+            return sb.toString();
+        }        
+    }
 
     /** we "partsMap" the TYPE into symbols and tokens to check for equality */
     private static class Deconstructed {
