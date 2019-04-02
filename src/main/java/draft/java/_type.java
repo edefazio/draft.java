@@ -3,14 +3,8 @@ package draft.java;
 import com.github.javaparser.StaticJavaParser;
 import com.github.javaparser.ast.*;
 import com.github.javaparser.ast.body.*;
-import com.github.javaparser.ast.comments.BlockComment;
-import com.github.javaparser.ast.comments.Comment;
-import com.github.javaparser.ast.comments.JavadocComment;
-import com.github.javaparser.ast.nodeTypes.NodeWithAnnotations;
-import com.github.javaparser.ast.nodeTypes.NodeWithImplements;
-import com.github.javaparser.ast.nodeTypes.NodeWithJavadoc;
-import com.github.javaparser.ast.nodeTypes.NodeWithModifiers;
-import com.github.javaparser.ast.nodeTypes.NodeWithName;
+import com.github.javaparser.ast.comments.*;
+import com.github.javaparser.ast.nodeTypes.*;
 import com.github.javaparser.ast.stmt.LocalClassDeclarationStmt;
 import com.github.javaparser.ast.type.ClassOrInterfaceType;
 import draft.DraftException;
@@ -251,6 +245,30 @@ public interface _type<AST extends TypeDeclaration & NodeWithJavadoc & NodeWithM
         return listMembers().stream().filter(_memberMatchFn).collect(Collectors.toList());
     }
 
+    /**
+     * lists all of the members that are of a specific member class
+     * @param <M> the specific member class to find
+     * @param memberClass the member class
+     * @return the list of members
+     */
+    default <M extends _member> List<M> listMembers( Class<M> memberClass ){
+        List<M> found = new ArrayList<>();
+        listMembers().stream().filter(m -> memberClass.isAssignableFrom(m.getClass()))
+                .forEach(m -> found.add( (M)m) );
+        return found;
+    }
+    
+    /**
+     * lists all of the members that are of a specific member class
+     * @param <M> the specific member class to find
+     * @param memberClass the member class
+     * @param _memberMatchFn a matching function for selecting which members
+     * @return the list of members
+     */
+    default <M extends _member> List<M> listMembers( Class<M> memberClass, Predicate<M> _memberMatchFn){
+        return listMembers(memberClass).stream().filter(_memberMatchFn).collect(Collectors.toList());        
+    }
+    
     /**
      * Does this _type have a {@link PackageDeclaration} Node set?
      * @return true if the TYPE is a top level TYPE AND has a declared package
