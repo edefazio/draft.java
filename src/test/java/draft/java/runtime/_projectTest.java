@@ -2,6 +2,7 @@ package draft.java.runtime;
 
 import draft.DraftException;
 import draft.java._class;
+import draft.java._method;
 import draft.java.macro.*;
 import draft.java.macro._autoDto;
 import junit.framework.TestCase;
@@ -13,6 +14,22 @@ import java.io.IOException;
 public class _projectTest extends TestCase {
 
 
+    /**
+     * test the new call methods to make srue
+     */
+    public void testNewCallMethods(){
+        _class _c = _class.of("aaaa.bbbb.C");
+        _method _m = _method.of("public static int val(){ return 1;}");
+        _c.add( _m);
+        
+        _project _p = _project.of(_c);
+        //because there is only 1 public static method on _c, call that
+        assertEquals( 1, _p.call( _c )); 
+        
+        //call this specific method on 
+        assertEquals( 1, _p.call( _m ));        
+    }
+    
     /**
      * Test Project inheritance
      * i.e. Child classLoaders can access classes in the Parent ClassLoader
