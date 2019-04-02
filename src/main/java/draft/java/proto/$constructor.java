@@ -486,7 +486,7 @@ public final class $constructor
     }
 
     @Override
-    public <N extends Node> N forIn(N astNode, Consumer<_constructor> _constructorActionFn ){
+    public <N extends Node> N forEachIn(N astNode, Consumer<_constructor> _constructorActionFn ){
         astNode.walk( ConstructorDeclaration.class, c-> {
             Select s = select( c );
             if( s != null ){
@@ -497,7 +497,7 @@ public final class $constructor
     }
 
     @Override
-    public <N extends _node> N forIn(N _n, Consumer<_constructor> _constructorActionFn ){
+    public <N extends _node> N forEachIn(N _n, Consumer<_constructor> _constructorActionFn ){
         Walk.in(_n, _constructor.class, c-> {
             Select s = select( c );
             if( s != null ){

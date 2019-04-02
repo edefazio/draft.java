@@ -23,6 +23,7 @@ import java.util.function.Predicate;
 public class $field
     implements Template<_field>, $query<_field> {
 
+    
     /**
      * 
      * @param <N>
@@ -804,7 +805,7 @@ public class $field
     }
 
     @Override
-    public <N extends Node> N forIn(N astNode, Consumer<_field> _fieldActionFn){
+    public <N extends Node> N forEachIn(N astNode, Consumer<_field> _fieldActionFn){
         astNode.walk(VariableDeclarator.class, e-> {
             //Tokens tokens = this.stencil.partsMap( e.toString());
             Select sel = select( e );
@@ -816,7 +817,7 @@ public class $field
     }
 
     @Override
-    public <N extends _node> N forIn(N _n, Consumer<_field> _fieldActionFn){
+    public <N extends _node> N forEachIn(N _n, Consumer<_field> _fieldActionFn){
         Walk.in(_n, VariableDeclarator.class, e-> {
             Tokens tokens = deconstruct( e );
             if( tokens != null ){

@@ -170,7 +170,7 @@ public class $exprTest extends TestCase {
 
         //use forAllIn to
         List<Integer>ints = new ArrayList<>();
-        e.forIn(_class.of(C.class), ie -> ints.add(ie.asInt()));
+        e.forEachIn(_class.of(C.class), ie -> ints.add(ie.asInt()));
         assertTrue( ints.contains(1) && ints.contains(2) && ints.contains(3) && ints.contains(4) && ints.contains(5) && ints.contains(6));
     }
     

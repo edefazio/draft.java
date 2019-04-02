@@ -575,7 +575,7 @@ public final class $snip implements Template<List<Statement>>, $query<List<State
     }
 
     @Override
-    public <N extends _node> N forIn(N _n, Consumer<List<Statement>> statementsConsumer ){
+    public <N extends _node> N forEachIn(N _n, Consumer<List<Statement>> statementsConsumer ){
         Walk.in(_n, this.$sts.get(0).statementClass, st -> {
             Select sel = select( (Statement)st );
             if( sel != null ){
@@ -586,7 +586,7 @@ public final class $snip implements Template<List<Statement>>, $query<List<State
     }
 
     @Override
-    public <N extends Node> N forIn(N astNode, Consumer<List<Statement>> statementsConsumer ){
+    public <N extends Node> N forEachIn(N astNode, Consumer<List<Statement>> statementsConsumer ){
         astNode.walk(this.$sts.get(0).statementClass, st -> {
             Select sel = select( (Statement)st );
             if( sel != null ){

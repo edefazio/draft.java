@@ -765,7 +765,7 @@ public final class $method
     }
 
     @Override
-    public <N extends Node> N forIn(N astNode, Consumer<_method> _methodActionFn){
+    public <N extends Node> N forEachIn(N astNode, Consumer<_method> _methodActionFn){
         astNode.walk(MethodDeclaration.class, e-> {
             Tokens tokens = this.deconstruct( e );
             if( tokens != null ){
@@ -776,7 +776,7 @@ public final class $method
     }
 
     @Override
-    public <N extends _node> N forIn(N _n, Consumer<_method> _methodActionFn){
+    public <N extends _node> N forEachIn(N _n, Consumer<_method> _methodActionFn){
         Walk.in(_n, MethodDeclaration.class, e -> {
             Tokens tokens = this.deconstruct( e );
             if( tokens != null ){

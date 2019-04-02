@@ -8,6 +8,19 @@ import junit.framework.TestCase;
 
 public class $annoTest extends TestCase {
  
+    
+    public void testAny(){
+        _class _c = _class.of("C");
+        assertEquals( 0, $anno.list(_c).size());
+        
+        //add a top level annotation
+        _c.annotate(Deprecated.class);
+        assertEquals( 1, $anno.list(_c).size());
+        
+        $anno.forEach(_c, a-> System.out.println(a.getName()));
+        $anno.forEach(_c, a-> !a.hasValues(), a-> System.out.println( a) );
+    }
+    
     @interface R{ int value() default 10; }
     @interface S{ Class[] clazz() default String.class; }
    

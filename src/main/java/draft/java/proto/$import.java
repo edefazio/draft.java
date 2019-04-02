@@ -1057,7 +1057,7 @@ public final class $import
     }
 
     @Override
-    public <N extends Node> N forIn(N astNode, Consumer<_import> _importActionFn){
+    public <N extends Node> N forEachIn(N astNode, Consumer<_import> _importActionFn){
         astNode.walk(ImportDeclaration.class, e-> {
             Tokens tokens = deconstruct( e );
             if( tokens != null ){
@@ -1068,8 +1068,8 @@ public final class $import
     }
 
     @Override
-    public <N extends _node> N forIn(N _n, Consumer<_import> _importActionFn){
-        forIn(_n.ast(), _importActionFn);
+    public <N extends _node> N forEachIn(N _n, Consumer<_import> _importActionFn){
+        forEachIn(_n.ast(), _importActionFn);
         return _n;
     }
 

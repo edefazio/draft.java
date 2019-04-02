@@ -14,18 +14,18 @@ import java.util.function.*;
 /**
  * Template for an {@link _anno}
   * <PRE>
- * $stmt
+ * $anno
  * CONSTRUCT
  *     .construct([Translator], Tokens) build & return 
  *     .fill([Translator], values)
  * PARAMETERIZE
- *     .$(Tokens)
+ *     .$(target, parameter)
  *     .assign$([translator], target, value)
  * MATCH
  *     .constraint(Predicate<T>) //set the matching constraint
- *     .matches(Statement)
- *     .select(Statement)
- *     .deconstruct( Statement )
+ *     .matches(AnnotationExpr)
+ *     .select(AnnotationExpr)
+ *     .deconstruct( AnnotationExpr )
  * QUERY       
  *     .first/.firstIn(_node, proto) find the first matching statement in
  *     .list/.listIn(_node, proto, Predicate<>) list all matches in        
@@ -34,17 +34,16 @@ import java.util.function.*;
  * MODIFY
  *     .remove/.removeIn(_node, proto)
  *     .replace/.replaceIn(_node, protoTarget, protoReplacement)
- *     .forIn(_node, Consumer<T>)
+ *     .forEach/forEachIn(_node, Consumer<T>)
  *     .forSelectedIn(_node, Consumer<T>) 
  *</PRE> 
- * 
- * provides:
- * $anno.first( _c, "");
- * 
  */
 public final class $anno
     implements Template<_anno>, $query<_anno> {
 
+    /** represents ANY annotation*/
+    public static final $anno ANY = $anno.of("@A").$("A", "any");
+    
     /**
      * 
      * @param <N>
@@ -137,8 +136,27 @@ public final class $anno
         return $anno.of(proto, constraint).selectFirstIn(astNode);
     }
     
-       
-    //?? TODO add constraint parameter at end (make it a vararg?)
+    /**
+     * lists all annos within the node
+     * @param <N>
+     * @param _n
+     * @return 
+     */
+    public static final <N extends _node> List<_anno> list( N _n ){
+        return ANY.listIn(_n);
+    }
+    
+    /**
+     * lists all annos within the node
+     * @param <N>
+     * @param _n
+     * @param constraint
+     * @return 
+     */
+    public static final <N extends _node> List<_anno> list( N _n, Predicate<_anno> constraint){
+        return new $anno( "@a" ).$("@a", "any").constraint(constraint).listIn(_n);
+    }
+    
     /**
      * lists all occurrences of annos that match the 
      * @param <N>
@@ -184,6 +202,79 @@ public final class $anno
     public static final <N extends _node> List<_anno> list( N _n, _anno _proto, Predicate<_anno> constraint){
         return $anno.of(_proto, constraint).listIn(_n);
     }
+        
+    /**
+     * lists all annos within the node
+     * @param <N>
+     * @param _n
+     * @param _annoConsumer
+     * @return 
+     */
+    public static final <N extends _node> N forEach( N _n, Consumer<_anno> _annoConsumer){
+        return ANY.forEachIn(_n, _annoConsumer);
+    }
+    
+    /**
+     * lists all annos within the node
+     * @param <N>
+     * @param _n
+     * @param constraint
+     * @param _annoConsumer
+     * @return 
+     */
+    public static final <N extends _node> N forEach( N _n, Predicate<_anno> constraint, Consumer<_anno> _annoConsumer){
+        return new $anno( "@a" ).$("@a", "any").constraint(constraint).forEachIn(_n, _annoConsumer);
+    }
+    
+    /**
+     * lists all occurrences of annos that match the 
+     * @param <N>
+     * @param _n
+     * @param proto
+     * @param _annoConsumer
+     * @return 
+     */
+    public static final <N extends _node> N forEach( N _n, String proto, Consumer<_anno> _annoConsumer){
+        return $anno.of(proto).forEachIn(_n, _annoConsumer);
+    }
+    
+    /**
+     * lists all occurrences of annos that match the 
+     * @param <N>
+     * @param _n
+     * @param proto
+     * @param constraint
+     * @param _annoConsumer
+     * @return 
+     */
+    public static final <N extends _node> N forEach( N _n, String proto, Predicate<_anno> constraint, Consumer<_anno> _annoConsumer){
+        return $anno.of(proto, constraint).forEachIn(_n, _annoConsumer);
+    }
+    
+    /**
+     * 
+     * @param <N>
+     * @param _n
+     * @param _proto
+     * @param _annoConsumer
+     * @return 
+     */
+    public static final <N extends _node> N forEach( N _n, _anno _proto , Consumer<_anno> _annoConsumer){
+        return $anno.of(_proto).forEachIn(_n, _annoConsumer);
+    }
+    
+    /**
+     * 
+     * @param <N>
+     * @param _n
+     * @param _proto
+     * @param constraint
+     * @param _annoConsumer
+     * @return 
+     */
+    public static final <N extends _node> N forEach( N _n, _anno _proto, Predicate<_anno> constraint, Consumer<_anno> _annoConsumer){
+        return $anno.of(_proto, constraint).forEachIn(_n, _annoConsumer);
+    }
     
     /**
      * lists all occurrences of annos that match the 
@@ -194,6 +285,17 @@ public final class $anno
      */
     public static final <N extends _node> List<Select> selectList( N _n, String proto ){
         return $anno.of(proto).selectListIn(_n);
+    }
+    
+    /**
+     * lists all occurrences of annos that match the 
+     * @param <N>
+     * @param _n
+     * @param constraint
+     * @return 
+     */
+    public static final <N extends _node> List<Select> selectList( N _n, Predicate<_anno> constraint ){
+        return new $anno( "@a" ).$("@a", "any").constraint(constraint).selectListIn(_n);
     }
     
     /**
@@ -232,6 +334,16 @@ public final class $anno
     }
     
     /**
+     * Removes all annotations within _n
+     * @param <N>
+     * @param _n
+     * @return the modified N
+     */
+    public static final <N extends _node> N remove( N _n ){
+        return ANY.removeIn(_n);
+    }
+    
+    /**
      * Removes all occurrences of the source anno in the rootNode (recursively)
      * @param <N>
      * @param _n
@@ -240,6 +352,17 @@ public final class $anno
      */
     public static final <N extends _node> N remove( N _n, _anno _proto ){
         return $anno.of(_proto).removeIn(_n);
+    }
+    
+    /**
+     * Removes all occurrences of the source anno in the rootNode (recursively)
+     * @param <N>
+     * @param _n
+     * @param constraint
+     * @return the modified N
+     */
+    public static final <N extends _node> N remove( N _n, Predicate<_anno> constraint ){
+        return new $anno( "@a" ).$("@a", "any").constraint(constraint).removeIn(_n);
     }
     
     /**
@@ -324,9 +447,7 @@ public final class $anno
      * @param targetProto
      * @return 
      */
-    public static final <N extends _node> N replace( 
-        N _n, Class<? extends Annotation>sourceProto, 
-        Class<? extends Annotation>targetProto){
+    public static final <N extends _node> N replace( N _n, Class<? extends Annotation>sourceProto, Class<? extends Annotation>targetProto){
         
         return $anno.of(sourceProto)
             .replaceIn(_n, $anno.of(targetProto));
@@ -354,7 +475,7 @@ public final class $anno
     }
     
     public static $anno of( Predicate<_anno> constraint ){
-        return new $anno( "@a" ).$("@a", "amy").constraint(constraint);
+        return new $anno( "@a" ).$("@a", "any").constraint(constraint);
     }
     
     /**
@@ -793,7 +914,7 @@ public final class $anno
     }
 
     @Override
-    public <N extends Node> N forIn(N astNode, Consumer<_anno> _annoActionFn){
+    public <N extends Node> N forEachIn(N astNode, Consumer<_anno> _annoActionFn){
         astNode.walk(AnnotationExpr.class, a-> {
             Tokens tokens = deconstruct(a );
             if( tokens != null ){
@@ -804,7 +925,7 @@ public final class $anno
     }
 
     @Override
-    public <N extends _node> N forIn(N _n, Consumer<_anno> _annoActionFn){
+    public <N extends _node> N forEachIn(N _n, Consumer<_anno> _annoActionFn){
         Walk.in(_n, AnnotationExpr.class, a -> {
             Tokens tokens =  deconstruct(a );
             if( tokens != null ){

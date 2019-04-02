@@ -1336,7 +1336,7 @@ public final class $stmt<T extends Statement>
     }
 
     @Override
-    public <N extends Node> N forIn(N astNode, Consumer<T> statementActionFn){
+    public <N extends Node> N forEachIn(N astNode, Consumer<T> statementActionFn){
         astNode.walk(this.statementClass, e-> {
             Tokens tokens = deconstruct( e );
             if( tokens != null ){
@@ -1347,7 +1347,7 @@ public final class $stmt<T extends Statement>
     }
 
     @Override
-    public <N extends _node> N forIn(N _n, Consumer<T> statementActionFn){
+    public <N extends _node> N forEachIn(N _n, Consumer<T> statementActionFn){
         Walk.in(_n, this.statementClass, e->{
             Tokens tokens = deconstruct( e );
             if( tokens != null ){

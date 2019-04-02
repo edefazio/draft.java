@@ -102,7 +102,7 @@ public final class $expr <T extends Expression>
      * @param constraint
      * @return the first matching expression or null if none found
      */
-    public static final <N extends _node, E extends Expression> Select<E> seleectFirst( N _n, String protoExpr, Predicate<E> constraint){
+    public static final <N extends _node, E extends Expression> Select<E> selectFirst( N _n, String protoExpr, Predicate<E> constraint){
         return $expr.of(protoExpr, constraint).selectFirstIn(_n);
     }
     
@@ -117,6 +117,33 @@ public final class $expr <T extends Expression>
      */
     public static final <N extends _node, E extends Expression> Select<E> selectFirst( N _n, E astProtoExpr, Predicate<E> constraint){
         return $expr.of(astProtoExpr, constraint).selectFirstIn(_n);
+    }
+    
+    /**
+     * 
+     * @param <N>
+     * @param <E>
+     * @param _n
+     * @param exprProto
+     * @param expressionActionFn
+     * @return 
+     */
+    public <N extends _node, E extends Expression> N forEach(N _n, E exprProto, Consumer<E> expressionActionFn){
+        return $expr.of(exprProto).forEachIn(_n, expressionActionFn);
+    }
+
+    /**
+     * 
+     * @param <N>
+     * @param <E>
+     * @param _n
+     * @param exprProto
+     * @param constraint
+     * @param expressionActionFn
+     * @return 
+     */
+    public <N extends _node, E extends Expression> N forEach(N _n, E exprProto, Predicate<E> constraint, Consumer<E> expressionActionFn){
+        return $expr.of(exprProto, constraint).forEachIn(_n, expressionActionFn);
     }
     
     /**
@@ -180,6 +207,73 @@ public final class $expr <T extends Expression>
     public static final <N extends _node, E extends Expression> List<E> list( N _n, $expr<E> astProtoExpr ){
         return (List<E>)astProtoExpr.listIn(_n);
     }
+    
+    /**
+     * 
+     * @param <N>
+     * @param <E>
+     * @param _n
+     * @param protoExpr
+     * @return 
+     */
+    public static final <N extends _node, E extends Expression> List<Select<Expression>> selectList( N _n, String protoExpr ){
+        return $expr.of(protoExpr).selectListIn(_n);
+    }
+    
+    /**
+     * 
+     * @param <N>
+     * @param <E>
+     * @param _n
+     * @param protoExpr
+     * @param constraint
+     * @return 
+     */
+    public static final <N extends _node, E extends Expression> List<Select<E>> selectList( N _n, String protoExpr, Predicate<E> constraint){
+        return $expr.of(protoExpr, constraint).selectListIn(_n);
+    }
+    
+    /**
+     * 
+     * @param <N>
+     * @param <E>
+     * @param _n
+     * @param astProtoExpr
+     * @return 
+     */
+    public static final <N extends _node, E extends Expression> List<Select<E>> selectList( N _n, E astProtoExpr ){
+        return $expr.of(astProtoExpr).selectListIn(_n);
+    }    
+    
+    /**
+     * 
+     * @param <N>
+     * @param <E>
+     * @param _n
+     * @param astProtoExpr
+     * @param constraint
+     * @return 
+     */
+    public static final <N extends _node, E extends Expression> List<Select<E>> selectList( N _n, E astProtoExpr, Predicate<E> constraint){
+        return $expr.of(astProtoExpr, constraint).selectListIn(_n);
+    }  
+    
+    /**
+     * 
+     * @param <N>
+     * @param <E>
+     * @param _n
+     * @param astProtoExpr
+     * @return 
+     */
+    public static final <N extends _node, E extends Expression> List<Select<E>> selectList( N _n, $expr<E> astProtoExpr ){
+        return astProtoExpr.selectListIn(_n);
+    }
+    
+    
+    
+    
+    
     
     /**
      * 
@@ -1691,8 +1785,10 @@ public final class $expr <T extends Expression>
         return typesList;
     }
 
+
+            
     @Override
-    public <N extends Node> N forIn(N astNode, Consumer<T> expressionActionFn){
+    public <N extends Node> N forEachIn(N astNode, Consumer<T> expressionActionFn){
         astNode.walk(this.expressionClass, e-> {
             Tokens tokens = deconstruct( e );
             if( tokens != null ){
@@ -1703,7 +1799,7 @@ public final class $expr <T extends Expression>
     }
 
     @Override
-    public <N extends _node> N forIn(N _n, Consumer<T> expressionActionFn){
+    public <N extends _node> N forEachIn(N _n, Consumer<T> expressionActionFn){
         Walk.in(_n, this.expressionClass, e -> {
             Tokens tokens = deconstruct( e );
             if( tokens != null ){

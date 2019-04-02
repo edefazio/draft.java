@@ -411,7 +411,6 @@ public interface _type<AST extends TypeDeclaration & NodeWithJavadoc & NodeWithM
      */
     default T removeImports( Predicate<_import> _importMatchFn ){
         getImports().remove(_importMatchFn );
-        //removeImports( listImports( _importMatchFn ));
         return (T)this;
     }
     
@@ -569,12 +568,6 @@ public interface _type<AST extends TypeDeclaration & NodeWithJavadoc & NodeWithM
     default List<_import> listImports( Predicate<_import> _importMatchFn ){
         return this.getImports().list().stream().filter( _importMatchFn ).collect(Collectors.toList());
     }
-    /*
-    default List<ImportDeclaration> listImports( Predicate<ImportDeclaration> importMatchFn){        
-        List<ImportDeclaration> is = listImports();
-        return is.stream().filter( importMatchFn ).collect(Collectors.toList());
-    }
-    */
 
     /**
      * Adds static wildcard imports for all Classes

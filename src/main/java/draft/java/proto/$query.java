@@ -86,7 +86,7 @@ public interface $query<Q> {
      * @param _nodeActionFn the function to run upon each encounter with a matching node
      * @return the modified astRootNode
      */
-    <N extends Node> N forIn(N astRootNode, Consumer<Q> _nodeActionFn);
+    <N extends Node> N forEachIn(N astRootNode, Consumer<Q> _nodeActionFn);
 
     /**
      * Find and execute a function on all of the matching occurrences within astRootNode
@@ -95,7 +95,7 @@ public interface $query<Q> {
      * @param _nodeActionFn the function to run on all matching entities
      * @return  the modified _java node
      */
-    <N extends _node> N forIn(N _n, Consumer<Q> _nodeActionFn);
+    <N extends _node> N forEachIn(N _n, Consumer<Q> _nodeActionFn);
 
     /**
      * 
@@ -397,13 +397,21 @@ public interface $query<Q> {
             return getArgs().is(key, value);
         }
     }
-    
+    /**
+     * The entity that is Selected is/has an AST node Representation
+     * @param <N> the specific type of AST Node that is selected
+     */
     interface selectedAstNode<N extends Node>{
         
-        /** return the selected AST Node */
+        /** return the selected AST Node (i.e. Expression, Statement, VariableDeclarator) */
         N ast();
     }
     
+    /**
+     * The entity that is selected is/has a draft _node Representation
+     * (which wraps the underlying Ast Node/Nodes)
+     * @param <M> the Draft _model representation
+     */
     interface selected_model<M extends _model>{
         
         /** return the selected node as a _model (i.e. _method for a MethodDeclaration)*/
