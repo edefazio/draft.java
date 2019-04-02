@@ -35,7 +35,7 @@ import java.util.function.*;
  *     .remove/.removeIn(_node, proto)
  *     .replace/.replaceIn(_node, protoTarget, protoReplacement)
  *     .forEach/forEachIn(_node, Consumer<T>)
- *     .forSelectedIn(_node, Consumer<T>) 
+ *     .forSelected/forSelectedIn(_node, Consumer<Select>) 
  *</PRE> 
  */
 public final class $anno
@@ -277,6 +277,79 @@ public final class $anno
     }
     
     /**
+     * lists all annos within the node
+     * @param <N>
+     * @param _n
+     * @param _annoConsumer
+     * @return 
+     */
+    public static final <N extends _node> N forSelected( N _n, Consumer<Select> _annoConsumer){
+        return ANY.forSelectedIn(_n, _annoConsumer);
+    }
+    
+    /**
+     * lists all annos within the node
+     * @param <N>
+     * @param _n
+     * @param constraint
+     * @param _annoConsumer
+     * @return 
+     */
+    public static final <N extends _node> N forSelected( N _n, Predicate<_anno> constraint, Consumer<Select> _annoConsumer){
+        return new $anno( "@a" ).$("@a", "any").constraint(constraint).forSelectedIn(_n, _annoConsumer);
+    }
+    
+    /**
+     * lists all occurrences of annos that match the 
+     * @param <N>
+     * @param _n
+     * @param proto
+     * @param _annoConsumer
+     * @return 
+     */
+    public static final <N extends _node> N forSelected( N _n, String proto, Consumer<Select> _annoConsumer){
+        return $anno.of(proto).forSelectedIn(_n, _annoConsumer);
+    }
+    
+    /**
+     * lists all occurrences of annos that match the 
+     * @param <N>
+     * @param _n
+     * @param proto
+     * @param constraint
+     * @param _annoConsumer
+     * @return 
+     */
+    public static final <N extends _node> N forSelected( N _n, String proto, Predicate<_anno> constraint, Consumer<Select> _annoConsumer){
+        return $anno.of(proto, constraint).forSelectedIn(_n, _annoConsumer);
+    }
+    
+    /**
+     * 
+     * @param <N>
+     * @param _n
+     * @param _proto
+     * @param _annoConsumer
+     * @return 
+     */
+    public static final <N extends _node> N forSelected( N _n, _anno _proto , Consumer<Select> _annoConsumer){
+        return $anno.of(_proto).forSelectedIn(_n, _annoConsumer);
+    }
+    
+    /**
+     * 
+     * @param <N>
+     * @param _n
+     * @param _proto
+     * @param constraint
+     * @param _annoConsumer
+     * @return 
+     */
+    public static final <N extends _node> N forSelected( N _n, _anno _proto, Predicate<_anno> constraint, Consumer<Select> _annoConsumer){
+        return $anno.of(_proto, constraint).forSelectedIn(_n, _annoConsumer);
+    }
+    
+    /**
      * lists all occurrences of annos that match the 
      * @param <N>
      * @param _n
@@ -334,7 +407,7 @@ public final class $anno
     }
     
     /**
-     * Removes all annotations within _n
+     * Removes ALL annotations within _n
      * @param <N>
      * @param _n
      * @return the modified N
