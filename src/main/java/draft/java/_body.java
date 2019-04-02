@@ -198,6 +198,47 @@ public final class _body implements _model {
         }
 
         /**
+         * Returns a list of statements
+         * NOTE: this lists the "top statements" 
+         * (this DOES NOT WALK INTO statements, like compound statements, 
+         * statements in for loops and nested blocks)
+         * 
+         * @return 
+         */
+        default List<Statement> listStatements(){
+            if( this.hasBody() ){
+                return getBody().getStatements();
+            }
+            return Collections.EMPTY_LIST;
+        }
+        
+        /**
+         * Returns the statements that are of the StmtClass
+         * <PRE>
+         * //list all return statements from the class
+         * List<ReturnStmt> retSts = _m.listStatements( Ast.RETURN_STMT );
+         * List<ThrowStmt> throwSts = _m.listStatements( Ast.THROW_STMT );
+         * </PRE>
+         * 
+         * NOTE: this lists the "top statements" 
+         * (this DOES NOT WALK INTO statements, like compound statements, 
+         * statements in for loops and nested blocks)
+         * @param <S> the statement class
+         * @param stmtClass the statement class
+         * @return the list of statements of the class
+         */
+        default <S extends Statement> List<S> listStatements(Class<S> stmtClass ){
+            if( this.hasBody() ){
+                List<S> stmts = new ArrayList<>();
+                getBody().getStatements().stream()
+                    .filter(s-> stmtClass.isAssignableFrom(s.getClass()))
+                    .forEach(s -> stmts.add( (S)s ));
+                return stmts;
+            }
+            return Collections.EMPTY_LIST;
+        }
+        
+        /**
          *
          * @param body
          * @return

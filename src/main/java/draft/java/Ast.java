@@ -566,7 +566,7 @@ public enum Ast {
      * @return the node implementation of the code
      */
     public static Node of(Class nodeClass, String... code) {
-        if (AnnotationExpr.class == nodeClass) {
+        if (nodeClass.isAssignableFrom( AnnotationExpr.class)) {
             return anno(code);
         }
         if (ImportDeclaration.class == nodeClass) {
@@ -586,10 +586,7 @@ public enum Ast {
         }
         if (ConstructorDeclaration.class == nodeClass) {
             return ctor(code);
-        }
-        if (Type.class == nodeClass) {
-            return typeRef(Text.combine(code).trim());
-        }
+        }        
         if (InitializerDeclaration.class == nodeClass) {
             return staticBlock(code);
         }
@@ -626,6 +623,18 @@ public enum Ast {
         if (MethodDeclaration.class == nodeClass) {
             return method(code);
         }
+        if( SimpleName.class == nodeClass){
+            return new SimpleName(Text.combine(code) );
+        }
+        if( Name.class == nodeClass){
+            return new Name( Text.combine(code));
+        }
+        if( Type.class.isAssignableFrom(nodeClass )){
+            return typeRef( Text.combine(code));
+        }
+        if( Modifier.class == nodeClass ){
+            return _modifiers.KEYWORD_TO_ENUM_MAP.get(Text.combine(code) );
+        }        
         throw new DraftException("Could not parse Node of class " + nodeClass);
     }
 
