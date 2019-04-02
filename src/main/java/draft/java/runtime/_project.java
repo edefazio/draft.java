@@ -1,11 +1,14 @@
 package draft.java.runtime;
 
+import com.github.javaparser.ast.Node;
+import com.github.javaparser.ast.body.TypeDeclaration;
 import com.github.javaparser.ast.expr.Expression;
 import com.github.javaparser.ast.expr.MethodCallExpr;
 import draft.DraftException;
 import draft.java.*;
+import draft.java._method;
+import draft.java._method._hasMethods;
 import draft.java.file.*;
-import draft.java.macro._macro;
 
 import javax.annotation.processing.Processor;
 import javax.tools.DiagnosticCollector;
@@ -135,7 +138,7 @@ public final class _project {
 
     public static _project of(Processor annotationProcessor, _type... types) {
         _javaFiles javaFiles = _javaFiles.of( types );
-        List<Processor> annProc = new ArrayList<Processor>();
+        List<Processor> annProc = new ArrayList<>();
         annProc.add( annotationProcessor );
         return _project.of( (_classLoader)null, null, annProc, javaFiles, null, null );
     }
@@ -149,7 +152,7 @@ public final class _project {
      */
     public static _project of(_project parent, _type._hasTypes _types, Processor... annotationProcessors) {
 
-        List<Processor> annProc = new ArrayList<Processor>();
+        List<Processor> annProc = new ArrayList<>();
         for( int i = 0; i < annotationProcessors.length; i++ ) {
             annProc.add( annotationProcessors[ i ] );
         }
@@ -166,7 +169,7 @@ public final class _project {
      */
     public static _project of(_javacOptions compilerOpts, _type._hasTypes _types, Processor... annotationProcessors) {
 
-        List<Processor> annProc = new ArrayList<Processor>();
+        List<Processor> annProc = new ArrayList<>();
         for( int i = 0; i < annotationProcessors.length; i++ ) {
             annProc.add( annotationProcessors[ i ] );
         }
@@ -405,6 +408,52 @@ public final class _project {
         }
     }
 
+    /**
+     * Call the LONE static method on a _type that has static methods
+     * 
+     * @param _t the _class, _enum, _interface that has a SINGLE static method to call
+     * @param args arguments to pass to the method
+     * @return the result of the call
+     */
+    public Object call( _type _t, Object...args ){
+        
+        List<_method> _publicStaticMethods = 
+            _t.listMembers(_method.class, (m)->((_method)m).isStatic() && ((_method)m).isPublic());
+        
+        if( _publicStaticMethods.size() == 1 ){
+            return call( _t.getFullName()+"."+_publicStaticMethods.get(0).getName(), args );
+        }
+        throw new DraftException(
+            "unable to locate/disabiguate public static method on _type "
+            + _t.getFullName()+" found ("+ _publicStaticMethods.size()+") candidates");
+    }
+    
+    /**
+     * Pass in a static public _method, (THAT MUST HAVE BEEN PART OF THE PROJECT) 
+     * and call it with the arguments
+     * @param _m a public static _method that was part of the _project
+     * @param args the arguments to pass to the method
+     * @return the result of the method
+     * @throws DraftException if errors occur
+     */
+    public Object call( _method _m, Object...args){
+        if( !_m.isStatic() || !_m.isPublic() ){
+            throw new DraftException("unable to call a non-public or non static method,... you must create an instace with _new or _proxy");
+        }
+        List<TypeDeclaration> declaringClasses = new ArrayList<>();
+        _m.ast().walk(Node.TreeTraversal.PARENTS, n-> { 
+            if( n instanceof TypeDeclaration){
+                declaringClasses.add( (TypeDeclaration)n );
+            }
+        });
+        //dont think this will work for a static method on an enum... but REALLY
+        if( declaringClasses.size() > 0 ){
+            _type _t = _type.of( declaringClasses.get(0) );
+            return call(_t.getFullName()+"."+_m.getName(), args);
+        }
+        throw new DraftException("Unable to find the declaring class of method "+ _m);        
+    }
+    
     /**
      * i.e.
      * call("java.util.UUID.generateRandomUUID");
