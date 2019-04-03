@@ -12,9 +12,9 @@ import junit.framework.TestCase;
  *
  * @author Eric
  */
-public class $fieldTest extends TestCase {
+public class pFieldTest extends TestCase {
     public void testSimple(){
-        $field $f = $field.of("public int i=100;");
+        pField $f = pField.of("public int i=100;");
         $f.matches(Ast.field("public int i = 100;"));
     }
 }

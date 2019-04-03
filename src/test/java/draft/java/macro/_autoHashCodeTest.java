@@ -6,7 +6,7 @@ import draft.java._class;
 import draft.java._method;
 import draft.java.runtime._project;
 import draft.java.runtime._proxy;
-import draft.java.proto.$stmt;
+import draft.java.proto.pStmt;
 import junit.framework.TestCase;
 
 import java.util.List;
@@ -66,16 +66,16 @@ public class _autoHashCodeTest extends TestCase {
         _autoHashCode.Macro.to(_c);
         _method _m = _c.getMethod("hashCode");
 
-        assertEquals( 1, $stmt.of("int hash = $any$;").listIn(_m).size() );
-        assertEquals( 1, $stmt.of("int prime = $any$;").listIn(_m).size() );
+        assertEquals(1, pStmt.of("int hash = $any$;").listIn(_m).size() );
+        assertEquals(1, pStmt.of("int prime = $any$;").listIn(_m).size() );
 
-        $stmt $st = $stmt.of("hash = hash * prime + $fieldHash$;");
+        pStmt $st = pStmt.of("hash = hash * prime + $fieldHash$;");
 
         //List l = $st.findAllIn(_m);
         //assertEquals( 4, l.size());
 
         //verify that
-        List<$stmt.Select> ss = $st.selectListIn(_m);
+        List<pStmt.Select> ss = $st.selectListIn(_m);
         assertTrue( ss.stream().filter(s-> s.args.is("fieldHash", Expr.of("( b ? 1 : 0 )").toString())).findAny().isPresent());
         assertTrue( ss.stream().filter(s-> s.args.is("fieldHash", "i") ).findAny().isPresent()); //int
         assertTrue( ss.stream().filter(s-> s.args.is("fieldHash", "by") ).findAny().isPresent()); //ibyte

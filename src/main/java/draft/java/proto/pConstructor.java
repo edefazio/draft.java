@@ -23,8 +23,8 @@ import java.util.function.Predicate;
  * Prototype for a Java constructor
  *
  */
-public final class $constructor
-        implements Template<_constructor>, $query<_constructor> {
+public final class pConstructor
+        implements Template<_constructor>, pQuery<_constructor> {
 
     public Stencil javadocStencil;
 
@@ -35,35 +35,35 @@ public final class $constructor
     public Stencil signatureStencil;
     
     /** stencil for the body of the constructor */
-    public $snip $body;
+    public pSnip $body;
 
     /**
      * 
      * @param _c
      * @return 
      */
-    public static $constructor of(_constructor _c ){
-        return new $constructor( _c, t->true);
+    public static pConstructor of(_constructor _c ){
+        return new pConstructor( _c, t->true);
     }
     
-    public static $constructor of(_constructor _c, Predicate<_constructor> constraint ){
-        return new $constructor( _c, constraint);
+    public static pConstructor of(_constructor _c, Predicate<_constructor> constraint ){
+        return new pConstructor( _c, constraint);
     }
 
-    public static $constructor of(String...code ){
-        return new $constructor(_constructor.of(code), t-> true);
+    public static pConstructor of(String...code ){
+        return new pConstructor(_constructor.of(code), t-> true);
     }
 
-    public static $constructor of( String protoCtor ){
+    public static pConstructor of( String protoCtor ){
         return of(new String[]{protoCtor});
     }
 
-    public static $constructor of( String protoCtor, Predicate<_constructor> constraint ){
-        return new $constructor( _constructor.of(protoCtor), constraint );
+    public static pConstructor of( String protoCtor, Predicate<_constructor> constraint ){
+        return new pConstructor( _constructor.of(protoCtor), constraint );
     }
     
-    public static $constructor of( Predicate<_constructor> constraint ){
-        return new $constructor( _constructor.of("c(){}"), constraint )
+    public static pConstructor of( Predicate<_constructor> constraint ){
+        return new pConstructor( _constructor.of("c(){}"), constraint )
                 .$(_constructor.of("c(){}").toString(), "any");
     }
     
@@ -75,7 +75,7 @@ public final class $constructor
      * @param anonymousObjectContainingCtor
      * @return
      */
-    public static $constructor of( Object anonymousObjectContainingCtor ){
+    public static pConstructor of( Object anonymousObjectContainingCtor ){
         StackTraceElement ste = Thread.currentThread().getStackTrace()[2];
         ObjectCreationExpr oce = Expr.anonymousObject( ste );
         MethodDeclaration theMethod = (MethodDeclaration)
@@ -96,9 +96,9 @@ public final class $constructor
         return of( _ct );
     }
 
-    private $constructor(_constructor _protoCtor, Predicate<_constructor> constraint){
+    private pConstructor(_constructor _protoCtor, Predicate<_constructor> constraint){
         if( _protoCtor.hasBody() ) {
-            this.$body = $snip.of(_protoCtor.getBody());
+            this.$body = pSnip.of(_protoCtor.getBody());
             _constructor _cp = _protoCtor.copy();
             if(_cp.ast().getJavadocComment().isPresent() ){
                 this.javadocStencil = Stencil.of(Ast.getContent( _cp.ast().getJavadocComment().get() ));
@@ -118,7 +118,7 @@ public final class $constructor
      * @param constraint
      * @return 
      */
-    public $constructor constraint( Predicate<_constructor> constraint ){
+    public pConstructor constraint( Predicate<_constructor> constraint ){
         this.constraint = constraint;
         return this;
     }
@@ -159,7 +159,7 @@ public final class $constructor
      * @param kvs the key parameter NAME and String VALUE to assign to the
      * @return the modified Stencil
      */
-    public $constructor assign$( Tokens kvs ) {
+    public pConstructor assign$( Tokens kvs ) {
         return assign$( Translator.DEFAULT_TRANSLATOR, kvs );
     }
 
@@ -170,7 +170,7 @@ public final class $constructor
      * @param keyValues the key parameter NAME and String VALUE to assign to the
      * @return the modified Stencil
      */
-    public $constructor assign$( Object... keyValues ) {
+    public pConstructor assign$( Object... keyValues ) {
         return assign$( Translator.DEFAULT_TRANSLATOR, Tokens.of( keyValues ) );
     }
 
@@ -182,7 +182,7 @@ public final class $constructor
      * @param keyValues the key parameter NAME and String VALUE to assign to the
      * @return the modified Stencil
      */
-    public $constructor assign$( Translator translator, Object... keyValues ) {
+    public pConstructor assign$( Translator translator, Object... keyValues ) {
         return assign$( translator, Tokens.of( keyValues ) );
     }
 
@@ -192,7 +192,7 @@ public final class $constructor
      * @param kvs
      * @return 
      */
-    public $constructor assign$( Translator translator, Tokens kvs ) {
+    public pConstructor assign$( Translator translator, Tokens kvs ) {
         if(this.javadocStencil != null ){
             this.javadocStencil = this.javadocStencil.assign$(translator,kvs);
         }
@@ -219,7 +219,7 @@ public final class $constructor
 
     @Override
     public _constructor construct(Map<String, Object> keyValues) {
-        return $constructor.this.construct( Translator.DEFAULT_TRANSLATOR, keyValues );
+        return pConstructor.this.construct( Translator.DEFAULT_TRANSLATOR, keyValues );
     }
 
     /**
@@ -228,17 +228,17 @@ public final class $constructor
      * @return 
      */
     public _constructor construct( _node _n ){
-        return $constructor.this.construct(_n.componentize());
+        return pConstructor.this.construct(_n.componentize());
     }
 
     @Override
     public _constructor construct(Object... keyValues) {
-        return $constructor.this.construct( Translator.DEFAULT_TRANSLATOR, keyValues );
+        return pConstructor.this.construct( Translator.DEFAULT_TRANSLATOR, keyValues );
     }
 
     @Override
     public _constructor construct(Translator translator, Object... keyValues) {
-        return $constructor.this.construct(translator, Tokens.of(keyValues));
+        return pConstructor.this.construct(translator, Tokens.of(keyValues));
     }
 
     @Override
@@ -256,11 +256,11 @@ public final class $constructor
         for(int i=0;i<values.length;i++){
             kvs.put( keys.get(i), values[i]);
         }
-        return $constructor.this.construct( t, kvs );
+        return pConstructor.this.construct( t, kvs );
     }
 
     @Override
-    public $constructor $(String target, String $Name) {
+    public pConstructor $(String target, String $Name) {
         if( this.javadocStencil != null ){
             this.javadocStencil = javadocStencil.$(target, $Name);
         }
@@ -275,7 +275,7 @@ public final class $constructor
      * @param $name
      * @return 
      */
-    public $constructor $(Expression astExpr, String $name ){
+    public pConstructor $(Expression astExpr, String $name ){
         String exprString = astExpr.toString();
         return $(exprString, $name);
     }
@@ -286,7 +286,7 @@ public final class $constructor
      * @param $name
      * @return 
      */
-    public $constructor $(Statement astStmt, String $name ){
+    public pConstructor $(Statement astStmt, String $name ){
         String exprString = astStmt.toString();
         return $(exprString, $name);
     }
@@ -324,7 +324,7 @@ public final class $constructor
      * @return 
      */
     public Select select( ConstructorDeclaration astCtor){
-        Tokens ts = deconstruct( astCtor );
+        $args ts = deconstruct( astCtor );
         if( ts != null ){
             return new Select( astCtor, ts );
         }
@@ -398,7 +398,7 @@ public final class $constructor
      * @param _ctor
      * @return 
      */
-    public Tokens deconstruct( _constructor _ctor ){
+    public $args deconstruct( _constructor _ctor ){
         return deconstruct( _ctor.ast() );                
     }
     
@@ -408,7 +408,7 @@ public final class $constructor
      * @param astTarget
      * @return 
      */
-    public Tokens deconstruct( ConstructorDeclaration astTarget ){
+    public $args deconstruct( ConstructorDeclaration astTarget ){
         if( !this.constraint.test( _constructor.of(astTarget))){
             return null;
         }
@@ -439,7 +439,7 @@ public final class $constructor
             });
             if( isConsistent.get() ){
                 ts.putAll(tss);
-                return ts;
+                return $args.of(ts);
             }
         }
         return null; //the BODY or signature isnt the same or BODY / signature tokens were inconsistent
@@ -559,16 +559,16 @@ public final class $constructor
      * A Matched Selection result returned from matching a prototype $constructor
      * inside of some Node or _node
      */    
-    public static class Select implements $query.selected, 
-            $query.selectedAstNode<ConstructorDeclaration>, 
-            $query.selected_model<_constructor> {
+    public static class Select implements pQuery.selected, 
+            pQuery.selectedAstNode<ConstructorDeclaration>, 
+            pQuery.selected_model<_constructor> {
         
         public final ConstructorDeclaration astCtor;
         public final $args args;
 
-        public Select( ConstructorDeclaration astCtor, Tokens tokens ){
+        public Select( ConstructorDeclaration astCtor, $args tokens ){
             this.astCtor = astCtor;
-            this.args = $args.of(tokens);
+            this.args = tokens;
         }
 
         @Override

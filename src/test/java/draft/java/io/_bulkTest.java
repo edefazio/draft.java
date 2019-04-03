@@ -12,6 +12,10 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
 
+/** 
+ * Commented out for now, because they slow down build 
+ * and are linked to my machine
+ */ 
 public class _bulkTest extends TestCase {
 
 
@@ -31,13 +35,15 @@ public class _bulkTest extends TestCase {
 
 
     public void testDir(){
+        /*
         _bulk._load _l = _bulk.read("C:\\draft\\intellij\\drft");
         System.out.println( _l );
+        */
 
     }
 
     public void testB(){
-
+        /*
         //485 524 500
         _bulk._load _l = _bulk.read(Paths.get("C:\\temp"));
         System.out.println( _l );
@@ -58,7 +64,6 @@ public class _bulkTest extends TestCase {
         List<ParseResult<CompilationUnit>> pares = sr.tryToParseParallelized();
         long end = System.currentTimeMillis();
         System.out.println( "TOOK "+ (end - start));
+        */
     }
-
-
 }

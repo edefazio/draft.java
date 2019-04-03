@@ -1,7 +1,7 @@
 package draft.java.macro;
 
 import draft.java.*;
-import draft.java.proto.$method;
+import draft.java.proto.pMethod;
 
 import java.lang.annotation.*;
 import java.util.List;
@@ -23,7 +23,7 @@ public @interface _autoSetFluent {
         public static Predicate<_field> SET_REQUIRED = _f -> !_f.isStatic() && !_f.isFinal();
 
         /** template method for a fluent set method */
-        public static $method $SET_FLUENT = $method.of(
+        public static pMethod $SET_FLUENT = pMethod.of(
                 "public $className$ set$Name$($type$ $name$){",
                 "    this.$name$ = $name$;",
                 "    return this;",

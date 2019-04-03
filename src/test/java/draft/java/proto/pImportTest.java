@@ -13,19 +13,21 @@ import org.junit.Assert;
  *
  * @author Eric
  */
-public class $importTest extends TestCase {
+public class pImportTest extends TestCase {
     
     public void testImportWildcardStaticAssertions(){
         _class _c = _class.of("C").importStatic(Assert.class);
-        $import.replace( _c, _import.of(Assert.class).setStatic().setWildcard(), 
+        pImport.replace( _c, _import.of(Assert.class).setStatic().setWildcard(), 
             _import.of(MatcherAssert.class).setStatic().setWildcard() );
+        
+        System.out.println( _c );
         
         assertFalse( _c.hasImport(Assert.class) );
         assertTrue( _c.hasImportStatic(MatcherAssert.class));
         assertTrue( _c.hasImport(MatcherAssert.class) );        
         
         _c = _class.of("C").imports(Assert.class);
-        $import.replace( _c, _import.of(Assert.class.getCanonicalName()), 
+        pImport.replace( _c, _import.of(Assert.class.getCanonicalName()), 
             _import.of(MatcherAssert.class.getCanonicalName()) );
         
         assertFalse( _c.hasImport(Assert.class) );
@@ -37,17 +39,17 @@ public class $importTest extends TestCase {
         
         _class _cs = _class.of( "C").importStatic(Map.class);
         //System.out.println( _class.of("C").importStatic(Map.class));
-        assertNotNull( $import.first(_cs, Map.class) );
-        assertNotNull( $import.first(_c, Map.class) );
-        assertNotNull( $import.selectFirst(_c, Map.class) );
-        assertNotNull( $import.selectFirst(_cs, Map.class) );
+        assertNotNull( pImport.first(_c, Map.class) );
+        assertNotNull( pImport.first(_cs, Map.class) );
+        assertNotNull( pImport.selectFirst(_c, Map.class) );
+        assertNotNull( pImport.selectFirst(_cs, Map.class) );
         
-        assertNotNull( $import.first(_cs, Map.class, i-> i.isStatic() && i.isWildcard()) );
-        assertNotNull( $import.first(_c, Map.class, i -> i.is(Map.class)) );
-        assertNotNull( $import.selectFirst(_c, Map.class, i-> i.is(Map.class)) );
-        assertNotNull( $import.selectFirst(_cs, Map.class, i-> i.isStatic()) );
+        assertNotNull( pImport.first(_cs, Map.class, i-> i.isStatic() && i.isWildcard()) );
+        assertNotNull( pImport.first(_c, Map.class, i -> i.is(Map.class)) );
+        assertNotNull( pImport.selectFirst(_c, Map.class, i-> i.is(Map.class)) );
+        assertNotNull( pImport.selectFirst(_cs, Map.class, i-> i.isStatic()) );
         
-        assertNotNull( $import.of(i-> i.isStatic()).firstIn(_cs) );
+        assertNotNull( pImport.of(i-> i.isStatic()).firstIn(_cs) );
         
        
     }
@@ -55,8 +57,8 @@ public class $importTest extends TestCase {
     public void testStaticAPI(){
         _class _c = _class.of("C").imports(Map.class);
         
-        assertNotNull( $import.first(_c, Map.class) );
-        assertNull( $import.first(_c, URI.class) );
+        assertNotNull( pImport.first(_c, Map.class) );
+        assertNull( pImport.first(_c, URI.class) );
     }
     
     public void testConstantTemplate(){        
@@ -65,19 +67,16 @@ public class $importTest extends TestCase {
         });
         _c.imports(Assert.class);
         
-        $import $i = $import.of(Assert.class);
+        pImport $i = pImport.of(Assert.class);
         $i.replaceIn(_c, MatcherAssert.class );
         
         System.out.println(_c);
     }
     
     public void testDynamicTemplate(){
-        $import $i = $import.of("import static draft.java.Ast$any$;");
-        assertTrue( $i.matches("import static draft.java.Ast.*;") );
+        //pImport $i = pImport.of("import static draft.java.Ast;").setWildcard();
+        //assertTrue( $i.matches("import static draft.java.Ast.*;") );
         
-        $i.$("static ", "isStatic");
-        
-        assertTrue( $i.matches("import static draft.java.Ast;") );
-        assertTrue( $i.matches("import draft.java.Ast;") );                
+        assertTrue( pImport.of("import static draft.java.Ast.*;").matches("import static draft.java.Ast.*;"));                      
     }
 }

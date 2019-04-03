@@ -6,8 +6,6 @@
 package draft.java.proto;
 
 import com.github.javaparser.ast.Node;
-import draft.Tokens;
-import draft.java.Ast;
 import draft.java._model;
 import draft.java._type;
 import java.util.function.Predicate;
@@ -17,14 +15,14 @@ import java.util.function.Predicate;
  * 
  * @author Eric
  */
-public class $classUse {
+public class pClassUse {
     
     public static <N extends _model._node> N replace(N _n, Class target, Class replacement) {
-        return $classUse.of(target).replaceIn(_n, replacement);
+        return pClassUse.of(target).replaceIn(_n, replacement);
     }
     
-    public static $classUse of( Class clazz ){
-        return new $classUse(clazz);
+    public static pClassUse of( Class clazz ){
+        return new pClassUse(clazz);
     }
     
     String packageName;
@@ -35,24 +33,24 @@ public class $classUse {
      * (i.e. imports, implements, extends, throws, annotationName, cast, 
      * instanceof, etc.)
      */ 
-    $node $fullName;
+    pNode $fullName;
     
     /**
      * Whenever the simple name (i.e. Map) is used
      * i.e. static method call Map.of(...), static field access, cast, etc.)
      */
-    $node $simpleName;
+    pNode $simpleName;
     
-    public $classUse( Class type ){
+    public pClassUse( Class type ){
         this.packageName = type.getPackageName();
         this.type = type;
-        this.$fullName = new $node(type.getCanonicalName());
+        this.$fullName = new pNode(type.getCanonicalName());
         //Note: there can be (0, 1, or more OTHER niodes that represent
         //Inner member classes, i.e. not fully qualified 
-        this.$simpleName = new $node(type.getSimpleName());        
+        this.$simpleName = new pNode(type.getSimpleName());        
     }
     
-    public $classUse constraint(Predicate<Node> constraint){
+    public pClassUse constraint(Predicate<Node> constraint){
         $fullName.constraint(constraint);
         $simpleName.constraint(constraint);
         return this;

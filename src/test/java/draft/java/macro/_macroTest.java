@@ -3,7 +3,7 @@ package draft.java.macro;
 import draft.java._anno._hasAnnos;
 import draft.java._class;
 import draft.java._type;
-import draft.java.proto.$stmt;
+import draft.java.proto.pStmt;
 import junit.framework.TestCase;
 
 import java.lang.annotation.ElementType;
@@ -86,7 +86,7 @@ public class _macroTest extends TestCase {
     @Target({ElementType.TYPE, ElementType.METHOD, ElementType.CONSTRUCTOR})
     @interface removePrintlns {
         
-        $stmt $println = $stmt.of( "System.out.println($any$);" );
+        pStmt $println = pStmt.of( "System.out.println($any$);" );
 
         class Macro implements _macro<_hasAnnos> {
             public Macro( removePrintlns rp ){}
@@ -126,9 +126,9 @@ public class _macroTest extends TestCase {
 
     //instead of removing System.outs, convert them into comments
     public void testCommentOut() {
-        $stmt $from = $stmt.of( "System.out.println( $any$ );" );
+        pStmt $from = pStmt.of( "System.out.println( $any$ );" );
 
-        $stmt $to = $stmt.of( "{ /*System.out.println( $any$ );*/ }" );
+        pStmt $to = pStmt.of( "{ /*System.out.println( $any$ );*/ }" );
         class C{
             void f(){
                 int i = 23;

@@ -23,7 +23,7 @@ import junit.framework.TestCase;
  *
  * @author Eric
  */
-public class $classUseTest extends TestCase {
+public class pClassUseTest extends TestCase {
 
     public interface Inter {
 
@@ -77,10 +77,10 @@ public class $classUseTest extends TestCase {
             @Ann
             Inter ifield = null;
 
-            @$nodeTest.Ann
+            @pNodeTest.Ann
             Base bField = null;
 
-            @draft.java.proto.$nodeTest.Ann
+            @draft.java.proto.pNodeTest.Ann
             Map<Inter, Base> m = new HashMap<>();
 
             Inter getInter() {
@@ -133,7 +133,7 @@ public class $classUseTest extends TestCase {
         
         //$typeUse.replace(_c, Base.class, Replace.class);
         //$typeUse.replace(_c, Inter.class, Outer.class);
-        $classUse.replace(_c, Ann.class, Stan.class);
+        pClassUse.replace(_c, Ann.class, Stan.class);
         
         /*
         $node $n = new $node($nodeTest.Ann.class.getCanonicalName());

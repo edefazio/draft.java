@@ -9,7 +9,7 @@ import draft.java.macro._package;
 import draft.java.macro._replaceSystemOutWithLog;
 import draft.java.runtime._javac;
 import draft.java.runtime._project;
-import draft.java.proto.$stmt;
+import draft.java.proto.pStmt;
 import junit.framework.TestCase;
 
 import java.util.ArrayList;
@@ -52,10 +52,10 @@ public class _astFeatures extends TestCase {
 
     public void testMonster1(){
         //List<Comment>todoComments = new ArrayList();
-        _io.out( _io.config().outProjectDir("C:/dev/refi"),
+        _io.out(_io.config().outProjectDir("C:/dev/refi"),
                 _project.of(_javac.options().parameterNamesStoredForRuntimeReflection(),
                         _bulk.load("C:/dev/orig",
-                                (_t) -> (_type)$stmt.of("System.out.println($any$);").removeIn(_t)
+                                (_t) -> (_type)pStmt.of("System.out.println($any$);").removeIn(_t)
                                 ).typesArray() ) );
 
     }

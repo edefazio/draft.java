@@ -6,9 +6,9 @@ import draft.Stencil;
 import draft.java.Ast;
 import draft.java._field;
 import draft.java._type;
-import draft.java.proto.$field;
-import draft.java.proto.$snip;
-import draft.java.proto.$stmt;
+import draft.java.proto.pField;
+import draft.java.proto.pSnip;
+import draft.java.proto.pStmt;
 
 import java.util.Arrays;
 import java.util.List;
@@ -30,7 +30,7 @@ public class _replaceSystemOutWithLog implements _macro<_type> {
     // REMOVED THIS TO HELP STARTUP PERF
     // static $stmt $anySystemOut = $stmt.of(($any$)->System.out.println($any$));
 
-    static $stmt $anySystemOut = $stmt.of("System.out.println($any$);");
+    static pStmt $anySystemOut = pStmt.of("System.out.println($any$);");
 
     /** this is the format of the (one or more) Logger Statement(s) used in place of the System out */
     String loggerStatementsFormat;
@@ -39,7 +39,7 @@ public class _replaceSystemOutWithLog implements _macro<_type> {
     Predicate<_field> preDefinedLoggerMatcher;
 
     /** IF... I have to create an ad hoc logger field it will be this */
-    $field adHocLogger;
+    pField adHocLogger;
 
     /** IF ... i have to create an ad hoc logger, these are the imports I need*/
     List<ImportDeclaration> adHocLoggerImports;
@@ -47,7 +47,7 @@ public class _replaceSystemOutWithLog implements _macro<_type> {
     public _replaceSystemOutWithLog(
             Predicate<_field> preDefinedLoggerMatcher,
             ImportDeclaration[] adHocLoggerImports,
-            $field adHocLogger,
+            pField adHocLogger,
             String loggerStatementsFormat){
         this( preDefinedLoggerMatcher,
                 Arrays.stream( adHocLoggerImports).collect(Collectors.toList()),
@@ -58,7 +58,7 @@ public class _replaceSystemOutWithLog implements _macro<_type> {
     public _replaceSystemOutWithLog(
             Predicate<_field> preDefinedLoggerMatcher,
             List<ImportDeclaration> adHocLoggerImports,
-            $field adHocLogger,
+            pField adHocLogger,
             String loggerStatementsFormat){
 
         Stencil st = Stencil.of(loggerStatementsFormat);
@@ -90,7 +90,7 @@ public class _replaceSystemOutWithLog implements _macro<_type> {
                 _f = adHocLogger.fill(_t.getFullName()); /* create a clone/copy for this _field */
                 _t.field( _f ); /* add logger field to the TYPE */
             }
-            $anySystemOut.replaceIn(_t, $snip.of( loggerStatementsFormat )
+            $anySystemOut.replaceIn(_t, pSnip.of( loggerStatementsFormat )
                     .assign$("name", _f.getName() ) );
         }
         return _t;
@@ -103,6 +103,6 @@ public class _replaceSystemOutWithLog implements _macro<_type> {
             (_field f)->f.isStatic() && f.isType(Logger.class),
             new ImportDeclaration[] {Ast.importDeclaration( Logger.class ),
              Ast.importDeclaration( Level.class )},
-            $field.of("public static final Logger LOG = Logger.getLogger($className$.class.getCanonicalName());"),
+            pField.of("public static final Logger LOG = Logger.getLogger($className$.class.getCanonicalName());"),
         "if($name$.isLoggable(Level.FINER)){ $name$.fine($any$ + \"\"); }" );
     }

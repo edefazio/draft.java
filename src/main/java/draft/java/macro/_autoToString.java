@@ -2,8 +2,8 @@ package draft.java.macro;
 
 import com.github.javaparser.ast.stmt.BlockStmt;
 import draft.java.*;
-import draft.java.proto.$method;
-import draft.java.proto.$stmt;
+import draft.java.proto.pMethod;
+import draft.java.proto.pStmt;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
@@ -29,7 +29,7 @@ public @interface _autoToString {
             return to( _t);
         }
 
-        public static final $method $TO_STRING = $method.of(
+        public static final pMethod $TO_STRING = pMethod.of(
             "public String toString(){",
             "    StringBuilder sb = new StringBuilder();",
             "    sb.append( \"$className$\" ).append(\"{\" );",
@@ -62,13 +62,13 @@ public @interface _autoToString {
          */
         public static final Predicate<_field> TO_STRING_FIELDS = f-> !f.isStatic() && !f.isTransient();
 
-        static $stmt $simple = $stmt.of(
+        static pStmt $simple = pStmt.of(
             "sb.append(\" $name$: \").append($name$).append(System.lineSeparator());" );
 
-        static $stmt $arrayOfPrimitives = $stmt.of(
+        static pStmt $arrayOfPrimitives = pStmt.of(
             "sb.append(\" $name$: \").append(java.util.Arrays.toString($name$)).append(System.lineSeparator());" );
 
-        static $stmt $arrayOfObjects = $stmt.of(
+        static pStmt $arrayOfObjects = pStmt.of(
             "sb.append(\" $name$: \").append(java.util.Arrays.deepToString($name$)).append(System.lineSeparator());");
 
         /* REMOVED FOR INCREASED STARTUP PERFORMANCE

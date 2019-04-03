@@ -4,7 +4,7 @@ import com.github.javaparser.ast.expr.IntegerLiteralExpr;
 import draft.java._annotation._element;
 import java.util.List;
 
-import draft.java.proto.$expr;
+import draft.java.proto.pExpr;
 import java.lang.annotation.ElementType;
 import junit.framework.TestCase;
 import test.ComplexAnnotationType;
@@ -43,8 +43,8 @@ public class _annotationTest extends TestCase  {
             String ss = "Some String";
         });
         assertEquals(5, _a.listElements().size());
-        assertTrue( $expr.of("{1,2,3,4,5}").matches(_a.getElement("vs").getDefaultValue()));
-        assertTrue( $expr.stringLiteral("Some String").matches(_a.getElement("ss").getDefaultValue()));
+        assertTrue(pExpr.of("{1,2,3,4,5}").matches(_a.getElement("vs").getDefaultValue()));
+        assertTrue(pExpr.stringLiteral("Some String").matches(_a.getElement("ss").getDefaultValue()));
     }
 
     public void testImport(){

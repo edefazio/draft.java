@@ -1,7 +1,7 @@
 package draft.java.macro;
 
-import draft.java.proto.$stmt;
-import draft.java.proto.$method;
+import draft.java.proto.pStmt;
+import draft.java.proto.pMethod;
 import com.github.javaparser.ast.stmt.*;
 import draft.Tokens;
 import draft.java.*;
@@ -50,7 +50,7 @@ public @interface _autoHashCode {
       * <LI>BODY:{} is a BlockStmt of one or more {@link Statement}s for processing each field for the hashcode
       * </UL>
       */
-     $method $HASHCODE = $method.of(
+     pMethod $HASHCODE = pMethod.of(
          "public int hashCode( ){",
          "    int hash = $seed$;",
          "    int prime = $prime$;",
@@ -95,16 +95,16 @@ public @interface _autoHashCode {
      class _fieldToStatement {
          private static Integer prime, hash;
 
-         public static $stmt $default = $stmt.of( "hash = hash * prime + java.util.Objects.hashCode($name$);");
-         public static $stmt $arrayOfPrimitives = $stmt.of( "hash = hash * prime + java.util.Arrays.hashCode($name$);");
-         public static $stmt $arrayOfObject = $stmt.of( "hash = hash * prime + java.util.Arrays.deepHashCode($name$);");
+         public static pStmt $default = pStmt.of( "hash = hash * prime + java.util.Objects.hashCode($name$);");
+         public static pStmt $arrayOfPrimitives = pStmt.of( "hash = hash * prime + java.util.Arrays.hashCode($name$);");
+         public static pStmt $arrayOfObject = pStmt.of( "hash = hash * prime + java.util.Arrays.deepHashCode($name$);");
 
-         public static $stmt $boolean = $stmt.of( "hash = hash * prime + ($name$ ? 1 : 0 );" );
-         public static $stmt $float = $stmt.of( "hash = hash * prime + Float.floatToIntBits($name$);" );
-         public static $stmt $double = $stmt.of(
+         public static pStmt $boolean = pStmt.of( "hash = hash * prime + ($name$ ? 1 : 0 );" );
+         public static pStmt $float = pStmt.of( "hash = hash * prime + Float.floatToIntBits($name$);" );
+         public static pStmt $double = pStmt.of(
                  "hash = hash * prime + (int)(Double.doubleToLongBits($name$)^(Double.doubleToLongBits($name$) >>> 32));");
-         public static $stmt $long = $stmt.of("hash = hash * prime + (int)($name$ ^ ($name$ >>> 32));");
-         public static $stmt $simplePrimitive = $stmt.of("hash = hash * prime + $name$;");
+         public static pStmt $long = pStmt.of("hash = hash * prime + (int)($name$ ^ ($name$ >>> 32));");
+         public static pStmt $simplePrimitive = pStmt.of("hash = hash * prime + $name$;");
 
          /* REMOVED FOR STARTUP PERFORMANCE (USE ABOVE INSTEAD)
          public static $stmt $default = $stmt.of( (Object $name$) -> hash = hash * prime + java.util.Objects.hashCode($name$));

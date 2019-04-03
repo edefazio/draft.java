@@ -16,8 +16,8 @@
         <developer>
             <id>Eric</id>
             <name>M. Eric DeFazio</name>
-            <email>eric@adlib.dev</email>
-            <url>http://adlib.dev</url>
+            <email>eric@macrobot.org</email>
+            <url>http://macrobot.org</url>
             <timezone>Eastern Standard Time</timezone>
         </developer>
     </developers>
@@ -41,7 +41,7 @@
         <dependency>
             <groupId>com.github.javaparser</groupId>
             <artifactId>javaparser-core</artifactId>
-            <version>3.13.4</version>
+            <version>3.13.5</version>
         </dependency>       
         <dependency>
             <groupId>junit</groupId>

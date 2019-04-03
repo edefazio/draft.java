@@ -8,8 +8,8 @@ import draft.java.Expr;
 import draft.java.Stmt;
 import draft.java._class;
 import draft.java._method;
-import draft.java.proto.$expr;
-import draft.java.proto.$method;
+import draft.java.proto.pExpr;
+import draft.java.proto.pMethod;
 import java.util.List;
 import java.util.function.BiFunction;
 import java.util.function.Function;
@@ -62,7 +62,7 @@ public class _eval {
         return fn.apply(arg1,arg2);
     }
     
-    static $method $evalExpr = $method.of("public static Object EVAL(){",
+    static pMethod $evalExpr = pMethod.of("public static Object EVAL(){",
         "return $eval$;",
         "}");
     
@@ -81,7 +81,7 @@ public class _eval {
         return _project.of(_c).call(_c);
     }
     
-    static $method $evalStmt = $method.of("public static Object EVAL(){",
+    static pMethod $evalStmt = pMethod.of("public static Object EVAL(){",
         "return $eval$;",
         "}");
     
