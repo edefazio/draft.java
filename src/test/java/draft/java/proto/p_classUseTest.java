@@ -72,6 +72,35 @@ public class p_classUseTest extends TestCase {
         
     }
     
+    public void test_annoReplacement(){
+        _class _c = _class.of("C", new Object(){
+            @Ann int a;
+            @Ann(100) int b;
+            
+            @draft.java.proto.p_classUseTest.Ann int c;
+            
+            @p_classUseTest.Ann int d;
+            
+        });
+        p_classUse.replace(_c, Ann.class, Stan.class);
+        //System.out.println( _c );
+        assertTrue( _c.getField("a").hasAnno(Stan.class));
+        assertFalse( _c.getField("a").hasAnno(Ann.class));
+        assertTrue( _c.getField("b").hasAnno(Stan.class));
+        assertFalse( _c.getField("b").hasAnno(Ann.class));
+        
+        assertTrue( _c.getField("c").hasAnno(Stan.class));
+        assertFalse( _c.getField("c").hasAnno(Ann.class));
+        
+        assertTrue( _c.getField("d").hasAnno(Stan.class));
+        assertFalse( _c.getField("d").hasAnno(Ann.class));        
+    }
+    
+    public void testExtendsReplacement(){
+        _class _c = _class.of("C").extend(Base.class);
+        
+    }
+    
     public void testN() {
         _class _c = _class.of("C", new Object() {
             @Ann
