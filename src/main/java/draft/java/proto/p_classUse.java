@@ -15,14 +15,14 @@ import java.util.function.Predicate;
  * 
  * @author Eric
  */
-public class pClassUse {
+public class p_classUse {
     
     public static <N extends _model._node> N replace(N _n, Class target, Class replacement) {
-        return pClassUse.of(target).replaceIn(_n, replacement);
+        return p_classUse.of(target).replaceIn(_n, replacement);
     }
     
-    public static pClassUse of( Class clazz ){
-        return new pClassUse(clazz);
+    public static p_classUse of( Class clazz ){
+        return new p_classUse(clazz);
     }
     
     String packageName;
@@ -33,24 +33,24 @@ public class pClassUse {
      * (i.e. imports, implements, extends, throws, annotationName, cast, 
      * instanceof, etc.)
      */ 
-    pNode $fullName;
+    p_node $fullName;
     
     /**
      * Whenever the simple name (i.e. Map) is used
      * i.e. static method call Map.of(...), static field access, cast, etc.)
      */
-    pNode $simpleName;
+    p_node $simpleName;
     
-    public pClassUse( Class type ){
+    public p_classUse( Class type ){
         this.packageName = type.getPackageName();
         this.type = type;
-        this.$fullName = new pNode(type.getCanonicalName());
+        this.$fullName = new p_node(type.getCanonicalName());
         //Note: there can be (0, 1, or more OTHER niodes that represent
         //Inner member classes, i.e. not fully qualified 
-        this.$simpleName = new pNode(type.getSimpleName());        
+        this.$simpleName = new p_node(type.getSimpleName());        
     }
     
-    public pClassUse constraint(Predicate<Node> constraint){
+    public p_classUse constraint(Predicate<Node> constraint){
         $fullName.constraint(constraint);
         $simpleName.constraint(constraint);
         return this;

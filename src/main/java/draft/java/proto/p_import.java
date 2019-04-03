@@ -14,8 +14,8 @@ import java.util.function.Predicate;
  * Template for an import declaration on a Java top level _type 
  *
  */
-public final class pImport
-    implements Template<_import>, pQuery<_import> {
+public final class p_import
+    implements Template<_import>, p_query<_import> {
 
     /**
      * 
@@ -25,7 +25,7 @@ public final class pImport
      * @return 
      */
     public static final <T extends _type> List<_import> list( T _type, _import _protoTarget){
-        return pImport.of(_protoTarget).listIn(_type);
+        return p_import.of(_protoTarget).listIn(_type);
     }
     
     /**
@@ -36,7 +36,7 @@ public final class pImport
      * @return 
      */
     public static final <T extends _type> List<_import> list( T _type, String protoTargetImport ){
-        return pImport.of(protoTargetImport).listIn(_type);
+        return p_import.of(protoTargetImport).listIn(_type);
     }
     
     /**
@@ -47,7 +47,7 @@ public final class pImport
      * @return 
      */
     public static final <T extends _type> List<_import> list( T _type, ImportDeclaration astProtoTarget ){
-        return pImport.of(_import.of(astProtoTarget)).listIn(_type);
+        return p_import.of(_import.of(astProtoTarget)).listIn(_type);
     }
     
     /**
@@ -58,7 +58,7 @@ public final class pImport
      * @return 
      */
     public static final <T extends _type> List<_import> list( T _type, Class target ){
-        return pImport.of(target).listIn(_type);
+        return p_import.of(target).listIn(_type);
     }
     
     /**
@@ -70,7 +70,7 @@ public final class pImport
      * @return 
      */
     public static final <T extends _type> List<_import> list( T _type, _import _protoTarget, Predicate<_import> constraint){
-        return pImport.of(_protoTarget).constraint(constraint).listIn(_type);
+        return p_import.of(_protoTarget).constraint(constraint).listIn(_type);
     }
     
     /**
@@ -82,7 +82,7 @@ public final class pImport
      * @return 
      */
     public static final <T extends _type> List<_import> list( T _type, String protoTargetImport, Predicate<_import> constraint){
-        return pImport.of(protoTargetImport).constraint(constraint).listIn(_type);
+        return p_import.of(protoTargetImport).constraint(constraint).listIn(_type);
     }
     
     /**
@@ -94,7 +94,7 @@ public final class pImport
      * @return 
      */
     public static final <T extends _type> List<_import> list( T _type, ImportDeclaration astProtoTarget, Predicate<_import> constraint){
-        return pImport.of(_import.of(astProtoTarget)).constraint(constraint).listIn(_type);
+        return p_import.of(_import.of(astProtoTarget)).constraint(constraint).listIn(_type);
     }
     
     /**
@@ -106,7 +106,7 @@ public final class pImport
      * @return 
      */
     public static final <T extends _type> List<_import> list( T _type, Class target, Predicate<_import> constraint){
-        return pImport.of(target).constraint(constraint).listIn(_type);
+        return p_import.of(target).constraint(constraint).listIn(_type);
     }
     
     /**
@@ -117,7 +117,7 @@ public final class pImport
      * @return 
      */
     public static final <T extends _type> List<Select> selectList( T _type, _import _protoTarget){
-        return pImport.of(_protoTarget).selectListIn(_type);
+        return p_import.of(_protoTarget).selectListIn(_type);
     }
     
     /**
@@ -128,7 +128,7 @@ public final class pImport
      * @return 
      */
     public static final <T extends _type> List<Select> selectList( T _type, String protoTargetImport ){
-        return pImport.of(protoTargetImport).selectListIn(_type);
+        return p_import.of(protoTargetImport).selectListIn(_type);
     }
     
     /**
@@ -139,7 +139,7 @@ public final class pImport
      * @return 
      */
     public static final <T extends _type> List<Select> selectList( T _type, ImportDeclaration astProtoTarget ){
-        return pImport.of(_import.of(astProtoTarget)).selectListIn(_type);
+        return p_import.of(_import.of(astProtoTarget)).selectListIn(_type);
     }
     
     /**
@@ -150,7 +150,7 @@ public final class pImport
      * @return 
      */
     public static final <T extends _type> List<Select> selectList( T _type, Class target ){
-        return pImport.of(target).selectListIn(_type);
+        return p_import.of(target).selectListIn(_type);
     }
     
     
@@ -163,7 +163,7 @@ public final class pImport
      * @return 
      */
     public static final <T extends _type> List<Select> selectList( T _type, _import _protoTarget,Predicate<_import> constraint){
-        return pImport.of(_protoTarget).constraint(constraint).selectListIn(_type);
+        return p_import.of(_protoTarget).constraint(constraint).selectListIn(_type);
     }
     
     /**
@@ -175,7 +175,7 @@ public final class pImport
      * @return 
      */
     public static final <T extends _type> List<Select> selectList( T _type, String protoTargetImport,Predicate<_import> constraint){
-        return pImport.of(protoTargetImport).constraint(constraint).selectListIn(_type);
+        return p_import.of(protoTargetImport).constraint(constraint).selectListIn(_type);
     }
     
     /**
@@ -187,7 +187,7 @@ public final class pImport
      * @return 
      */
     public static final <T extends _type> List<Select> selectList( T _type, ImportDeclaration astProtoTarget, Predicate<_import> constraint){
-        return pImport.of(_import.of(astProtoTarget)).constraint(constraint).selectListIn(_type);
+        return p_import.of(_import.of(astProtoTarget)).constraint(constraint).selectListIn(_type);
     }
     
     /**
@@ -199,7 +199,7 @@ public final class pImport
      * @return 
      */
     public static final <T extends _type> List<Select> selectList( T _type, Class target, Predicate<_import> constraint){
-        return pImport.of(target).constraint(constraint).selectListIn(_type);
+        return p_import.of(target).constraint(constraint).selectListIn(_type);
     }
    
     /**
@@ -210,7 +210,7 @@ public final class pImport
      * @return 
      */      
     public static final <T extends _type> _import first( T _type, _import _protoTarget){
-        return pImport.of(_protoTarget).firstIn(_type);
+        return p_import.of(_protoTarget).firstIn(_type);
     }
     
     /**
@@ -221,7 +221,7 @@ public final class pImport
      * @return 
      */      
     public static final <T extends _type> _import first( T _type, String protoTargetImport ){
-        return pImport.of(protoTargetImport).firstIn(_type);
+        return p_import.of(protoTargetImport).firstIn(_type);
     }
     
     /**
@@ -232,7 +232,7 @@ public final class pImport
      * @return 
      */      
     public static final <T extends _type> _import first( T _type, ImportDeclaration astProtoTarget ){
-        return pImport.of(_import.of(astProtoTarget)).firstIn(_type);
+        return p_import.of(_import.of(astProtoTarget)).firstIn(_type);
     }
     
     /**
@@ -243,7 +243,7 @@ public final class pImport
      * @r
      */ 
     public static final <T extends _type> _import first( T _type, Class target ){
-        return pImport.of(target).firstIn(_type);
+        return p_import.of(target).firstIn(_type);
     }
     
     /**
@@ -255,7 +255,7 @@ public final class pImport
      * @return 
      */
     public static final <T extends _type> _import first( T _type, _import _protoTarget, Predicate<_import> constraint){
-        return pImport.of(_protoTarget).constraint(constraint).firstIn(_type);
+        return p_import.of(_protoTarget).constraint(constraint).firstIn(_type);
     }
     
     /**
@@ -267,7 +267,7 @@ public final class pImport
      * @return 
      */
     public static final <T extends _type> _import first( T _type, String protoTargetImport, Predicate<_import> constraint){
-        return pImport.of(protoTargetImport).constraint(constraint).firstIn(_type);
+        return p_import.of(protoTargetImport).constraint(constraint).firstIn(_type);
     }
     
     /**
@@ -279,7 +279,7 @@ public final class pImport
      * @return 
      */
     public static final <T extends _type> _import first( T _type, ImportDeclaration astProtoTarget, Predicate<_import> constraint){
-        return pImport.of(_import.of(astProtoTarget)).constraint(constraint).firstIn(_type);
+        return p_import.of(_import.of(astProtoTarget)).constraint(constraint).firstIn(_type);
     }
     
     /**
@@ -291,7 +291,7 @@ public final class pImport
      * @return 
      */
     public static final <T extends _type> _import first( T _type, Class target, Predicate<_import> constraint){
-        return pImport.of(target).constraint(constraint).firstIn(_type);
+        return p_import.of(target).constraint(constraint).firstIn(_type);
     }
     
     /**
@@ -303,7 +303,7 @@ public final class pImport
      * @return 
      */
     public static final <T extends _type> T forEach( T _type, _import _protoTarget, Consumer<_import> actionFn){
-        return (T) pImport.of(_protoTarget).forEachIn(_type, actionFn);
+        return (T) p_import.of(_protoTarget).forEachIn(_type, actionFn);
     }
     
     /**
@@ -315,7 +315,7 @@ public final class pImport
      * @return 
      */
     public static final <T extends _type> T forEach( T _type, String protoTargetImport, Consumer<_import> actionFn){
-        return pImport.of(protoTargetImport).forEachIn(_type, actionFn);
+        return p_import.of(protoTargetImport).forEachIn(_type, actionFn);
     }
     
     /**
@@ -327,7 +327,7 @@ public final class pImport
      * @return 
      */
     public static final <T extends _type> T forEach( T _type, ImportDeclaration astProtoTarget, Consumer<_import> actionFn){
-        return pImport.of(_import.of(astProtoTarget)).forEachIn(_type, actionFn);
+        return p_import.of(_import.of(astProtoTarget)).forEachIn(_type, actionFn);
     }
     
     /**
@@ -339,7 +339,7 @@ public final class pImport
      * @return 
      */
     public static final <T extends _type> T forEach( T _type, Class target, Consumer<_import> actionFn){
-        return pImport.of(target).forEachIn(_type, actionFn);
+        return p_import.of(target).forEachIn(_type, actionFn);
     }
     
     /**
@@ -352,7 +352,7 @@ public final class pImport
      * @return 
      */
     public static final <T extends _type> T forEach( T _type, _import _protoTarget, Predicate<_import> constraint, Consumer<_import> actionFn){
-        return pImport.of(_protoTarget).constraint(constraint).forEachIn(_type, actionFn);
+        return p_import.of(_protoTarget).constraint(constraint).forEachIn(_type, actionFn);
     }
     
     /**
@@ -365,7 +365,7 @@ public final class pImport
      * @return 
      */
     public static final <T extends _type> T forEach( T _type, String protoTargetImport, Predicate<_import> constraint, Consumer<_import> actionFn){
-        return pImport.of(protoTargetImport).constraint(constraint).forEachIn(_type, actionFn);
+        return p_import.of(protoTargetImport).constraint(constraint).forEachIn(_type, actionFn);
     }
     
     /**
@@ -378,7 +378,7 @@ public final class pImport
      * @return 
      */
     public static final <T extends _type> T forEach( T _type, ImportDeclaration astProtoTarget, Predicate<_import> constraint, Consumer<_import> actionFn){
-        return pImport.of(_import.of(astProtoTarget)).constraint(constraint)
+        return p_import.of(_import.of(astProtoTarget)).constraint(constraint)
                 .forEachIn(_type, actionFn);
     }
     
@@ -392,7 +392,7 @@ public final class pImport
      * @return 
      */
     public static final <T extends _type> T forEach( T _type, Class target, Predicate<_import> constraint, Consumer<_import> actionFn){
-        return pImport.of(target).constraint(constraint).forEachIn(_type, actionFn);
+        return p_import.of(target).constraint(constraint).forEachIn(_type, actionFn);
     }
     
     /**
@@ -404,7 +404,7 @@ public final class pImport
      * @return 
      */
     public static final <T extends _type> T forSelected( T _type, _import _protoTarget, Consumer<Select> actionFn){
-        return (T) pImport.of(_protoTarget).forSelectedIn(_type, actionFn);
+        return (T) p_import.of(_protoTarget).forSelectedIn(_type, actionFn);
     }
     
     /**
@@ -416,7 +416,7 @@ public final class pImport
      * @return 
      */
     public static final <T extends _type> T forSelected( T _type, String protoTargetImport, Consumer<Select> actionFn){
-        return pImport.of(protoTargetImport).forSelectedIn(_type, actionFn);
+        return p_import.of(protoTargetImport).forSelectedIn(_type, actionFn);
     }
     
     /**
@@ -428,7 +428,7 @@ public final class pImport
      * @return 
      */
     public static final <T extends _type> T forSelected( T _type, ImportDeclaration astProtoTarget, Consumer<Select> actionFn){
-        return pImport.of(_import.of(astProtoTarget)).forSelectedIn(_type, actionFn);
+        return p_import.of(_import.of(astProtoTarget)).forSelectedIn(_type, actionFn);
     }
     
     /**
@@ -440,7 +440,7 @@ public final class pImport
      * @return 
      */
     public static final <T extends _type> T forSelected( T _type, Class target, Consumer<Select> actionFn){
-        return pImport.of(target).forSelectedIn(_type, actionFn);
+        return p_import.of(target).forSelectedIn(_type, actionFn);
     }
     
     /**
@@ -453,7 +453,7 @@ public final class pImport
      * @return 
      */
     public static final <T extends _type> T forSelected( T _type, _import _protoTarget, Predicate<_import> constraint, Consumer<Select> actionFn){
-        return pImport.of(_protoTarget).constraint(constraint)
+        return p_import.of(_protoTarget).constraint(constraint)
                 .forSelectedIn(_type, actionFn);
     }
     
@@ -467,7 +467,7 @@ public final class pImport
      * @return 
      */
     public static final <T extends _type> T forSelected( T _type, String protoTargetImport, Predicate<_import> constraint, Consumer<Select> actionFn){
-        return pImport.of(protoTargetImport).constraint(constraint)
+        return p_import.of(protoTargetImport).constraint(constraint)
                 .forSelectedIn(_type, actionFn);
     }
     
@@ -481,7 +481,7 @@ public final class pImport
      * @return 
      */
     public static final <T extends _type> T forSelected( T _type, ImportDeclaration astProtoTarget, Predicate<_import> constraint, Consumer<Select> actionFn){
-        return pImport.of(_import.of(astProtoTarget)).constraint(constraint)
+        return p_import.of(_import.of(astProtoTarget)).constraint(constraint)
                 .forSelectedIn(_type, actionFn);
     }
     
@@ -495,7 +495,7 @@ public final class pImport
      * @return 
      */
     public static final <T extends _type> T forSelected( T _type, Class target, Predicate<_import> constraint, Consumer<Select> actionFn){
-        return pImport.of(target).constraint(constraint).forSelectedIn(_type, actionFn);
+        return p_import.of(target).constraint(constraint).forSelectedIn(_type, actionFn);
     }
     
     /**
@@ -506,7 +506,7 @@ public final class pImport
      * @return 
      */
     public static final <T extends _type> Select selectFirst( T _type, _import _protoTarget){
-        return pImport.of(_protoTarget).selectFirstIn(_type);
+        return p_import.of(_protoTarget).selectFirstIn(_type);
     }
     
     /**
@@ -517,7 +517,7 @@ public final class pImport
      * @return 
      */
     public static final <T extends _type> Select selectFirst( T _type, String protoTargetImport ){
-        return pImport.of(protoTargetImport).selectFirstIn(_type);
+        return p_import.of(protoTargetImport).selectFirstIn(_type);
     }
     
     /**
@@ -528,7 +528,7 @@ public final class pImport
      * @return 
      */
     public static final <T extends _type> Select selectFirst( T _type, ImportDeclaration astProtoTarget ){
-        return pImport.of(_import.of(astProtoTarget)).selectFirstIn(_type);
+        return p_import.of(_import.of(astProtoTarget)).selectFirstIn(_type);
     }
     
     /**
@@ -539,7 +539,7 @@ public final class pImport
      * @return 
      */
     public static final <T extends _type> Select selectFirst( T _type, Class target ){
-        return pImport.of(target).selectFirstIn(_type);
+        return p_import.of(target).selectFirstIn(_type);
     }
                
     /**
@@ -551,7 +551,7 @@ public final class pImport
      * @return 
      */
     public static final <T extends _type> Select selectFirst( T _type, _import _protoTarget, Predicate<_import> constraint){
-        return pImport.of(_protoTarget).constraint(constraint).selectFirstIn(_type);
+        return p_import.of(_protoTarget).constraint(constraint).selectFirstIn(_type);
     }
     
     /**
@@ -563,7 +563,7 @@ public final class pImport
      * @return 
      */
     public static final <T extends _type> Select selectFirst( T _type, String protoTargetImport, Predicate<_import> constraint){
-        return pImport.of(protoTargetImport).constraint(constraint).selectFirstIn(_type);
+        return p_import.of(protoTargetImport).constraint(constraint).selectFirstIn(_type);
     }
     
     /**
@@ -575,7 +575,7 @@ public final class pImport
      * @return 
      */
     public static final <T extends _type> Select selectFirst( T _type, ImportDeclaration astProtoTarget, Predicate<_import> constraint){
-        return pImport.of(_import.of(astProtoTarget)).constraint(constraint).selectFirstIn(_type);
+        return p_import.of(_import.of(astProtoTarget)).constraint(constraint).selectFirstIn(_type);
     }
     
     /**
@@ -587,7 +587,7 @@ public final class pImport
      * @return 
      */
     public static final <T extends _type> Select selectFirst( T _type, Class target, Predicate<_import> constraint){
-        return pImport.of(target).constraint(constraint).selectFirstIn(_type);
+        return p_import.of(target).constraint(constraint).selectFirstIn(_type);
     }
     
     
@@ -600,7 +600,7 @@ public final class pImport
      * @return 
      */
     public static final <T extends _type> T replace( T _type, _import _protoSource, _import _protoTarget ){
-        return pImport.of(_protoSource).replaceIn(_type, _protoTarget);
+        return p_import.of(_protoSource).replaceIn(_type, _protoTarget);
     }
     
     /**
@@ -612,7 +612,7 @@ public final class pImport
      * @return 
      */
     public static final <T extends _type> T replace( T _type, String protoSource, String protoTarget ){        
-        return pImport.of(protoSource).replaceIn(_type, protoTarget);
+        return p_import.of(protoSource).replaceIn(_type, protoTarget);
     }
     
     /**
@@ -624,7 +624,7 @@ public final class pImport
      * @return 
      */
     public static final <T extends _type> T replace( T _type, ImportDeclaration astProtoSource, ImportDeclaration astProtoTarget ){
-        return pImport.of(_import.of(astProtoSource))
+        return p_import.of(_import.of(astProtoSource))
                 .replaceIn(_type, _import.of(astProtoTarget));
     }
     
@@ -637,7 +637,7 @@ public final class pImport
      * @return 
      */
     public static final <T extends _type> T replace( T _type, Class protoSource, Class protoTarget ){
-        return pImport.of(protoSource)
+        return p_import.of(protoSource)
             .replaceIn(_type, _import.of(protoTarget));
     }
 
@@ -649,7 +649,7 @@ public final class pImport
      * @return 
      */
     public static final <T extends _type> T remove( T _type, _import _protoTarget){
-        return pImport.of(_protoTarget).removeIn(_type);
+        return p_import.of(_protoTarget).removeIn(_type);
     }
     
     /**
@@ -660,7 +660,7 @@ public final class pImport
      * @return 
      */
     public static final <T extends _type> T remove( T _type, String protoTarget ){
-        return pImport.of(protoTarget).removeIn(_type);
+        return p_import.of(protoTarget).removeIn(_type);
     }
     
     /**
@@ -671,7 +671,7 @@ public final class pImport
      * @return 
      */
     public static final <T extends _type> T remove( T _type, ImportDeclaration astProtoTarget ){
-        return pImport.of(_import.of(astProtoTarget)).removeIn(_type);
+        return p_import.of(_import.of(astProtoTarget)).removeIn(_type);
     }
     
     /**
@@ -682,7 +682,7 @@ public final class pImport
      * @return 
      */
     public static final <T extends _type> T remove( T _type, Class target ){
-        return pImport.of(_import.of(target)).removeIn(_type);
+        return p_import.of(_import.of(target)).removeIn(_type);
     }
     
     /**
@@ -694,7 +694,7 @@ public final class pImport
      * @return 
      */
     public static final <T extends _type> T remove( T _type, _import _protoTarget, Predicate<_import> constraint){
-        return pImport.of(_protoTarget).constraint(constraint).removeIn(_type);
+        return p_import.of(_protoTarget).constraint(constraint).removeIn(_type);
     }
     
     /**
@@ -706,7 +706,7 @@ public final class pImport
      * @return 
      */
     public static final <T extends _type> T remove( T _type, String protoTarget, Predicate<_import> constraint){
-        return pImport.of(protoTarget).constraint(constraint).removeIn(_type);
+        return p_import.of(protoTarget).constraint(constraint).removeIn(_type);
     }
     
     /**
@@ -718,7 +718,7 @@ public final class pImport
      * @return 
      */
     public static final <T extends _type> T remove( T _type, ImportDeclaration astProtoTarget, Predicate<_import> constraint){
-        return pImport.of(_import.of(astProtoTarget)).constraint(constraint).removeIn(_type);
+        return p_import.of(_import.of(astProtoTarget)).constraint(constraint).removeIn(_type);
     }
     
     /**
@@ -730,7 +730,7 @@ public final class pImport
      * @return 
      */
     public static final <T extends _type> T remove( T _type, Class target, Predicate<_import> constraint){
-        return pImport.of(_import.of(target)).constraint(constraint).removeIn(_type);
+        return p_import.of(_import.of(target)).constraint(constraint).removeIn(_type);
     }
     
     /**
@@ -738,9 +738,9 @@ public final class pImport
      * @param proto
      * @return 
      */
-    public static pImport of( String proto){
+    public static p_import of( String proto){
         _import _i = _import.of( proto );
-        return new pImport( _i  );
+        return new p_import( _i  );
     }
 
     /**
@@ -748,8 +748,8 @@ public final class pImport
      * @param constraint
      * @return 
      */
-    public static pImport of( Predicate<_import> constraint ){
-        return new pImport( constraint );
+    public static p_import of( Predicate<_import> constraint ){
+        return new p_import( constraint );
     }
     
     /**
@@ -758,9 +758,9 @@ public final class pImport
      * @param constraint
      * @return 
      */
-    public static pImport of( String proto, Predicate<_import> constraint){
+    public static p_import of( String proto, Predicate<_import> constraint){
         _import _i = _import.of(proto );
-        return new pImport( _i ).constraint(constraint);
+        return new p_import( _i ).constraint(constraint);
     }
     
     
@@ -769,9 +769,9 @@ public final class pImport
      * @param clazz
      * @return 
      */
-    public static pImport of( Class clazz ){
+    public static p_import of( Class clazz ){
         _import _i = _import.of( clazz );
-        return new pImport( _i  );
+        return new p_import( _i  );
     }
     
     /**
@@ -780,9 +780,9 @@ public final class pImport
      * @param constraint
      * @return 
      */
-    public static pImport of( Class clazz, Predicate<_import> constraint){
+    public static p_import of( Class clazz, Predicate<_import> constraint){
         _import _i = _import.of( clazz );
-        return new pImport( _i  ).constraint(constraint);
+        return new p_import( _i  ).constraint(constraint);
     }
     
     /**
@@ -790,8 +790,8 @@ public final class pImport
      * @param _proto
      * @return 
      */
-    public static pImport of( _import _proto){
-        return new pImport( _proto  );
+    public static p_import of( _import _proto){
+        return new p_import( _proto  );
     }
 
     /**
@@ -800,8 +800,8 @@ public final class pImport
      * @param constraint
      * @return 
      */
-    public static pImport of( _import _proto, Predicate<_import> constraint){
-        return new pImport( _proto ).constraint(constraint);
+    public static p_import of( _import _proto, Predicate<_import> constraint){
+        return new p_import( _proto ).constraint(constraint);
     }
     
     public Predicate<_import> constraint = t-> true;
@@ -811,7 +811,7 @@ public final class pImport
     //public boolean isStatic = false;
     //public boolean isWildcard = false;
     
-    private pImport(_import proto ){
+    private p_import(_import proto ){
         this.importPattern = Stencil.of( proto.getName() );
         //if( proto.isStatic()){
         //    this.isStatic = true;
@@ -821,7 +821,7 @@ public final class pImport
         //}        
     }
 
-    private pImport( Predicate<_import> constraint ){
+    private p_import( Predicate<_import> constraint ){
         this.importPattern = Stencil.of("$any$");
         this.constraint = constraint;
     }
@@ -850,7 +850,7 @@ public final class pImport
      * @param constraint
      * @return 
      */
-    public pImport constraint( Predicate<_import> constraint ){
+    public p_import constraint( Predicate<_import> constraint ){
         this.constraint = this.constraint.and(constraint);
         return this;
     }
@@ -888,13 +888,13 @@ public final class pImport
      * @param _i
      * @return Tokens from the stencil, or null if the expression doesnt match
      */
-    public $args deconstruct(_import _i ){
+    public args deconstruct(_import _i ){
         if( this.constraint.test(_i)){
             System.out.println( "STATIC " + _i.isStatic() +"  WILDCARD "+_i.isWildcard()+ " I "+ _i.getName());
             //System.out.println( "THIS STATIC " + this.isStatic +"  THIS WILDCARD "+this.isWildcard + " I "+ _i);
             System.out.println( "IMPORT PATTERN " + importPattern );
             //if( this.isStatic == _i.isStatic() && this.isWildcard == _i.isWildcard() ){                
-            return $args.of(importPattern.deconstruct( _i.getName().replace(".*", "").trim() ));
+            return args.of(importPattern.deconstruct( _i.getName().replace(".*", "").trim() ));
             //}
         }
         return null;
@@ -906,10 +906,10 @@ public final class pImport
      * @param astImport
      * @return Tokens from the stencil, or null if the expression doesnt match
      */
-    public $args deconstruct(ImportDeclaration astImport ){
+    public args deconstruct(ImportDeclaration astImport ){
         if(this.constraint.test(_import.of(astImport))){ 
             //if( this.isStatic == astImport.isStatic() && this.isWildcard == astImport.isAsterisk()){
-            return $args.of( importPattern.deconstruct( astImport.getNameAsString().trim() ));
+            return args.of( importPattern.deconstruct( astImport.getNameAsString().trim() ));
             //}
         }
         return null;
@@ -966,7 +966,7 @@ public final class pImport
     }
 
     @Override
-    public pImport $(String target, String $Name) {
+    public p_import $(String target, String $Name) {
         this.importPattern = this.importPattern.$(target, $Name);
         return this;
     }
@@ -978,7 +978,7 @@ public final class pImport
      * @param kvs the key parameter NAME and String VALUE to assign to the
      * @return the modified Stencil
      */
-    public pImport assign$( Tokens kvs ) {
+    public p_import assign$( Tokens kvs ) {
         return assign$( Translator.DEFAULT_TRANSLATOR, kvs );
     }
 
@@ -989,7 +989,7 @@ public final class pImport
      * @param keyValues the key parameter NAME and String VALUE to assign to the
      * @return the modified Stencil
      */
-    public pImport assign$( Object... keyValues ) {
+    public p_import assign$( Object... keyValues ) {
         return assign$( Translator.DEFAULT_TRANSLATOR, Tokens.of( keyValues ) );
     }
 
@@ -1001,7 +1001,7 @@ public final class pImport
      * @param keyValues the key parameter NAME and String VALUE to assign to the
      * @return the modified Stencil
      */
-    public pImport assign$( Translator translator, Object... keyValues ) {
+    public p_import assign$( Translator translator, Object... keyValues ) {
         return assign$( translator, Tokens.of( keyValues ) );
     }
 
@@ -1011,7 +1011,7 @@ public final class pImport
      * @param kvs
      * @return 
      */
-    public pImport assign$( Translator translator, Tokens kvs ) {
+    public p_import assign$( Translator translator, Tokens kvs ) {
         this.importPattern = this.importPattern.assign$(translator,kvs);
         return this;
     }
@@ -1041,7 +1041,7 @@ public final class pImport
      * @return 
      */
     public Select select(ImportDeclaration astImport){
-        $args ts = this.deconstruct(astImport);
+        args ts = this.deconstruct(astImport);
         if( ts != null){
             return new Select( astImport, ts );
         }
@@ -1187,7 +1187,7 @@ public final class pImport
      * @return 
      */
     public <N extends _node> N replaceIn(N _n, Class clazz){
-        return replaceIn(_n, pImport.of(clazz));
+        return replaceIn(_n, p_import.of(clazz));
     }
     
     /**
@@ -1231,7 +1231,7 @@ public final class pImport
      * @param <N> the TYPE of model
      * @return
      */
-    public <N extends _node> N replaceIn(N _n, pImport $i ){
+    public <N extends _node> N replaceIn(N _n, p_import $i ){
         replaceIn( _n.ast(), $i);        
         return _n;
     }
@@ -1243,7 +1243,7 @@ public final class pImport
      * @param $i
      * @return 
      */
-    public <N extends Node> N replaceIn(N astNode, pImport $i ){
+    public <N extends Node> N replaceIn(N astNode, p_import $i ){
         if( astNode.findCompilationUnit().isPresent() ){
             astNode.findCompilationUnit().get().walk(ImportDeclaration.class, e-> {
                 Select sel = select( e );
@@ -1289,7 +1289,7 @@ public final class pImport
     @Override
     public <N extends Node> N forEachIn(N astNode, Consumer<_import> _importActionFn){
         astNode.walk(ImportDeclaration.class, e-> {
-            $args tokens = deconstruct( e );
+            args tokens = deconstruct( e );
             if( tokens != null ){
                 _importActionFn.accept( _import.of(e));
             }
@@ -1307,20 +1307,20 @@ public final class pImport
      * A Matched Selection result returned from matching a prototype $import
      * inside of some CompilationUnit
      */
-    public static class Select implements pQuery.selected, 
-        pQuery.selectedAstNode<ImportDeclaration>, 
-        pQuery.selected_model<_import> {
+    public static class Select implements p_query.selected, 
+        p_query.selectedAstNode<ImportDeclaration>, 
+        p_query.selected_model<_import> {
     
         public final ImportDeclaration astImport;
-        public final $args args;
+        public final args args;
 
-        public Select( ImportDeclaration astImport, $args tokens){
+        public Select( ImportDeclaration astImport, args tokens){
             this.astImport = astImport;
             this.args = tokens;
         }
         
         @Override
-        public $args getArgs(){
+        public args getArgs(){
             return args;
         }
         

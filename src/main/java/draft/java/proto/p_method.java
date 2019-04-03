@@ -17,8 +17,8 @@ import java.util.function.*;
 /**
  * Template for a Java {@link _method}
  */
-public final class pMethod
-    implements Template<_method>, pQuery<_method> {
+public final class p_method
+    implements Template<_method>, p_query<_method> {
     
     
     /**
@@ -29,7 +29,7 @@ public final class pMethod
      * @return 
      */
     public static final <N extends _node> List<_method> list( N _n, String proto ){
-        return pMethod.of(proto).listIn(_n);
+        return p_method.of(proto).listIn(_n);
     }
     
     /**
@@ -40,7 +40,7 @@ public final class pMethod
      * @return 
      */
     public static final <N extends _node> List<_method> list( N _n, _method _proto ){
-        return pMethod.of(_proto).listIn(_n);
+        return p_method.of(_proto).listIn(_n);
     }
     
     /**
@@ -52,7 +52,7 @@ public final class pMethod
      * @return 
      */
     public static final <N extends _node> List<_method> list( N _n, String proto, Predicate<_method> constraint){
-        return pMethod.of(proto, constraint).listIn(_n);
+        return p_method.of(proto, constraint).listIn(_n);
     }
     
     /**
@@ -64,7 +64,7 @@ public final class pMethod
      * @return 
      */
     public static final <N extends _node> List<_method> list( N _n, _method _proto, Predicate<_method> constraint){
-        return pMethod.of(_proto, constraint).listIn(_n);
+        return p_method.of(_proto, constraint).listIn(_n);
     }
     
     /**
@@ -75,7 +75,7 @@ public final class pMethod
      * @return the modified N
      */
     public static final <N extends _node> N remove( N _n, _method _proto ){
-        return pMethod.of(_proto).removeIn(_n);
+        return p_method.of(_proto).removeIn(_n);
     }
     
     /**
@@ -86,7 +86,7 @@ public final class pMethod
      * @return 
      */
     public static final <N extends _node> N remove( N _n, String... proto ){
-        return pMethod.of(proto).removeIn(_n);
+        return p_method.of(proto).removeIn(_n);
     }
     
     /**
@@ -98,7 +98,7 @@ public final class pMethod
      * @return 
      */
     public static final <N extends _node> N replace( N _n, _method _protoSource, _method _protoReplacement ){
-        return pMethod.of(_protoSource).replaceIn(_n, _protoReplacement);
+        return p_method.of(_protoSource).replaceIn(_n, _protoReplacement);
     }
     
     /**
@@ -110,7 +110,7 @@ public final class pMethod
      * @return 
      */
     public static final <N extends _node> N replace( N _n, String[] protoMethod, String[] replacementMethod ){
-        return pMethod.of(protoMethod).replaceIn(_n, replacementMethod);
+        return p_method.of(protoMethod).replaceIn(_n, replacementMethod);
     }
     
     /**
@@ -118,7 +118,7 @@ public final class pMethod
      * @param protoMethod
      * @return 
      */
-    public static pMethod of( String protoMethod ){
+    public static p_method of( String protoMethod ){
         return of(new String[]{protoMethod});
     }
     
@@ -130,7 +130,7 @@ public final class pMethod
      * @param anonymousObjectContainingMethod
      * @return
      */
-    public static pMethod of( Object anonymousObjectContainingMethod ){
+    public static p_method of( Object anonymousObjectContainingMethod ){
         StackTraceElement ste = Thread.currentThread().getStackTrace()[2];
         ObjectCreationExpr oce = Expr.anonymousObject( ste );
         MethodDeclaration theMethod = (MethodDeclaration)
@@ -145,7 +145,7 @@ public final class pMethod
      * @param body
      * @return 
      */
-    public static pMethod of(String signature, Expr.Command body ){
+    public static p_method of(String signature, Expr.Command body ){
         LambdaExpr le = Expr.lambda(Thread.currentThread().getStackTrace()[2]);
         _method _m = _method.fromSignature( signature );
         return of( _method.updateBody(_m, le) );
@@ -158,7 +158,7 @@ public final class pMethod
      * @param body
      * @return 
      */
-    public static <A extends Object> pMethod of(String signature, Consumer<A> body ){
+    public static <A extends Object> p_method of(String signature, Consumer<A> body ){
         LambdaExpr le = Expr.lambda(Thread.currentThread().getStackTrace()[2]);
         _method _m = _method.fromSignature( signature );
         return of( _method.updateBody(_m, le) );
@@ -172,7 +172,7 @@ public final class pMethod
      * @param body
      * @return 
      */
-    public static <A extends Object, B extends Object> pMethod of(String signature, BiConsumer<A, B> body ){
+    public static <A extends Object, B extends Object> p_method of(String signature, BiConsumer<A, B> body ){
         LambdaExpr le = Expr.lambda(Thread.currentThread().getStackTrace()[2]);
         _method _m = _method.fromSignature( signature );
         return of( _method.updateBody(_m, le) );
@@ -187,7 +187,7 @@ public final class pMethod
      * @param body
      * @return 
      */
-    public static <A extends Object, B extends Object, C extends Object> pMethod of(String signature, Expr.TriConsumer<A, B, C> body ){
+    public static <A extends Object, B extends Object, C extends Object> p_method of(String signature, Expr.TriConsumer<A, B, C> body ){
         LambdaExpr le = Expr.lambda(Thread.currentThread().getStackTrace()[2]);
         _method _m = _method.fromSignature( signature );
         return of( _method.updateBody(_m, le) );
@@ -203,7 +203,7 @@ public final class pMethod
      * @param body
      * @return 
      */
-    public static <A extends Object, B extends Object, C extends Object, D extends Object> pMethod of(String signature, Expr.QuadConsumer<A, B, C, D> body ){
+    public static <A extends Object, B extends Object, C extends Object, D extends Object> p_method of(String signature, Expr.QuadConsumer<A, B, C, D> body ){
         LambdaExpr le = Expr.lambda(Thread.currentThread().getStackTrace()[2]);
         _method _m = _method.fromSignature( signature );
         return of( _method.updateBody(_m, le) );
@@ -218,7 +218,7 @@ public final class pMethod
      * @param parametersAndBody
      * @return
      */
-    public static <T extends Object, U extends Object> pMethod  of( String signature, Function<T,U> parametersAndBody){
+    public static <T extends Object, U extends Object> p_method  of( String signature, Function<T,U> parametersAndBody){
         LambdaExpr le = Expr.lambda(Thread.currentThread().getStackTrace()[2]);
         _method _m = _method.fromSignature( signature );
         return of(_method.updateBody(_m, le));
@@ -234,7 +234,7 @@ public final class pMethod
      * @param parametersAndBody
      * @return
      */
-    public static <T extends Object, U extends Object, V extends Object> pMethod of( String signature, BiFunction<T,U,V> parametersAndBody){
+    public static <T extends Object, U extends Object, V extends Object> p_method of( String signature, BiFunction<T,U,V> parametersAndBody){
         LambdaExpr le = Expr.lambda(Thread.currentThread().getStackTrace()[2]);
         _method _m = _method.fromSignature( signature );
         return of(_method.updateBody(_m, le));
@@ -250,7 +250,7 @@ public final class pMethod
      * @param parametersAndBody
      * @return 
      */
-    public static <A extends Object, B extends Object, C extends Object, D extends Object> pMethod of( String signature, Expr.TriFunction<A,B,C,D> parametersAndBody){
+    public static <A extends Object, B extends Object, C extends Object, D extends Object> p_method of( String signature, Expr.TriFunction<A,B,C,D> parametersAndBody){
         LambdaExpr le = Expr.lambda(Thread.currentThread().getStackTrace()[2]);
         _method _m = _method.fromSignature( signature );
         return of(_method.updateBody(_m, le));
@@ -267,7 +267,7 @@ public final class pMethod
      * @param parametersAndBody
      * @return 
      */
-    public static <A extends Object, B extends Object, C extends Object, D extends Object, E extends Object> pMethod of( String signature, Expr.QuadFunction<A,B,C,D,E> parametersAndBody){
+    public static <A extends Object, B extends Object, C extends Object, D extends Object, E extends Object> p_method of( String signature, Expr.QuadFunction<A,B,C,D,E> parametersAndBody){
         LambdaExpr le = Expr.lambda(Thread.currentThread().getStackTrace()[2]);
         _method _m = _method.fromSignature( signature );
         return of(_method.updateBody(_m, le));
@@ -278,8 +278,8 @@ public final class pMethod
      * @param _m
      * @return 
      */
-    public static pMethod of( _method _m ){
-        return new pMethod( _m);
+    public static p_method of( _method _m ){
+        return new p_method( _m);
     }
 
     /**
@@ -288,8 +288,8 @@ public final class pMethod
      * @param constraint
      * @return 
      */
-    public static pMethod of( _method _m, Predicate<_method> constraint){
-        return new pMethod( _m).constraint(constraint);
+    public static p_method of( _method _m, Predicate<_method> constraint){
+        return new p_method( _m).constraint(constraint);
     }
         
     /**
@@ -298,7 +298,7 @@ public final class pMethod
      * @param name
      * @return 
      */
-    public static pMethod of( Class clazz, String name ){
+    public static p_method of( Class clazz, String name ){
         _method._hasMethods  _hm = (_method._hasMethods)_type.of(clazz);
         return of( _hm.getMethod(name) );
     }       
@@ -308,8 +308,8 @@ public final class pMethod
      * @param proto
      * @return 
      */
-    public static pMethod of( String...proto ){
-        return new pMethod(_method.of(proto));
+    public static p_method of( String...proto ){
+        return new p_method(_method.of(proto));
     }
     
     /**
@@ -318,21 +318,21 @@ public final class pMethod
      * @param constraint
      * @return 
      */
-    public static pMethod of( String proto, Predicate<_method> constraint ){
-        return new pMethod(_method.of(proto)).constraint(constraint);
+    public static p_method of( String proto, Predicate<_method> constraint ){
+        return new p_method(_method.of(proto)).constraint(constraint);
     }
 
     public Predicate<_method> constraint = t -> true;
     public Stencil signatureStencil;
-    public pSnip $body;
+    public p_snip $body;
 
     /**
      * 
      * @param _proto 
      */
-    public pMethod( _method _proto ){
+    public p_method( _method _proto ){
         if( _proto.hasBody() ) {
-            this.$body = pSnip.of(_proto.getBody());
+            this.$body = p_snip.of(_proto.getBody());
             _method _cp = _proto.copy();
             this.signatureStencil = Stencil.of( _cp.setBody("").toString() );
         } else {
@@ -346,7 +346,7 @@ public final class pMethod
      * @param constraint
      * @return 
      */
-    public pMethod constraint( Predicate<_method> constraint){
+    public p_method constraint( Predicate<_method> constraint){
         this.constraint = constraint;
         return this;
     }
@@ -388,7 +388,7 @@ public final class pMethod
 
     @Override
     public _method construct(Map<String, Object> keyValues) {
-        return pMethod.this.construct( Translator.DEFAULT_TRANSLATOR, keyValues );
+        return p_method.this.construct( Translator.DEFAULT_TRANSLATOR, keyValues );
     }
 
     /**
@@ -397,17 +397,17 @@ public final class pMethod
      * @return 
      */
     public _method construct(_node _n ){
-        return pMethod.this.construct(_n.componentize() );
+        return p_method.this.construct(_n.componentize() );
     }
 
     @Override
     public _method construct(Object... keyValues) {
-        return pMethod.this.construct( Translator.DEFAULT_TRANSLATOR, keyValues );
+        return p_method.this.construct( Translator.DEFAULT_TRANSLATOR, keyValues );
     }
 
     @Override
     public _method construct(Translator translator, Object... keyValues) {
-        return pMethod.this.construct(translator, Tokens.of(keyValues));
+        return p_method.this.construct(translator, Tokens.of(keyValues));
     }
 
     @Override
@@ -426,7 +426,7 @@ public final class pMethod
         for(int i=0;i<values.length;i++){
             kvs.put( keys.get(i), values[i]);
         }
-        return pMethod.this.construct( t, kvs );
+        return p_method.this.construct( t, kvs );
     }
 
     public static final BlockStmt EMPTY = Stmt.block("{}");
@@ -436,7 +436,7 @@ public final class pMethod
      * @param _m
      * @return 
      */
-    public $args deconstruct( _method _m ){
+    public args deconstruct( _method _m ){
         return deconstruct(_m.ast() );
     }
     
@@ -445,7 +445,7 @@ public final class pMethod
      * @param astTarget
      * @return 
      */
-    public $args deconstruct( MethodDeclaration astTarget ){
+    public args deconstruct( MethodDeclaration astTarget ){
         if( !this.constraint.test(_method.of(astTarget))){
             return null;
         }
@@ -482,7 +482,7 @@ public final class pMethod
                 });
                 if( isConsistent.get() ){
                     ts.putAll(tss);
-                    return $args.of(ts);
+                    return args.of(ts);
                 }
             }
             return null; //the BODY or signature isnt the same or BODY / signature tokens were inconsistent
@@ -491,7 +491,7 @@ public final class pMethod
             return null; //the target doesnt have a BODY , the template does
         }
         //just check the signature, (after removeing the JAVADOC) since there is no BODY
-        return $args.of(this.signatureStencil.deconstruct( astTarget.clone().removeComment().toString() ));
+        return args.of(this.signatureStencil.deconstruct( astTarget.clone().removeComment().toString() ));
     }
 
     /**
@@ -501,7 +501,7 @@ public final class pMethod
      * @param kvs the key parameter NAME and String VALUE to assign to the
      * @return the modified Stencil
      */
-    public pMethod assign$( Tokens kvs ) {
+    public p_method assign$( Tokens kvs ) {
         return assign$( Translator.DEFAULT_TRANSLATOR, kvs );
     }
 
@@ -512,7 +512,7 @@ public final class pMethod
      * @param keyValues the key parameter NAME and String VALUE to assign to the
      * @return the modified Stencil
      */
-    public pMethod assign$( Object... keyValues ) {
+    public p_method assign$( Object... keyValues ) {
         return assign$( Translator.DEFAULT_TRANSLATOR, Tokens.of( keyValues ) );
     }
 
@@ -524,7 +524,7 @@ public final class pMethod
      * @param keyValues the key parameter NAME and String VALUE to assign to the
      * @return the modified Stencil
      */
-    public pMethod assign$( Translator translator, Object... keyValues ) {
+    public p_method assign$( Translator translator, Object... keyValues ) {
         return assign$( translator, Tokens.of( keyValues ) );
     }
 
@@ -534,7 +534,7 @@ public final class pMethod
      * @param kvs
      * @return 
      */
-    public pMethod assign$( Translator translator, Tokens kvs ) {
+    public p_method assign$( Translator translator, Tokens kvs ) {
         this.$body = this.$body.assign$(translator,kvs);
         this.signatureStencil = this.signatureStencil.assign$(translator,kvs);
         return this;
@@ -542,7 +542,7 @@ public final class pMethod
 
     /** Post - parameterize, create a parameter from the target string named $Name#$*/
     @Override
-    public pMethod $(String target, String $Name) {
+    public p_method $(String target, String $Name) {
         this.$body = this.$body.$(target, $Name);
         this.signatureStencil = this.signatureStencil.$(target, $Name);
         return this;
@@ -554,7 +554,7 @@ public final class pMethod
      * @param $name
      * @return 
      */
-    public pMethod $(Expression astExpr, String $name ){
+    public p_method $(Expression astExpr, String $name ){
         String exprString = astExpr.toString();
         return $(exprString, $name);
     }
@@ -592,7 +592,7 @@ public final class pMethod
      * @return 
      */
     public Select select( MethodDeclaration astMethod){
-        $args ts = deconstruct( astMethod );
+        args ts = deconstruct( astMethod );
         if( ts != null ){
             return new Select( astMethod, ts );
         }
@@ -702,7 +702,7 @@ public final class pMethod
      * @param $replace
      * @return 
      */
-    public <N extends _node> N replaceIn( N _n, pMethod $replace ){
+    public <N extends _node> N replaceIn( N _n, p_method $replace ){
         return forSelectedIn(_n, s -> {
             _method repl = $replace.construct(s.args);
             s.astMethod.replace(repl.ast());
@@ -717,7 +717,7 @@ public final class pMethod
      * @return 
      */
     public <N extends _node> N replaceIn( N _n, String... replacementProto ){
-        return replaceIn(_n, pMethod.of(replacementProto));        
+        return replaceIn(_n, p_method.of(replacementProto));        
     }
     
     /**
@@ -728,7 +728,7 @@ public final class pMethod
      * @return 
      */
     public <N extends _node> N replaceIn( N _n, _method method ){
-        return replaceIn(_n, pMethod.of(method));        
+        return replaceIn(_n, p_method.of(method));        
     }
     
     /**
@@ -739,13 +739,13 @@ public final class pMethod
      * @return 
      */
     public <N extends _node> N replaceIn( N _n, MethodDeclaration astMethod ){
-        return replaceIn(_n, pMethod.of(astMethod));        
+        return replaceIn(_n, p_method.of(astMethod));        
     }
     
     @Override
     public <N extends _node> N removeIn(N _n ){
         Walk.in(_n, MethodDeclaration.class, e-> {
-            $args tokens = this.deconstruct( e );
+            args tokens = this.deconstruct( e );
             if( tokens != null ){
                 e.removeForced();
             }
@@ -756,7 +756,7 @@ public final class pMethod
     @Override
     public <N extends Node> N removeIn(N astNode){
         astNode.walk(MethodDeclaration.class, e-> {
-            $args tokens = this.deconstruct( e );
+            args tokens = this.deconstruct( e );
             if( tokens != null ){
                 e.removeForced();
             }
@@ -767,7 +767,7 @@ public final class pMethod
     @Override
     public <N extends Node> N forEachIn(N astNode, Consumer<_method> _methodActionFn){
         astNode.walk(MethodDeclaration.class, e-> {
-            $args tokens = this.deconstruct( e );
+            args tokens = this.deconstruct( e );
             if( tokens != null ){
                 _methodActionFn.accept( _method.of(e) );
             }
@@ -778,7 +778,7 @@ public final class pMethod
     @Override
     public <N extends _node> N forEachIn(N _n, Consumer<_method> _methodActionFn){
         Walk.in(_n, MethodDeclaration.class, e -> {
-            $args tokens = this.deconstruct( e );
+            args tokens = this.deconstruct( e );
             if( tokens != null ){
                 _methodActionFn.accept( _method.of(e) );
             }
@@ -807,20 +807,20 @@ public final class pMethod
      * A Matched Selection result returned from matching a prototype $method
      * inside of some Node or _node
      */
-    public static class Select implements pQuery.selected, 
-            pQuery.selectedAstNode<MethodDeclaration>, 
-            pQuery.selected_model<_method> {
+    public static class Select implements p_query.selected, 
+            p_query.selectedAstNode<MethodDeclaration>, 
+            p_query.selected_model<_method> {
         
         public final MethodDeclaration astMethod;
-        public final $args args;
+        public final args args;
 
-        public Select( MethodDeclaration astMethod, $args tokens ){
+        public Select( MethodDeclaration astMethod, args tokens ){
             this.astMethod = astMethod;
             this.args = tokens;
         }
 
         @Override
-        public $args getArgs(){
+        public args getArgs(){
             return args;
         }
         

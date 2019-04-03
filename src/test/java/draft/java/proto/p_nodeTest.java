@@ -21,7 +21,7 @@ import junit.framework.TestCase;
  *
  * @author Eric
  */
-public class pNodeTest extends TestCase {
+public class p_nodeTest extends TestCase {
     
     public interface Inter{
         public static final int VAL = 1;
@@ -59,10 +59,10 @@ public class pNodeTest extends TestCase {
             @Ann
             Inter ifield = null;
             
-            @pNodeTest.Ann
+            @p_nodeTest.Ann
             Base bField = null;
             
-            @draft.java.proto.pNodeTest.Ann
+            @draft.java.proto.p_nodeTest.Ann
             Map<Inter,Base> m = new HashMap<>();
             
             //@draft.java.proto.$nodeTest.Ann
@@ -78,7 +78,7 @@ public class pNodeTest extends TestCase {
                 if( arr[0] instanceof Inter ){
                     
                 }
-                @pNodeTest.Ann
+                @p_nodeTest.Ann
                 class INN implements Inter{ //check inner nest
                     
                 }
@@ -103,7 +103,7 @@ public class pNodeTest extends TestCase {
                 return bField;
             }
             
-            @pNodeTest.Ann
+            @p_nodeTest.Ann
             public void setInter( Inter ifld ){
                 this.ifield = ifld;
             }
@@ -116,25 +116,25 @@ public class pNodeTest extends TestCase {
                 .extend(Base.class);
          
         //the first thing is to replace fully qualified references
-        pNode $n = new pNode(Inter.class.getCanonicalName());
+        p_node $n = new p_node(Inter.class.getCanonicalName());
         $n.replaceIn(_c, Inter.class.getCanonicalName().replace("Inter", "Other") );
-        $n = new pNode("Inter");
+        $n = new p_node("Inter");
         $n.replaceIn(_c, "Other");
         
         
-        $n = new pNode(Ann.class.getCanonicalName());
+        $n = new p_node(Ann.class.getCanonicalName());
         $n.replaceIn(_c, Ann.class.getCanonicalName().replace("Ann", "Stan") );
         
-        $n = new pNode("$nodeTest.Ann");
+        $n = new p_node("$nodeTest.Ann");
         $n.replaceIn(_c, "$nodeTest.Stan");
         
-        $n = new pNode("Ann");
+        $n = new p_node("Ann");
         $n.replaceIn(_c, "Stan");
         
         
-        $n = new pNode(Base.class.getCanonicalName());
+        $n = new p_node(Base.class.getCanonicalName());
         $n.replaceIn(_c, Base.class.getCanonicalName().replace("Base", "Replace") );
-        $n = new pNode("Base");
+        $n = new p_node("Base");
         $n.replaceIn(_c, "Replace");
         
         System.out.println( _c );

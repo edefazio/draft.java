@@ -1,17 +1,11 @@
 package draft.java.macro;
 
 import com.github.javaparser.ast.ImportDeclaration;
-import draft.DraftException;
-import draft.Stencil;
-import draft.java.Ast;
-import draft.java._field;
-import draft.java._type;
-import draft.java.proto.pField;
-import draft.java.proto.pSnip;
-import draft.java.proto.pStmt;
+import draft.*;
+import draft.java.*;
+import draft.java.proto.*;
 
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
 import java.util.function.Predicate;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -21,44 +15,41 @@ import java.util.stream.Collectors;
  * A Macro that can be applied to _types that will
  * 1) check if there are any System.out.println statements in the code
  *    ...IF there are
- *    A) check if there is a static Logger implementation (if not will add a Logger
- * 2)
+ *    A) check if there is a static Logger implementation (if not will add a Logger)
+ * 2) import the classes needed for the logger
+ * 3) convert all println statements to log statements
  */
 public class _replaceSystemOutWithLog implements _macro<_type> {
     /** find these statements to be replaced */
 
-    // REMOVED THIS TO HELP STARTUP PERF
-    // static $stmt $anySystemOut = $stmt.of(($any$)->System.out.println($any$));
-
-    static pStmt $anySystemOut = pStmt.of("System.out.println($any$);");
+    static p_stmt $anySystemOut = p_stmt.of("System.out.println($any$);");
 
     /** this is the format of the (one or more) Logger Statement(s) used in place of the System out */
     String loggerStatementsFormat;
 
-    /** find the appropriate Logger field if the TYPE has one */
+    /** find the appropriate Logger field (if the TYPE has one) */
     Predicate<_field> preDefinedLoggerMatcher;
 
     /** IF... I have to create an ad hoc logger field it will be this */
-    pField adHocLogger;
+    p_field adHocLogger;
 
     /** IF ... i have to create an ad hoc logger, these are the imports I need*/
     List<ImportDeclaration> adHocLoggerImports;
 
-    public _replaceSystemOutWithLog(
-            Predicate<_field> preDefinedLoggerMatcher,
-            ImportDeclaration[] adHocLoggerImports,
-            pField adHocLogger,
-            String loggerStatementsFormat){
+    public _replaceSystemOutWithLog(Predicate<_field> preDefinedLoggerMatcher,
+        ImportDeclaration[] adHocLoggerImports,
+        p_field adHocLogger,
+        String loggerStatementsFormat){
+        
         this( preDefinedLoggerMatcher,
                 Arrays.stream( adHocLoggerImports).collect(Collectors.toList()),
                 adHocLogger,
                 loggerStatementsFormat);
     }
 
-    public _replaceSystemOutWithLog(
-            Predicate<_field> preDefinedLoggerMatcher,
+    public _replaceSystemOutWithLog( Predicate<_field> preDefinedLoggerMatcher,
             List<ImportDeclaration> adHocLoggerImports,
-            pField adHocLogger,
+            p_field adHocLogger,
             String loggerStatementsFormat){
 
         Stencil st = Stencil.of(loggerStatementsFormat);
@@ -90,19 +81,19 @@ public class _replaceSystemOutWithLog implements _macro<_type> {
                 _f = adHocLogger.fill(_t.getFullName()); /* create a clone/copy for this _field */
                 _t.field( _f ); /* add logger field to the TYPE */
             }
-            $anySystemOut.replaceIn(_t, pSnip.of( loggerStatementsFormat )
+            $anySystemOut.replaceIn(_t, p_snip.of( loggerStatementsFormat )
                     .assign$("name", _f.getName() ) );
         }
         return _t;
     }
-    /**
-     * A specific implementation that will replace System.out.printlns with java.util.Logger Log.fine()...
-     * statements of the macro that
+    
+    /** (HERE IS HOW WE CREATE A SIMPLE IMPLEMENTATION)
+     * A specific implementation that will replace System.out.printlns 
+     * with java.util.Logger Log.fine()...statements of the macro
      */
     public static _macro<_type> JavaLoggerFine = new _replaceSystemOutWithLog(
             (_field f)->f.isStatic() && f.isType(Logger.class),
-            new ImportDeclaration[] {Ast.importDeclaration( Logger.class ),
-             Ast.importDeclaration( Level.class )},
-            pField.of("public static final Logger LOG = Logger.getLogger($className$.class.getCanonicalName());"),
+            new ImportDeclaration[] { Ast.importDeclaration( Logger.class ),Ast.importDeclaration( Level.class )},
+            p_field.of("public static final Logger LOG = Logger.getLogger($className$.class.getCanonicalName());"),
         "if($name$.isLoggable(Level.FINER)){ $name$.fine($any$ + \"\"); }" );
-    }
+}

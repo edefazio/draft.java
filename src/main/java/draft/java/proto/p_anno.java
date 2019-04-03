@@ -38,11 +38,11 @@ import java.util.function.*;
  *     .forSelected/forSelectedIn(_node, Consumer<Select>) 
  *</PRE> 
  */
-public final class pAnno
-    implements Template<_anno>, pQuery<_anno> {
+public final class p_anno
+    implements Template<_anno>, p_query<_anno> {
 
     /** represents ANY annotation*/
-    public static final pAnno ANY = pAnno.of("@A").$("A", "any");
+    public static final p_anno ANY = p_anno.of("@A").$("A", "any");
     
     /**
      * 
@@ -52,7 +52,7 @@ public final class pAnno
      * @return 
      */
     public static final <N extends _node> _anno first( N _n, String proto ){
-        return pAnno.of(proto).firstIn(_n);
+        return p_anno.of(proto).firstIn(_n);
     }
     
     /**
@@ -63,7 +63,7 @@ public final class pAnno
      * @return 
      */
     public static final <N extends _node> _anno first( Node astNode, String proto ){
-        return pAnno.of(proto).firstIn(astNode);
+        return p_anno.of(proto).firstIn(astNode);
     }
     
     /**
@@ -75,7 +75,7 @@ public final class pAnno
      * @return 
      */
     public static final <N extends _node> _anno first( N _n, String proto, Predicate<_anno> constraint){
-        return pAnno.of(proto, constraint).firstIn(_n);
+        return p_anno.of(proto, constraint).firstIn(_n);
     }
     
     /**
@@ -87,7 +87,7 @@ public final class pAnno
      * @return 
      */
     public static final <N extends _node> _anno first( Node astNode, String proto,Predicate<_anno>constraint){
-        return pAnno.of(proto, constraint).firstIn(astNode);
+        return p_anno.of(proto, constraint).firstIn(astNode);
     }
          
     /**
@@ -98,7 +98,7 @@ public final class pAnno
      * @return 
      */
     public static final <N extends _node> Select selectFirst( N _n, String proto ){
-        return pAnno.of(proto).selectFirstIn(_n);
+        return p_anno.of(proto).selectFirstIn(_n);
     }
     
     /**
@@ -109,7 +109,7 @@ public final class pAnno
      * @return 
      */
     public static final <N extends _node> Select selectFirst( Node astNode, String proto ){
-        return pAnno.of(proto).selectFirstIn(astNode);
+        return p_anno.of(proto).selectFirstIn(astNode);
     }
     
     /**
@@ -121,7 +121,7 @@ public final class pAnno
      * @return 
      */
     public static final <N extends _node> Select selectFirst( N _n, String proto, Predicate<_anno> constraint){
-        return pAnno.of(proto, constraint).selectFirstIn(_n);
+        return p_anno.of(proto, constraint).selectFirstIn(_n);
     }
     
     /**
@@ -133,7 +133,7 @@ public final class pAnno
      * @return 
      */
     public static final <N extends _node> Select selectFirst( Node astNode, String proto,Predicate<_anno>constraint){
-        return pAnno.of(proto, constraint).selectFirstIn(astNode);
+        return p_anno.of(proto, constraint).selectFirstIn(astNode);
     }
     
     /**
@@ -154,7 +154,7 @@ public final class pAnno
      * @return 
      */
     public static final <N extends _node> List<_anno> list( N _n, Predicate<_anno> constraint){
-        return new pAnno( "@a" ).$("@a", "any").constraint(constraint).listIn(_n);
+        return new p_anno( "@a" ).$("@a", "any").constraint(constraint).listIn(_n);
     }
     
     /**
@@ -165,7 +165,7 @@ public final class pAnno
      * @return 
      */
     public static final <N extends _node> List<_anno> list( N _n, String proto ){
-        return pAnno.of(proto).listIn(_n);
+        return p_anno.of(proto).listIn(_n);
     }
     
     /**
@@ -177,7 +177,7 @@ public final class pAnno
      * @return 
      */
     public static final <N extends _node> List<_anno> list( N _n, String proto, Predicate<_anno> constraint){
-        return pAnno.of(proto, constraint).listIn(_n);
+        return p_anno.of(proto, constraint).listIn(_n);
     }
     
     /**
@@ -188,7 +188,7 @@ public final class pAnno
      * @return 
      */
     public static final <N extends _node> List<_anno> list( N _n, _anno _proto ){
-        return pAnno.of(_proto).listIn(_n);
+        return p_anno.of(_proto).listIn(_n);
     }
     
     /**
@@ -200,7 +200,7 @@ public final class pAnno
      * @return 
      */
     public static final <N extends _node> List<_anno> list( N _n, _anno _proto, Predicate<_anno> constraint){
-        return pAnno.of(_proto, constraint).listIn(_n);
+        return p_anno.of(_proto, constraint).listIn(_n);
     }
         
     /**
@@ -223,7 +223,7 @@ public final class pAnno
      * @return 
      */
     public static final <N extends _node> N forEach( N _n, Predicate<_anno> constraint, Consumer<_anno> _annoConsumer){
-        return new pAnno( "@a" ).$("@a", "any").constraint(constraint).forEachIn(_n, _annoConsumer);
+        return new p_anno( "@a" ).$("@a", "any").constraint(constraint).forEachIn(_n, _annoConsumer);
     }
     
     /**
@@ -235,7 +235,7 @@ public final class pAnno
      * @return 
      */
     public static final <N extends _node> N forEach( N _n, String proto, Consumer<_anno> _annoConsumer){
-        return pAnno.of(proto).forEachIn(_n, _annoConsumer);
+        return p_anno.of(proto).forEachIn(_n, _annoConsumer);
     }
     
     /**
@@ -248,7 +248,7 @@ public final class pAnno
      * @return 
      */
     public static final <N extends _node> N forEach( N _n, String proto, Predicate<_anno> constraint, Consumer<_anno> _annoConsumer){
-        return pAnno.of(proto, constraint).forEachIn(_n, _annoConsumer);
+        return p_anno.of(proto, constraint).forEachIn(_n, _annoConsumer);
     }
     
     /**
@@ -260,7 +260,7 @@ public final class pAnno
      * @return 
      */
     public static final <N extends _node> N forEach( N _n, _anno _proto , Consumer<_anno> _annoConsumer){
-        return pAnno.of(_proto).forEachIn(_n, _annoConsumer);
+        return p_anno.of(_proto).forEachIn(_n, _annoConsumer);
     }
     
     /**
@@ -273,7 +273,7 @@ public final class pAnno
      * @return 
      */
     public static final <N extends _node> N forEach( N _n, _anno _proto, Predicate<_anno> constraint, Consumer<_anno> _annoConsumer){
-        return pAnno.of(_proto, constraint).forEachIn(_n, _annoConsumer);
+        return p_anno.of(_proto, constraint).forEachIn(_n, _annoConsumer);
     }
     
     /**
@@ -296,7 +296,7 @@ public final class pAnno
      * @return 
      */
     public static final <N extends _node> N forSelected( N _n, Predicate<_anno> constraint, Consumer<Select> _annoConsumer){
-        return new pAnno( "@a" ).$("@a", "any").constraint(constraint).forSelectedIn(_n, _annoConsumer);
+        return new p_anno( "@a" ).$("@a", "any").constraint(constraint).forSelectedIn(_n, _annoConsumer);
     }
     
     /**
@@ -308,7 +308,7 @@ public final class pAnno
      * @return 
      */
     public static final <N extends _node> N forSelected( N _n, String proto, Consumer<Select> _annoConsumer){
-        return pAnno.of(proto).forSelectedIn(_n, _annoConsumer);
+        return p_anno.of(proto).forSelectedIn(_n, _annoConsumer);
     }
     
     /**
@@ -321,7 +321,7 @@ public final class pAnno
      * @return 
      */
     public static final <N extends _node> N forSelected( N _n, String proto, Predicate<_anno> constraint, Consumer<Select> _annoConsumer){
-        return pAnno.of(proto, constraint).forSelectedIn(_n, _annoConsumer);
+        return p_anno.of(proto, constraint).forSelectedIn(_n, _annoConsumer);
     }
     
     /**
@@ -333,7 +333,7 @@ public final class pAnno
      * @return 
      */
     public static final <N extends _node> N forSelected( N _n, _anno _proto , Consumer<Select> _annoConsumer){
-        return pAnno.of(_proto).forSelectedIn(_n, _annoConsumer);
+        return p_anno.of(_proto).forSelectedIn(_n, _annoConsumer);
     }
     
     /**
@@ -346,7 +346,7 @@ public final class pAnno
      * @return 
      */
     public static final <N extends _node> N forSelected( N _n, _anno _proto, Predicate<_anno> constraint, Consumer<Select> _annoConsumer){
-        return pAnno.of(_proto, constraint).forSelectedIn(_n, _annoConsumer);
+        return p_anno.of(_proto, constraint).forSelectedIn(_n, _annoConsumer);
     }
     
     /**
@@ -357,7 +357,7 @@ public final class pAnno
      * @return 
      */
     public static final <N extends _node> List<Select> selectList( N _n, String proto ){
-        return pAnno.of(proto).selectListIn(_n);
+        return p_anno.of(proto).selectListIn(_n);
     }
     
     /**
@@ -368,7 +368,7 @@ public final class pAnno
      * @return 
      */
     public static final <N extends _node> List<Select> selectList( N _n, Predicate<_anno> constraint ){
-        return new pAnno( "@a" ).$("@a", "any").constraint(constraint).selectListIn(_n);
+        return new p_anno( "@a" ).$("@a", "any").constraint(constraint).selectListIn(_n);
     }
     
     /**
@@ -380,7 +380,7 @@ public final class pAnno
      * @return 
      */
     public static final <N extends _node> List<Select> selectList( N _n, String proto, Predicate<_anno> constraint){
-        return pAnno.of(proto, constraint).selectListIn(_n);
+        return p_anno.of(proto, constraint).selectListIn(_n);
     }
     
     /**
@@ -391,7 +391,7 @@ public final class pAnno
      * @return 
      */
     public static final <N extends _node> List<Select> selectList( N _n, _anno _proto ){
-        return pAnno.of(_proto).selectListIn(_n);
+        return p_anno.of(_proto).selectListIn(_n);
     }
     
     /**
@@ -403,7 +403,7 @@ public final class pAnno
      * @return 
      */
     public static final <N extends _node> List<Select> selectList( N _n, _anno _proto, Predicate<_anno> constraint){
-        return pAnno.of(_proto, constraint).selectListIn(_n);
+        return p_anno.of(_proto, constraint).selectListIn(_n);
     }
     
     /**
@@ -424,7 +424,7 @@ public final class pAnno
      * @return the modified N
      */
     public static final <N extends _node> N remove( N _n, _anno _proto ){
-        return pAnno.of(_proto).removeIn(_n);
+        return p_anno.of(_proto).removeIn(_n);
     }
     
     /**
@@ -435,7 +435,7 @@ public final class pAnno
      * @return the modified N
      */
     public static final <N extends _node> N remove( N _n, Predicate<_anno> constraint ){
-        return new pAnno( "@a" ).$("@a", "any").constraint(constraint).removeIn(_n);
+        return new p_anno( "@a" ).$("@a", "any").constraint(constraint).removeIn(_n);
     }
     
     /**
@@ -447,7 +447,7 @@ public final class pAnno
      * @return the modified N
      */
     public static final <N extends _node> N remove( N _n, _anno _proto, Predicate<_anno> constraint){
-        return pAnno.of(_proto, constraint).removeIn(_n);
+        return p_anno.of(_proto, constraint).removeIn(_n);
     }
     
     /**
@@ -458,7 +458,7 @@ public final class pAnno
      * @return 
      */
     public static final <N extends _node> N remove( N _n, String proto ){
-        return pAnno.of(proto).removeIn(_n);
+        return p_anno.of(proto).removeIn(_n);
     }
     
     /**
@@ -470,7 +470,7 @@ public final class pAnno
      * @return 
      */
     public static final <N extends _node> N remove( N _n, String proto, Predicate<_anno> constraint){
-        return pAnno.of(proto, constraint).removeIn(_n);
+        return p_anno.of(proto, constraint).removeIn(_n);
     }
     
     /**
@@ -482,8 +482,8 @@ public final class pAnno
      * @return 
      */
     public static final <N extends _node> N replace(N _n, _anno sourceProto, _anno targetProto){
-        return pAnno.of(sourceProto)
-            .replaceIn(_n, pAnno.of(targetProto));
+        return p_anno.of(sourceProto)
+            .replaceIn(_n, p_anno.of(targetProto));
     }
     
     /**
@@ -495,8 +495,8 @@ public final class pAnno
      * @return 
      */
     public static final <N extends _node> N replace(N _n, String sourceProto, String targetProto){
-        return pAnno.of(sourceProto)
-            .replaceIn(_n, pAnno.of(targetProto));
+        return p_anno.of(sourceProto)
+            .replaceIn(_n, p_anno.of(targetProto));
     }
     
     /**
@@ -508,8 +508,8 @@ public final class pAnno
      * @return 
      */
     public static final <N extends _node> N replace(N _n, AnnotationDeclaration astSourceProto, AnnotationDeclaration astTargetProto){
-        return pAnno.of(_anno.of(astSourceProto))
-            .replaceIn(_n, pAnno.of(_anno.of(astTargetProto)));
+        return p_anno.of(_anno.of(astSourceProto))
+            .replaceIn(_n, p_anno.of(_anno.of(astTargetProto)));
     }
     
     /**
@@ -522,33 +522,33 @@ public final class pAnno
      */
     public static final <N extends _node> N replace( N _n, Class<? extends Annotation>sourceProto, Class<? extends Annotation>targetProto){
         
-        return pAnno.of(sourceProto)
-            .replaceIn(_n, pAnno.of(targetProto));
+        return p_anno.of(sourceProto)
+            .replaceIn(_n, p_anno.of(targetProto));
     }
     
-    public static pAnno of( String code){
+    public static p_anno of( String code){
         return of( new String[]{code} );
     }
     
-    public static pAnno of( String code, Predicate<_anno> constraint){
+    public static p_anno of( String code, Predicate<_anno> constraint){
         return of( new String[]{code} ).constraint(constraint);
     }
     
-    public static pAnno of( String...code){
+    public static p_anno of( String...code){
         _anno _a = _anno.of( code );
-        return new pAnno( _a.toString().trim() );
+        return new p_anno( _a.toString().trim() );
     }
 
-    public static pAnno of( _anno _a ){
-        return new pAnno( _a.toString().trim() ); 
+    public static p_anno of( _anno _a ){
+        return new p_anno( _a.toString().trim() ); 
     }
     
-    public static pAnno of( _anno _a, Predicate<_anno> constraint ){
-        return new pAnno( _a.toString().trim() ).constraint(constraint);
+    public static p_anno of( _anno _a, Predicate<_anno> constraint ){
+        return new p_anno( _a.toString().trim() ).constraint(constraint);
     }
     
-    public static pAnno of( Predicate<_anno> constraint ){
-        return new pAnno( "@a" ).$("@a", "any").constraint(constraint);
+    public static p_anno of( Predicate<_anno> constraint ){
+        return new p_anno( "@a" ).$("@a", "any").constraint(constraint);
     }
     
     /**
@@ -556,7 +556,7 @@ public final class pAnno
      * @param anonymousObjectWithAnnotation
      * @return 
      */
-    public static pAnno of( Object anonymousObjectWithAnnotation ){
+    public static p_anno of( Object anonymousObjectWithAnnotation ){
         StackTraceElement ste = Thread.currentThread().getStackTrace()[2];
         ObjectCreationExpr oce = Expr.anonymousObject( ste );
         NodeList<BodyDeclaration<?>> bds = oce.getAnonymousClassBody().get();
@@ -564,23 +564,23 @@ public final class pAnno
         return of( _anno.of(bd.getAnnotation(0) ) );        
     }
     
-    public static pAnno of( Class<? extends Annotation> clazz){
-        return pAnno.of( a -> a.isInstance(clazz) );         
+    public static p_anno of( Class<? extends Annotation> clazz){
+        return p_anno.of( a -> a.isInstance(clazz) );         
     }
     
-    public static pAnno of( Class<? extends Annotation> clazz, String argumentStencil ){
+    public static p_anno of( Class<? extends Annotation> clazz, String argumentStencil ){
         if( !argumentStencil.trim().startsWith("(") ){
             argumentStencil = "("+ argumentStencil + ")";
         }
-        pAnno $a = pAnno.of("@$annotationName$"+argumentStencil).constraint(a -> a.isInstance(clazz));
+        p_anno $a = p_anno.of("@$annotationName$"+argumentStencil).constraint(a -> a.isInstance(clazz));
         return $a;
     }
     
-    public static pAnno of( Class<? extends Annotation> clazz, String argumentStencil, Predicate<_anno> constraint){
+    public static p_anno of( Class<? extends Annotation> clazz, String argumentStencil, Predicate<_anno> constraint){
         if( !argumentStencil.trim().startsWith("(") ){
             argumentStencil = "("+ argumentStencil + ")";
         }
-        pAnno $a = pAnno.of("@$annotationName$"+argumentStencil).constraint(a -> a.isInstance(clazz) && constraint.test(a));
+        p_anno $a = p_anno.of("@$annotationName$"+argumentStencil).constraint(a -> a.isInstance(clazz) && constraint.test(a));
         return $a;
     }
     
@@ -589,7 +589,7 @@ public final class pAnno
     
     public Stencil annoStencil;
     
-    private pAnno( String stencil) {
+    private p_anno( String stencil) {
         this.annoStencil = Stencil.of(stencil );
     }
 
@@ -598,7 +598,7 @@ public final class pAnno
      * @param constraint
      * @return 
      */
-    public pAnno constraint( Predicate<_anno> constraint ){
+    public p_anno constraint( Predicate<_anno> constraint ){
         this.constraint = constraint;
         return this;
     }
@@ -636,11 +636,11 @@ public final class pAnno
      * @param _a
      * @return Tokens from the stencil, or null if the expression doesnt match
      */
-    public $args deconstruct(_anno _a ){
+    public args deconstruct(_anno _a ){
         if( this.constraint.test(_a) ){
             Tokens r = annoStencil.deconstruct( _a.toString() ); 
             if( r != null){
-                return new $args(r);
+                return new args(r);
             }            
         }
         return null;
@@ -652,7 +652,7 @@ public final class pAnno
      * @param astAnnoExpr
      * @return Tokens from the stencil, or null if the expression doesnt match
      */
-    public $args deconstruct(AnnotationExpr astAnnoExpr ){
+    public args deconstruct(AnnotationExpr astAnnoExpr ){
         return deconstruct(_anno.of(astAnnoExpr) );
     }
 
@@ -692,7 +692,7 @@ public final class pAnno
     }
 
     @Override
-    public pAnno $(String target, String $Name) {
+    public p_anno $(String target, String $Name) {
         this.annoStencil = this.annoStencil.$(target, $Name);        
         return this;
     }
@@ -704,7 +704,7 @@ public final class pAnno
      * @param kvs the key parameter NAME and String VALUE to assign to the
      * @return the modified Stencil
      */
-    public pAnno assign$( Tokens kvs ) {
+    public p_anno assign$( Tokens kvs ) {
         return assign$( Translator.DEFAULT_TRANSLATOR, kvs );
     }
 
@@ -715,7 +715,7 @@ public final class pAnno
      * @param keyValues the key parameter NAME and String VALUE to assign to the
      * @return the modified Stencil
      */
-    public pAnno assign$( Object... keyValues ) {
+    public p_anno assign$( Object... keyValues ) {
         return assign$( Translator.DEFAULT_TRANSLATOR, Tokens.of( keyValues ) );
     }
 
@@ -727,7 +727,7 @@ public final class pAnno
      * @param keyValues the key parameter NAME and String VALUE to assign to the
      * @return the modified Stencil
      */
-    public pAnno assign$( Translator translator, Object... keyValues ) {
+    public p_anno assign$( Translator translator, Object... keyValues ) {
         return assign$( translator, Tokens.of( keyValues ) );
     }
 
@@ -737,7 +737,7 @@ public final class pAnno
      * @param kvs
      * @return 
      */
-    public pAnno assign$( Translator translator, Tokens kvs ) {
+    public p_anno assign$( Translator translator, Tokens kvs ) {
         this.annoStencil = this.annoStencil.assign$(translator,kvs);          
         return this;
     }
@@ -780,7 +780,7 @@ public final class pAnno
      * @return 
      */
     public Select select(AnnotationExpr astExpr){
-        $args ts = this.deconstruct(astExpr);
+        args ts = this.deconstruct(astExpr);
         if( ts != null){
             return new Select( astExpr, ts );
         }
@@ -925,7 +925,7 @@ public final class pAnno
      * @param <N> the TYPE of model
      * @return
      */
-    public <N extends _node> N replaceIn(N _n, pAnno $a ){
+    public <N extends _node> N replaceIn(N _n, p_anno $a ){
         Walk.in(_n, AnnotationExpr.class, e-> {
             Select sel = select( e );
             if( sel != null ){
@@ -942,7 +942,7 @@ public final class pAnno
      * @param $a
      * @return 
      */
-    public <N extends Node> N replaceIn(N astNode, pAnno $a ){
+    public <N extends Node> N replaceIn(N astNode, p_anno $a ){
         astNode.walk(AnnotationExpr.class, e-> {
             Select sel = select( e );
             if( sel != null ){
@@ -989,7 +989,7 @@ public final class pAnno
     @Override
     public <N extends Node> N forEachIn(N astNode, Consumer<_anno> _annoActionFn){
         astNode.walk(AnnotationExpr.class, a-> {
-            $args tokens = deconstruct(a );
+            args tokens = deconstruct(a );
             if( tokens != null ){
                 _annoActionFn.accept(_anno.of(a));
             }
@@ -1000,7 +1000,7 @@ public final class pAnno
     @Override
     public <N extends _node> N forEachIn(N _n, Consumer<_anno> _annoActionFn){
         Walk.in(_n, AnnotationExpr.class, a -> {
-            $args tokens =  deconstruct(a );
+            args tokens =  deconstruct(a );
             if( tokens != null ){
                 _annoActionFn.accept(_anno.of(a) );
             }
@@ -1013,18 +1013,18 @@ public final class pAnno
      * inside of some Node or _node
      */
     public static class Select 
-        implements pQuery.selected, selected_model<_anno>, selectedAstNode<AnnotationExpr> {
+        implements p_query.selected, selected_model<_anno>, selectedAstNode<AnnotationExpr> {
         
         public final AnnotationExpr astAnno;
-        public final $args args;
+        public final args args;
 
-        public Select( AnnotationExpr expression, $args tokens){
+        public Select( AnnotationExpr expression, args tokens){
             this.astAnno = expression;
             this.args = tokens; //$args.of( tokens);
         }
         
         @Override
-        public $args getArgs(){
+        public args getArgs(){
             return args;
         }
         

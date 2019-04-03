@@ -24,34 +24,34 @@ import java.util.function.Predicate;
  * Any Ast Node that can be matched, extracted
  * @author Eric
  */
-public class pNode implements pQuery<Node> {
+public class p_node implements p_query<Node> {
     
     public static <N extends Node> N replace(  N astRootNode, String source, String target ){
-        return pNode.of(source).replaceIn(astRootNode, target);
+        return p_node.of(source).replaceIn(astRootNode, target);
     }
     
-    public static pNode of( String name ){
-        return new pNode( name );
+    public static p_node of( String name ){
+        return new p_node( name );
     }
     public Stencil pattern;
     
     public Predicate<Node> constraint = t -> true;
     
-    public pNode( String pattern ){
+    public p_node( String pattern ){
         this( Stencil.of(pattern) );
     }
     
-    public pNode( Stencil pattern ){
+    public p_node( Stencil pattern ){
         this.pattern = pattern;
         this.constraint = t-> true;
     }
     
-    public pNode constraint( Predicate<Node> constraint ){
+    public p_node constraint( Predicate<Node> constraint ){
         this.constraint = constraint;
         return this;
     }
     
-    public pNode $(String target, String $Name) {
+    public p_node $(String target, String $Name) {
         this.pattern = this.pattern.$(target, $Name);
         return this;
     }
@@ -171,7 +171,7 @@ public class pNode implements pQuery<Node> {
     }
      
     
-    public <N extends _node> N replaceIn(N _n, pNode $replacement) {
+    public <N extends _node> N replaceIn(N _n, p_node $replacement) {
         if( _n instanceof _type && ((_type)_n).isTopClass()){            
             replaceIn( ((_type)_n).findCompilationUnit(), $replacement);
             return _n;
@@ -180,7 +180,7 @@ public class pNode implements pQuery<Node> {
         return _n;
     }
     
-    public <N extends Node> N replaceIn(N astRootNode, pNode $replacement) {
+    public <N extends Node> N replaceIn(N astRootNode, p_node $replacement) {
         astRootNode.walk(n -> {
             //System.out.println( "+++++ ON NODE "+ n );
             if( this.constraint.test(n) ) {
@@ -280,18 +280,18 @@ public class pNode implements pQuery<Node> {
      * A Matched Selection result returned from matching a prototype $field
      * inside of some Node or _node
      */
-    public static class Select implements pQuery.selected, pQuery.selectedAstNode<Node> {
+    public static class Select implements p_query.selected, p_query.selectedAstNode<Node> {
         public Node node;
-        public $args args;
+        public args args;
 
         @Override
-        public $args getArgs(){
+        public args getArgs(){
             return args;
         }
         
         public Select( Node node, Tokens tokens){
             this.node = node;
-            this.args = $args.of(tokens);
+            this.args = args.of(tokens);
         }
 
         

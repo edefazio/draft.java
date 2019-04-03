@@ -16,12 +16,12 @@ import junit.framework.TestCase;
  *
  * @author Eric
  */
-public class pVarTest extends TestCase {
+public class p_varTest extends TestCase {
     
     public void testVar(){
-        pVar $anyInt = pVar.of("int $name$");
-        pVar $anyString = pVar.of("String $name$");
-        pVar $anyInit = pVar.of("$type$ $name$ = $init$");
+        p_var $anyInt = p_var.of("int $name$");
+        p_var $anyString = p_var.of("String $name$");
+        p_var $anyInit = p_var.of("$type$ $name$ = $init$");
         
         VariableDeclarator v = Ast.variable("int count");
         assertEquals( $anyInt.fill("count"), v );
@@ -39,11 +39,11 @@ public class pVarTest extends TestCase {
         //I want to list all var names
         
         List<String> varNames = new ArrayList<>();
-        pVar.forEach(_c, vv -> varNames.add(vv.getNameAsString()));        
+        p_var.forEach(_c, vv -> varNames.add(vv.getNameAsString()));        
         System.out.println( varNames );
         
         List<String> typeNames = new ArrayList<>();
-        pVar.forEach(_c, vv -> typeNames.add(vv.getTypeAsString()));
+        p_var.forEach(_c, vv -> typeNames.add(vv.getTypeAsString()));
         System.out.println( typeNames );
         
     }

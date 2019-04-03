@@ -29,7 +29,7 @@ import java.util.function.Consumer;
  * 
  * @param <Q> the TYPE of the node being queried for (likely a {@link Node} or {@link _model._node}
  */
-public interface pQuery<Q> {
+public interface p_query<Q> {
 
     /** 
      * Find and return a List of all matching node types within _n 
@@ -100,21 +100,21 @@ public interface pQuery<Q> {
     /**
      * 
      */
-    public static class $args implements Map<String,Object>{
+    public static class args implements Map<String,Object>{
         
         /**
          * 
          */
         private Tokens tokens;
         
-        public static $args of( Tokens ts ){
+        public static args of( Tokens ts ){
             if( ts == null ){
                 return null;
             }
-            return new $args(ts);
+            return new args(ts);
         }
         
-        public $args( Tokens ts ){
+        public args( Tokens ts ){
             this.tokens = ts;
         }
         
@@ -160,21 +160,6 @@ public interface pQuery<Q> {
             }
             return Stmt.block( obj.toString() ).getStatements();            
         }
-        
-        /** 
-         * check that it has this this exact key VALUE combination
-         * @param key     
-         * @param value     
-         * @return true if 
-         
-        public boolean is( String key, String value){
-            Object obj = get(key);
-            if( obj == null){ 
-                return false;
-            }
-            return obj.toString().equals( value );
-        }
-        */ 
                
         /** 
          * is the clause with the key equal to the Type?
@@ -212,12 +197,12 @@ public interface pQuery<Q> {
             return stmt.toString(Ast.PRINT_NO_COMMENTS).equals(st.toString(Ast.PRINT_NO_COMMENTS));
         }        
         
-        public boolean is( $args cs ){
+        public boolean is( args cs ){
             return this.equals(cs );
         }
         
         public boolean is( Tokens tks ){
-            return this.equals($args.of( tks) );
+            return this.equals(args.of( tks) );
         }
 
         
@@ -259,6 +244,11 @@ public interface pQuery<Q> {
             return value.toString().equals( o);
         }
         
+        /**
+         * 
+         * @param keyValues
+         * @return 
+         */
         public boolean is( Object...keyValues ){
             if( keyValues.length % 2 == 1){
                 throw new DraftException("Expected an even number of key values, got ("+ keyValues.length+")");
@@ -274,10 +264,10 @@ public interface pQuery<Q> {
         
         @Override
         public boolean equals(Object o ){
-            if( o == null || !o.getClass().equals($args.class ) ) {
+            if( o == null || !o.getClass().equals(args.class ) ) {
                 return false;
             }
-            $args co = ($args)o;
+            args co = (args)o;
             return Objects.equals( co.tokens, tokens);            
         }
 
@@ -353,12 +343,12 @@ public interface pQuery<Q> {
     }
     
     /**
-     * a selected entity from a prototype uery
+     * a selected entity from a prototype query
      * @param <T> 
      */
     interface selected<T> {
         
-        $args getArgs();        
+        args getArgs();        
         
         default Expression expr(String key){
             return getArgs().expr(key);            

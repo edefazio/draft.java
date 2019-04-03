@@ -1,6 +1,6 @@
 package draft.java.proto;
 
-import draft.java.proto.pMethod;
+import draft.java.proto.p_method;
 import draft.java.Ast;
 import draft.java._class;
 import draft.java._field;
@@ -10,15 +10,15 @@ import draft.java.macro._static;
 import draft.java.runtime._javac;
 import junit.framework.TestCase;
 
-public class pMethodTest extends TestCase {
+public class p_methodTest extends TestCase {
     
     public void testStaticMethodReplaceRemoveList(){
-        pMethod $set = pMethod.of(
+        p_method $set = p_method.of(
             "public void set$Name$($type$ $name$){",
             "this.$name$ = $name$;",
             "}");
         
-        pMethod $setFleunt = pMethod.of(
+        p_method $setFleunt = p_method.of(
             "public $className$ set$Name$( $type$ $name$ ){",
             "this.$name$ = $name$;",
             "return this;",
@@ -63,14 +63,14 @@ public class pMethodTest extends TestCase {
     }
 
     public void testAnonymousBodyWithMacros(){
-        pMethod $m = pMethod.of(new Object(){
+        p_method $m = p_method.of(new Object(){
             @_static void a(){ System.out.println(1); }
         });
         _method _m = $m.construct();
         assertTrue( _m.isStatic() );
     }
     public void testAnonymousBody(){
-        pMethod $m = pMethod.of( new Object(){
+        p_method $m = p_method.of( new Object(){
             @_remove class $type${}
             @_remove $type$ $name$;
             /**
@@ -99,11 +99,11 @@ public class pMethodTest extends TestCase {
 
     public void testGetterSetter(){
 
-        pMethod $get = pMethod.of("public $type$ get$Name$(){ return $name$; }");
-        pMethod $getThis = pMethod.of("public $type$ get$Name$(){ return this.$name$; }");
+        p_method $get = p_method.of("public $type$ get$Name$(){ return $name$; }");
+        p_method $getThis = p_method.of("public $type$ get$Name$(){ return this.$name$; }");
 
 
-        pMethod $set = pMethod.of("public void set$Name$( $type$ $name$){ this.$name$ = $name$; }");
+        p_method $set = p_method.of("public void set$Name$( $type$ $name$){ this.$name$ = $name$; }");
 
         _method composed = $get.fill(int.class, "x" );
         System.out.println( composed );

@@ -3,8 +3,8 @@ package draft.java.macro;
 import com.github.javaparser.ast.stmt.BlockStmt;
 import draft.Tokens;
 import draft.java.*;
-import draft.java.proto.pMethod;
-import draft.java.proto.pStmt;
+import draft.java.proto.p_method;
+import draft.java.proto.p_stmt;
 
 import java.lang.annotation.* ;
 import java.util.List;
@@ -31,12 +31,12 @@ public @interface _autoEquals {
         static final Predicate<_field> FIELDS_FOR_EQUALS = f -> !f.isStatic();
 
         /** template statements for typesEqual based on the field TYPE */
-        static pStmt $float = pStmt.of("eq = eq && Float.compare(this.$name$,test.$name$) == 0;");
-        static pStmt $double = pStmt.of("eq = eq && Double.compare(this.$name$,test.$name$) == 0;");
-        static pStmt $primitive = pStmt.of("eq = eq && this.$name$ == test.$name$;");
-        static pStmt $arrayOfPrimitives = pStmt.of("eq = eq && java.util.Arrays.equals(this.$name$,test.$name$);");
-        static pStmt $arrayOfObject = pStmt.of("eq = eq && java.util.Arrays.deepEquals(this.$name$,test.$name$);");
-        static pStmt $default = pStmt.of("eq = eq && java.util.Objects.equals(this.$name$,test.$name$);");
+        static p_stmt $float = p_stmt.of("eq = eq && Float.compare(this.$name$,test.$name$) == 0;");
+        static p_stmt $double = p_stmt.of("eq = eq && Double.compare(this.$name$,test.$name$) == 0;");
+        static p_stmt $primitive = p_stmt.of("eq = eq && this.$name$ == test.$name$;");
+        static p_stmt $arrayOfPrimitives = p_stmt.of("eq = eq && java.util.Arrays.equals(this.$name$,test.$name$);");
+        static p_stmt $arrayOfObject = p_stmt.of("eq = eq && java.util.Arrays.deepEquals(this.$name$,test.$name$);");
+        static p_stmt $default = p_stmt.of("eq = eq && java.util.Objects.equals(this.$name$,test.$name$);");
 
         /** dummy class only used as a template parameter */
         private class $className${}
@@ -66,7 +66,7 @@ public @interface _autoEquals {
          }
          */
 
-        static pMethod $equals = pMethod.of(
+        static p_method $equals = p_method.of(
             "public boolean equals(Object o){",
             "if(o == null) {",
             "   return false;",

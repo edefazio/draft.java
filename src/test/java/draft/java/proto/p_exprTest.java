@@ -11,19 +11,19 @@ import java.util.List;
 import java.util.function.Predicate;
 import static junit.framework.TestCase.assertNotNull;
 
-public class pExprTest extends TestCase {
+public class p_exprTest extends TestCase {
 
     public void testGenericExpr(){
         //LocalClassDeclarationExpr lc =  Expr.("class $any${}");
         
         //find EVERY lambda with a comment
-        pExpr $anyLambda = pExpr.of("($params$)->$body$", e -> e.getComment().isPresent() );
+        p_expr $anyLambda = p_expr.of("($params$)->$body$", e -> e.getComment().isPresent() );
         
         System.out.println( Expr.lambda("/** comment */ ()->true") );
         
         assertTrue( $anyLambda.matches( Expr.lambda("/** comment */ ()->true") ) );
         
-        assertTrue( pExpr.lambda(l -> l.getComment().isPresent() ).matches("/** comment */ ()->true;") );
+        assertTrue( p_expr.lambda(l -> l.getComment().isPresent() ).matches("/** comment */ ()->true;") );
         
         /** A comment */
         //lass C{}
@@ -43,8 +43,8 @@ public class pExprTest extends TestCase {
             int a = 1;
             int b = 3 + 4;
         });        
-        assertEquals( 1, pExpr.list(_c, Expr.of(2) ).size());
-        assertEquals( 4, pExpr.of(2).$("2", "number").listIn(_c).size());
+        assertEquals( 1, p_expr.list(_c, Expr.of(2) ).size());
+        assertEquals( 4, p_expr.of(2).$("2", "number").listIn(_c).size());
     }
     
     
@@ -55,7 +55,7 @@ public class pExprTest extends TestCase {
 
     public void test$exprPostParameterize(){
         //a template expression
-        pExpr $e = pExpr.of("1 + 2");
+        p_expr $e = p_expr.of("1 + 2");
         //post parameterize the + as an operator
         $e.$("+", "op");
 
@@ -75,7 +75,7 @@ public class pExprTest extends TestCase {
         //select returns the selected tokens
         assertTrue($e.select(Expr.of("1 * 2")).args.is("op", "*"));
 
-        $e = pExpr.of("$a$ + $b$");
+        $e = p_expr.of("$a$ + $b$");
         @aa(1 + 2)
         class G{
             int f = 3 + 5;
@@ -89,60 +89,60 @@ public class pExprTest extends TestCase {
     }
 
     public void testExprOf(){
-        pExpr $e = pExpr.of("1 + 2");
+        p_expr $e = p_expr.of("1 + 2");
         assertEquals( $e.construct(), Expr.of("1 + 2"));
         assertTrue( $e.matches(Expr.of("1+2")));
 
-        $e = pExpr.of("$a$ + $b$");
+        $e = p_expr.of("$a$ + $b$");
         assertTrue( $e.matches(Expr.of("1+2")));
     }
 
     public void testExprTypes(){
         boolean var = true;
 
-        assertTrue( pExpr.assign("$var$=100").matches("y=100"));
-        assertTrue(pExpr.arrayAccess("arr[$index$]").matches("arr[0]"));
-        assertTrue( pExpr.arrayCreation("new $arr$[][]").matches("new xy[][]"));
-        assertTrue(pExpr.arrayInitializer("{$any$}").matches("{1,2,3}"));
-        assertTrue(pExpr.binary("$left$ > $right$").matches("a > b"));
-        assertTrue(pExpr.of(true).matches("true"));
-        assertTrue(pExpr.booleanLiteral(true).matches("true"));
-        assertTrue(pExpr.of('c').matches( "'c'"));
-        assertTrue(pExpr.cast("($type$)o").matches("(String)o"));
-        assertTrue(pExpr.classExpr("$type$.class").matches("String.class"));
-        assertTrue( pExpr.conditional("($left$ < $right$) ? $left$ : $right$;").matches("(a < b) ? a : b;"));
+        assertTrue( p_expr.assign("$var$=100").matches("y=100"));
+        assertTrue(p_expr.arrayAccess("arr[$index$]").matches("arr[0]"));
+        assertTrue( p_expr.arrayCreation("new $arr$[][]").matches("new xy[][]"));
+        assertTrue(p_expr.arrayInitializer("{$any$}").matches("{1,2,3}"));
+        assertTrue(p_expr.binary("$left$ > $right$").matches("a > b"));
+        assertTrue(p_expr.of(true).matches("true"));
+        assertTrue(p_expr.booleanLiteral(true).matches("true"));
+        assertTrue(p_expr.of('c').matches( "'c'"));
+        assertTrue(p_expr.cast("($type$)o").matches("(String)o"));
+        assertTrue(p_expr.classExpr("$type$.class").matches("String.class"));
+        assertTrue( p_expr.conditional("($left$ < $right$) ? $left$ : $right$;").matches("(a < b) ? a : b;"));
         assertEquals( Expr.of(3.14f), Expr.of(3.14f));
         assertEquals( Expr.of(12.3), Expr.of("12.3"));
         assertEquals( Expr.of("12.3f"), Expr.of("12.3f"));
-        assertTrue(pExpr.doubleLiteral(12.3).matches("12.3"));
-        assertTrue(pExpr.doubleLiteral("12.3f").matches("12.3f"));
-        assertTrue(pExpr.enclosedExpr("($a$ + $b$)").matches("(100 + 200)"));
-        assertTrue(pExpr.fieldAccess("my.$field$").matches("my.a"));
-        assertTrue(pExpr.intLiteral(100).matches("100"));
-        assertTrue(pExpr.of(100).matches("100"));
-        assertTrue(pExpr.instanceOf("$obj$ instanceof String").matches("a instanceof String"));
-        assertTrue( pExpr.longLiteral(100).matches( Expr.longLiteral( "100")));
-        assertTrue(pExpr.lambda("$param$ -> a.$method$()").matches("x-> a.toString()"));
-        assertTrue(pExpr.methodCall("$methodCall$($params$)").matches("a()"));
-        assertTrue(pExpr.methodCall("$methodCall$($params$)").matches("a(1,2,3)"));
-        assertTrue(pExpr.methodReference("$target$::$methodName$").matches("String::toString"));
-        assertTrue(pExpr.nullExpr().matches("null"));
-        assertTrue(pExpr.name("eric").matches("eric"));
-        assertTrue(pExpr.objectCreation("new $Object$()").matches("new String()"));
-        assertTrue(pExpr.objectCreation("new $Object$($params$)").matches("new Date(101010)"));
-        assertTrue(pExpr.stringLiteral("Hello $name$").matches("\"Hello Eric\""));
-        assertTrue(pExpr.superExpr().matches("super"));
-        assertTrue( pExpr.thisExpr().matches("this"));
-        assertTrue( pExpr.typeExpr("$type$").matches(Expr.typeExpr("AType")));
-        assertTrue( pExpr.unary("!$var$").matches("!isDead"));
-        assertTrue(pExpr.varDecl("int $var$").matches("int x"));
+        assertTrue(p_expr.doubleLiteral(12.3).matches("12.3"));
+        assertTrue(p_expr.doubleLiteral("12.3f").matches("12.3f"));
+        assertTrue(p_expr.enclosedExpr("($a$ + $b$)").matches("(100 + 200)"));
+        assertTrue(p_expr.fieldAccess("my.$field$").matches("my.a"));
+        assertTrue(p_expr.intLiteral(100).matches("100"));
+        assertTrue(p_expr.of(100).matches("100"));
+        assertTrue(p_expr.instanceOf("$obj$ instanceof String").matches("a instanceof String"));
+        assertTrue( p_expr.longLiteral(100).matches( Expr.longLiteral( "100")));
+        assertTrue(p_expr.lambda("$param$ -> a.$method$()").matches("x-> a.toString()"));
+        assertTrue(p_expr.methodCall("$methodCall$($params$)").matches("a()"));
+        assertTrue(p_expr.methodCall("$methodCall$($params$)").matches("a(1,2,3)"));
+        assertTrue(p_expr.methodReference("$target$::$methodName$").matches("String::toString"));
+        assertTrue(p_expr.nullExpr().matches("null"));
+        assertTrue(p_expr.name("eric").matches("eric"));
+        assertTrue(p_expr.objectCreation("new $Object$()").matches("new String()"));
+        assertTrue(p_expr.objectCreation("new $Object$($params$)").matches("new Date(101010)"));
+        assertTrue(p_expr.stringLiteral("Hello $name$").matches("\"Hello Eric\""));
+        assertTrue(p_expr.superExpr().matches("super"));
+        assertTrue( p_expr.thisExpr().matches("this"));
+        assertTrue( p_expr.typeExpr("$type$").matches(Expr.typeExpr("AType")));
+        assertTrue( p_expr.unary("!$var$").matches("!isDead"));
+        assertTrue(p_expr.varDecl("int $var$").matches("int x"));
 
-        assertTrue( pExpr.of("0b1010000101000101101000010100010110100001010001011010000101000101L")
+        assertTrue( p_expr.of("0b1010000101000101101000010100010110100001010001011010000101000101L")
                 .matches("0b1010000101000101101000010100010110100001010001011010000101000101L"));
     }
 
     public void testSelect(){
-        pExpr<IntegerLiteralExpr> e = pExpr.intLiteral("1").$("1", "val");
+        p_expr<IntegerLiteralExpr> e = p_expr.intLiteral("1").$("1", "val");
         assertTrue(e.matches("1"));
         class C{
             public void f(){
@@ -157,7 +157,7 @@ public class pExprTest extends TestCase {
                 System.out.println("another method"+6+" values");
             }
         }
-        List<pExpr.Select<IntegerLiteralExpr>> sel =  e.selectListIn( _class.of(C.class) );
+        List<p_expr.Select<IntegerLiteralExpr>> sel =  e.selectListIn( _class.of(C.class) );
         assertEquals(6, sel.size()); //verify that I have (6) selections
 
         //System.out.println(">>"+ sel.get(0).tokens );
@@ -176,19 +176,19 @@ public class pExprTest extends TestCase {
     
     public void testAPI(){
         
-        assertTrue(pExpr.arrayAccess(a -> a.getIndex().isIntegerLiteralExpr() ).matches("a[1]"));
-        assertTrue(pExpr.arrayAccess("a[$any$]", a -> a.getIndex().isIntegerLiteralExpr() ).matches("a[1]"));
-        assertFalse(pExpr.arrayAccess("a[$any$]", a -> a.getIndex().isIntegerLiteralExpr() ).matches("a[b.count()]"));
+        assertTrue(p_expr.arrayAccess(a -> a.getIndex().isIntegerLiteralExpr() ).matches("a[1]"));
+        assertTrue(p_expr.arrayAccess("a[$any$]", a -> a.getIndex().isIntegerLiteralExpr() ).matches("a[1]"));
+        assertFalse(p_expr.arrayAccess("a[$any$]", a -> a.getIndex().isIntegerLiteralExpr() ).matches("a[b.count()]"));
         _class _c = _class.of("C").field("int i=1;");
-        assertTrue( pExpr.replace(_c, "1", "2").getField("i").initIs(2));
+        assertTrue( p_expr.replace(_c, "1", "2").getField("i").initIs(2));
         
-        assertTrue(pExpr.list(_c, "2").size() == 1);
+        assertTrue(p_expr.list(_c, "2").size() == 1);
         
         //assertTrue( $expr.list(_c, "2").size() == 1 );
         
         //look for every literal
-        pExpr $bin = 
-            pExpr.binary("$a$ > $b$", 
+        p_expr $bin = 
+            p_expr.binary("$a$ > $b$", 
                 b-> b.getLeft().isIntegerLiteralExpr() && b.getRight().isIntegerLiteralExpr());
         assertTrue($bin.matches("3 > 2"));
         assertFalse($bin.matches("3L > 2"));
@@ -210,15 +210,15 @@ public class pExprTest extends TestCase {
             
         }             
         _class _c = _class.of(C.class);
-        assertNotNull( pExpr.intLiteral("2").firstIn(_c));        
-        assertNotNull( pExpr.intLiteral(1).firstIn(_c));                
+        assertNotNull( p_expr.intLiteral("2").firstIn(_c));        
+        assertNotNull( p_expr.intLiteral(1).firstIn(_c));                
         
         Predicate<IntegerLiteralExpr> p = (IntegerLiteralExpr i)-> i.asInt() % 2 == 1;
-        pExpr.intLiteral( p );
+        p_expr.intLiteral( p );
         
-        assertNotNull( pExpr.intLiteral( (i)-> i.asInt() % 2 == 1 ).firstIn(_c)); 
+        assertNotNull( p_expr.intLiteral( (i)-> i.asInt() % 2 == 1 ).firstIn(_c)); 
                
-        pExpr $e = pExpr.of(1).$("1", "num");
+        p_expr $e = p_expr.of(1).$("1", "num");
         
     }
 }
