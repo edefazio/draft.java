@@ -29,7 +29,7 @@ import java.util.function.Consumer;
  * 
  * @param <Q> the TYPE of the node being queried for (likely a {@link Node} or {@link _model._node}
  */
-public interface p_query<Q> {
+public interface _pQuery<Q> {
 
     /** 
      * Find and return a List of all matching node types within _n 
@@ -206,42 +206,49 @@ public interface p_query<Q> {
         }
 
         
-        public boolean is( String key, Object value ){
+        public boolean is( String key, Object expectedValue ){
             //this matches nullExpr or simply not there
             Object o = get(key);
             
-            if( value == null || value instanceof NullLiteralExpr ){                
+            if( expectedValue == null || expectedValue instanceof NullLiteralExpr ){                
                 if( !( o == null || o instanceof NullLiteralExpr || o.equals("null"))){
                     return false;
                 }
                 return true;
             }            
-            if( value instanceof String && o instanceof String){
-                //System.out.println("both equals String"+ value +" "+o );
-                String v = (String)value;
+            if( expectedValue instanceof String && o instanceof String){
+                //System.out.println("both equals String"+ expectedValue +" "+o );
+                String v = (String)expectedValue;
                 String s = (String)o;
                 
                 if( s.startsWith("\"") && s.endsWith("\"") ){
-                    return v.equals( s.substring(1, s.length() -1) );
+                    s = s.substring(1, s.length() -1);
+                    //return v.equals( s.substring(1, s.length() -1) );
                 }
-                return o.equals(value);
+                if( v.startsWith("\"") && v.endsWith("\"") ){
+                    v = v.substring(1, v.length() -1);
+                    //return v.equals( s.substring(1, s.length() -1) );
+                }
+                return s.equals(v);
+                //return o.equals(expectedValue);
             }
-            if( value instanceof Expression ){
-                return Expr.equatesTo((Expression)value, get(key) );
+            if( expectedValue instanceof Expression ){
+                //System.out.println( "Value is Expression");
+                return Expr.equatesTo((Expression)expectedValue, get(key) );
             }
-            else if( value instanceof String ){                
+            else if( expectedValue instanceof String ){                
                 try{
-                    return Expr.equatesTo( Expr.of( (String)value ), o);
+                    return Expr.equatesTo(Expr.of((String)expectedValue ), o);
                 }
                 catch(Exception e){
                     
                 }
-                return Objects.equals( value, get(key) );
+                return Objects.equals(expectedValue, get(key) );
             }      
-            else if( o.getClass().equals( value.getClass()) ){
-                return o.equals(value);
+            else if( o.getClass().equals(expectedValue.getClass()) ){
+                return o.equals(expectedValue);
             }
-            return value.toString().equals( o);
+            return expectedValue.toString().equals( o);
         }
         
         /**
@@ -256,6 +263,7 @@ public interface p_query<Q> {
             for(int i=0; i<keyValues.length; i+=2){
                 String key = keyValues[i].toString();
                 if( ! is( key, get(key))){
+                    System.out.println( "NOT "+key+" "+get(key));
                     return false;
                 }
             }

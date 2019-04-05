@@ -6,19 +6,19 @@ import draft.java._class;
 import java.util.regex.Pattern;
 import junit.framework.TestCase;
 
-public class p_annoTest extends TestCase {
+public class _pAnnoTest extends TestCase {
  
     
     public void testAny(){
         _class _c = _class.of("C");
-        assertEquals( 0, p_anno.list(_c).size());
+        assertEquals( 0, _pAnno.list(_c).size());
         
         //add a top level annotation
         _c.annotate(Deprecated.class);
-        assertEquals( 1, p_anno.list(_c).size());
+        assertEquals( 1, _pAnno.list(_c).size());
         
-        p_anno.forEach(_c, a-> System.out.println(a.getName()));
-        p_anno.forEach(_c, a-> !a.hasValues(), a-> System.out.println( a) );
+        _pAnno.forEach(_c, a-> System.out.println(a.getName()));
+        _pAnno.forEach(_c, a-> !a.hasValues(), a-> System.out.println( a) );
     }
     
     @interface R{ int value() default 10; }
@@ -26,42 +26,42 @@ public class p_annoTest extends TestCase {
    
     public void testMatchClass(){
         
-        assertTrue(p_anno.of(R.class).matches("R"));
-        assertTrue(p_anno.of(R.class).matches("@draft.java.proto.p_annoTest.R"));
+        assertTrue(_pAnno.of(R.class).matches("R"));
+        assertTrue(_pAnno.of(R.class).matches("@draft.java.proto._pAnnoTest.R"));
         
-        assertTrue(p_anno.of(R.class).matches("R()"));
-        assertTrue(p_anno.of(R.class).matches("@draft.java.proto.p_annoTest.R()"));
+        assertTrue(_pAnno.of(R.class).matches("R()"));
+        assertTrue(_pAnno.of(R.class).matches("@draft.java.proto._pAnnoTest.R()"));
         
-        assertTrue(p_anno.of(R.class).matches("R(1)"));
-        assertTrue(p_anno.of(R.class).matches("@draft.java.proto.p_annoTest.R(2)"));        
+        assertTrue(_pAnno.of(R.class).matches("R(1)"));
+        assertTrue(_pAnno.of(R.class).matches("@draft.java.proto._pAnnoTest.R(2)"));        
         
-        assertTrue(p_anno.of(R.class).matches("R(value=1)"));
-        assertTrue(p_anno.of(R.class).matches("@draft.java.proto.p_annoTest.R(value=2)"));   
+        assertTrue(_pAnno.of(R.class).matches("R(value=1)"));
+        assertTrue(_pAnno.of(R.class).matches("@draft.java.proto._pAnnoTest.R(value=2)"));   
         
-        assertTrue(p_anno.of(R.class, "()").matches("@draft.java.proto.p_annoTest.R()"));   
-        assertTrue(p_anno.of(R.class, "()").matches("R()"));   
+        assertTrue(_pAnno.of(R.class, "()").matches("@draft.java.proto._pAnnoTest.R()"));   
+        assertTrue(_pAnno.of(R.class, "()").matches("R()"));   
         
-        assertTrue(p_anno.of(R.class, "($any$)").matches("@draft.java.proto.p_annoTest.R()"));   
-        assertTrue(p_anno.of(R.class, "($any$)").matches("R()"));   
+        assertTrue(_pAnno.of(R.class, "($any$)").matches("@draft.java.proto._pAnnoTest.R()"));   
+        assertTrue(_pAnno.of(R.class, "($any$)").matches("R()"));   
         
-        assertTrue(p_anno.of(R.class, "($any$)").matches("@draft.java.proto.p_annoTest.R(1)"));   
-        assertTrue(p_anno.of(R.class, "($any$)").matches("R(2)"));
+        assertTrue(_pAnno.of(R.class, "($any$)").matches("@draft.java.proto._pAnnoTest.R(1)"));   
+        assertTrue(_pAnno.of(R.class, "($any$)").matches("R(2)"));
         
-        assertTrue(p_anno.of(R.class, "($any$)").select("@draft.java.proto.p_annoTest.R(1)").is("any", Expr.of(1) ) );   
-        assertTrue(p_anno.of(R.class, "($any$)").select("@draft.java.proto.p_annoTest.R(1)").is("any", "1" ) );  
+        assertTrue(_pAnno.of(R.class, "($any$)").select("@draft.java.proto._pAnnoTest.R(1)").is("any", Expr.of(1) ) );   
+        assertTrue(_pAnno.of(R.class, "($any$)").select("@draft.java.proto._pAnnoTest.R(1)").is("any", "1" ) );  
        
-        assertTrue(p_anno.of(R.class, "($any$)").select("@draft.java.proto.p_annoTest.R(1)").is("any", Expr.of(1) ) );   
-        assertTrue(p_anno.of(R.class, "($any$)").select("@draft.java.proto.p_annoTest.R(1)").is("any", "1" ) );  
+        assertTrue(_pAnno.of(R.class, "($any$)").select("@draft.java.proto._pAnnoTest.R(1)").is("any", Expr.of(1) ) );   
+        assertTrue(_pAnno.of(R.class, "($any$)").select("@draft.java.proto._pAnnoTest.R(1)").is("any", "1" ) );  
         
         
         
-        assertTrue(p_anno.of(R.class, "($any$)").matches("R(2)"));
+        assertTrue(_pAnno.of(R.class, "($any$)").matches("R(2)"));
         
-        assertTrue(p_anno.of(S.class, "($any$)").matches("S()"));
-        assertTrue(p_anno.of(S.class, "($any$)").matches("S(Float.class)"));
-        assertTrue(p_anno.of(S.class, "($any$)", a-> a.hasValue(v -> v.isClassExpr())).matches("@S(Float.class)"));
-        assertFalse(p_anno.of(S.class, "($any$)", a-> a.hasValue(v -> v.isClassExpr())).matches("@S"));
-        assertFalse(p_anno.of(S.class, "($any$)", a-> a.hasValue(v -> v.isClassExpr())).matches("@S({Float.class, String.class})"));
+        assertTrue(_pAnno.of(S.class, "($any$)").matches("S()"));
+        assertTrue(_pAnno.of(S.class, "($any$)").matches("S(Float.class)"));
+        assertTrue(_pAnno.of(S.class, "($any$)", a-> a.hasValue(v -> v.isClassExpr())).matches("@S(Float.class)"));
+        assertFalse(_pAnno.of(S.class, "($any$)", a-> a.hasValue(v -> v.isClassExpr())).matches("@S"));
+        assertFalse(_pAnno.of(S.class, "($any$)", a-> a.hasValue(v -> v.isClassExpr())).matches("@S({Float.class, String.class})"));
         
     }
     
@@ -72,9 +72,9 @@ public class p_annoTest extends TestCase {
     public void testFullyQualified(){        
         // when I do this, I need to change the regex as EITHER
         // 
-        p_anno $a = p_anno.of(R.class);
+        _pAnno $a = _pAnno.of(R.class);
         
-        @draft.java.proto.p_annoTest.R
+        @draft.java.proto._pAnnoTest.R
         class C{}        
         _class _c = _class.of(C.class);        
         assertNotNull( $a.firstIn(_c) );
@@ -117,20 +117,20 @@ public class p_annoTest extends TestCase {
         }
         
         _class _c = _class.of(C.class);
-        assertNotNull( p_anno.first(_c, "name($any$)") );
+        assertNotNull( _pAnno.first(_c, "name($any$)") );
         
         //verify that we can find 
-        assertNotNull( p_anno.first(_c, "name($any$)", 
+        assertNotNull( _pAnno.first(_c, "name($any$)", 
                 //there is an Integer attribute value that is odd
                 (a)-> a.hasValue(e -> e.isIntegerLiteralExpr() && e.asIntegerLiteralExpr().asInt() % 2 == 1)) );
         
-        assertNotNull( p_anno.first(_c, "name($any$)", (a) -> a.hasValue(3)) );
-        assertNotNull( p_anno.first(_c, "name(3)"));        
-        assertNotNull( p_anno.first(_c, "name(3)", _a-> _a.hasValue(3)) );
+        assertNotNull( _pAnno.first(_c, "name($any$)", (a) -> a.hasValue(3)) );
+        assertNotNull( _pAnno.first(_c, "name(3)"));        
+        assertNotNull( _pAnno.first(_c, "name(3)", _a-> _a.hasValue(3)) );
     }
      
     public void testStatic$anno(){
-        p_anno $a = p_anno.of("@name");
+        _pAnno $a = _pAnno.of("@name");
         assertEquals( _anno.of("@name"), $a.construct());
         assertTrue( $a.matches(_anno.of("@name")));
 
@@ -141,14 +141,14 @@ public class p_annoTest extends TestCase {
         }
         _class _c = _class.of(C.class);
         assertEquals( 3, $a.selectListIn(_c).size() );
-        _c = $a.replaceIn(_c, p_anno.of("@name2"));
+        _c = $a.replaceIn(_c, _pAnno.of("@name2"));
         assertEquals( 0, $a.selectListIn(_c).size() ); //verify they are all changed
-        assertEquals( 3, p_anno.of("@name2").selectListIn(_c).size() ); //verify they are all changed
+        assertEquals( 3, _pAnno.of("@name2").selectListIn(_c).size() ); //verify they are all changed
     }
 
     public void testDynamicAnno(){
         //any @NAME annotation with a prefix
-        p_anno $a = p_anno.of("@name(prefix=$any$)");
+        _pAnno $a = _pAnno.of("@name(prefix=$any$)");
 
         assertTrue( $a.matches( _anno.of("@name(prefix=\"1\")") ));
 
@@ -168,7 +168,7 @@ public class p_annoTest extends TestCase {
 
         // In this case, it'd be better to just use Walk
         // Here we Transpose the property information from @NAME to the @name2 annotation
-        $a.replaceIn(_c, p_anno.of("@name2(string=$any$)") );
+        $a.replaceIn(_c, _pAnno.of("@name2(string=$any$)") );
         System.out.println(_c );
 
         _anno _a = $a.construct("any", "\"Some String\"");

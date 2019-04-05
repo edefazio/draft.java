@@ -24,34 +24,34 @@ import java.util.function.Predicate;
  * Any Ast Node that can be matched, extracted
  * @author Eric
  */
-public class p_node implements p_query<Node> {
+public class _pNode implements _pQuery<Node> {
     
     public static <N extends Node> N replace(  N astRootNode, String source, String target ){
-        return p_node.of(source).replaceIn(astRootNode, target);
+        return _pNode.of(source).replaceIn(astRootNode, target);
     }
     
-    public static p_node of( String name ){
-        return new p_node( name );
+    public static _pNode of( String name ){
+        return new _pNode( name );
     }
     public Stencil pattern;
     
     public Predicate<Node> constraint = t -> true;
     
-    public p_node( String pattern ){
+    public _pNode( String pattern ){
         this( Stencil.of(pattern) );
     }
     
-    public p_node( Stencil pattern ){
+    public _pNode( Stencil pattern ){
         this.pattern = pattern;
         this.constraint = t-> true;
     }
     
-    public p_node constraint( Predicate<Node> constraint ){
+    public _pNode constraint( Predicate<Node> constraint ){
         this.constraint = constraint;
         return this;
     }
     
-    public p_node $(String target, String $Name) {
+    public _pNode $(String target, String $Name) {
         this.pattern = this.pattern.$(target, $Name);
         return this;
     }
@@ -135,7 +135,7 @@ public class p_node implements p_query<Node> {
     private static boolean replaceNode( Node target, Node replacement ){
         boolean isRep = false;
         
-        System.out.println( "replacing "+target+" with "+ replacement);
+        //System.out.println( "replacing "+target+" with "+ replacement);
         if( target.getClass() != replacement.getClass() ){
             
             //System.out.println( "replacing "+target.getClass()+" with "+ replacement.getClass());
@@ -152,10 +152,10 @@ public class p_node implements p_query<Node> {
         }
         //
         if( ! isRep ){      
-            System.out.println( " NEITHER ");
+            //System.out.println( " NEITHER ");
             isRep = target.replace(replacement);                                
         }
-        System.out.println( isRep + " "+ target+" "+replacement );
+        //System.out.println( isRep + " "+ target+" "+replacement );
         return isRep;
         
     }
@@ -171,7 +171,7 @@ public class p_node implements p_query<Node> {
     }
      
     
-    public <N extends _node> N replaceIn(N _n, p_node $replacement) {
+    public <N extends _node> N replaceIn(N _n, _pNode $replacement) {
         if( _n instanceof _type && ((_type)_n).isTopClass()){            
             replaceIn( ((_type)_n).findCompilationUnit(), $replacement);
             return _n;
@@ -180,7 +180,7 @@ public class p_node implements p_query<Node> {
         return _n;
     }
     
-    public <N extends Node> N replaceIn(N astRootNode, p_node $replacement) {
+    public <N extends Node> N replaceIn(N astRootNode, _pNode $replacement) {
         astRootNode.walk(n -> {
             //System.out.println( "+++++ ON NODE "+ n );
             if( this.constraint.test(n) ) {
@@ -209,7 +209,7 @@ public class p_node implements p_query<Node> {
     }
     
     public <N extends Node> N replaceIn(N astRootNode, String replacement) {
-        System.out.println( "IN WALK PATTERN "+ this.pattern );
+        //System.out.println( "IN WALK PATTERN "+ this.pattern );
         
         astRootNode.walk(n -> {
                //System.out.println( "   !>>>" + n.getClass() );
@@ -218,11 +218,11 @@ public class p_node implements p_query<Node> {
                 //System.out.println( "   >>>"+st);
                 Tokens ts = this.pattern.deconstruct( st );
                 if( ts != null ){
-                    System.out.println( " ***** FOUND "+this.pattern);   
+                    //System.out.println( " ***** FOUND "+this.pattern);   
                     
                     boolean isRep = replaceNode( n, replacement );                    
                     if( !isRep ){
-                        System.out.println( "NOT REPALCED");
+                        //System.out.println( "NOT REPALCED");
                     }
                 }                
             }
@@ -280,7 +280,7 @@ public class p_node implements p_query<Node> {
      * A Matched Selection result returned from matching a prototype $field
      * inside of some Node or _node
      */
-    public static class Select implements p_query.selected, p_query.selectedAstNode<Node> {
+    public static class Select implements _pQuery.selected, _pQuery.selectedAstNode<Node> {
         public Node node;
         public args args;
 

@@ -1,7 +1,7 @@
 package draft.java.macro;
 
 import draft.java.*;
-import draft.java.proto.p_method;
+import draft.java.proto._pMethod;
 
 import java.lang.annotation.*;
 import java.util.List;
@@ -18,7 +18,7 @@ public @interface _autoGet {
 
     class Macro implements _macro<_type> {
 
-        public static final p_method $GET = p_method.of(
+        public static final _pMethod $GET = _pMethod.of(
                 "public $type$ get$Name$(){ return $name$; }");
 
         @Override

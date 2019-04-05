@@ -779,9 +779,9 @@ public interface _type<AST extends TypeDeclaration & NodeWithJavadoc & NodeWithM
     }
 
     default T setPublic(){
-        this.ast().setPublic(true);
         this.ast().setPrivate(false);
         this.ast().setProtected(false);
+        this.ast().setPublic(true);        
         return (T)this;
     }
 

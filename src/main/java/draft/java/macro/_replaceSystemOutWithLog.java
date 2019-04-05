@@ -22,7 +22,7 @@ import java.util.stream.Collectors;
 public class _replaceSystemOutWithLog implements _macro<_type> {
     /** find these statements to be replaced */
 
-    static p_stmt $anySystemOut = p_stmt.of("System.out.println($any$);");
+    static _pStmt $anySystemOut = _pStmt.of("System.out.println($any$);");
 
     /** this is the format of the (one or more) Logger Statement(s) used in place of the System out */
     String loggerStatementsFormat;
@@ -31,14 +31,14 @@ public class _replaceSystemOutWithLog implements _macro<_type> {
     Predicate<_field> preDefinedLoggerMatcher;
 
     /** IF... I have to create an ad hoc logger field it will be this */
-    p_field adHocLogger;
+    _pField adHocLogger;
 
     /** IF ... i have to create an ad hoc logger, these are the imports I need*/
     List<ImportDeclaration> adHocLoggerImports;
 
     public _replaceSystemOutWithLog(Predicate<_field> preDefinedLoggerMatcher,
         ImportDeclaration[] adHocLoggerImports,
-        p_field adHocLogger,
+        _pField adHocLogger,
         String loggerStatementsFormat){
         
         this( preDefinedLoggerMatcher,
@@ -49,7 +49,7 @@ public class _replaceSystemOutWithLog implements _macro<_type> {
 
     public _replaceSystemOutWithLog( Predicate<_field> preDefinedLoggerMatcher,
             List<ImportDeclaration> adHocLoggerImports,
-            p_field adHocLogger,
+            _pField adHocLogger,
             String loggerStatementsFormat){
 
         Stencil st = Stencil.of(loggerStatementsFormat);
@@ -81,7 +81,7 @@ public class _replaceSystemOutWithLog implements _macro<_type> {
                 _f = adHocLogger.fill(_t.getFullName()); /* create a clone/copy for this _field */
                 _t.field( _f ); /* add logger field to the TYPE */
             }
-            $anySystemOut.replaceIn(_t, p_snip.of( loggerStatementsFormat )
+            $anySystemOut.replaceIn(_t, _pSnip.of( loggerStatementsFormat )
                     .assign$("name", _f.getName() ) );
         }
         return _t;
@@ -94,6 +94,6 @@ public class _replaceSystemOutWithLog implements _macro<_type> {
     public static _macro<_type> JavaLoggerFine = new _replaceSystemOutWithLog(
             (_field f)->f.isStatic() && f.isType(Logger.class),
             new ImportDeclaration[] { Ast.importDeclaration( Logger.class ),Ast.importDeclaration( Level.class )},
-            p_field.of("public static final Logger LOG = Logger.getLogger($className$.class.getCanonicalName());"),
+            _pField.of("public static final Logger LOG = Logger.getLogger($className$.class.getCanonicalName());"),
         "if($name$.isLoggable(Level.FINER)){ $name$.fine($any$ + \"\"); }" );
 }

@@ -7,10 +7,10 @@ import draft.java.macro._ctor;
 import junit.framework.TestCase;
 
 
-public class p_constructorTest extends TestCase {
+public class _pConstructorTest extends TestCase {
 
     public void testNoArgConstructor(){
-        p_constructor $c = p_constructor.of( "public $name$(){ assert(1==1); }" ).$(Stmt.of("assert(1==1);"), "body");
+        _pConstructor $c = _pConstructor.of( "public $name$(){ assert(1==1); }" ).$(Stmt.of("assert(1==1);"), "body");
         assertTrue($c.matches(_constructor.of("public C(){}")));
     }
     
@@ -18,7 +18,7 @@ public class p_constructorTest extends TestCase {
      * Verify
      */
     public void testCompareWithJavadocAndAnnotationsAndComments(){
-        p_constructor $c = p_constructor.of( "public $name$(int x){ this.x = x; }" );
+        _pConstructor $c = _pConstructor.of( "public $name$(int x){ this.x = x; }" );
 
         assertTrue($c.matches(_constructor.of("public C(int x){ this.x = x;}")));
         assertTrue($c.matches(_constructor.of("/** Javadoc */ public C(int x){ this.x = x;}")));
@@ -26,7 +26,7 @@ public class p_constructorTest extends TestCase {
         assertTrue($c.matches(_constructor.of("public C(int x){ /* block comment*/ this.x = x;}")));
         assertTrue($c.matches(_constructor.of("/** Javadoc */ @Deprecated public C(int x){ /** jd comment */ this.x = x;}")));
 
-        $c = p_constructor.of( "/** JAVADOC $name$ */ public $name$(int x){ this.x = x; }" );
+        $c = _pConstructor.of( "/** JAVADOC $name$ */ public $name$(int x){ this.x = x; }" );
         assertTrue($c.matches(_constructor.of("public C(int x){ this.x = x;}")));
         assertTrue($c.matches(_constructor.of("/** Javadoc */ public C(int x){ this.x = x;}")));
         assertTrue($c.matches(_constructor.of("/** Javadoc */ @Deprecated public C(int x){ this.x = x;}")));
@@ -55,7 +55,7 @@ public class p_constructorTest extends TestCase {
     */
 
     public void testBuildViaAnonymousClass(){
-        p_constructor $ct = p_constructor.of( new Object() {
+        _pConstructor $ct = _pConstructor.of( new Object() {
                  int a; String name;
 
                  @_ctor public void ct(int a, String name ){
@@ -85,7 +85,7 @@ public class p_constructorTest extends TestCase {
                 "this.name = name;",
                 "}"));
 
-        $ct = p_constructor.of( new Object(){
+        $ct = _pConstructor.of( new Object(){
             String s;
             /**
              * Some Javadoc
@@ -102,7 +102,7 @@ public class p_constructorTest extends TestCase {
     }
 
     public void testCtorLabels() {
-        p_constructor $c = p_constructor.of(new Object() {
+        _pConstructor $c = _pConstructor.of(new Object() {
             public void C() {
                 label:
                 System.out.println(12);
@@ -114,7 +114,7 @@ public class p_constructorTest extends TestCase {
                 Stmt.of("System.out.println(12);"));
     }
     public void testCtorLabelForAddingCode(){
-        p_constructor $c = p_constructor.of( new Object(){
+        _pConstructor $c = _pConstructor.of( new Object(){
             public void C(){
                 label:{}
             }
@@ -147,7 +147,7 @@ public class p_constructorTest extends TestCase {
 
     public void testC(){
         //match any no arg CONSTRUCTORS
-        p_constructor $noArgNoBody = p_constructor.of("$name$(){}");
+        _pConstructor $noArgNoBody = _pConstructor.of("$name$(){}");
 
         assertTrue( $noArgNoBody.matches(_constructor.of("name(){}") ));
 
@@ -171,7 +171,7 @@ public class p_constructorTest extends TestCase {
     }
 
     public void testAnyParams(){
-        p_constructor $oneArgInit = p_constructor.of("$ctorName$ ($type$ $name$){",
+        _pConstructor $oneArgInit = _pConstructor.of("$ctorName$ ($type$ $name$){",
                 "this.$name$ = $name$;",
                 "}");
 

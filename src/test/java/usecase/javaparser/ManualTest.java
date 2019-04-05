@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package usecase.javaparser;
 
 import draft.java.Walk;
@@ -10,7 +5,7 @@ import draft.java._class;
 import draft.java._method;
 import draft.java.io._io;
 import draft.java.macro._static;
-import draft.java.proto.p_stmt;
+import draft.java.proto._pStmt;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.util.List;
@@ -39,6 +34,7 @@ public class ManualTest extends TestCase {
         });
         _io.out("C:\\temp", _c);
     }
+    
     /*
     <A HREF="https://github.com/javaparser/javaparser/wiki/Manual#printing-the-compilationunit-to-system-output">
     */
@@ -76,7 +72,7 @@ public class ManualTest extends TestCase {
     public void testChangingMethods() throws FileNotFoundException{
         _class _c = _class.of( new FileInputStream("C:\\temp\\test.java") );
         
-        /** to modify BOTH methods on _c AND methods on Inner */
+        /** Walk will modify BOTH methods on test.java AND methods on Inner class*/
         Walk.in( 
             _c,
             _method.class,
@@ -122,7 +118,7 @@ public class ManualTest extends TestCase {
         }
         _class _c = _class.of(D.class);
         
-        p_stmt.remove(_c, "int a = 20;");
+        _pStmt.remove(_c, "int a = 20;");
         
         //BONUS: lets verify the code was removed
         assertTrue( _c.getMethod("foo").getBody().isEmpty());
@@ -130,7 +126,7 @@ public class ManualTest extends TestCase {
         //BONUS (2) : lets add the code back in to understand $stmt proto
         
         //here create a proto - $stmt for initializing a variable a
-        p_stmt $a = p_stmt.of("int a = $init$;");
+        _pStmt $a = _pStmt.of("int a = $init$;");
         
         //construct/add a statement to the method using the prototype $a 
         //    "int a = 100;"
@@ -145,12 +141,12 @@ public class ManualTest extends TestCase {
         //find/match and statement assignment of int a to any value
         assertNotNull($a.firstIn(_c));
         
-        $a = p_stmt.of("$type$ a = $init$;");
+        $a = _pStmt.of("$type$ a = $init$;");
         
         // remove any assignment statements of variable a to any type 
         assertNotNull($a.removeIn(_c));
                 
         //find any assignment of the variable a to any value
-        assertNull(p_stmt.first(_c, "$type$ a = $init$;"));        
+        assertNull(_pStmt.first(_c, "$type$ a = $init$;"));        
     }
 }
