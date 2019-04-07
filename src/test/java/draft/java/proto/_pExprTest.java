@@ -13,6 +13,27 @@ import static junit.framework.TestCase.assertNotNull;
 
 public class _pExprTest extends TestCase {
 
+    static class Base{
+        public static int V = 100;
+        public int val() {
+            return 101;
+        }
+    }
+    class Derived extends Base{
+        public int val(){
+            return super.val();
+        }
+        public int tVal(){
+            return this.val();
+        }
+    }
+    
+    public void testSuperThis(){
+        _class _c = _class.of(Derived.class);
+        _pExpr.thisExprAny().listIn(_c);
+        _pExpr.superExprAny().listIn(_c);
+    }
+    
     public void testGenericExpr(){
         //LocalClassDeclarationExpr lc =  Expr.("class $any${}");
         

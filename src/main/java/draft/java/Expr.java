@@ -1260,10 +1260,19 @@ public enum Expr {
     public static SuperExpr superExpr(  ) {
         return new SuperExpr();
     }
+    
+    public static ThisExpr superExpr( String... expr ){
+        return (ThisExpr)StaticJavaParser.parseExpression(Text.combine(expr));
+    }
+    
     public static final Class<ThisExpr> THIS = ThisExpr.class;
 
     public static ThisExpr thisExpr(  ) {
         return new ThisExpr();
+    }
+    
+    public static ThisExpr thisExpr( String... expr ){
+        return (ThisExpr)StaticJavaParser.parseExpression(Text.combine(expr));
     }
 
     public static final Class<TypeExpr> TYPE = TypeExpr.class;
