@@ -163,6 +163,7 @@ public final class _annotation
         annotate("Target(ElementType.ANNOTATION_TYPE)");
         return this;
     }
+    
     public _annotation targetPackage(){
         this.imports( Target.class, ElementType.class );
         removeAnnos(Target.class);
@@ -232,6 +233,7 @@ public final class _annotation
     public static _annotation of( _in in ){
         return of( in.getInputStream());
     }
+    
     public _annotation( AnnotationDeclaration astClass ){
         this.astAnnotation = astClass;
     }
@@ -250,7 +252,7 @@ public final class _annotation
     public boolean isTopClass(){
         return ast().isTopLevelType();
     }
-
+    
     @Override
     public CompilationUnit findCompilationUnit(){
         if( this.ast().findCompilationUnit().isPresent() ){
@@ -343,15 +345,6 @@ public final class _annotation
         if( ! Ast.importsEqual( this.astAnnotation,other.astAnnotation ) ){
             return false;
         }
-        /*
-        if( this.isTopClass() ){
-            if( ! other.isTopClass() ){
-                return false;
-            }
-            
-        }
-        */
-
         Set<_field> tf = new HashSet<>();
         Set<_field> of = new HashSet<>();
         tf.addAll( this.listFields() );
@@ -486,6 +479,7 @@ public final class _annotation
         return this;
     }
 
+    @Override
     public boolean is( String...annotationDeclaration){
         try {
             return is(Ast.annotationDeclaration(annotationDeclaration));
@@ -499,6 +493,7 @@ public final class _annotation
      * @param ad 
      * @return true if these annotations are equivalent
      */
+    @Override
     public boolean is( AnnotationDeclaration ad ){
         try{
             _annotation _a = of( ad);
@@ -556,6 +551,16 @@ public final class _annotation
             this.astAnnMember = astAnnMember;
         }
 
+        @Override
+        public boolean is(String...stringRep){
+            return is(Ast.annotationMember(stringRep));
+        }
+        
+        @Override
+        public boolean is(AnnotationMemberDeclaration amd ){
+            return _element.of(amd).equals(this);
+        }
+        
         @Override
         public _element name(String name){
             this.astAnnMember.setName( name );

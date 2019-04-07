@@ -1,6 +1,5 @@
 package draft.java;
 
-import draft.ObjectDiff.DiffList;
 import junit.framework.TestCase;
 
 public class _extendsTest extends TestCase {
@@ -24,9 +23,8 @@ public class _extendsTest extends TestCase {
         
         
         System.out.println( _d );
-        DiffList od = draft.ObjectDiff.components(_c, _d);
-        System.out.println( od );
-        
+        //DiffList od = draft.ObjectDiff.components(_c, _d);
+        //System.out.println( od );
         
     }
 }

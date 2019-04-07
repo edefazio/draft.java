@@ -480,7 +480,7 @@ public class _pField
      * @return 
      */
     public _field construct(_node _protoNode ){
-        return _pField.this.construct(Translator.DEFAULT_TRANSLATOR, _protoNode.componentize() );
+        return _pField.this.construct(Translator.DEFAULT_TRANSLATOR, _protoNode.deconstruct() );
     }
 
     @Override

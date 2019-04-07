@@ -7,7 +7,6 @@ import com.github.javaparser.ast.expr.AnnotationExpr;
 import com.github.javaparser.ast.nodeTypes.NodeWithJavadoc;
 import com.github.javaparser.ast.type.Type;
 import com.github.javaparser.printer.PrettyPrinterConfiguration;
-import draft.Composite;
 import draft.Named;
 import draft.Text;
 
@@ -44,7 +43,6 @@ import java.util.function.Consumer;
  */
 public interface _model {
     
-    
     /**
      * {@link _model} entity that maps directly to an AST {@link Node}
      * for example:
@@ -68,21 +66,38 @@ public interface _model {
      * @param <N> ast node {@link MethodDeclaration}, {@link com.github.javaparser.ast.body.FieldDeclaration}
      */
     interface _node<N extends Node>
-            extends _model, Composite {
+            extends _model {
 
+        /**
+         * is the String representation equal to the _node entity
+         * (i.e. if we parse the string, does it create an AST entity that
+         * is equal to the node?)
+         * 
+         * @param stringRep the string representation of the node 
+         * (parsed as an AST and compared to this entity to see if equal)
+         * @return true if the Parsed String represents the entity 
+         */
+        boolean is(String...stringRep);
+        
+        /**
+         * Is the AST node representation equal to the underlying entity
+         * @param astNode the astNode to compare against
+         * @return true if they represent the same _node, false otherwise
+         */
+        boolean is(N astNode);
+        
         /**
          * Decompose the entity into key-VALUE pairs
          * @return a map of key values
          */
         Map<_java.Component,Object> componentsMap();
-
+        
         /**
          * Decompose the entity into smaller named components
          * returning a mapping between the name and the constituent part
          * @return a Map with the names mapped to the corresponding components
          */
-        @Override
-        default Map<String,Object>componentize(){
+        default Map<String,Object>deconstruct(){
             Map<_java.Component, Object> parts = componentsMap();
             Map<String,Object> mdd = new HashMap<>();
             parts.forEach( (p,o) -> {mdd.put( p.name, o);});

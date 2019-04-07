@@ -4,12 +4,9 @@ import com.github.javaparser.ast.NodeList;
 import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
 import com.github.javaparser.ast.nodeTypes.NodeWithTypeParameters;
 import com.github.javaparser.ast.type.ClassOrInterfaceType;
-import com.github.javaparser.ast.type.Type;
 import com.github.javaparser.ast.type.TypeParameter;
 import draft.Text;
-import static draft.java.Ast.typesEqual;
 import draft.java._model.*;
-import draft.java._java._path;
 
 import java.util.*;
 import java.util.function.Consumer;
@@ -51,15 +48,18 @@ public final class _typeParameter
         this.typeParameter = tp;
     }
 
-    public boolean is( String typeParameterDecl ){
+    @Override
+    public boolean is( String... typeParameterDecl ){
         try{
-            return of( typeParameterDecl ).equals(this);
+            return of( Text.combine(typeParameterDecl) ).equals(this);
         }
         catch( Exception e) {
             return false;
         }
     }
-
+    
+    
+    @Override
     public boolean is( TypeParameter typeParameterDecl ){
         try{
             return of( typeParameterDecl ).equals(this);

@@ -397,7 +397,7 @@ public final class _pMethod
      * @return 
      */
     public _method construct(_node _n ){
-        return _pMethod.this.construct(_n.componentize() );
+        return _pMethod.this.construct(_n.deconstruct() );
     }
 
     @Override

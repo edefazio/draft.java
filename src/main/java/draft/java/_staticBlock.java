@@ -55,6 +55,7 @@ public final class _staticBlock
         return _body.of( astStaticInit );
     }
 
+    @Override
     public boolean is( String... code ) {
         try {
             return of(code).equals(this);
@@ -63,6 +64,10 @@ public final class _staticBlock
         }
     }
 
+    @Override
+    public boolean is( InitializerDeclaration astId){
+        return of(astId).equals(this);
+    }
 
     @Override
     public _staticBlock setBody( BlockStmt body ) {
@@ -177,7 +182,7 @@ public final class _staticBlock
      * @author Eric
      * @param <T>
      */
-    public interface _hasStaticBlock<T extends _hasStaticBlock & _type>
+    public interface _hasStaticBlocks<T extends _hasStaticBlocks & _type>
             extends _model {
 
         /** 

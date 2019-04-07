@@ -385,12 +385,21 @@ public final class _constructor implements _anno._hasAnnos<_constructor>,
     public interface _hasConstructors<T extends _hasConstructors & _type, N extends Node & NodeWithConstructors>
             extends _model {
 
+        /** Gets the node that is the nodeWithConstructors (i.e. _class, _enum) */
         N ast();
         
         List<_constructor> listConstructors();
 
         _constructor getConstructor( int index );
 
+        default _constructor getConstructor( Predicate<_constructor> _ctorMatchFn){
+            List<_constructor> ctors = listConstructors(_ctorMatchFn);
+            if( ctors.isEmpty() ){
+                return null;
+            }
+            return ctors.get(0); //just get the first one
+        }
+        
         default boolean hasConstructors() {
             return listConstructors().size() > 0;
         }
@@ -549,6 +558,8 @@ public final class _constructor implements _anno._hasAnnos<_constructor>,
          * 
          * constructor ( ()-> System.out.println("in constructor") );
          * 
+         * @param <A>
+         * @param <B>
          * @param command
          * @return
          */

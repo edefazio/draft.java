@@ -544,7 +544,7 @@ public final class _pTypeRef<T extends Type>
      * @return 
      */
     public T construct( _node _n ){
-        return (T)_pTypeRef.this.construct(_n.componentize());
+        return (T)_pTypeRef.this.construct(_n.deconstruct());
     }
 
     @Override

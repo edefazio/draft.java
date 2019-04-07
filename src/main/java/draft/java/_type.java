@@ -1294,30 +1294,30 @@ public interface _type<AST extends TypeDeclaration & NodeWithJavadoc & NodeWithM
             return !listImplements().isEmpty();
         }
         
-        default boolean hasImplements( String str ){
+        default boolean isImplementer( String str ){
             try{
-                return _hasImplements.this.hasImplements( (ClassOrInterfaceType)Ast.typeRef( str ) );
+                return _hasImplements.this.isImplementer( (ClassOrInterfaceType)Ast.typeRef( str ) );
             }catch( Exception e){}
             return false;
         }
 
-        default boolean hasImplements( ClassOrInterfaceType ct ){
+        default boolean isImplementer( ClassOrInterfaceType ct ){
             return ((NodeWithImplements)((_type)this).ast()).getImplementedTypes().contains(ct);
             //return this.astEnum.getImplementedTypes().contains( ct );
         }
         
-        default boolean hasImplements( Class clazz ){
+        default boolean isImplementer( Class clazz ){
             try{
                 _type t = ((_type)this);
                 
-                return _hasImplements.this.hasImplements( (ClassOrInterfaceType)Ast.typeRef( clazz ) ) ||
-                    t.hasImport( clazz ) && _hasImplements.this.hasImplements(clazz.getSimpleName() );
+                return _hasImplements.this.isImplementer( (ClassOrInterfaceType)Ast.typeRef( clazz ) ) ||
+                    t.hasImport( clazz ) && _hasImplements.this.isImplementer(clazz.getSimpleName() );
             } catch( Exception e){ }
             return false;
         }
     
-        default boolean hasImplements( _interface _i){
-            return hasImplements( _i.getFullName() );
+        default boolean isImplementer( _interface _i){
+            return _hasImplements.this.isImplementer( _i.getFullName() );
         }
         
         default List<ClassOrInterfaceType> listImplements(){

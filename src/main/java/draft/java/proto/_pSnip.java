@@ -362,7 +362,7 @@ public final class _pSnip implements Template<List<Statement>>, _pQuery<List<Sta
      * @return 
      */
     public List<Statement> construct( _node _n ){
-        return construct(_n.componentize());
+        return construct(_n.deconstruct());
     }
 
     @Override

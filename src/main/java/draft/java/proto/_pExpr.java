@@ -1658,7 +1658,7 @@ public final class _pExpr <T extends Expression>
      * @return 
      */
     public T construct( _node _n ){
-        return (T)_pExpr.this.construct(_n.componentize());
+        return (T)_pExpr.this.construct(_n.deconstruct());
     }
 
     @Override

@@ -193,8 +193,8 @@ public class macroTest extends TestCase {
 
         _class _c = _class.of(C.class);
         System.out.println( _c );
-        assertTrue( _c.hasImplements(Serializable.class));
-        assertTrue( _c.hasImplements(Externalizable.class));
+        assertTrue( _c.isImplementer(Serializable.class));
+        assertTrue( _c.isImplementer(Externalizable.class));
     }
 
 

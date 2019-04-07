@@ -9,6 +9,7 @@ import draft.DraftException;
 import draft.Text;
 import draft.java._model.*;
 import static draft.java.Ast.field;
+import draft.java._java.Component;
 import java.lang.annotation.Annotation;
 import java.util.*;
 import java.util.function.Consumer;
@@ -311,6 +312,7 @@ public final class _anno
         return null;
     }
 
+    @Override
     public boolean is( AnnotationExpr astExpr ){
         try {
             return _anno.of(astExpr).equals( this );
@@ -320,6 +322,7 @@ public final class _anno
         }
     }
 
+    @Override
     public boolean is( String... str ) {
         try {
             return is( Ast.anno( str ) );
@@ -329,6 +332,22 @@ public final class _anno
         return false;
     }
 
+    public Object get(Component component){
+        if( component == Component.NAME ){
+            return this.getName();
+        }
+        if( component == Component.KEY_VALUES ){
+            if( this.astAnno instanceof NormalAnnotationExpr ){
+                NormalAnnotationExpr nae = (NormalAnnotationExpr)this.astAnno;
+                return nae.getPairs();
+            } else if( this.astAnno instanceof SingleMemberAnnotationExpr){
+                SingleMemberAnnotationExpr se = (SingleMemberAnnotationExpr)this.astAnno;
+                return new MemberValuePair("value", se.getMemberValue() );
+            }
+        }
+        return null;
+    }
+    
     @Override
     public Map<_java.Component,Object> componentsMap(){
         Map<_java.Component,Object> m = new HashMap();
@@ -339,7 +358,6 @@ public final class _anno
         } else if( this.astAnno instanceof SingleMemberAnnotationExpr){
             SingleMemberAnnotationExpr se = (SingleMemberAnnotationExpr)this.astAnno;
             m.put(_java.Component.KEY_VALUES, new MemberValuePair("value", se.getMemberValue() ) );
-            //m.put(_java.Component.VALUE, se.getMemberValue());
         }
         return m;
     }

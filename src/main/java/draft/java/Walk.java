@@ -1100,13 +1100,13 @@ public enum Walk {
                     });
             return astRootNode;
         }
-        else if( _modelClass == _staticBlock._hasStaticBlock.class ) {
+        else if( _modelClass == _staticBlock._hasStaticBlocks.class ) {
             Ast.walk( tt,
                     astRootNode,
                     Node.class,
                     n-> n instanceof ClassOrInterfaceDeclaration || n instanceof EnumDeclaration,
                     n-> {
-                        _staticBlock._hasStaticBlock hsb = null;
+                        _staticBlock._hasStaticBlocks hsb = null;
                         if( n instanceof ClassOrInterfaceDeclaration){
                             ClassOrInterfaceDeclaration coid = (ClassOrInterfaceDeclaration)n;
                             if( !coid.isInterface() ) {
@@ -1115,8 +1115,8 @@ public enum Walk {
                         } else {
                             hsb = _enum.of( (EnumDeclaration)n);
                         }
-                        if( hsb != null && ((Predicate<_staticBlock._hasStaticBlock>)_modelMatchFn).test( hsb) ){
-                            ((Consumer<_staticBlock._hasStaticBlock>)_modelAction).accept( hsb );
+                        if( hsb != null && ((Predicate<_staticBlock._hasStaticBlocks>)_modelMatchFn).test( hsb) ){
+                            ((Consumer<_staticBlock._hasStaticBlocks>)_modelAction).accept( hsb );
                         }
                     });
             return astRootNode;

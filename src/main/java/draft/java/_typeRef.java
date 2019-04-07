@@ -1,9 +1,8 @@
 package draft.java;
 
 import com.github.javaparser.ast.type.Type;
-import draft.java._java.Component;
+import draft.Text;
 import draft.java._model.*;
-import draft.java._java._path;
 
 import java.util.*;
 
@@ -47,7 +46,7 @@ public final class _typeRef<T extends Type>
     public Type ast() {
         return astType;
     }
-
+       
     public boolean isPrimitive() {
         return astType.isPrimitiveType();
     }
@@ -90,15 +89,17 @@ public final class _typeRef<T extends Type>
         return of(this.astType.clone());
     }
     
-    public boolean is( String type  ){
+    @Override
+    public boolean is( String... type  ){
         try{
-            return of( type ).equals(this);
+            return of( Text.combine(type) ).equals(this);
         }
         catch( Exception e) {
             return false;
         }
     }
 
+    @Override
     public boolean is( Type typeDecl ){
         try{
             return of( typeDecl ).equals(this);

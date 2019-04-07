@@ -5,6 +5,7 @@ import com.github.javaparser.ast.body.ConstructorDeclaration;
 import com.github.javaparser.ast.body.MethodDeclaration;
 import com.github.javaparser.ast.body.ReceiverParameter;
 import com.github.javaparser.ast.type.Type;
+import draft.Text;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -37,14 +38,16 @@ public final class _receiverParameter
         this.astReceiverParam = rp;
     }
 
-    public boolean is( String string ) {
+    @Override
+    public boolean is( String... string ) {
         try {
-            return of(string).equals(this);
+            return of(Text.combine(string)).equals(this);
         }catch (Exception e){
             return false;
         }
     }
 
+    @Override
     public boolean is ( ReceiverParameter astRp ){
         return of( astRp ).equals( this );
     }

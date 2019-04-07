@@ -228,7 +228,7 @@ public final class _pConstructor
      * @return 
      */
     public _constructor construct( _node _n ){
-        return _pConstructor.this.construct(_n.componentize());
+        return _pConstructor.this.construct(_n.deconstruct());
     }
 
     @Override

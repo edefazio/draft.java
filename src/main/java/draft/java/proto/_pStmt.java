@@ -1316,9 +1316,9 @@ public final class _pStmt<T extends Statement>
      */
     public T construct( _node _n ){
         if( this.commentStencil != null ){
-            return (T)Stmt.of(Stencil.of(commentStencil, stencil).construct(_n.componentize()) );
+            return (T)Stmt.of(Stencil.of(commentStencil, stencil).construct(_n.deconstruct()) );
         }
-        return (T)_pStmt.this.construct(_n.componentize());
+        return (T)_pStmt.this.construct(_n.deconstruct());
     }
 
     @Override

@@ -28,7 +28,7 @@ import java.util.stream.Collectors;
  * @author Eric
  */
 public final class _enum implements _type<EnumDeclaration, _enum>,_method._hasMethods<_enum>,
-        _constructor._hasConstructors<_enum, EnumDeclaration>, _staticBlock._hasStaticBlock<_enum>,
+        _constructor._hasConstructors<_enum, EnumDeclaration>, _staticBlock._hasStaticBlocks<_enum>,
         _type._hasImplements<_enum>{
 
     public static _enum of( Class<? extends Enum> clazz ){
@@ -135,6 +135,20 @@ public final class _enum implements _type<EnumDeclaration, _enum>,_method._hasMe
         return astEnum.isTopLevelType();
     }
 
+    @Override
+    public boolean is(String...stringRep){
+        try{
+            return equals(of(Ast.compilationUnit(stringRep)));
+        } catch(Exception e){
+            return false;
+        }
+    }
+    
+    @Override
+    public boolean is(EnumDeclaration ed){
+        return of(ed).equals(this);
+    }
+    
     @Override
     public CompilationUnit findCompilationUnit(){
         //it might be a member class
@@ -548,6 +562,19 @@ public final class _enum implements _type<EnumDeclaration, _enum>,_method._hasMe
             return this.astConstant.getArguments().size() > 0;
         }
 
+        public boolean is(String...stringRep){
+           try{
+               return is(Ast.constant(stringRep));
+           }     
+           catch(Exception e){
+               return false;
+           }
+        }
+        
+        public boolean is(EnumConstantDeclaration ecd ){
+            return of(ecd).equals(this);
+        }
+        
         @Override
         public _constant name( String name ){
             this.astConstant.setName( name );

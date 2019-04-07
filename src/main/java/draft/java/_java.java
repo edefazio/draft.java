@@ -456,12 +456,12 @@ public enum _java {
     }
 
     /**
-     * Defines the components and identifies the path within a _type to
-     * a specific member or property
+     * Defines the Path through the hierarchial member components
+     * ( _types, methods, etc.) a specific member or property
      * 
-     * for example:
+     * (the notation we use is [xxxx] represents a name, and the other names
+     * represent components for example:    
      * <PRE>
-     * 
      * class[MyClass].name                          : the name of class MyClass
      * interface[I].extends                         : the extends on the interface I
      * enum[Scope].implements                       : the implements on the enum Scope
