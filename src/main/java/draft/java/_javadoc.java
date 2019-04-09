@@ -17,43 +17,43 @@ public final class _javadoc
         return new _javadoc( jdnode );
     }
 
-    private final NodeWithJavadoc jdnode;
+    private final NodeWithJavadoc astJavadocedNode;
 
     public _javadoc( NodeWithJavadoc jdnode ) {
-        this.jdnode = jdnode;
+        this.astJavadocedNode = jdnode;
     }
 
     public NodeWithJavadoc astHolder() {
-        return this.jdnode;
+        return this.astJavadocedNode;
     }
 
     public _javadoc setContent( String... content ) {
-        jdnode.setJavadocComment( Text.combine( content ) );
+        astJavadocedNode.setJavadocComment( Text.combine( content ) );
         return this;
     }
 
     public boolean isEmpty(){
-        return !jdnode.hasJavaDocComment();
+        return !astJavadocedNode.hasJavaDocComment();
     }
 
     public JavadocComment ast() {
-        if( this.jdnode.getJavadocComment().isPresent() ) {
-            return (JavadocComment)this.jdnode.getJavadocComment().get();
+        if( this.astJavadocedNode.getJavadocComment().isPresent() ) {
+            return (JavadocComment)this.astJavadocedNode.getJavadocComment().get();
         }
         return null;
     }
 
     public String getContent() {
-        if( jdnode.getJavadocComment().isPresent() ) {
-            return Ast.getContent( (Comment)jdnode.getJavadocComment().get() );
+        if( astJavadocedNode.getJavadocComment().isPresent() ) {
+            return Ast.getContent((Comment)astJavadocedNode.getJavadocComment().get() );
         }
         return null;
     }
 
     @Override
     public String toString(){
-        if( jdnode.getJavadocComment().isPresent() ) {
-            return jdnode.getJavadocComment().get().toString();
+        if( astJavadocedNode.getJavadocComment().isPresent() ) {
+            return astJavadocedNode.getJavadocComment().get().toString();
         }
         return null;
     }
@@ -70,7 +70,7 @@ public final class _javadoc
             return false;
         }
         final _javadoc other = (_javadoc)obj;
-        if( this.jdnode == other.jdnode ) {
+        if( this.astJavadocedNode == other.astJavadocedNode ) {
             return true; //two _javadoc instances pointing to the same NodeWithJavadoc
         }
         if( !Objects.equals( this.getContent(), other.getContent() ) ) {

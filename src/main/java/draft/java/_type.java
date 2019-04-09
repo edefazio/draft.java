@@ -118,6 +118,31 @@ public interface _type<AST extends TypeDeclaration & NodeWithJavadoc & NodeWithM
     CompilationUnit findCompilationUnit();    
     
     /**
+     * find members that are of the specific class and perform the _memberAction on them
+     * @param <M>
+     * @param memberClass the member Class (i.e. _field, _method, _constructor)
+     * @param _memberAction the Action function to apply to candidates
+     * @return the modified T
+     */
+    default <M extends _member> T forMembers( Class<M> memberClass, Consumer<M> _memberAction){
+        listMembers(memberClass).forEach(_memberAction);
+        return (T)this;
+    }
+    
+    /**
+     * find members that are of the specific class and perform the _memberAction on them
+     * @param <M>
+     * @param memberClass the member Class (i.e. _field, _method, _constructor)
+     * @param _memberMatchFn the matching function for selecting which members to take action on
+     * @param _memberAction the Action function to apply to candidates
+     * @return the modified T
+     */
+    default <M extends _member> T forMembers( Class<M> memberClass, Predicate<M> _memberMatchFn, Consumer<M> _memberAction){
+        listMembers(memberClass, _memberMatchFn).forEach(_memberAction);
+        return (T)this;
+    }
+    
+    /**
      * Iterate & apply the action function to all Members that satisfy the _memberMatchFn
      * @param _memberMatchFn function for selecting which members to apply the _memberActionFn
      * @param _memberAction the action to apply to all selected members that satisfy the _memberMatchFn
@@ -488,16 +513,11 @@ public interface _type<AST extends TypeDeclaration & NodeWithJavadoc & NodeWithM
      * Gets the _imports abstraction for the _type
      * @return the imports abstraction
      */
-    default _imports getImports(){
-        //CompilationUnit cu = ;
-        //if( cu != null ){
-        //    return _imports.of( cu );
-        //}
+    default _imports getImports(){       
         return _imports.of(findCompilationUnit());
     }
     
-    //TODO get rid of this in place of _imports, or getImports()
-    
+    //TODO get rid of this in place of _imports, or getImports()    
     default List<ImportDeclaration> listAstImports(){
         CompilationUnit cu = findCompilationUnit();
         if( cu != null ){
@@ -507,12 +527,7 @@ public interface _type<AST extends TypeDeclaration & NodeWithJavadoc & NodeWithM
     }
     
     default List<_import> listImports(){
-        return getImports().list();
-        //CompilationUnit cu = findCompilationUnit();
-        //if( cu != null ){
-        //    return cu.getImports();
-       // }
-       // return new ArrayList<>();
+        return getImports().list();       
     }
     
     default boolean hasImport( _type _t ){
@@ -531,10 +546,7 @@ public interface _type<AST extends TypeDeclaration & NodeWithJavadoc & NodeWithM
      * @return 
      */
     default boolean hasImportStatic( Class clazz ){
-        //String canonicalName = clazz.getCanonicalName();
-        return !listImports( i -> i.isStatic() && i.isWildcard() && i.hasImport(clazz)).isEmpty();
-        //return listImports().stream().filter(i -> i.isAsterisk() && i.isStatic() && i.getNameAsString().equals(clazz.getCanonicalName()))
-        //        .findFirst().isPresent();
+        return !listImports( i -> i.isStatic() && i.isWildcard() && i.hasImport(clazz)).isEmpty();        
     }
 
     /**

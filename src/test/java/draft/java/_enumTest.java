@@ -30,6 +30,17 @@ public class _enumTest extends TestCase {
     }
     
 
+    public void testForMembers(){
+        _enum _e = _enum.of("E", new Object(){
+            public static final int ID=102; 
+            public static final String NAME = "Eric";
+        }).constants("A", "B", "C", "D", "E");
+           
+        _e.forMembers(_field.class, f-> f.isStatic(), f->System.out.println(f));
+        
+        _e.forFields( f-> f.isStatic(), f-> System.out.println(f));
+    }
+    
     public void testConstants(){
         _enum _e = _enum.of("Suit").constants("Hearts","Clubs","Spades","Diamonds");
         assertEquals(4, _e.listConstants().size() );

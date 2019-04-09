@@ -165,7 +165,6 @@ public final class _modifiers
      * @return
      */
     public boolean isDefault() {
-
         return this.node.hasModifier( Modifier.Keyword.DEFAULT );
     }
 
@@ -585,10 +584,9 @@ public final class _modifiers
             getModifiers().clear().set( _ms.asKeywords() );
             return (T)this;
         }
-
     }
     
-    interface _hasFinal<T extends _hasFinal> {
+    public interface _hasFinal<T extends _hasFinal> {
 
         boolean isFinal();
 
@@ -599,7 +597,7 @@ public final class _modifiers
         T setFinal( boolean toSet );
     }
 
-    interface _hasStatic<T extends _hasStatic>  extends _hasModifiers<T> {
+    public interface _hasStatic<T extends _hasStatic>  extends _hasModifiers<T> {
 
         boolean isStatic();
 
@@ -615,7 +613,7 @@ public final class _modifiers
         }
     }
 
-    interface _hasSynchronized<T extends _hasSynchronized> extends _hasModifiers<T> {
+    public interface _hasSynchronized<T extends _hasSynchronized> extends _hasModifiers<T> {
 
         default boolean isSynchronized(){
             return getModifiers().node.hasModifier(Modifier.Keyword.SYNCHRONIZED );
@@ -633,7 +631,7 @@ public final class _modifiers
         }
     }
 
-    interface _hasAbstract<T extends _hasAbstract> extends _hasModifiers<T> {
+    public interface _hasAbstract<T extends _hasAbstract> extends _hasModifiers<T> {
 
         boolean isAbstract();
 
@@ -649,7 +647,7 @@ public final class _modifiers
         }
     }
 
-    interface _hasVolatile<T extends _hasVolatile> extends _hasModifiers<T> {
+    public interface _hasVolatile<T extends _hasVolatile> extends _hasModifiers<T> {
 
         default boolean isVolatile(){
             return getModifiers().node.hasModifier(Modifier.Keyword.VOLATILE );
@@ -667,7 +665,7 @@ public final class _modifiers
         }
     }
 
-    interface _hasNative<T extends _hasNative>  extends _hasModifiers<T> {
+    public interface _hasNative<T extends _hasNative>  extends _hasModifiers<T> {
 
         default boolean isNative(){
             return getModifiers().node.hasModifier(Modifier.Keyword.NATIVE );
@@ -685,7 +683,7 @@ public final class _modifiers
         }
     }
 
-    interface _hasTransient<T extends _hasTransient>  extends _hasModifiers<T> {
+    public interface _hasTransient<T extends _hasTransient>  extends _hasModifiers<T> {
 
         default boolean isTransient(){
             return getModifiers().node.hasModifier(Modifier.Keyword.TRANSIENT );
@@ -703,7 +701,7 @@ public final class _modifiers
         }
     }
 
-    interface _hasStrictFp<T extends _hasStrictFp>  extends _hasModifiers<T> {
+    public interface _hasStrictFp<T extends _hasStrictFp>  extends _hasModifiers<T> {
 
         default boolean isStrictFp(){
             return getModifiers().node.hasModifier(Modifier.Keyword.STRICTFP );

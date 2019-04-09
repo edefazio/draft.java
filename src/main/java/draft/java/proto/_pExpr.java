@@ -596,7 +596,6 @@ public final class _pExpr <T extends Expression>
         return new _pExpr<>( Expr.arrayInitializer("{1}") ).$(Expr.of("{1}"), "any");
     }
     
-
     /** 
      * i.e."a = 1", "a = 4" 
      * @param proto
@@ -1339,8 +1338,7 @@ public final class _pExpr <T extends Expression>
     }
 
     /**
-     * 
-     * @param constraint
+     * Any long literal
      * @return 
      */
     public static _pExpr<LongLiteralExpr> longLiteralAny( ) {
@@ -1547,7 +1545,6 @@ public final class _pExpr <T extends Expression>
 
     /**
      * 
-     * @param constraint
      * @return 
      */
     public static _pExpr<NameExpr> nameAny() {
@@ -1646,6 +1643,7 @@ public final class _pExpr <T extends Expression>
     /**
      * 
      * @param superExpr
+     * @param constraint
      * @return 
      */
     public static _pExpr<SuperExpr> superExpr(String superExpr, Predicate<SuperExpr> constraint ){
@@ -1800,7 +1798,6 @@ public final class _pExpr <T extends Expression>
     
     /** 
      *  i.e."!true"
-     * @param constraint 
      * @return  
      */
     public static _pExpr<UnaryExpr> unaryAny() {

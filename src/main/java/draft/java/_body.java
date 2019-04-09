@@ -23,6 +23,11 @@ import java.util.function.Predicate;
  */
 public final class _body implements _model {
 
+    /**
+     * NOTE: this is an Object, because it can EITHER be a NodeWithBlockStmt
+     * or NodeWithOptionaBlockStmt implementation (i.e. for method)
+     * so, internally we just say it's an Object
+     */
     private final Object parentNode;
 
     public static _body of(NodeWithBlockStmt nwbs) {

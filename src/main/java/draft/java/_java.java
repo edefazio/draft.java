@@ -14,6 +14,32 @@ import draft.java._model.*;
 import java.util.*;
 
 import static draft.java.Ast.*;
+import draft.java._anno._annos;
+import draft.java._anno._hasAnnos;
+import draft.java._annotation._element;
+import draft.java._body._hasBody;
+import draft.java._constructor._hasConstructors;
+import draft.java._enum._constant;
+import draft.java._import._imports;
+import draft.java._javadoc._hasJavadoc;
+import draft.java._method._hasMethods;
+import draft.java._modifiers._hasAbstract;
+import draft.java._modifiers._hasFinal;
+import draft.java._modifiers._hasModifiers;
+import draft.java._modifiers._hasNative;
+import draft.java._modifiers._hasStatic;
+import draft.java._modifiers._hasStrictFp;
+import draft.java._modifiers._hasSynchronized;
+import draft.java._modifiers._hasTransient;
+import draft.java._modifiers._hasVolatile;
+import draft.java._parameter._hasParameters;
+import draft.java._parameter._parameters;
+import draft.java._receiverParameter._hasReceiverParameter;
+import draft.java._staticBlock._hasStaticBlocks;
+import draft.java._throws._hasThrows;
+import draft.java._type._hasExtends;
+import draft.java._type._hasImplements;
+import draft.java._typeParameter._typeParameters;
 
 /**
  * Translates between AST {@link Node} entities to {@link _model} runtime
@@ -33,6 +59,83 @@ import static draft.java.Ast.*;
 public enum _java {
     ;
 
+    /* 
+        Easy access to the draft _java classes and interfaces that represent
+        entities... his allows convenient autocomplete when you do a Walk.in
+        of Walk.list, etc.
+        <PRE>
+        Walk.list( _c, _java.THROWS );
+        Walk.list( _c, _java.THROWS );
+        </PRE>
+        
+        to make it similar (in feel) to Ast.* :
+        Walk.in( _c, Ast.INITIALIZER_DECLARATION, 
+            id-> id.getBody().add(Stmt.of("System.out.println(1);"));
+        Walk.list( _m, Ast.RETURN_STMT );
+      */    
+        
+    public static final Class<_model> MODEL = _model.class;    
+    public static final Class<_member> MEMBER = _member.class;
+    public static final Class<_node> NODE = _node.class;
+    public static final Class<_named> NAMED = _named.class;
+    public static final Class<_namedType> NAMED_TYPE = _namedType.class;
+   
+    public static final Class<_type> TYPE = _type.class;
+    
+    public static final Class<_class> CLASS = _class.class;
+    public static final Class<_enum> ENUM = _enum.class;
+    public static final Class<_interface> INTERFACE = _interface.class;
+    public static final Class<_annotation> ANNOTATION = _annotation.class;
+   
+    public static final Class<_method> METHOD = _method.class;
+    public static final Class<_field> FIELD = _field.class;
+    public static final Class<_constructor> CONSTRUCTOR = _constructor.class;
+    
+    /** ENUM constant i.e. enum E { CONSTANT; } */
+    public static final Class<_constant> CONSTANT = _constant.class;
+    
+    /** Annotation Element i.e. @interface A{ int element(); } */
+    public static final Class<_element> ELEMENT = _element.class;
+   
+    public static final Class<_body> BODY = _body.class;
+    public static final Class<_anno> ANNO = _anno.class;
+    public static final Class<_annos> ANNOS = _annos.class;
+    public static final Class<_import> IMPORT = _import.class;
+    public static final Class<_imports> IMPORTS = _imports.class;
+    public static final Class<_javadoc> JAVADOC = _javadoc.class;
+    public static final Class<_modifiers> MODIFIERS = _modifiers.class;
+    public static final Class<_parameter> PARAMETER = _parameter.class;
+    public static final Class<_parameters> PARAMETERS = _parameters.class;
+    public static final Class<_typeParameter> TYPE_PARAMETER = _typeParameter.class;
+    public static final Class<_typeParameters> TYPE_PARAMETERS = _typeParameters.class;   
+    public static final Class<_receiverParameter> RECEIVER_PARAMETER = _receiverParameter.class;
+    public static final Class<_staticBlock> STATIC_BLOCK = _staticBlock.class;
+    public static final Class<_throws> THROWS = _throws.class;
+    public static final Class<_typeRef> TYPEREF = _typeRef.class;
+   
+    public static final Class<_hasThrows> HAS_THROWS = _hasThrows.class;
+    public static final Class<_hasBody> HAS_BODY = _hasBody.class;
+    public static final Class<_hasAnnos> HAS_ANNOS = _hasAnnos.class;
+    public static final Class<_hasConstructors> HAS_CONSTRUCTORS = _hasConstructors.class;
+    public static final Class<_hasJavadoc> HAS_JAVADOC = _hasJavadoc.class;
+    public static final Class<_hasMethods> HAS_METHODS = _hasMethods.class;
+    public static final Class<_hasModifiers> HAS_MODIFIERS = _hasModifiers.class;
+    public static final Class<_hasParameters> HAS_PARAMETERS = _hasParameters.class;
+    public static final Class<_hasReceiverParameter> HAS_RECEIVER_PARAMETER = _hasReceiverParameter.class;
+    public static final Class<_hasStaticBlocks> HAS_STATIC_BLOCKS = _hasStaticBlocks.class;    
+    public static final Class<_hasExtends> HAS_EXTENDS = _hasExtends.class;
+    public static final Class<_hasImplements> HAS_IMPLEMENTS = _hasImplements.class;
+   
+    public static final Class<_hasFinal> HAS_FINAL = _hasFinal.class;
+    public static final Class<_hasAbstract> HAS_ABSTRACT = _hasAbstract.class;
+    public static final Class<_hasNative> HAS_NATIVE = _hasNative.class;
+    public static final Class<_hasStatic> HAS_STATIC = _hasStatic.class;
+    public static final Class<_hasStrictFp> HAS_STRICTFP = _hasStrictFp.class;
+    public static final Class<_hasSynchronized> HAS_SYNCHRONIZED = _hasSynchronized.class;
+    public static final Class<_hasTransient> HAS_TRANSIENT = _hasTransient.class;
+    public static final Class<_hasVolatile> HAS_VOLATILE = _hasVolatile.class;
+    
+   
    /** Map from the _model._node classes to the Ast Node equivalent */
     public static final Map<Class<? extends _node>, Class<? extends Node>> _JAVA_TO_AST_NODE_CLASSES = new HashMap<>();
 
@@ -263,58 +366,6 @@ public enum _java {
         throw new DraftException("Unable to create logical entity from " + node);
     }
 
-    /**
-     * Determine if two entities are SEMANTICALLY equivalent.
-     *
-     * NOTE: this is MUCH different than testing AST Nodes for syntactical
-     * equality because of
-     * <UL>
-     * <LI>Inferred Modifiers:
-     * <PRE>
-     * (i.e. a method with no modifiers on an interface is inferred to be public,
-     * but not syntactically equal to an interface with an IMPLICIT marking of public)
-     *
-     *  (not syntactically equal, but equivalent in meaning)
-     * interface i {int p;}  =/= interface i{ public int p;}
-     * </PRE>
-     * </LI>
-     * <LI>Ordering: the order of many things (i.e. thrown exceptions,
-     * typeParameters) matters from a readability perspective (we dont want to
-     * change the syntactic order in which exceptions are thrown in the code).
-     * But the underlying semantics are the same regardless if your throws
-     * clause has A, then B or B, then A
-     *
-     * (not syntactically equal, but equivalent in meaning) void m() throws A,
-     * B; =/= void m() throws B, A
-     * </LI>
-     * <LI>Fully Qualified Types vs "Bare" when comparing types if they have the
-     * same name and are from an explicitly different packages, they should not
-     * be equivalent. But the following ARE equivalent (specifiying the fully
-     * qualified type on one hand should
-     *
-     * java.util.Map<java.net.URL,String> map; =/= Map<URL,String> map;
-     *
-     * @param <A>
-     *
-     * public interface Semantic<A> {
-     *
-     * /**
-     * Are two entities "semantically" equivalent? Note: we need this level
-     * difference between equality/equivalency precisely because we often times
-     * cannot look at syntactical equality
-     *
-     * here are a few examples that are syntactically NOT EQUAL but semantically
-     * EQUIVALENT
-     *
-     * (although not syntactically the same, semantically they MEAN the same
-     * thing) interface i{ int x(); } interface i{ public int x(); }
-     *
-     * @param left the first instance
-     * @param right the second instance
-     * @return true if they are semantically equivalent
-     *
-     * public boolean equivalent(A left, A right); }
-     */
     /**
      * A Way to consistently name things when we construct and deconstruct
      * Components of Java programs (external tools for building & matching &

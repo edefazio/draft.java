@@ -346,7 +346,6 @@ public enum Walk {
         return _m;
     }
 
-
     /**
      * <PRE>
      *            (A)
@@ -875,10 +874,10 @@ public enum Walk {
             return model(tt, astRootNode, (Class<L>)targetClass, (Predicate<L>)matchFn, (Consumer<L>)action);
         }
     }
-
+        
     /**
      * A Walk that resolves {@link _model} classes (as apposed to AST {@link Node} implementation
-     * this requires "special work" building temporary ad-hoc models (i.e. _model, _field, _class, _parameter)
+     * this requires "special work" building temporary ad-hoc models (i.e. _field, _class, _parameter)
      * to test against predicates
      *
      * NOTE: this ALSO works with {@link _model} interfaces like {@link _model}, {@link _method._hasMethods}
@@ -1180,7 +1179,6 @@ public enum Walk {
         throw new DraftException( "Could not convert Node of TYPE " + _modelClass + " to _model TYPE" );
     }
 
-
     /**
      * Given an AST node, walk check its comments (in order)
      *
@@ -1208,14 +1206,15 @@ public enum Walk {
                         && commentMatchFn.test((C) c))
                 .forEach(c -> commentActionFn.accept((C) c));
     }
-
+    
     /**
      * @param astRootNode
      * @param commentMatchFn
      * @param commentActionFn
      */
     public static void comments(
-            Node astRootNode, Predicate<Comment> commentMatchFn, Consumer<Comment> commentActionFn) {
+        Node astRootNode, Predicate<Comment> commentMatchFn, Consumer<Comment> commentActionFn) {
+        
         if (astRootNode == null) {
             return;
         }
@@ -1233,7 +1232,7 @@ public enum Walk {
         acs.addAll(ocs);
         Collections.sort(acs, new CommentPositionComparator());
         acs.stream()
-                .filter(commentMatchFn).forEach(commentActionFn);
+            .filter(commentMatchFn).forEach(commentActionFn);
     }
 
 
@@ -1302,7 +1301,7 @@ public enum Walk {
      * @return a list of matching comments
      */
     public static <C extends Comment> List<C> listComments(
-            Node astRootNode, Class<C> commentTargetClass, Predicate<C> commentMatchFn) {
+        Node astRootNode, Class<C> commentTargetClass, Predicate<C> commentMatchFn) {
 
         List<C> found = new ArrayList<>();
         Walk.comments(astRootNode, c -> {

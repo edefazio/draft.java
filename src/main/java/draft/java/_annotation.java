@@ -516,7 +516,11 @@ public final class _annotation
      *     int VALUE() default 0;
      * }
      * </PRE>
-     *
+     * NOTE: we called this an ELEMENT and NOT a member, because we use the
+     * term "member" to be any member implementation (_field, _method, etc.)
+     * of a type (as it is documented in Java), so we devised the term _element
+     * to mean (specifically) a property of an _annotation
+     * (it is also a _member) and maps to an AnnotationMemberDeclaration
      */
     public static class _element implements _javadoc._hasJavadoc<_element>,
             _anno._hasAnnos<_element>, _namedType<_element>,
