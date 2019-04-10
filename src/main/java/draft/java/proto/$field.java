@@ -20,8 +20,8 @@ import java.util.function.Predicate;
  * Template for a {@link _field}
  *
  */
-public class _pField
-    implements Template<_field>, _pQuery<_field> {
+public class $field
+    implements Template<_field>, $query<_field> {
 
     
     /**
@@ -32,7 +32,7 @@ public class _pField
      * @return 
      */
     public static final <N extends _node> List<_field> list( N _n, String proto ){
-        return _pField.of(proto).listIn(_n);
+        return $field.of(proto).listIn(_n);
     }
     
     /**
@@ -44,7 +44,7 @@ public class _pField
      * @return 
      */
     public static final <N extends _node> List<_field> list( N _n, String proto, Predicate<_field> constraint){
-        return _pField.of(proto, constraint).listIn(_n);
+        return $field.of(proto, constraint).listIn(_n);
     }
     
     /**
@@ -55,7 +55,7 @@ public class _pField
      * @return 
      */
     public static final <N extends _node> List<_field> list( N _n, _field proto ){
-        return _pField.of(proto).listIn(_n);
+        return $field.of(proto).listIn(_n);
     }
     
     /**
@@ -67,7 +67,7 @@ public class _pField
      * @return 
      */
     public static final <N extends _node> List<_field> list( N _n, _field proto, Predicate<_field> constraint){
-        return _pField.of(proto, constraint).listIn(_n);
+        return $field.of(proto, constraint).listIn(_n);
     }
           
     /**
@@ -78,7 +78,7 @@ public class _pField
      * @return 
      */
     public static final <N extends _node> _field first( N _n, String proto ){
-        return _pField.of(proto).firstIn(_n);
+        return $field.of(proto).firstIn(_n);
     }
     
     /**
@@ -90,7 +90,7 @@ public class _pField
      * @return 
      */
     public static final <N extends _node> _field first( N _n, String proto, Predicate<_field> constraint){
-        return _pField.of(proto, constraint).firstIn(_n);
+        return $field.of(proto, constraint).firstIn(_n);
     }
     
     /**
@@ -101,7 +101,7 @@ public class _pField
      * @return 
      */
     public static final <N extends _node> _field first( N _n, _field proto ){
-        return _pField.of(proto).firstIn(_n);
+        return $field.of(proto).firstIn(_n);
     }
     
     /**
@@ -113,7 +113,7 @@ public class _pField
      * @return 
      */
     public static final <N extends _node> _field first( N _n, _field proto, Predicate<_field> constraint){
-        return _pField.of(proto, constraint).firstIn(_n);
+        return $field.of(proto, constraint).firstIn(_n);
     }
     
     /**
@@ -124,7 +124,7 @@ public class _pField
      * @return 
      */
     public static final <N extends _node> Select selectFirst( N _n, String proto ){
-        return _pField.of(proto).selectFirstIn(_n);
+        return $field.of(proto).selectFirstIn(_n);
     }
     
     /**
@@ -136,7 +136,7 @@ public class _pField
      * @return 
      */
     public static final <N extends _node> Select selectFirst( N _n, String proto, Predicate<_field> constraint){
-        return _pField.of(proto, constraint).selectFirstIn(_n);
+        return $field.of(proto, constraint).selectFirstIn(_n);
     }
     
     /**
@@ -147,7 +147,7 @@ public class _pField
      * @return 
      */
     public static final <N extends _node> Select selectFirst( N _n, _field proto ){
-        return _pField.of(proto).selectFirstIn(_n);
+        return $field.of(proto).selectFirstIn(_n);
     }
     
     /**
@@ -159,7 +159,7 @@ public class _pField
      * @return 
      */
     public static final <N extends _node> Select selectFirst( N _n, _field proto, Predicate<_field> constraint){
-        return _pField.of(proto, constraint).selectFirstIn(_n);
+        return $field.of(proto, constraint).selectFirstIn(_n);
     }
     
     
@@ -171,7 +171,7 @@ public class _pField
      * @return 
      */
     public static final <N extends _node> List<Select> selectList( N _n, String proto ){
-        return _pField.of(proto).selectListIn(_n);
+        return $field.of(proto).selectListIn(_n);
     }
     
     /**
@@ -183,7 +183,7 @@ public class _pField
      * @return 
      */
     public static final <N extends _node> List<Select> selectList( N _n, String proto, Predicate<_field> constraint){
-        return _pField.of(proto, constraint).selectListIn(_n);
+        return $field.of(proto, constraint).selectListIn(_n);
     }
     
     /**
@@ -194,7 +194,7 @@ public class _pField
      * @return 
      */
     public static final <N extends _node> List<Select> selectList( N _n, _field proto ){
-        return _pField.of(proto).selectListIn(_n);
+        return $field.of(proto).selectListIn(_n);
     }
     
     /**
@@ -206,7 +206,7 @@ public class _pField
      * @return 
      */
     public static final <N extends _node> List<Select> selectList( N _n, _field proto, Predicate<_field> constraint){
-        return _pField.of(proto, constraint).selectListIn(_n);
+        return $field.of(proto, constraint).selectListIn(_n);
     }
     
     
@@ -218,7 +218,7 @@ public class _pField
      * @return the modified N
      */
     public static final <N extends _node> N remove( N _n, _field proto ){
-        return _pField.of(proto).removeIn(_n);
+        return $field.of(proto).removeIn(_n);
     }
     
     /**
@@ -230,7 +230,7 @@ public class _pField
      * @return the modified N
      */
     public static final <N extends _node> N remove( N _n, _field proto, Predicate<_field> constraint){
-        return _pField.of(proto, constraint).removeIn(_n);
+        return $field.of(proto, constraint).removeIn(_n);
     }
     
     /**
@@ -241,7 +241,7 @@ public class _pField
      * @return 
      */
     public static final <N extends _node> N remove( N _n, String proto ){
-        return _pField.of(proto).removeIn(_n);
+        return $field.of(proto).removeIn(_n);
     }
     
     /**
@@ -253,8 +253,8 @@ public class _pField
      * @return 
      */
     public static final <N extends _node> N replace(N rootNode, _field _protoSource, _field _protoTarget){
-        return _pField.of(_protoSource)
-            .replaceIn(rootNode, _pField.of(_protoTarget));
+        return $field.of(_protoSource)
+            .replaceIn(rootNode, $field.of(_protoTarget));
     }
     
     /**
@@ -266,8 +266,8 @@ public class _pField
      * @return 
      */
     public static final <N extends _node> N replace(N rootNode, String protoSource, String protoTarget){
-        return _pField.of(_field.of(protoSource))
-            .replaceIn(rootNode, _pField.of(_field.of(protoTarget)));
+        return $field.of(_field.of(protoSource))
+            .replaceIn(rootNode, $field.of(_field.of(protoTarget)));
     }
     
     /**
@@ -281,8 +281,8 @@ public class _pField
     public static final <N extends _node> N replace( 
         N rootNode, FieldDeclaration astProtoSource, FieldDeclaration astProtoTarget){
         
-        return _pField.of(astProtoSource)
-            .replaceIn(rootNode, _pField.of(astProtoTarget));
+        return $field.of(astProtoSource)
+            .replaceIn(rootNode, $field.of(astProtoTarget));
     }
     
     /**
@@ -290,7 +290,7 @@ public class _pField
      * @param anonymousObject
      * @return 
      */
-    public static _pField of( Object anonymousObject ){
+    public static $field of( Object anonymousObject ){
         StackTraceElement ste = Thread.currentThread().getStackTrace()[2];
         ObjectCreationExpr oce = Expr.anonymousObject(ste);
         FieldDeclaration fd = (FieldDeclaration)
@@ -306,7 +306,7 @@ public class _pField
      * @param proto
      * @return 
      */
-    public static _pField of( String proto ){
+    public static $field of( String proto ){
         return of(new String[]{proto});
     }
     
@@ -316,7 +316,7 @@ public class _pField
      * @param constraint
      * @return 
      */
-    public static _pField of( String proto, Predicate<_field> constraint){
+    public static $field of( String proto, Predicate<_field> constraint){
         return of(new String[]{proto}).constraint(constraint);
     }
     
@@ -325,9 +325,9 @@ public class _pField
      * @param proto
      * @return 
      */
-    public static _pField of(String...proto){
+    public static $field of(String...proto){
         _field _f = _field.of(proto );
-        return new _pField( _f );
+        return new $field( _f );
     }
 
     /**
@@ -335,12 +335,12 @@ public class _pField
      * @param _protoField
      * @return 
      */
-    public static _pField of(_field _protoField){
-        return new _pField( _protoField  );
+    public static $field of(_field _protoField){
+        return new $field( _protoField  );
     }
 
-    public static _pField of(_field _protoField, Predicate<_field> constraint){
-        return new _pField( _protoField  ).constraint(constraint);
+    public static $field of(_field _protoField, Predicate<_field> constraint){
+        return new $field( _protoField  ).constraint(constraint);
     }
     
     public Predicate<_field> constraint = t -> true;
@@ -350,12 +350,12 @@ public class _pField
     public static final PrettyPrinterConfiguration NO_COMMENTS = new PrettyPrinterConfiguration()
         .setPrintComments(false).setPrintJavadoc(false);
 
-    public _pField constraint( Predicate<_field> constraint){
+    public $field constraint( Predicate<_field> constraint){
         this.constraint = constraint;
         return this;
     }
     
-    private _pField( _field _protoField ){
+    private $field( _field _protoField ){
         if( _protoField.getFieldDeclaration().hasJavaDocComment() ){
             Comment c = _protoField.getFieldDeclaration().getComment().get();
             commentStencil = Stencil.of( c.toString() );
@@ -480,22 +480,22 @@ public class _pField
      * @return 
      */
     public _field construct(_node _protoNode ){
-        return _pField.this.construct(Translator.DEFAULT_TRANSLATOR, _protoNode.deconstruct() );
+        return $field.this.construct(Translator.DEFAULT_TRANSLATOR, _protoNode.deconstruct() );
     }
 
     @Override
     public _field construct(Map<String, Object> keyValues) {
-        return _pField.this.construct( Translator.DEFAULT_TRANSLATOR, keyValues);
+        return $field.this.construct( Translator.DEFAULT_TRANSLATOR, keyValues);
     }
 
     @Override
     public _field construct(Object... keyValues) {
-        return _pField.this.construct( Translator.DEFAULT_TRANSLATOR, Tokens.of(keyValues));
+        return $field.this.construct( Translator.DEFAULT_TRANSLATOR, Tokens.of(keyValues));
     }
 
     @Override
     public _field construct(Translator translator, Object... keyValues) {
-        return _pField.this.construct( translator, Tokens.of(keyValues));
+        return $field.this.construct( translator, Tokens.of(keyValues));
     }
 
     @Override
@@ -512,7 +512,7 @@ public class _pField
     }
 
     @Override
-    public _pField $(String target, String $Name) {
+    public $field $(String target, String $Name) {
         if(this.commentStencil != null ){
             this.commentStencil = this.commentStencil.$(target,$Name);
         }
@@ -527,7 +527,7 @@ public class _pField
      * @param kvs the key parameter NAME and String VALUE to assign to the
      * @return the modified Stencil
      */
-    public _pField assign$( Tokens kvs ) {
+    public $field assign$( Tokens kvs ) {
         return assign$( Translator.DEFAULT_TRANSLATOR, kvs );
     }
 
@@ -538,7 +538,7 @@ public class _pField
      * @param keyValues the key parameter NAME and String VALUE to assign to the
      * @return the modified Stencil
      */
-    public _pField assign$( Object... keyValues ) {
+    public $field assign$( Object... keyValues ) {
         return assign$( Translator.DEFAULT_TRANSLATOR, Tokens.of( keyValues ) );
     }
 
@@ -550,7 +550,7 @@ public class _pField
      * @param keyValues the key parameter NAME and String VALUE to assign to the
      * @return the modified $field
      */
-    public _pField assign$( Translator translator, Object... keyValues ) {
+    public $field assign$( Translator translator, Object... keyValues ) {
         return assign$( translator, Tokens.of( keyValues ) );
     }
 
@@ -560,7 +560,7 @@ public class _pField
      * @param kvs
      * @return 
      */
-    public _pField assign$( Translator translator, Tokens kvs ) {
+    public $field assign$( Translator translator, Tokens kvs ) {
         if( this.commentStencil != null ){
             this.commentStencil = this.commentStencil.assign$(translator, kvs);
         }
@@ -749,7 +749,7 @@ public class _pField
      * @param $replaceProto
      * @return 
      */
-    public <N extends Node> N replaceIn(N astNode, _pField $replaceProto ){
+    public <N extends Node> N replaceIn(N astNode, $field $replaceProto ){
         astNode.walk(VariableDeclarator.class, e-> {
             Select sel = select( e );
             if( sel != null ){
@@ -766,7 +766,7 @@ public class _pField
      * @param $replaceProto
      * @return 
      */
-    public <N extends _node> N replaceIn(N _le, _pField $replaceProto ){
+    public <N extends _node> N replaceIn(N _le, $field $replaceProto ){
         Walk.in(_le, VariableDeclarator.class, e-> {
             Select sel = select( e );
             if( sel != null ){
@@ -837,9 +837,9 @@ public class _pField
      * A Matched Selection result returned from matching a prototype $field
      * inside of some Node or _node
      */
-    public static class Select implements _pQuery.selected, 
-            _pQuery.selectedAstNode<VariableDeclarator>, 
-            _pQuery.selected_model<_field> {
+    public static class Select implements $query.selected, 
+            $query.selectedAstNode<VariableDeclarator>, 
+            $query.selected_model<_field> {
         
         public final _field _f;
         public final args args;

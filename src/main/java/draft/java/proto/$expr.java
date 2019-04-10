@@ -16,8 +16,8 @@ import java.util.function.Predicate;
  *
  * @param <T> the underlying Expression TYPE
  */
-public final class _pExpr <T extends Expression>
-    implements Template<T>, _pQuery<T> {
+public final class $expr <T extends Expression>
+    implements Template<T>, $query<T> {
     
     /**
      * find the first occurring instance of a matching expression within the rootNode
@@ -28,7 +28,7 @@ public final class _pExpr <T extends Expression>
      * @return the first matching expression or null if none found
      */
     public static final <N extends _node, E extends Expression> E first( N _n, String protoExpr ){
-        return (E) _pExpr.of(protoExpr).firstIn(_n);
+        return (E) $expr.of(protoExpr).firstIn(_n);
     }    
     
     /**
@@ -40,7 +40,7 @@ public final class _pExpr <T extends Expression>
      * @return the first matching expression or null if none found
      */
     public static final <N extends _node, E extends Expression> E first( N _n, Class<E> exprClass ){
-        return (E) new _pExpr(exprClass, "$any$").firstIn(_n);
+        return (E) new $expr(exprClass, "$any$").firstIn(_n);
     }
     
     /**
@@ -52,7 +52,7 @@ public final class _pExpr <T extends Expression>
      * @return 
      */
     public static final <N extends _node, E extends Expression> E first( N _n, E astProtoExpr ){
-        return (E)_pExpr.of(astProtoExpr).firstIn(_n);
+        return (E)$expr.of(astProtoExpr).firstIn(_n);
     }  
     
     /**
@@ -65,7 +65,7 @@ public final class _pExpr <T extends Expression>
      * @return the first matching expression or null if none found
      */
     public static final <N extends _node, E extends Expression> E first( N _n, String protoExpr, Predicate<E> constraint){
-        return (E) _pExpr.of(protoExpr, constraint).firstIn(_n);
+        return (E) $expr.of(protoExpr, constraint).firstIn(_n);
     }
     
     /**
@@ -78,7 +78,7 @@ public final class _pExpr <T extends Expression>
      * @return 
      */
     public static final <N extends _node, E extends Expression> E first( N _n, E astProtoExpr, Predicate<E> constraint){
-        return (E)_pExpr.of(astProtoExpr, constraint).firstIn(_n);
+        return (E)$expr.of(astProtoExpr, constraint).firstIn(_n);
     }  
    
     /**
@@ -90,7 +90,7 @@ public final class _pExpr <T extends Expression>
      * @return the first matching expression or null if none found
      */
     public static final <N extends _node, E extends Expression> Select<E> selectFirst( N _n, String protoExpr ){
-        return (Select<E>)_pExpr.of(protoExpr).selectFirstIn(_n);
+        return (Select<E>)$expr.of(protoExpr).selectFirstIn(_n);
     }
     
     /**
@@ -102,7 +102,7 @@ public final class _pExpr <T extends Expression>
      * @return 
      */
     public static final <N extends _node, E extends Expression> Select<E> selectFirst( N _n, E astProtoExpr ){
-        return _pExpr.of(astProtoExpr).selectFirstIn(_n);
+        return $expr.of(astProtoExpr).selectFirstIn(_n);
     }  
     
     /**
@@ -115,7 +115,7 @@ public final class _pExpr <T extends Expression>
      * @return the first matching expression or null if none found
      */
     public static final <N extends _node, E extends Expression> Select<E> selectFirst( N _n, String protoExpr, Predicate<E> constraint){
-        return _pExpr.of(protoExpr, constraint).selectFirstIn(_n);
+        return $expr.of(protoExpr, constraint).selectFirstIn(_n);
     }
     
     /**
@@ -128,7 +128,7 @@ public final class _pExpr <T extends Expression>
      * @return 
      */
     public static final <N extends _node, E extends Expression> Select<E> selectFirst( N _n, E astProtoExpr, Predicate<E> constraint){
-        return _pExpr.of(astProtoExpr, constraint).selectFirstIn(_n);
+        return $expr.of(astProtoExpr, constraint).selectFirstIn(_n);
     }
 
     /**
@@ -142,7 +142,7 @@ public final class _pExpr <T extends Expression>
      */
     public <N extends _node, E extends Expression> N forEach(N _n, Class<E> exprClass, Consumer<E> expressionActionFn){
         
-        return (N) new _pExpr(exprClass, "$any$").forEachIn(_n, expressionActionFn);
+        return (N) new $expr(exprClass, "$any$").forEachIn(_n, expressionActionFn);
     }
     
     /**
@@ -155,7 +155,7 @@ public final class _pExpr <T extends Expression>
      * @return 
      */
     public <N extends _node, E extends Expression> N forEach(N _n, E exprProto, Consumer<E> expressionActionFn){
-        return _pExpr.of(exprProto).forEachIn(_n, expressionActionFn);
+        return $expr.of(exprProto).forEachIn(_n, expressionActionFn);
     }
 
     /**
@@ -169,7 +169,7 @@ public final class _pExpr <T extends Expression>
      * @return 
      */
     public <N extends _node, E extends Expression> N forEach(N _n, E exprProto, Predicate<E> constraint, Consumer<E> expressionActionFn){
-        return _pExpr.of(exprProto, constraint).forEachIn(_n, expressionActionFn);
+        return $expr.of(exprProto, constraint).forEachIn(_n, expressionActionFn);
     }
     
     /**
@@ -181,7 +181,7 @@ public final class _pExpr <T extends Expression>
      * @return 
      */
     public static final <N extends _node, E extends Expression> List<E> list( N _n, Class<E> exprClass ){
-        return (List<E>)new _pExpr(exprClass, "$any$").listIn(_n);
+        return (List<E>)new $expr(exprClass, "$any$").listIn(_n);
     }
     
     /**
@@ -193,7 +193,7 @@ public final class _pExpr <T extends Expression>
      * @return 
      */
     public static final <N extends _node, E extends Expression> List<E> list( N _n, String protoExpr ){
-        return (List<E>)_pExpr.of(protoExpr).listIn(_n);
+        return (List<E>)$expr.of(protoExpr).listIn(_n);
     }
     
     /**
@@ -206,7 +206,7 @@ public final class _pExpr <T extends Expression>
      * @return 
      */
     public static final <N extends _node, E extends Expression> List<E> list( N _n, String protoExpr, Predicate<E> constraint){
-        return (List<E>)_pExpr.of(protoExpr, constraint).listIn(_n);
+        return (List<E>)$expr.of(protoExpr, constraint).listIn(_n);
     }
     
     /**
@@ -218,7 +218,7 @@ public final class _pExpr <T extends Expression>
      * @return 
      */
     public static final <N extends _node, E extends Expression> List<E> list( N _n, E astProtoExpr ){
-        return _pExpr.of(astProtoExpr).listIn(_n);
+        return $expr.of(astProtoExpr).listIn(_n);
     }    
     
     /**
@@ -231,7 +231,7 @@ public final class _pExpr <T extends Expression>
      * @return 
      */
     public static final <N extends _node, E extends Expression> List<E> list( N _n, E astProtoExpr, Predicate<E> constraint){
-        return _pExpr.of(astProtoExpr, constraint).listIn(_n);
+        return $expr.of(astProtoExpr, constraint).listIn(_n);
     }  
     
     /**
@@ -242,7 +242,7 @@ public final class _pExpr <T extends Expression>
      * @param astProtoExpr
      * @return 
      */
-    public static final <N extends _node, E extends Expression> List<E> list( N _n, _pExpr<E> astProtoExpr ){
+    public static final <N extends _node, E extends Expression> List<E> list( N _n, $expr<E> astProtoExpr ){
         return (List<E>)astProtoExpr.listIn(_n);
     }
     
@@ -255,7 +255,7 @@ public final class _pExpr <T extends Expression>
      * @return 
      */
     public static final <N extends _node, E extends Expression> List<Select<Expression>> selectList( N _n, String protoExpr ){
-        return _pExpr.of(protoExpr).selectListIn(_n);
+        return $expr.of(protoExpr).selectListIn(_n);
     }
     
     /**
@@ -268,7 +268,7 @@ public final class _pExpr <T extends Expression>
      * @return 
      */
     public static final <N extends _node, E extends Expression> List<Select<E>> selectList( N _n, String protoExpr, Predicate<E> constraint){
-        return _pExpr.of(protoExpr, constraint).selectListIn(_n);
+        return $expr.of(protoExpr, constraint).selectListIn(_n);
     }
     
     /**
@@ -280,7 +280,7 @@ public final class _pExpr <T extends Expression>
      * @return 
      */
     public static final <N extends _node, E extends Expression> List<Select<E>> selectList( N _n, E astProtoExpr ){
-        return _pExpr.of(astProtoExpr).selectListIn(_n);
+        return $expr.of(astProtoExpr).selectListIn(_n);
     }    
     
     /**
@@ -293,7 +293,7 @@ public final class _pExpr <T extends Expression>
      * @return 
      */
     public static final <N extends _node, E extends Expression> List<Select<E>> selectList( N _n, E astProtoExpr, Predicate<E> constraint){
-        return _pExpr.of(astProtoExpr, constraint).selectListIn(_n);
+        return $expr.of(astProtoExpr, constraint).selectListIn(_n);
     }  
     
     /**
@@ -304,7 +304,7 @@ public final class _pExpr <T extends Expression>
      * @param astProtoExpr
      * @return 
      */
-    public static final <N extends _node, E extends Expression> List<Select<E>> selectList( N _n, _pExpr<E> astProtoExpr ){
+    public static final <N extends _node, E extends Expression> List<Select<E>> selectList( N _n, $expr<E> astProtoExpr ){
         return astProtoExpr.selectListIn(_n);
     }
     
@@ -317,8 +317,8 @@ public final class _pExpr <T extends Expression>
      * @return 
      */
     public static final <N extends _node> N replace(N _n, Expression protoSource, Expression protoTarget){
-        return (N)_pExpr.of(protoSource)
-            .replaceIn(_n, _pExpr.of(protoTarget));
+        return (N)$expr.of(protoSource)
+            .replaceIn(_n, $expr.of(protoTarget));
     }
     
     /**
@@ -331,8 +331,8 @@ public final class _pExpr <T extends Expression>
      */
     public static final <N extends _node> N replace( N _n, String protoSource, String protoTarget){
         
-        return (N)_pExpr.of(protoSource)
-            .replaceIn(_n, _pExpr.of(protoTarget));
+        return (N)$expr.of(protoSource)
+            .replaceIn(_n, $expr.of(protoTarget));
     }
     
     /**
@@ -343,9 +343,9 @@ public final class _pExpr <T extends Expression>
      * @return 
      */
     public static final Expression replace( Expression astExpr, String protoSource, String protoTarget){
-        args ts = _pExpr.of(protoSource).deconstruct(astExpr);
+        args ts = $expr.of(protoSource).deconstruct(astExpr);
         if( ts != null ){
-            Expression t = _pExpr.of(protoTarget).construct(ts);
+            Expression t = $expr.of(protoTarget).construct(ts);
             astExpr.replace(t);
             return t;
         }
@@ -358,8 +358,8 @@ public final class _pExpr <T extends Expression>
      * @param proto
      * @return 
      */
-    public static <T extends Expression> _pExpr<T> of( String...proto ){
-        return new _pExpr<>( (T)Expr.of(proto));
+    public static <T extends Expression> $expr<T> of( String...proto ){
+        return new $expr<>( (T)Expr.of(proto));
     }
     
     /**
@@ -369,8 +369,8 @@ public final class _pExpr <T extends Expression>
      * @param constraint
      * @return 
      */
-    public static <T extends Expression> _pExpr<T> of( String proto, Predicate<T> constraint ){
-        return new _pExpr<>( (T)Expr.of(proto)).constraint(constraint);
+    public static <T extends Expression> $expr<T> of( String proto, Predicate<T> constraint ){
+        return new $expr<>( (T)Expr.of(proto)).constraint(constraint);
     }
     
     /**
@@ -379,8 +379,8 @@ public final class _pExpr <T extends Expression>
      * @param protoExpr
      * @return 
      */
-    public static <T extends Expression> _pExpr<T> of(T protoExpr ){
-        return new _pExpr<>(protoExpr );
+    public static <T extends Expression> $expr<T> of(T protoExpr ){
+        return new $expr<>(protoExpr );
     }
 
     /**
@@ -390,8 +390,8 @@ public final class _pExpr <T extends Expression>
      * @param constraint
      * @return 
      */
-    public static <T extends Expression> _pExpr<T> of(T protoExpr, Predicate<T> constraint ){
-        return new _pExpr<>(protoExpr ).constraint(constraint);
+    public static <T extends Expression> $expr<T> of(T protoExpr, Predicate<T> constraint ){
+        return new $expr<>(protoExpr ).constraint(constraint);
     }
      
     
@@ -400,8 +400,8 @@ public final class _pExpr <T extends Expression>
      * @param proto
      * @return
      */
-    public static _pExpr<ArrayAccessExpr> arrayAccess(String... proto ) {
-        return new _pExpr<>( Expr.arrayAccess(proto) );
+    public static $expr<ArrayAccessExpr> arrayAccess(String... proto ) {
+        return new $expr<>( Expr.arrayAccess(proto) );
     }
     
     /**
@@ -409,8 +409,8 @@ public final class _pExpr <T extends Expression>
      * @param constraint
      * @return
      */
-    public static _pExpr<ArrayAccessExpr> arrayAccess(Predicate<ArrayAccessExpr> constraint) {
-        return new _pExpr<>( Expr.arrayAccess("a[0]") )
+    public static $expr<ArrayAccessExpr> arrayAccess(Predicate<ArrayAccessExpr> constraint) {
+        return new $expr<>( Expr.arrayAccess("a[0]") )
                 .$(Expr.of("a[0]"), "any").constraint(constraint);
     }    
 
@@ -420,8 +420,8 @@ public final class _pExpr <T extends Expression>
      * @param constraint
      * @return
      */
-    public static _pExpr<ArrayAccessExpr> arrayAccess(String proto, Predicate<ArrayAccessExpr> constraint) {
-        return new _pExpr<>( Expr.arrayAccess(proto) ).constraint(constraint);
+    public static $expr<ArrayAccessExpr> arrayAccess(String proto, Predicate<ArrayAccessExpr> constraint) {
+        return new $expr<>( Expr.arrayAccess(proto) ).constraint(constraint);
     }
     
     /**
@@ -429,8 +429,8 @@ public final class _pExpr <T extends Expression>
      * i.e."arr[3]"
      * @return
      */
-    public static _pExpr<ArrayAccessExpr> arrayAccessAny( ) {
-        return new _pExpr<>( Expr.arrayAccess("a[0]") )
+    public static $expr<ArrayAccessExpr> arrayAccessAny( ) {
+        return new $expr<>( Expr.arrayAccess("a[0]") )
                 .$(Expr.of("a[0]"), "any");
     }
     
@@ -439,8 +439,8 @@ public final class _pExpr <T extends Expression>
      * @param proto
      * @return 
      */
-    public static _pExpr<ArrayCreationExpr> arrayCreation( String... proto ) {
-        return new _pExpr<>( Expr.arrayCreation(proto ) );
+    public static $expr<ArrayCreationExpr> arrayCreation( String... proto ) {
+        return new $expr<>( Expr.arrayCreation(proto ) );
     }
     
     /**
@@ -448,8 +448,8 @@ public final class _pExpr <T extends Expression>
      * @param constraint
      * @return 
      */
-    public static _pExpr<ArrayCreationExpr> arrayCreation(Predicate<ArrayCreationExpr> constraint ) {
-        return new _pExpr<>( Expr.arrayCreation("new int[]")).$(Expr.of("new int[]"), "any").constraint(constraint);
+    public static $expr<ArrayCreationExpr> arrayCreation(Predicate<ArrayCreationExpr> constraint ) {
+        return new $expr<>( Expr.arrayCreation("new int[]")).$(Expr.of("new int[]"), "any").constraint(constraint);
     }
     
     /**
@@ -458,16 +458,16 @@ public final class _pExpr <T extends Expression>
      * @param constraint
      * @return 
      */
-    public static _pExpr<ArrayCreationExpr> arrayCreation( String proto, Predicate<ArrayCreationExpr> constraint ) {
-        return new _pExpr<>( Expr.arrayCreation(proto ) ).constraint(constraint);
+    public static $expr<ArrayCreationExpr> arrayCreation( String proto, Predicate<ArrayCreationExpr> constraint ) {
+        return new $expr<>( Expr.arrayCreation(proto ) ).constraint(constraint);
     }
 
     /**
      * i.e."new Obj[]", "new int[][]"
      * @return 
      */
-    public static _pExpr<ArrayCreationExpr> arrayCreationAny( ) {
-        return new _pExpr<>( Expr.arrayCreation("new int[]")).$(Expr.of("new int[]"), "any");
+    public static $expr<ArrayCreationExpr> arrayCreationAny( ) {
+        return new $expr<>( Expr.arrayCreation("new int[]")).$(Expr.of("new int[]"), "any");
     }
     
     /**
@@ -475,8 +475,8 @@ public final class _pExpr <T extends Expression>
      * @param proto
      * @return 
      */
-    public static _pExpr<ArrayInitializerExpr> arrayInitializer( String... proto ) {
-        return new _pExpr<>( Expr.arrayInitializer(proto ) );
+    public static $expr<ArrayInitializerExpr> arrayInitializer( String... proto ) {
+        return new $expr<>( Expr.arrayInitializer(proto ) );
     }
     
     /**
@@ -484,7 +484,7 @@ public final class _pExpr <T extends Expression>
      * @param ints
      * @return 
      */
-    public static _pExpr<ArrayInitializerExpr> arrayInitializer( int[] ints ) {
+    public static $expr<ArrayInitializerExpr> arrayInitializer( int[] ints ) {
         StringBuilder sb = new StringBuilder();
         sb.append("{");
         for(int i=0;i<ints.length; i++){
@@ -502,7 +502,7 @@ public final class _pExpr <T extends Expression>
      * @param bools
      * @return 
      */
-    public static _pExpr<ArrayInitializerExpr> arrayInitializer( boolean[] bools ) {
+    public static $expr<ArrayInitializerExpr> arrayInitializer( boolean[] bools ) {
         StringBuilder sb = new StringBuilder();
         sb.append("{");
         for(int i=0;i<bools.length; i++){
@@ -520,7 +520,7 @@ public final class _pExpr <T extends Expression>
      * @param chars
      * @return 
      */
-    public static _pExpr<ArrayInitializerExpr> arrayInitializer( char[] chars ) {
+    public static $expr<ArrayInitializerExpr> arrayInitializer( char[] chars ) {
         StringBuilder sb = new StringBuilder();
         sb.append("{");
         for(int i=0;i<chars.length; i++){
@@ -538,7 +538,7 @@ public final class _pExpr <T extends Expression>
      * @param doubles
      * @return 
      */
-    public static _pExpr<ArrayInitializerExpr> arrayInitializer( double[] doubles ) {
+    public static $expr<ArrayInitializerExpr> arrayInitializer( double[] doubles ) {
         StringBuilder sb = new StringBuilder();
         sb.append("{");
         for(int i=0;i<doubles.length; i++){
@@ -556,7 +556,7 @@ public final class _pExpr <T extends Expression>
      * @param floats
      * @return 
      */
-    public static _pExpr<ArrayInitializerExpr> arrayInitializer( float[] floats ) {
+    public static $expr<ArrayInitializerExpr> arrayInitializer( float[] floats ) {
         StringBuilder sb = new StringBuilder();
         sb.append("{");
         for(int i=0;i<floats.length; i++){
@@ -574,8 +574,8 @@ public final class _pExpr <T extends Expression>
      * @param constraint
      * @return 
      */
-    public static _pExpr<ArrayInitializerExpr> arrayInitializer( Predicate<ArrayInitializerExpr> constraint) {
-        return new _pExpr<>( Expr.arrayInitializer("{1}") ).$(Expr.of("{1}"), "any").constraint(constraint);
+    public static $expr<ArrayInitializerExpr> arrayInitializer( Predicate<ArrayInitializerExpr> constraint) {
+        return new $expr<>( Expr.arrayInitializer("{1}") ).$(Expr.of("{1}"), "any").constraint(constraint);
     }
     
     /**
@@ -584,16 +584,16 @@ public final class _pExpr <T extends Expression>
      * @param constraint
      * @return 
      */
-    public static _pExpr<ArrayInitializerExpr> arrayInitializer( String proto, Predicate<ArrayInitializerExpr> constraint) {
-        return new _pExpr<>( Expr.arrayInitializer(proto ) ).constraint(constraint);
+    public static $expr<ArrayInitializerExpr> arrayInitializer( String proto, Predicate<ArrayInitializerExpr> constraint) {
+        return new $expr<>( Expr.arrayInitializer(proto ) ).constraint(constraint);
     }
     
     /**
      * Any array initializer
      * @return 
      */
-    public static _pExpr<ArrayInitializerExpr> arrayInitializerAny() {
-        return new _pExpr<>( Expr.arrayInitializer("{1}") ).$(Expr.of("{1}"), "any");
+    public static $expr<ArrayInitializerExpr> arrayInitializerAny() {
+        return new $expr<>( Expr.arrayInitializer("{1}") ).$(Expr.of("{1}"), "any");
     }
     
     /** 
@@ -601,8 +601,8 @@ public final class _pExpr <T extends Expression>
      * @param proto
      * @return 
      */
-    public static _pExpr<AssignExpr> assign( String... proto ) {
-        return new _pExpr<>( Expr.assign(proto ) );
+    public static $expr<AssignExpr> assign( String... proto ) {
+        return new $expr<>( Expr.assign(proto ) );
     }
     
     /** 
@@ -610,8 +610,8 @@ public final class _pExpr <T extends Expression>
      * @param constraint
      * @return 
      */
-    public static _pExpr<AssignExpr> assign(Predicate<AssignExpr> constraint) {
-        return new _pExpr<>( Expr.assign("a=1") ).$(Expr.of("a=1"), "any").constraint(constraint);
+    public static $expr<AssignExpr> assign(Predicate<AssignExpr> constraint) {
+        return new $expr<>( Expr.assign("a=1") ).$(Expr.of("a=1"), "any").constraint(constraint);
     }
     
     /** 
@@ -620,16 +620,16 @@ public final class _pExpr <T extends Expression>
      * @param constraint
      * @return 
      */
-    public static _pExpr<AssignExpr> assign( String proto, Predicate<AssignExpr> constraint) {
-        return new _pExpr<>( Expr.assign(proto ) ).constraint(constraint);
+    public static $expr<AssignExpr> assign( String proto, Predicate<AssignExpr> constraint) {
+        return new $expr<>( Expr.assign(proto ) ).constraint(constraint);
     }
     
     /** 
      * i.e."a = 1", "a = 4" 
      * @return 
      */
-    public static _pExpr<AssignExpr> assignAny( ) {
-        return new _pExpr<>( Expr.assign("a=1") ).$(Expr.of("a=1"), "any");
+    public static $expr<AssignExpr> assignAny( ) {
+        return new $expr<>( Expr.assign("a=1") ).$(Expr.of("a=1"), "any");
     }
     
 
@@ -638,8 +638,8 @@ public final class _pExpr <T extends Expression>
      * @param proto
      * @return 
      */
-    public static _pExpr<BinaryExpr> binary( String... proto ) {
-        return new _pExpr<>( Expr.binary(proto ) );
+    public static $expr<BinaryExpr> binary( String... proto ) {
+        return new $expr<>( Expr.binary(proto ) );
     }
     
     /**
@@ -648,8 +648,8 @@ public final class _pExpr <T extends Expression>
      * @param constraint
      * @return 
      */
-    public static _pExpr<BinaryExpr> binary( String proto, Predicate<BinaryExpr> constraint) {
-        return new _pExpr<>( Expr.binary(proto ) ).constraint(constraint);
+    public static $expr<BinaryExpr> binary( String proto, Predicate<BinaryExpr> constraint) {
+        return new $expr<>( Expr.binary(proto ) ).constraint(constraint);
     }    
 
     /**
@@ -657,16 +657,16 @@ public final class _pExpr <T extends Expression>
      * @param constraint
      * @return 
      */
-    public static _pExpr<BinaryExpr> binary(Predicate<BinaryExpr> constraint) {
-        return new _pExpr<>( Expr.binary("a || b" ) ).$(Expr.binary("a || b"), "any").constraint(constraint);
+    public static $expr<BinaryExpr> binary(Predicate<BinaryExpr> constraint) {
+        return new $expr<>( Expr.binary("a || b" ) ).$(Expr.binary("a || b"), "any").constraint(constraint);
     }  
     
     /**
      * a || b    
      * @return 
      */
-    public static _pExpr<BinaryExpr> binaryAny( ) {
-        return new _pExpr<>( Expr.binary("a || b" ) ).$(Expr.binary("a || b"), "any");
+    public static $expr<BinaryExpr> binaryAny( ) {
+        return new $expr<>( Expr.binary("a || b" ) ).$(Expr.binary("a || b"), "any");
     } 
     
     /** 
@@ -674,8 +674,8 @@ public final class _pExpr <T extends Expression>
      * @param b
      * @return  
      */
-    public static _pExpr<BooleanLiteralExpr> of( boolean b ){
-        return new _pExpr<>( Expr.of( b ) );
+    public static $expr<BooleanLiteralExpr> of( boolean b ){
+        return new $expr<>( Expr.of( b ) );
     }
 
     /**
@@ -683,8 +683,8 @@ public final class _pExpr <T extends Expression>
      * @param b
      * @return 
      */
-    public static _pExpr<BooleanLiteralExpr> booleanLiteral( boolean b ) {
-        return new _pExpr( Expr.of( b ) );
+    public static $expr<BooleanLiteralExpr> booleanLiteral( boolean b ) {
+        return new $expr( Expr.of( b ) );
     }
     
     /**
@@ -693,8 +693,8 @@ public final class _pExpr <T extends Expression>
      * @param constraint
      * @return 
      */
-    public static _pExpr<BooleanLiteralExpr> booleanLiteral( boolean b, Predicate<BooleanLiteralExpr> constraint) {
-        return new _pExpr( Expr.of( b ) ).constraint(constraint);
+    public static $expr<BooleanLiteralExpr> booleanLiteral( boolean b, Predicate<BooleanLiteralExpr> constraint) {
+        return new $expr( Expr.of( b ) ).constraint(constraint);
     }
     
     /** 
@@ -703,8 +703,8 @@ public final class _pExpr <T extends Expression>
      * @param proto
      * @return 
      */
-    public static _pExpr<BooleanLiteralExpr> booleanLiteral( String... proto ) {
-        return new _pExpr( Expr.booleanLiteral(proto ) );
+    public static $expr<BooleanLiteralExpr> booleanLiteral( String... proto ) {
+        return new $expr( Expr.booleanLiteral(proto ) );
     }
 
     /** 
@@ -712,8 +712,8 @@ public final class _pExpr <T extends Expression>
      * @param constraint
      * @return 
      */
-    public static _pExpr<BooleanLiteralExpr> booleanLiteral( Predicate<BooleanLiteralExpr>constraint ) {
-        return new _pExpr( Expr.booleanLiteral("true") ).$("true", "any").constraint(constraint);
+    public static $expr<BooleanLiteralExpr> booleanLiteral( Predicate<BooleanLiteralExpr>constraint ) {
+        return new $expr( Expr.booleanLiteral("true") ).$("true", "any").constraint(constraint);
     }
     
     /** 
@@ -722,16 +722,16 @@ public final class _pExpr <T extends Expression>
      * @param constraint
      * @return 
      */
-    public static _pExpr<BooleanLiteralExpr> booleanLiteral( String proto, Predicate<BooleanLiteralExpr>constraint ) {
-        return new _pExpr( Expr.booleanLiteral(proto ) ).constraint(constraint);
+    public static $expr<BooleanLiteralExpr> booleanLiteral( String proto, Predicate<BooleanLiteralExpr>constraint ) {
+        return new $expr( Expr.booleanLiteral(proto ) ).constraint(constraint);
     }
     
     /** 
      * "true" / "false" 
      * @return 
      */
-    public static _pExpr<BooleanLiteralExpr> booleanLiteralAny( ) {
-        return new _pExpr( Expr.booleanLiteral("true") ).$("true", "any");
+    public static $expr<BooleanLiteralExpr> booleanLiteralAny( ) {
+        return new $expr( Expr.booleanLiteral("true") ).$("true", "any");
     }
     
     /** 
@@ -739,8 +739,8 @@ public final class _pExpr <T extends Expression>
      * @param proto
      * @return 
      */
-    public static _pExpr<CastExpr> cast( String... proto ) {
-        return new _pExpr( Expr.cast(proto ) );
+    public static $expr<CastExpr> cast( String... proto ) {
+        return new $expr( Expr.cast(proto ) );
     }
 
     /** 
@@ -748,8 +748,8 @@ public final class _pExpr <T extends Expression>
      * @param constraint
      * @return 
      */
-    public static _pExpr<CastExpr> cast( Predicate<CastExpr> constraint ) {
-        return new _pExpr( Expr.cast("(String)o")).$(Expr.of("String(o)"),"any").constraint(constraint);
+    public static $expr<CastExpr> cast( Predicate<CastExpr> constraint ) {
+        return new $expr( Expr.cast("(String)o")).$(Expr.of("String(o)"),"any").constraint(constraint);
     }
     
     /** 
@@ -758,16 +758,16 @@ public final class _pExpr <T extends Expression>
      * @param constraint
      * @return 
      */
-    public static _pExpr<CastExpr> cast( String proto, Predicate<CastExpr> constraint ) {
-        return new _pExpr( Expr.cast(proto ) ).constraint(constraint);
+    public static $expr<CastExpr> cast( String proto, Predicate<CastExpr> constraint ) {
+        return new $expr( Expr.cast(proto ) ).constraint(constraint);
     }
     
     /** 
      * (String)o 
      * @return 
      */
-    public static _pExpr<CastExpr> castAny( ) {
-        return new _pExpr( Expr.cast("(String)o")).$(Expr.of("String(o)"),"any");
+    public static $expr<CastExpr> castAny( ) {
+        return new $expr( Expr.cast("(String)o")).$(Expr.of("String(o)"),"any");
     }
     
     /** 
@@ -775,27 +775,8 @@ public final class _pExpr <T extends Expression>
      * @param c
      * @return 
      */
-    public static _pExpr<CharLiteralExpr> of( char c ){
-        return new _pExpr( Expr.charLiteral( c ) );
-    }
-
-    /** 
-     * 'c' 
-     * @param c
-     * @param constraint
-     * @return 
-     */
-    public static _pExpr<CharLiteralExpr> of( char c, Predicate<CharLiteralExpr> constraint){
-        return new _pExpr( Expr.charLiteral( c ) ).constraint(constraint);
-    }
-    
-    /** 
-     * 'c' 
-     * @param c
-     * @return 
-     */
-    public static _pExpr<CharLiteralExpr> charLiteral( char c ) {
-        return new _pExpr( Expr.charLiteral( c ) );
+    public static $expr<CharLiteralExpr> of( char c ){
+        return new $expr( Expr.charLiteral( c ) );
     }
 
     /** 
@@ -804,8 +785,27 @@ public final class _pExpr <T extends Expression>
      * @param constraint
      * @return 
      */
-    public static _pExpr<CharLiteralExpr> charLiteral( char c, Predicate<CharLiteralExpr> constraint) {
-        return new _pExpr( Expr.charLiteral( c ) ).constraint(constraint);
+    public static $expr<CharLiteralExpr> of( char c, Predicate<CharLiteralExpr> constraint){
+        return new $expr( Expr.charLiteral( c ) ).constraint(constraint);
+    }
+    
+    /** 
+     * 'c' 
+     * @param c
+     * @return 
+     */
+    public static $expr<CharLiteralExpr> charLiteral( char c ) {
+        return new $expr( Expr.charLiteral( c ) );
+    }
+
+    /** 
+     * 'c' 
+     * @param c
+     * @param constraint
+     * @return 
+     */
+    public static $expr<CharLiteralExpr> charLiteral( char c, Predicate<CharLiteralExpr> constraint) {
+        return new $expr( Expr.charLiteral( c ) ).constraint(constraint);
     }
     
     /** 
@@ -813,8 +813,8 @@ public final class _pExpr <T extends Expression>
      * @param proto
      * @return 
      */
-    public static _pExpr<CharLiteralExpr> charLiteral( String... proto ) {
-        return new _pExpr( Expr.charLiteral(proto ) );
+    public static $expr<CharLiteralExpr> charLiteral( String... proto ) {
+        return new $expr( Expr.charLiteral(proto ) );
     }
 
     /** 
@@ -822,8 +822,8 @@ public final class _pExpr <T extends Expression>
      * @param constraint
      * @return 
      */
-    public static _pExpr<CharLiteralExpr> charLiteral( Predicate<CharLiteralExpr> constraint) {
-        return new _pExpr( Expr.charLiteral('a') ).$("'a'", "any").constraint(constraint);
+    public static $expr<CharLiteralExpr> charLiteral( Predicate<CharLiteralExpr> constraint) {
+        return new $expr( Expr.charLiteral('a') ).$("'a'", "any").constraint(constraint);
     }
     
     /** 
@@ -832,8 +832,8 @@ public final class _pExpr <T extends Expression>
      * @param constraint
      * @return 
      */
-    public static _pExpr<CharLiteralExpr> charLiteral( String proto, Predicate<CharLiteralExpr> constraint) {
-        return new _pExpr( Expr.charLiteral(proto ) ).constraint(constraint);
+    public static $expr<CharLiteralExpr> charLiteral( String proto, Predicate<CharLiteralExpr> constraint) {
+        return new $expr( Expr.charLiteral(proto ) ).constraint(constraint);
     }
     
     /** 
@@ -841,8 +841,8 @@ public final class _pExpr <T extends Expression>
      * 'c' 
      * @return 
      */
-    public static _pExpr<CharLiteralExpr> charLiteralAny(  ) {
-        return new _pExpr( Expr.charLiteral('a') ).$("'a'", "any");
+    public static $expr<CharLiteralExpr> charLiteralAny(  ) {
+        return new $expr( Expr.charLiteral('a') ).$("'a'", "any");
     }
     
     /** 
@@ -850,8 +850,8 @@ public final class _pExpr <T extends Expression>
      * @param proto
      * @return 
      */
-    public static _pExpr<ClassExpr> classExpr( String... proto ) {
-        return new _pExpr( Expr.classExpr(proto ) );
+    public static $expr<ClassExpr> classExpr( String... proto ) {
+        return new $expr( Expr.classExpr(proto ) );
     }
     
     /**
@@ -859,8 +859,8 @@ public final class _pExpr <T extends Expression>
      * @param constraint
      * @return 
      */
-    public static _pExpr<ClassExpr> classExpr( Predicate<ConditionalExpr> constraint) {
-        return new _pExpr( Expr.classExpr("a.class") )
+    public static $expr<ClassExpr> classExpr( Predicate<ConditionalExpr> constraint) {
+        return new $expr( Expr.classExpr("a.class") )
             .$("a.class", "any").constraint(constraint);
     }
     
@@ -870,16 +870,16 @@ public final class _pExpr <T extends Expression>
      * @param constraint
      * @return 
      */
-    public static _pExpr<ClassExpr> classExpr( String proto, Predicate<ConditionalExpr> constraint) {
-        return new _pExpr( Expr.classExpr(proto ) ).constraint(constraint);
+    public static $expr<ClassExpr> classExpr( String proto, Predicate<ConditionalExpr> constraint) {
+        return new $expr( Expr.classExpr(proto ) ).constraint(constraint);
     }
 
     /**
      * String.class
      * @return 
      */
-    public static _pExpr<ClassExpr> classExprAny() {
-        return new _pExpr( Expr.classExpr("a.class") )
+    public static $expr<ClassExpr> classExprAny() {
+        return new $expr( Expr.classExpr("a.class") )
             .$("a.class", "any");
     }
     
@@ -888,8 +888,8 @@ public final class _pExpr <T extends Expression>
      * @param proto
      * @return 
      */
-    public static _pExpr<ConditionalExpr> conditional( String... proto ) {
-        return new _pExpr( Expr.conditional(proto ) );
+    public static $expr<ConditionalExpr> conditional( String... proto ) {
+        return new $expr( Expr.conditional(proto ) );
     }
 
     /**
@@ -898,8 +898,8 @@ public final class _pExpr <T extends Expression>
      * @param constraint
      * @return 
      */
-    public static _pExpr<ConditionalExpr> conditional( String proto, Predicate<ConditionalExpr> constraint) {
-        return new _pExpr( Expr.conditional(proto ) ).constraint(constraint);
+    public static $expr<ConditionalExpr> conditional( String proto, Predicate<ConditionalExpr> constraint) {
+        return new $expr( Expr.conditional(proto ) ).constraint(constraint);
     }
     
     /**
@@ -907,8 +907,8 @@ public final class _pExpr <T extends Expression>
      * @param constraint
      * @return 
      */
-    public static _pExpr<ConditionalExpr> conditional(Predicate<ConditionalExpr> constraint) {
-        return new _pExpr( Expr.conditional("(a==1) ? 1 : 2" ) )
+    public static $expr<ConditionalExpr> conditional(Predicate<ConditionalExpr> constraint) {
+        return new $expr( Expr.conditional("(a==1) ? 1 : 2" ) )
                 .$(Expr.conditional("(a==1) ? 1 : 2"), "any")
                 .constraint(constraint);
     }    
@@ -917,8 +917,8 @@ public final class _pExpr <T extends Expression>
      * Any conditional 
      * @return 
      */
-    public static _pExpr<ConditionalExpr> conditionalAny() {
-        return new _pExpr( Expr.conditional("(a==1) ? 1 : 2" ) )
+    public static $expr<ConditionalExpr> conditionalAny() {
+        return new $expr( Expr.conditional("(a==1) ? 1 : 2" ) )
                 .$(Expr.conditional("(a==1) ? 1 : 2"), "any");
     }    
     
@@ -927,8 +927,8 @@ public final class _pExpr <T extends Expression>
      * @param d
      * @return 
      */
-    public static _pExpr<DoubleLiteralExpr> of( double d ){
-        return new _pExpr( Expr.of( d ) );
+    public static $expr<DoubleLiteralExpr> of( double d ){
+        return new $expr( Expr.of( d ) );
     }
 
     /** 
@@ -936,8 +936,8 @@ public final class _pExpr <T extends Expression>
      * @param d
      * @return 
      */
-    public static _pExpr<DoubleLiteralExpr> doubleLiteral( double d ) {
-        return new _pExpr( Expr.doubleLiteral( d ) );
+    public static $expr<DoubleLiteralExpr> doubleLiteral( double d ) {
+        return new $expr( Expr.doubleLiteral( d ) );
     }
 
     /**
@@ -946,8 +946,8 @@ public final class _pExpr <T extends Expression>
      * @param constraint
      * @return 
      */
-    public static _pExpr<DoubleLiteralExpr> doubleLiteral( double d, Predicate<DoubleLiteralExpr> constraint) {
-        return new _pExpr( Expr.doubleLiteral( d ) ).constraint(constraint);
+    public static $expr<DoubleLiteralExpr> doubleLiteral( double d, Predicate<DoubleLiteralExpr> constraint) {
+        return new $expr( Expr.doubleLiteral( d ) ).constraint(constraint);
     }
     
     /**
@@ -955,8 +955,8 @@ public final class _pExpr <T extends Expression>
      * @param proto
      * @return 
      */
-    public static _pExpr<DoubleLiteralExpr> doubleLiteral( String proto ) {
-        return new _pExpr( Expr.doubleLiteral(proto ) );
+    public static $expr<DoubleLiteralExpr> doubleLiteral( String proto ) {
+        return new $expr( Expr.doubleLiteral(proto ) );
     }
 
     /**
@@ -965,8 +965,8 @@ public final class _pExpr <T extends Expression>
      * @param constraint
      * @return 
      */
-    public static _pExpr<DoubleLiteralExpr> doubleLiteral( String proto, Predicate<DoubleLiteralExpr> constraint) {
-        return new _pExpr( Expr.doubleLiteral(proto ) ).constraint(constraint);
+    public static $expr<DoubleLiteralExpr> doubleLiteral( String proto, Predicate<DoubleLiteralExpr> constraint) {
+        return new $expr( Expr.doubleLiteral(proto ) ).constraint(constraint);
     }
         
     /**
@@ -974,8 +974,8 @@ public final class _pExpr <T extends Expression>
      * @param d
      * @return 
      */
-    public static _pExpr<DoubleLiteralExpr> of( float d ){
-        return new _pExpr( Expr.doubleLiteral( d ) );
+    public static $expr<DoubleLiteralExpr> of( float d ){
+        return new $expr( Expr.doubleLiteral( d ) );
     }
 
     /**
@@ -983,8 +983,8 @@ public final class _pExpr <T extends Expression>
      * @param d
      * @return 
      */
-    public static _pExpr<DoubleLiteralExpr> doubleLiteral( float d ) {
-        return new _pExpr( Expr.of( d ) );
+    public static $expr<DoubleLiteralExpr> doubleLiteral( float d ) {
+        return new $expr( Expr.of( d ) );
     }
 
     /**
@@ -993,8 +993,8 @@ public final class _pExpr <T extends Expression>
      * @param constraint
      * @return 
      */
-    public static _pExpr<DoubleLiteralExpr> doubleLiteral( float d, Predicate<DoubleLiteralExpr> constraint) {
-        return new _pExpr( Expr.of( d ) ).constraint(constraint);
+    public static $expr<DoubleLiteralExpr> doubleLiteral( float d, Predicate<DoubleLiteralExpr> constraint) {
+        return new $expr( Expr.of( d ) ).constraint(constraint);
     }
     
     /**
@@ -1002,16 +1002,16 @@ public final class _pExpr <T extends Expression>
      * @param constraint
      * @return 
      */
-    public static _pExpr<DoubleLiteralExpr> doubleLiteral( Predicate<DoubleLiteralExpr> constraint) {
-        return new _pExpr( Expr.of( 1.0d ) ).$("1.0d", "any").constraint(constraint);
+    public static $expr<DoubleLiteralExpr> doubleLiteral( Predicate<DoubleLiteralExpr> constraint) {
+        return new $expr( Expr.of( 1.0d ) ).$("1.0d", "any").constraint(constraint);
     }
         
     /**
      * 10.1d
      * @return 
      */
-    public static _pExpr<DoubleLiteralExpr> doubleLiteralAny( ) {
-        return new _pExpr( Expr.of( 1.0d ) ).$("1.0d", "any");
+    public static $expr<DoubleLiteralExpr> doubleLiteralAny( ) {
+        return new $expr( Expr.of( 1.0d ) ).$("1.0d", "any");
     }
     
     /** 
@@ -1019,8 +1019,8 @@ public final class _pExpr <T extends Expression>
      * @param proto
      * @return 
      */
-    public static _pExpr<DoubleLiteralExpr> floatLiteral( String... proto ) {
-        return new _pExpr( Expr.floatLiteral(proto ) );
+    public static $expr<DoubleLiteralExpr> floatLiteral( String... proto ) {
+        return new $expr( Expr.floatLiteral(proto ) );
     }
 
     /**
@@ -1029,8 +1029,8 @@ public final class _pExpr <T extends Expression>
      * @param constraint
      * @return 
      */
-    public static _pExpr<DoubleLiteralExpr> floatLiteral( String proto, Predicate<DoubleLiteralExpr> constraint ) {
-        return new _pExpr( Expr.floatLiteral(proto ) ).constraint(constraint);
+    public static $expr<DoubleLiteralExpr> floatLiteral( String proto, Predicate<DoubleLiteralExpr> constraint ) {
+        return new $expr( Expr.floatLiteral(proto ) ).constraint(constraint);
     }
     
     /**
@@ -1038,8 +1038,8 @@ public final class _pExpr <T extends Expression>
      * @param constraint
      * @return 
      */
-    public static _pExpr<DoubleLiteralExpr> floatLiteral(Predicate<DoubleLiteralExpr> constraint ) {
-        return new _pExpr( Expr.of(1.0f) ).$(Expr.of(1.0f), "any").constraint(constraint);
+    public static $expr<DoubleLiteralExpr> floatLiteral(Predicate<DoubleLiteralExpr> constraint ) {
+        return new $expr( Expr.of(1.0f) ).$(Expr.of(1.0f), "any").constraint(constraint);
     }
     
     /**
@@ -1047,8 +1047,8 @@ public final class _pExpr <T extends Expression>
      * @param constraint
      * @return 
      */
-    public static _pExpr<DoubleLiteralExpr> floatLiteralAny(Predicate<DoubleLiteralExpr> constraint ) {
-        return new _pExpr( Expr.of(1.0f) ).$(Expr.of(1.0f), "any");
+    public static $expr<DoubleLiteralExpr> floatLiteralAny(Predicate<DoubleLiteralExpr> constraint ) {
+        return new $expr( Expr.of(1.0f) ).$(Expr.of(1.0f), "any");
     }
     
     /** 
@@ -1056,8 +1056,8 @@ public final class _pExpr <T extends Expression>
      * @param proto
      * @return 
      */
-    public static _pExpr<EnclosedExpr> enclosedExpr( String... proto ) {
-        return new _pExpr( Expr.enclosedExpr(proto ) );
+    public static $expr<EnclosedExpr> enclosedExpr( String... proto ) {
+        return new $expr( Expr.enclosedExpr(proto ) );
     }
 
     /**
@@ -1065,8 +1065,8 @@ public final class _pExpr <T extends Expression>
      * @param constraint
      * @return 
      */
-    public static _pExpr<EnclosedExpr> enclosedExpr(Predicate<EnclosedExpr>constraint ) {
-        return new _pExpr( Expr.enclosedExpr("(a)" ) ).$("(a)", "any").constraint(constraint);
+    public static $expr<EnclosedExpr> enclosedExpr(Predicate<EnclosedExpr>constraint ) {
+        return new $expr( Expr.enclosedExpr("(a)" ) ).$("(a)", "any").constraint(constraint);
     }
     
     /**
@@ -1075,16 +1075,16 @@ public final class _pExpr <T extends Expression>
      * @param constraint
      * @return 
      */
-    public static _pExpr<EnclosedExpr> enclosedExpr( String proto, Predicate<EnclosedExpr>constraint ) {
-        return new _pExpr( Expr.enclosedExpr(proto ) ).constraint(constraint);
+    public static $expr<EnclosedExpr> enclosedExpr( String proto, Predicate<EnclosedExpr>constraint ) {
+        return new $expr( Expr.enclosedExpr(proto ) ).constraint(constraint);
     }
     
     /**
      * i.e.( 3 + 4 )    
      * @return 
      */
-    public static _pExpr<EnclosedExpr> enclosedExprAny( ) {
-        return new _pExpr( Expr.enclosedExpr("(a)" ) ).$("(a)", "any");
+    public static $expr<EnclosedExpr> enclosedExprAny( ) {
+        return new $expr( Expr.enclosedExpr("(a)" ) ).$("(a)", "any");
     }
     
     /** 
@@ -1092,8 +1092,8 @@ public final class _pExpr <T extends Expression>
      * @param proto
      * @return 
      */
-    public static _pExpr<FieldAccessExpr> fieldAccess(String... proto ) {
-        return new _pExpr( Expr.fieldAccess(proto ) );
+    public static $expr<FieldAccessExpr> fieldAccess(String... proto ) {
+        return new $expr( Expr.fieldAccess(proto ) );
     }
 
     /**
@@ -1101,8 +1101,8 @@ public final class _pExpr <T extends Expression>
      * @param constraint
      * @return 
      */
-    public static _pExpr<FieldAccessExpr> fieldAccess(Predicate<FieldAccessExpr> constraint ) {
-        return new _pExpr( Expr.fieldAccess("a.B") )
+    public static $expr<FieldAccessExpr> fieldAccess(Predicate<FieldAccessExpr> constraint ) {
+        return new $expr( Expr.fieldAccess("a.B") )
                 .$(Expr.fieldAccess("a.B"), "any").constraint(constraint);
     }
     
@@ -1112,8 +1112,8 @@ public final class _pExpr <T extends Expression>
      * @param constraint
      * @return 
      */
-    public static _pExpr<FieldAccessExpr> fieldAccess(String proto, Predicate<FieldAccessExpr> constraint ) {
-        return new _pExpr( Expr.fieldAccess(proto ) ).constraint(constraint);
+    public static $expr<FieldAccessExpr> fieldAccess(String proto, Predicate<FieldAccessExpr> constraint ) {
+        return new $expr( Expr.fieldAccess(proto ) ).constraint(constraint);
     }
     
     /**
@@ -1121,8 +1121,8 @@ public final class _pExpr <T extends Expression>
      * 
      * @return 
      */
-    public static _pExpr<FieldAccessExpr> fieldAccessAny( ) {
-        return new _pExpr( Expr.fieldAccess("a.B") )
+    public static $expr<FieldAccessExpr> fieldAccessAny( ) {
+        return new $expr( Expr.fieldAccess("a.B") )
                 .$(Expr.fieldAccess("a.B"), "any");
     }
     
@@ -1132,8 +1132,8 @@ public final class _pExpr <T extends Expression>
      * @param proto
      * @return 
      */
-    public static _pExpr<InstanceOfExpr> instanceOf(String... proto ) {
-        return new _pExpr( Expr.instanceOf(proto ) );
+    public static $expr<InstanceOfExpr> instanceOf(String... proto ) {
+        return new $expr( Expr.instanceOf(proto ) );
     }
     
     /**
@@ -1141,8 +1141,8 @@ public final class _pExpr <T extends Expression>
      * @param constraint
      * @return 
      */
-    public static _pExpr<InstanceOfExpr> instanceOf(Predicate<InstanceOfExpr> constraint ) {
-        return new _pExpr( Expr.instanceOf( "a instanceof b" ) ).$("a instanceof b", "any")
+    public static $expr<InstanceOfExpr> instanceOf(Predicate<InstanceOfExpr> constraint ) {
+        return new $expr( Expr.instanceOf( "a instanceof b" ) ).$("a instanceof b", "any")
                 .constraint(constraint);
     }
     
@@ -1152,16 +1152,16 @@ public final class _pExpr <T extends Expression>
      * @param constraint
      * @return 
      */
-    public static _pExpr<InstanceOfExpr> instanceOf(String proto, Predicate<InstanceOfExpr> constraint ) {
-        return new _pExpr( Expr.instanceOf(proto ) ).constraint(constraint);
+    public static $expr<InstanceOfExpr> instanceOf(String proto, Predicate<InstanceOfExpr> constraint ) {
+        return new $expr( Expr.instanceOf(proto ) ).constraint(constraint);
     }
     
     /**
      * 
      * @return 
      */
-    public static _pExpr<InstanceOfExpr> instanceOfAny() {
-        return new _pExpr( Expr.instanceOf( "a instanceof b" ) ).$("a instanceof b", "any");
+    public static $expr<InstanceOfExpr> instanceOfAny() {
+        return new $expr( Expr.instanceOf( "a instanceof b" ) ).$("a instanceof b", "any");
     }
     
     /**
@@ -1169,8 +1169,8 @@ public final class _pExpr <T extends Expression>
      * @param i
      * @return 
      */
-    public static _pExpr<IntegerLiteralExpr> of(int i) {
-        return new _pExpr( Expr.of( i ) );
+    public static $expr<IntegerLiteralExpr> of(int i) {
+        return new $expr( Expr.of( i ) );
     }
 
     /**
@@ -1179,8 +1179,8 @@ public final class _pExpr <T extends Expression>
      * @param constraint
      * @return 
      */
-    public static _pExpr<IntegerLiteralExpr> of(int i, Predicate<IntegerLiteralExpr> constraint) {
-        return new _pExpr( Expr.of( i ) ).constraint(constraint);
+    public static $expr<IntegerLiteralExpr> of(int i, Predicate<IntegerLiteralExpr> constraint) {
+        return new $expr( Expr.of( i ) ).constraint(constraint);
     }
     
     /**
@@ -1188,12 +1188,12 @@ public final class _pExpr <T extends Expression>
      * @param constraint
      * @return 
      */
-    public static _pExpr<IntegerLiteralExpr> intLiteral(Predicate<IntegerLiteralExpr> constraint) {
-        return new _pExpr( Expr.of( 1 ) ).$("1", "any").constraint(constraint);
+    public static $expr<IntegerLiteralExpr> intLiteral(Predicate<IntegerLiteralExpr> constraint) {
+        return new $expr( Expr.of( 1 ) ).$("1", "any").constraint(constraint);
     }
     
-    public static _pExpr<IntegerLiteralExpr> intLiteralAny( ) {
-        return new _pExpr( Expr.of( 1 ) ).$("1", "any");
+    public static $expr<IntegerLiteralExpr> intLiteralAny( ) {
+        return new $expr( Expr.of( 1 ) ).$("1", "any");
     }
     
     /**
@@ -1201,8 +1201,8 @@ public final class _pExpr <T extends Expression>
      * @param i
      * @return 
      */
-    public static _pExpr<IntegerLiteralExpr> intLiteral(int i) {
-        return new _pExpr( Expr.of( i ) );
+    public static $expr<IntegerLiteralExpr> intLiteral(int i) {
+        return new $expr( Expr.of( i ) );
     }
 
     /**
@@ -1211,8 +1211,8 @@ public final class _pExpr <T extends Expression>
      * @param constraint
      * @return 
      */
-    public static _pExpr<IntegerLiteralExpr> intLiteral(int i, Predicate<IntegerLiteralExpr> constraint) {
-        return new _pExpr( Expr.of( i ) ).constraint(constraint);
+    public static $expr<IntegerLiteralExpr> intLiteral(int i, Predicate<IntegerLiteralExpr> constraint) {
+        return new $expr( Expr.of( i ) ).constraint(constraint);
     }
     
     /**
@@ -1220,8 +1220,8 @@ public final class _pExpr <T extends Expression>
      * @param proto
      * @return 
      */
-    public static _pExpr<IntegerLiteralExpr> intLiteral(String... proto ) {
-        return new _pExpr( Expr.intLiteral(proto ) );
+    public static $expr<IntegerLiteralExpr> intLiteral(String... proto ) {
+        return new $expr( Expr.intLiteral(proto ) );
     }
 
     /**
@@ -1230,8 +1230,8 @@ public final class _pExpr <T extends Expression>
      * @param constraint
      * @return 
      */
-    public static _pExpr<IntegerLiteralExpr> intLiteral(String proto, Predicate<IntegerLiteralExpr> constraint ) {
-        return new _pExpr( Expr.intLiteral(proto ) ).constraint(constraint);
+    public static $expr<IntegerLiteralExpr> intLiteral(String proto, Predicate<IntegerLiteralExpr> constraint ) {
+        return new $expr( Expr.intLiteral(proto ) ).constraint(constraint);
     }
     
     /** 
@@ -1239,8 +1239,8 @@ public final class _pExpr <T extends Expression>
      * @param proto
      * @return 
      */
-    public static _pExpr<LambdaExpr> lambda(String... proto ) {
-        return new _pExpr( Expr.lambda(proto ) );
+    public static $expr<LambdaExpr> lambda(String... proto ) {
+        return new $expr( Expr.lambda(proto ) );
     }
 
     /** 
@@ -1248,8 +1248,8 @@ public final class _pExpr <T extends Expression>
      * @param constraint
      * @return 
      */
-    public static _pExpr<LambdaExpr> lambda(Predicate<LambdaExpr> constraint) {
-        return new _pExpr( Expr.lambda("a-> true" ) ).$(Expr.lambda("a->true"), "any").constraint(constraint);
+    public static $expr<LambdaExpr> lambda(Predicate<LambdaExpr> constraint) {
+        return new $expr( Expr.lambda("a-> true" ) ).$(Expr.lambda("a->true"), "any").constraint(constraint);
     }
 
     /**
@@ -1258,16 +1258,16 @@ public final class _pExpr <T extends Expression>
      * @param constraint
      * @return 
      */
-    public static _pExpr<LambdaExpr> lambda(String proto , Predicate<LambdaExpr> constraint) {
-        return new _pExpr( Expr.lambda(proto ) ).constraint(constraint);
+    public static $expr<LambdaExpr> lambda(String proto , Predicate<LambdaExpr> constraint) {
+        return new $expr( Expr.lambda(proto ) ).constraint(constraint);
     }
     
     /** 
      * a-> System.out.println( a )  
      * @return 
      */
-    public static _pExpr<LambdaExpr> lambdaAny( ) {
-        return new _pExpr( Expr.lambda("a-> true" ) ).$(Expr.lambda("a->true"), "any");
+    public static $expr<LambdaExpr> lambdaAny( ) {
+        return new $expr( Expr.lambda("a-> true" ) ).$(Expr.lambda("a->true"), "any");
     }
     
     /**
@@ -1275,8 +1275,8 @@ public final class _pExpr <T extends Expression>
      * @param l
      * @return 
      */
-    public static _pExpr<LongLiteralExpr> of(long l) {
-        return new _pExpr( Expr.of( l ) );
+    public static $expr<LongLiteralExpr> of(long l) {
+        return new $expr( Expr.of( l ) );
     }
 
     /**
@@ -1285,8 +1285,8 @@ public final class _pExpr <T extends Expression>
      * @param constraint
      * @return 
      */
-    public static _pExpr<LongLiteralExpr> of(long l, Predicate<LongLiteralExpr> constraint ) {
-        return new _pExpr( Expr.of( l ) ).constraint(constraint);
+    public static $expr<LongLiteralExpr> of(long l, Predicate<LongLiteralExpr> constraint ) {
+        return new $expr( Expr.of( l ) ).constraint(constraint);
     }
     
     /**
@@ -1294,8 +1294,8 @@ public final class _pExpr <T extends Expression>
      * @param l
      * @return 
      */
-    public static _pExpr<LongLiteralExpr> longLiteral( long l ) {
-        return new _pExpr( Expr.of( l ) );
+    public static $expr<LongLiteralExpr> longLiteral( long l ) {
+        return new $expr( Expr.of( l ) );
     }
 
     /**
@@ -1303,8 +1303,8 @@ public final class _pExpr <T extends Expression>
      * @param constraint
      * @return 
      */
-    public static _pExpr<LongLiteralExpr> longLiteral( Predicate<LongLiteralExpr> constraint ) {
-        return new _pExpr( Expr.longLiteral(1L)).$(Expr.longLiteral(1L), "any")
+    public static $expr<LongLiteralExpr> longLiteral( Predicate<LongLiteralExpr> constraint ) {
+        return new $expr( Expr.longLiteral(1L)).$(Expr.longLiteral(1L), "any")
                 .constraint(constraint) ;
     }
     
@@ -1314,8 +1314,8 @@ public final class _pExpr <T extends Expression>
      * @param constraint
      * @return 
      */
-    public static _pExpr<LongLiteralExpr> longLiteral( long l, Predicate<LongLiteralExpr> constraint ) {
-        return new _pExpr( Expr.of( l ) ).constraint(constraint);
+    public static $expr<LongLiteralExpr> longLiteral( long l, Predicate<LongLiteralExpr> constraint ) {
+        return new $expr( Expr.of( l ) ).constraint(constraint);
     }
    
     /**
@@ -1323,8 +1323,8 @@ public final class _pExpr <T extends Expression>
      * @param proto
      * @return 
      */
-    public static _pExpr<LongLiteralExpr> longLiteral( String... proto ) {
-        return new _pExpr( Expr.longLiteral(proto ) );
+    public static $expr<LongLiteralExpr> longLiteral( String... proto ) {
+        return new $expr( Expr.longLiteral(proto ) );
     }
     
     /**
@@ -1333,16 +1333,16 @@ public final class _pExpr <T extends Expression>
      * @param constraint
      * @return 
      */
-    public static _pExpr<LongLiteralExpr> longLiteral( String proto, Predicate<LongLiteralExpr> constraint ) {
-        return new _pExpr( Expr.longLiteral(proto ) ).constraint(constraint);
+    public static $expr<LongLiteralExpr> longLiteral( String proto, Predicate<LongLiteralExpr> constraint ) {
+        return new $expr( Expr.longLiteral(proto ) ).constraint(constraint);
     }
 
     /**
      * Any long literal
      * @return 
      */
-    public static _pExpr<LongLiteralExpr> longLiteralAny( ) {
-        return new _pExpr( Expr.longLiteral(1L)).$(Expr.longLiteral(1L), "any");
+    public static $expr<LongLiteralExpr> longLiteralAny( ) {
+        return new $expr( Expr.longLiteral(1L)).$(Expr.longLiteral(1L), "any");
     }
     
     /** 
@@ -1350,8 +1350,8 @@ public final class _pExpr <T extends Expression>
      * @param proto 
      * @return  
      */
-    public static _pExpr<MethodCallExpr> methodCall( String... proto ) {
-        return new _pExpr( Expr.methodCall(proto ) );
+    public static $expr<MethodCallExpr> methodCall( String... proto ) {
+        return new $expr( Expr.methodCall(proto ) );
     }
 
     /**
@@ -1360,8 +1360,8 @@ public final class _pExpr <T extends Expression>
      * @param constraint
      * @return 
      */
-    public static _pExpr<MethodCallExpr> methodCall( String proto, Predicate<MethodCallExpr> constraint ) {
-        return new _pExpr( Expr.methodCall(proto ) ).constraint(constraint);
+    public static $expr<MethodCallExpr> methodCall( String proto, Predicate<MethodCallExpr> constraint ) {
+        return new $expr( Expr.methodCall(proto ) ).constraint(constraint);
     }
     
     /**
@@ -1369,8 +1369,8 @@ public final class _pExpr <T extends Expression>
      * @param constraint
      * @return 
      */
-    public static _pExpr<MethodCallExpr> methodCall( Predicate<MethodCallExpr> constraint ) {
-        return new _pExpr( Expr.methodCall("a()" )).$(Expr.of("a()"), "any").constraint(constraint);
+    public static $expr<MethodCallExpr> methodCall( Predicate<MethodCallExpr> constraint ) {
+        return new $expr( Expr.methodCall("a()" )).$(Expr.of("a()"), "any").constraint(constraint);
     }
     
     /**
@@ -1403,10 +1403,10 @@ public final class _pExpr <T extends Expression>
      * @return the MethodCallExpr Ast Node representing the first method call
      * in the lambda body
      */
-    public static _pExpr<MethodCallExpr> methodCall( Consumer<? extends Object> lambdaWithMethodCallInSource ){
+    public static $expr<MethodCallExpr> methodCall( Consumer<? extends Object> lambdaWithMethodCallInSource ){
         StackTraceElement ste = Thread.currentThread().getStackTrace()[2];
         LambdaExpr astLambda = Expr.lambda(ste);
-        return _pExpr.of(astLambda.getBody().findFirst(MethodCallExpr.class).get());
+        return $expr.of(astLambda.getBody().findFirst(MethodCallExpr.class).get());
     }    
     
     /**
@@ -1421,10 +1421,10 @@ public final class _pExpr <T extends Expression>
      * @return the MethodCallExpr Ast Node representing the first method call
      * in the lambda body
      */
-    public static _pExpr<MethodCallExpr> methodCall( BiConsumer<? extends Object,? extends Object> lambdaWithMethodCallInSource ){
+    public static $expr<MethodCallExpr> methodCall( BiConsumer<? extends Object,? extends Object> lambdaWithMethodCallInSource ){
         StackTraceElement ste = Thread.currentThread().getStackTrace()[2];
         LambdaExpr astLambda = Expr.lambda(ste);
-        return _pExpr.of(astLambda.getBody().findFirst(MethodCallExpr.class).get());
+        return $expr.of(astLambda.getBody().findFirst(MethodCallExpr.class).get());
     }  
     
     /**
@@ -1439,10 +1439,10 @@ public final class _pExpr <T extends Expression>
      * @return the MethodCallExpr Ast Node representing the first method call
      * in the lambda body
      */
-    public static _pExpr<MethodCallExpr> methodCall( Expr.TriConsumer<? extends Object,? extends Object, ? extends Object> lambdaWithMethodCallInSource ){
+    public static $expr<MethodCallExpr> methodCall( Expr.TriConsumer<? extends Object,? extends Object, ? extends Object> lambdaWithMethodCallInSource ){
         StackTraceElement ste = Thread.currentThread().getStackTrace()[2];
         LambdaExpr astLambda = Expr.lambda(ste);
-        return _pExpr.of(astLambda.getBody().findFirst(MethodCallExpr.class).get());
+        return $expr.of(astLambda.getBody().findFirst(MethodCallExpr.class).get());
     }
     
     /**
@@ -1457,18 +1457,18 @@ public final class _pExpr <T extends Expression>
      * @return the MethodCallExpr Ast Node representing the first method call
      * in the lambda body
      */
-    public static _pExpr<MethodCallExpr> methodCall( Expr.QuadConsumer<? extends Object,? extends Object, ? extends Object, ? extends Object> lambdaWithMethodCallInSource ){
+    public static $expr<MethodCallExpr> methodCall( Expr.QuadConsumer<? extends Object,? extends Object, ? extends Object, ? extends Object> lambdaWithMethodCallInSource ){
         StackTraceElement ste = Thread.currentThread().getStackTrace()[2];
         LambdaExpr astLambda = Expr.lambda(ste);
-        return _pExpr.of(astLambda.getBody().findFirst(MethodCallExpr.class).get());
+        return $expr.of(astLambda.getBody().findFirst(MethodCallExpr.class).get());
     }
     
     /**
      * ANY method call
      * @return 
      */
-    public static _pExpr<MethodCallExpr> methodCallAny( ) {
-        return new _pExpr( Expr.methodCall("a()" )).$(Expr.of("a()"), "any");
+    public static $expr<MethodCallExpr> methodCallAny( ) {
+        return new $expr( Expr.methodCall("a()" )).$(Expr.of("a()"), "any");
     }
     
     /** 
@@ -1476,8 +1476,8 @@ public final class _pExpr <T extends Expression>
      * @param proto
      * @return 
      */
-    public static _pExpr<MethodReferenceExpr> methodReference( String... proto ) {
-        return new _pExpr( Expr.methodReference(proto ) );
+    public static $expr<MethodReferenceExpr> methodReference( String... proto ) {
+        return new $expr( Expr.methodReference(proto ) );
     }
     
     /**
@@ -1485,8 +1485,8 @@ public final class _pExpr <T extends Expression>
      * @param constraint
      * @return 
      */
-    public static _pExpr<MethodReferenceExpr> methodReference( Predicate<MethodReferenceExpr> constraint) {
-        return new _pExpr( Expr.methodReference("A:b")).$("A:b", "any").constraint(constraint);
+    public static $expr<MethodReferenceExpr> methodReference( Predicate<MethodReferenceExpr> constraint) {
+        return new $expr( Expr.methodReference("A:b")).$("A:b", "any").constraint(constraint);
     }
     
     /** 
@@ -1495,24 +1495,24 @@ public final class _pExpr <T extends Expression>
      * @param constraint
      * @return 
      */
-    public static _pExpr<MethodReferenceExpr> methodReference( String proto, Predicate<MethodReferenceExpr>constraint ) {
-        return new _pExpr( Expr.methodReference(proto ) ).constraint(constraint);
+    public static $expr<MethodReferenceExpr> methodReference( String proto, Predicate<MethodReferenceExpr>constraint ) {
+        return new $expr( Expr.methodReference(proto ) ).constraint(constraint);
     }
     
     /**
      * 
      * @return 
      */
-    public static _pExpr<MethodReferenceExpr> methodReferenceAny() {
-        return new _pExpr( Expr.methodReference("A:b")).$("A:b", "any");
+    public static $expr<MethodReferenceExpr> methodReferenceAny() {
+        return new $expr( Expr.methodReference("A:b")).$("A:b", "any");
     }
     
     /** 
      *  i.e."null"
      * @return  
      */
-    public static _pExpr<NullLiteralExpr> nullExpr(){
-        return new _pExpr( Expr.nullExpr() );
+    public static $expr<NullLiteralExpr> nullExpr(){
+        return new $expr( Expr.nullExpr() );
     }
 
     /**
@@ -1520,8 +1520,8 @@ public final class _pExpr <T extends Expression>
      * @param proto
      * @return 
      */
-    public static _pExpr<NameExpr> name( String... proto ) {
-        return new _pExpr( Expr.name(proto ) );
+    public static $expr<NameExpr> name( String... proto ) {
+        return new $expr( Expr.name(proto ) );
     }
     
     /**
@@ -1529,8 +1529,8 @@ public final class _pExpr <T extends Expression>
      * @param constraint
      * @return 
      */
-    public static _pExpr<NameExpr> name( Predicate<NameExpr>constraint) {
-        return new _pExpr( Expr.name("name" ) ).$("name", "any").constraint(constraint);
+    public static $expr<NameExpr> name( Predicate<NameExpr>constraint) {
+        return new $expr( Expr.name("name" ) ).$("name", "any").constraint(constraint);
     }
     
     /**
@@ -1539,16 +1539,16 @@ public final class _pExpr <T extends Expression>
      * @param constraint
      * @return 
      */
-    public static _pExpr<NameExpr> name( String proto, Predicate<NameExpr>constraint) {
-        return new _pExpr( Expr.name(proto ) ).constraint(constraint);
+    public static $expr<NameExpr> name( String proto, Predicate<NameExpr>constraint) {
+        return new $expr( Expr.name(proto ) ).constraint(constraint);
     }
 
     /**
      * 
      * @return 
      */
-    public static _pExpr<NameExpr> nameAny() {
-        return new _pExpr( Expr.name("name" ) ).$("name", "any");
+    public static $expr<NameExpr> nameAny() {
+        return new $expr( Expr.name("name" ) ).$("name", "any");
     }
     
     /** 
@@ -1556,8 +1556,8 @@ public final class _pExpr <T extends Expression>
      * @param proto
      * @return 
      */
-    public static _pExpr<ObjectCreationExpr> objectCreation(String... proto ) {
-        return new _pExpr( Expr.objectCreation( proto ) );
+    public static $expr<ObjectCreationExpr> objectCreation(String... proto ) {
+        return new $expr( Expr.objectCreation( proto ) );
     }
     
     /** 
@@ -1565,8 +1565,8 @@ public final class _pExpr <T extends Expression>
      * @param constraint
      * @return 
      */
-    public static _pExpr<ObjectCreationExpr> objectCreation(Predicate<ObjectCreationExpr>constraint ) {
-        return new _pExpr( Expr.objectCreation( "new a()" ) ).$("new a()", "any").constraint(constraint);
+    public static $expr<ObjectCreationExpr> objectCreation(Predicate<ObjectCreationExpr>constraint ) {
+        return new $expr( Expr.objectCreation( "new a()" ) ).$("new a()", "any").constraint(constraint);
     }
     
     /** 
@@ -1575,16 +1575,16 @@ public final class _pExpr <T extends Expression>
      * @param constraint
      * @return 
      */
-    public static _pExpr<ObjectCreationExpr> objectCreation(String proto, Predicate<ObjectCreationExpr>constraint ) {
-        return new _pExpr( Expr.objectCreation( proto ) ).constraint(constraint);
+    public static $expr<ObjectCreationExpr> objectCreation(String proto, Predicate<ObjectCreationExpr>constraint ) {
+        return new $expr( Expr.objectCreation( proto ) ).constraint(constraint);
     }
 
     /** 
      * "new Date()"
      * @return 
      */
-    public static _pExpr<ObjectCreationExpr> objectCreationAny() {
-        return new _pExpr( Expr.objectCreation( "new a()" ) ).$("new a()", "any");
+    public static $expr<ObjectCreationExpr> objectCreationAny() {
+        return new $expr( Expr.objectCreation( "new a()" ) ).$("new a()", "any");
     }
     
     /** 
@@ -1592,8 +1592,8 @@ public final class _pExpr <T extends Expression>
      * @param proto
      * @return 
      */
-    public static _pExpr<StringLiteralExpr> stringLiteral( String... proto ) {
-        return new _pExpr( Expr.stringLiteral( proto ) );
+    public static $expr<StringLiteralExpr> stringLiteral( String... proto ) {
+        return new $expr( Expr.stringLiteral( proto ) );
     }
 
     /**
@@ -1601,8 +1601,8 @@ public final class _pExpr <T extends Expression>
      * @param constraint
      * @return 
      */
-    public static _pExpr<StringLiteralExpr> stringLiteral(Predicate<StringLiteralExpr> constraint) {
-        return new _pExpr( Expr.stringLiteral( "\"a\"" ) ).$("\"a\"", "any").constraint(constraint);
+    public static $expr<StringLiteralExpr> stringLiteral(Predicate<StringLiteralExpr> constraint) {
+        return new $expr( Expr.stringLiteral( "\"a\"" ) ).$("\"a\"", "any").constraint(constraint);
     }
     
     /**
@@ -1611,24 +1611,24 @@ public final class _pExpr <T extends Expression>
      * @param constraint
      * @return 
      */
-    public static _pExpr<StringLiteralExpr> stringLiteral( String proto, Predicate<StringLiteralExpr> constraint) {
-        return new _pExpr( Expr.stringLiteral( proto ) ).constraint(constraint);
+    public static $expr<StringLiteralExpr> stringLiteral( String proto, Predicate<StringLiteralExpr> constraint) {
+        return new $expr( Expr.stringLiteral( proto ) ).constraint(constraint);
     }
     
     /**
      * 
      * @return 
      */
-    public static _pExpr<StringLiteralExpr> stringLiteralAny( ) {
-        return new _pExpr( Expr.stringLiteral( "\"a\"" ) ).$("\"a\"", "any");
+    public static $expr<StringLiteralExpr> stringLiteralAny( ) {
+        return new $expr( Expr.stringLiteral( "\"a\"" ) ).$("\"a\"", "any");
     }
     
     /** 
      * "super"
      * @return  
      */
-    public static _pExpr<SuperExpr> superExpr(  ) {
-        return new _pExpr( Expr.superExpr( ) );
+    public static $expr<SuperExpr> superExpr(  ) {
+        return new $expr( Expr.superExpr( ) );
     }
 
     /**
@@ -1636,8 +1636,8 @@ public final class _pExpr <T extends Expression>
      * @param superExpr
      * @return 
      */
-    public static _pExpr<SuperExpr> superExpr(String...superExpr ){
-        return new _pExpr(Expr.superExpr(superExpr));
+    public static $expr<SuperExpr> superExpr(String...superExpr ){
+        return new $expr(Expr.superExpr(superExpr));
     }
     
     /**
@@ -1646,8 +1646,8 @@ public final class _pExpr <T extends Expression>
      * @param constraint
      * @return 
      */
-    public static _pExpr<SuperExpr> superExpr(String superExpr, Predicate<SuperExpr> constraint ){
-        return new _pExpr(Expr.superExpr(superExpr)).constraint(constraint);
+    public static $expr<SuperExpr> superExpr(String superExpr, Predicate<SuperExpr> constraint ){
+        return new $expr(Expr.superExpr(superExpr)).constraint(constraint);
     }
     
     /**
@@ -1655,8 +1655,8 @@ public final class _pExpr <T extends Expression>
      * @param se
      * @return 
      */
-    public static _pExpr<SuperExpr> superExpr(SuperExpr se){
-        return new _pExpr(se);
+    public static $expr<SuperExpr> superExpr(SuperExpr se){
+        return new $expr(se);
     }
     
     /**
@@ -1665,8 +1665,8 @@ public final class _pExpr <T extends Expression>
      * @param constraint
      * @return 
      */
-    public static _pExpr<SuperExpr> superExpr(SuperExpr superExpr, Predicate<SuperExpr> constraint ){
-        return new _pExpr(superExpr).constraint(constraint);
+    public static $expr<SuperExpr> superExpr(SuperExpr superExpr, Predicate<SuperExpr> constraint ){
+        return new $expr(superExpr).constraint(constraint);
     }
     
     /**
@@ -1674,16 +1674,16 @@ public final class _pExpr <T extends Expression>
      * 
      * @return 
      */
-    public static _pExpr<SuperExpr> superExprAny(){
-        return new _pExpr(Expr.superExpr()).$("super", "any");
+    public static $expr<SuperExpr> superExprAny(){
+        return new $expr(Expr.superExpr()).$("super", "any");
     }
     
     /** 
      * "this"
      * @return  
      */
-    public static _pExpr<ThisExpr> thisExpr(  ) {
-        return new _pExpr( Expr.thisExpr( ) );
+    public static $expr<ThisExpr> thisExpr(  ) {
+        return new $expr( Expr.thisExpr( ) );
     }
 
     /**
@@ -1691,8 +1691,8 @@ public final class _pExpr <T extends Expression>
      * @param te
      * @return 
      */
-    public static _pExpr<ThisExpr> thisExpr(String... te){
-        return new _pExpr(Expr.thisExpr(te) );
+    public static $expr<ThisExpr> thisExpr(String... te){
+        return new $expr(Expr.thisExpr(te) );
     }
     
     /**
@@ -1701,8 +1701,8 @@ public final class _pExpr <T extends Expression>
      * @param constraint
      * @return 
      */
-    public static _pExpr<ThisExpr> thisExpr(String te, Predicate<ThisExpr> constraint){
-        return new _pExpr(Expr.thisExpr(te) ).constraint(constraint);
+    public static $expr<ThisExpr> thisExpr(String te, Predicate<ThisExpr> constraint){
+        return new $expr(Expr.thisExpr(te) ).constraint(constraint);
     }
     
     /**
@@ -1710,8 +1710,8 @@ public final class _pExpr <T extends Expression>
      * @param te
      * @return 
      */
-    public static _pExpr<ThisExpr> thisExpr(ThisExpr te){
-        return new _pExpr(te);
+    public static $expr<ThisExpr> thisExpr(ThisExpr te){
+        return new $expr(te);
     }
     
     /**
@@ -1720,16 +1720,16 @@ public final class _pExpr <T extends Expression>
      * @param constraint
      * @return 
      */
-    public static _pExpr<ThisExpr> thisExpr(ThisExpr te, Predicate<ThisExpr> constraint){
-        return new _pExpr(te ).constraint(constraint);
+    public static $expr<ThisExpr> thisExpr(ThisExpr te, Predicate<ThisExpr> constraint){
+        return new $expr(te ).constraint(constraint);
     }
 
     /**
      * ANY this expression
      * @return 
      */
-    public static _pExpr<ThisExpr> thisExprAny( ){
-        return new _pExpr(Expr.thisExpr()).$("this", "any");
+    public static $expr<ThisExpr> thisExprAny( ){
+        return new $expr(Expr.thisExpr()).$("this", "any");
     }
     
     /** 
@@ -1737,8 +1737,8 @@ public final class _pExpr <T extends Expression>
      * @param proto
      * @return 
      */
-    public static _pExpr<TypeExpr> typeExpr(String... proto ) {
-        return new _pExpr( Expr.typeExpr( proto ) );
+    public static $expr<TypeExpr> typeExpr(String... proto ) {
+        return new $expr( Expr.typeExpr( proto ) );
     }
     
     /** 
@@ -1746,8 +1746,8 @@ public final class _pExpr <T extends Expression>
      * @param constraint
      * @return 
      */
-    public static _pExpr<TypeExpr> typeExpr(Predicate<TypeExpr> constraint ) {
-        return new _pExpr( Expr.typeExpr( "a" ) ).$("a", "any").constraint(constraint);
+    public static $expr<TypeExpr> typeExpr(Predicate<TypeExpr> constraint ) {
+        return new $expr( Expr.typeExpr( "a" ) ).$("a", "any").constraint(constraint);
     }
     
     /** 
@@ -1756,16 +1756,16 @@ public final class _pExpr <T extends Expression>
      * @param constraint
      * @return 
      */
-    public static _pExpr<TypeExpr> typeExpr(String proto, Predicate<TypeExpr> constraint ) {
-        return new _pExpr( Expr.typeExpr( proto ) ).constraint(constraint);
+    public static $expr<TypeExpr> typeExpr(String proto, Predicate<TypeExpr> constraint ) {
+        return new $expr( Expr.typeExpr( proto ) ).constraint(constraint);
     }
 
     /** 
      * i.e."World" in World::greet 
      * @return 
      */
-    public static _pExpr<TypeExpr> typeExprAny( ) {
-        return new _pExpr( Expr.typeExpr( "a" ) ).$("a", "any");
+    public static $expr<TypeExpr> typeExprAny( ) {
+        return new $expr( Expr.typeExpr( "a" ) ).$("a", "any");
     }
     
     /** 
@@ -1773,8 +1773,8 @@ public final class _pExpr <T extends Expression>
      * @param proto
      * @return 
      */
-    public static _pExpr<UnaryExpr> unary( String... proto ) {
-        return new _pExpr( Expr.unary( proto ) );
+    public static $expr<UnaryExpr> unary( String... proto ) {
+        return new $expr( Expr.unary( proto ) );
     }
    
     /** 
@@ -1782,8 +1782,8 @@ public final class _pExpr <T extends Expression>
      * @param constraint 
      * @return  
      */
-    public static _pExpr<UnaryExpr> unary( Predicate<UnaryExpr>constraint) {
-        return new _pExpr( Expr.unary( "!true" ) ).$("!true", "any").constraint(constraint);
+    public static $expr<UnaryExpr> unary( Predicate<UnaryExpr>constraint) {
+        return new $expr( Expr.unary( "!true" ) ).$("!true", "any").constraint(constraint);
     }
     
     /** 
@@ -1792,16 +1792,16 @@ public final class _pExpr <T extends Expression>
      * @param constraint 
      * @return  
      */
-    public static _pExpr<UnaryExpr> unary( String proto, Predicate<UnaryExpr>constraint) {
-        return new _pExpr( Expr.unary( proto ) ).constraint(constraint);
+    public static $expr<UnaryExpr> unary( String proto, Predicate<UnaryExpr>constraint) {
+        return new $expr( Expr.unary( proto ) ).constraint(constraint);
     }
     
     /** 
      *  i.e."!true"
      * @return  
      */
-    public static _pExpr<UnaryExpr> unaryAny() {
-        return new _pExpr( Expr.unary( "!true" ) ).$("!true", "any");
+    public static $expr<UnaryExpr> unaryAny() {
+        return new $expr( Expr.unary( "!true" ) ).$("!true", "any");
     }
     
     /** 
@@ -1809,8 +1809,8 @@ public final class _pExpr <T extends Expression>
      * @param proto
      * @return  
      */
-    public static _pExpr<VariableDeclarationExpr> varDecl( String... proto ) {
-        return new _pExpr( Expr.varDecl( proto ) );
+    public static $expr<VariableDeclarationExpr> varDecl( String... proto ) {
+        return new $expr( Expr.varDecl( proto ) );
     }
 
     /** 
@@ -1818,8 +1818,8 @@ public final class _pExpr <T extends Expression>
      * @param constraint 
      * @return  
      */
-    public static _pExpr<VariableDeclarationExpr> varDecl( Predicate<VariableDeclarationExpr> constraint) {
-        return new _pExpr( Expr.varDecl( "int i=1") ).$(Expr.of("int i=1"), "any").constraint(constraint);
+    public static $expr<VariableDeclarationExpr> varDecl( Predicate<VariableDeclarationExpr> constraint) {
+        return new $expr( Expr.varDecl( "int i=1") ).$(Expr.of("int i=1"), "any").constraint(constraint);
     }
     
     /** 
@@ -1828,16 +1828,16 @@ public final class _pExpr <T extends Expression>
      * @param constraint 
      * @return  
      */
-    public static _pExpr<VariableDeclarationExpr> varDecl( String proto, Predicate<VariableDeclarationExpr> constraint) {
-        return new _pExpr( Expr.varDecl( proto ) ).constraint(constraint);
+    public static $expr<VariableDeclarationExpr> varDecl( String proto, Predicate<VariableDeclarationExpr> constraint) {
+        return new $expr( Expr.varDecl( proto ) ).constraint(constraint);
     }
     
     /** 
      * "int i = 1"
      * @return  
      */
-    public static _pExpr<VariableDeclarationExpr> varDeclAny( ) {
-        return new _pExpr( Expr.varDecl( "int i=1") ).$(Expr.of("int i=1"), "any");
+    public static $expr<VariableDeclarationExpr> varDeclAny( ) {
+        return new $expr( Expr.varDecl( "int i=1") ).$(Expr.of("int i=1"), "any");
     }
     
     
@@ -1856,7 +1856,7 @@ public final class _pExpr <T extends Expression>
      * 
      * @param astExpressionProto 
      */
-    public _pExpr(T astExpressionProto){
+    public $expr(T astExpressionProto){
         this.expressionClass = (Class<T>)astExpressionProto.getClass();
         this.exprPattern = Stencil.of(astExpressionProto.toString() );
     }
@@ -1866,7 +1866,7 @@ public final class _pExpr <T extends Expression>
      * @param expressionClass
      * @param stencil 
      */
-    public _pExpr(Class<T>expressionClass, String stencil ){
+    public $expr(Class<T>expressionClass, String stencil ){
         this.expressionClass = expressionClass;
         this.exprPattern = Stencil.of(stencil);
     }
@@ -1876,7 +1876,7 @@ public final class _pExpr <T extends Expression>
      * @param constraint
      * @return 
      */
-    public _pExpr constraint( Predicate<T> constraint){
+    public $expr constraint( Predicate<T> constraint){
         this.constraint = constraint;
         return this;
     }
@@ -1888,7 +1888,7 @@ public final class _pExpr <T extends Expression>
     }
 
     @Override
-    public _pExpr<T> $(String target, String $name ) {
+    public $expr<T> $(String target, String $name ) {
         this.exprPattern = this.exprPattern.$(target, $name);
         return this;
     }
@@ -1899,7 +1899,7 @@ public final class _pExpr <T extends Expression>
      * @param $name
      * @return 
      */
-    public _pExpr<T> $( Expression astExpr, String $name){
+    public $expr<T> $( Expression astExpr, String $name){
         this.exprPattern = this.exprPattern.$(astExpr.toString(), $name);
         return this;
     }
@@ -1911,7 +1911,7 @@ public final class _pExpr <T extends Expression>
      * @param kvs the key parameter NAME and String VALUE to assign to the
      * @return the modified Stencil
      */
-    public _pExpr assign$( Tokens kvs ) {
+    public $expr assign$( Tokens kvs ) {
         return assign$( Translator.DEFAULT_TRANSLATOR, kvs );
     }
 
@@ -1922,7 +1922,7 @@ public final class _pExpr <T extends Expression>
      * @param keyValues the key parameter NAME and String VALUE to assign to the
      * @return the modified Stencil
      */
-    public _pExpr assign$( Object... keyValues ) {
+    public $expr assign$( Object... keyValues ) {
         return assign$( Translator.DEFAULT_TRANSLATOR, Tokens.of( keyValues ) );
     }
 
@@ -1934,7 +1934,7 @@ public final class _pExpr <T extends Expression>
      * @param keyValues the key parameter NAME and String VALUE to assign to the
      * @return the modified Stencil
      */
-    public _pExpr assign$( Translator translator, Object... keyValues ) {
+    public $expr assign$( Translator translator, Object... keyValues ) {
         return assign$( translator, Tokens.of( keyValues ) );
     }
 
@@ -1944,7 +1944,7 @@ public final class _pExpr <T extends Expression>
      * @param kvs
      * @return 
      */
-    public _pExpr assign$( Translator translator, Tokens kvs ) {
+    public $expr assign$( Translator translator, Tokens kvs ) {
         this.exprPattern = this.exprPattern.assign$(translator,kvs);
         return this;
     }
@@ -1965,7 +1965,7 @@ public final class _pExpr <T extends Expression>
      * @return 
      */
     public T construct( _node _n ){
-        return (T)_pExpr.this.construct(_n.deconstruct());
+        return (T)$expr.this.construct(_n.deconstruct());
     }
 
     @Override
@@ -2220,7 +2220,7 @@ public final class _pExpr <T extends Expression>
      * @return 
      */
     public <N extends _node> N replaceIn(N _n, String protoReplaceExpr ){
-        return replaceIn(_n, _pExpr.of(protoReplaceExpr) );
+        return replaceIn(_n, $expr.of(protoReplaceExpr) );
     }
     
     /**
@@ -2230,7 +2230,7 @@ public final class _pExpr <T extends Expression>
      * @param $repl
      * @return 
      */
-    public <N extends _node> N replaceIn(N _n, _pExpr $repl ){
+    public <N extends _node> N replaceIn(N _n, $expr $repl ){
         Walk.in(_n, this.expressionClass, e-> {
             Select sel = select( e );
             if( sel != null ){
@@ -2284,8 +2284,8 @@ public final class _pExpr <T extends Expression>
      * inside of some (Ast)Node or (_java)_node
      * @param <T> expression type
      */
-    public static class Select<T extends Expression> implements _pQuery.selected<T>,
-            _pQuery.selectedAstNode<T> {
+    public static class Select<T extends Expression> implements $query.selected<T>,
+            $query.selectedAstNode<T> {
         
         public final T astExpression;
         public final args args;

@@ -29,7 +29,7 @@ import java.util.function.Consumer;
  * 
  * @param <Q> the TYPE of the node being queried for (likely a {@link Node} or {@link _model._node}
  */
-public interface _pQuery<Q> {
+public interface $query<Q> {
 
     /** 
      * Find and return a List of all matching node types within _n 

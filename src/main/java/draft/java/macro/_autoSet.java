@@ -1,7 +1,7 @@
 package draft.java.macro;
 
 import draft.java.*;
-import draft.java.proto._pMethod;
+import draft.java.proto.$method;
 
 import java.lang.annotation.*;
 import java.util.List;
@@ -25,7 +25,7 @@ public @interface _autoSet {
         public static Predicate<_field> SET_FIELDS = _f -> !_f.isStatic() && !_f.isFinal();
 
         /** template method for a setXXX() method */
-        public static _pMethod $SET = _pMethod.of(
+        public static $method $SET = $method.of(
                 "public void set$Name$($type$ $name$){ this.$name$ = $name$; }" );
 
         @Override

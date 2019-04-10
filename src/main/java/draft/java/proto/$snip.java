@@ -24,7 +24,7 @@ import java.util.function.Function;
  * NOTE: although this does not implement the Template<> and $query<> interfaces
  * it follows the same naming conventions
  */
-public final class _pSnip implements Template<List<Statement>>, _pQuery<List<Statement>> {
+public final class $snip implements Template<List<Statement>>, $query<List<Statement>> {
 
     /**
      * 
@@ -35,7 +35,7 @@ public final class _pSnip implements Template<List<Statement>>, _pQuery<List<Sta
      * @return 
      */
     public static final <N extends _node> N replace( N _n, String[] sourceProto, String[] targetProto){
-        _pSnip.of(sourceProto).replaceIn(_n, _pSnip.of(targetProto));
+        $snip.of(sourceProto).replaceIn(_n, $snip.of(targetProto));
         return _n;
     } 
         
@@ -48,7 +48,7 @@ public final class _pSnip implements Template<List<Statement>>, _pQuery<List<Sta
      * @return 
      */
     public static final <N extends _node> N replace( N _n, String sourceProto, String targetProto){
-        _pSnip.of(sourceProto).replaceIn(_n, _pSnip.of(targetProto));
+        $snip.of(sourceProto).replaceIn(_n, $snip.of(targetProto));
         return _n;
     } 
     
@@ -60,7 +60,7 @@ public final class _pSnip implements Template<List<Statement>>, _pQuery<List<Sta
      * @return 
      */
     public static final <N extends _node> N remove( N _n, String... proto){
-        _pSnip.of(proto).removeIn(_n);
+        $snip.of(proto).removeIn(_n);
         return _n;
     }
     
@@ -72,7 +72,7 @@ public final class _pSnip implements Template<List<Statement>>, _pQuery<List<Sta
      * @return 
      */
     public static final <N extends _node> List<Statement> first( N _n, String... proto){
-        return _pSnip.of(proto).firstIn(_n);
+        return $snip.of(proto).firstIn(_n);
     }
     
     /**
@@ -83,7 +83,7 @@ public final class _pSnip implements Template<List<Statement>>, _pQuery<List<Sta
      * @return 
      */
     public static final <N extends _node> Select selectFirst( N _n, String... proto){
-        return _pSnip.of(proto).selectFirstIn(_n);
+        return $snip.of(proto).selectFirstIn(_n);
     }
     
     /**
@@ -94,7 +94,7 @@ public final class _pSnip implements Template<List<Statement>>, _pQuery<List<Sta
      * @return 
      */
     public static final <N extends _node> List<List<Statement>> list( N _n, String... proto){
-        return _pSnip.of(proto).listIn(_n);
+        return $snip.of(proto).listIn(_n);
     }
     
     /**
@@ -105,10 +105,10 @@ public final class _pSnip implements Template<List<Statement>>, _pQuery<List<Sta
      * @return 
      */
     public static final <N extends _node> List<Select> selectList( N _n, String... proto){
-        return _pSnip.of(proto).selectListIn(_n);
+        return $snip.of(proto).selectListIn(_n);
     }
         
-    public List<_pStmt> $sts = new ArrayList<>();
+    public List<$stmt> $sts = new ArrayList<>();
 
     /**
      * Build a dynamic code snippet based on the content of a method defined within an anonymous Object
@@ -130,7 +130,7 @@ public final class _pSnip implements Template<List<Statement>>, _pQuery<List<Sta
      * @param anonymousObjectWithBody
      * @return the dynamic code snippet
      */
-    public static _pSnip of( Object anonymousObjectWithBody ){
+    public static $snip of( Object anonymousObjectWithBody ){
         StackTraceElement ste = Thread.currentThread().getStackTrace()[2];
         ObjectCreationExpr oce = Expr.anonymousObject(ste);
         //find the first method that doesnt have removeIn on it and has a BODY
@@ -142,56 +142,56 @@ public final class _pSnip implements Template<List<Statement>>, _pQuery<List<Sta
         return of( theMethod.getBody().get());
     }
 
-    public static _pSnip of( String proto ){
+    public static $snip of( String proto ){
         return of(new String[] {proto});
     }
 
-    public static _pSnip of( Expr.Command c ){
+    public static $snip of( Expr.Command c ){
         StackTraceElement ste = Thread.currentThread().getStackTrace()[2];
         return of( Expr.lambda(ste));
     }
 
-    public static <T extends Object>  _pSnip of( Consumer<T> c ){
+    public static <T extends Object>  $snip of( Consumer<T> c ){
         StackTraceElement ste = Thread.currentThread().getStackTrace()[2];
         return of( Expr.lambda(ste));
     }
 
-    public static <T extends Object, U extends Object>  _pSnip of( Function<T,U> c ){
+    public static <T extends Object, U extends Object>  $snip of( Function<T,U> c ){
         StackTraceElement ste = Thread.currentThread().getStackTrace()[2];
         return of( Expr.lambda(ste));
     }
 
-    public static <T extends Object, U extends Object, V extends Object>  _pSnip of( BiFunction<T,U, V> c ){
+    public static <T extends Object, U extends Object, V extends Object>  $snip of( BiFunction<T,U, V> c ){
         StackTraceElement ste = Thread.currentThread().getStackTrace()[2];
         return of( Expr.lambda(ste));
     }
 
-    public static <T extends Object, U extends Object>_pSnip of( BiConsumer<T,U> c ){
+    public static <T extends Object, U extends Object>$snip of( BiConsumer<T,U> c ){
         StackTraceElement ste = Thread.currentThread().getStackTrace()[2];
         return of( Expr.lambda(ste));
     }
 
-    public static <T extends Object, U extends Object, V extends Object>_pSnip of( Expr.TriConsumer<T,U,V> c ){
+    public static <T extends Object, U extends Object, V extends Object>$snip of( Expr.TriConsumer<T,U,V> c ){
         StackTraceElement ste = Thread.currentThread().getStackTrace()[2];
         return of( Expr.lambda(ste));
     }
 
-    public static <T extends Object, U extends Object, V extends Object, Z extends Object>_pSnip of( Expr.QuadConsumer<T,U,V,Z> c ){
+    public static <T extends Object, U extends Object, V extends Object, Z extends Object>$snip of( Expr.QuadConsumer<T,U,V,Z> c ){
         StackTraceElement ste = Thread.currentThread().getStackTrace()[2];
         return of( Expr.lambda(ste));
     }
 
-    public static _pSnip of( LambdaExpr astLambda ){
+    public static $snip of( LambdaExpr astLambda ){
         Statement st = Stmt.from(astLambda);
-        return new _pSnip(st);
+        return new $snip(st);
     }
 
-    public static _pSnip of( _body _b ){
+    public static $snip of( _body _b ){
         return of( _b.ast() );
     }
 
-    public static _pSnip of(BlockStmt astBlockStmt ){
-        _pSnip $s = new _pSnip();
+    public static $snip of(BlockStmt astBlockStmt ){
+        $snip $s = new $snip();
         astBlockStmt.getStatements().forEach(s -> $s.add(s));
         return $s;
     }
@@ -201,18 +201,18 @@ public final class _pSnip implements Template<List<Statement>>, _pQuery<List<Sta
      * @param protoSnippet
      * @return 
      */
-    public static _pSnip of(String... protoSnippet) {
-        _pSnip $s = new _pSnip();
+    public static $snip of(String... protoSnippet) {
+        $snip $s = new $snip();
         BlockStmt bs = Ast.blockStmt(protoSnippet);
 
         bs.getStatements().forEach(s -> $s.add(s));
         return $s;
     }
 
-    public _pSnip(){
+    public $snip(){
     }
 
-    private _pSnip( Statement astProtoStmt ){
+    private $snip( Statement astProtoStmt ){
         if( astProtoStmt instanceof BlockStmt ){
             astProtoStmt.asBlockStmt().getStatements().forEach(s -> add(s) );
         } else{
@@ -220,22 +220,22 @@ public final class _pSnip implements Template<List<Statement>>, _pQuery<List<Sta
         }
     }
 
-    public _pSnip(_pStmt $st){
+    public $snip($stmt $st){
         add($st);
     }
 
-    public _pSnip add(Statement astProtoStmt){
-        $sts.add(new _pStmt(astProtoStmt) );
+    public $snip add(Statement astProtoStmt){
+        $sts.add(new $stmt(astProtoStmt) );
         return this;
     }
 
-    public _pSnip add(_pStmt $st ){
+    public $snip add($stmt $st ){
         $sts.add($st);
         return this;
     }
 
     @Override
-    public _pSnip $(String target, String paramName){
+    public $snip $(String target, String paramName){
         this.$sts.forEach(s -> s.$(target, paramName));
         return this;
     }
@@ -275,7 +275,7 @@ public final class _pSnip implements Template<List<Statement>>, _pQuery<List<Sta
      * @param kvs the key parameter NAME and String VALUE to assign to the
      * @return the modified Stencil
      */
-    public _pSnip assign$( Tokens kvs ) {
+    public $snip assign$( Tokens kvs ) {
         return assign$( Translator.DEFAULT_TRANSLATOR, kvs );
     }
 
@@ -286,7 +286,7 @@ public final class _pSnip implements Template<List<Statement>>, _pQuery<List<Sta
      * @param keyValues the key parameter NAME and String VALUE to assign to the
      * @return the modified Stencil
      */
-    public _pSnip assign$( Object... keyValues ) {
+    public $snip assign$( Object... keyValues ) {
         return assign$( Translator.DEFAULT_TRANSLATOR, Tokens.of( keyValues ) );
     }
 
@@ -298,7 +298,7 @@ public final class _pSnip implements Template<List<Statement>>, _pQuery<List<Sta
      * @param keyValues the key parameter NAME and String VALUE to assign to the
      * @return the modified Stencil
      */
-    public _pSnip assign$( Translator translator, Object... keyValues ) {
+    public $snip assign$( Translator translator, Object... keyValues ) {
         return assign$( translator, Tokens.of( keyValues ) );
     }
 
@@ -308,7 +308,7 @@ public final class _pSnip implements Template<List<Statement>>, _pQuery<List<Sta
      * @param kvs
      * @return 
      */
-    public _pSnip assign$( Translator translator, Tokens kvs ) {
+    public $snip assign$( Translator translator, Tokens kvs ) {
         this.$sts.forEach( $s -> $s.assign$(translator, kvs));
         return this;
     }
@@ -339,12 +339,12 @@ public final class _pSnip implements Template<List<Statement>>, _pQuery<List<Sta
         for(int i=0;i<values.length;i++){
             kvs.put( keys.get(i), values[i]);
         }
-        return _pSnip.this.construct( t, kvs );
+        return $snip.this.construct( t, kvs );
     }
 
     @Override
     public List<Statement> construct( Object...keyValues ){
-        return _pSnip.this.construct( Tokens.of(keyValues));
+        return $snip.this.construct( Tokens.of(keyValues));
     }
 
     /**
@@ -353,7 +353,7 @@ public final class _pSnip implements Template<List<Statement>>, _pQuery<List<Sta
      * @return 
      */
     public List<Statement> construct( Tokens tokens ){
-        return _pSnip.this.construct( Translator.DEFAULT_TRANSLATOR, tokens.map());
+        return $snip.this.construct( Translator.DEFAULT_TRANSLATOR, tokens.map());
     }
 
     /**
@@ -639,9 +639,9 @@ public final class _pSnip implements Template<List<Statement>>, _pQuery<List<Sta
      * @param $repl
      * @return 
      */
-    public <N extends Node> N replaceIn(N astNode, _pStmt $repl ){
-        _pSnip $sn = new _pSnip($repl);
-        return _pSnip.this.replaceIn(astNode, $sn);
+    public <N extends Node> N replaceIn(N astNode, $stmt $repl ){
+        $snip $sn = new $snip($repl);
+        return $snip.this.replaceIn(astNode, $sn);
     }
 
     /**
@@ -651,7 +651,7 @@ public final class _pSnip implements Template<List<Statement>>, _pQuery<List<Sta
      * @param $repl
      * @return 
      */
-    public <N extends Node> N replaceIn(N astNode, _pSnip $repl ){
+    public <N extends Node> N replaceIn(N astNode, $snip $repl ){
         AtomicInteger ai = new AtomicInteger(0);
 
         astNode.walk(this.$sts.get(0).statementClass, st-> {
@@ -704,9 +704,9 @@ public final class _pSnip implements Template<List<Statement>>, _pQuery<List<Sta
      * @param $repl
      * @return 
      */
-    public <N extends _node> N replaceIn(N _n, _pStmt $repl ){
-        _pSnip $sn = new _pSnip($repl);
-        return _pSnip.this.replaceIn(_n, $sn);
+    public <N extends _node> N replaceIn(N _n, $stmt $repl ){
+        $snip $sn = new $snip($repl);
+        return $snip.this.replaceIn(_n, $sn);
     }
 
     /**
@@ -716,7 +716,7 @@ public final class _pSnip implements Template<List<Statement>>, _pQuery<List<Sta
      * @param $repl
      * @return 
      */
-    public <N extends _node> N replaceIn(N _n, _pSnip $repl ){
+    public <N extends _node> N replaceIn(N _n, $snip $repl ){
         AtomicInteger ai = new AtomicInteger(0);
 
         Walk.in(_n, this.$sts.get(0).statementClass, st-> {
@@ -806,7 +806,7 @@ public final class _pSnip implements Template<List<Statement>>, _pQuery<List<Sta
      * A Matched Selection result returned from matching a prototype $field
      * inside of some Node or _node
      */
-    public static class Select implements _pQuery.selected {
+    public static class Select implements $query.selected {
         public List<Statement> statements;
         public args args;
 

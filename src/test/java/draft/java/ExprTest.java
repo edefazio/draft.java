@@ -1,20 +1,20 @@
 package draft.java;
 
+import com.github.javaparser.StaticJavaParser;
 import com.github.javaparser.ast.body.FieldDeclaration;
 import com.github.javaparser.ast.comments.BlockComment;
 import com.github.javaparser.ast.comments.Comment;
 import com.github.javaparser.ast.comments.JavadocComment;
 import com.github.javaparser.ast.comments.LineComment;
 import com.github.javaparser.ast.expr.LambdaExpr;
+import com.github.javaparser.ast.expr.Name;
 import com.github.javaparser.ast.expr.ObjectCreationExpr;
 import com.github.javaparser.ast.expr.UnaryExpr;
 import com.github.javaparser.ast.type.UnknownType;
+import draft.java.proto.$classUse;
 import junit.framework.TestCase;
 
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
+import java.util.*;
 
 /**
  *
@@ -29,11 +29,32 @@ public class ExprTest extends TestCase {
         
         Expr.instanceOf( ($any$)-> $any$ instanceof String );
     }
+    
+    
+    public void testExp(){
+        class Outer{
+            class $prefix{
+                class G{
+                    public int i=0;
+                }
+            }
+        }
+        
+        _class _c = _class.of(Outer.class);
+        _c.ast().walk(s -> System.out.println( s) );
+        
+        Name n = StaticJavaParser.parseName("Outer.$prefix.G");
+        
+        
+                
+        System.out.println( n );
+    }
+    
     public void testObjectCreation(){
         ObjectCreationExpr oce = Expr.objectCreation( ()-> new HashMap() );
         assertEquals( oce, Expr.objectCreation("new HashMap()"));
         
-        assertEquals( Expr.of("List.of(1,2)"), Expr.methodCall(()-> List.of(1, 2) ) );
+        assertEquals( Expr.of("List.of(1,2)"), Expr.methodCall("List.of(1,2);"));
     }
     
     public void testArrayExpr(){

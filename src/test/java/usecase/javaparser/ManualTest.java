@@ -5,7 +5,7 @@ import draft.java._class;
 import draft.java._method;
 import draft.java.io._io;
 import draft.java.macro._static;
-import draft.java.proto._pStmt;
+import draft.java.proto.$stmt;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.util.List;
@@ -118,7 +118,7 @@ public class ManualTest extends TestCase {
         }
         _class _c = _class.of(D.class);
         
-        _pStmt.remove(_c, "int a = 20;");
+        $stmt.remove(_c, "int a = 20;");
         
         //BONUS: lets verify the code was removed
         assertTrue( _c.getMethod("foo").getBody().isEmpty());
@@ -126,7 +126,7 @@ public class ManualTest extends TestCase {
         //BONUS (2) : lets add the code back in to understand $stmt proto
         
         //here create a proto - $stmt for initializing a variable a
-        _pStmt $a = _pStmt.of("int a = $init$;");
+        $stmt $a = $stmt.of("int a = $init$;");
         
         //construct/add a statement to the method using the prototype $a 
         //    "int a = 100;"
@@ -141,12 +141,12 @@ public class ManualTest extends TestCase {
         //find/match and statement assignment of int a to any value
         assertNotNull($a.firstIn(_c));
         
-        $a = _pStmt.of("$type$ a = $init$;");
+        $a = $stmt.of("$type$ a = $init$;");
         
         // remove any assignment statements of variable a to any type 
         assertNotNull($a.removeIn(_c));
                 
         //find any assignment of the variable a to any value
-        assertNull(_pStmt.first(_c, "$type$ a = $init$;"));        
+        assertNull($stmt.first(_c, "$type$ a = $init$;"));        
     }
 }

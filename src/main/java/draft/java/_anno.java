@@ -104,7 +104,9 @@ public final class _anno
             return keys;
         }
         if( this.astAnno instanceof SingleMemberAnnotationExpr ){
-            return List.of("value");
+            List<String> arr = new ArrayList<>();
+            arr.add("value");
+            return arr;
         }
         return new ArrayList<>();
     }

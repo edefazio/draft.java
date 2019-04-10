@@ -12,7 +12,7 @@ import junit.framework.TestCase;
  *
  * @author Eric
  */
-public class _pClassUseTest extends TestCase {
+public class $classUseTest extends TestCase {
 
     public interface Inter {
 
@@ -65,14 +65,14 @@ public class _pClassUseTest extends TestCase {
         _class _c = _class.of("C", new Object(){
             @Ann int a;
             @Ann(100) int b;
-            @draft.java.proto._pClassUseTest.Ann int c;
-            @_pClassUseTest.Ann int d;
+            @draft.java.proto.$classUseTest.Ann int c;
+            @$classUseTest.Ann int d;
             public Object[] staticObjects = {
                 "Base", "Ann", "Inter", 
                 Base.class, Ann.class, Inter.class
             };            
         });
-        _pClassUse.replace(_c, Ann.class, Stan.class);
+        $classUse.replace(_c, Ann.class, Stan.class);
         //System.out.println( _c );
         assertTrue( _c.getField("a").hasAnno(Stan.class));
         assertFalse( _c.getField("a").hasAnno(Ann.class));
@@ -83,14 +83,14 @@ public class _pClassUseTest extends TestCase {
         assertTrue( _c.getField("d").hasAnno(Stan.class));
         assertFalse( _c.getField("d").hasAnno(Ann.class));        
         
-        _pClassUse.replace(_c,Base.class, Replace.class);
-        _pClassUse.replace(_c,Inter.class, Outer.class);
+        $classUse.replace(_c,Base.class, Replace.class);
+        $classUse.replace(_c,Inter.class, Outer.class);
         
-        System.out.println( _pExpr.list(_c, Expr.ARRAY_INITIALIZER ) );
+        //System.out.println( _pExpr.list(_c, Expr.ARRAY_INITIALIZER ) );
         //gets the  array Initializer
-        _pExpr $arrVals = _pExpr.arrayInitializer("{ $a$, $b$, $c$, Replace.class, Stan.class, Outer.class }", a-> a.getValues().size() == 6 );
+        $expr $arrVals = $expr.arrayInitializer("{ $a$, $b$, $c$, Replace.class, Stan.class, Outer.class }", a-> a.getValues().size() == 6 );
         //assertNotNull($arrVals.selectFirstIn(_c));
-        _pExpr.Select s = $arrVals.selectFirstIn(_c);
+        $expr.Select s = $arrVals.selectFirstIn(_c);
         
         assertTrue( s.is("a", "Base")); 
         assertTrue( s.is("b", "Ann")); 
@@ -111,7 +111,7 @@ public class _pClassUseTest extends TestCase {
             @Ann
             Inter ifield = null;
 
-            @_pNodeTest.Ann
+            @$nodeTest.Ann
             Base bField = null;
 
             public Object[] staticObjects = new Object[] {
@@ -119,7 +119,7 @@ public class _pClassUseTest extends TestCase {
                 Base.class, Ann.class, Inter.class //THESE SHOULD BE CHANGED   
             };
             
-            @draft.java.proto._pNodeTest.Ann
+            @draft.java.proto.$nodeTest.Ann
             Map<Inter, Base> m = new HashMap<>();
 
             Inter getInter() {
@@ -170,9 +170,9 @@ public class _pClassUseTest extends TestCase {
         }).implement(Inter.class)
                 .extend(Base.class);
         
-        _pClassUse.replace(_c, Base.class, Replace.class);
-        _pClassUse.replace(_c, Inter.class, Outer.class);
-        _pClassUse.replace(_c, Ann.class, Stan.class);
+        $classUse.replace(_c, Base.class, Replace.class);
+        $classUse.replace(_c, Inter.class, Outer.class);
+        $classUse.replace(_c, Ann.class, Stan.class);
         
         /*
         $node $n = new $node($nodeTest.Ann.class.getCanonicalName());

@@ -5,7 +5,7 @@ import draft.java.Expr;
 import draft.java._class;
 import draft.java._method;
 import draft.java._type;
-import draft.java.proto._pMethod;
+import draft.java.proto.$method;
 import java.util.function.BiFunction;
 import java.util.function.Function;
 import java.util.function.Supplier;
@@ -27,7 +27,7 @@ public class _eval {
      * the prototype method used to inject an expression into so that it can be 
      * evaluated and returned
      */ 
-    private static _pMethod $evalExpr = _pMethod.of("public static Object EVAL(){",
+    private static $method $evalExpr = $method.of("public static Object EVAL(){",
         "return $eval$;",
         "}");
     

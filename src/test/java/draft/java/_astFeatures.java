@@ -9,7 +9,7 @@ import draft.java.macro._package;
 import draft.java.macro._replaceSystemOutWithLog;
 import draft.java.runtime._javac;
 import draft.java.runtime._project;
-import draft.java.proto._pStmt;
+import draft.java.proto.$stmt;
 import junit.framework.TestCase;
 
 import java.util.ArrayList;
@@ -55,7 +55,7 @@ public class _astFeatures extends TestCase {
         _io.out(_io.config().outProjectDir("C:/dev/refi"),
                 _project.of(_javac.options().parameterNamesStoredForRuntimeReflection(),
                         _bulk.load("C:/dev/orig",
-                                (_t) -> (_type)_pStmt.of("System.out.println($any$);").removeIn(_t)
+                                (_t) -> (_type)$stmt.of("System.out.println($any$);").removeIn(_t)
                                 ).typesArray() ) );
 
     }
@@ -111,6 +111,7 @@ public class _astFeatures extends TestCase {
         //Walk.in( _c, Comment.class, (Comment c)-> System.out.println( Ast.getContent( c ) ));
         List<Comment> todoComments =
                 Walk.list( _c, Comment.class, (Comment c)-> Ast.getContent( c ).startsWith("TODO")  );
+        System.out.println( todoComments );
         assertEquals( 5, todoComments.size());
     }
 

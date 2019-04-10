@@ -1248,10 +1248,11 @@ public enum Ast {
         if (PATTERN_LOCAL_CLASS.matcher(str).find()) {
             //lets remove all the local stuff... return a type without package
             str = str.replaceAll(LOCAL_CLASS_NAME_PACKAGE_PATTERN, ".");
+            //System.out.println( "Str \"" + str +"\"");
             return typeRef(str.substring(str.lastIndexOf('.') + 1));
         }
-        String name = str.replace('$', '.');
-        return typeRef(name);
+        //String name = str.replace('$', '.');
+        return typeRef(str);
     }
 
     public static Type typeRef(Class clazz) {
@@ -1288,6 +1289,13 @@ public enum Ast {
             cc.getParameter().walk(UnionType.class, u -> ut.add(u));
             return ut.get(0);
         }
+        if (PATTERN_LOCAL_CLASS.matcher(code).find()) {
+            //lets remove all the local stuff... return a type without package
+            code = code.replaceAll(LOCAL_CLASS_NAME_PACKAGE_PATTERN, ".");
+            //System.out.println( "Str \"" + code +"\"");
+            return typeRef(code.substring(code.lastIndexOf('.') + 1));
+        }
+        //System.out.println( "THE CODE IS \""+ code+"\"");
         return StaticJavaParser.parseType(code);
     }
 

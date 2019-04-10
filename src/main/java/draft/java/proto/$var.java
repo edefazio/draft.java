@@ -15,10 +15,10 @@ import java.util.function.Predicate;
  * Template for a {@link VariableDeclarator}
  *
  */
-public class _pVar
-    implements Template<VariableDeclarator>, _pQuery<VariableDeclarator> {
+public class $var
+    implements Template<VariableDeclarator>, $query<VariableDeclarator> {
 
-    public static final _pVar ANY = of("$type$ $name$");
+    public static final $var ANY = of("$type$ $name$");
     
     /**
      * List ALL variables within the Node
@@ -49,7 +49,7 @@ public class _pVar
      * @return 
      */
     public static final <N extends _node> List<VariableDeclarator> list( N _n, String proto ){
-        return _pVar.of(proto).listIn(_n);
+        return $var.of(proto).listIn(_n);
     }
     
     /**
@@ -61,7 +61,7 @@ public class _pVar
      * @return 
      */
     public static final <N extends _node> List<VariableDeclarator> list( N _n, String proto, Predicate<VariableDeclarator> constraint){
-        return _pVar.of(proto, constraint).listIn(_n);
+        return $var.of(proto, constraint).listIn(_n);
     }
     
     /**
@@ -72,7 +72,7 @@ public class _pVar
      * @return 
      */
     public static final <N extends _node> List<VariableDeclarator> list( N _n, VariableDeclarator proto ){
-        return _pVar.of(proto).listIn(_n);
+        return $var.of(proto).listIn(_n);
     }
     
     /**
@@ -84,7 +84,7 @@ public class _pVar
      * @return 
      */
     public static final <N extends _node> List<VariableDeclarator> list( N _n, VariableDeclarator proto, Predicate<VariableDeclarator> constraint){
-        return _pVar.of(proto, constraint).listIn(_n);
+        return $var.of(proto, constraint).listIn(_n);
     }
 
     /**
@@ -224,7 +224,7 @@ public class _pVar
      * @return 
      */
     public static final <N extends _node> VariableDeclarator first( N _n, String proto ){
-        return _pVar.of(proto).firstIn(_n);
+        return $var.of(proto).firstIn(_n);
     }
     
     /**
@@ -236,7 +236,7 @@ public class _pVar
      * @return 
      */
     public static final <N extends _node> VariableDeclarator first( N _n, String proto, Predicate<VariableDeclarator> constraint){
-        return _pVar.of(proto, constraint).firstIn(_n);
+        return $var.of(proto, constraint).firstIn(_n);
     }
     
     /**
@@ -247,7 +247,7 @@ public class _pVar
      * @return 
      */
     public static final <N extends _node> VariableDeclarator first( N _n, VariableDeclarator proto ){
-        return _pVar.of(proto).firstIn(_n);
+        return $var.of(proto).firstIn(_n);
     }
     
     /**
@@ -259,7 +259,7 @@ public class _pVar
      * @return 
      */
     public static final <N extends _node> VariableDeclarator first( N _n, VariableDeclarator proto, Predicate<VariableDeclarator> constraint){
-        return _pVar.of(proto, constraint)
+        return $var.of(proto, constraint)
                 .firstIn(_n);
     }
     
@@ -271,7 +271,7 @@ public class _pVar
      * @return 
      */
     public static final <N extends _node> Select selectFirst( N _n, String proto ){
-        return _pVar.of(proto).selectFirstIn(_n);
+        return $var.of(proto).selectFirstIn(_n);
     }
     
     /**
@@ -283,7 +283,7 @@ public class _pVar
      * @return 
      */
     public static final <N extends _node> Select selectFirst( N _n, String proto, Predicate<VariableDeclarator> constraint){
-        return _pVar.of(proto, constraint).selectFirstIn(_n);
+        return $var.of(proto, constraint).selectFirstIn(_n);
     }
     
     /**
@@ -294,7 +294,7 @@ public class _pVar
      * @return 
      */
     public static final <N extends _node> Select selectFirst( N _n, VariableDeclarator proto ){
-        return _pVar.of(proto).selectFirstIn(_n);
+        return $var.of(proto).selectFirstIn(_n);
     }
     
     /**
@@ -306,7 +306,7 @@ public class _pVar
      * @return 
      */
     public static final <N extends _node> Select selectFirst( N _n, VariableDeclarator proto, Predicate<VariableDeclarator> constraint){
-        return _pVar.of(proto, constraint).selectFirstIn(_n);
+        return $var.of(proto, constraint).selectFirstIn(_n);
     }
     
     /**
@@ -317,7 +317,7 @@ public class _pVar
      * @return 
      */
     public static final <N extends _node> List<Select> selectList( N _n, String proto ){
-        return _pVar.of(proto).selectListIn(_n);
+        return $var.of(proto).selectListIn(_n);
     }
     
     /**
@@ -329,7 +329,7 @@ public class _pVar
      * @return 
      */
     public static final <N extends _node> List<Select> selectList( N _n, String proto, Predicate<VariableDeclarator> constraint){
-        return _pVar.of(proto, constraint).selectListIn(_n);
+        return $var.of(proto, constraint).selectListIn(_n);
     }
     
     /**
@@ -340,7 +340,7 @@ public class _pVar
      * @return 
      */
     public static final <N extends _node> List<Select> selectList( N _n, VariableDeclarator proto ){
-        return _pVar.of(proto).selectListIn(_n);
+        return $var.of(proto).selectListIn(_n);
     }
     
     /**
@@ -352,7 +352,7 @@ public class _pVar
      * @return 
      */
     public static final <N extends _node> List<Select> selectList( N _n, VariableDeclarator proto, Predicate<VariableDeclarator> constraint){
-        return _pVar.of(proto, constraint).selectListIn(_n);
+        return $var.of(proto, constraint).selectListIn(_n);
     }
     
     /**
@@ -363,7 +363,7 @@ public class _pVar
      * @return the modified N
      */
     public static final <N extends _node> N remove( N _n, VariableDeclarator proto ){
-        return _pVar.of(proto).removeIn(_n);
+        return $var.of(proto).removeIn(_n);
     }
     
     /**
@@ -375,7 +375,7 @@ public class _pVar
      * @return the modified N
      */
     public static final <N extends _node> N remove( N _n, VariableDeclarator proto, Predicate<VariableDeclarator> constraint){
-        return _pVar.of(proto, constraint).removeIn(_n);
+        return $var.of(proto, constraint).removeIn(_n);
     }
     
     /**
@@ -386,7 +386,7 @@ public class _pVar
      * @return 
      */
     public static final <N extends _node> N remove( N _n, String proto ){
-        return _pVar.of(proto).removeIn(_n);
+        return $var.of(proto).removeIn(_n);
     }
     
     /**
@@ -398,8 +398,8 @@ public class _pVar
      * @return 
      */
     public static final <N extends _node> N replace(N rootNode, VariableDeclarator _protoSource, VariableDeclarator _protoTarget){
-        return _pVar.of(_protoSource)
-            .replaceIn(rootNode, _pVar.of(_protoTarget));
+        return $var.of(_protoSource)
+            .replaceIn(rootNode, $var.of(_protoTarget));
     }
     
     /**
@@ -411,8 +411,8 @@ public class _pVar
      * @return 
      */
     public static final <N extends _node> N replace(N rootNode, String protoSource, String protoTarget){
-        return _pVar.of(Ast.variable(protoSource))
-            .replaceIn(rootNode, _pVar.of(protoTarget));
+        return $var.of(Ast.variable(protoSource))
+            .replaceIn(rootNode, $var.of(protoTarget));
     }
     
     /**
@@ -420,7 +420,7 @@ public class _pVar
      * @param proto
      * @return 
      */
-    public static _pVar of( String proto ){
+    public static $var of( String proto ){
         return of(new String[]{proto});
     }
     
@@ -430,7 +430,7 @@ public class _pVar
      * @param constraint
      * @return 
      */
-    public static _pVar of( String proto, Predicate<VariableDeclarator> constraint){
+    public static $var of( String proto, Predicate<VariableDeclarator> constraint){
         return of(new String[]{proto}).constraint(constraint);
     }
     
@@ -439,8 +439,8 @@ public class _pVar
      * @param proto
      * @return 
      */
-    public static _pVar of(String...proto){
-        return new _pVar( Ast.variable( proto ) );
+    public static $var of(String...proto){
+        return new $var( Ast.variable( proto ) );
     }
 
     /**
@@ -448,12 +448,12 @@ public class _pVar
      * @param _protoField
      * @return 
      */
-    public static _pVar of(VariableDeclarator _protoField){
-        return new _pVar( _protoField  );
+    public static $var of(VariableDeclarator _protoField){
+        return new $var( _protoField  );
     }
 
-    public static _pVar of(VariableDeclarator _protoField, Predicate<VariableDeclarator> constraint){
-        return new _pVar( _protoField  ).constraint(constraint);
+    public static $var of(VariableDeclarator _protoField, Predicate<VariableDeclarator> constraint){
+        return new $var( _protoField  ).constraint(constraint);
     }
     
     public Predicate<VariableDeclarator> constraint = t -> true;
@@ -466,7 +466,7 @@ public class _pVar
     public static final PrettyPrinterConfiguration NO_COMMENTS = new PrettyPrinterConfiguration()
         .setPrintComments(false).setPrintJavadoc(false);
   
-    private _pVar( VariableDeclarator astProtoVar ){
+    private $var( VariableDeclarator astProtoVar ){
         String str = astProtoVar.getTypeAsString() + " " + astProtoVar.toString(Ast.PRINT_NO_COMMENTS);                 
         varStencil = Stencil.of( str );
         if( astProtoVar.getInitializer().isPresent() ){
@@ -475,12 +475,12 @@ public class _pVar
         }
     }
     
-    public _pVar constraint( Predicate<VariableDeclarator> constraint){
+    public $var constraint( Predicate<VariableDeclarator> constraint){
         this.constraint = constraint;
         return this;
     }
     
-    public _pVar init( Stencil $initProto ){
+    public $var init( Stencil $initProto ){
         this.$init = $initProto;
         return this;
     }
@@ -578,7 +578,7 @@ public class _pVar
     }
 
     @Override
-    public _pVar $(String target, String $Name) {
+    public $var $(String target, String $Name) {
         this.varStencil = this.varStencil.$(target, $Name);
         return this;
     }
@@ -590,7 +590,7 @@ public class _pVar
      * @param kvs the key parameter NAME and String VALUE to assign to the
      * @return the modified Stencil
      */
-    public _pVar assign$( Tokens kvs ) {
+    public $var assign$( Tokens kvs ) {
         return assign$( Translator.DEFAULT_TRANSLATOR, kvs );
     }
 
@@ -601,7 +601,7 @@ public class _pVar
      * @param keyValues the key parameter NAME and String VALUE to assign to the
      * @return the modified Stencil
      */
-    public _pVar assign$( Object... keyValues ) {
+    public $var assign$( Object... keyValues ) {
         return assign$( Translator.DEFAULT_TRANSLATOR, Tokens.of( keyValues ) );
     }
 
@@ -613,7 +613,7 @@ public class _pVar
      * @param keyValues the key parameter NAME and String VALUE to assign to the
      * @return the modified $field
      */
-    public _pVar assign$( Translator translator, Object... keyValues ) {
+    public $var assign$( Translator translator, Object... keyValues ) {
         return assign$( translator, Tokens.of( keyValues ) );
     }
 
@@ -623,7 +623,7 @@ public class _pVar
      * @param kvs
      * @return 
      */
-    public _pVar assign$( Translator translator, Tokens kvs ) {
+    public $var assign$( Translator translator, Tokens kvs ) {
         this.varStencil = this.varStencil.assign$(translator,kvs);
         return this;
     }
@@ -772,7 +772,7 @@ public class _pVar
      * @param $replaceProto
      * @return 
      */
-    public <N extends Node> N replaceIn(N astNode, _pVar $replaceProto ){
+    public <N extends Node> N replaceIn(N astNode, $var $replaceProto ){
         astNode.walk(VariableDeclarator.class, e-> {
             Select sel = select( e );
             if( sel != null ){
@@ -789,7 +789,7 @@ public class _pVar
      * @param $replaceProto
      * @return 
      */
-    public <N extends _node> N replaceIn(N _le, _pVar $replaceProto ){
+    public <N extends _node> N replaceIn(N _le, $var $replaceProto ){
         Walk.in(_le, VariableDeclarator.class, e-> {
             Select sel = select( e );
             if( sel != null ){
@@ -860,8 +860,8 @@ public class _pVar
      * A Matched Selection result returned from matching a prototype $var
      * inside of some Node or _node
      */
-    public static class Select implements _pQuery.selected, 
-            _pQuery.selectedAstNode<VariableDeclarator> {
+    public static class Select implements $query.selected, 
+            $query.selectedAstNode<VariableDeclarator> {
         
         public final VariableDeclarator var;
         public final args args;

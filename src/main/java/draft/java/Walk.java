@@ -856,7 +856,8 @@ public enum Walk {
                 }
                 else if( targetClass == BlockComment.class ) {
                     comments( astRootNode, BlockComment.class, (Predicate<BlockComment>)matchFn, (Consumer<BlockComment>)action );
-                }else {
+                }
+                else {
                     comments(astRootNode, LineComment.class, (Predicate<LineComment>) matchFn, (Consumer<LineComment>) action);
                 }
                 return astRootNode;
@@ -1200,8 +1201,13 @@ public enum Walk {
             }
         }
         List<Comment> acs = astRootNode.getAllContainedComments();
+
         Collections.sort(acs, new CommentPositionComparator());
-        acs.stream()
+        LinkedHashSet<Comment> lhs = new LinkedHashSet<>();
+        lhs.addAll(acs);
+
+        //Collections.sort( lhs, new CommentPositionComparator());
+        lhs.stream()
                 .filter(c -> commentClass.isAssignableFrom(c.getClass())
                         && commentMatchFn.test((C) c))
                 .forEach(c -> commentActionFn.accept((C) c));
@@ -1230,11 +1236,13 @@ public enum Walk {
         List<Comment> ocs = astRootNode.getOrphanComments();
         // System.out.println( "ACS = "+acs.size()+" OCS "+ ocs.size());
         acs.addAll(ocs);
+
         Collections.sort(acs, new CommentPositionComparator());
-        acs.stream()
+        LinkedHashSet<Comment> lhs = new LinkedHashSet<>();
+        lhs.addAll(acs);
+        lhs.stream()
             .filter(commentMatchFn).forEach(commentActionFn);
     }
-
 
     /**
      * Comparator for Comments within an AST node that organizes based on the

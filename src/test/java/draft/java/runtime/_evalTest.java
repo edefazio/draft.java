@@ -36,7 +36,7 @@ public class _evalTest extends TestCase {
         assertEquals( 7,  _eval.of( ()-> 3+4 ));
         assertEquals( 7,  _eval.expr("3+4"));
         //assertEquals( 7,  _eval.of("int i=1+1;", "i++;", "i++;", "i++;", "i++;", "i++;", "return i;"));
-        assertEquals( 1,  _eval.of( ()-> Map.of("X", 1).size() ) );
+        //assertEquals( 1,  _eval.of( ()-> Map.of("X", 1).size() ) );
         
         //assertEquals( 1,  _eval.of( 
         //        (Integer res, String r) -> Map.of("X",res).size() ) 

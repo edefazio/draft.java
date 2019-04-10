@@ -1,6 +1,6 @@
 package draft.java.proto;
 
-import draft.java.proto._pSnip;
+import draft.java.proto.$snip;
 import com.github.javaparser.ast.stmt.Statement;
 import draft.Tokens;
 import draft.java.Expr;
@@ -19,18 +19,18 @@ import java.util.stream.Collectors;
  * for each field, find the appropriate $snip, and _1_build code
  * to be returned
  */
-public class _pSnip_fields{
+public class $snip_fields{
 
     public Predicate<_field> _fieldFilter = (f) -> true;
     public List<$snip_field> $snipFields = new ArrayList<>();
-    public _pSnip defaultSnip;
+    public $snip defaultSnip;
 
-    public _pSnip_fields(){
+    public $snip_fields(){
         this( "");
     }
 
-    public _pSnip_fields(String...defaultSnip){
-        this.defaultSnip = _pSnip.of(defaultSnip);
+    public $snip_fields(String...defaultSnip){
+        this.defaultSnip = $snip.of(defaultSnip);
     }
 
     public List<Statement> compose(_field _f, Object...keyValuePairs){
@@ -128,7 +128,7 @@ public class _pSnip_fields{
     }
     */
 
-    public _pSnip find$snipFor_field( _field _f){
+    public $snip find$snipFor_field( _field _f){
         for(int i=0;i<$snipFields.size(); i++){
             if( $snipFields.get(i)._fieldMatch.test(_f) ){
                 return $snipFields.get(i).snip;
@@ -149,9 +149,9 @@ public class _pSnip_fields{
 
     private static class $snip_field{
         Predicate<_field> _fieldMatch;
-        _pSnip snip;
+        $snip snip;
 
-        public $snip_field(Predicate<_field>_fieldMatch, _pSnip $s){
+        public $snip_field(Predicate<_field>_fieldMatch, $snip $s){
             this._fieldMatch = _fieldMatch;
             this.snip = $s;
         }

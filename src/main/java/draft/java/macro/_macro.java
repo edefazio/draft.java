@@ -171,7 +171,7 @@ public interface _macro<M extends _anno._hasAnnos>
             return _fl;
         } catch( NoSuchFieldException nsfe ){
             //System.out.println("FIELD "+ _fl );
-            Arrays.stream( clazz.getDeclaredFields() ).forEach(f -> System.out.println(f));
+            //Arrays.stream( clazz.getDeclaredFields() ).forEach(f -> System.out.println(f));
             throw new DraftException("no Field "+ _fl+" on "+clazz, nsfe);
         }
     }
@@ -201,12 +201,13 @@ public interface _macro<M extends _anno._hasAnnos>
         if( mm == null){
             //TBH if I cant find it... and they dont have any annotations... who cares
             
-            //return _mm;
+            //
             
             //I have a theory that this happens ALWAYS TO member classes
             if( clazz.isAnonymousClass() ){
+                return _mm;
                 //System.out.println( "<<<<<<<<<<<<<<<<<<<<<<<< Anon Class");
-                throw new DraftException("Could not find method "+ _mm +" on ANONYMOUS class "+ clazz );
+                //throw new DraftException("Could not find method "+ _mm +" on ANONYMOUS class "+ clazz );
             }
             if( clazz.isLocalClass() ){
                 //System.out.println( "<<<<<<<<<<<<<<<<<<<<<<<< Local Class");
@@ -319,7 +320,7 @@ public interface _macro<M extends _anno._hasAnnos>
             
             // enums have (2) implied params NAME and ordinal that are not explicit in the signature
             //System.out.println( "LOOKING FOR " + _c );
-            System.out.println( "*****ENUM CTOR ");
+            //System.out.println( "*****ENUM CTOR ");
             for (int i = 0; i < cs.size(); i++) {    
                 
                 Constructor ct = cs.get(i);

@@ -28,14 +28,14 @@ import java.util.function.Predicate;
  * </UL>
  * @author Eric
  */
-public class _pClassUse {
+public class $classUse {
     
     public static <N extends _model._node> N replace(N _n, Class target, Class replacement) {
-        return _pClassUse.of(target).replaceIn(_n, replacement);
+        return $classUse.of(target).replaceIn(_n, replacement);
     }
     
-    public static _pClassUse of( Class clazz ){
-        return new _pClassUse(clazz);
+    public static $classUse of( Class clazz ){
+        return new $classUse(clazz);
     }
     
     String packageName;
@@ -46,7 +46,7 @@ public class _pClassUse {
      * (i.e. imports, implements, extends, throws, annotationName, cast, 
      * instanceof, etc.)
      */ 
-    _pNode $fullName;
+    $node $fullName;
     
     /**
      * If the class is a member class (or a member of a member class)
@@ -60,26 +60,30 @@ public class _pClassUse {
      * this will create an ordered list of names that can be used to be refer
      * to the class in this fashion
      */
-    List<_pNode> $memberNames; 
+    List<$node> $memberNames; 
     
     /**
      * Whenever the simple name (i.e. Map) is used
      * i.e. static method call Map.of(...), static field access, cast, etc.)
      */
-    _pNode $simpleName;
+    $node $simpleName;
     
-    public _pClassUse( Class type ){
-        this.packageName = type.getPackageName();
+    public $classUse( Class type ){
+        if( type.getPackage() != null ) {
+            this.packageName = type.getPackage().getName();
+        } else{
+            this.packageName ="";
+        }
         this.type = type;
-        this.$fullName = new _pNode(type.getCanonicalName());
+        this.$fullName = new $node(type.getCanonicalName());
         //Note: there can be (0, 1, or more OTHER nodes that represent
         //Inner member classes, i.e. not fully qualified 
         
-        this.$simpleName = new _pNode(type.getSimpleName());        
-        $memberNames = _pClassUse.buildMemberClassNames( type );
+        this.$simpleName = new $node(type.getSimpleName());        
+        $memberNames = $classUse.buildMemberClassNames( type );
     }
     
-    public _pClassUse constraint(Predicate<Node> constraint){
+    public $classUse constraint(Predicate<Node> constraint){
         $fullName.constraint(constraint);
         $simpleName.constraint(constraint);
         $memberNames.forEach(m -> constraint(constraint));
@@ -97,8 +101,8 @@ public class _pClassUse {
         return _n;
     }
     
-    private static List<_pNode> buildMemberClassNames(Class clazz ){
-        List<_pNode> nodes = new ArrayList<>();
+    private static List<$node> buildMemberClassNames(Class clazz ){
+        List<$node> nodes = new ArrayList<>();
         String currentPath = clazz.getSimpleName();
         buildMemberClassNames(clazz, currentPath, nodes);
         
@@ -109,11 +113,11 @@ public class _pClassUse {
         return nodes;
     }
     
-    private static void buildMemberClassNames(Class clazz, String currentPath, List<_pNode> nodes){        
+    private static void buildMemberClassNames(Class clazz, String currentPath, List<$node> nodes){        
         if( clazz.isMemberClass()){
             Class declaringClass = clazz.getDeclaringClass();
             currentPath = declaringClass.getSimpleName()+"."+currentPath;
-            nodes.add( _pNode.of(currentPath) );
+            nodes.add( $node.of(currentPath) );
             buildMemberClassNames( declaringClass, currentPath, nodes);
         }
     }

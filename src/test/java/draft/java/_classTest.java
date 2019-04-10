@@ -109,7 +109,7 @@ public class _classTest extends TestCase {
             URI u = null;
             @Override
             public Map m(UUID u) throws IOException {
-                return Map.of();
+                return new HashMap<>();
             }            
         });
         
@@ -136,7 +136,7 @@ public class _classTest extends TestCase {
             AtomicBoolean ab;
                     
             public Set theSet(URI uri, UUID uuid) throws IOException {
-                return Set.of();
+                return new HashSet();
             }
             
         });
@@ -158,7 +158,7 @@ public class _classTest extends TestCase {
             AtomicBoolean ab;
                     
             public Set theSet(URI uri, UUID uuid) throws IOException {
-                return Set.of();
+                return new HashSet();
             }
             
         });

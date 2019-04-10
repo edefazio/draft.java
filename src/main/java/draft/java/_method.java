@@ -332,8 +332,13 @@ public final class _method
      */
     public boolean hasParametersOf(java.lang.reflect.Method m) {
         java.lang.reflect.Type[] genericParameterTypes = m.getGenericParameterTypes();
+        if( m.getParameterCount() > 0 ) {
+            //System.out.println( "HEEEEEEEYYYYY " + m.getParameters()[0] );
+            //System.out.println( "HEEEEEEEYYYYY " + m.getDeclaringClass() );
+        }
         List<_parameter> pl = this.listParameters();
         if (genericParameterTypes.length != pl.size()) {
+            //System.out.println( "Generic Params "+genericParameterTypes.length +" "+ pl.size() );
             return false;
         }
         for (int i = 0; i < genericParameterTypes.length; i++) {

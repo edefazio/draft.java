@@ -2,27 +2,16 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="b8cbbe52-04a5-46b7-ae38-dbae2e46d7e1" name="Default Changelist" comment="">
+      <change afterPath="$PROJECT_DIR$/draft.java.iml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/compiler.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/compiler.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__com_github_javaparser_javaparser_core_3_12_0.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/modules.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/modules.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/draft/Composite.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/draft/Composite.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/draft/java/Expr.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/draft/java/Expr.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/draft/java/_anno.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/draft/java/_anno.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/draft/java/_annotation.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/draft/java/_annotation.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/draft/java/_class.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/draft/java/_class.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/draft/java/_constructor.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/draft/java/_constructor.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/draft/java/_enum.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/draft/java/_enum.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/draft/java/_field.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/draft/java/_field.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/draft/java/_interface.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/draft/java/_interface.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/draft/java/_method.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/draft/java/_method.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/draft/java/macro/_autoDto.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/draft/java/macro/_autoDto.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/draft/java/template/$anno.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/draft/java/template/$anno.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/draft/java/template/$constructor.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/draft/java/template/$constructor.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/draft/java/template/$field.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/draft/java/template/$field.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/draft/java/template/$method.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/draft/java/template/$method.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/draft/java/template/$snip.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/draft/java/template/$snip.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/test/java/draft/StencilTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/draft/StencilTest.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/test/java/draft/TextBlanksTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/draft/TextBlanksTest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/draft/java/proto/_pClassUse.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/draft/java/proto/_pClassUse.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/test/java/draft/java/ExprTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/draft/java/ExprTest.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/test/java/draft/java/template/$stmtTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/draft/java/template/$stmtTest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/java/draft/java/_classTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/draft/java/_classTest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/java/draft/java/runtime/_evalTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/draft/java/runtime/_evalTest.java" afterDir="false" />
     </list>
     <ignored path="$PROJECT_DIR$/target/" />
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
@@ -32,23 +21,11 @@
     <option name="LAST_RESOLUTION" value="IGNORE" />
   </component>
   <component name="FileEditorManager">
-    <leaf>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/main/java/draft/TextBlanks.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-8518">
-              <caret line="95" column="48" selection-start-line="95" selection-start-column="48" selection-end-line="95" selection-end-column="48" />
-              <folding>
-                <element signature="imports" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
+    <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/main/java/draft/Template.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-1684">
+            <state relative-caret-position="289">
               <caret line="18" column="17" selection-start-line="18" selection-start-column="17" selection-end-line="18" selection-end-column="17" />
             </state>
           </provider>
@@ -67,7 +44,7 @@
         <entry file="file://$PROJECT_DIR$/src/main/java/draft/Named.java">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="187">
-              <caret line="11" column="43" selection-start-line="11" selection-start-column="43" selection-end-line="11" selection-end-column="43" />
+              <caret line="11" column="47" selection-start-line="11" selection-start-column="47" selection-end-line="11" selection-end-column="47" />
             </state>
           </provider>
         </entry>
@@ -81,20 +58,56 @@
           </provider>
         </entry>
       </file>
-      <file pinned="false" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/src/main/java/draft/Diff.java">
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/main/java/draft/java/_anno.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="2431">
-              <caret line="182" column="27" selection-start-line="182" selection-start-column="27" selection-end-line="182" selection-end-column="27" />
+            <state relative-caret-position="1343">
+              <caret line="106" column="23" selection-start-line="106" selection-start-column="23" selection-end-line="106" selection-end-column="23" />
             </state>
           </provider>
         </entry>
       </file>
       <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/main/java/draft/Composite.java">
+        <entry file="file://$PROJECT_DIR$/src/main/java/draft/java/proto/_pClassUse.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="289">
-              <caret line="17" column="14" selection-start-line="17" selection-start-column="14" selection-end-line="17" selection-end-column="14" />
+            <state relative-caret-position="1139">
+              <caret line="75" column="9" selection-start-line="75" selection-start-column="9" selection-end-line="75" selection-end-column="9" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/test/java/draft/java/_classTest.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="2363">
+              <caret line="160" column="36" selection-start-line="160" selection-start-column="36" selection-end-line="160" selection-end-column="36" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/test/java/draft/java/runtime/_evalTest.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="510">
+              <caret line="38" column="10" selection-start-line="38" selection-start-column="10" selection-end-line="38" selection-end-column="10" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/src/test/java/draft/java/ExprTest.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="17">
+              <caret line="32" column="81" selection-start-line="32" selection-start-column="81" selection-end-line="32" selection-end-column="81" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="jar://$USER_HOME$/Downloads/zulu11.2.3-jdk11.0.1-win_x64/zulu11.2.3-jdk11.0.1-win_x64/lib/src.zip!/java.base/java/lang/Class.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="14909">
+              <caret line="962" column="19" selection-start-line="962" selection-start-column="19" selection-end-line="962" selection-end-column="19" />
             </state>
           </provider>
         </entry>
@@ -113,64 +126,40 @@
         <option value="$PROJECT_DIR$/src/main/java/draft/DraftException.java" />
         <option value="$PROJECT_DIR$/src/main/java/draft/Diff.java" />
         <option value="$PROJECT_DIR$/src/main/java/draft/Composite.java" />
+        <option value="$PROJECT_DIR$/src/main/java/draft/java/_anno.java" />
+        <option value="$PROJECT_DIR$/src/main/java/draft/java/proto/_pClassUse.java" />
+        <option value="$PROJECT_DIR$/src/test/java/draft/java/_classTest.java" />
+        <option value="$PROJECT_DIR$/src/test/java/draft/java/runtime/_evalTest.java" />
+        <option value="$PROJECT_DIR$/src/test/java/draft/java/ExprTest.java" />
       </list>
     </option>
   </component>
+  <component name="MavenImportPreferences">
+    <option name="importingSettings">
+      <MavenImportingSettings>
+        <option name="importAutomatically" value="true" />
+      </MavenImportingSettings>
+    </option>
+  </component>
   <component name="ProjectFrameBounds">
-    <option name="x" value="249" />
-    <option name="y" value="189" />
+    <option name="x" value="343" />
+    <option name="y" value="130" />
     <option name="width" value="1385" />
-    <option name="height" value="809" />
+    <option name="height" value="777" />
   </component>
   <component name="ProjectView">
     <navigator proportions="" version="1">
       <foldersAlwaysOnTop value="true" />
     </navigator>
     <panes>
-      <pane id="ProjectPane">
-        <subPane>
-          <expand>
-            <path>
-              <item name="draft-java" type="b2602c69:ProjectViewProjectNode" />
-              <item name="draft-java" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="draft-java" type="b2602c69:ProjectViewProjectNode" />
-              <item name="draft-java" type="462c0819:PsiDirectoryNode" />
-              <item name="src" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="draft-java" type="b2602c69:ProjectViewProjectNode" />
-              <item name="draft-java" type="462c0819:PsiDirectoryNode" />
-              <item name="src" type="462c0819:PsiDirectoryNode" />
-              <item name="main" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="draft-java" type="b2602c69:ProjectViewProjectNode" />
-              <item name="draft-java" type="462c0819:PsiDirectoryNode" />
-              <item name="src" type="462c0819:PsiDirectoryNode" />
-              <item name="main" type="462c0819:PsiDirectoryNode" />
-              <item name="java" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="draft-java" type="b2602c69:ProjectViewProjectNode" />
-              <item name="draft-java" type="462c0819:PsiDirectoryNode" />
-              <item name="src" type="462c0819:PsiDirectoryNode" />
-              <item name="main" type="462c0819:PsiDirectoryNode" />
-              <item name="java" type="462c0819:PsiDirectoryNode" />
-              <item name="draft" type="462c0819:PsiDirectoryNode" />
-            </path>
-          </expand>
-          <select />
-        </subPane>
-      </pane>
-      <pane id="PackagesPane" />
       <pane id="Scope" />
+      <pane id="ProjectPane" />
+      <pane id="PackagesPane" />
     </panes>
   </component>
   <component name="PropertiesComponent">
-    <property name="com.android.tools.idea.instantapp.provision.ProvisionBeforeRunTaskProvider.myTimeStamp" value="1550770582254" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$" />
+    <property name="com.android.tools.idea.instantapp.provision.ProvisionBeforeRunTaskProvider.myTimeStamp" value="1554827656142" />
+    <property name="last_opened_file_path" value="C:/macrobot/project/macrobot" />
   </component>
   <component name="RunDashboard">
     <option name="ruleStates">
@@ -198,17 +187,15 @@
     <servers />
   </component>
   <component name="ToolWindowManager">
-    <frame x="249" y="189" width="1385" height="809" extended-state="0" />
-    <editor active="true" />
+    <frame x="343" y="130" width="1385" height="777" extended-state="0" />
     <layout>
-      <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.17660378" />
+      <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.16754717" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
       <window_info id="Image Layers" order="2" />
       <window_info id="Designer" order="3" />
       <window_info id="UI Designer" order="4" />
       <window_info id="Capture Tool" order="5" />
       <window_info id="Favorites" order="6" side_tool="true" />
-      <window_info anchor="bottom" id="Messages" weight="0.32988167" />
       <window_info anchor="bottom" id="Message" order="0" />
       <window_info anchor="bottom" id="Find" order="1" weight="0.32988167" />
       <window_info anchor="bottom" id="Run" order="2" />
@@ -219,6 +206,7 @@
       <window_info anchor="bottom" id="Terminal" order="7" />
       <window_info anchor="bottom" id="Event Log" order="8" side_tool="true" />
       <window_info anchor="bottom" id="Version Control" order="9" />
+      <window_info anchor="bottom" id="Messages" order="10" visible="true" weight="0.3462733" />
       <window_info anchor="right" id="Commander" internal_type="SLIDING" order="0" type="SLIDING" weight="0.4" />
       <window_info anchor="right" id="Ant Build" order="1" weight="0.25" />
       <window_info anchor="right" content_ui="combo" id="Hierarchy" order="2" weight="0.25" />
@@ -230,9 +218,11 @@
     </layout>
   </component>
   <component name="editorHistoryManager">
+    <entry file="file://$PROJECT_DIR$/src/main/java/draft/Composite.java" />
+    <entry file="file://$PROJECT_DIR$/src/main/java/draft/Diff.java" />
     <entry file="file://$PROJECT_DIR$/src/main/java/draft/TextBlanks.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-8518">
+        <state relative-caret-position="1581">
           <caret line="95" column="48" selection-start-line="95" selection-start-column="48" selection-end-line="95" selection-end-column="48" />
           <folding>
             <element signature="imports" expanded="true" />
@@ -242,7 +232,7 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/draft/Template.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-1684">
+        <state relative-caret-position="289">
           <caret line="18" column="17" selection-start-line="18" selection-start-column="17" selection-end-line="18" selection-end-column="17" />
         </state>
       </provider>
@@ -257,7 +247,7 @@
     <entry file="file://$PROJECT_DIR$/src/main/java/draft/Named.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="187">
-          <caret line="11" column="43" selection-start-line="11" selection-start-column="43" selection-end-line="11" selection-end-column="43" />
+          <caret line="11" column="47" selection-start-line="11" selection-start-column="47" selection-end-line="11" selection-end-column="47" />
         </state>
       </provider>
     </entry>
@@ -268,17 +258,45 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/draft/Composite.java">
+    <entry file="file://$PROJECT_DIR$/src/main/java/draft/java/_anno.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="289">
-          <caret line="17" column="14" selection-start-line="17" selection-start-column="14" selection-end-line="17" selection-end-column="14" />
+        <state relative-caret-position="1343">
+          <caret line="106" column="23" selection-start-line="106" selection-start-column="23" selection-end-line="106" selection-end-column="23" />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/draft/Diff.java">
+    <entry file="file://$PROJECT_DIR$/src/main/java/draft/java/proto/_pClassUse.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="2431">
-          <caret line="182" column="27" selection-start-line="182" selection-start-column="27" selection-end-line="182" selection-end-column="27" />
+        <state relative-caret-position="1139">
+          <caret line="75" column="9" selection-start-line="75" selection-start-column="9" selection-end-line="75" selection-end-column="9" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/test/java/draft/java/_classTest.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="2363">
+          <caret line="160" column="36" selection-start-line="160" selection-start-column="36" selection-end-line="160" selection-end-column="36" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/test/java/draft/java/runtime/_evalTest.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="510">
+          <caret line="38" column="10" selection-start-line="38" selection-start-column="10" selection-end-line="38" selection-end-column="10" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="jar://$USER_HOME$/Downloads/zulu11.2.3-jdk11.0.1-win_x64/zulu11.2.3-jdk11.0.1-win_x64/lib/src.zip!/java.base/java/lang/Class.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="14909">
+          <caret line="962" column="19" selection-start-line="962" selection-start-column="19" selection-end-line="962" selection-end-column="19" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/test/java/draft/java/ExprTest.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="17">
+          <caret line="32" column="81" selection-start-line="32" selection-start-column="81" selection-end-line="32" selection-end-column="81" />
         </state>
       </provider>
     </entry>
