@@ -15,7 +15,7 @@ import java.util.function.Predicate;
  *
  */
 public final class $import
-    implements Template<_import>, $query<_import> {
+    implements Template<_import>, $proto<_import> {
 
     /**
      * 
@@ -888,13 +888,13 @@ public final class $import
      * @param _i
      * @return Tokens from the stencil, or null if the expression doesnt match
      */
-    public args deconstruct(_import _i ){
+    public $args deconstruct(_import _i ){
         if( this.constraint.test(_i)){
             System.out.println( "STATIC " + _i.isStatic() +"  WILDCARD "+_i.isWildcard()+ " I "+ _i.getName());
             //System.out.println( "THIS STATIC " + this.isStatic +"  THIS WILDCARD "+this.isWildcard + " I "+ _i);
             System.out.println( "IMPORT PATTERN " + importPattern );
             //if( this.isStatic == _i.isStatic() && this.isWildcard == _i.isWildcard() ){                
-            return args.of(importPattern.deconstruct( _i.getName().replace(".*", "").trim() ));
+            return $args.of(importPattern.deconstruct( _i.getName().replace(".*", "").trim() ));
             //}
         }
         return null;
@@ -906,10 +906,10 @@ public final class $import
      * @param astImport
      * @return Tokens from the stencil, or null if the expression doesnt match
      */
-    public args deconstruct(ImportDeclaration astImport ){
+    public $args deconstruct(ImportDeclaration astImport ){
         if(this.constraint.test(_import.of(astImport))){ 
             //if( this.isStatic == astImport.isStatic() && this.isWildcard == astImport.isAsterisk()){
-            return args.of( importPattern.deconstruct( astImport.getNameAsString().trim() ));
+            return $args.of( importPattern.deconstruct( astImport.getNameAsString().trim() ));
             //}
         }
         return null;
@@ -929,42 +929,12 @@ public final class $import
         //return "($import) : \"" +stat + this.importPattern + star + "\"";
     }
 
+    
     @Override
     public _import construct(Translator translator, Map<String, Object> keyValues) {
         return _import.of(importPattern.construct(translator, keyValues));
-                //.setStatic(this.isStatic).setWildcard(this.isWildcard);
     }
-
-    @Override
-    public _import construct(Map<String, Object> keyValues) {
-        return _import.of(importPattern.construct(Translator.DEFAULT_TRANSLATOR, keyValues));
-                //.setStatic(this.isStatic).setWildcard(this.isWildcard);
-    }
-
-    @Override
-    public _import construct(Object... keyValues) {
-        return _import.of(importPattern.construct(Translator.DEFAULT_TRANSLATOR, keyValues));
-                //.setStatic(this.isStatic).setWildcard(this.isWildcard);
-    }
-
-    @Override
-    public _import construct(Translator translator, Object... keyValues) {
-        return _import.of(importPattern.construct(translator, keyValues));
-                //.setStatic(this.isStatic).setWildcard(this.isWildcard);
-    }
-
-    @Override
-    public _import fill(Object... values) {
-        return _import.of(importPattern.fill(Translator.DEFAULT_TRANSLATOR, values));
-            //.setStatic(this.isStatic).setWildcard(this.isWildcard);
-    }
-
-    @Override
-    public _import fill(Translator translator, Object... values) {
-        return _import.of(importPattern.fill(translator, values));
-            //.setStatic(this.isStatic).setWildcard(this.isWildcard);
-    }
-
+    
     @Override
     public $import $(String target, String $Name) {
         this.importPattern = this.importPattern.$(target, $Name);
@@ -1041,7 +1011,7 @@ public final class $import
      * @return 
      */
     public Select select(ImportDeclaration astImport){
-        args ts = this.deconstruct(astImport);
+        $args ts = this.deconstruct(astImport);
         if( ts != null){
             return new Select( astImport, ts );
         }
@@ -1289,7 +1259,7 @@ public final class $import
     @Override
     public <N extends Node> N forEachIn(N astNode, Consumer<_import> _importActionFn){
         astNode.walk(ImportDeclaration.class, e-> {
-            args tokens = deconstruct( e );
+            $args tokens = deconstruct( e );
             if( tokens != null ){
                 _importActionFn.accept( _import.of(e));
             }
@@ -1307,20 +1277,20 @@ public final class $import
      * A Matched Selection result returned from matching a prototype $import
      * inside of some CompilationUnit
      */
-    public static class Select implements $query.selected, 
-        $query.selectedAstNode<ImportDeclaration>, 
-        $query.selected_model<_import> {
+    public static class Select implements $proto.selected, 
+        $proto.selectedAstNode<ImportDeclaration>, 
+        $proto.selected_model<_import> {
     
         public final ImportDeclaration astImport;
-        public final args args;
+        public final $args args;
 
-        public Select( ImportDeclaration astImport, args tokens){
+        public Select( ImportDeclaration astImport, $args tokens){
             this.astImport = astImport;
             this.args = tokens;
         }
         
         @Override
-        public args getArgs(){
+        public $args getArgs(){
             return args;
         }
         
@@ -1328,7 +1298,7 @@ public final class $import
         public String toString(){
             return "$import.Select {"+ System.lineSeparator()+
                 Text.indent( astImport.toString() )+ System.lineSeparator()+
-                Text.indent("ARGS : " + args) + System.lineSeparator()+
+                Text.indent("$args : " + args) + System.lineSeparator()+
                 "}";
         }
 

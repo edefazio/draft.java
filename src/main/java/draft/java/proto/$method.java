@@ -18,9 +18,8 @@ import java.util.function.*;
  * Template for a Java {@link _method}
  */
 public final class $method
-    implements Template<_method>, $query<_method> {
-    
-    
+    implements Template<_method>, $proto<_method> {
+       
     /**
      * 
      * @param <N>
@@ -386,20 +385,11 @@ public final class $method
         return _m;
     }
 
+    /*
     @Override
     public _method construct(Map<String, Object> keyValues) {
         return $method.this.construct( Translator.DEFAULT_TRANSLATOR, keyValues );
     }
-
-    /**
-     * 
-     * @param _n
-     * @return 
-     */
-    public _method construct(_node _n ){
-        return $method.this.construct(_n.deconstruct() );
-    }
-
     @Override
     public _method construct(Object... keyValues) {
         return $method.this.construct( Translator.DEFAULT_TRANSLATOR, keyValues );
@@ -428,6 +418,17 @@ public final class $method
         }
         return $method.this.construct( t, kvs );
     }
+    
+    */
+    
+    /**
+     * 
+     * @param _n
+     * @return 
+     */
+    public _method construct(_node _n ){
+        return $method.this.construct(_n.deconstruct() );
+    }
 
     public static final BlockStmt EMPTY = Stmt.block("{}");
 
@@ -436,7 +437,7 @@ public final class $method
      * @param _m
      * @return 
      */
-    public args deconstruct( _method _m ){
+    public $args deconstruct( _method _m ){
         return deconstruct(_m.ast() );
     }
     
@@ -445,7 +446,7 @@ public final class $method
      * @param astTarget
      * @return 
      */
-    public args deconstruct( MethodDeclaration astTarget ){
+    public $args deconstruct( MethodDeclaration astTarget ){
         if( !this.constraint.test(_method.of(astTarget))){
             return null;
         }
@@ -482,7 +483,7 @@ public final class $method
                 });
                 if( isConsistent.get() ){
                     ts.putAll(tss);
-                    return args.of(ts);
+                    return $args.of(ts);
                 }
             }
             return null; //the BODY or signature isnt the same or BODY / signature tokens were inconsistent
@@ -491,7 +492,7 @@ public final class $method
             return null; //the target doesnt have a BODY , the template does
         }
         //just check the signature, (after removeing the JAVADOC) since there is no BODY
-        return args.of(this.signatureStencil.deconstruct( astTarget.clone().removeComment().toString() ));
+        return $args.of(this.signatureStencil.deconstruct( astTarget.clone().removeComment().toString() ));
     }
 
     /**
@@ -592,7 +593,7 @@ public final class $method
      * @return 
      */
     public Select select( MethodDeclaration astMethod){
-        args ts = deconstruct( astMethod );
+        $args ts = deconstruct( astMethod );
         if( ts != null ){
             return new Select( astMethod, ts );
         }
@@ -745,7 +746,7 @@ public final class $method
     @Override
     public <N extends _node> N removeIn(N _n ){
         Walk.in(_n, MethodDeclaration.class, e-> {
-            args tokens = this.deconstruct( e );
+            $args tokens = this.deconstruct( e );
             if( tokens != null ){
                 e.removeForced();
             }
@@ -756,7 +757,7 @@ public final class $method
     @Override
     public <N extends Node> N removeIn(N astNode){
         astNode.walk(MethodDeclaration.class, e-> {
-            args tokens = this.deconstruct( e );
+            $args tokens = this.deconstruct( e );
             if( tokens != null ){
                 e.removeForced();
             }
@@ -767,7 +768,7 @@ public final class $method
     @Override
     public <N extends Node> N forEachIn(N astNode, Consumer<_method> _methodActionFn){
         astNode.walk(MethodDeclaration.class, e-> {
-            args tokens = this.deconstruct( e );
+            $args tokens = this.deconstruct( e );
             if( tokens != null ){
                 _methodActionFn.accept( _method.of(e) );
             }
@@ -778,7 +779,7 @@ public final class $method
     @Override
     public <N extends _node> N forEachIn(N _n, Consumer<_method> _methodActionFn){
         Walk.in(_n, MethodDeclaration.class, e -> {
-            args tokens = this.deconstruct( e );
+            $args tokens = this.deconstruct( e );
             if( tokens != null ){
                 _methodActionFn.accept( _method.of(e) );
             }
@@ -807,20 +808,20 @@ public final class $method
      * A Matched Selection result returned from matching a prototype $method
      * inside of some Node or _node
      */
-    public static class Select implements $query.selected, 
-            $query.selectedAstNode<MethodDeclaration>, 
-            $query.selected_model<_method> {
+    public static class Select implements $proto.selected, 
+            $proto.selectedAstNode<MethodDeclaration>, 
+            $proto.selected_model<_method> {
         
         public final MethodDeclaration astMethod;
-        public final args args;
+        public final $args args;
 
-        public Select( MethodDeclaration astMethod, args tokens ){
+        public Select( MethodDeclaration astMethod, $args tokens ){
             this.astMethod = astMethod;
             this.args = tokens;
         }
 
         @Override
-        public args getArgs(){
+        public $args getArgs(){
             return args;
         }
         
@@ -828,7 +829,7 @@ public final class $method
         public String toString(){
             return "$method.Select{"+ System.lineSeparator()+
                 Text.indent(astMethod.toString() )+ System.lineSeparator()+
-                Text.indent("ARGS : " + args) + System.lineSeparator()+
+                Text.indent("$args : " + args) + System.lineSeparator()+
                 "}";
         }
 

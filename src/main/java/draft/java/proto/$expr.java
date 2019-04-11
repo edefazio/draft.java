@@ -17,7 +17,7 @@ import java.util.function.Predicate;
  * @param <T> the underlying Expression TYPE
  */
 public final class $expr <T extends Expression>
-    implements Template<T>, $query<T> {
+    implements Template<T>, $proto<T> {
     
     /**
      * find the first occurring instance of a matching expression within the rootNode
@@ -343,7 +343,7 @@ public final class $expr <T extends Expression>
      * @return 
      */
     public static final Expression replace( Expression astExpr, String protoSource, String protoTarget){
-        args ts = $expr.of(protoSource).deconstruct(astExpr);
+        $args ts = $expr.of(protoSource).deconstruct(astExpr);
         if( ts != null ){
             Expression t = $expr.of(protoTarget).construct(ts);
             astExpr.replace(t);
@@ -1949,16 +1949,6 @@ public final class $expr <T extends Expression>
         return this;
     }
 
-    @Override
-    public T fill(Translator t, Object...values){
-        return (T)Expr.of(exprPattern.fill(t, values));
-    }
-
-    @Override
-    public T construct( Object...keyValues ){
-        return (T)Expr.of(exprPattern.construct( Tokens.of(keyValues)));
-    }
-
     /**
      * 
      * @param _n
@@ -1966,16 +1956,6 @@ public final class $expr <T extends Expression>
      */
     public T construct( _node _n ){
         return (T)$expr.this.construct(_n.deconstruct());
-    }
-
-    @Override
-    public T construct( Translator t, Object...keyValues ){
-        return (T)Expr.of(exprPattern.construct( t, Tokens.of(keyValues) ));
-    }
-
-    @Override
-    public T construct( Map<String,Object> tokens ){
-        return (T)Expr.of(exprPattern.construct( Translator.DEFAULT_TRANSLATOR, tokens ));
     }
 
     @Override
@@ -2016,7 +1996,7 @@ public final class $expr <T extends Expression>
      * @param expression
      * @return 
      */
-    public args deconstruct( String... expression ){
+    public $args deconstruct( String... expression ){
         return deconstruct( Expr.of(expression) );
     }
     
@@ -2026,7 +2006,7 @@ public final class $expr <T extends Expression>
      * @param astExpr expression
      * @return Tokens from the stencil, or null if the expression doesnt match
      */
-    public args deconstruct( Expression astExpr ){
+    public $args deconstruct( Expression astExpr ){
         if( expressionClass.isAssignableFrom(astExpr.getClass()) 
                 && constraint.test((T)astExpr)){
             //slight modification..
@@ -2040,7 +2020,7 @@ public final class $expr <T extends Expression>
             }
             Tokens ts = exprPattern.deconstruct(astExpr.toString(Ast.PRINT_NO_COMMENTS) );
             if( ts != null ){
-                return args.of(ts);
+                return $args.of(ts);
             }
         }
         return null;
@@ -2052,7 +2032,7 @@ public final class $expr <T extends Expression>
      * @return 
      */
     public Select select( Expression astExpr){
-        args ts = this.deconstruct(astExpr);
+        $args ts = this.deconstruct(astExpr);
         if( ts != null){
             return new Select( astExpr, ts );
         }
@@ -2130,7 +2110,7 @@ public final class $expr <T extends Expression>
     @Override
     public <N extends Node> N forEachIn(N astNode, Consumer<T> expressionActionFn){
         astNode.walk(this.expressionClass, e-> {
-            args tokens = deconstruct( e );
+            $args tokens = deconstruct( e );
             if( tokens != null ){
                 expressionActionFn.accept( e);
             }
@@ -2141,7 +2121,7 @@ public final class $expr <T extends Expression>
     @Override
     public <N extends _node> N forEachIn(N _n, Consumer<T> expressionActionFn){
         Walk.in(_n, this.expressionClass, e -> {
-            args tokens = deconstruct( e );
+            $args tokens = deconstruct( e );
             if( tokens != null ){
                 expressionActionFn.accept( e);
             }
@@ -2234,7 +2214,10 @@ public final class $expr <T extends Expression>
         Walk.in(_n, this.expressionClass, e-> {
             Select sel = select( e );
             if( sel != null ){
-                sel.astExpression.replace($repl.construct(sel.args));
+                Expression replaceNode = (Expression)$repl.construct( sel.args.asTokens() );
+                //System.out.println(replaceNode);
+                //System.out.println(replaceNode.getClass());
+                sel.astExpression.replace( replaceNode );
             }
         });
         return _n;
@@ -2284,19 +2267,19 @@ public final class $expr <T extends Expression>
      * inside of some (Ast)Node or (_java)_node
      * @param <T> expression type
      */
-    public static class Select<T extends Expression> implements $query.selected<T>,
-            $query.selectedAstNode<T> {
+    public static class Select<T extends Expression> implements $proto.selected<T>,
+            $proto.selectedAstNode<T> {
         
         public final T astExpression;
-        public final args args;
+        public final $args args;
 
-        public Select( T astExpr, args tokens){
+        public Select( T astExpr, $args tokens){
             this.astExpression = astExpr;
             this.args = tokens;
         }
         
         @Override
-        public args getArgs(){
+        public $args getArgs(){
             return args;
         }
         
@@ -2304,7 +2287,7 @@ public final class $expr <T extends Expression>
         public String toString(){
             return "$expr.Select{"+ System.lineSeparator()+
                 Text.indent(astExpression.toString() )+ System.lineSeparator()+
-                Text.indent("ARGS : " + args) + System.lineSeparator()+
+                Text.indent("$args : " + args) + System.lineSeparator()+
                 "}";
         }
 

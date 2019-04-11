@@ -24,7 +24,7 @@ import java.util.function.Function;
  * NOTE: although this does not implement the Template<> and $query<> interfaces
  * it follows the same naming conventions
  */
-public final class $snip implements Template<List<Statement>>, $query<List<Statement>> {
+public final class $snip implements Template<List<Statement>>, $proto<List<Statement>> {
 
     /**
      * 
@@ -312,41 +312,7 @@ public final class $snip implements Template<List<Statement>>, $query<List<State
         this.$sts.forEach( $s -> $s.assign$(translator, kvs));
         return this;
     }
-
-    /**
-     * NOTE: FILL DOES NOT HANDLE OPTIONAL STATEMENTS
-     * i.e.
-     *
-     * $optional:
-     *
-     * so you cannot pass in the $optional parameter inline with fill
-     * @param values
-     * @return
-     */
-    @Override
-    public List<Statement> fill(Object...values){
-        return fill( Translator.DEFAULT_TRANSLATOR, values );
-    }
-
-    @Override
-    public List<Statement> fill(Translator t, Object...values){
-        List<Statement>sts = new ArrayList<>();
-        List<String> keys = list$Normalized();
-        if( values.length < keys.size() ){
-            throw new DraftException( "not enough values("+values.length+") to fill ("+keys.size()+") variables "+ keys);
-        }
-        Map<String,Object> kvs = new HashMap<>();
-        for(int i=0;i<values.length;i++){
-            kvs.put( keys.get(i), values[i]);
-        }
-        return $snip.this.construct( t, kvs );
-    }
-
-    @Override
-    public List<Statement> construct( Object...keyValues ){
-        return $snip.this.construct( Tokens.of(keyValues));
-    }
-
+    
     /**
      * 
      * @param tokens
@@ -363,16 +329,6 @@ public final class $snip implements Template<List<Statement>>, $query<List<State
      */
     public List<Statement> construct( _node _n ){
         return construct(_n.deconstruct());
-    }
-
-    @Override
-    public List<Statement> construct( Map<String,Object> tokens ){
-       return construct( Translator.DEFAULT_TRANSLATOR, tokens );
-    }
-
-    @Override
-    public List<Statement> construct( Translator t, Object...keyValues ){
-        return construct( t, Tokens.of(keyValues ) );
     }
 
     @Override
@@ -453,7 +409,7 @@ public final class $snip implements Template<List<Statement>>, $query<List<State
         //check if we can partsMap the first one
         Tokens all = new Tokens();
         for(int i = 0; i< this.$sts.size(); i++) {
-            args ts = this.$sts.get(i).deconstruct(ss.get(i));
+            $args ts = this.$sts.get(i).deconstruct(ss.get(i));
             if (ts == null) {
                 //System.out.println( "NO Match with >"+ this.$sts.get(i)+ "< against >"+ss.get(i)+"< tokens");
                 return null;
@@ -806,12 +762,12 @@ public final class $snip implements Template<List<Statement>>, $query<List<State
      * A Matched Selection result returned from matching a prototype $field
      * inside of some Node or _node
      */
-    public static class Select implements $query.selected {
+    public static class Select implements $proto.selected {
         public List<Statement> statements;
-        public args args;
+        public $args args;
 
         @Override
-        public args getArgs(){
+        public $args getArgs(){
             return args;
         }
         
@@ -826,7 +782,7 @@ public final class $snip implements Template<List<Statement>>, $query<List<State
             this.statements.forEach( s -> sb.append(s).append( System.lineSeparator()) );
             return "$snip.Selected{"+ System.lineSeparator()+
                 Text.indent( sb.toString() )+ System.lineSeparator()+
-                Text.indent("args : " + args) + System.lineSeparator()+
+                Text.indent("$args : " + args) + System.lineSeparator()+
                 "}";
         }
     }

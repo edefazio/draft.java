@@ -16,11 +16,9 @@ import java.util.function.Predicate;
 
 /**
  * Template for a Java Type Reference
- *
- * @param <T> the underlying Expression TYPE
  */
-public final class $typeRef<T extends Type>
-        implements Template<T>, $query<T>{
+public final class $typeRef //<T extends Type>
+        implements Template<_typeRef>, $proto<_typeRef>{
 
     /**
      * 
@@ -427,16 +425,16 @@ public final class $typeRef<T extends Type>
     public static final $typeRef doubleType = of(PrimitiveType.doubleType());
 
     public Predicate<_typeRef> constraint = (t)-> true;
-    public Class<T> typeClass;
+    //public Class<T> typeClass;
     public Stencil typeStencil;
 
     /**
      * 
      * @param astProtoType 
      */
-    public $typeRef(T astProtoType){
-        this.typeClass = (Class<T>)astProtoType.getClass();
-        this.typeStencil = Stencil.of(astProtoType.toString() );
+    public $typeRef( Type astProtoType ){
+        //this.typeClass = (Class<T>)astProtoType.getClass();
+        this.typeStencil = Stencil.of(_typeRef.of(astProtoType).toString() );
         //System.out.println("TYPE STENCIL " +typeStencil);
     }
 
@@ -444,11 +442,12 @@ public final class $typeRef<T extends Type>
      * 
      * @param typeClass
      * @param stencil 
-     */
+     
     public $typeRef(Class<T>typeClass, String stencil ){
         this.typeClass = typeClass;
         this.typeStencil = Stencil.of(stencil);
     }
+    */ 
 
     /**
      * 
@@ -460,11 +459,13 @@ public final class $typeRef<T extends Type>
         return this;
     }
     
+    /*
     @Override
     public T fill(Object...values){
         String str = typeStencil.fill(Translator.DEFAULT_TRANSLATOR, values);
         return (T)Ast.typeRef( str );
     }
+    */
 
     @Override
     public $typeRef $(String target, String $name ) {
@@ -527,7 +528,17 @@ public final class $typeRef<T extends Type>
         this.typeStencil.assign$(translator,kvs);
         return this;
     }
+    
+    /**
+     * 
+     * @param _n
+     * @return 
+     */
+    public _typeRef construct( _node _n ){
+        return construct(_n.deconstruct());
+    }
 
+    /*
     @Override
     public T fill(Translator t, Object...values){
         return (T)Ast.typeRef(typeStencil.fill(t, values));
@@ -538,14 +549,7 @@ public final class $typeRef<T extends Type>
         return (T)Ast.typeRef(typeStencil.construct( Tokens.of(keyValues)));
     }
 
-    /**
-     * 
-     * @param _n
-     * @return 
-     */
-    public T construct( _node _n ){
-        return (T)$typeRef.this.construct(_n.deconstruct());
-    }
+    
 
     @Override
     public T construct( Translator t, Object...keyValues ){
@@ -556,10 +560,11 @@ public final class $typeRef<T extends Type>
     public T construct( Map<String,Object> tokens ){
         return (T)Ast.typeRef(typeStencil.construct( Translator.DEFAULT_TRANSLATOR, tokens ));
     }
-
+    */
+    
     @Override
-    public T construct( Translator t, Map<String,Object> tokens ){
-        return (T)Ast.typeRef(typeStencil.construct( t, tokens ));
+    public _typeRef construct( Translator t, Map<String,Object> tokens ){
+        return _typeRef.of(typeStencil.construct( t, tokens ));
     }
 
     /**
@@ -599,7 +604,7 @@ public final class $typeRef<T extends Type>
         return this.typeStencil.list$Normalized();
     }
 
-    public args deconstruct( String type ){
+    public $args deconstruct( String type ){
         try{
             return deconstruct(_typeRef.of(type));
         }catch(Exception e){
@@ -612,11 +617,11 @@ public final class $typeRef<T extends Type>
      * @param _tr
      * @return 
      */
-    public args deconstruct( _typeRef _tr){   
+    public $args deconstruct( _typeRef _tr){   
         if( this.constraint.test(_tr ) ) {            
             Tokens ts = typeStencil.deconstruct(_tr.toString() );
             if( ts != null ){
-                return args.of(ts);
+                return $args.of(ts);
             }
         }        
         return null;
@@ -628,7 +633,7 @@ public final class $typeRef<T extends Type>
      * @param astType TYPE instance
      * @return Tokens from the stencil, or null if the expression doesnt match
      */
-    public args deconstruct( Type astType ){
+    public $args deconstruct( Type astType ){
         return deconstruct( _typeRef.of(astType ));        
     }
     
@@ -647,7 +652,7 @@ public final class $typeRef<T extends Type>
      * @return 
      */
     public Select select( Type astType){
-        args ts = this.deconstruct(astType);
+        $args ts = this.deconstruct(astType);
         if( ts != null){
             return new Select( astType, ts );
         }
@@ -660,7 +665,7 @@ public final class $typeRef<T extends Type>
      * @return  the first Type that matches (or null if none found)
      */
     public _typeRef firstIn( _node _n ){
-        Optional<T> f = _n.ast().findFirst(this.typeClass, s -> this.matches(s) );         
+        Optional<Type> f = _n.ast().findFirst(Type.class, s -> this.matches(s) );         
         if( f.isPresent()){
             return _typeRef.of(f.get());
         }
@@ -673,7 +678,7 @@ public final class $typeRef<T extends Type>
      * @return  the first Type that matches (or null if none found)
      */
     public _typeRef firstIn( Node astNode ){
-        Optional<T> f = astNode.findFirst(this.typeClass, s -> this.matches(s) );         
+        Optional<Type> f = astNode.findFirst(Type.class, s -> this.matches(s) );         
         if( f.isPresent()){
             return _typeRef.of(f.get());
         }
@@ -686,7 +691,7 @@ public final class $typeRef<T extends Type>
      * @return  the first Type that matches (or null if none found)
      */
     public Select selectFirstIn( _node _n ){
-        Optional<T> f = _n.ast().findFirst(this.typeClass, s -> this.matches(s) );         
+        Optional<Type> f = _n.ast().findFirst(Type.class, s -> this.matches(s) );         
         if( f.isPresent()){
             return select(f.get());
         }
@@ -699,7 +704,7 @@ public final class $typeRef<T extends Type>
      * @return  the first Type that matches (or null if none found)
      */
     public Select selectFirstIn( Node astNode ){
-        Optional<T> f = astNode.findFirst(this.typeClass, s -> this.matches(s) );         
+        Optional<Type> f = astNode.findFirst(Type.class, s -> this.matches(s) );         
         if( f.isPresent()){
             return select(f.get());
         }
@@ -707,9 +712,9 @@ public final class $typeRef<T extends Type>
     }
 
     @Override
-    public List<Select<T>> selectListIn(Node astNode ){
-        List<Select<T>>sts = new ArrayList<>();
-        astNode.walk(this.typeClass, e-> {
+    public List<Select> selectListIn(Node astNode ){
+        List<Select>sts = new ArrayList<>();
+        astNode.walk( Type.class, e-> {
             Select s = select( e );
             if( s != null ){
                 sts.add( s);
@@ -719,7 +724,7 @@ public final class $typeRef<T extends Type>
     }
 
     @Override
-    public List<Select<T>> selectListIn(_node _n ){
+    public List<Select> selectListIn(_node _n ){
         return selectListIn(_n.ast() );
     }
 
@@ -731,7 +736,7 @@ public final class $typeRef<T extends Type>
      * @return 
      */
     public <N extends _node> N forSelectedIn(N _n, Consumer<Select> selectConsumer ){
-        Walk.in(_n, this.typeClass, e-> {
+        Walk.in(_n, Type.class, e-> {
             Select sel = select( e );
             if( sel != null ){
                 selectConsumer.accept( sel );
@@ -748,7 +753,7 @@ public final class $typeRef<T extends Type>
      * @return 
      */
     public <N extends Node> N forSelectedIn(N astNode, Consumer<Select> selectConsumer ){
-        astNode.walk(this.typeClass, e-> {
+        astNode.walk(Type.class, e-> {
             Select sel = select( e );
             if( sel != null ){
                 selectConsumer.accept( sel );
@@ -758,16 +763,16 @@ public final class $typeRef<T extends Type>
     }
 
     @Override
-    public List<T> listIn(_node _n ){
+    public List<_typeRef> listIn(_node _n ){
         return listIn( _n.ast() );
     }
 
     @Override
-    public List<T> listIn(Node astNode ){
-        List<T> typesList = new ArrayList<>();
-        astNode.walk(this.typeClass, t->{
+    public List<_typeRef> listIn(Node astNode ){
+        List<_typeRef> typesList = new ArrayList<>();
+        astNode.walk(Type.class, t->{
             if( this.matches(t) ){
-                typesList.add(t);
+                typesList.add(_typeRef.of(t));
             }
         } );
         return typesList;
@@ -822,10 +827,10 @@ public final class $typeRef<T extends Type>
      * @return
      */
     public <N extends _node> N replaceIn(N _n, $typeRef $replacementType){
-        Walk.in(_n, this.typeClass, e -> {
-            args tokens = deconstruct( e );
+        Walk.in(_n, Type.class, e -> {
+            $args tokens = deconstruct( e );
             if( tokens != null ){
-                if( !e.replace($replacementType.construct(tokens))){
+                if( !e.replace($replacementType.construct(tokens).ast() )){
                     throw new DraftException("unable to replaceIn "+ e + " in "+ _n+" with "+$replacementType);
                 }
             }
@@ -835,8 +840,8 @@ public final class $typeRef<T extends Type>
 
     @Override
     public <N extends Node> N removeIn(N astNode ){
-        astNode.walk(this.typeClass, e -> {
-            args tokens = deconstruct( e );
+        astNode.walk(Type.class, e -> {
+            $args tokens = deconstruct( e );
             if( tokens != null ){
                 e.removeForced();
             }
@@ -846,8 +851,8 @@ public final class $typeRef<T extends Type>
 
     @Override
     public <N extends _node> N removeIn(N _n ){
-        Walk.in(_n, this.typeClass, e -> {
-            args tokens = deconstruct( e );
+        Walk.in(_n, Type.class, e -> {
+            $args tokens = deconstruct( e );
             if( tokens != null ){
                 e.removeForced();
             }
@@ -856,22 +861,22 @@ public final class $typeRef<T extends Type>
     }
 
     @Override
-    public <N extends Node> N forEachIn(N astNode, Consumer<T> expressionActionFn){
-        astNode.walk(this.typeClass, e-> {
-            args tokens = deconstruct( e );
+    public <N extends Node> N forEachIn(N astNode, Consumer<_typeRef> expressionActionFn){
+        astNode.walk(Type.class, t-> {
+            $args tokens = deconstruct( t );
             if( tokens != null ){
-                expressionActionFn.accept( e);
+                expressionActionFn.accept( _typeRef.of(t) );
             }
         });
         return astNode;
     }
 
     @Override
-    public <N extends _node> N forEachIn(N _n, Consumer<T> expressionActionFn){
-        Walk.in(_n, this.typeClass, e -> {
-            args tokens = deconstruct( e );
+    public <N extends _node> N forEachIn(N _n, Consumer<_typeRef> expressionActionFn){
+        Walk.in(_n, Type.class, e -> {
+            $args tokens = deconstruct( e );
             if( tokens != null ){
-                expressionActionFn.accept( e);
+                expressionActionFn.accept( _typeRef.of(e));
             }
         });
         return _n;
@@ -879,44 +884,43 @@ public final class $typeRef<T extends Type>
 
     @Override
     public String toString() {
-        return "(" + this.typeClass.getSimpleName() + ") : \"" + this.typeStencil + "\"";
+        return "(_typeRef) : \"" + this.typeStencil + "\"";
     }
 
     /**
      * 
      * @param <T> 
      */
-    public static class Select<T extends Type> implements $query.selected, 
-            $query.selectedAstNode<T>, $query.selected_model<_typeRef> {
-        public T astType;
-        public args args;
+    public static class Select implements $proto.selected, 
+            $proto.selected_model<_typeRef> {
+        public _typeRef type;
+        public $args args;
 
-        public Select( T type, args tokens){
-            this.astType = type;
+        public Select( Type type, $args tokens){
+            this.type = _typeRef.of(type);
             this.args = tokens;
         }
         
         @Override
-        public args getArgs(){
+        public $args getArgs(){
             return args;
         } 
         
         @Override
         public String toString(){
             return "$typeRef.Select {"+ System.lineSeparator()+
-                Text.indent(astType.toString() )+ System.lineSeparator()+
-                Text.indent("ARGS : " + args) + System.lineSeparator()+
+                Text.indent(type.toString() )+ System.lineSeparator()+
+                Text.indent("$args : " + args) + System.lineSeparator()+
                 "}";
         }
 
-        @Override
-        public T ast() {
-            return astType;
+        public Type ast() {
+            return type.ast();
         }
 
         @Override
         public _typeRef model() {
-            return _typeRef.of(astType);
+            return type;
         }
     }
 }

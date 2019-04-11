@@ -136,6 +136,11 @@ public final class _modifiers
         return this.node.getModifiers().equals( other.node.getModifiers() );
     }
 
+    
+    public boolean isEmpty(){
+        return this.node.getModifiers().isEmpty();
+    }
+    
     public boolean is( String... mods ) {
         try {
             _modifiers _ms = _modifiers.of( mods );
@@ -472,6 +477,7 @@ public final class _modifiers
          */
         _modifiers getModifiers();
 
+        
         /**
          * Returns the Effective Modifiers as a bitMask
          * @return an int representing the BitMask of the modifiers

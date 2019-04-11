@@ -10,7 +10,7 @@ import draft.java.macro._static;
 import draft.java.runtime._javac;
 import junit.framework.TestCase;
 
-public class $methodTest extends TestCase {
+public class SmethodTest extends TestCase {
     
     public void testStaticMethodReplaceRemoveList(){
         $method $set = $method.of(

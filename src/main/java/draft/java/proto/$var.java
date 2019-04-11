@@ -16,7 +16,7 @@ import java.util.function.Predicate;
  *
  */
 public class $var
-    implements Template<VariableDeclarator>, $query<VariableDeclarator> {
+    implements Template<VariableDeclarator>, $proto<VariableDeclarator> {
 
     public static final $var ANY = of("$type$ $name$");
     
@@ -509,7 +509,7 @@ public class $var
      * @param astVar 
      * @return Tokens from the stencil, or null if the expression doesnt match
      */
-    public args deconstruct(VariableDeclarator astVar ){
+    public $args deconstruct(VariableDeclarator astVar ){
         
         Tokens all = new Tokens();
         if(this.constraint.test(astVar)) {            
@@ -530,7 +530,7 @@ public class $var
                     this.varStencil.deconstruct( astVar.getType()+ " " +astVar.toString(Ast.PRINT_NO_ANNOTATIONS_OR_COMMENTS) );
             if( matchedName != null ){
                 all.putAll(matchedName);
-                return args.of(all);
+                return $args.of(all);
             }
         }
         return null;                
@@ -644,7 +644,7 @@ public class $var
      * @return 
      */
     public Select select(VariableDeclarator astVar){
-        args ts = this.deconstruct(astVar);
+        $args ts = this.deconstruct(astVar);
         if( ts != null){
             return new Select( astVar, ts );
         }
@@ -848,7 +848,7 @@ public class $var
     @Override
     public <N extends _node> N forEachIn(N _n, Consumer<VariableDeclarator> varActionFn){
         Walk.in(_n, VariableDeclarator.class, e-> {
-            args tokens = deconstruct( e );
+            $args tokens = deconstruct( e );
             if( tokens != null ){
                 varActionFn.accept( e );
             }
@@ -860,19 +860,19 @@ public class $var
      * A Matched Selection result returned from matching a prototype $var
      * inside of some Node or _node
      */
-    public static class Select implements $query.selected, 
-            $query.selectedAstNode<VariableDeclarator> {
+    public static class Select implements $proto.selected, 
+            $proto.selectedAstNode<VariableDeclarator> {
         
         public final VariableDeclarator var;
-        public final args args;
+        public final $args args;
 
-        public Select( VariableDeclarator v, args tokens){
+        public Select( VariableDeclarator v, $args tokens){
             this.var = v;
             this.args = tokens;
         }
         
         @Override
-        public args getArgs(){
+        public $args getArgs(){
             return args;
         }
         
@@ -880,7 +880,7 @@ public class $var
         public String toString(){
             return "$var.Select{"+ System.lineSeparator()+
                     Text.indent( var.toString() )+ System.lineSeparator()+
-                    Text.indent("ARGS : " + args) + System.lineSeparator()+
+                    Text.indent("$args : " + args) + System.lineSeparator()+
                     "}";
         }
 

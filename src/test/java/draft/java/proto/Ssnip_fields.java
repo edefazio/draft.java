@@ -19,17 +19,17 @@ import java.util.stream.Collectors;
  * for each field, find the appropriate $snip, and _1_build code
  * to be returned
  */
-public class $snip_fields{
+public class Ssnip_fields{
 
     public Predicate<_field> _fieldFilter = (f) -> true;
     public List<$snip_field> $snipFields = new ArrayList<>();
     public $snip defaultSnip;
 
-    public $snip_fields(){
+    public Ssnip_fields(){
         this( "");
     }
 
-    public $snip_fields(String...defaultSnip){
+    public Ssnip_fields(String...defaultSnip){
         this.defaultSnip = $snip.of(defaultSnip);
     }
 

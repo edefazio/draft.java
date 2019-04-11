@@ -21,9 +21,8 @@ import java.util.function.Predicate;
  *
  */
 public class $field
-    implements Template<_field>, $query<_field> {
+    implements Template<_field>, $proto<_field> {
 
-    
     /**
      * 
      * @param <N>
@@ -162,7 +161,6 @@ public class $field
         return $field.of(proto, constraint).selectFirstIn(_n);
     }
     
-    
     /**
      * 
      * @param <N>
@@ -208,7 +206,6 @@ public class $field
     public static final <N extends _node> List<Select> selectList( N _n, _field proto, Predicate<_field> constraint){
         return $field.of(proto, constraint).selectListIn(_n);
     }
-    
     
     /**
      * Removes all occurrences of the source field in the rootNode (recursively)
@@ -405,7 +402,7 @@ public class $field
      * @param _f
      * @return Tokens from the stencil, or null if the expression doesnt match
      */
-    public args deconstruct(_field _f){
+    public $args deconstruct(_field _f){
         return deconstruct( _f.ast() );
     }
 
@@ -415,13 +412,13 @@ public class $field
      * @param astFieldDeclaration 
      * @return Tokens from the stencil, or null if the expression doesnt match
      */
-    public args deconstruct(FieldDeclaration astFieldDeclaration ){
+    public $args deconstruct(FieldDeclaration astFieldDeclaration ){
         
         if( astFieldDeclaration.getVariables().size() == 1 ){
             
             Tokens ts = 
                     fieldStencil.deconstruct( astFieldDeclaration.toString(Ast.PRINT_NO_ANNOTATIONS_OR_COMMENTS ) );
-            return args.of(ts);
+            return $args.of(ts);
         }
 
         /** this is painful, but hopefully not too common */
@@ -429,7 +426,7 @@ public class $field
             //I need to build separate FieldDeclarations
             _field _f = _field.of( astFieldDeclaration.getModifiers()+" "+astFieldDeclaration.getVariable( i ) +";");
             if( this.constraint.test(_f)) {
-                args tks = deconstruct( _f.getFieldDeclaration() );
+                $args tks = deconstruct( _f.getFieldDeclaration() );
                 if( tks != null ){
                     return tks;
                 }
@@ -443,7 +440,7 @@ public class $field
      * @param astVar
      * @return 
      */
-    public args deconstruct(VariableDeclarator astVar ){
+    public $args deconstruct(VariableDeclarator astVar ){
         if( !astVar.getParentNode().isPresent()){
             throw new DraftException("cannot check Field Variable "+astVar+" :: no parent FieldDeclaration");
         }
@@ -452,7 +449,7 @@ public class $field
         if( this.constraint.test( _f) ){
             Tokens ts = this.fieldStencil.deconstruct(_f.toString(Ast.PRINT_NO_ANNOTATIONS_OR_COMMENTS));
             if( ts != null ){
-                return args.of(ts);
+                return $args.of(ts);
             }
         }
         return null;
@@ -480,9 +477,10 @@ public class $field
      * @return 
      */
     public _field construct(_node _protoNode ){
-        return $field.this.construct(Translator.DEFAULT_TRANSLATOR, _protoNode.deconstruct() );
+        return construct(Translator.DEFAULT_TRANSLATOR, _protoNode.deconstruct() );
     }
 
+    /*
     @Override
     public _field construct(Map<String, Object> keyValues) {
         return $field.this.construct( Translator.DEFAULT_TRANSLATOR, keyValues);
@@ -510,6 +508,7 @@ public class $field
         }
         return _field.of(fieldStencil.fill(translator, values));
     }
+    */
 
     @Override
     public $field $(String target, String $Name) {
@@ -592,7 +591,7 @@ public class $field
      * @return 
      */
     public Select select(_field _f){
-        args ts = deconstruct(_f.ast() );
+        $args ts = deconstruct(_f.ast() );
         if( ts != null ){
             return new Select(_f, ts);
         }
@@ -621,7 +620,7 @@ public class $field
      * @return 
      */
     public Select select(VariableDeclarator astVar){
-        args ts = this.deconstruct(astVar);
+        $args ts = this.deconstruct(astVar);
         if( ts != null){
             return new Select( _field.of(astVar), ts );
         }
@@ -825,7 +824,7 @@ public class $field
     @Override
     public <N extends _node> N forEachIn(N _n, Consumer<_field> _fieldActionFn){
         Walk.in(_n, VariableDeclarator.class, e-> {
-            args tokens = deconstruct( e );
+            $args tokens = deconstruct( e );
             if( tokens != null ){
                 _fieldActionFn.accept( _field.of(e) );
             }
@@ -837,20 +836,20 @@ public class $field
      * A Matched Selection result returned from matching a prototype $field
      * inside of some Node or _node
      */
-    public static class Select implements $query.selected, 
-            $query.selectedAstNode<VariableDeclarator>, 
-            $query.selected_model<_field> {
+    public static class Select implements $proto.selected, 
+            $proto.selectedAstNode<VariableDeclarator>, 
+            $proto.selected_model<_field> {
         
         public final _field _f;
-        public final args args;
+        public final $args args;
 
-        public Select( _field _f, args tokens){
+        public Select( _field _f, $args tokens){
             this._f = _f;
             this.args = tokens;
         }
         
         @Override
-        public args getArgs(){
+        public $args getArgs(){
             return args;
         }
         
@@ -858,7 +857,7 @@ public class $field
         public String toString(){
             return "$field.Select{"+ System.lineSeparator()+
                     Text.indent( _f.toString() )+ System.lineSeparator()+
-                    Text.indent("ARGS : " + args) + System.lineSeparator()+
+                    Text.indent("$args : " + args) + System.lineSeparator()+
                     "}";
         }
 

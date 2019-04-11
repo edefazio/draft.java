@@ -47,7 +47,7 @@ import java.util.function.*;
  * @param <T> underlying Statement implementation type
  */
 public final class $stmt<T extends Statement>
-    implements Template<T>, $query<T> {
+    implements Template<T>, $proto<T> {
     
     /**
      * Return the first statement matching the lambda
@@ -1308,19 +1308,7 @@ public final class $stmt<T extends Statement>
         }
         return (T)Stmt.of( stencil.construct( Tokens.of(keyValues)));
     }
-
-    /**
-     * 
-     * @param _n
-     * @return 
-     */
-    public T construct( _node _n ){
-        if( this.commentStencil != null ){
-            return (T)Stmt.of(Stencil.of(commentStencil, stencil).construct(_n.deconstruct()) );
-        }
-        return (T)$stmt.this.construct(_n.deconstruct());
-    }
-
+    
     @Override
     public T construct( Translator t, Object...keyValues ){
         if( this.commentStencil != null ){
@@ -1335,6 +1323,18 @@ public final class $stmt<T extends Statement>
             return (T)Stmt.of( Stencil.of(commentStencil, stencil).construct( Translator.DEFAULT_TRANSLATOR, tokens ));
         }
         return (T)Stmt.of( stencil.construct( Translator.DEFAULT_TRANSLATOR, tokens ));
+    }
+    
+    /**
+     * 
+     * @param _n
+     * @return 
+     */
+    public T construct( _node _n ){
+        if( this.commentStencil != null ){
+            return (T)Stmt.of(Stencil.of(commentStencil, stencil).construct(_n.deconstruct()) );
+        }
+        return (T)$stmt.this.construct(_n.deconstruct());
     }
 
     @Override
@@ -1435,7 +1435,7 @@ public final class $stmt<T extends Statement>
      * @return 
      */
     public Select<T> select( Statement astStmt ){
-        args ts = deconstruct(astStmt );
+        $args ts = deconstruct(astStmt );
         if( ts != null ){
             return new Select( astStmt, ts );
         }
@@ -1448,7 +1448,7 @@ public final class $stmt<T extends Statement>
      * @param astStmt the statement to partsMap
      * @return Tokens from the stencil, or null if the statement doesnt match
      */
-    public args deconstruct( Statement astStmt ){
+    public $args deconstruct( Statement astStmt ){
         
         if( statementClass.isAssignableFrom(astStmt.getClass())){
             if( ! constraint.test((T) astStmt)){
@@ -1458,33 +1458,33 @@ public final class $stmt<T extends Statement>
                 if( astStmt.getComment().isPresent() ){ //removeIn any comments before checking                    
                     Tokens tks = stencil.deconstruct(astStmt.toString());
                     if( tks != null ){
-                        return args.of(tks);
+                        return $args.of(tks);
                     }
                     //if the statement HAS a comment and the template does not
                     Statement cpy = astStmt.clone();
                     cpy.removeComment();
                     if( cpy.toString().trim().equals(stencil.getTextBlanks().getFixedText().trim())){
-                        return args.of(Tokens.of());
+                        return $args.of(Tokens.of());
                     }
                 }else if( astStmt.toString().equals(stencil.getTextBlanks().getFixedText())){
-                    return args.of(Tokens.of());
+                    return $args.of(Tokens.of());
                 }
                 return null;
             }
             if( !astStmt.getComment().isPresent() ) {
                 Tokens ts = stencil.deconstruct(astStmt.toString().trim());
                 if( ts != null ){
-                    return args.of(ts);
+                    return $args.of(ts);
                 }
             } else{
                 Tokens ts = stencil.deconstruct(astStmt.toString());
                 if( ts != null ){
-                    return args.of(ts);
+                    return $args.of(ts);
                 }
                 Statement cpy = astStmt.clone();
                 cpy.removeComment();
                 ts = stencil.deconstruct(cpy.toString().trim());
-                return args.of(ts);
+                return $args.of(ts);
             }
         }
         return null;
@@ -1570,7 +1570,7 @@ public final class $stmt<T extends Statement>
     @Override
     public <N extends Node> N forEachIn(N astNode, Consumer<T> statementActionFn){
         astNode.walk(this.statementClass, e-> {
-            args tokens = deconstruct( e );
+            $args tokens = deconstruct( e );
             if( tokens != null ){
                 statementActionFn.accept( e);
             }
@@ -1581,7 +1581,7 @@ public final class $stmt<T extends Statement>
     @Override
     public <N extends _node> N forEachIn(N _n, Consumer<T> statementActionFn){
         Walk.in(_n, this.statementClass, e->{
-            args tokens = deconstruct( e );
+            $args tokens = deconstruct( e );
             if( tokens != null ){
                 statementActionFn.accept( (T)e);
             }
@@ -1627,7 +1627,7 @@ public final class $stmt<T extends Statement>
     public List<Select<T>> selectListIn(Node astNode ){
         List<Select<T>>sts = new ArrayList<>();
         astNode.walk(this.statementClass, st-> {
-            args tokens = deconstruct( st );
+            $args tokens = deconstruct( st );
             if( tokens != null ){
                 sts.add( new Select( (T)st, tokens) );
             }
@@ -1644,7 +1644,7 @@ public final class $stmt<T extends Statement>
     public List<Select<T>> selectListIn(_node _n ){
         List<Select<T>>sts = new ArrayList<>();
         Walk.in(_n, this.statementClass, st->{
-            args tokens = deconstruct(st);
+            $args tokens = deconstruct(st);
             if (tokens != null) {
                 sts.add(new Select(st, tokens));
             }
@@ -1746,18 +1746,18 @@ public final class $stmt<T extends Statement>
      * 
      * @param <T> 
      */
-    public static class Select<T extends Statement> implements $query.selected, 
-            $query.selectedAstNode<T> {
+    public static class Select<T extends Statement> implements $proto.selected, 
+            $proto.selectedAstNode<T> {
         public T astStatement;
-        public args args;
+        public $args args;
 
-        public Select( T astStatement, args tokens){
+        public Select( T astStatement, $args tokens){
             this.astStatement = astStatement;
             this.args = tokens;
         }
         
         @Override
-        public args getArgs(){
+        public $args getArgs(){
             return args;
         }
         
@@ -1765,7 +1765,7 @@ public final class $stmt<T extends Statement>
         public String toString(){
             return "$stmt.Select{"+ System.lineSeparator()+
                 Text.indent(astStatement.toString() )+ System.lineSeparator()+
-                Text.indent("Args : " + args) + System.lineSeparator()+
+                Text.indent("$args : " + args) + System.lineSeparator()+
                 "}";
         }
 

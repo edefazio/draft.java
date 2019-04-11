@@ -13,7 +13,7 @@ import junit.framework.TestCase;
 import java.util.*;
 
 @Ast.cache
-public class $snipTest extends TestCase {
+public class SsnipTest extends TestCase {
 
 
     public void testIfSnipTest(){

@@ -6,7 +6,7 @@ import draft.java._class;
 import java.util.regex.Pattern;
 import junit.framework.TestCase;
 
-public class $annoTest extends TestCase {
+public class SannoTest extends TestCase {
  
     
     public void testAny(){
@@ -27,31 +27,31 @@ public class $annoTest extends TestCase {
     public void testMatchClass(){
         
         assertTrue($anno.of(R.class).matches("R"));
-        assertTrue($anno.of(R.class).matches("@draft.java.proto.$annoTest.R"));
+        assertTrue($anno.of(R.class).matches("@draft.java.proto.SannoTest.R"));
         
         assertTrue($anno.of(R.class).matches("R()"));
-        assertTrue($anno.of(R.class).matches("@draft.java.proto.$annoTest.R()"));
+        assertTrue($anno.of(R.class).matches("@draft.java.proto.SannoTest.R()"));
         
         assertTrue($anno.of(R.class).matches("R(1)"));
-        assertTrue($anno.of(R.class).matches("@draft.java.proto.$annoTest.R(2)"));        
+        assertTrue($anno.of(R.class).matches("@draft.java.proto.SannoTest.R(2)"));        
         
         assertTrue($anno.of(R.class).matches("R(value=1)"));
-        assertTrue($anno.of(R.class).matches("@draft.java.proto.$annoTest.R(value=2)"));   
+        assertTrue($anno.of(R.class).matches("@draft.java.proto.SannoTest.R(value=2)"));   
         
-        assertTrue($anno.of(R.class, "()").matches("@draft.java.proto.$annoTest.R()"));   
+        assertTrue($anno.of(R.class, "()").matches("@draft.java.proto.SannoTest.R()"));   
         assertTrue($anno.of(R.class, "()").matches("R()"));   
         
-        assertTrue($anno.of(R.class, "($any$)").matches("@draft.java.proto.$annoTest.R()"));   
+        assertTrue($anno.of(R.class, "($any$)").matches("@draft.java.proto.SannoTest.R()"));   
         assertTrue($anno.of(R.class, "($any$)").matches("R()"));   
         
-        assertTrue($anno.of(R.class, "($any$)").matches("@draft.java.proto.$annoTest.R(1)"));   
+        assertTrue($anno.of(R.class, "($any$)").matches("@draft.java.proto.SannoTest.R(1)"));   
         assertTrue($anno.of(R.class, "($any$)").matches("R(2)"));
         
-        assertTrue($anno.of(R.class, "($any$)").select("@draft.java.proto.$annoTest.R(1)").is("any", Expr.of(1) ) );   
-        assertTrue($anno.of(R.class, "($any$)").select("@draft.java.proto.$annoTest.R(1)").is("any", "1" ) );  
+        assertTrue($anno.of(R.class, "($any$)").select("@draft.java.proto.SannoTest.R(1)").is("any", Expr.of(1) ) );   
+        assertTrue($anno.of(R.class, "($any$)").select("@draft.java.proto.SannoTest.R(1)").is("any", "1" ) );  
        
-        assertTrue($anno.of(R.class, "($any$)").select("@draft.java.proto.$annoTest.R(1)").is("any", Expr.of(1) ) );   
-        assertTrue($anno.of(R.class, "($any$)").select("@draft.java.proto.$annoTest.R(1)").is("any", "1" ) );  
+        assertTrue($anno.of(R.class, "($any$)").select("@draft.java.proto.SannoTest.R(1)").is("any", Expr.of(1) ) );   
+        assertTrue($anno.of(R.class, "($any$)").select("@draft.java.proto.SannoTest.R(1)").is("any", "1" ) );  
         
         
         
@@ -74,7 +74,7 @@ public class $annoTest extends TestCase {
         // 
         $anno $a = $anno.of(R.class);
         
-        @draft.java.proto.$annoTest.R
+        @draft.java.proto.SannoTest.R
         class C{}        
         _class _c = _class.of(C.class);        
         assertNotNull( $a.firstIn(_c) );

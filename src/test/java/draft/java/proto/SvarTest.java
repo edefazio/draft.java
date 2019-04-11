@@ -16,7 +16,7 @@ import junit.framework.TestCase;
  *
  * @author Eric
  */
-public class $varTest extends TestCase {
+public class SvarTest extends TestCase {
     
     public void testVar(){
         $var $anyInt = $var.of("int $name$");

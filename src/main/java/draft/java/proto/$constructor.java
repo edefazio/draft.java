@@ -24,7 +24,7 @@ import java.util.function.Predicate;
  *
  */
 public final class $constructor
-        implements Template<_constructor>, $query<_constructor> {
+        implements Template<_constructor>, $proto<_constructor> {
 
     public Stencil javadocStencil;
 
@@ -218,48 +218,6 @@ public final class $constructor
     }
 
     @Override
-    public _constructor construct(Map<String, Object> keyValues) {
-        return $constructor.this.construct( Translator.DEFAULT_TRANSLATOR, keyValues );
-    }
-
-    /**
-     * 
-     * @param _n
-     * @return 
-     */
-    public _constructor construct( _node _n ){
-        return $constructor.this.construct(_n.deconstruct());
-    }
-
-    @Override
-    public _constructor construct(Object... keyValues) {
-        return $constructor.this.construct( Translator.DEFAULT_TRANSLATOR, keyValues );
-    }
-
-    @Override
-    public _constructor construct(Translator translator, Object... keyValues) {
-        return $constructor.this.construct(translator, Tokens.of(keyValues));
-    }
-
-    @Override
-    public _constructor fill(Object...values){
-        return fill( Translator.DEFAULT_TRANSLATOR, values );
-    }
-
-    @Override
-    public _constructor fill(Translator t, Object...values){
-        List<String> keys = list$Normalized();
-        if( values.length < keys.size() ){
-            throw new DraftException("not enough values("+values.length+") to fill ("+keys.size()+") variables "+ keys);
-        }
-        Map<String,Object> kvs = new HashMap<>();
-        for(int i=0;i<values.length;i++){
-            kvs.put( keys.get(i), values[i]);
-        }
-        return $constructor.this.construct( t, kvs );
-    }
-
-    @Override
     public $constructor $(String target, String $Name) {
         if( this.javadocStencil != null ){
             this.javadocStencil = javadocStencil.$(target, $Name);
@@ -324,7 +282,7 @@ public final class $constructor
      * @return 
      */
     public Select select( ConstructorDeclaration astCtor){
-        args ts = deconstruct( astCtor );
+        $args ts = deconstruct( astCtor );
         if( ts != null ){
             return new Select( astCtor, ts );
         }
@@ -398,7 +356,7 @@ public final class $constructor
      * @param _ctor
      * @return 
      */
-    public args deconstruct( _constructor _ctor ){
+    public $args deconstruct( _constructor _ctor ){
         return deconstruct( _ctor.ast() );                
     }
     
@@ -408,7 +366,7 @@ public final class $constructor
      * @param astTarget
      * @return 
      */
-    public args deconstruct( ConstructorDeclaration astTarget ){
+    public $args deconstruct( ConstructorDeclaration astTarget ){
         if( !this.constraint.test( _constructor.of(astTarget))){
             return null;
         }
@@ -439,7 +397,7 @@ public final class $constructor
             });
             if( isConsistent.get() ){
                 ts.putAll(tss);
-                return args.of(ts);
+                return $args.of(ts);
             }
         }
         return null; //the BODY or signature isnt the same or BODY / signature tokens were inconsistent
@@ -559,20 +517,20 @@ public final class $constructor
      * A Matched Selection result returned from matching a prototype $constructor
      * inside of some Node or _node
      */    
-    public static class Select implements $query.selected, 
-            $query.selectedAstNode<ConstructorDeclaration>, 
-            $query.selected_model<_constructor> {
+    public static class Select implements $proto.selected, 
+            $proto.selectedAstNode<ConstructorDeclaration>, 
+            $proto.selected_model<_constructor> {
         
         public final ConstructorDeclaration astCtor;
-        public final args args;
+        public final $args args;
 
-        public Select( ConstructorDeclaration astCtor, args tokens ){
+        public Select( ConstructorDeclaration astCtor, $args tokens ){
             this.astCtor = astCtor;
             this.args = tokens;
         }
 
         @Override
-        public args getArgs(){
+        public $args getArgs(){
             return args;
         }
         
@@ -580,7 +538,7 @@ public final class $constructor
         public String toString(){
             return "$constructor.Select{"+ System.lineSeparator()+
                     Text.indent(astCtor.toString() )+ System.lineSeparator()+
-                    Text.indent("ARGS : " + args) + System.lineSeparator()+
+                    Text.indent("$args : " + args) + System.lineSeparator()+
                     "}";
         }
         

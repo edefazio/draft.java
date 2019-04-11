@@ -5,13 +5,13 @@ import draft.Tokens;
 import draft.java.Expr;
 import draft.java.Stmt;
 import draft.java._class;
-import draft.java.proto.$query.args;
+import draft.java.proto.$proto.$args;
 import junit.framework.TestCase;
 
 import java.util.List;
 import java.util.function.Consumer;
 
-public class $stmtTest extends TestCase {
+public class SstmtTest extends TestCase {
 
     
     public void test$protoQueryTutorial(){
@@ -245,7 +245,7 @@ public class $stmtTest extends TestCase {
     public void testMatchWithComments(){
         //$stmt $s = $stmt.of( Stmt.of( ()-> System.out.println(1) ));
         $stmt $s = $stmt.of( ()-> System.out.println(1) );
-        args tokens = $s.deconstruct(Stmt.of( ()-> System.out.println(1) ));
+        $args tokens = $s.deconstruct(Stmt.of( ()-> System.out.println(1) ));
         assertNotNull( tokens );
 
         //$s = $stmt.of( ($any$)-> System.out.println($any$) );

@@ -12,7 +12,7 @@ import junit.framework.TestCase;
  *
  * @author Eric
  */
-public class $fieldTest extends TestCase {
+public class SfieldTest extends TestCase {
     public void testSimple(){
         $field $f = $field.of("public int z=100;");
         assertTrue( $f.matches(Ast.field("public int z = 100;")) );

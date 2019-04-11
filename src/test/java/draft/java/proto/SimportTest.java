@@ -13,7 +13,7 @@ import org.junit.Assert;
  *
  * @author Eric
  */
-public class $importTest extends TestCase {
+public class SimportTest extends TestCase {
     
     public void testImportWildcardStaticAssertions(){
         _class _c = _class.of("C").importStatic(Assert.class);

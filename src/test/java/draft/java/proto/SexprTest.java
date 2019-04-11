@@ -11,7 +11,7 @@ import java.util.List;
 import java.util.function.Predicate;
 import static junit.framework.TestCase.assertNotNull;
 
-public class $exprTest extends TestCase {
+public class SexprTest extends TestCase {
 
     static class Base{
         public static int V = 100;
@@ -201,7 +201,18 @@ public class $exprTest extends TestCase {
         assertTrue($expr.arrayAccess("a[$any$]", a -> a.getIndex().isIntegerLiteralExpr() ).matches("a[1]"));
         assertFalse($expr.arrayAccess("a[$any$]", a -> a.getIndex().isIntegerLiteralExpr() ).matches("a[b.count()]"));
         _class _c = _class.of("C").field("int i=1;");
+        
+        assertEquals(1, $expr.list(_c, Expr.of(1) ).size());
+        
+        System.out.println( Expr.of("1").getClass() );
+        
+        System.out.println( $expr.replace(_c, Expr.of(1), Expr.of(2)) );
+
+        System.out.println( $expr.replace(_c, "1", "2") );
+        
         assertTrue( $expr.replace(_c, "1", "2").getField("i").initIs(2));
+        
+        //assertTrue( $expr.replace(_c, "1", "2").getField("i").initIs("2"));
         
         assertTrue($expr.list(_c, "2").size() == 1);
         

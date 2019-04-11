@@ -12,7 +12,7 @@ import junit.framework.TestCase;
  *
  * @author Eric
  */
-public class $classUseTest extends TestCase {
+public class SclassUseTest extends TestCase {
 
     public interface Inter {
 
@@ -65,8 +65,8 @@ public class $classUseTest extends TestCase {
         _class _c = _class.of("C", new Object(){
             @Ann int a;
             @Ann(100) int b;
-            @draft.java.proto.$classUseTest.Ann int c;
-            @$classUseTest.Ann int d;
+            @draft.java.proto.SclassUseTest.Ann int c;
+            @SclassUseTest.Ann int d;
             public Object[] staticObjects = {
                 "Base", "Ann", "Inter", 
                 Base.class, Ann.class, Inter.class
@@ -111,7 +111,7 @@ public class $classUseTest extends TestCase {
             @Ann
             Inter ifield = null;
 
-            @$nodeTest.Ann
+            @SnodeTest.Ann
             Base bField = null;
 
             public Object[] staticObjects = new Object[] {
@@ -119,7 +119,7 @@ public class $classUseTest extends TestCase {
                 Base.class, Ann.class, Inter.class //THESE SHOULD BE CHANGED   
             };
             
-            @draft.java.proto.$nodeTest.Ann
+            @draft.java.proto.SnodeTest.Ann
             Map<Inter, Base> m = new HashMap<>();
 
             Inter getInter() {

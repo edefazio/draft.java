@@ -12,7 +12,7 @@ import junit.framework.TestCase;
 
 import java.util.*;
 
-public class $typeRefTest extends TestCase {
+public class StypeRefTest extends TestCase {
 
     public static class OldT{
         public static final int F = 1;
@@ -37,20 +37,20 @@ public class $typeRefTest extends TestCase {
             
             public OldT method( OldT one ){
                 /** WORKING */                
-                draft.java.proto.$typeRefTest.OldT fv = new draft.java.proto.$typeRefTest.OldT();
+                draft.java.proto.StypeRefTest.OldT fv = new draft.java.proto.StypeRefTest.OldT();
                 
                 //annotation ?
-                draft.java.proto.$typeRefTest.OldT[] arr = new draft.java.proto.$typeRefTest.OldT[2];
+                draft.java.proto.StypeRefTest.OldT[] arr = new draft.java.proto.StypeRefTest.OldT[2];
                 
-                draft.java.proto.$typeRefTest.OldT rr = (draft.java.proto.$typeRefTest.OldT)one; //cast
+                draft.java.proto.StypeRefTest.OldT rr = (draft.java.proto.StypeRefTest.OldT)one; //cast
                 
                 /* NOT WORKING  */
                 OldT var = new OldT();
                 
                 System.out.println( OldT.F ); //field access
                 OldT.m();
-                System.out.println(draft.java.proto.$typeRefTest.OldT.F ); //field access
-                draft.java.proto.$typeRefTest.OldT.m();
+                System.out.println(draft.java.proto.StypeRefTest.OldT.F ); //field access
+                draft.java.proto.StypeRefTest.OldT.m();
                 return var;
             }            
         });
@@ -143,7 +143,7 @@ public class $typeRefTest extends TestCase {
     
     public void testSimple(){
         $typeRef $t = $typeRef.intType;
-        assertEquals(Ast.INT_TYPE, $t.construct());
+        assertEquals(_typeRef.of(int.class), $t.construct());
 
         assertNotNull( $t.deconstruct(Ast.INT_TYPE));
         assertNull( $t.deconstruct(Ast.FLOAT_TYPE));

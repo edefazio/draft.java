@@ -39,7 +39,7 @@ import java.util.function.*;
  *</PRE> 
  */
 public final class $anno
-    implements Template<_anno>, $query<_anno> {
+    implements Template<_anno>, $proto<_anno> {
 
     /** represents ANY annotation*/
     public static final $anno ANY = $anno.of("@A").$("A", "any");
@@ -636,11 +636,11 @@ public final class $anno
      * @param _a
      * @return Tokens from the stencil, or null if the expression doesnt match
      */
-    public args deconstruct(_anno _a ){
+    public $args deconstruct(_anno _a ){
         if( this.constraint.test(_a) ){
             Tokens r = annoStencil.deconstruct( _a.toString() ); 
             if( r != null){
-                return new args(r);
+                return new $args(r);
             }            
         }
         return null;
@@ -652,7 +652,7 @@ public final class $anno
      * @param astAnnoExpr
      * @return Tokens from the stencil, or null if the expression doesnt match
      */
-    public args deconstruct(AnnotationExpr astAnnoExpr ){
+    public $args deconstruct(AnnotationExpr astAnnoExpr ){
         return deconstruct(_anno.of(astAnnoExpr) );
     }
 
@@ -664,31 +664,6 @@ public final class $anno
     @Override
     public _anno construct(Translator translator, Map<String, Object> keyValues) {
         return _anno.of(annoStencil.construct(translator, keyValues));
-    }
-
-    @Override
-    public _anno construct(Map<String, Object> keyValues) {
-        return _anno.of(annoStencil.construct(Translator.DEFAULT_TRANSLATOR, keyValues));
-    }
-
-    @Override
-    public _anno construct(Object... keyValues) {
-        return _anno.of( annoStencil.construct(Translator.DEFAULT_TRANSLATOR, keyValues));
-    }
-
-    @Override
-    public _anno construct(Translator translator, Object... keyValues) {
-        return _anno.of(annoStencil.construct(translator, keyValues));
-    }
-
-    @Override
-    public _anno fill(Object... values) {
-        return _anno.of( annoStencil.fill(Translator.DEFAULT_TRANSLATOR, values));
-    }
-
-    @Override
-    public _anno fill(Translator translator, Object... values) {
-        return _anno.of( annoStencil.fill(translator, values));
     }
 
     @Override
@@ -780,7 +755,7 @@ public final class $anno
      * @return 
      */
     public Select select(AnnotationExpr astExpr){
-        args ts = this.deconstruct(astExpr);
+        $args ts = this.deconstruct(astExpr);
         if( ts != null){
             return new Select( astExpr, ts );
         }
@@ -989,7 +964,7 @@ public final class $anno
     @Override
     public <N extends Node> N forEachIn(N astNode, Consumer<_anno> _annoActionFn){
         astNode.walk(AnnotationExpr.class, a-> {
-            args tokens = deconstruct(a );
+            $args tokens = deconstruct(a );
             if( tokens != null ){
                 _annoActionFn.accept(_anno.of(a));
             }
@@ -1000,7 +975,7 @@ public final class $anno
     @Override
     public <N extends _node> N forEachIn(N _n, Consumer<_anno> _annoActionFn){
         Walk.in(_n, AnnotationExpr.class, a -> {
-            args tokens =  deconstruct(a );
+            $args tokens =  deconstruct(a );
             if( tokens != null ){
                 _annoActionFn.accept(_anno.of(a) );
             }
@@ -1013,18 +988,18 @@ public final class $anno
      * inside of some Node or _node
      */
     public static class Select 
-        implements $query.selected, selected_model<_anno>, selectedAstNode<AnnotationExpr> {
+        implements $proto.selected, selected_model<_anno>, selectedAstNode<AnnotationExpr> {
         
         public final AnnotationExpr astAnno;
-        public final args args;
+        public final $args args;
 
-        public Select( AnnotationExpr expression, args tokens){
+        public Select( AnnotationExpr expression, $args tokens){
             this.astAnno = expression;
             this.args = tokens; //$args.of( tokens);
         }
         
         @Override
-        public args getArgs(){
+        public $args getArgs(){
             return args;
         }
         
@@ -1032,7 +1007,7 @@ public final class $anno
         public String toString(){
             return "$anno.Select {"+ System.lineSeparator()+
                 Text.indent(astAnno.toString() )+ System.lineSeparator()+
-                Text.indent("ARGS : " + args) + System.lineSeparator()+
+                Text.indent("$args : " + args) + System.lineSeparator()+
                 "}";
         }
 

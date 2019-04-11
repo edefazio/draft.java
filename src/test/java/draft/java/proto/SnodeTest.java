@@ -23,7 +23,7 @@ import junit.framework.TestCase;
  *
  * @author Eric
  */
-public class $nodeTest extends TestCase {
+public class SnodeTest extends TestCase {
     
     public interface Inter{
         public static final int VAL = 1;
@@ -85,13 +85,13 @@ public class $nodeTest extends TestCase {
             @Ann
             Inter ifield = null;
             
-            @$nodeTest.Ann
+            @SnodeTest.Ann
             Base bField = null;
             
-            @draft.java.proto.$nodeTest.Ann
+            @draft.java.proto.SnodeTest.Ann
             Map<Inter,Base> m = new HashMap<>();
             
-            @draft.java.proto.$nodeTest.Ann
+            @draft.java.proto.SnodeTest.Ann
             Inter getInter(){
                 Inter.tell();
                 System.out.println( Inter.VAL );
@@ -104,7 +104,7 @@ public class $nodeTest extends TestCase {
                 if( arr[0] instanceof Inter ){
                     
                 }
-                @$nodeTest.Ann
+                @SnodeTest.Ann
                 class INN implements Inter{ //check inner nest
                     
                 }
@@ -129,7 +129,7 @@ public class $nodeTest extends TestCase {
                 return bField;
             }
             
-            @$nodeTest.Ann
+            @SnodeTest.Ann
             public void setInter( Inter ifld ){
                 this.ifield = ifld;
             }

@@ -6,10 +6,10 @@ import draft.java._field;
 import junit.framework.TestCase;
 
 @Ast.cache
-public class $snip_fieldsTest extends TestCase {
+public class Ssnip_fieldsTest extends TestCase {
 
     public void testSimple(){
-        $snip_fields $sfs = new $snip_fields("System.out.println($name$);");
+        Ssnip_fields $sfs = new Ssnip_fields("System.out.println($name$);");
 
         //$sfs.TYPE(int.class,
         //        ($name$)-> System.out.println("int $name$"));

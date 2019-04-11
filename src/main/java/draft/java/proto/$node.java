@@ -1,22 +1,17 @@
 package draft.java.proto;
 
 import com.github.javaparser.ast.Node;
-import com.github.javaparser.ast.body.FieldDeclaration;
-import com.github.javaparser.ast.body.VariableDeclarator;
 import com.github.javaparser.ast.expr.Name;
 import com.github.javaparser.ast.expr.SimpleName;
 import com.github.javaparser.ast.type.ClassOrInterfaceType;
-import com.github.javaparser.ast.type.Type;
 import draft.Stencil;
 import draft.Text;
 import draft.Tokens;
 import draft.java.Ast;
-import draft.java.Walk;
 import draft.java._model._node;
 import draft.java._type;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
 
@@ -24,7 +19,7 @@ import java.util.function.Predicate;
  * Any Ast Node that can be matched, extracted
  * @author Eric
  */
-public class $node implements $query<Node> {
+public class $node implements $proto<Node> {
     
     public static <N extends Node> N replace(  N astRootNode, String source, String target ){
         return $node.of(source).replaceIn(astRootNode, target);
@@ -280,12 +275,12 @@ public class $node implements $query<Node> {
      * A Matched Selection result returned from matching a prototype $field
      * inside of some Node or _node
      */
-    public static class Select implements $query.selected, $query.selectedAstNode<Node> {
+    public static class Select implements $proto.selected, $proto.selectedAstNode<Node> {
         public Node node;
-        public args args;
+        public $args args;
 
         @Override
-        public args getArgs(){
+        public $args getArgs(){
             return args;
         }
         
@@ -304,7 +299,7 @@ public class $node implements $query<Node> {
         public String toString(){
             return "$snip.Selected{"+ System.lineSeparator()+
                 Text.indent( node.toString() )+ System.lineSeparator()+
-                Text.indent("args : " + args) + System.lineSeparator()+
+                Text.indent("$args : " + args) + System.lineSeparator()+
                 "}";
         }
 

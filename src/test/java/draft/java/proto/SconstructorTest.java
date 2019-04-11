@@ -7,7 +7,7 @@ import draft.java.macro._ctor;
 import junit.framework.TestCase;
 
 
-public class $constructorTest extends TestCase {
+public class SconstructorTest extends TestCase {
 
     public void testNoArgConstructor(){
         $constructor $c = $constructor.of( "public $name$(){ assert(1==1); }" ).$(Stmt.of("assert(1==1);"), "body");
