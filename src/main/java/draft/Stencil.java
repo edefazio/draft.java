@@ -368,36 +368,6 @@ public final class Stencil implements Template<String>{
         return new Stencil( builder.compile(), params );
     }
 
-    /**
-     * pass in the fill values in the order they first appear in the Stencil
-     *
-     * @param translator translates the fill values from Object to text
-     * @param fillValues the values to fill in the document
-     * @return the filled $signature
-     */
-    @Override
-    public String fill( Translator translator, Object... fillValues ) {
-        Map<String, Object> m = new HashMap<>();
-        int fillIndex = 0;
-        for( int i = 0; i < this.$NamesNormalized.size(); i++ ) {
-            final String p = $NamesNormalized.get( i );
-            Optional<String> found = m.keySet().stream()
-                    .filter( s -> s.equalsIgnoreCase( p ) )
-                    .findFirst();
-            if( !found.isPresent() ) {
-                if( fillValues.length > fillIndex ) {
-                    m.put( this.$NamesNormalized.get( i ), fillValues[ fillIndex ] );
-                    fillIndex++;
-                }
-                else {
-                    throw new DraftException( "No fill for [" + i + "] "
-                            + this.$NamesNormalized.get( i ) + "" );
-                }
-            }
-        }
-        return construct( translator, m );
-    }
-
     @Override
     public String construct(Translator translator, Map<String, Object> $nameValues ){
 

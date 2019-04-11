@@ -1,5 +1,6 @@
 package draft;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -108,7 +109,17 @@ public interface Template<T> {
      * @param values data to populate the template
      * @return the constructed T (i.e. _method, _field, _ctor)
      */
-    T fill( Translator translator, Object... values );
+    default T fill( Translator translator, Object... values ){
+        List<String> keys = list$Normalized();
+        if( values.length < keys.size() ){
+            throw new DraftException("not enough values("+values.length+") to fill ("+keys.size()+") variables "+ keys);
+        }
+        Map<String,Object> kvs = new HashMap<>();
+        for(int i=0;i<values.length;i++){
+            kvs.put( keys.get(i), values[i]);
+        }
+        return construct( translator, kvs );
+    }
 
     /**
      * Post - parameterize, create a parameter ($Name) from the target String.<BR/>
