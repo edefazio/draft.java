@@ -37,7 +37,9 @@ public interface Template<T> {
      * text
      * @return a constructed T entity
      */
-    T construct( Map<String, Object> keyValues );
+    default T construct( Map<String, Object> keyValues ){
+        return construct( Translator.DEFAULT_TRANSLATOR, keyValues );
+    }
 
     /**
      * construct and return a new T given the tokens
@@ -45,7 +47,9 @@ public interface Template<T> {
      * @param keyValues alternating key, and values
      * @return
      */
-    T construct( Object... keyValues );
+    default T construct( Object... keyValues ){
+        return construct(Translator.DEFAULT_TRANSLATOR, Tokens.of(keyValues));
+    }
 
     /**
      * construct and return a new T given the tokens and translator
@@ -54,7 +58,9 @@ public interface Template<T> {
      * @param keyValues alternating key, and values
      * @return
      */
-    T construct( Translator translator, Object... keyValues );
+    default T construct( Translator translator, Object... keyValues ){
+        return construct(translator, Tokens.of(keyValues));
+    }
 
     /**
      * fill in the values of the Template sequentially
@@ -76,7 +82,9 @@ public interface Template<T> {
      * @param values data to populate the template
      * @return the constructed T (i.e. _method, _field, _ctor)
      */
-    T fill( Object... values );
+    default T fill( Object... values ){
+        return fill(Translator.DEFAULT_TRANSLATOR, values );    
+    }
 
     /**
      * fill in the values of the Template sequentially
