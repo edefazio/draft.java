@@ -103,6 +103,14 @@ public final class Stencil implements Template<String>{
     }
 
     /**
+     * A matchAll Stencil (its ONLY a variable, with no fixed text
+     */ 
+    public boolean isMatchAll(){
+        return this.textBlanks.getFixedText() == null || 
+            this.textBlanks.getFixedText().length() == 0;
+    }
+    
+    /**
      *
      * @param code
      * @return the composite stencil
@@ -361,30 +369,6 @@ public final class Stencil implements Template<String>{
     }
 
     /**
-     * Directly fill the values in the TextBind with "lazy assignment"
-     * i.e. with a Stencil:
-     *
-     * Stencil st = Stencil.of("$a$ $A$ $b$");
-     * st.fill( "eric", "wagon");
-     * //produces:
-     * "eric ERIC wagon"
-     *
-     * ...
-     * so:
-     * param $a$ : is lazily assigned to the first VALUE "eric"
-     * param $A$ : is an uppercased version of $a$, so we reuse the param $a$
-     * uppercase
-     * param $b$ : is lazily assigned to the second VALUE "wagon"
-     *
-     * @param fillValues the values in the order they appear in the Stencil
-     * @return the filled Stencil
-     */
-    @Override
-    public String fill( Object... fillValues ) {
-        return fill( Translator.DEFAULT_TRANSLATOR, fillValues );
-    }
-
-    /**
      * pass in the fill values in the order they first appear in the Stencil
      *
      * @param translator translates the fill values from Object to text
@@ -412,32 +396,6 @@ public final class Stencil implements Template<String>{
             }
         }
         return construct( translator, m );
-    }
-
-    @Override
-    public String construct( Object... $nameValues ) {
-        return construct( Translator.DEFAULT_TRANSLATOR, $nameValues );
-    }
-
-    @Override
-    public String construct( Translator translator, Object... $nameValues ) {
-        if( $nameValues.length == 1 && $nameValues[ 0 ] instanceof Tokens) {
-            return construct( translator, (Tokens)$nameValues[ 0 ] );
-        }
-        Map<String, Object> paramMap = new HashMap<>();
-        if( $nameValues.length % 2 != 0 ) {
-            throw new DraftException( "expected even number of nameValues "
-                    + $nameValues.length + " " + $nameValues[ 0 ] );
-        }
-        for( int i = 0; i < $nameValues.length; i += 2 ) {
-            paramMap.put( $nameValues[ i ].toString(), $nameValues[ i + 1 ] );
-        }
-        return construct( translator, paramMap );
-    }
-
-    @Override
-    public String construct( Map<String, Object> $nameValues ) {
-        return construct( Translator.DEFAULT_TRANSLATOR, $nameValues );
     }
 
     @Override
