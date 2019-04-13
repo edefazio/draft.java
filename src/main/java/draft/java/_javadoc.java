@@ -11,7 +11,7 @@ import java.util.Objects;
  * @author Eric
  */
 public final class _javadoc
-        implements _model {
+    implements _model {
 
     public static _javadoc of( NodeWithJavadoc jdnode ) {
         return new _javadoc( jdnode );
@@ -55,7 +55,7 @@ public final class _javadoc
         if( astJavadocedNode.getJavadocComment().isPresent() ) {
             return astJavadocedNode.getJavadocComment().get().toString();
         }
-        return null;
+        return "";
     }
 
     @Override
