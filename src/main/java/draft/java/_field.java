@@ -237,14 +237,12 @@ public final class _field
         return astVar.getNameAsString();
     }
 
-    
     @Override
     public boolean hasJavadoc() {
         if( getFieldDeclaration() != null ){
             return getFieldDeclaration().getJavadocComment().isPresent();
         }
-        return false;
-        
+        return false;        
     }
 
     @Override
