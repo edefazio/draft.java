@@ -106,8 +106,9 @@ public final class Stencil implements Template<String>{
      * A matchAll Stencil (its ONLY a variable, with no fixed text
      */ 
     public boolean isMatchAll(){
-        return this.textBlanks.getFixedText() == null || 
-            this.textBlanks.getFixedText().length() == 0;
+        return this.$Names.size() == 1 && 
+                this.textBlanks.getFixedText() == null || 
+                this.textBlanks.getFixedText().length() == 0;
     }
     
     /**
