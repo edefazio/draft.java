@@ -181,16 +181,13 @@ public class Tokens implements Map<String,Object>{
      * @return true if we can merge the tokens without conflict, false if there is a conflict
      */
     public boolean isConsistent( Tokens t ){
-        Set<String> tk = t.keySet();
-        tk.retainAll(this.keySet());
-        final AtomicBoolean ab = new AtomicBoolean(true);
-        //for intersection of keys, verify no
-        tk.forEach( e -> {
-            if( t.get(e).equals(this.kvMap.get(e) ) ){
-                ab.set(false);
-            }
-        });
-        return ab.get();
+        Optional<String> unmatchedKey = 
+                t.kvMap.keySet().stream().filter( k-> containsKey(k) && (!t.get(k).equals(get(k)) )).findFirst();
+        if( unmatchedKey.isPresent() ){
+            System.out.println( "Unmatched key \""+ unmatchedKey.get()+"\" values : \""+ t.get(unmatchedKey.get())+ "\"  \""+ get(unmatchedKey.get())+"\""  );
+            return false;
+        }
+        return true;        
     }
 
     public boolean is( Tokens tks ){
