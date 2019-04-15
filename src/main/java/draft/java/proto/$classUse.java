@@ -140,6 +140,10 @@ public class $classUse {
         return astRootNode;
     }
 
+    public _type replaceIn(Class clazz, String replacement){
+        return replaceIn( _type.of(clazz), replacement);
+    }
+    
     public <N extends _model._node> N replaceIn(N _n, String replacement) {
         if( _n instanceof _type && ((_type)_n).isTopClass()){
             replaceIn( ((_type)_n).findCompilationUnit(), replacement);
@@ -163,5 +167,9 @@ public class $classUse {
         }
         replaceIn(_n.ast(), replacement);
         return _n;
+    }
+    
+    public _type replaceIn(Class clazz, Node replacement){
+        return replaceIn(_type.of(clazz), replacement);
     }
 }

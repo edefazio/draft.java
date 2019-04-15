@@ -18,6 +18,25 @@ import junit.framework.TestCase;
  */
 public class SvarTest extends TestCase {
     
+    public void testVarOrField(){
+        class Holder{
+            int x,y,z;
+            
+            public void m(){
+                int u = 100;
+                System.out.println(u + 3);
+            }
+        }
+        assertEquals( 4, $var.list(Holder.class).size() );
+        
+        //
+        assertEquals( 1, $var.list(Holder.class, (v)-> v.getInitializer().isPresent()).size() );
+        assertEquals( 4, $var.list(Holder.class, "int $name$").size() );
+        assertEquals( 4, $var.of(int.class).listIn(Holder.class).size() );
+        
+        //assertNotNull($var.first(Holder.class, "int $name$"));
+    }
+    
     public void testVar(){
         $var $anyInt = $var.of("int $name$");
         $var $anyString = $var.of("String $name$");

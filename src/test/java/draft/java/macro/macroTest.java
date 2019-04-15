@@ -79,6 +79,7 @@ public class macroTest extends TestCase {
         }
         _class _c = _class.of(E.class);
         assertNotNull( _c.getMethod("equals") );
+        System.out.println( "EEEEEEEEEEEEEEEEEEEEEEEEE " + _c.getMethod("equals"));
         assertEquals(1, _autoEquals.Macro.$primitive.selectListIn(_c).size());  //int a;
         assertEquals(1, _autoEquals.Macro.$float.selectListIn(_c).size());      //float f
         assertEquals(1, _autoEquals.Macro.$double.selectListIn(_c).size());     // double d

@@ -120,7 +120,7 @@ public @interface _autoEquals {
                         }
                     }
                 });
-
+                System.out.println(">>>>> THE BODY IS " + body );
                 ts.put("$BODY", body);
                 _c.method( $equals.construct(ts) );
             }

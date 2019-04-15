@@ -5,7 +5,6 @@
  */
 package draft.java.proto;
 
-import draft.java.Ast;
 import junit.framework.TestCase;
 
 /**
@@ -14,14 +13,15 @@ import junit.framework.TestCase;
  */
 public class SfieldTest extends TestCase {
     public void testSimple(){
-        $field $f = $field.of("public int z=100;");
-        assertTrue( $f.matches(Ast.field("public int z = 100;")) );
-        assertFalse( $f.matches(Ast.field("public int z = 5;")) );
+        $field $fi = $field.of("public int z=100;");
+        assertTrue( $fi.matches("public int z = 100;") );
+        assertFalse( $fi.matches("public int z = 5;") );
         
-        $f.$("100", "value");
-        System.out.println( $f );
-        assertTrue( $f.matches(Ast.field("public int z = 100;")) );
-        assertTrue( $f.matches(Ast.field("public int z = 5;")) );
+        $fi.$init();
+        //System.out.println( $fi );
+        assertTrue( $fi.matches("public int z = 100;") );
+        assertTrue( $fi.matches("public int z = 5;") );
+        
         
         
     }

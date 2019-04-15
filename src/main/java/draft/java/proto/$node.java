@@ -28,6 +28,7 @@ public class $node implements $proto<Node> {
     public static $node of( String name ){
         return new $node( name );
     }
+    
     public Stencil pattern;
     
     public Predicate<Node> constraint = t -> true;
@@ -45,6 +46,17 @@ public class $node implements $proto<Node> {
         this.constraint = constraint;
         return this;
     }
+    
+    /**
+     * ADDS an additional matching constraint to the prototype
+     * @param constraint a constraint to be added
+     * @return the modified prototype
+     */
+    public $node addConstraint( Predicate<Node>constraint ){
+        this.constraint = this.constraint.and(constraint);
+        return this;
+    }
+    
     
     public $node $(String target, String $Name) {
         this.pattern = this.pattern.$(target, $Name);

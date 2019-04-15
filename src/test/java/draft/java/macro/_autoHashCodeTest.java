@@ -1,5 +1,6 @@
 package draft.java.macro;
 
+import com.github.javaparser.ast.stmt.EmptyStmt;
 import draft.java.Expr;
 import draft.java.Stmt;
 import draft.java._class;
@@ -38,7 +39,11 @@ public class _autoHashCodeTest extends TestCase {
 
     public void test$HashCode(){
         //test the "outer" HashCode template
-        assertEquals( 3, _autoHashCode.$HASHCODE.fill(1, 2).getBody().getStatements().size() );
+        _method _m = _autoHashCode.$HASHCODE.construct("seed",1,"prime",2);
+        System.out.println( _m );
+        _m.ast().walk(EmptyStmt.class, es-> es.remove() );
+        System.out.println( _m );
+        assertEquals( 3, _autoHashCode.$HASHCODE.construct("seed",1,"prime",2).getBody().getStatements().size() );
         assertEquals( 4, _autoHashCode.$HASHCODE.construct("seed", 1,"prime", 2, "callSuperHashCode", true, "body", false).getBody().getStatements().size() );
         assertEquals( 5, _autoHashCode.$HASHCODE.construct("seed", 1,"prime", 2, "callSuperHashCode", true, "body", Stmt.of("System.out.println(1);")).getBody().getStatements().size() );
     }

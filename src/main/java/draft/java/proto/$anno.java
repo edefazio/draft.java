@@ -587,10 +587,10 @@ public final class $anno
     /** An additional Match constraint (By default always true) */
     public Predicate<_anno> constraint = a-> true;
     
-    public Stencil annoStencil;
+    public Stencil pattern;
     
     private $anno( String stencil) {
-        this.annoStencil = Stencil.of(stencil );
+        this.pattern = Stencil.of(stencil );
     }
 
     /**
@@ -600,6 +600,17 @@ public final class $anno
      */
     public $anno constraint( Predicate<_anno> constraint ){
         this.constraint = constraint;
+        return this;
+    }
+    
+    
+    /**
+     * ADDS an additional matching constraint to the prototype
+     * @param constraint a constraint to be added
+     * @return the modified prototype
+     */
+    public $anno addConstraint( Predicate<_anno>constraint ){
+        this.constraint = this.constraint.and(constraint);
         return this;
     }
     
@@ -638,7 +649,7 @@ public final class $anno
      */
     public $args deconstruct(_anno _a ){
         if( this.constraint.test(_a) ){
-            Tokens r = annoStencil.deconstruct( _a.toString() ); 
+            Tokens r = pattern.deconstruct( _a.toString() ); 
             if( r != null){
                 return new $args(r);
             }            
@@ -658,17 +669,17 @@ public final class $anno
 
     @Override
     public String toString() {
-        return "($anno) : \"" + this.annoStencil + "\"";
+        return "($anno) : \"" + this.pattern + "\"";
     }
 
     @Override
     public _anno construct(Translator translator, Map<String, Object> keyValues) {
-        return _anno.of(annoStencil.construct(translator, keyValues));
+        return _anno.of(pattern.construct(translator, keyValues));
     }
 
     @Override
     public $anno $(String target, String $Name) {
-        this.annoStencil = this.annoStencil.$(target, $Name);        
+        this.pattern = this.pattern.$(target, $Name);        
         return this;
     }
 
@@ -713,18 +724,18 @@ public final class $anno
      * @return 
      */
     public $anno assign$( Translator translator, Tokens kvs ) {
-        this.annoStencil = this.annoStencil.assign$(translator,kvs);          
+        this.pattern = this.pattern.assign$(translator,kvs);          
         return this;
     }
 
     @Override
     public List<String> list$() {
-        return this.annoStencil.list$();
+        return this.pattern.list$();
     }
 
     @Override
     public List<String> list$Normalized() {
-        return this.annoStencil.list$Normalized();
+        return this.pattern.list$Normalized();
     }
 
     /**
@@ -733,7 +744,13 @@ public final class $anno
      * @return 
      */
     public Select select(_anno _a){
-        return select( _a.ast() );
+        if( this.constraint.test(_a) ){
+            Tokens r = pattern.deconstruct( _a.toString() ); 
+            if( r != null){
+                return new Select( _a, r );
+            }            
+        }
+        return null;        
     }
 
     /**
@@ -993,6 +1010,15 @@ public final class $anno
         public final AnnotationExpr astAnno;
         public final $args args;
 
+        public Select ( _anno _a, Tokens tokens){
+            this( _a, $args.of(tokens));
+        }
+        
+        public Select ( _anno _a, $args tokens){
+            this.astAnno = _a.ast();
+            args = tokens;
+        }
+        
         public Select( AnnotationExpr expression, $args tokens){
             this.astAnno = expression;
             this.args = tokens; //$args.of( tokens);

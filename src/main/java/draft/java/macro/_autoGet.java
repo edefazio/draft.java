@@ -29,7 +29,7 @@ public @interface _autoGet {
             if (t instanceof _method._hasMethods) {
                 List<_field> _fs = t.listFields(_f -> !((_field)_f).isStatic());
                 _fs.forEach(f ->
-                        ((_method._hasMethods) t).method($GET.fill(f.getType(), f.getName() ))
+                        ((_method._hasMethods) t).method($GET.construct("type", f.getType(), "name", f.getName() ))
                 );
             }
             return t;

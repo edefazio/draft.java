@@ -4,20 +4,24 @@ import com.github.javaparser.ast.Node;
 import com.github.javaparser.ast.body.MethodDeclaration;
 import com.github.javaparser.ast.expr.*;
 import com.github.javaparser.ast.stmt.*;
+import com.github.javaparser.printer.PrettyPrinterConfiguration;
 import draft.*;
 import draft.java.*;
+import draft.java._anno._annos;
 import draft.java._model._node;
+import draft.java._parameter._parameters;
+import draft.java._typeParameter._typeParameters;
 import draft.java.macro._macro;
 import draft.java.macro._remove;
 
 import java.util.*;
-import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.*;
+import java.util.stream.Collectors;
 
 /**
  * Template for a Java {@link _method}
  */
-public final class $method
+public class $method
     implements Template<_method>, $proto<_method> {
        
     /**
@@ -318,30 +322,84 @@ public final class $method
      * @return 
      */
     public static $method of( String proto, Predicate<_method> constraint ){
-        return new $method(_method.of(proto)).constraint(constraint);
+        return new $method(_method.of(proto) ).constraint(constraint);
     }
 
     public Predicate<_method> constraint = t -> true;
-    public Stencil signatureStencil;
-    public $snip $body;
-
+    
+    public $component<_javadoc> javadoc = new $component( "$javadoc$", t->true);
+    public $component<_annos> annos = new $component( "$annos$", t->true);    
+    public $component<_modifiers> modifiers = new $component( "$modifiers$", t->true);
+    public $component<_typeRef> type = new $component( "$type$", t->true);
+    public $component<_typeParameters> typeParameters = new $component( "$typeParameters$", t->true);
+    public $component<String> name = new $component( "$name$", t->true);    
+    public $component<_parameters> parameters = new $component( "$parameters$", t-> true);
+    public $component<_throws> thrown = new $component( "$throws$", t-> true);
+    public $component<_body> body = new $component("$body$", t->true);
+    
+    private $method( _method _p ){
+        this( _p, t-> true );
+    }
+    
     /**
      * 
      * @param _proto 
      */
-    public $method( _method _proto ){
-        if( _proto.hasBody() ) {
-            this.$body = $snip.of(_proto.getBody());
-            _method _cp = _proto.copy();
-            this.signatureStencil = Stencil.of( _cp.setBody("").toString() );
-        } else {
-            this.signatureStencil = Stencil.of(_proto.toString() );
-            this.$body = null; //no BODY
+    private $method( _method _m , Predicate<_method> constraint){
+        
+        if( _m.hasJavadoc() ){
+            //System.out.println( "The JavaDoc is "+ _m.getJavadoc() );
+            javadoc.stencil(_m.getJavadoc().toString() );
+            //javadoc.$form = Stencil.of(_p.getJavadoc().toString());
         }
+        
+        if( _m.hasAnnos() ){
+            annos.stencil(_m.getAnnos() );
+            //annos.$form = Stencil.of(_p.getAnnos().toString() );
+        }
+        if( !_m.getModifiers().isEmpty() ){
+            final _modifiers ms = _m.getModifiers();
+            modifiers = new $component(
+                ms.toString(), 
+                (m)-> ms.equals(m));
+        }
+        type = new $component<>(_m.getType().toString());
+        if( !_m.hasTypeParameters() ){
+            final _typeParameters etps = _m.getTypeParameters();
+            //HMMMMM matvhing orfer shouldnt matter
+            typeParameters = new $component(
+                "$typeParameters$", 
+                (tps)-> tps.equals(etps) );
+        }
+        name = new $component(_m.getName());
+        if( _m.hasParameters() ){
+            parameters = new $component( _m.getParameters().toString() );
+        }        
+        if( _m.hasThrows() ){
+            final _throws ths = _m.getThrows();
+            thrown = new $component( "$throws$", (t)-> t.equals(ths) );
+        }
+        if( _m.hasBody() ){            
+            String bdy = _m.getBody().toString(new PrettyPrinterConfiguration()
+                .setPrintComments(false).setPrintJavadoc(false) );
+            //System.out.println( "the Body is "+ bdy);
+            body = new $component(bdy.trim());            
+        }
+        this.constraint = constraint;
     }
-
+    
     /**
-     * 
+     * ADDS an additional matching constraint to the prototype
+     * @param constraint a constraint to be added
+     * @return the modified prototype
+     */
+    public $method addConstraint( Predicate<_method>constraint ){
+        this.constraint = this.constraint.and(constraint);
+        return this;
+    }
+    
+    /**
+     * SETS/ OVERRIDES the matching constraint
      * @param constraint
      * @return 
      */
@@ -353,73 +411,169 @@ public final class $method
     @Override
     public List<String> list$Normalized(){
         List<String>normalized$ = new ArrayList<>();
-        normalized$.addAll( this.signatureStencil.list$Normalized() );
-        if( this.$body != null){
-            this.$body.list$Normalized().forEach( l-> {
-                if (!normalized$.contains(l)) {
-                    normalized$.add(l);
-                }
-            });
-        }
-        return normalized$;
+        normalized$.addAll( javadoc.$form.list$Normalized() );
+        normalized$.addAll( annos.$form.list$Normalized() );
+        normalized$.addAll( modifiers.$form.list$Normalized() );
+        normalized$.addAll( typeParameters.$form.list$Normalized() );
+        normalized$.addAll( type.$form.list$Normalized() );        
+        normalized$.addAll( name.$form.list$Normalized() );
+        normalized$.addAll( parameters.$form.list$Normalized() );
+        normalized$.addAll( thrown.$form.list$Normalized() );
+        normalized$.addAll( body.$form.list$Normalized() );
+        return normalized$.stream().distinct().collect(Collectors.toList());        
     }
 
     @Override
     public List<String> list$(){
-        List<String>normalized$ = new ArrayList<>();
-        normalized$.addAll( this.signatureStencil.list$Normalized() );
-        normalized$.addAll( this.$body.list$Normalized() );
-        return normalized$;
-    }
-
-    @Override
-    public _method construct(Translator translator, Map<String, Object> keyValues) {
-        //_1_build the signature
-        _method _m = _method.of(this.signatureStencil.construct(translator, keyValues ));
-
-        if( this.$body != null) {
-            //_1_build the BODY
-            List<Statement> sts = $body.construct(translator, keyValues);
-            sts.forEach( s -> _m.add(s) );
-        }
-        return _m;
-    }
-
-    /*
-    @Override
-    public _method construct(Map<String, Object> keyValues) {
-        return $method.this.construct( Translator.DEFAULT_TRANSLATOR, keyValues );
-    }
-    @Override
-    public _method construct(Object... keyValues) {
-        return $method.this.construct( Translator.DEFAULT_TRANSLATOR, keyValues );
-    }
-
-    @Override
-    public _method construct(Translator translator, Object... keyValues) {
-        return $method.this.construct(translator, Tokens.of(keyValues));
-    }
-
-    @Override
-    public _method fill(Object...values){
-        return fill( Translator.DEFAULT_TRANSLATOR, values );
-    }
-
-    @Override
-    public _method fill(Translator t, Object...values){
-        //List<Statement>sts = new ArrayList<>();
-        List<String> keys = list$Normalized();
-        if( values.length < keys.size() ){
-            throw new DraftException("not enough values("+values.length+") to fill ("+keys.size()+") variables "+ keys);
-        }
-        Map<String,Object> kvs = new HashMap<>();
-        for(int i=0;i<values.length;i++){
-            kvs.put( keys.get(i), values[i]);
-        }
-        return $method.this.construct( t, kvs );
+        List<String>all$ = new ArrayList<>();
+        all$.addAll( javadoc.$form.list$() );
+        all$.addAll( annos.$form.list$() );
+        all$.addAll( modifiers.$form.list$() );
+        all$.addAll( typeParameters.$form.list$() );
+        all$.addAll( type.$form.list$() );        
+        all$.addAll( name.$form.list$() );
+        all$.addAll( parameters.$form.list$() );
+        all$.addAll( thrown.$form.list$() );
+        all$.addAll( body.$form.list$() );        
+        return all$;
     }
     
-    */
+    public $method $name(){
+        this.name.stencil("$name$");
+        return this;
+    }
+    
+    public $method $type(){
+        this.type.stencil("$type$");
+        return this;
+    }
+    
+    public $method $typeParameters(){
+        this.typeParameters.stencil("$typeParameters$");
+        return this;
+    }
+
+    public $method $modifiers(){
+        this.modifiers.stencil("$modifiers$");
+        return this;
+    }
+    
+    public $method $annos(){
+        this.annos.stencil("$annos$");
+        return this;
+    }
+    
+    public $method $javadoc(){
+        this.javadoc.stencil("$javadoc$");
+        return this;
+    }
+    
+    public $method $javadoc( String... form ){
+        this.javadoc.stencil(form);
+        return this;
+    }
+    
+    public $method noBody(){
+        body.$form = Stencil.of( ";" );
+        return this;
+    }
+    
+    public $method emptyBody(){
+        body.$form = Stencil.of( "{}" );
+        return this;
+    }
+    
+    @Override
+    public _method fill(Translator translator, Object... values) {
+        List<String> nom = this.list$Normalized();
+        nom.remove( "javadoc");
+        nom.remove( "annos");
+        nom.remove( "modifiers");
+        nom.remove( "typeParameters");
+        nom.remove( "parameters");
+        nom.remove( "throws");
+        nom.remove("body");
+        if( nom.size() != values.length ){
+            throw new DraftException ("FILL eXPECTED ("+nom.size()+") values "+ nom+" got ("+values.length+")");
+        }
+        Tokens ts = new Tokens();
+        for(int i=0;i<nom.size();i++){
+            ts.put( nom.get(i), values[i]);
+        }
+        return construct(translator, ts);
+        
+        /*
+        if( values.length != 2 ){
+            throw new DraftException("expected type and name");
+        }
+        return construct( translator, Tokens.of("type", values[0], "name", values[1] ) );        
+        */
+    }
+    
+    @Override
+    public _method construct(Translator translator, Map<String, Object> keyValues) {
+        
+        //the base values (so we dont get Nulls for base values
+        Tokens base = Tokens.of(
+                "javadoc", "", 
+                "annos", "", 
+                "modifiers", "", 
+                "typeParameters", "", 
+                "parameters", "()", 
+                "throws", "", 
+                "body", "");
+        
+        //System.out.println( "KEYVALUES "+ keyValues );
+        base.putAll(keyValues);
+        
+        StringBuilder sb = new StringBuilder();   
+        //System.out.println( "&&&& JD "+ javadoc.$form +"<<" );
+        sb.append( javadoc.compose(translator, base ));        
+        sb.append(System.lineSeparator());
+        //System.out.println( "JAVADOC \""+ sb.toString()+"\"");
+        sb.append( annos.compose(translator, base));
+        sb.append(System.lineSeparator());
+        //System.out.println( "JAVADOC ANNOS \""+ sb.toString()+"\"");
+        sb.append( modifiers.compose(translator, base));
+        sb.append(" ");
+        sb.append( typeParameters.compose(translator, base));
+        sb.append(" ");
+        sb.append( type.compose(translator, base));
+        sb.append(" ");
+        sb.append( name.compose(translator, base));
+        sb.append(" ");
+        sb.append( parameters.compose(translator, base));
+        sb.append(" ");
+        sb.append( thrown.compose(translator, base));
+        sb.append(System.lineSeparator());
+        /** 
+         * with the body, I need to fo some more processing
+         * I need to process the labeled Statements like snips
+         */
+        String str = body.compose(translator, base); 
+        try{
+            //I might need another specialization
+            //BlockStmt astBs = Ast.blockStmt(str);
+            $snip $s = $snip.of(str);
+            List<Statement> sts = $s.construct(translator, base );
+            //System.out.println( specialBody );
+            //BlockStmt resolved = new BlockStmt();
+            _method _mb  = _method.of(sb.toString()+"{}");
+            
+            sts.forEach(s -> {
+                if(! (s instanceof EmptyStmt)){ 
+                    _mb.add(s);
+                } 
+            });            
+            //it's possible we have empty statements, lets remove all of them
+            Walk.in(_mb, EmptyStmt.class, es-> es.remove() );            
+            return _mb;            
+        } catch(Exception e){
+            sb.append( str );
+            return _method.of(sb.toString());     
+        }        
+        //return _method.of(sb.toString());
+    }
     
     /**
      * 
@@ -427,7 +581,7 @@ public final class $method
      * @return 
      */
     public _method construct(_node _n ){
-        return $method.this.construct(_n.deconstruct() );
+        return construct(_n.deconstruct() );
     }
 
     public static final BlockStmt EMPTY = Stmt.block("{}");
@@ -438,7 +592,24 @@ public final class $method
      * @return 
      */
     public $args deconstruct( _method _m ){
-        return deconstruct(_m.ast() );
+        if( !this.constraint.test(_m)){
+            System.out.println("FAILED CONSTRAINT");
+            return null;
+        }
+        Tokens all = new Tokens();
+        all = javadoc.decomposeTo(_m.getJavadoc(), all);
+        all = annos.decomposeTo(_m.getAnnos(), all);
+        all = modifiers.decomposeTo(_m.getModifiers(), all);
+        all = typeParameters.decomposeTo(_m.getTypeParameters(), all);
+        all = type.decomposeTo(_m.getType(), all);
+        all = name.decomposeTo(_m.getName(), all);
+        all = parameters.decomposeTo(_m.getParameters(), all);
+        all = thrown.decomposeTo(_m.getThrows(), all);
+        all = body.decomposeTo(_m.getBody(), all);
+        if( all != null ){
+            return $args.of(all);
+        }
+        return null;
     }
     
     /**
@@ -447,52 +618,7 @@ public final class $method
      * @return 
      */
     public $args deconstruct( MethodDeclaration astTarget ){
-        if( !this.constraint.test(_method.of(astTarget))){
-            return null;
-        }
-        if( astTarget.getBody().isPresent()){
-            if( this.$body == null) {
-                return null; //the target has a BODY, the template doesnt
-            }
-            Tokens ts = null;
-            if( astTarget.getBody().get().isEmpty() ){
-                ts = new Tokens();
-            } else {
-                //we check this first because we dont want to clone unless we need to
-                ts = this.$body.deconstruct(astTarget.getBody().get().getStatement(0));
-            }
-
-            if( ts != null ){
-                final Tokens toks = ts;
-                
-                //we have to clone to check signature equality, also removeIn JAVADOC and BODY
-                String signature = astTarget.clone()
-                        .setBody(EMPTY) //make the clones' BODY empty
-                        .removeComment() //removeIn any comments/JAVADOC from the clone
-                        .toString();
-                Tokens tss = this.signatureStencil.deconstruct( signature );
-                if( tss == null ){
-                    return null;
-                }
-                AtomicBoolean isConsistent = new AtomicBoolean(true);
-                tss.forEach( (String k, Object v)->{
-                    Object val = toks.get(k);
-                    if( val != null && !val.equals(v) ){
-                        isConsistent.set(false);
-                    }
-                });
-                if( isConsistent.get() ){
-                    ts.putAll(tss);
-                    return $args.of(ts);
-                }
-            }
-            return null; //the BODY or signature isnt the same or BODY / signature tokens were inconsistent
-        }
-        if( this.$body != null ) {
-            return null; //the target doesnt have a BODY , the template does
-        }
-        //just check the signature, (after removeing the JAVADOC) since there is no BODY
-        return $args.of(this.signatureStencil.deconstruct( astTarget.clone().removeComment().toString() ));
+        return deconstruct( _method.of(astTarget ) );        
     }
 
     /**
@@ -536,16 +662,31 @@ public final class $method
      * @return 
      */
     public $method assign$( Translator translator, Tokens kvs ) {
-        this.$body = this.$body.assign$(translator,kvs);
-        this.signatureStencil = this.signatureStencil.assign$(translator,kvs);
+        javadoc.$form = javadoc.$form.assign$(translator, kvs);
+        annos.$form = annos.$form.assign$(translator, kvs);
+        modifiers.$form = modifiers.$form.assign$(translator, kvs);
+        typeParameters.$form = typeParameters.$form.assign$(translator, kvs);
+        type.$form = type.$form.assign$(translator, kvs);
+        name.$form = name.$form.assign$(translator, kvs);
+        parameters.$form = parameters.$form.assign$(translator, kvs);
+        thrown.$form = thrown.$form.assign$(translator, kvs);
+        body.$form = body.$form.assign$(translator, kvs);
+        
         return this;
     }
 
     /** Post - parameterize, create a parameter from the target string named $Name#$*/
     @Override
     public $method $(String target, String $Name) {
-        this.$body = this.$body.$(target, $Name);
-        this.signatureStencil = this.signatureStencil.$(target, $Name);
+        javadoc.$form = javadoc.$form.$(target, $Name);
+        annos.$form = annos.$form.$(target, $Name);
+        modifiers.$form = modifiers.$form.$(target, $Name);
+        typeParameters.$form = typeParameters.$form.$(target, $Name);
+        type.$form = type.$form.$(target, $Name);
+        name.$form = name.$form.$(target, $Name);
+        parameters.$form = parameters.$form.$(target, $Name);
+        thrown.$form = thrown.$form.$(target, $Name);
+        body.$form = body.$form.$(target, $Name);        
         return this;
     }
 
@@ -566,7 +707,7 @@ public final class $method
      * @return 
      */
     public boolean matches( _method _m ){
-        return deconstruct( _m.ast() ) != null;
+        return deconstruct( _m ) != null;
     }
 
     /**
@@ -584,7 +725,12 @@ public final class $method
      * @return 
      */
     public Select select( _method _m){
-        return select( _m.ast());
+        $args ts = deconstruct( _m );
+        if( ts != null ){
+            return new Select( _m, ts );
+        }
+        return null;
+        //return select( _m );
     }
 
     /**
@@ -625,7 +771,6 @@ public final class $method
         }
         return null;
     }
-    
     
     /**
      * Returns the first _method that matches the pattern and constraint
@@ -677,6 +822,13 @@ public final class $method
         return sts;
     }
 
+    /**
+     * 
+     * @param <N>
+     * @param astNode
+     * @param selectedActionFn
+     * @return 
+     */
     public <N extends Node> N forSelectedIn(N astNode, Consumer<Select> selectedActionFn ){
         astNode.walk( MethodDeclaration.class, m-> {
             Select s = select( m );
@@ -686,6 +838,14 @@ public final class $method
         });
         return astNode;
     }
+    
+    /**
+     * 
+     * @param <N>
+     * @param _n
+     * @param selectedActionFn
+     * @return 
+     */
     public <N extends _node> N forSelectedIn(N _n, Consumer<Select> selectedActionFn ){
         Walk.in(_n, _method.class, m ->{
             Select s = select( m );
@@ -705,8 +865,8 @@ public final class $method
      */
     public <N extends _node> N replaceIn( N _n, $method $replace ){
         return forSelectedIn(_n, s -> {
-            _method repl = $replace.construct(s.args);
-            s.astMethod.replace(repl.ast());
+            _method repl = $replace.construct(Translator.DEFAULT_TRANSLATOR, s.args);
+            s._m.ast().replace(repl.ast());
         });
     }
 
@@ -802,7 +962,6 @@ public final class $method
         } );
         return typesList;
     }
-    
 
     /**
      * A Matched Selection result returned from matching a prototype $method
@@ -812,11 +971,16 @@ public final class $method
             $proto.selectedAstNode<MethodDeclaration>, 
             $proto.selected_model<_method> {
         
-        public final MethodDeclaration astMethod;
+        public final _method _m;
         public final $args args;
 
+        public Select( _method _m, $args tokens ){
+            this._m = _m;
+            this.args = tokens;
+        }
+                
         public Select( MethodDeclaration astMethod, $args tokens ){
-            this.astMethod = astMethod;
+            this._m = _method.of(astMethod);
             this.args = tokens;
         }
 
@@ -828,19 +992,19 @@ public final class $method
         @Override
         public String toString(){
             return "$method.Select{"+ System.lineSeparator()+
-                Text.indent(astMethod.toString() )+ System.lineSeparator()+
+                Text.indent(_m.toString() )+ System.lineSeparator()+
                 Text.indent("$args : " + args) + System.lineSeparator()+
                 "}";
         }
 
         @Override
         public MethodDeclaration ast() {
-            return astMethod;
+            return _m.ast();
         }
 
         @Override
         public _method model() {
-            return _method.of(astMethod);
+            return _m;
         }
     }
 }

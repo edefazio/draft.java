@@ -24,15 +24,15 @@ import java.util.function.Predicate;
  *
  */
 public final class $constructor
-        implements Template<_constructor>, $proto<_constructor> {
+    implements Template<_constructor>, $proto<_constructor> {
 
-    public Stencil javadocStencil;
+    public Stencil javadocPattern;
 
     /** Additional matching constraint on the constructor */
     public Predicate<_constructor> constraint = t -> true;
     
     /** stencil for the signature of the constructor */
-    public Stencil signatureStencil;
+    public Stencil signaturePattern;
     
     /** stencil for the body of the constructor */
     public $snip $body;
@@ -50,16 +50,16 @@ public final class $constructor
         return new $constructor( _c, constraint);
     }
 
-    public static $constructor of(String...code ){
-        return new $constructor(_constructor.of(code), t-> true);
+    public static $constructor of(String...pattern ){
+        return new $constructor(_constructor.of(pattern), t-> true);
     }
 
-    public static $constructor of( String protoCtor ){
-        return of(new String[]{protoCtor});
+    public static $constructor of( String pattern ){
+        return of(new String[]{pattern});
     }
 
-    public static $constructor of( String protoCtor, Predicate<_constructor> constraint ){
-        return new $constructor( _constructor.of(protoCtor), constraint );
+    public static $constructor of( String pattern, Predicate<_constructor> constraint ){
+        return new $constructor( _constructor.of(pattern), constraint );
     }
     
     public static $constructor of( Predicate<_constructor> constraint ){
@@ -101,11 +101,11 @@ public final class $constructor
             this.$body = $snip.of(_protoCtor.getBody());
             _constructor _cp = _protoCtor.copy();
             if(_cp.ast().getJavadocComment().isPresent() ){
-                this.javadocStencil = Stencil.of(Ast.getContent( _cp.ast().getJavadocComment().get() ));
+                this.javadocPattern = Stencil.of(Ast.getContent( _cp.ast().getJavadocComment().get() ));
             }
-            this.signatureStencil = Stencil.of( _cp.setBody("").toString(Ast.PRINT_NO_COMMENTS) );
+            this.signaturePattern = Stencil.of( _cp.setBody("").toString(Ast.PRINT_NO_COMMENTS) );
         } else {
-            this.signatureStencil = Stencil.of(_protoCtor.toString() );
+            this.signaturePattern = Stencil.of(_protoCtor.toString() );
             this.$body = null; //no BODY
         }
         if(constraint != null ){
@@ -123,13 +123,24 @@ public final class $constructor
         return this;
     }
     
+    
+    /**
+     * ADDS an additional matching constraint to the prototype
+     * @param constraint a constraint to be added
+     * @return the modified prototype
+     */
+    public $constructor addConstraint( Predicate<_constructor>constraint ){
+        this.constraint = this.constraint.and(constraint);
+        return this;
+    }
+    
     @Override
     public List<String> list$Normalized(){
         List<String>normalized$ = new ArrayList<>();
-        if( this.javadocStencil != null ){
-            normalized$.addAll(Stencil.of(this.javadocStencil, this.signatureStencil).list$Normalized());
+        if( this.javadocPattern != null ){
+            normalized$.addAll(Stencil.of(this.javadocPattern, this.signaturePattern).list$Normalized());
         } else {
-            normalized$.addAll(this.signatureStencil.list$Normalized());
+            normalized$.addAll(this.signaturePattern.list$Normalized());
         }
         if( this.$body != null){
             this.$body.list$Normalized().forEach( l-> {
@@ -144,10 +155,10 @@ public final class $constructor
     @Override
     public List<String> list$(){
         List<String>normalized$ = new ArrayList<>();
-        if( this.javadocStencil != null) {
-            normalized$.addAll(this.javadocStencil.list$Normalized());
+        if( this.javadocPattern != null) {
+            normalized$.addAll(this.javadocPattern.list$Normalized());
         }
-        normalized$.addAll( this.signatureStencil.list$Normalized() );
+        normalized$.addAll(this.signaturePattern.list$Normalized() );
         normalized$.addAll( this.$body.list$Normalized() );
         return normalized$;
     }
@@ -193,10 +204,10 @@ public final class $constructor
      * @return 
      */
     public $constructor assign$( Translator translator, Tokens kvs ) {
-        if(this.javadocStencil != null ){
-            this.javadocStencil = this.javadocStencil.assign$(translator,kvs);
+        if(this.javadocPattern != null ){
+            this.javadocPattern = this.javadocPattern.assign$(translator,kvs);
         }
-        this.signatureStencil = this.signatureStencil.assign$(translator,kvs);
+        this.signaturePattern = this.signaturePattern.assign$(translator,kvs);
         this.$body = this.$body.assign$(translator, kvs);
         return this;
     }
@@ -204,26 +215,26 @@ public final class $constructor
     @Override
     public _constructor construct(Translator translator, Map<String, Object> keyValues) {
         //_1_build the signature
-        _constructor _c = _constructor.of(this.signatureStencil.construct(translator, keyValues ));
+        _constructor _c = _constructor.of(this.signaturePattern.construct(translator, keyValues ));
 
         if( this.$body != null) {
             //_1_build the BODY
             List<Statement> sts = $body.construct(translator, keyValues);
             sts.forEach( s -> _c.add( s ) );
         }
-        if( this.javadocStencil != null ){
-            _c.javadoc(this.javadocStencil.construct(translator, keyValues));
+        if( this.javadocPattern != null ){
+            _c.javadoc(this.javadocPattern.construct(translator, keyValues));
         }
         return _c;
     }
 
     @Override
     public $constructor $(String target, String $Name) {
-        if( this.javadocStencil != null ){
-            this.javadocStencil = javadocStencil.$(target, $Name);
+        if( this.javadocPattern != null ){
+            this.javadocPattern = javadocPattern.$(target, $Name);
         }
         this.$body = this.$body.$(target, $Name);
-        this.signatureStencil = this.signatureStencil.$(target, $Name);
+        this.signaturePattern = this.signaturePattern.$(target, $Name);
         return this;
     }
 
@@ -343,12 +354,12 @@ public final class $constructor
     
     @Override
     public String toString(){
-        if( this.javadocStencil != null ){
-            return this.javadocStencil.toString() +System.lineSeparator() 
-                    + this.signatureStencil.toString()+System.lineSeparator() +
+        if( this.javadocPattern != null ){
+            return this.javadocPattern.toString() +System.lineSeparator() 
+                    + this.signaturePattern.toString()+System.lineSeparator() +
                     this.$body.toString();
         }
-        return this.signatureStencil.toString()+System.lineSeparator()+ this.$body.toString();
+        return this.signaturePattern.toString()+System.lineSeparator()+ this.$body.toString();
     }
     
     /**
@@ -384,7 +395,7 @@ public final class $constructor
                     .removeComment() //removeIn any comments/JAVADOC from the clone
                     .toString();
 
-            Tokens tss = this.signatureStencil.deconstruct( signature );
+            Tokens tss = this.signaturePattern.deconstruct( signature );
             if( tss == null ){
                 return null;
             }
@@ -448,7 +459,7 @@ public final class $constructor
         astNode.walk( ConstructorDeclaration.class, c-> {
             Select s = select( c );
             if( s != null ){
-                _constructorActionFn.accept( _constructor.of(s.astCtor) );
+                _constructorActionFn.accept( s._ct );
             }
         });
         return astNode;
@@ -459,7 +470,7 @@ public final class $constructor
         Walk.in(_n, _constructor.class, c-> {
             Select s = select( c );
             if( s != null ){
-                _constructorActionFn.accept( _constructor.of(s.astCtor) );
+                _constructorActionFn.accept( s._ct );
             }
         });
         return _n;
@@ -467,13 +478,13 @@ public final class $constructor
 
     @Override
     public <N extends _node> N removeIn(N _n ){
-        selectListIn(_n).forEach(s -> s.astCtor.remove() );
+        selectListIn(_n).forEach(s -> s._ct.ast().remove() );
         return _n;
     }
 
     @Override
     public <N extends Node> N removeIn(N astNode ){
-        selectListIn(astNode).forEach(s -> s.astCtor.remove() );
+        selectListIn(astNode).forEach(s -> s._ct.ast().remove() );
         return astNode;
     }
 
@@ -521,13 +532,16 @@ public final class $constructor
             $proto.selectedAstNode<ConstructorDeclaration>, 
             $proto.selected_model<_constructor> {
         
-        public final ConstructorDeclaration astCtor;
+        public final _constructor _ct;
         public final $args args;
 
         public Select( ConstructorDeclaration astCtor, $args tokens ){
-            this.astCtor = astCtor;
+            this._ct = _constructor.of(astCtor);
             this.args = tokens;
         }
+        
+        //In select
+        
 
         @Override
         public $args getArgs(){
@@ -537,19 +551,19 @@ public final class $constructor
         @Override
         public String toString(){
             return "$constructor.Select{"+ System.lineSeparator()+
-                    Text.indent(astCtor.toString() )+ System.lineSeparator()+
+                    Text.indent(_ct.toString() )+ System.lineSeparator()+
                     Text.indent("$args : " + args) + System.lineSeparator()+
                     "}";
         }
         
         @Override
         public ConstructorDeclaration ast(){
-            return astCtor;
+            return _ct.ast();
         } 
         
         @Override
         public _constructor model() {
-            return _constructor.of(astCtor);
+            return _ct;
         }
     }
 }

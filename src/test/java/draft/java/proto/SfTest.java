@@ -13,8 +13,8 @@ public class SfTest extends TestCase {
     
      public void testSimple$field(){
         //the field prototype specifies the type and name (only)
-        $f $simpleField = $f.of( _field.of("int i") );
-        $simpleField = $f.of( "int i" );
+        $field $simpleField = $field.of( _field.of("int i") );
+        $simpleField = $field.of( "int i" );
         
         
         //it will match the EXACT field definition
@@ -40,19 +40,19 @@ public class SfTest extends TestCase {
      
     /** build a prototype from just a predicate */
     public void testOfPredicate(){
-        $f $anyVolatile = $f.of( f-> f.isVolatile() );        
+        $field $anyVolatile = $field.of( f-> f.isVolatile() );        
         assertTrue( $anyVolatile.matches( "volatile int v;" ) );
     }
     
     /** Build a $field prototype with only the name */
     public void testOfName(){
-        $f $x = $f.ofName("x");
+        $field $x = $field.ofName("x");
         assertTrue( $x.matches("public static final List<String> x;") );
     }
     
     /** build a $field prototype with only the type */
     public void testAnyFieldOfType(){
-        $f $anyInt = $f.ofType( int.class );
+        $field $anyInt = $field.ofType( int.class );
         
         //it will match any field
         assertTrue( $anyInt.matches("int x"));
@@ -65,7 +65,7 @@ public class SfTest extends TestCase {
     
     /** Build a prototype with a dynamic variable */
     public void testDynamic$field(){
-        $f $typeField = $f.of( _field.of("$type$ i") );
+        $field $typeField = $field.of( _field.of("$type$ i") );
         
         assertTrue($typeField.deconstruct(_field.of("int i"))
             .is("type", int.class) );
@@ -86,13 +86,13 @@ public class SfTest extends TestCase {
     }
     
     public void testTypeGeneric$field(){
-        $f $listType = $f.ofType("List<$elType$>");
+        $field $listType = $field.ofType("List<$elType$>");
         assertTrue( $listType.matches("List<String> f;") );
         assertTrue( $listType.matches("List<Map<Integer,String>> g;") );
         
         assertFalse( $listType.matches("Map<List<Integer>,String> g;") );
         
-        $listType = $f.ofType( _typeRef.of("List<$elType$>"));
+        $listType = $field.ofType( _typeRef.of("List<$elType$>"));
         assertTrue( $listType.matches("List<String> f;") );
         assertTrue( $listType.matches("List<Map<Integer,String>> g;") );
         
@@ -113,7 +113,7 @@ public class SfTest extends TestCase {
      * only the things you want (to list/update/modify)
      */
     public void testBuild$f(){
-        $f $b = $f.any(); //any field
+        $field $b = $field.any(); //any field
         $b.addConstraint(f-> f.hasAnno(Deprecated.class));
         
         assertFalse( $b.matches("int a") ); //expected Deprecated
@@ -159,17 +159,17 @@ public class SfTest extends TestCase {
     
     
     public void testConstruct$F(){
-        _field _f = $f.of("int f").construct();
+        _field _f = $field.of("int f").construct();
         assertTrue( _f.is("int f") );
         
-        _f = $f.ofName("f").construct("type", int.class);
+        _f = $field.ofName("f").construct("type", int.class);
         assertTrue( _f.is("int f") );
         
-        _f = $f.ofType(int.class).construct("name", "f");
+        _f = $field.ofType(int.class).construct("name", "f");
         assertTrue( _f.is("int f") );
         
         
-        $f $full = $f.of("/** javadoc */ @Deprecated public static final int IF = 100;");
+        $field $full = $field.of("/** javadoc */ @Deprecated public static final int IF = 100;");
         
         _f = $full.construct();
         assertTrue( _f.is("/** javadoc */ @Deprecated public static final int IF = 100;") );

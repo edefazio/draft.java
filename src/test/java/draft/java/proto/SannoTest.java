@@ -8,6 +8,22 @@ import junit.framework.TestCase;
 
 public class SannoTest extends TestCase {
  
+    /* COMMENTED OUT UNTIL WE REFACTOR THIS
+    //current implementation of $anno: CRAP
+    // doesnt support these things and should
+    public void testOutOfOrderKeyValues(){
+        $anno $a = $anno.of("@A(a=1,b=2)");
+        assertTrue( $a.matches(_anno.of("@A(b=2,a=1)")) );
+    }
+    
+    public void testParensOrNoParens(){
+        $anno $a = $anno.of("@E");
+        
+        assertTrue($a.matches(_anno.of("@E")));
+        //this doesnt work
+        assertTrue($a.matches(_anno.of("@E()")));
+    }
+    */
     
     public void testAny(){
         _class _c = _class.of("C");

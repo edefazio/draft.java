@@ -336,7 +336,7 @@ public final class $snip implements Template<List<Statement>>, $proto<List<State
         List<Statement>sts = new ArrayList<>();
         $sts.forEach(stmt -> {
             if( stmt.statementClass == LabeledStmt.class &&
-                    stmt.stencil.getTextBlanks().startsWithText()) {
+                    stmt.stmtPattern.getTextBlanks().startsWithText()) {
                     //&&
                     //stmt.stencil.getTextBlanks().getFixedText().startsWith("$") ){
                 /* Dynamic labeled Statements are Labeled Statements like this:
@@ -347,7 +347,7 @@ public final class $snip implements Template<List<Statement>>, $proto<List<State
                  * "$callSuperEquals" if the VALUE associated with $doThis is passed into the input,
                  * and the VALUE of $doThis is NOT NULL or NOT Boolean.FALSE
                  */
-                String sttext = stmt.stencil.getTextBlanks().getFixedText();
+                String sttext = stmt.stmtPattern.getTextBlanks().getFixedText();
                 String name = sttext.substring(0, sttext.indexOf(":") );
                 Object val = tokens.get(name );
                 if( val instanceof BlockStmt ){
@@ -374,7 +374,7 @@ public final class $snip implements Template<List<Statement>>, $proto<List<State
             } else { //it is NOT a dymanically labeled Statement, so just process normally
                 sts.add(stmt.construct(t, tokens));
             }
-        });
+        });       
         return sts;
     }
 

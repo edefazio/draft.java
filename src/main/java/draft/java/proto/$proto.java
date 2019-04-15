@@ -7,10 +7,14 @@ import com.github.javaparser.ast.stmt.Statement;
 import com.github.javaparser.ast.type.Type;
 import draft.DraftException;
 import draft.Stencil;
+import draft.Text;
 import draft.Tokens;
+import draft.Translator;
 import draft.java.Ast;
 import draft.java.Expr;
 import draft.java.Stmt;
+import draft.java._body;
+import draft.java._javadoc;
 
 import draft.java._model;
 import draft.java._model._node;
@@ -112,7 +116,9 @@ public interface $proto<Q> {
     <N extends _node> N forEachIn(N _n, Consumer<Q> _nodeActionFn);
 
     /**
-     *
+     * An extra layer on top of a Tokens that is specifically
+     * for holding value data that COULD be Expressions, Statements and the 
+     * like
      */
     public static class $args implements Map<String, Object> {
 
@@ -175,6 +181,10 @@ public interface $proto<Q> {
             return Stmt.block(obj.toString()).getStatements();
         }
 
+        public boolean isConsistent(Tokens tokens ){
+            return this.tokens.isConsistent(tokens);
+        }
+        
         /**
          * is the clause with the key equal to the Type?
          *
@@ -222,6 +232,28 @@ public interface $proto<Q> {
             return this.equals($args.of(tks));
         }
 
+        public boolean is(String key, Class clazz ){
+            Object o = get(key);
+            if( o != null ){
+                return _typeRef.of( o.toString() ).equals(_typeRef.of(clazz));
+            }
+            return false;            
+        }
+        
+        /**
+         * Is there a argument called "type" that 
+         * @param clazz
+         * @return 
+         */
+        public boolean isType( Class clazz ){
+            return is("type", clazz);
+        }
+        
+        public boolean isName( String name ){
+            return is("name", name);
+        }
+        
+        
         public boolean is(String key, Object expectedValue) {
             //this matches nullExpr or simply not there
             Object o = get(key);
@@ -370,26 +402,97 @@ public interface $proto<Q> {
      */
     public static class $component<T> {
 
+        /*
+        public static final $component<?> of( String template){
+            return new $component(template, t->true);
+        }
+        
+        public static final $component<?> of( String template, Predicate<?> constraint ){
+            return new $component(template, constraint);
+        }        
+        */
+        
         public Stencil $form;
         public Predicate<T> constraint = t -> true;
 
+        /*
         public $component(T t) {
             this.$form = Stencil.of(t.toString());
+        } 
+        */
+
+        /**
+         * 
+         * @param pattern 
+         */
+        public $component(String pattern) {
+            this.$form = Stencil.of(pattern);
         }
 
-        public $component(Predicate<T> p) {
-            this.constraint = p;
-        }
-
-        public $component(String stencil) {
-            this.$form = Stencil.of(stencil);
-        }
-
-        public $component(String stencil, Predicate<T> constraint) {
-            this.$form = Stencil.of(stencil);
+        public $component(String pattern, Predicate<T> constraint) {
+            this.$form = Stencil.of(pattern);
             this.constraint = constraint;
         }
-
+        
+        /**
+         * SETS or OVERRIDES the constraint
+         * @param constraint
+         * @return 
+         */
+        public $component constraint( Predicate<T> constraint ){
+            this.constraint = constraint;
+            return this;
+        }
+        
+        public $component stencil(_model _javaModel ){
+            
+            if( _javaModel != null ){
+                return stencil( Stencil.of( _javaModel.toString() ) );
+            }
+            return this;
+        }
+        
+        public $component stencil(_node _javaModel ){            
+            if( _javaModel != null ){
+                return stencil( Stencil.of( _javaModel.toString(Ast.PRINT_NO_COMMENTS) ) );
+            }
+            return this;
+        }
+        
+        public $component stencil( String... pattern ){
+            return stencil(Stencil.of(Text.combine(pattern) ) );
+        }
+        
+        public $component stencil(  Stencil pattern ){
+            this.$form = pattern;
+            return this;
+        } 
+        
+        
+        public $component $( String target, String $name ){
+            this.$form = this.$form.$(target, $name);
+            return this;
+        }
+        
+        public List<String> list$(){
+            return this.$form.list$();
+        }
+        
+        public List<String> list$Normalized(){
+            return this.$form.list$Normalized();
+        }
+        
+        public String compose( Translator t, Map<String,Object> keyValues ){
+            //System.out.println( "In compose KeyValues "+ keyValues );
+            //System.out.println( "In compose FORM "+ this.$form );
+            return this.$form.construct(t, keyValues);
+        }
+                
+        /**
+         * 
+         * @param constraint
+         * @return 
+         */
         public $component addConstraint( Predicate<T> constraint ){
             this.constraint = this.constraint.and(constraint);
             return this;
@@ -403,28 +506,65 @@ public interface $proto<Q> {
             
             if (t == null) {
                 /** Null is allowed IF and ONLY If the Stencil $form isMatchAll*/
-                if ($form.isMatchAll()) {
-                    return new Tokens();
+                if ($form.isMatchAll()) {                    
+                    return Tokens.of($form.list$().get(0), "");
                 }
                 return null;
             }
-            if (constraint.test(t)) {
-                return $form.deconstruct(t.toString());
+            if (constraint.test(t)){                
+                if( t instanceof _node){
+                    return $form.deconstruct( ((_node)t).toString(Ast.PRINT_NO_COMMENTS).trim() );
+                }
+                if( t instanceof _body ){
+                    //System.out.println("THE BODY >>" +t+"<<");
+                    //System.out.println("THE FORM >>" +$form+"<<");
+                    return $form.deconstruct( ((_body)t).toString(Ast.PRINT_NO_COMMENTS).trim() );
+                }
+                return $form.deconstruct( t.toString() );
             }
             return null;
         }
 
-        public Tokens decomposeTo(T t, Tokens all) {
-            if (all == null) {
-                return null;
+        public $args decomposeTo(T t, $args args ){
+            if( args == null) {
+                return null;                
             }
             Tokens ts = decompose(t);
-            if (ts != null) {
-                if (ts.isConsistent(all)) {
+            if (ts != null) {                
+                if (args.isConsistent(ts)) {                   
+                    args.putAll(ts);
+                    //System.out.println( " CONSISTENT "+all);
+                    return args;
+                }
+                //System.out.println( "NOT  CONSISTENT "+all+ " " +ts );
+            }
+            return null;
+        }
+        
+        public Tokens decomposeTo(T t, Tokens all) {
+            if (all == null) { /* Skip decompose if the tokens already null*/
+                return null;
+            }
+            
+            Tokens ts = decompose(t);
+            
+            /*
+            if( t instanceof _node){
+                ts = decompose( ((_node)t).toString(Ast.PRINT_NO_COMMENTS) );
+            }
+            else {
+                ts = decompose(t);
+            } //decompose
+            */
+            if (ts != null) {                
+                if (all.isConsistent(ts)) {                   
                     all.putAll(ts);
+                    //System.out.println( " CONSISTENT "+all);
                     return all;
                 }
+                //System.out.println( "NOT  CONSISTENT "+all+ " " +ts );
             }
+            //System.out.println( t + " didnt work for "+ this.$form );
             return null;
         }
     }

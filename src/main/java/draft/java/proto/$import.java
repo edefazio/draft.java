@@ -590,7 +590,6 @@ public final class $import
         return $import.of(target).constraint(constraint).selectFirstIn(_type);
     }
     
-    
     /**
      * 
      * @param <T>
@@ -808,23 +807,28 @@ public final class $import
         
     public Stencil importPattern;
     
-    //public boolean isStatic = false;
-    //public boolean isWildcard = false;
     
     private $import(_import proto ){
         this.importPattern = Stencil.of( proto.getName() );
-        //if( proto.isStatic()){
-        //    this.isStatic = true;
-        //}
-        //if( proto.isWildcard() ){
-        //    this.isWildcard = true;
-        //}        
+        
     }
 
     private $import( Predicate<_import> constraint ){
         this.importPattern = Stencil.of("$any$");
         this.constraint = constraint;
     }
+    
+    
+    /**
+     * ADDS an additional matching constraint to the prototype
+     * @param constraint a constraint to be added
+     * @return the modified prototype
+     */
+    public $import addConstraint( Predicate<_import>constraint ){
+        this.constraint = this.constraint.and(constraint);
+        return this;
+    }
+    
     /*
     public pImport setStatic(){
         return setStatic(true);

@@ -1,5 +1,6 @@
 package draft.java.proto;
 
+import com.github.javaparser.ast.body.BodyDeclaration;
 import draft.java.proto.$method;
 import draft.java.Ast;
 import draft.java._class;
@@ -11,7 +12,39 @@ import draft.java.runtime._javac;
 import junit.framework.TestCase;
 
 public class SmethodTest extends TestCase {
-    
+            
+    public void testSimpleMatch(){
+        $method $m = $method.of( new Object(){
+            $type$ $name$;
+            class $type${} 
+            public $type$ get$Name$(){
+               return this.$name$;
+            }           
+        });
+        
+        //you can create a method based on the properties of a field
+        // (i.e. a _field will decompose to 
+        // even though the field is private, we DONT traspose the 
+        //modifier because it is static
+        assertEquals( $m.construct( _field.of("private int count") ),
+                $m.construct( _field.of("int count") ) );
+        //_method _m = $m.construct( _field.of("private int count") );                
+        //System.out.println( _m );
+        
+        $m.annos.stencil("@Deprecated");
+        _method _m = $m.construct( _field.of("private int count") );                
+        System.out.println( _m );
+        
+        assertTrue($m.matches(_m));
+        _m.removeAnnos(Deprecated.class);
+        
+        /** SHOULD WORK, NEED TO REFACTOR $anno first 
+        _m.annotate("@java.lang.Deprecated");
+        System.out.println( _m );
+        assertTrue($m.matches(_m));
+        */
+        
+    }
     public void testStaticMethodReplaceRemoveList(){
         $method $set = $method.of(
             "public void set$Name$($type$ $name$){",
@@ -40,7 +73,14 @@ public class SmethodTest extends TestCase {
             }
         }
         _class _c = _class.of(Loc.class);
+        
+        //$method stat = $method.of("public void setX(int x){ this.x = x; }");
+        //_method _m = stat.construct();
+        //System.out.println("COMPOSED" + _m );
+        
+        //assertEquals(1, stat.listIn(_c).size());
         //verify we can find (2) set methods
+        
         assertEquals(2, $set.listIn(_c).size());
         
         //remove 'em
@@ -69,10 +109,26 @@ public class SmethodTest extends TestCase {
         _method _m = $m.construct();
         assertTrue( _m.isStatic() );
     }
+    
+    public void testSimpleGetter(){
+        $method $get = $method.of("public $type$ get$Name$(){ return this.$name$; }");
+        
+        
+        BodyDeclaration bd = Ast.declaration( "public java.lang.String getEric ()" + System.lineSeparator() +
+                "{"+ System.lineSeparator()+
+                "    return this.eric;"+ System.lineSeparator() +
+                "}");
+        System.out.println( bd );
+        
+        _method _m = $get.construct("name", "eric", "type", String.class);
+        System.out.println( _m );
+    }
+    
     public void testAnonymousBody(){
         $method $m = $method.of( new Object(){
             @_remove class $type${}
             @_remove $type$ $name$;
+            
             /**
              * Gets the $name$
              *
@@ -105,7 +161,7 @@ public class SmethodTest extends TestCase {
 
         $method $set = $method.of("public void set$Name$( $type$ $name$){ this.$name$ = $name$; }");
 
-        _method composed = $get.fill(int.class, "x" );
+        _method composed = $get.construct("type", int.class, "name", "x" );
         System.out.println( composed );
         _method _ma = _method.of("public int getX()", (Integer x)->{
             return x;
@@ -150,16 +206,16 @@ public class SmethodTest extends TestCase {
 
         //find all (3) getter METHODS in the TYPE above
         assertEquals( 3, $get.selectListIn(_c).size());
-        assertEquals($get.select(_c.getMethod("getX") ).astMethod, Ast.method("public int getX(){ return x; }") );
+        assertEquals($get.select(_c.getMethod("getX") )._m, _method.of("public int getX(){ return x; }") );
         assertEquals( 3, $set.selectListIn(_c).size());
 
         //print all get METHODS
-        $get.forSelectedIn(_c, g -> System.out.println(g.astMethod ));
+        $get.forSelectedIn(_c, g -> System.out.println(g._m ));
 
         //convert all void set METHODS to fluent set METHODS
         $set.forSelectedIn(_c, s-> {
-            s.astMethod.setType( _c.getName() );
-            s.astMethod.getBody().get().addStatement("return this;");
+            s._m.ast().setType( _c.getName() );
+            s._m.ast().getBody().get().addStatement("return this;");
         });
         _javac.of( _c );
 

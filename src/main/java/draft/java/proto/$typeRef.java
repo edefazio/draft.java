@@ -2,7 +2,6 @@ package draft.java.proto;
 
 import com.github.javaparser.ast.Node;
 import com.github.javaparser.ast.expr.*;
-import com.github.javaparser.ast.type.PrimitiveType;
 import com.github.javaparser.ast.type.Type;
 import draft.*;
 import draft.java.Ast;
@@ -17,29 +16,29 @@ import java.util.function.Predicate;
 /**
  * Template for a Java Type Reference
  */
-public final class $typeRef //<T extends Type>
-        implements Template<_typeRef>, $proto<_typeRef>{
+public final class $typeRef
+    implements Template<_typeRef>, $proto<_typeRef>{
 
     /**
      * 
      * @param <N>
      * @param _n
-     * @param proto
+     * @param pattern
      * @return 
      */
-    public static final <N extends _node> _typeRef first( N _n, String proto ){
-        return $typeRef.of(proto).firstIn(_n);
+    public static final <N extends _node> _typeRef first( N _n, String pattern ){
+        return $typeRef.of(pattern).firstIn(_n);
     }
     
     /**
      * 
      * @param <N>
      * @param _n
-     * @param proto
+     * @param typeClass
      * @return 
      */
-    public static final <N extends _node> _typeRef first( N _n, Class proto ){
-        return $typeRef.of(proto).firstIn(_n);
+    public static final <N extends _node> _typeRef first( N _n, Class typeClass ){
+        return $typeRef.of(typeClass).firstIn(_n);
     }
         
     /**
@@ -57,24 +56,24 @@ public final class $typeRef //<T extends Type>
      * 
      * @param <N>
      * @param _n
-     * @param proto
+     * @param pattern
      * @param constraint
      * @return 
      */
-    public static final <N extends _node> _typeRef first( N _n, String proto, Predicate<_typeRef> constraint){
-        return $typeRef.of(proto).constraint(constraint).firstIn(_n);
+    public static final <N extends _node> _typeRef first( N _n, String pattern, Predicate<_typeRef> constraint){
+        return $typeRef.of(pattern).constraint(constraint).firstIn(_n);
     }
     
     /**
      * 
      * @param <N>
      * @param _n
-     * @param proto
+     * @param typeClass
      * @param constraint
      * @return 
      */
-    public static final <N extends _node> _typeRef first( N _n, Class proto, Predicate<_typeRef> constraint ){
-        return $typeRef.of(proto).constraint(constraint).firstIn(_n);
+    public static final <N extends _node> _typeRef first( N _n, Class typeClass, Predicate<_typeRef> constraint ){
+        return $typeRef.of(typeClass).constraint(constraint).firstIn(_n);
     }
         
     /**
@@ -93,22 +92,22 @@ public final class $typeRef //<T extends Type>
      * 
      * @param <N>
      * @param _n
-     * @param proto
+     * @param pattern
      * @return 
      */
-    public static final <N extends _node> Select selectFirst( N _n, String proto ){
-        return $typeRef.of(proto).selectFirstIn(_n);
+    public static final <N extends _node> Select selectFirst( N _n, String pattern ){
+        return $typeRef.of(pattern).selectFirstIn(_n);
     }
     
     /**
      * 
      * @param <N>
      * @param _n
-     * @param proto
+     * @param typeClass
      * @return 
      */
-    public static final <N extends _node> Select selectFirst( N _n, Class proto ){
-        return $typeRef.of(proto).selectFirstIn(_n);
+    public static final <N extends _node> Select selectFirst( N _n, Class typeClass ){
+        return $typeRef.of(typeClass).selectFirstIn(_n);
     }
         
     /**
@@ -126,24 +125,24 @@ public final class $typeRef //<T extends Type>
      * 
      * @param <N>
      * @param _n
-     * @param proto
+     * @param pattern
      * @param constraint
      * @return 
      */
-    public static final <N extends _node> Select selectFirst( N _n, String proto, Predicate<_typeRef> constraint){
-        return $typeRef.of(proto).constraint(constraint).selectFirstIn(_n);
+    public static final <N extends _node> Select selectFirst( N _n, String pattern, Predicate<_typeRef> constraint){
+        return $typeRef.of(pattern).constraint(constraint).selectFirstIn(_n);
     }
     
     /**
      * 
      * @param <N>
      * @param _n
-     * @param proto
+     * @param typeClass
      * @param constraint
      * @return 
      */
-    public static final <N extends _node> Select selectFirst( N _n, Class proto, Predicate<_typeRef> constraint ){
-        return $typeRef.of(proto).constraint(constraint).selectFirstIn(_n);
+    public static final <N extends _node> Select selectFirst( N _n, Class typeClass, Predicate<_typeRef> constraint ){
+        return $typeRef.of(typeClass).constraint(constraint).selectFirstIn(_n);
     }
         
     /**
@@ -154,7 +153,7 @@ public final class $typeRef //<T extends Type>
      * @param constraint
      * @return 
      */
-    public static final <N extends _node> Select selectFirst( N _n, _typeRef proto,Predicate<_typeRef> constraint){
+    public static final <N extends _node> Select selectFirst( N _n, _typeRef proto, Predicate<_typeRef> constraint){
         return $typeRef.of(proto).constraint(constraint).selectFirstIn(_n);
     }
     
@@ -162,22 +161,22 @@ public final class $typeRef //<T extends Type>
      * 
      * @param <N>
      * @param _n
-     * @param proto
+     * @param pattern
      * @return 
      */
-    public static final <N extends _node> List<_typeRef> list( N _n, String proto ){
-        return $typeRef.of(proto).listIn(_n);
+    public static final <N extends _node> List<_typeRef> list( N _n, String pattern ){
+        return $typeRef.of(pattern).listIn(_n);
     }
     
     /**
      * 
      * @param <N>
      * @param _n
-     * @param proto
+     * @param typeClass
      * @return 
      */
-    public static final <N extends _node> List<_typeRef> list( N _n, Class proto ){
-        return $typeRef.of(proto).listIn(_n);
+    public static final <N extends _node> List<_typeRef> list( N _n, Class typeClass ){
+        return $typeRef.of(typeClass).listIn(_n);
     }
         
     /**
@@ -195,24 +194,24 @@ public final class $typeRef //<T extends Type>
      * 
      * @param <N>
      * @param _n
-     * @param proto
+     * @param pattern
      * @param constraint
      * @return 
      */
-    public static final <N extends _node> List<_typeRef> list( N _n, String proto, Predicate<_typeRef> constraint){
-        return $typeRef.of(proto).constraint(constraint).listIn(_n);
+    public static final <N extends _node> List<_typeRef> list( N _n, String pattern, Predicate<_typeRef> constraint){
+        return $typeRef.of(pattern).constraint(constraint).listIn(_n);
     }
     
     /**
      * 
      * @param <N>
      * @param _n
-     * @param proto
+     * @param typeClass
      * @param constraint
      * @return 
      */
-    public static final <N extends _node> List<_typeRef> list( N _n, Class proto, Predicate<_typeRef> constraint ){
-        return $typeRef.of(proto).constraint(constraint).listIn(_n);
+    public static final <N extends _node> List<_typeRef> list( N _n, Class typeClass, Predicate<_typeRef> constraint ){
+        return $typeRef.of(typeClass).constraint(constraint).listIn(_n);
     }
         
     /**
@@ -231,22 +230,22 @@ public final class $typeRef //<T extends Type>
      * 
      * @param <N>
      * @param _n
-     * @param proto
+     * @param pattern
      * @return 
      */
-    public static final <N extends _node> List<Select> selectList( N _n, String proto ){
-        return $typeRef.of(proto).selectListIn(_n);
+    public static final <N extends _node> List<Select> selectList( N _n, String pattern ){
+        return $typeRef.of(pattern).selectListIn(_n);
     }
     
     /**
      * 
      * @param <N>
      * @param _n
-     * @param proto
+     * @param typeClass
      * @return 
      */
-    public static final <N extends _node> List<Select> selectList( N _n, Class proto ){
-        return $typeRef.of(proto).selectListIn(_n);
+    public static final <N extends _node> List<Select> selectList( N _n, Class typeClass ){
+        return $typeRef.of(typeClass).selectListIn(_n);
     }
         
     /**
@@ -260,29 +259,28 @@ public final class $typeRef //<T extends Type>
         return $typeRef.of(proto).selectListIn(_n);
     }    
     
-    
     /**
      * 
      * @param <N>
      * @param _n
-     * @param proto
+     * @param pattern
      * @param constraint
      * @return 
      */
-    public static final <N extends _node> List<Select> selectList( N _n, String proto, Predicate<_typeRef> constraint){
-        return $typeRef.of(proto).constraint(constraint).selectListIn(_n);
+    public static final <N extends _node> List<Select> selectList( N _n, String pattern, Predicate<_typeRef> constraint){
+        return $typeRef.of(pattern).constraint(constraint).selectListIn(_n);
     }
     
     /**
      * 
      * @param <N>
      * @param _n
-     * @param proto
+     * @param typeClass
      * @param constraint
      * @return 
      */
-    public static final <N extends _node> List<Select> selectList( N _n, Class proto, Predicate<_typeRef> constraint ){
-        return $typeRef.of(proto).constraint(constraint).selectListIn(_n);
+    public static final <N extends _node> List<Select> selectList( N _n, Class typeClass, Predicate<_typeRef> constraint ){
+        return $typeRef.of(typeClass).constraint(constraint).selectListIn(_n);
     }
         
     /**
@@ -293,7 +291,7 @@ public final class $typeRef //<T extends Type>
      * @param constraint
      * @return 
      */
-    public static final <N extends _node> List<Select> selectList( N _n, _typeRef proto,Predicate<_typeRef> constraint){
+    public static final <N extends _node> List<Select> selectList( N _n, _typeRef proto, Predicate<_typeRef> constraint){
         return $typeRef.of(proto).constraint(constraint).selectListIn(_n);
     }
     
@@ -301,39 +299,39 @@ public final class $typeRef //<T extends Type>
      * 
      * @param <N>
      * @param _n
-     * @param protoSource
-     * @param protoTarget
+     * @param sourceProto
+     * @param targetProto
      * @return 
      */
-    public static final <N extends _node> N replace(N _n, _typeRef protoSource, _typeRef protoTarget){
-        return (N)$typeRef.of(protoSource)
-            .replaceIn(_n, $typeRef.of(protoTarget));
+    public static final <N extends _node> N replace(N _n, _typeRef sourceProto, _typeRef targetProto){
+        return (N)$typeRef.of(sourceProto)
+            .replaceIn(_n, $typeRef.of(targetProto));
     }
     
     /**
      * 
      * @param <N>
      * @param _n
-     * @param protoSource
-     * @param protoTarget
+     * @param sourceType
+     * @param targetType
      * @return 
      */
-    public static final <N extends _node> N replace(N _n, Type protoSource, Type protoTarget){
-        return (N)$typeRef.of(protoSource)
-            .replaceIn(_n, $typeRef.of(protoTarget));
+    public static final <N extends _node> N replace(N _n, Type sourceType, Type targetType){
+        return (N)$typeRef.of(sourceType)
+            .replaceIn(_n, $typeRef.of(targetType));
     }
 
     /**
      * 
      * @param <N>
      * @param _n
-     * @param protoSource
-     * @param protoTarget
+     * @param sourcePattern
+     * @param targetPattern
      * @return 
      */
-    public static final <N extends _node> N replace(N _n, String protoSource, String protoTarget){
-        return (N)$typeRef.of(protoSource)
-            .replaceIn(_n, $typeRef.of(protoTarget));
+    public static final <N extends _node> N replace(N _n, String sourcePattern, String targetPattern){
+        return (N)$typeRef.of(sourcePattern)
+            .replaceIn(_n, $typeRef.of(targetPattern));
     }
     
     /**
@@ -351,21 +349,21 @@ public final class $typeRef //<T extends Type>
     
     /**
      * 
-     * @param proto
+     * @param pattern
      * @return 
      */
-    public static $typeRef of(String proto ){
-        return new $typeRef(Ast.typeRef(proto));
+    public static $typeRef of(String pattern ){
+        return new $typeRef(Ast.typeRef(pattern));
     }
 
     /**
      * 
-     * @param proto
+     * @param pattern
      * @param constraint
      * @return 
      */
-    public static $typeRef of(String proto, Predicate<_typeRef> constraint){
-        return new $typeRef(Ast.typeRef(proto)).constraint(constraint);
+    public static $typeRef of(String pattern, Predicate<_typeRef> constraint){
+        return new $typeRef(Ast.typeRef(pattern)).constraint(constraint);
     }
     
     /**
@@ -398,78 +396,69 @@ public final class $typeRef //<T extends Type>
     
     /**
      * 
-     * @param _protoType
+     * @param _proto
      * @return 
      */
-    public static $typeRef of( _typeRef _protoType){
-        return new $typeRef(_protoType.ast());
+    public static $typeRef of( _typeRef _proto){
+        return new $typeRef(_proto.ast());
     }
     
     /**
      * 
-     * @param t
+     * @param _proto
      * @param constraint
      * @return 
      */
-    public static $typeRef of( _typeRef t, Predicate<_typeRef> constraint){
-        return new $typeRef(t.ast()).constraint(constraint);
+    public static $typeRef of( _typeRef _proto, Predicate<_typeRef> constraint){
+        return new $typeRef(_proto.ast()).constraint(constraint);
     }
-
-    public static final $typeRef booleanType = of(PrimitiveType.booleanType());
-    public static final $typeRef charType = of(PrimitiveType.charType());
-    public static final $typeRef byteType = of(PrimitiveType.byteType());
-    public static final $typeRef shortType = of(PrimitiveType.shortType());
-    public static final $typeRef intType = of(PrimitiveType.intType());
-    public static final $typeRef longType = of(PrimitiveType.longType());
-    public static final $typeRef floatType = of(PrimitiveType.floatType());
-    public static final $typeRef doubleType = of(PrimitiveType.doubleType());
-
+    
+    /** Matching constraint */
     public Predicate<_typeRef> constraint = (t)-> true;
-    //public Class<T> typeClass;
-    public Stencil typeStencil;
+    
+    /** type code Pattern */
+    public Stencil typePattern;
 
     /**
      * 
      * @param astProtoType 
      */
     public $typeRef( Type astProtoType ){
-        //this.typeClass = (Class<T>)astProtoType.getClass();
-        this.typeStencil = Stencil.of(_typeRef.of(astProtoType).toString() );
-        //System.out.println("TYPE STENCIL " +typeStencil);
+        this.typePattern = Stencil.of(_typeRef.of(astProtoType).toString() );
     }
 
     /**
      * 
-     * @param typeClass
-     * @param stencil 
-     
-    public $typeRef(Class<T>typeClass, String stencil ){
-        this.typeClass = typeClass;
-        this.typeStencil = Stencil.of(stencil);
+     * @param _proto the proto to build the $typeRef prototype from 
+     */
+    public $typeRef(_typeRef _proto){
+        this.typePattern = Stencil.of(_proto.toString() );
     }
-    */ 
-
+    
     /**
-     * 
-     * @param constraint
-     * @return 
+     * SETS/ OVERRIDES the constraint
+     * @param constraint the new constraint
+     * @return the modified 
      */
     public $typeRef constraint(Predicate<_typeRef> constraint){
         this.constraint = constraint;
         return this;
     }
     
-    /*
-    @Override
-    public T fill(Object...values){
-        String str = typeStencil.fill(Translator.DEFAULT_TRANSLATOR, values);
-        return (T)Ast.typeRef( str );
+    /**
+     * 
+     * @param constraint
+     * @return 
+     */
+    public $typeRef addConstraint( Predicate<_typeRef> constraint ){
+        this.constraint = this.constraint.and(constraint);
+        return this;
     }
-    */
-
+    
+    
     @Override
     public $typeRef $(String target, String $name ) {
-        this.typeStencil = this.typeStencil.$(target, $name);
+        this.typePattern = this.typePattern.$(target, $name);
         return this;
     }
 
@@ -480,7 +469,7 @@ public final class $typeRef //<T extends Type>
      * @return 
      */
     public $typeRef $(Expression astExpr, String $name){
-        this.typeStencil = this.typeStencil.$(astExpr.toString(), $name);
+        this.typePattern = this.typePattern.$(astExpr.toString(), $name);
         return this;
     }
 
@@ -525,7 +514,7 @@ public final class $typeRef //<T extends Type>
      * @return 
      */
     public $typeRef assign$( Translator translator, Tokens kvs ) {
-        this.typeStencil.assign$(translator,kvs);
+        this.typePattern.assign$(translator,kvs);
         return this;
     }
     
@@ -537,34 +526,10 @@ public final class $typeRef //<T extends Type>
     public _typeRef construct( _node _n ){
         return construct(_n.deconstruct());
     }
-
-    /*
-    @Override
-    public T fill(Translator t, Object...values){
-        return (T)Ast.typeRef(typeStencil.fill(t, values));
-    }
-
-    @Override
-    public T construct( Object...keyValues ){
-        return (T)Ast.typeRef(typeStencil.construct( Tokens.of(keyValues)));
-    }
-
-    
-
-    @Override
-    public T construct( Translator t, Object...keyValues ){
-        return (T)Ast.typeRef(typeStencil.construct( t, Tokens.of(keyValues) ));
-    }
-
-    @Override
-    public T construct( Map<String,Object> tokens ){
-        return (T)Ast.typeRef(typeStencil.construct( Translator.DEFAULT_TRANSLATOR, tokens ));
-    }
-    */
     
     @Override
     public _typeRef construct( Translator t, Map<String,Object> tokens ){
-        return _typeRef.of(typeStencil.construct( t, tokens ));
+        return _typeRef.of(typePattern.construct( t, tokens ));
     }
 
     /**
@@ -578,7 +543,7 @@ public final class $typeRef //<T extends Type>
 
     /**
      * 
-     * @param astType
+     * @param _tr
      * @return 
      */
     public boolean matches( _typeRef _tr ){
@@ -596,14 +561,19 @@ public final class $typeRef //<T extends Type>
 
     @Override
     public List<String> list$(){
-        return this.typeStencil.list$();
+        return this.typePattern.list$();
     }
 
     @Override
     public List<String> list$Normalized(){
-        return this.typeStencil.list$Normalized();
+        return this.typePattern.list$Normalized();
     }
 
+    /**
+     * 
+     * @param type
+     * @return 
+     */
     public $args deconstruct( String type ){
         try{
             return deconstruct(_typeRef.of(type));
@@ -619,7 +589,7 @@ public final class $typeRef //<T extends Type>
      */
     public $args deconstruct( _typeRef _tr){   
         if( this.constraint.test(_tr ) ) {            
-            Tokens ts = typeStencil.deconstruct(_tr.toString() );
+            Tokens ts = typePattern.deconstruct(_tr.toString() );
             if( ts != null ){
                 return $args.of(ts);
             }
@@ -884,16 +854,19 @@ public final class $typeRef //<T extends Type>
 
     @Override
     public String toString() {
-        return "(_typeRef) : \"" + this.typeStencil + "\"";
+        return "(_typeRef) : \"" + this.typePattern + "\"";
     }
 
     /**
      * 
-     * @param <T> 
      */
     public static class Select implements $proto.selected, 
             $proto.selected_model<_typeRef> {
+        
+        /** The underlying selected _typeRef */
         public _typeRef type;
+        
+        /** the arguments selected*/
         public $args args;
 
         public Select( Type type, $args tokens){
