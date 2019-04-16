@@ -170,7 +170,7 @@ public class SannoTest extends TestCase {
 
         assertTrue( $a.select(_anno.of("@name(prefix=\"1\")") ).is("any", "1") );
 
-        assertTrue($a.deconstruct(_anno.of("@name(prefix=\"ABCD\")")).is("any", "ABCD"));
+        assertTrue( $a.select(_anno.of("@name(prefix=\"ABCD\")")).is("any", "ABCD"));
         assertTrue( $a.list$().contains("any"));
 
 

@@ -455,7 +455,6 @@ public final class $typeRef
         return this;
     }
     
-    
     @Override
     public $typeRef $(String target, String $name ) {
         this.typePattern = this.typePattern.$(target, $name);
@@ -538,7 +537,7 @@ public final class $typeRef
      * @return 
      */
     public boolean matches( String type ){
-        return deconstruct( Ast.typeRef(type)) != null;
+        return select( Ast.typeRef(type)) != null;
     }
 
     /**
@@ -547,7 +546,7 @@ public final class $typeRef
      * @return 
      */
     public boolean matches( _typeRef _tr ){
-        return deconstruct(_tr) != null;
+        return select(_tr) != null;
     }
     
     /**
@@ -556,7 +555,7 @@ public final class $typeRef
      * @return 
      */
     public boolean matches( Type astType ){
-        return deconstruct(astType) != null;
+        return select(astType) != null;
     }
 
     @Override
@@ -568,52 +567,20 @@ public final class $typeRef
     public List<String> list$Normalized(){
         return this.typePattern.list$Normalized();
     }
-
-    /**
-     * 
-     * @param type
-     * @return 
-     */
-    public $args deconstruct( String type ){
-        try{
-            return deconstruct(_typeRef.of(type));
-        }catch(Exception e){
-            return null;
-        }
-    }
     
     /**
      * 
      * @param _tr
      * @return 
      */
-    public $args deconstruct( _typeRef _tr){   
+    public Select select( _typeRef _tr){
         if( this.constraint.test(_tr ) ) {            
             Tokens ts = typePattern.deconstruct(_tr.toString() );
             if( ts != null ){
-                return $args.of(ts);
+                return new Select( _tr, ts); //$args.of(ts);
             }
         }        
         return null;
-    }
-    
-    /**
-     * Deconstruct the expression into tokens, or return null if the statement doesnt match
-     *
-     * @param astType TYPE instance
-     * @return Tokens from the stencil, or null if the expression doesnt match
-     */
-    public $args deconstruct( Type astType ){
-        return deconstruct( _typeRef.of(astType ));        
-    }
-    
-    /**
-     * 
-     * @param typeRef
-     * @return 
-     */
-    public Select select( _typeRef typeRef){
-        return select(typeRef.ast());
     }
     
     /**
@@ -622,13 +589,18 @@ public final class $typeRef
      * @return 
      */
     public Select select( Type astType){
-        $args ts = this.deconstruct(astType);
-        if( ts != null){
-            return new Select( astType, ts );
-        }
-        return null;
+        return select(_typeRef.of(astType));       
     }
     
+    /**
+     * 
+     * @param type
+     * @return 
+     */
+    public Select select( String type ){
+        return select(_typeRef.of(type));
+    }
+   
     /**
      * Returns the first Type that matches the pattern and constraint
      * @param _n the _java node
@@ -798,9 +770,10 @@ public final class $typeRef
      */
     public <N extends _node> N replaceIn(N _n, $typeRef $replacementType){
         Walk.in(_n, Type.class, e -> {
-            $args tokens = deconstruct( e );
-            if( tokens != null ){
-                if( !e.replace($replacementType.construct(tokens).ast() )){
+            //$args tokens = deconstruct( e );
+            Select select = select(e);
+            if( select != null ){
+                if( !e.replace($replacementType.construct(select.args).ast() )){
                     throw new DraftException("unable to replaceIn "+ e + " in "+ _n+" with "+$replacementType);
                 }
             }
@@ -811,8 +784,9 @@ public final class $typeRef
     @Override
     public <N extends Node> N removeIn(N astNode ){
         astNode.walk(Type.class, e -> {
-            $args tokens = deconstruct( e );
-            if( tokens != null ){
+            //$args tokens = deconstruct( e );
+            Select select = select(e);
+            if( select != null ){
                 e.removeForced();
             }
         });
@@ -822,8 +796,9 @@ public final class $typeRef
     @Override
     public <N extends _node> N removeIn(N _n ){
         Walk.in(_n, Type.class, e -> {
-            $args tokens = deconstruct( e );
-            if( tokens != null ){
+            //$args tokens = deconstruct( e );
+            Select select = select(e);
+            if( select != null ){
                 e.removeForced();
             }
         });
@@ -833,8 +808,9 @@ public final class $typeRef
     @Override
     public <N extends Node> N forEachIn(N astNode, Consumer<_typeRef> expressionActionFn){
         astNode.walk(Type.class, t-> {
-            $args tokens = deconstruct( t );
-            if( tokens != null ){
+            //$args tokens = deconstruct( t );
+            Select select = select(t);
+            if( select != null ){
                 expressionActionFn.accept( _typeRef.of(t) );
             }
         });
@@ -844,8 +820,9 @@ public final class $typeRef
     @Override
     public <N extends _node> N forEachIn(N _n, Consumer<_typeRef> expressionActionFn){
         Walk.in(_n, Type.class, e -> {
-            $args tokens = deconstruct( e );
-            if( tokens != null ){
+            //$args tokens = deconstruct( e );
+            Select select = select(e);
+            if( select != null ){
                 expressionActionFn.accept( _typeRef.of(e));
             }
         });
@@ -869,6 +846,11 @@ public final class $typeRef
         /** the arguments selected*/
         public $args args;
 
+        public Select(_typeRef _tr, Tokens tokens ){
+            this.type = _tr;
+            this.args = $args.of(tokens);
+        }
+        
         public Select( Type type, $args tokens){
             this.type = _typeRef.of(type);
             this.args = tokens;
@@ -894,6 +876,26 @@ public final class $typeRef
         @Override
         public _typeRef model() {
             return type;
+        }
+        
+        public boolean is(String typeRef){
+            return this.type.is(typeRef);
+        }
+        
+        public boolean is(Class typeClass){
+            return this.type.is(typeClass);
+        }
+        
+        public boolean is(Type astType){
+            return this.type.is(astType);
+        }
+        
+        public boolean isArray(){
+            return this.type.isArray();
+        }
+        
+        public boolean isPrimitive(){            
+            return this.type.isPrimitive();
         }
     }
 }

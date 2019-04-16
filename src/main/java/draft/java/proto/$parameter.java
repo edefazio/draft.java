@@ -147,10 +147,15 @@ public class $parameter implements Template<_parameter>, $proto<_parameter> {
             || this.isVarArg && !_p.isVarArg() ){            
             return null;
         }
-        $args args = this.type.deconstruct(_p.getType() );
-        args = this.name.decomposeTo(_p.getName(), args);
-        if( args != null ){
-            return new Select(_p, args);
+        //$args args = this.type.deconstruct(_p.getType() );
+        $typeRef.Select sel = type.select(_p.getType());
+        
+        if( sel != null ){
+            $args as = sel.args;
+            as = this.name.decomposeTo(_p.getName(), as );
+            if( as != null ){
+                return new Select(_p, as);
+            }
         }
         return null;        
     }

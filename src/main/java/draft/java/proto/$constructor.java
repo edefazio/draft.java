@@ -266,7 +266,7 @@ public final class $constructor
      * @return 
      */
     public boolean matches( _constructor _ctor ){
-        return deconstruct(_ctor.ast() ) != null;
+        return select(_ctor.ast() ) != null;
     }
 
     /**
@@ -275,29 +275,7 @@ public final class $constructor
      * @return 
      */
     public boolean matches(ConstructorDeclaration astCtor ){
-        return deconstruct(astCtor ) != null;
-    }
-
-    /**
-     * 
-     * @param _c
-     * @return 
-     */
-    public Select select( _constructor _c){
-        return select( _c.ast());
-    }
-
-    /**
-     * 
-     * @param astCtor
-     * @return 
-     */
-    public Select select( ConstructorDeclaration astCtor){
-        $args ts = deconstruct( astCtor );
-        if( ts != null ){
-            return new Select( astCtor, ts );
-        }
-        return null;
+        return select(astCtor ) != null;
     }
 
     /**
@@ -364,32 +342,27 @@ public final class $constructor
     
     /**
      * 
-     * @param _ctor
+     * @param _c
      * @return 
      */
-    public $args deconstruct( _constructor _ctor ){
-        return deconstruct( _ctor.ast() );                
-    }
-    
-    /**
-     * 
-     * NOTE we dont check the Javadoc for deconstruct
-     * @param astTarget
-     * @return 
-     */
-    public $args deconstruct( ConstructorDeclaration astTarget ){
-        if( !this.constraint.test( _constructor.of(astTarget))){
+    public Select select( _constructor _c){
+        if( !this.constraint.test( _c )){
             return null;
         }
         Tokens ts = null;
-        if( astTarget.getBody().isEmpty() ){
+        if( !_c.hasBody() || _c.listStatements().isEmpty() ){
             ts = new Tokens();
         } else {
-            ts = this.$body.deconstruct(astTarget.getBody().getStatement(0));
+            $snip.Select ss = this.$body.select( _c.ast().getBody().getStatement(0) );
+            if( ss != null ){
+                ts = new Tokens();
+                ts.putAll(ss.args);
+            }
+            //ts = this.$body.deconstruct(_c.ast().getBody().getStatement(0));
         }
         if( ts != null ){
             //final Tokens tdd = ts;
-            String signature = astTarget.clone()
+            String signature = _c.ast().clone()
                     .setBody(EMPTY) //make the clones' BODY empty
                     .setAnnotations(new NodeList<>()) //remove all ANNOTATIONS
                     .removeComment() //removeIn any comments/JAVADOC from the clone
@@ -408,12 +381,27 @@ public final class $constructor
             });
             if( isConsistent.get() ){
                 ts.putAll(tss);
-                return $args.of(ts);
+                return new Select(_c, ts);                
             }
         }
         return null; //the BODY or signature isnt the same or BODY / signature tokens were inconsistent
+        //return select( _c.ast());
     }
 
+    /**
+     * 
+     * @param astCtor
+     * @return 
+     */
+    public Select select( ConstructorDeclaration astCtor){
+        return select(_constructor.of(astCtor));
+        //$args ts = deconstruct( astCtor );
+        //if( ts != null ){
+        //    return new Select( astCtor, ts );
+        //}
+        //return null;
+    }
+    
     @Override
     public List<_constructor> listIn(_node _n ){
         return listIn(_n.ast() );
@@ -535,6 +523,11 @@ public final class $constructor
         public final _constructor _ct;
         public final $args args;
 
+        public Select(_constructor _c, Tokens tokens ){
+            this._ct = _c;
+            this.args = $args.of(tokens);
+        }
+        
         public Select( ConstructorDeclaration astCtor, $args tokens ){
             this._ct = _constructor.of(astCtor);
             this.args = tokens;

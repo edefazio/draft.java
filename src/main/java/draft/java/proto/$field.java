@@ -4,6 +4,7 @@ import com.github.javaparser.ast.Node;
 import com.github.javaparser.ast.body.FieldDeclaration;
 import com.github.javaparser.ast.body.VariableDeclarator;
 import com.github.javaparser.ast.expr.Expression;
+import com.github.javaparser.ast.type.Type;
 import draft.*;
 import draft.java.Expr;
 import draft.java._anno._annos;
@@ -580,47 +581,7 @@ public class $field implements Template<_field>, $proto<_field> {
         return this;
     }
     
-    /**
-     * 
-     * @param _f
-     * @return 
-     */
-    public Select select(_field _f){
-        $args ts = deconstruct(_f.ast() );
-        if( ts != null ){
-            return new Select(_f, ts);
-        }
-        return null;
-    }
-
-    /**
-     * 
-     * @param astField
-     * @return 
-     */
-    public List<Select> select(FieldDeclaration astField){
-        List<Select> sels = new ArrayList<>();
-        astField.getVariables().forEach( v-> {
-            Select sel = select( v );
-            if( sel != null ){
-                sels.add(sel);
-            }
-        });
-        return sels;
-    }
-
-    /**
-     * 
-     * @param astVar
-     * @return 
-     */
-    public Select select(VariableDeclarator astVar){
-        $args ts = this.deconstruct(astVar);
-        if( ts != null){
-            return new Select( _field.of(astVar), ts );
-        }
-        return null;
-    }
+   
 
     /**
      * Returns the first _field that matches the pattern and constraint
@@ -654,7 +615,17 @@ public class $field implements Template<_field>, $proto<_field> {
      * @return  the first _field that matches (or null if none found)
      */
     public Select selectFirstIn( _node _n ){
-        Optional<VariableDeclarator> f = _n.ast().findFirst(VariableDeclarator.class, s -> this.matches(s) );         
+        Optional<VariableDeclarator> f = 
+                _n.ast().findFirst( 
+                        VariableDeclarator.class, 
+                        (VariableDeclarator s) -> select(s) != null );
+                    //s.getParentNode().isPresent() 
+                    //    && (s.getParentNode().get() instanceof FieldDeclaration) 
+                    //    && (select(s) != null) ; 
+                    //if( ){
+                    //    return this.matches(s); 
+                   // }
+                //});         
         if( f.isPresent()){
             return select(f.get());
         }
@@ -819,8 +790,9 @@ public class $field implements Template<_field>, $proto<_field> {
     @Override
     public <N extends _model._node> N forEachIn(N _n, Consumer<_field> _fieldActionFn){
         Walk.in(_n, VariableDeclarator.class, e-> {
-            $proto.$args tokens = deconstruct( e );
-            if( tokens != null ){
+            //$proto.$args tokens = deconstruct( e );
+            Select sel = select( e );
+            if( sel != null ){
                 _fieldActionFn.accept( _field.of(e) );
             }
         });
@@ -836,18 +808,15 @@ public class $field implements Template<_field>, $proto<_field> {
         }
     }
     
-    
     public boolean matches( VariableDeclarator vd ){
-        try{
-            return matches(_field.of(vd));
-        }catch(Exception e){
-            return false;
-        }
-    }
-    public boolean matches( _field _f ){
-        return deconstruct(_f) != null;
+        return select(vd) != null;        
     }
     
+    public boolean matches( _field _f ){
+        return select(_f) != null;
+    }
+    
+    /*
     public $proto.$args deconstruct( String...field ){
         try{
             _field _f = _field.of(field);
@@ -876,6 +845,75 @@ public class $field implements Template<_field>, $proto<_field> {
         }
         return null;
     }    
+    */
+    
+    public Select select(String...field){
+        try{
+            return select(_field.of(field));
+        }catch(Exception e){
+            return null;
+        }        
+    }
+    /**
+     * 
+     * @param _f
+     * @return 
+     */
+    public Select select(_field _f){
+        if( this.constraint.test(_f) ){
+            Tokens all = new Tokens();
+            all = javadoc.decomposeTo(_f.getJavadoc(), all);
+            all = annos.decomposeTo(_f.getAnnos(), all);
+            all = modifiers.decomposeTo(_f.getModifiers(), all);
+            all = type.decomposeTo(_f.getType(), all);
+            all = name.decomposeTo(_f.getName(), all);
+            all = init.decomposeTo(_f.getInit(), all);
+            if(all != null){
+                return new Select( _f, $args.of(all));
+            }
+        }
+        return null;
+        /*
+        $args ts = deconstruct(_f.ast() );
+        if( ts != null ){
+            return new Select(_f, ts);
+        }
+        return null;
+        */
+    }
+
+    /**
+     * 
+     * @param astField
+     * @return 
+     */
+    public List<Select> select(FieldDeclaration astField){
+        List<Select> sels = new ArrayList<>();
+        astField.getVariables().forEach( v-> {
+            Select sel = select( _field.of(v) );
+            if( sel != null ){
+                sels.add(sel);
+            }
+        });
+        return sels;
+    }
+
+    /**
+     * 
+     * @param astVar
+     * @return 
+     */
+    public Select select(VariableDeclarator astVar){
+        if( astVar.getParentNode().isPresent() && astVar.getParentNode().get() instanceof FieldDeclaration ){
+            return select( _field.of(astVar));
+            //$args ts = this.select(astVar);
+            //if( ts != null){
+            //    return new Select( _field.of(astVar), ts );
+            //}            
+        }   
+        return null;
+    } 
+    
 
     @Override
     public _field construct(Translator translator, Map<String, Object> keyValues) {
@@ -1010,6 +1048,70 @@ public class $field implements Template<_field>, $proto<_field> {
             return _f.ast();
         }
 
+        public boolean is( String fieldDeclaration ){
+            return _f.is(fieldDeclaration);
+        }
+        
+        public boolean isInit( Predicate<Expression> initMatchFn){
+            return _f.isInit(initMatchFn);
+        }
+        
+        public boolean isInit(String init){
+            return _f.isInit(init);
+        }
+        
+        public boolean isInit(byte init){
+            return _f.isInit(init);
+        }
+        
+        public boolean isInit(short init){
+            return _f.isInit(init);
+        }
+        
+        public boolean isInit(long init){
+            return _f.isInit(init);
+        }
+        
+        public boolean isInit(char init){
+            return _f.isInit(init);
+        }
+        
+        public boolean isInit(double init){
+            return _f.isInit(init);
+        }
+        
+        public boolean isInit(float init){
+            return _f.isInit(init);
+        }
+        
+        public boolean isInit(boolean init){
+            return _f.isInit(init);
+        }
+        
+        public boolean isInit(int init){
+            return _f.isInit(init);
+        }
+        
+        public boolean isInit(Expression init){
+            return _f.isInit(init);
+        }
+        
+        public boolean isType( Class expectedType){
+            return _f.isType(expectedType);
+        }
+        
+        public boolean isType( String expectedType){
+            return _f.isType(expectedType);
+        }
+        
+        public boolean isType( _typeRef expectedType){
+            return _f.isType(expectedType);
+        }
+        
+        public boolean isType( Type expectedType){
+            return _f.isType(expectedType);
+        }
+        
         @Override
         public _field model() {
             return _f;

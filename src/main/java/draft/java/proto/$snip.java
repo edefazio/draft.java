@@ -409,19 +409,20 @@ public final class $snip implements Template<List<Statement>>, $proto<List<State
         //check if we can partsMap the first one
         Tokens all = new Tokens();
         for(int i = 0; i< this.$sts.size(); i++) {
-            $args ts = this.$sts.get(i).deconstruct(ss.get(i));
-            if (ts == null) {
+            //$args ts = this.$sts.get(i).deconstruct(ss.get(i));
+            $stmt.Select sel = this.$sts.get(i).select(ss.get(i) );
+            if (sel == null) {
                 //System.out.println( "NO Match with >"+ this.$sts.get(i)+ "< against >"+ss.get(i)+"< tokens");
                 return null;
             }
-            String[] keys = ts.keySet().toArray(new String[0]);
+            String[] keys = sel.args.keySet().toArray(new String[0]);
             for(int j=0;j<keys.length;j++){
-                if( all.containsKeys(keys[j]) && !all.get( keys[j] ).equals( ts.get(keys[j])) ){
+                if( all.containsKeys(keys[j]) && !all.get( keys[j] ).equals( sel.args.get(keys[j])) ){
                     //System.out.println( "Inconsistent Key Values");
                     return null; //inconsistent key values
                 }
             }
-            all.putAll(ts);
+            all.putAll(sel.args);
         }
         return new Select( ss, all);
     }
@@ -432,7 +433,7 @@ public final class $snip implements Template<List<Statement>>, $proto<List<State
      *
      * @param astStmt the statement to partsMap
      * @return Tokens from the stencil, or null if the statement doesnt match
-     */
+     
     public Tokens deconstruct( Statement astStmt ){
         Select s  = select(astStmt );
         if( s != null ){
@@ -440,6 +441,7 @@ public final class $snip implements Template<List<Statement>>, $proto<List<State
         }
         return null;
     }
+    */ 
 
     /**
      * 
@@ -456,7 +458,7 @@ public final class $snip implements Template<List<Statement>>, $proto<List<State
      * @return 
      */
     public boolean matches( Statement astStmt ){
-        return deconstruct(astStmt) != null;
+        return select(astStmt) != null;
     }
 
     /**
@@ -784,6 +786,10 @@ public final class $snip implements Template<List<Statement>>, $proto<List<State
                 Text.indent( sb.toString() )+ System.lineSeparator()+
                 Text.indent("$args : " + args) + System.lineSeparator()+
                 "}";
+        }
+        
+        public int stmtCount(){
+            return statements.size();
         }
     }
 }

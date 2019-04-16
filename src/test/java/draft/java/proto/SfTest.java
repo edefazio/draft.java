@@ -31,11 +31,12 @@ public class SfTest extends TestCase {
         assertNotNull($simpleField.matches(_field.of("int i=100;")) );
         assertNotNull($simpleField.matches("int i=100;") );
         
-        assertNotNull($simpleField.deconstruct("int i=100;").is("init", 100) );
+        assertTrue($simpleField.select("int i=100;").isInit(100) );
+        assertTrue($simpleField.select("int i=100;").isType(int.class) );
         
-        assertNotNull($simpleField.deconstruct("/**javadoc*/ int i")); //.is("javadoc", "/**javadoc*/") );
-        assertNotNull($simpleField.deconstruct("@Deprecated int i") );        
-        assertNotNull($simpleField.deconstruct("/**javadoc*/ @Deprecated int i=0;") );
+        assertNotNull($simpleField.select("/**javadoc*/ int i")); //.is("javadoc", "/**javadoc*/") );
+        assertNotNull($simpleField.select("@Deprecated int i") );        
+        assertNotNull($simpleField.select("/**javadoc*/ @Deprecated int i=0;") );
     }
      
     /** build a prototype from just a predicate */
@@ -67,22 +68,15 @@ public class SfTest extends TestCase {
     public void testDynamic$field(){
         $field $typeField = $field.of( _field.of("$type$ i") );
         
-        assertTrue($typeField.deconstruct(_field.of("int i"))
-            .is("type", int.class) );
+        assertTrue($typeField.select(_field.of("int i")).isType( int.class) );
         
-        assertTrue($typeField.deconstruct("int i")
-            .is("type", int.class) );
+        assertTrue($typeField.select("int i").isType( int.class) );
         
-        assertTrue($typeField.deconstruct(_field.of("String i"))
-            .is("type", "String") );
+        assertTrue($typeField.select(_field.of("String i")).isType( "String") );
         
-        assertTrue($typeField.deconstruct("String i")
-            .is("type", "String") 
-        );
+        assertTrue($typeField.select("String i").isType("String") );
         
-        assertTrue($typeField.deconstruct("String i")
-            .is("type", _typeRef.of(String.class)) 
-        );        
+        assertTrue($typeField.select("String i").isType(_typeRef.of(String.class)));        
     }
     
     public void testTypeGeneric$field(){

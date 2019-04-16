@@ -8,6 +8,7 @@ import draft.Tokens;
 import draft.java.Ast;
 import draft.java.Stmt;
 import draft.java._class;
+import draft.java.proto.$snip.Select;
 import junit.framework.TestCase;
 
 import java.util.*;
@@ -227,20 +228,20 @@ public class SsnipTest extends TestCase {
         }),  ss.statements.get(1));
     }
 
-    public void test$snipDecomposeStaticStatement() {
+    public void test$snipSelectStaticStatement() {
         //partsMap & match a static statement
         $snip s = $snip.of(() -> System.out.println(1));
-        assertNotNull(s.deconstruct(Stmt.of("System.out.println(1);")));
+        assertNotNull(s.select(Stmt.of("System.out.println(1);")));
         assertTrue(s.matches(Stmt.of("System.out.println(1);")));
     }
 
-    public void test$snipDecomposeVarStatement() {
+    public void test$snipSelectVarStatement() {
         //partsMap a variable statement
         $snip s = $snip.of( (Object $any$) -> System.out.println($any$));
-        assertNotNull(s.deconstruct(Stmt.of("System.out.println(1);")));
-        assertNotNull(s.deconstruct(Stmt.of("System.out.println(1);")));
-        Tokens tks = s.deconstruct(Stmt.of("System.out.println(1);"));
-        assertTrue(tks.has("any", "1"));
+        assertNotNull(s.select(Stmt.of("System.out.println(1);")));
+        assertNotNull(s.select(Stmt.of("System.out.println(1);")));
+        $snip.Select tks = s.select(Stmt.of("System.out.println(1);"));
+        assertTrue(tks.is("any", "1"));
     }
 
     public void test$snipSingleStmtSelect(){
@@ -312,26 +313,26 @@ public class SsnipTest extends TestCase {
 
         //verify I can partsMap the List of statements and get the variables out
         //across
-        Tokens ts = s.deconstruct( bs.getStatement(0) );
-        assertTrue( ts.has("a", "1"));
-        assertTrue( ts.has("b", "2"));
-        assertTrue( ts.has("c", "3"));
-        assertTrue( ts.has("d", "4"));
+        Select ts = s.select( bs.getStatement(0) );
+        assertTrue( ts.is("a", "1"));
+        assertTrue( ts.is("b", "2"));
+        assertTrue( ts.is("c", "3"));
+        assertTrue( ts.is("d", "4"));
     }
 
     public void test$snipDecomposeStaticMultiStatements(){
         //static
         $snip s = $snip.of( ()-> {System.out.println(1); assert(true);});
         BlockStmt bs = Stmt.block("{System.out.println(1); assert(true);}");
-        assertNotNull(s.deconstruct(bs.getStatement(0)) );
+        assertNotNull(s.select(bs.getStatement(0)) );
     }
 
     public void test$snipDecomposeStaticVarMultiStatements(){
         $snip s = $snip.of( (Object $any$, Boolean $expr$)-> {System.out.println($any$); assert($expr$);});
         BlockStmt bs = Stmt.block("{System.out.println(1); assert(true);}");
-        Tokens tks = s.deconstruct(bs.getStatement(0));
+        Select tks = s.select(bs.getStatement(0));
         assertNotNull(tks);
-        assertTrue(tks.has("any", "1") && tks.has("expr", "true") );
+        assertTrue(tks.is("any", "1") && tks.is("expr", "true") );
     }
 
     public void test$snip(){

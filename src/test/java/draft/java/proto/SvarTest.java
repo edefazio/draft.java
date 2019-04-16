@@ -10,6 +10,7 @@ import draft.java.Ast;
 import draft.java._class;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 import junit.framework.TestCase;
 
 /**
@@ -32,7 +33,11 @@ public class SvarTest extends TestCase {
         //
         assertEquals( 1, $var.list(Holder.class, (v)-> v.getInitializer().isPresent()).size() );
         assertEquals( 4, $var.list(Holder.class, "int $name$").size() );
-        assertEquals( 4, $var.of(int.class).listIn(Holder.class).size() );
+        assertEquals( 4, $var.ofType(int.class).listIn(Holder.class).size() );
+        
+        assertEquals( 3, $var.ofType(int.class).selectListIn(Holder.class, s-> s.isFieldVar()).size() );
+                //.stream().filter( s-> s.isFieldVar() ).collect(Collectors.toList()).size() );
+        //assertEquals( 4, $var.se(int.class).forSelected(Holder.class).size() );
         
         //assertNotNull($var.first(Holder.class, "int $name$"));
     }

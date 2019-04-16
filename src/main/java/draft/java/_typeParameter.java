@@ -19,7 +19,7 @@ import java.util.stream.Collectors;
  * @author Eric
  */
 public final class _typeParameter
-        implements _node<TypeParameter> {
+        implements _node<TypeParameter>, _named<_typeParameter> {
 
     public static _typeParameter of( String typeParam ) {
         return of( Ast.typeParameter( typeParam ) );
@@ -40,7 +40,7 @@ public final class _typeParameter
     }
 
     @Override
-    public TypeParameter ast() {
+    public TypeParameter ast() {        
         return this.typeParameter;
     }
 
@@ -105,6 +105,17 @@ public final class _typeParameter
     @Override
     public String toString() {
         return typeParameter.toString();
+    }
+
+    @Override
+    public _typeParameter name(String name) {
+        this.typeParameter.setName(name);
+        return this;
+    }
+
+    @Override
+    public String getName() {
+        return typeParameter.getNameAsString();
     }
 
     /**

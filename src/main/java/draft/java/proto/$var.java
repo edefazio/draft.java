@@ -1,7 +1,9 @@
 package draft.java.proto;
 
 import com.github.javaparser.ast.Node;
+import com.github.javaparser.ast.body.FieldDeclaration;
 import com.github.javaparser.ast.body.VariableDeclarator;
+import com.github.javaparser.ast.expr.Expression;
 import com.github.javaparser.ast.type.Type;
 import com.github.javaparser.printer.PrettyPrinterConfiguration;
 import draft.*;
@@ -14,14 +16,14 @@ import java.util.function.Predicate;
 
 /**
  * Template for a {@link VariableDeclarator}
- *
+ * NOTE: this INCLUDES BOTH: 
+ * <UL>
+ *    <LI>FIELDS (member fields defined on a type)
+ *    <LI>VARIABLES (variables created within a scope body)
+ * </UL>
  */
 public class $var
     implements Template<VariableDeclarator>, $proto<VariableDeclarator> {
-    
-    public static final $var any(){
-        return of("$type$ $name$");
-    }
     
     /**
      * List ALL variables within the Node
@@ -261,7 +263,7 @@ public class $var
         return  astNode;
     }
     
-        /**
+    /**
      * 
      * @param <N>
      * @param _n
@@ -287,6 +289,60 @@ public class $var
         return  astNode;
     }
     
+    
+    
+    /**
+     * 
+     * @param <N>
+     * @param _n
+     * @param pattern
+     * @param varActionFn
+     * @return 
+     */
+    public static <N extends _node> N forSelected(N _n, String pattern, Predicate<Select> selectConstraint, Consumer<Select> varActionFn){
+        of(pattern).forSelectedIn(_n.ast(), varActionFn);
+        return _n;
+    }
+    
+    /**
+     * 
+     * @param <N>
+     * @param astNode
+     * @param pattern
+     * @param varActionFn
+     * @return 
+     */
+    public static <N extends Node> N forSelected(N astNode, String pattern, Predicate<Select> selectConstraint,Consumer<Select> varActionFn){
+        of(pattern).forSelectedIn(astNode, varActionFn);
+        return  astNode;
+    }
+    
+    /**
+     * 
+     * @param <N>
+     * @param _n
+     * @param proto
+     * @param varActionFn
+     * @return 
+     */
+    public static <N extends _node> N forSelected(N _n, VariableDeclarator proto, Predicate<Select> selectConstraint, Consumer<Select> varActionFn){
+        of(proto).forSelectedIn(_n.ast(), selectConstraint, varActionFn);
+        return _n;
+    }
+    
+    /**
+     * 
+     * @param <N>
+     * @param astNode
+     * @param proto
+     * @param varActionFn
+     * @return 
+     */
+    public static <N extends Node> N forSelected(N astNode, VariableDeclarator proto, Predicate<Select> selectConstraint, Consumer<Select> varActionFn){
+        of(proto).forSelectedIn(astNode, selectConstraint, varActionFn);
+        return  astNode;
+    }
+   
     /**
      * 
      * @param <N>
@@ -364,8 +420,8 @@ public class $var
      * @param constraint
      * @return 
      */
-    public static final <N extends _node> Select selectFirst( N _n, String pattern, Predicate<VariableDeclarator> constraint){
-        return $var.of(pattern, constraint).selectFirstIn(_n);
+    public static final <N extends _node> Select selectFirst( N _n, String pattern, Predicate<Select> selectConstraint ){
+        return $var.of(pattern).selectFirstIn(_n, selectConstraint);
     }
     
     /**
@@ -387,8 +443,8 @@ public class $var
      * @param constraint
      * @return 
      */
-    public static final <N extends _node> Select selectFirst( N _n, VariableDeclarator proto, Predicate<VariableDeclarator> constraint){
-        return $var.of(proto, constraint).selectFirstIn(_n);
+    public static final <N extends _node> Select selectFirst( N _n, VariableDeclarator proto, Predicate<Select> selectConstraint){
+        return $var.of(proto).selectFirstIn(_n, selectConstraint);
     }
     
     /**
@@ -498,11 +554,19 @@ public class $var
     }
     
     /**
+     * build a var prototype to match any var (field or local variable declaration)
+     * @return the var prototype that matches any var
+     */
+    public static final $var any(){
+        return of("$type$ $name$");
+    }
+    
+    /**
      * a Var Prototype only specifying the type
      * @param varType
      * @return 
      */
-    public static $var of( Class varType ){
+    public static $var ofType( Class varType ){
         final _typeRef e = _typeRef.of(varType );
         return any().constraint( v-> e.is(v.getType()) );
     }
@@ -512,10 +576,19 @@ public class $var
      * @param varType
      * @return 
      */
-    public static $var of( Type varType ){
+    public static $var ofType( Type varType ){
         final _typeRef e = _typeRef.of(varType );
         return any().constraint( v-> e.is(v) );
     }
+
+    /**
+     * a Var Prototype only specifying the type
+     * @param varType
+     * @return 
+     */
+    public static $var ofType( _typeRef varType ){        
+        return any().constraint( v-> varType.is(v) );
+    }    
     
     /**
      * 
@@ -603,23 +676,19 @@ public class $var
      * @return 
      */
     public boolean matches( VariableDeclarator astVar ){
-        return deconstruct(astVar ) != null;
+        return select(astVar ) != null;
     }   
 
-    /**
-     * Deconstruct the expression into tokens, or return null if the field doesnt match
-     *
-     * @param astVar 
-     * @return Tokens from the stencil, or null if the expression doesnt match
+     /**
+     * 
+     * @param astVar
+     * @return 
      */
-    public $args deconstruct(VariableDeclarator astVar ){
-        
+    public Select select(VariableDeclarator astVar){       
         Tokens all = new Tokens();
         if(this.constraint.test(astVar)) {            
             if( this.initPattern != null ){
-                //System.out.println( "checking init "+ $init );
                 if( astVar.getInitializer().isPresent()){
-                    //System.out.println( " .... against "+ astVar.getInitializer().get() );    
                     all = this.initPattern.deconstruct( astVar.getInitializer().get().toString(NO_COMMENTS) );
                     if( all == null ){
                         return null;
@@ -628,17 +697,16 @@ public class $var
                     return null;
                 }                
             }
-            //System.out.println( "checking "+ astVar+" against "+ this.varStencil );
             Tokens matchedName = 
                     this.varPattern.deconstruct( astVar.getType()+ " " +astVar.toString(Ast.PRINT_NO_ANNOTATIONS_OR_COMMENTS) );
             if( matchedName != null ){
                 all.putAll(matchedName);
-                return $args.of(all);
+                return new Select( astVar, $args.of(all));
             }
         }
         return null;                
     }
-
+    
     @Override
     public String toString() {
         return "($var) : \"" + this.varPattern + "\"";
@@ -749,20 +817,7 @@ public class $var
         }
         return Stencil.of(varPattern, initPattern).list$Normalized();        
     }
-
-    /**
-     * 
-     * @param astVar
-     * @return 
-     */
-    public Select select(VariableDeclarator astVar){
-        $args ts = this.deconstruct(astVar);
-        if( ts != null){
-            return new Select( astVar, ts );
-        }
-        return null;
-    }
-    
+ 
     /**
      * Returns the first VaribleDeclarator that matches the pattern and constraint
      * @param _n the _java node
@@ -815,6 +870,40 @@ public class $var
         return null;
     }
     
+    /**
+     * Returns the first VaribleDeclarator that matches the pattern and constraint
+     * @param _n the _java node
+     * @param selectConstraint
+     * @return  the first VaribleDeclarator that matches (or null if none found)
+     */
+    public Select selectFirstIn( _node _n, Predicate<Select> selectConstraint ){
+        Optional<VariableDeclarator> f = _n.ast().findFirst(VariableDeclarator.class, s -> this.matches(s) );         
+        if( f.isPresent()){
+            Select sel = select(f.get());
+            if( selectConstraint.test(sel)){
+                return sel;
+            }
+        }
+        return null;
+    }
+
+    /**
+     * Returns the first Select VaribleDeclarator that matches the pattern and constraint
+     * @param astNode the node to look through
+     * @param selectConstraint
+     * @return  the first Select VaribleDeclarator that matches (or null if none found)
+     */
+    public Select selectFirstIn( Node astNode, Predicate<Select> selectConstraint ){
+        Optional<VariableDeclarator> f = astNode.findFirst(VariableDeclarator.class, s -> this.matches(s) );         
+        if( f.isPresent()){
+            Select sel = select(f.get());
+            if( selectConstraint.test(sel)){
+                return sel;
+            }
+        }
+        return null;
+    }
+    
     public List<VariableDeclarator> listIn(Class clazz){
         return listIn(_type.of(clazz) );
     }
@@ -862,7 +951,51 @@ public class $var
         });
         return sts;
     }
+    
+    /**
+     * 
+     * @param clazz
+     * @param selectConstraint
+     * @return 
+     */
+    public List<Select> selectListIn(Class clazz, Predicate<Select> selectConstraint){
+        return selectListIn(_type.of(clazz), selectConstraint);
+    }
+    
+    /**
+     * 
+     * @param astNode
+     * @param selectConstraint
+     * @return 
+     */
+    public List<Select> selectListIn(Node astNode, Predicate<Select> selectConstraint){
+        List<Select>sts = new ArrayList<>();
+        astNode.walk(VariableDeclarator.class, e-> {
+            Select s = select( e );
+            if( s != null && selectConstraint.test(s)){
+                sts.add( s);
+            }
+        });
+        return sts;
+    }
 
+    /**
+     * 
+     * @param _n
+     * @param selectConstraint
+     * @return 
+     */
+    public List<Select> selectListIn(_node _n, Predicate<Select> selectConstraint){
+        List<Select>sts = new ArrayList<>();
+        Walk.in(_n, VariableDeclarator.class, e -> {
+            Select s = select( e );
+            if( s != null && selectConstraint.test(s)){
+                sts.add( s);
+            }
+        });
+        return sts;
+    }
+    
     public _type removeIn( Class clazz){
         return removeIn(_type.of(clazz) );
     }
@@ -889,6 +1022,12 @@ public class $var
         return _n;
     }
 
+    /**
+     * 
+     * @param clazz
+     * @param $replaceProto
+     * @return 
+     */
     public _type replaceIn(Class clazz, $var $replaceProto ){
         return replaceIn( _type.of(clazz), $replaceProto);    
     }
@@ -927,6 +1066,12 @@ public class $var
         return _le;
     }
 
+    /**
+     * 
+     * @param clazz
+     * @param selectConsumer
+     * @return 
+     */
     public _type forSelectedIn( Class clazz, Consumer<Select> selectConsumer){
         return forSelectedIn( _type.of(clazz), selectConsumer);
     }
@@ -947,7 +1092,7 @@ public class $var
         });
         return _n;
     }
-
+    
     /**
      * 
      * @param <N>
@@ -959,6 +1104,53 @@ public class $var
         astNode.walk(VariableDeclarator.class, e-> {
             Select sel = select( e );
             if( sel != null ){
+                selectConsumer.accept( sel );
+            }
+        });
+        return astNode;
+    }
+    
+    /**
+     * 
+     * @param clazz
+     * @param selectConstraint
+     * @param selectConsumer
+     * @return 
+     */
+    public _type forSelectedIn( Class clazz, Predicate<Select> selectConstraint, Consumer<Select> selectConsumer){
+        return forSelectedIn( _type.of(clazz), selectConstraint, selectConsumer);
+    }
+    
+    /**
+     * 
+     * @param <N>
+     * @param _n
+     * @param selectConstraint
+     * @param selectConsumer
+     * @return 
+     */
+    public <N extends _node> N forSelectedIn(N _n, Predicate<Select> selectConstraint, Consumer<Select> selectConsumer ){
+        Walk.in(_n, VariableDeclarator.class, e-> {
+            Select sel = select( e );
+            if( sel != null && selectConstraint.test(sel)){
+                selectConsumer.accept( sel );
+            }
+        });
+        return _n;
+    }
+    
+    /**
+     * 
+     * @param <N>
+     * @param astNode
+     * @param selectConstraint
+     * @param selectConsumer
+     * @return 
+     */
+    public <N extends Node> N forSelectedIn(N astNode, Predicate<Select> selectConstraint, Consumer<Select> selectConsumer ){
+        astNode.walk(VariableDeclarator.class, e-> {
+            Select sel = select( e );
+            if( sel != null && selectConstraint.test(sel)){
                 selectConsumer.accept( sel );
             }
         });
@@ -984,8 +1176,9 @@ public class $var
     @Override
     public <N extends _node> N forEachIn(N _n, Consumer<VariableDeclarator> varActionFn){
         Walk.in(_n, VariableDeclarator.class, e-> {
-            $args tokens = deconstruct( e );
-            if( tokens != null ){
+            //$args tokens = deconstruct( e );
+            Select sel = select(e);
+            if( sel != null ){
                 varActionFn.accept( e );
             }
         });
@@ -1020,6 +1213,103 @@ public class $var
                     "}";
         }
 
+        /**
+         * Is the variable selected a part of a field (member) variable 
+         * (opposite of isLocalVar)
+         * @return 
+         */
+        public boolean isFieldVar(){
+            return astVar.getParentNode().isPresent() && astVar.getParentNode().get() instanceof FieldDeclaration;
+        }
+        
+        /**
+         * is this selected var part of a local variable (i.e. declared within a
+         * body or lambda, not a "member" of a Class)
+         * @return 
+         */
+        public boolean isBodyVar(){
+            return !isFieldVar();
+        }
+        
+        public boolean isNamed(String name){
+            return Objects.equals( astVar.getNameAsString(), name);
+        }
+        
+        public boolean is( String... varDeclaration ){
+            try{
+                return _field.of(astVar).is(varDeclaration);
+            }catch(Exception e){
+                return false; 
+            }
+        }
+        
+        public Expression getInit(){
+            if( astVar.getInitializer().isPresent() ){
+                return astVar.getInitializer().get();
+            }
+            return null;
+        }
+        
+        public boolean isInit( Predicate<Expression> initMatchFn){
+            return astVar.getInitializer().isPresent() && initMatchFn.test( astVar.getInitializer().get());
+        }
+        
+        public boolean isInit(String init){
+            return Objects.equals( getInit(), Expr.of(init));
+        }
+        
+        public boolean isInit(byte init){
+            return Objects.equals( getInit(), Expr.of(init));
+        }
+        
+        public boolean isInit(short init){
+            return Objects.equals( getInit(), Expr.of(init));
+        }
+        
+        public boolean isInit(long init){
+            return Objects.equals( getInit(), Expr.of(init));
+        }
+        
+        public boolean isInit(char init){
+            return Objects.equals( getInit(), Expr.of(init));
+        }
+        
+        public boolean isInit(double init){
+            return Objects.equals( getInit(), Expr.of(init));
+        }
+        
+        public boolean isInit(float init){
+            return Objects.equals( getInit(), Expr.of(init));
+        }
+        
+        public boolean isInit(boolean init){
+            return Objects.equals( getInit(), Expr.of(init));
+        }
+        
+        public boolean isInit(int init){
+            return Objects.equals( getInit(), Expr.of(init));
+        }
+        
+        public boolean isInit(Expression init){
+            return Objects.equals( getInit(), init);
+        }
+        
+        public boolean isType( Class expectedType){
+            return _typeRef.of(astVar.getType()).is( expectedType );
+        }
+        
+        public boolean isType( String expectedType){
+            return _typeRef.of(astVar.getType()).is( expectedType );
+        }
+        
+        public boolean isType( _typeRef expectedType){
+            return _typeRef.of(astVar.getType()).equals( expectedType );
+        }
+        
+        public boolean isType( Type expectedType){
+            return _typeRef.of(astVar.getType()).is( expectedType );
+        }
+        
         @Override
         public VariableDeclarator ast() {
             return astVar;

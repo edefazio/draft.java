@@ -14,7 +14,6 @@ import draft.java.Ast;
 import draft.java.Expr;
 import draft.java.Stmt;
 import draft.java._body;
-import draft.java._javadoc;
 
 import draft.java._model;
 import draft.java._model._node;
@@ -72,7 +71,7 @@ public interface $proto<Q> {
      * @return a list of the selected
      */
     List<? extends selected> selectListIn(_node _n);
-
+    
     /**
      * Remove all matching occurrences of the template in the node and return
      * the modified node
@@ -603,6 +602,7 @@ public interface $proto<Q> {
         }
 
         default boolean is(String key, String value) {
+            System.out.println( "ARGS "+ getArgs() );
             return getArgs().is(key, value);
         }
 

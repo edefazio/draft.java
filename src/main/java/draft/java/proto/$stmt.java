@@ -517,7 +517,6 @@ public final class $stmt<T extends Statement>
         return (N)$stmt.of(pattern).constraint(constraint).removeIn(_n);
     }   
     
-        
     /**
      * 
      * @param <N>
@@ -530,7 +529,6 @@ public final class $stmt<T extends Statement>
     public static final <N extends _node, T extends Statement> N remove( N _n, T proto, Predicate<T> constraint){
         return (N)$stmt.of(proto).constraint(constraint).removeIn(_n);
     }   
-    
     
     /**
      * Removes all occurrences of the proto Statement in the node (recursively)
@@ -611,7 +609,7 @@ public final class $stmt<T extends Statement>
      * @param proto
      * @return 
      */ 
-    public static <T extends Object>  $stmt of( Expr.Command proto ){
+    public static <T extends Object> $stmt of( Expr.Command proto ){
         StackTraceElement ste = Thread.currentThread().getStackTrace()[2];
         return fromStackTrace( ste );
     }
@@ -622,7 +620,7 @@ public final class $stmt<T extends Statement>
      * @param proto
      * @return 
      */
-    public static <T extends Object>  $stmt of( Consumer<T> proto ){
+    public static <T extends Object> $stmt of( Consumer<T> proto ){
         StackTraceElement ste = Thread.currentThread().getStackTrace()[2];
         return fromStackTrace( ste );
     } 
@@ -634,7 +632,7 @@ public final class $stmt<T extends Statement>
      * @param proto
      * @return 
      */
-    public static <T extends Object, U extends Object>  $stmt of( BiConsumer<T,U> proto ){
+    public static <T extends Object, U extends Object> $stmt of( BiConsumer<T,U> proto ){
         StackTraceElement ste = Thread.currentThread().getStackTrace()[2];
         return fromStackTrace( ste );
     }
@@ -647,7 +645,7 @@ public final class $stmt<T extends Statement>
      * @param proto
      * @return 
      */
-    public static <T extends Object, U extends Object, V extends Object>  $stmt of(TriConsumer<T, U, V> proto ){
+    public static <T extends Object, U extends Object, V extends Object> $stmt of(TriConsumer<T, U, V> proto ){
         StackTraceElement ste = Thread.currentThread().getStackTrace()[2];
         return fromStackTrace( ste );
     }
@@ -696,6 +694,7 @@ public final class $stmt<T extends Statement>
 
     /**
      * i.e."assert(1==1);"
+     * @param pattern
      * @param constraint
      * @return and AssertStmt with the code
      */
@@ -739,7 +738,6 @@ public final class $stmt<T extends Statement>
         return new $stmt( Stmt.block(pattern)).constraint(constraint);
     }
     
-
     /**
      * i.e."break;" or "break outer;"
      * @param constraint
@@ -1372,7 +1370,7 @@ public final class $stmt<T extends Statement>
      * @return 
      */
     public boolean matches( Statement astStmt ){
-        return deconstruct(astStmt) != null;
+        return select(astStmt) != null;
     }
 
     @Override
@@ -1443,19 +1441,6 @@ public final class $stmt<T extends Statement>
 
     /**
      * 
-     * @param astStmt
-     * @return 
-     */
-    public Select<T> select( Statement astStmt ){
-        $args ts = deconstruct(astStmt );
-        if( ts != null ){
-            return new Select( astStmt, ts );
-        }
-        return null;
-    }
-    
-    /**
-     * 
      * @param stmt
      * @return 
      */
@@ -1466,16 +1451,14 @@ public final class $stmt<T extends Statement>
             return null;
         }
     }
-
+    
     /**
-     * Deconstruct the statement into tokens, or return null if the statement doesnt match
-     *
-     * @param astStmt the statement to partsMap
-     * @return Tokens from the stencil, or null if the statement doesnt match
+     * 
+     * @param astStmt
+     * @return 
      */
-    public $args deconstruct( Statement astStmt ){
-        
-        if( statementClass.isAssignableFrom(astStmt.getClass())){
+    public Select<T> select( Statement astStmt ){
+         if( statementClass.isAssignableFrom(astStmt.getClass())){
             if( ! constraint.test((T) astStmt)){
                 return null;
             }
@@ -1483,36 +1466,43 @@ public final class $stmt<T extends Statement>
                 if( astStmt.getComment().isPresent() ){ //removeIn any comments before checking                    
                     Tokens tks = stmtPattern.deconstruct(astStmt.toString());
                     if( tks != null ){
-                        return $args.of(tks);
+                        return new Select( astStmt, $args.of(tks) );
+                        //return $args.of(tks);
                     }
                     //if the statement HAS a comment and the template does not
                     Statement cpy = astStmt.clone();
                     cpy.removeComment();
                     if( cpy.toString().trim().equals(stmtPattern.getTextBlanks().getFixedText().trim())){
-                        return $args.of(Tokens.of());
+                        //return $args.of(Tokens.of());
+                        return new Select( astStmt, $args.of( new Tokens()) );
                     }
                 }else if( astStmt.toString().equals(stmtPattern.getTextBlanks().getFixedText())){
-                    return $args.of(Tokens.of());
+                    return new Select( astStmt, $args.of( new Tokens()) );
+                    //return $args.of(Tokens.of());
                 }
                 return null;
             }
             if( !astStmt.getComment().isPresent() ) {
                 Tokens ts = stmtPattern.deconstruct(astStmt.toString().trim());
                 if( ts != null ){
-                    return $args.of(ts);
+                    //return $args.of(ts);
+                    return new Select( astStmt, $args.of(ts) );
                 }
             } else{
                 Tokens ts = stmtPattern.deconstruct(astStmt.toString());
                 if( ts != null ){
-                    return $args.of(ts);
+                    //return $args.of(ts);
+                    return new Select( astStmt, $args.of(ts) );
                 }
                 Statement cpy = astStmt.clone();
                 cpy.removeComment();
                 ts = stmtPattern.deconstruct(cpy.toString().trim());
-                return $args.of(ts);
+                if( ts != null ){
+                    return new Select( astStmt, $args.of(ts) );
+                }
             }
         }
-        return null;
+        return null;        
     }
 
     @Override
@@ -1536,7 +1526,7 @@ public final class $stmt<T extends Statement>
     public Select<T> selectFirstIn( _node _n ){
         Optional<T> f = _n.ast().findFirst(this.statementClass, s -> this.matches(s) );         
         if( f.isPresent()){
-            return this.select( f.get() );
+            return select( f.get() );
         }
         return null;
     }
@@ -1548,6 +1538,42 @@ public final class $stmt<T extends Statement>
      */
     public Select<T> selectFirstIn( Node astNode ){
         Optional<T> f = astNode.findFirst(this.statementClass, s -> this.matches(s) );         
+        if( f.isPresent()){
+            return this.select(f.get());
+        }
+        return null;
+    }
+    
+    
+    /**
+     * Returns the first Statement that matches the 
+     * @param _n
+     * @param selectConstraint
+     * @return 
+     */
+    public Select<T> selectFirstIn( _node _n, Predicate<Select<T>> selectConstraint ){
+        Optional<T> f = _n.ast().findFirst(this.statementClass, s -> {
+            Select<T> sel = this.select(s); 
+            return sel != null && selectConstraint.test(sel);
+            });         
+        if( f.isPresent()){
+            return select( f.get() );
+        }
+        return null;
+    }
+
+    /**
+     * Returns the first Statement that matches the 
+     * @param astNode the 
+     * @param selectConstraint 
+     * @return a Select containing the Statement and the key value pairs from the prototype
+     */
+    public Select<T> selectFirstIn( Node astNode, Predicate<Select<T>> selectConstraint ){
+        Optional<T> f = astNode.findFirst(this.statementClass, s -> {
+            Select<T> sel = this.select(s); 
+            return sel != null && selectConstraint.test(sel);
+            });                         
+                //s -> this.matches(s) );         
         if( f.isPresent()){
             return this.select(f.get());
         }
@@ -1594,9 +1620,8 @@ public final class $stmt<T extends Statement>
 
     @Override
     public <N extends Node> N forEachIn(N astNode, Consumer<T> statementActionFn){
-        astNode.walk(this.statementClass, e-> {
-            $args tokens = deconstruct( e );
-            if( tokens != null ){
+        astNode.walk(this.statementClass, e-> {                        
+            if( select(e)  != null ){
                 statementActionFn.accept( e);
             }
         });
@@ -1606,8 +1631,8 @@ public final class $stmt<T extends Statement>
     @Override
     public <N extends _node> N forEachIn(N _n, Consumer<T> statementActionFn){
         Walk.in(_n, this.statementClass, e->{
-            $args tokens = deconstruct( e );
-            if( tokens != null ){
+            //$args tokens = deconstruct( e );
+            if( select(e) != null ){
                 statementActionFn.accept( (T)e);
             }
         });
@@ -1648,35 +1673,97 @@ public final class $stmt<T extends Statement>
         return _n;
     }
 
-    @Override
-    public List<Select<T>> selectListIn(Node astNode ){
-        List<Select<T>>sts = new ArrayList<>();
-        astNode.walk(this.statementClass, st-> {
-            $args tokens = deconstruct( st );
-            if( tokens != null ){
-                sts.add( new Select( (T)st, tokens) );
+    /**
+     * 
+     * @param <N>
+     * @param astNode
+     * @param selectConstraint
+     * @param selectedActionFn
+     * @return 
+     */
+    public <N extends Node> N forSelectedIn(N astNode, Predicate<Select<T>> selectConstraint, Consumer<Select<T>> selectedActionFn){
+        astNode.walk(this.statementClass, e-> {
+            Select<T> sel = select( e );
+            if( sel != null  && selectConstraint.test(sel) ){
+                selectedActionFn.accept( sel );
             }
         });
-        return sts;
+        return astNode;
     }
 
+    /**
+     * 
+     * @param <N>
+     * @param _n
+     * @param selectConstraint
+     * @param selectedActionFn
+     * @return 
+     */
+    public <N extends _node> N forSelectedIn(N _n, Predicate<Select<T>> selectConstraint, Consumer<Select<T>> selectedActionFn){
+        Walk.in(_n, this.statementClass, e->{
+            Select<T> sel = select( e );
+            if( sel != null && selectConstraint.test(sel)){
+                selectedActionFn.accept( sel );
+            }
+        });
+        return _n;
+    }
+    
     /** Write the Statements without comments (for matching, comparison) */
     public static final PrettyPrinterConfiguration NO_COMMENTS = 
         new PrettyPrinterConfiguration()
             .setPrintComments(false).setPrintJavadoc(false);
 
     @Override
+    public List<Select<T>> selectListIn(Node astNode ){
+        List<Select<T>>sts = new ArrayList<>();
+        astNode.walk(this.statementClass, st-> {
+            //$args tokens = deconstruct( st );
+            Select sel = select(st);
+            if( sel != null ){
+                sts.add( sel); //new Select( (T)st, tokens) );
+            }
+        });
+        return sts;
+    }
+    
+    @Override
     public List<Select<T>> selectListIn(_node _n ){
         List<Select<T>>sts = new ArrayList<>();
         Walk.in(_n, this.statementClass, st->{
-            $args tokens = deconstruct(st);
-            if (tokens != null) {
-                sts.add(new Select(st, tokens));
+            //$args tokens = deconstruct(st);
+            Select sel = select(st);
+            if (sel != null) {
+                sts.add(sel);
             }
         });
         return sts;
     }
 
+    public List<Select<T>> selectListIn(Node astNode, Predicate<Select<T>> selectConstraint ){
+        List<Select<T>>sts = new ArrayList<>();
+        astNode.walk(this.statementClass, st-> {
+            //$args tokens = deconstruct( st );
+            Select sel = select(st);
+            if( sel != null && selectConstraint.test(sel)){
+                sts.add( sel); //new Select( (T)st, tokens) );
+            }
+        });
+        return sts;
+    }
+    
+    public List<Select<T>> selectListIn(_node _n, Predicate<Select<T>> selectConstraint ){
+        List<Select<T>>sts = new ArrayList<>();
+        Walk.in(_n, this.statementClass, st->{
+            //$args tokens = deconstruct(st);
+            Select sel = select(st);
+            if (sel != null && selectConstraint.test(sel)){
+                sts.add(sel);
+            }
+        });
+        return sts;
+    }
+    
     @Override
     public <N extends _node> N removeIn(N _n ){
         this.selectListIn(_n).forEach(s-> s.astStatement.removeForced() );
@@ -1773,9 +1860,10 @@ public final class $stmt<T extends Statement>
      */
     public static class Select<T extends Statement> implements $proto.selected, 
             $proto.selectedAstNode<T> {
+        
         public T astStatement;
         public $args args;
-
+        
         public Select( T astStatement, $args tokens){
             this.astStatement = astStatement;
             this.args = tokens;

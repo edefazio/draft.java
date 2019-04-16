@@ -44,7 +44,7 @@ import java.util.function.Predicate;
  * @author Eric
  */
 public final class _anno
-        implements _node<AnnotationExpr> {
+        implements _node<AnnotationExpr>, _named<_anno> {
 
     public static _anno of( String anno ){
         return of( new String[]{anno} );
@@ -82,6 +82,12 @@ public final class _anno
         return this.astAnno.getNameAsString();
     }
 
+    @Override
+    public _anno name( String name ){
+        this.astAnno.setName(name);
+        return this;
+    }
+    
     public _anno setName( String name ) {
         this.astAnno.setName( name );
         return this;

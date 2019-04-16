@@ -629,7 +629,7 @@ public final class $anno
      * @return 
      */
     public boolean matches( AnnotationExpr astAnnoExpr ){
-        return deconstruct(astAnnoExpr ) != null;
+        return select(astAnnoExpr ) != null;
     }
 
     /**
@@ -638,7 +638,7 @@ public final class $anno
      * @return 
      */
     public boolean matches( _anno _a){
-        return deconstruct( _a ) != null;
+        return select( _a ) != null;
     }
 
     /**
@@ -646,7 +646,7 @@ public final class $anno
      *
      * @param _a
      * @return Tokens from the stencil, or null if the expression doesnt match
-     */
+     
     public $args deconstruct(_anno _a ){
         if( this.constraint.test(_a) ){
             Tokens r = pattern.deconstruct( _a.toString() ); 
@@ -656,16 +656,56 @@ public final class $anno
         }
         return null;
     }
+    */ 
 
     /**
      * Deconstruct the expression into tokens, or return null if the statement doesnt match
      *
      * @param astAnnoExpr
      * @return Tokens from the stencil, or null if the expression doesnt match
-     */
+     
     public $args deconstruct(AnnotationExpr astAnnoExpr ){
         return deconstruct(_anno.of(astAnnoExpr) );
     }
+    */ 
+    
+     /**
+     * 
+     * @param _a
+     * @return 
+     */
+    public Select select(_anno _a){
+        if( this.constraint.test(_a) ){
+            Tokens r = pattern.deconstruct( _a.toString() ); 
+            if( r != null){
+                return new Select( _a, r );
+            }            
+        }
+        return null;        
+    }
+
+    /**
+     * 
+     * @param anno
+     * @return 
+     */
+    public Select select(String anno){
+        try{
+            return select( _anno.of(anno));
+        }catch(Exception e){
+            return null;
+        }
+    }
+    
+    /**
+     * 
+     * @param astExpr
+     * @return 
+     */
+    public Select select(AnnotationExpr astAnno){
+        return select(_anno.of(astAnno));        
+    }
+    
 
     @Override
     public String toString() {
@@ -738,46 +778,7 @@ public final class $anno
         return this.pattern.list$Normalized();
     }
 
-    /**
-     * 
-     * @param _a
-     * @return 
-     */
-    public Select select(_anno _a){
-        if( this.constraint.test(_a) ){
-            Tokens r = pattern.deconstruct( _a.toString() ); 
-            if( r != null){
-                return new Select( _a, r );
-            }            
-        }
-        return null;        
-    }
-
-    /**
-     * 
-     * @param anno
-     * @return 
-     */
-    public Select select(String anno){
-        try{
-            return select( _anno.of(anno));
-        }catch(Exception e){
-            return null;
-        }
-    }
-    
-    /**
-     * 
-     * @param astExpr
-     * @return 
-     */
-    public Select select(AnnotationExpr astExpr){
-        $args ts = this.deconstruct(astExpr);
-        if( ts != null){
-            return new Select( astExpr, ts );
-        }
-        return null;
-    }
+   
 
     /**
      * Returns the first _anno that matches the pattern and constraint
@@ -981,9 +982,10 @@ public final class $anno
     @Override
     public <N extends Node> N forEachIn(N astNode, Consumer<_anno> _annoActionFn){
         astNode.walk(AnnotationExpr.class, a-> {
-            $args tokens = deconstruct(a );
-            if( tokens != null ){
-                _annoActionFn.accept(_anno.of(a));
+            //$args tokens = deconstruct(a );
+            Select select = select(a);
+            if( select != null ){
+                _annoActionFn.accept( select.model() );
             }
         });
         return astNode;
@@ -992,9 +994,10 @@ public final class $anno
     @Override
     public <N extends _node> N forEachIn(N _n, Consumer<_anno> _annoActionFn){
         Walk.in(_n, AnnotationExpr.class, a -> {
-            $args tokens =  deconstruct(a );
-            if( tokens != null ){
-                _annoActionFn.accept(_anno.of(a) );
+            //$args tokens =  deconstruct(a );
+            Select select = select(a);
+            if( select != null ){
+                _annoActionFn.accept( select.model() );
             }
         });
         return _n;

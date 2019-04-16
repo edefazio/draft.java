@@ -89,6 +89,15 @@ public final class _typeRef<T extends Type>
         return of(this.astType.clone());
     }
     
+    public boolean is(Class expectedType ){
+        try{
+            return of( expectedType ).equals(this);
+        }
+        catch( Exception e) {
+            return false;
+        }
+    }
+    
     @Override
     public boolean is( String... type  ){
         try{

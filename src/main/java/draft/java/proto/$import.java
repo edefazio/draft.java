@@ -32,11 +32,11 @@ public final class $import
      * 
      * @param <T>
      * @param _type
-     * @param protoTargetImport
+     * @param pattern
      * @return 
      */
-    public static final <T extends _type> List<_import> list( T _type, String protoTargetImport ){
-        return $import.of(protoTargetImport).listIn(_type);
+    public static final <T extends _type> List<_import> list( T _type, String pattern ){
+        return $import.of(pattern).listIn(_type);
     }
     
     /**
@@ -77,12 +77,12 @@ public final class $import
      * 
      * @param <T>
      * @param _type
-     * @param protoTargetImport
+     * @param pattern
      * @param constraint
      * @return 
      */
-    public static final <T extends _type> List<_import> list( T _type, String protoTargetImport, Predicate<_import> constraint){
-        return $import.of(protoTargetImport).constraint(constraint).listIn(_type);
+    public static final <T extends _type> List<_import> list( T _type, String pattern, Predicate<_import> constraint){
+        return $import.of(pattern).constraint(constraint).listIn(_type);
     }
     
     /**
@@ -124,11 +124,11 @@ public final class $import
      * 
      * @param <T>
      * @param _type
-     * @param protoTargetImport
+     * @param pattern
      * @return 
      */
-    public static final <T extends _type> List<Select> selectList( T _type, String protoTargetImport ){
-        return $import.of(protoTargetImport).selectListIn(_type);
+    public static final <T extends _type> List<Select> selectList( T _type, String pattern ){
+        return $import.of(pattern).selectListIn(_type);
     }
     
     /**
@@ -153,8 +153,7 @@ public final class $import
         return $import.of(target).selectListIn(_type);
     }
     
-    
-        /**
+    /**
      * 
      * @param <T>
      * @param _type
@@ -170,12 +169,12 @@ public final class $import
      * 
      * @param <T>
      * @param _type
-     * @param protoTargetImport
+     * @param pattern
      * @param constraint
      * @return 
      */
-    public static final <T extends _type> List<Select> selectList( T _type, String protoTargetImport,Predicate<_import> constraint){
-        return $import.of(protoTargetImport).constraint(constraint).selectListIn(_type);
+    public static final <T extends _type> List<Select> selectList( T _type, String pattern, Predicate<_import> constraint){
+        return $import.of(pattern).constraint(constraint).selectListIn(_type);
     }
     
     /**
@@ -217,11 +216,11 @@ public final class $import
      * 
      * @param <T>
      * @param _type
-     * @param protoTargetImport
+     * @param pattern
      * @return 
      */      
-    public static final <T extends _type> _import first( T _type, String protoTargetImport ){
-        return $import.of(protoTargetImport).firstIn(_type);
+    public static final <T extends _type> _import first( T _type, String pattern ){
+        return $import.of(pattern).firstIn(_type);
     }
     
     /**
@@ -262,12 +261,12 @@ public final class $import
      * 
      * @param <T>
      * @param _type
-     * @param protoTargetImport
+     * @param pattern
      * @param constraint
      * @return 
      */
-    public static final <T extends _type> _import first( T _type, String protoTargetImport, Predicate<_import> constraint){
-        return $import.of(protoTargetImport).constraint(constraint).firstIn(_type);
+    public static final <T extends _type> _import first( T _type, String pattern, Predicate<_import> constraint){
+        return $import.of(pattern).constraint(constraint).firstIn(_type);
     }
     
     /**
@@ -310,12 +309,12 @@ public final class $import
      * 
      * @param <T>
      * @param _type
-     * @param protoTargetImport
+     * @param pattern
      * @param actionFn
      * @return 
      */
-    public static final <T extends _type> T forEach( T _type, String protoTargetImport, Consumer<_import> actionFn){
-        return $import.of(protoTargetImport).forEachIn(_type, actionFn);
+    public static final <T extends _type> T forEach( T _type, String pattern, Consumer<_import> actionFn){
+        return $import.of(pattern).forEachIn(_type, actionFn);
     }
     
     /**
@@ -411,12 +410,12 @@ public final class $import
      * 
      * @param <T>
      * @param _type
-     * @param protoTargetImport
+     * @param pattern
      * @param actionFn
      * @return 
      */
-    public static final <T extends _type> T forSelected( T _type, String protoTargetImport, Consumer<Select> actionFn){
-        return $import.of(protoTargetImport).forSelectedIn(_type, actionFn);
+    public static final <T extends _type> T forSelected( T _type, String pattern, Consumer<Select> actionFn){
+        return $import.of(pattern).forSelectedIn(_type, actionFn);
     }
     
     /**
@@ -461,13 +460,13 @@ public final class $import
      * 
      * @param <T>
      * @param _type
-     * @param protoTargetImport
+     * @param pattern
      * @param constraint
      * @param actionFn
      * @return 
      */
-    public static final <T extends _type> T forSelected( T _type, String protoTargetImport, Predicate<_import> constraint, Consumer<Select> actionFn){
-        return $import.of(protoTargetImport).constraint(constraint)
+    public static final <T extends _type> T forSelected( T _type, String pattern, Predicate<_import> constraint, Consumer<Select> actionFn){
+        return $import.of(pattern).constraint(constraint)
                 .forSelectedIn(_type, actionFn);
     }
     
@@ -513,11 +512,11 @@ public final class $import
      * 
      * @param <T>
      * @param _type
-     * @param protoTargetImport
+     * @param pattern
      * @return 
      */
-    public static final <T extends _type> Select selectFirst( T _type, String protoTargetImport ){
-        return $import.of(protoTargetImport).selectFirstIn(_type);
+    public static final <T extends _type> Select selectFirst( T _type, String pattern ){
+        return $import.of(pattern).selectFirstIn(_type);
     }
     
     /**
@@ -558,12 +557,12 @@ public final class $import
      * 
      * @param <T>
      * @param _type
-     * @param protoTargetImport
+     * @param pattern
      * @param constraint
      * @return 
      */
-    public static final <T extends _type> Select selectFirst( T _type, String protoTargetImport, Predicate<_import> constraint){
-        return $import.of(protoTargetImport).constraint(constraint).selectFirstIn(_type);
+    public static final <T extends _type> Select selectFirst( T _type, String pattern, Predicate<_import> constraint){
+        return $import.of(pattern).constraint(constraint).selectFirstIn(_type);
     }
     
     /**
@@ -594,24 +593,24 @@ public final class $import
      * 
      * @param <T>
      * @param _type
-     * @param _protoSource
-     * @param _protoTarget
+     * @param _sourceProto
+     * @param _targetProto
      * @return 
      */
-    public static final <T extends _type> T replace( T _type, _import _protoSource, _import _protoTarget ){
-        return $import.of(_protoSource).replaceIn(_type, _protoTarget);
+    public static final <T extends _type> T replace( T _type, _import _sourceProto, _import _targetProto ){
+        return $import.of(_sourceProto).replaceIn(_type, _targetProto);
     }
     
     /**
      * 
      * @param <T>
      * @param _type
-     * @param protoSource
-     * @param protoTarget
+     * @param sourcePattern
+     * @param targetPattern
      * @return 
      */
-    public static final <T extends _type> T replace( T _type, String protoSource, String protoTarget ){        
-        return $import.of(protoSource).replaceIn(_type, protoTarget);
+    public static final <T extends _type> T replace( T _type, String sourcePattern, String targetPattern ){        
+        return $import.of(sourcePattern).replaceIn(_type, targetPattern);
     }
     
     /**
@@ -655,11 +654,11 @@ public final class $import
      * 
      * @param <T>
      * @param _type
-     * @param protoTarget
+     * @param pattern
      * @return 
      */
-    public static final <T extends _type> T remove( T _type, String protoTarget ){
-        return $import.of(protoTarget).removeIn(_type);
+    public static final <T extends _type> T remove( T _type, String pattern ){
+        return $import.of(pattern).removeIn(_type);
     }
     
     /**
@@ -700,12 +699,12 @@ public final class $import
      * 
      * @param <T>
      * @param _type
-     * @param protoTarget
+     * @param pattern
      * @param constraint
      * @return 
      */
-    public static final <T extends _type> T remove( T _type, String protoTarget, Predicate<_import> constraint){
-        return $import.of(protoTarget).constraint(constraint).removeIn(_type);
+    public static final <T extends _type> T remove( T _type, String pattern, Predicate<_import> constraint){
+        return $import.of(pattern).constraint(constraint).removeIn(_type);
     }
     
     /**
@@ -734,11 +733,11 @@ public final class $import
     
     /**
      * 
-     * @param proto
+     * @param pattern
      * @return 
      */
-    public static $import of( String proto){
-        _import _i = _import.of( proto );
+    public static $import of( String pattern){
+        _import _i = _import.of(pattern );
         return new $import( _i  );
     }
 
@@ -753,15 +752,14 @@ public final class $import
     
     /**
      * 
-     * @param proto
+     * @param pattern
      * @param constraint
      * @return 
      */
-    public static $import of( String proto, Predicate<_import> constraint){
-        _import _i = _import.of(proto );
+    public static $import of( String pattern, Predicate<_import> constraint){
+        _import _i = _import.of(pattern );
         return new $import( _i ).constraint(constraint);
     }
-    
     
     /**
      * 
@@ -829,26 +827,6 @@ public final class $import
         return this;
     }
     
-    /*
-    public pImport setStatic(){
-        return setStatic(true);
-    }
-    
-    public pImport setStatic( boolean isStatic ){
-        this.isStatic = isStatic;
-        return this;
-    }
-    
-    public pImport setWildcard( ){
-        return setWildcard(true);
-    }
-    
-    public pImport setWildcard( boolean isWildcard ){
-        this.isWildcard = isWildcard;
-        return this;
-    }
-    */
-    
     /**
      * ADD a constraint
      * @param constraint
@@ -861,11 +839,11 @@ public final class $import
     
     /**
      * 
-     * @param imports
+     * @param imprt
      * @return 
      */
-    public boolean matches( String imports ){
-        return matches( _import.of(imports) );
+    public boolean matches( String imprt ){
+        return matches(_import.of(imprt) );
     }
 
     /**
@@ -894,9 +872,9 @@ public final class $import
      */
     public $args deconstruct(_import _i ){
         if( this.constraint.test(_i)){
-            System.out.println( "STATIC " + _i.isStatic() +"  WILDCARD "+_i.isWildcard()+ " I "+ _i.getName());
+            //System.out.println( "STATIC " + _i.isStatic() +"  WILDCARD "+_i.isWildcard()+ " I "+ _i.getName());
             //System.out.println( "THIS STATIC " + this.isStatic +"  THIS WILDCARD "+this.isWildcard + " I "+ _i);
-            System.out.println( "IMPORT PATTERN " + importPattern );
+            //System.out.println( "IMPORT PATTERN " + importPattern );
             //if( this.isStatic == _i.isStatic() && this.isWildcard == _i.isWildcard() ){                
             return $args.of(importPattern.deconstruct( _i.getName().replace(".*", "").trim() ));
             //}
@@ -919,21 +897,33 @@ public final class $import
         return null;
     }
 
-    @Override
-    public String toString() {
-        //String stat = "";
-        //String star = "";
-        //if( isStatic ){
-        //    stat = " static ";
-        //}
-        //if( isWildcard ){
-        //    star = ".*";
-        //}
-        return "($import) : \"" +this.importPattern + "\"";
-        //return "($import) : \"" +stat + this.importPattern + star + "\"";
+     /**
+     * 
+     * @param _i
+     * @return 
+     */
+    public Select select(_import _i){
+        return select( _i.ast() );
     }
 
+    /**
+     * 
+     * @param astImport
+     * @return 
+     */
+    public Select select(ImportDeclaration astImport){
+        $args ts = this.deconstruct(astImport);
+        if( ts != null){
+            return new Select( astImport, ts );
+        }
+        return null;
+    }
     
+    @Override
+    public String toString() {
+        return "($import) : \"" +this.importPattern + "\"";
+    }
+
     @Override
     public _import construct(Translator translator, Map<String, Object> keyValues) {
         return _import.of(importPattern.construct(translator, keyValues));
@@ -998,28 +988,6 @@ public final class $import
     @Override
     public List<String> list$Normalized() {
         return this.importPattern.list$Normalized();
-    }
-
-    /**
-     * 
-     * @param _i
-     * @return 
-     */
-    public Select select(_import _i){
-        return select( _i.ast() );
-    }
-
-    /**
-     * 
-     * @param astImport
-     * @return 
-     */
-    public Select select(ImportDeclaration astImport){
-        $args ts = this.deconstruct(astImport);
-        if( ts != null){
-            return new Select( astImport, ts );
-        }
-        return null;
     }
 
     /**
@@ -1124,7 +1092,7 @@ public final class $import
     }
 
     /**
-     * Remove all matching occurrences of the template in the node and return the
+     * Remove all matching occurrences of the proto in the node and return the
      * modified node
      * @param astNode the root node to start search
      * @param <N> the input node TYPE
@@ -1135,7 +1103,7 @@ public final class $import
         astNode.walk( ImportDeclaration.class, e-> {
             Select sel = select( e );
             if( sel != null ){
-                sel.astImport.removeForced();
+                sel.ast().removeForced();
             }
         });
         return astNode;
@@ -1188,7 +1156,7 @@ public final class $import
             astNode.findCompilationUnit().get().walk(ImportDeclaration.class, e-> {
                 Select sel = select( e );
                 if( sel != null ){
-                    sel.astImport.replace(_i.ast() );
+                    sel.ast().replace(_i.ast() );
                 }
             });
         }
@@ -1222,7 +1190,7 @@ public final class $import
             astNode.findCompilationUnit().get().walk(ImportDeclaration.class, e-> {
                 Select sel = select( e );
                 if( sel != null ){
-                    sel.astImport.replace($i.construct(sel.args).ast() );
+                    sel.ast().replace($i.construct(sel.args).ast() );
                 }
             });
         }
@@ -1285,11 +1253,17 @@ public final class $import
         $proto.selectedAstNode<ImportDeclaration>, 
         $proto.selected_model<_import> {
     
-        public final ImportDeclaration astImport;
+        //public final ImportDeclaration astImport;
+        public final _import _i;
         public final $args args;
 
+        public Select(_import _i, $args tokens){
+            this._i = _i;  
+            this.args = tokens;
+        }
+        
         public Select( ImportDeclaration astImport, $args tokens){
-            this.astImport = astImport;
+            this._i = _import.of(astImport );
             this.args = tokens;
         }
         
@@ -1301,19 +1275,19 @@ public final class $import
         @Override
         public String toString(){
             return "$import.Select {"+ System.lineSeparator()+
-                Text.indent( astImport.toString() )+ System.lineSeparator()+
+                Text.indent( _i.toString() )+ System.lineSeparator()+
                 Text.indent("$args : " + args) + System.lineSeparator()+
                 "}";
         }
 
         @Override
         public ImportDeclaration ast() {
-            return astImport;
+            return _i.ast();
         }
 
         @Override
         public _import model() {
-            return _import.of(astImport);
+            return _i;
         }
     }
 }

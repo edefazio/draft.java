@@ -210,7 +210,7 @@ public class SexprTest extends TestCase {
 
         System.out.println( $expr.replace(_c, "1", "2") );
         
-        assertTrue( $expr.replace(_c, "1", "2").getField("i").initIs(2));
+        assertTrue( $expr.replace(_c, "1", "2").getField("i").isInit(2));
         
         //assertTrue( $expr.replace(_c, "1", "2").getField("i").initIs("2"));
         

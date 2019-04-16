@@ -4,6 +4,7 @@ import com.github.javaparser.ast.Node;
 import com.github.javaparser.ast.body.MethodDeclaration;
 import com.github.javaparser.ast.expr.*;
 import com.github.javaparser.ast.stmt.*;
+import com.github.javaparser.ast.type.Type;
 import com.github.javaparser.printer.PrettyPrinterConfiguration;
 import draft.*;
 import draft.java.*;
@@ -71,6 +72,48 @@ public class $method
     }
     
     /**
+     * 
+     * @param clazz
+     * @param proto
+     * @return 
+     */
+    public static final List<_method> list( Class clazz, String proto ){
+        return $method.of(proto).listIn(_type.of(clazz));
+    }
+    
+    /**
+     * 
+     * @param clazz
+     * @param _proto
+     * @return 
+     */
+    public static final List<_method> list(Class clazz, _method _proto ){
+        return $method.of(_proto).listIn(_type.of(clazz));
+    }
+    
+    /**
+     * 
+     * @param clazz
+     * @param proto
+     * @param constraint
+     * @return 
+     */
+    public static final List<_method> list( Class clazz, String proto, Predicate<_method> constraint){
+        return $method.of(proto, constraint).listIn(_type.of(clazz) );
+    }
+    
+    /**
+     *
+     * @param clazz
+     * @param _proto
+     * @param constraint
+     * @return 
+     */
+    public static final List<_method> list( Class clazz, _method _proto, Predicate<_method> constraint){
+        return $method.of(_proto, constraint).listIn(_type.of(clazz) );
+    }
+    
+    /**
      * Removes all occurrences of the source anno in the rootNode (recursively)
      * @param <N>
      * @param _n
@@ -91,6 +134,27 @@ public class $method
     public static final <N extends _node> N remove( N _n, String... proto ){
         return $method.of(proto).removeIn(_n);
     }
+    
+    
+    /**
+     * Removes all occurrences of the source anno in the rootNode (recursively)
+     * @param clazz
+     * @param _proto
+     * @return the modified N
+     */
+    public static final _type remove( Class clazz, _method _proto ){
+        return $method.of(_proto).removeIn(_type.of(clazz));
+    }
+    
+    /**
+     * @param clazz
+     * @param proto
+     * @return 
+     */
+    public static final _type remove( Class clazz, String... proto ){
+        return $method.of(proto).removeIn(_type.of(clazz));
+    }
+    
     
     /**
      * 
@@ -114,6 +178,28 @@ public class $method
      */
     public static final <N extends _node> N replace( N _n, String[] protoMethod, String[] replacementMethod ){
         return $method.of(protoMethod).replaceIn(_n, replacementMethod);
+    }
+    
+    /**
+     * 
+     * @param clazz
+     * @param _protoSource
+     * @param _protoReplacement
+     * @return 
+     */
+    public static final _type replace( Class clazz, _method _protoSource, _method _protoReplacement ){
+        return $method.of(_protoSource).replaceIn(_type.of(clazz), _protoReplacement);
+    }
+    
+    /**
+     * 
+     * @param clazz
+     * @param protoMethod
+     * @param replacementMethod
+     * @return 
+     */
+    public static final _type replace( Class clazz, String[] protoMethod, String[] replacementMethod ){
+        return $method.of(protoMethod).replaceIn(_type.of(clazz), replacementMethod);
     }
     
     /**
@@ -348,14 +434,10 @@ public class $method
     private $method( _method _m , Predicate<_method> constraint){
         
         if( _m.hasJavadoc() ){
-            //System.out.println( "The JavaDoc is "+ _m.getJavadoc() );
             javadoc.stencil(_m.getJavadoc().toString() );
-            //javadoc.$form = Stencil.of(_p.getJavadoc().toString());
-        }
-        
+        }        
         if( _m.hasAnnos() ){
             annos.stencil(_m.getAnnos() );
-            //annos.$form = Stencil.of(_p.getAnnos().toString() );
         }
         if( !_m.getModifiers().isEmpty() ){
             final _modifiers ms = _m.getModifiers();
@@ -382,7 +464,6 @@ public class $method
         if( _m.hasBody() ){            
             String bdy = _m.getBody().toString(new PrettyPrinterConfiguration()
                 .setPrintComments(false).setPrintJavadoc(false) );
-            //System.out.println( "the Body is "+ bdy);
             body = new $component(bdy.trim());            
         }
         this.constraint = constraint;
@@ -494,7 +575,7 @@ public class $method
         nom.remove( "throws");
         nom.remove("body");
         if( nom.size() != values.length ){
-            throw new DraftException ("FILL eXPECTED ("+nom.size()+") values "+ nom+" got ("+values.length+")");
+            throw new DraftException ("Fill expected ("+nom.size()+") values "+ nom+" got ("+values.length+")");
         }
         Tokens ts = new Tokens();
         for(int i=0;i<nom.size();i++){
@@ -591,9 +672,8 @@ public class $method
      * @param _m
      * @return 
      */
-    public $args deconstruct( _method _m ){
+    public Select select( _method _m){
         if( !this.constraint.test(_m)){
-            System.out.println("FAILED CONSTRAINT");
             return null;
         }
         Tokens all = new Tokens();
@@ -607,20 +687,20 @@ public class $method
         all = thrown.decomposeTo(_m.getThrows(), all);
         all = body.decomposeTo(_m.getBody(), all);
         if( all != null ){
-            return $args.of(all);
+            return new Select( _m, $args.of(all));
         }
-        return null;
-    }
-    
-    /**
-     * 
-     * @param astTarget
-     * @return 
-     */
-    public $args deconstruct( MethodDeclaration astTarget ){
-        return deconstruct( _method.of(astTarget ) );        
+        return null;        
     }
 
+    /**
+     * 
+     * @param astMethod
+     * @return 
+     */
+    public Select select( MethodDeclaration astMethod){
+        return select(_method.of(astMethod ));
+    }
+    
     /**
      * Hardcode parameterized values
      * (i.e. what was once a parameter, now is static text)
@@ -707,7 +787,7 @@ public class $method
      * @return 
      */
     public boolean matches( _method _m ){
-        return deconstruct( _m ) != null;
+        return select( _m ) != null;
     }
 
     /**
@@ -716,34 +796,7 @@ public class $method
      * @return 
      */
     public boolean matches( MethodDeclaration astMethod ){
-        return deconstruct(astMethod ) != null;
-    }
-
-    /**
-     * 
-     * @param _m
-     * @return 
-     */
-    public Select select( _method _m){
-        $args ts = deconstruct( _m );
-        if( ts != null ){
-            return new Select( _m, ts );
-        }
-        return null;
-        //return select( _m );
-    }
-
-    /**
-     * 
-     * @param astMethod
-     * @return 
-     */
-    public Select select( MethodDeclaration astMethod){
-        $args ts = deconstruct( astMethod );
-        if( ts != null ){
-            return new Select( astMethod, ts );
-        }
-        return null;
+        return select(astMethod ) != null;
     }
 
     /**
@@ -798,6 +851,40 @@ public class $method
         return null;
     }
     
+    /**
+     * Returns the first _method that matches the pattern and constraint
+     * @param _n the _java node
+     * @param selectConstraint
+     * @return  the first _method that matches (or null if none found)
+     */
+    public Select selectFirstIn( _node _n, Predicate<Select> selectConstraint){
+        Optional<MethodDeclaration> f = _n.ast().findFirst(MethodDeclaration.class, s -> {
+            Select sel = this.select(s);
+            return sel != null && selectConstraint.test(sel);
+            });               
+        if( f.isPresent()){
+            return select(f.get());
+        }
+        return null;
+    }
+
+    /**
+     * Returns the first _method that matches the pattern and constraint
+     * @param astNode the node to look through
+     * @param selectConstraint
+     * @return  the first _method that matches (or null if none found)
+     */
+    public Select selectFirstIn( Node astNode, Predicate<Select> selectConstraint){
+        Optional<MethodDeclaration> f = astNode.findFirst(MethodDeclaration.class, s -> {
+            Select sel = this.select(s);
+            return sel != null && selectConstraint.test(sel);
+            });         
+        if( f.isPresent()){
+            return select(f.get());
+        }
+        return null;
+    }
+    
     @Override
     public List<Select> selectListIn(Node astNode){
         List<Select>sts = new ArrayList<>();
@@ -816,6 +903,28 @@ public class $method
         Walk.in(_n, MethodDeclaration.class, m -> {
             Select sel = select( m );
             if( sel != null ){
+                sts.add(sel);
+            }
+        });
+        return sts;
+    }
+    
+    public List<Select> selectListIn(Node astNode, Predicate<Select> selectConstraint){
+        List<Select>sts = new ArrayList<>();
+        astNode.walk(MethodDeclaration.class, m-> {
+            Select sel = select( m );
+            if( sel != null && selectConstraint.test(sel)){
+                sts.add(sel);
+            }
+        });
+        return sts;
+    }
+
+    public List<Select> selectListIn(_node _n, Predicate<Select> selectConstraint){
+        List<Select>sts = new ArrayList<>();
+        Walk.in(_n, MethodDeclaration.class, m -> {
+            Select sel = select( m );
+            if( sel != null && selectConstraint.test(sel)){
                 sts.add(sel);
             }
         });
@@ -850,6 +959,42 @@ public class $method
         Walk.in(_n, _method.class, m ->{
             Select s = select( m );
             if( s != null ){
+                selectedActionFn.accept( s );
+            }
+        });
+        return _n;
+    }
+    
+    /**
+     * 
+     * @param <N>
+     * @param astNode
+     * @param selectConstraint
+     * @param selectedActionFn
+     * @return 
+     */
+    public <N extends Node> N forSelectedIn(N astNode, Predicate<Select> selectConstraint, Consumer<Select> selectedActionFn ){
+        astNode.walk( MethodDeclaration.class, m-> {
+            Select s = select( m );
+            if( s != null && selectConstraint.test(s)){
+                selectedActionFn.accept( s );
+            }
+        });
+        return astNode;
+    }
+    
+    /**
+     * 
+     * @param <N>
+     * @param _n
+     * @param selectConstraint
+     * @param selectedActionFn
+     * @return 
+     */
+    public <N extends _node> N forSelectedIn(N _n, Predicate<Select> selectConstraint, Consumer<Select> selectedActionFn ){
+        Walk.in(_n, _method.class, m ->{
+            Select s = select( m );
+            if( s != null && selectConstraint.test(s)){
                 selectedActionFn.accept( s );
             }
         });
@@ -906,8 +1051,9 @@ public class $method
     @Override
     public <N extends _node> N removeIn(N _n ){
         Walk.in(_n, MethodDeclaration.class, e-> {
-            $args tokens = this.deconstruct( e );
-            if( tokens != null ){
+            //$args tokens = this.deconstruct( e );
+            
+            if( select(e) != null ){
                 e.removeForced();
             }
         });
@@ -917,8 +1063,8 @@ public class $method
     @Override
     public <N extends Node> N removeIn(N astNode){
         astNode.walk(MethodDeclaration.class, e-> {
-            $args tokens = this.deconstruct( e );
-            if( tokens != null ){
+            //$args tokens = this.deconstruct( e );
+            if( select(e) != null ){
                 e.removeForced();
             }
         });
@@ -928,8 +1074,8 @@ public class $method
     @Override
     public <N extends Node> N forEachIn(N astNode, Consumer<_method> _methodActionFn){
         astNode.walk(MethodDeclaration.class, e-> {
-            $args tokens = this.deconstruct( e );
-            if( tokens != null ){
+            //$args tokens = this.deconstruct( e );
+            if( select(e) != null ){
                 _methodActionFn.accept( _method.of(e) );
             }
         });
@@ -939,8 +1085,8 @@ public class $method
     @Override
     public <N extends _node> N forEachIn(N _n, Consumer<_method> _methodActionFn){
         Walk.in(_n, MethodDeclaration.class, e -> {
-            $args tokens = this.deconstruct( e );
-            if( tokens != null ){
+            //$args tokens = this.deconstruct( e );
+            if( select(e) != null ){
                 _methodActionFn.accept( _method.of(e) );
             }
         });
@@ -1005,6 +1151,58 @@ public class $method
         @Override
         public _method model() {
             return _m;
+        }
+        
+        public boolean isType( Class type ){
+            return _m.isType(type);
+        }
+        
+        public boolean isType( String type ){
+            return _m.isType(type);
+        }
+        
+        public boolean isType( Type type ){
+            return _m.isType(type);
+        }
+        
+        public boolean isType( _typeRef _tr ){
+            return _m.isType(_tr);
+        }
+        
+        public boolean isVarArg(){
+            return _m.isVarArg();
+        }
+        
+        public boolean isAbstract(){
+            return _m.isAbstract();
+        }
+        
+        public boolean hasBody(){
+            return _m.hasBody();
+        }
+        
+        public boolean isVoid(){            
+            return _m.isVoid();
+        }
+        
+        public boolean hasThrows(){
+            return _m.hasThrows();
+        }
+        
+        public boolean hasThrow(Class<? extends Throwable> throwsClass){            
+            return _m.hasThrow(throwsClass);
+        }
+        
+        public boolean hasParameters(){            
+            return _m.hasParameters();
+        }
+        
+        public boolean is(String...methodDeclaration){
+            return _m.is(methodDeclaration);
+        }
+        
+        public boolean hasTypeParameters(){            
+            return _m.hasTypeParameters();
         }
     }
 }

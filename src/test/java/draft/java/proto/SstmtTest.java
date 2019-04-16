@@ -6,6 +6,7 @@ import draft.java.Expr;
 import draft.java.Stmt;
 import draft.java._class;
 import draft.java.proto.$proto.$args;
+import draft.java.proto.$stmt.Select;
 import junit.framework.TestCase;
 
 import java.util.List;
@@ -245,18 +246,23 @@ public class SstmtTest extends TestCase {
     public void testMatchWithComments(){
         //$stmt $s = $stmt.of( Stmt.of( ()-> System.out.println(1) ));
         $stmt $s = $stmt.of( ()-> System.out.println(1) );
-        $args tokens = $s.deconstruct(Stmt.of( ()-> System.out.println(1) ));
-        assertNotNull( tokens );
+        //$args tokens = $s.deconstruct(Stmt.of( ()-> System.out.println(1) ));
+        
+        Select sel = $s.select(Stmt.of( ()-> System.out.println(1) ));
+        assertNotNull( sel );
 
         //$s = $stmt.of( ($any$)-> System.out.println($any$) );
         $s = $stmt.of( ($any$)-> System.out.println($any$) );
-        tokens = $s.deconstruct(Stmt.of( ()-> System.out.println(1) ));
-        assertNotNull( tokens );
-        assertTrue( tokens.is("any", "1"));
+        
+        sel = $s.select(Stmt.of( ()-> System.out.println(1) ));
+        //tokens = $s.deconstruct(Stmt.of( ()-> System.out.println(1) ));
+        assertNotNull( sel );
+        assertTrue( sel.is("any", "1"));
 
-        tokens = $s.deconstruct(Stmt.of( ()-> /** Comment */ System.out.println(1) ));
-        assertNotNull( tokens );
-        assertTrue( tokens.is("any", "1"));
+        //tokens = $s.deconstruct(Stmt.of( ()-> /** Comment */ System.out.println(1) ));
+        sel = $s.select(Stmt.of( ()-> /** Comment */ System.out.println(1) ));
+        assertNotNull( sel );
+        assertTrue( sel.is("any", "1"));
     }
 
     public void testStmtMatchComments() {
@@ -286,7 +292,7 @@ public class SstmtTest extends TestCase {
         assertTrue( $s.matches(st));
 
         //verify we can partsMap the Statement and return the 1 (the filled parameter)
-        assertTrue( $s.deconstruct(st).is("any", "1") );
+        assertTrue( $s.select(st).is("any", "1") );
     }
 
     /*

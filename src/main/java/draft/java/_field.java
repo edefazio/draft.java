@@ -130,15 +130,6 @@ public final class _field
                 .equals(this);
     }
 
-    public boolean initIs(Predicate<Expression> expressionPredicate) {
-        return this.hasInit() && expressionPredicate.test(this.getInit());
-    }
-
-    public boolean initIs(String... initExpression) {
-        Expression e = Expr.of(initExpression);
-        return this.getInit().equals(e);
-    }
-
     /**
      * remove the initial value declaration of the field
      * @return the modified field
@@ -148,43 +139,52 @@ public final class _field
         return this;
     }
 
-    public boolean initIs(Expression e) {
+    public boolean isInit(Predicate<Expression> expressionPredicate) {
+        return this.hasInit() && expressionPredicate.test(this.getInit());
+    }
+
+    public boolean isInit(String... initExpression) {
+        Expression e = Expr.of(initExpression);
+        return this.getInit().equals(e);
+    }
+    
+    public boolean isInit(Expression e) {
         return Objects.equals(this.getInit(), e);
     }
 
-    public boolean initIs(boolean b) {
+    public boolean isInit(boolean b) {
         return Objects.equals(this.getInit(), Expr.of(b));
     }
 
-    public boolean initIs(byte b) {
+    public boolean isInit(byte b) {
         return Objects.equals(this.getInit(),Expr.of(b));
     }
 
-    public boolean initIs(short s) {
+    public boolean isInit(short s) {
         return Objects.equals(this.getInit(),Expr.of(s));
     }
 
-    public boolean initIs(int i) {
+    public boolean isInit(int i) {
         return Objects.equals(this.getInit(),Expr.of(i));
     }
 
-    public boolean initIs(char c) {
+    public boolean isInit(char c) {
         return Objects.equals(this.getInit(),Expr.of(c));
     }
 
-    public boolean initIs(float f) {
+    public boolean isInit(float f) {
         return Objects.equals(this.getInit(),Expr.of(f));
     }
 
-    public boolean initIs(double d) {
+    public boolean isInit(double d) {
         return Objects.equals(this.getInit(),Expr.of(d));
     }
 
-    public boolean initIs(long l) {
+    public boolean isInit(long l) {
         return Objects.equals(this.getInit(),Expr.of(l));
     }
 
-    public boolean initIs(String init) {
+    public boolean isInit(String init) {
         return Objects.equals(this.getInit(),Expr.stringLiteral(init));
     }
     

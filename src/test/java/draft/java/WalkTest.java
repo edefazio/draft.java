@@ -25,7 +25,7 @@ public class WalkTest extends TestCase {
         assertEquals(3, Walk.list(_c, _field.class).size());
         assertEquals(3, Walk.list(_c, _java.FIELD).size());
         assertEquals(2, Walk.list(_c, _field.class, fd->fd.isPrimitive()).size());
-        assertEquals(1, Walk.list(_c, _field.class, fd->fd.initIs(2)).size());
+        assertEquals(1, Walk.list(_c, _field.class, fd->fd.isInit(2)).size());
         
         
     }
