@@ -1040,6 +1040,22 @@ public final class $anno
                 "}";
         }
 
+        public boolean isNamed(String name){            
+            return astAnno.getNameAsString().equals(name);
+        }
+        
+        
+        public boolean isSingleValue(){
+            return astAnno instanceof SingleMemberAnnotationExpr;
+        }
+        
+        public boolean hasKeyValues(){
+            return astAnno instanceof NormalAnnotationExpr;
+        }
+        
+        public boolean hasNoValues(){
+            return astAnno instanceof MarkerAnnotationExpr;
+        }
         
         @Override
         public AnnotationExpr ast(){
