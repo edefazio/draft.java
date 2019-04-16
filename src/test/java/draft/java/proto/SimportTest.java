@@ -15,6 +15,45 @@ import org.junit.Assert;
  */
 public class SimportTest extends TestCase {
     
+    public void testStaticImports(){
+        $import $i = $import.of("import a.MyClass");
+        assertTrue( $i.matches("import a.MyClass"));
+        assertTrue( $i.matches("import a.MyClass.*"));
+        assertTrue( $i.matches("import static a.MyClass"));
+
+        //the proto is not static, the composed is not static
+        assertEquals( _import.of("a.MyClass"), $i.construct() );
+        
+        //IF the prototype is marked static it WILL match
+        $i = $import.of("import static a.MyClass");
+        assertFalse( $i.matches("import a.MyClass"));
+        assertTrue( $i.matches("import static a.MyClass"));
+        assertTrue( $i.matches("import static a.MyClass.*"));
+        
+        //the proto is static, the composed is ALSO static
+        assertEquals( _import.of("a.MyClass").setStatic(), $i.construct() );        
+    }
+    
+    public void testWildcardImports(){
+        $import $i = $import.of("import a.MyClass");        
+        assertTrue( $i.matches("import a.MyClass"));
+        
+        //should match a wildcard import
+        assertTrue( $i.matches("import a.MyClass.*"));
+
+        //the proto is not static, the composed is not static
+        assertEquals( _import.of("a.MyClass"), $i.construct() );
+        
+        //IF the prototype is marked static it WILL match
+        $i = $import.of("import a.MyClass.*");
+        assertFalse( $i.matches("import a.MyClass"));
+        assertTrue( $i.matches("import a.MyClass.*"));
+        
+        //the proto is wildcard, the composed is ALSO a wildcard
+        assertEquals( _import.of("a.MyClass.*"), $i.construct() );        
+    }
+    
+    
     public void testImportWildcardStaticAssertions(){
         _class _c = _class.of("C").importStatic(Assert.class);
         $import.replace( _c, _import.of(Assert.class).setStatic().setWildcard(), 

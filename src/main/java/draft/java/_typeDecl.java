@@ -7,38 +7,37 @@ import draft.java._model.*;
 import java.util.*;
 
 /**
- * Model of a Java TYPE Reference (i.e. String, int, List<Boolean>)
+ * Model of a Java TYPE Declaration (i.e. String, int, List<Boolean>)
  * wraps an AST {@link Type} implementation
- *
  *
  * @param <T> the Type implementation (i.e. ReferenceType)
  */
-public final class _typeRef<T extends Type>
+public final class _typeDecl<T extends Type>
         implements _node<Type> {
 
-    public static _typeRef of( java.lang.reflect.AnnotatedType t){
-        return new _typeRef( Ast.typeRef( t ) );
+    public static _typeDecl of( java.lang.reflect.AnnotatedType t){
+        return new _typeDecl( Ast.typeRef( t ) );
     }
 
-    public static _typeRef of( java.lang.reflect.Type t){
-        return new _typeRef( Ast.typeRef( t ) );
+    public static _typeDecl of( java.lang.reflect.Type t){
+        return new _typeDecl( Ast.typeRef( t ) );
     }
 
-    public static _typeRef of( Class clazz ) {
-        return new _typeRef( Ast.typeRef( clazz ) );
+    public static _typeDecl of( Class clazz ) {
+        return new _typeDecl( Ast.typeRef( clazz ) );
     }
 
-    public static _typeRef of( String string ) {
-        return new _typeRef( Ast.typeRef( string ) );
+    public static _typeDecl of( String string ) {
+        return new _typeDecl( Ast.typeRef( string ) );
     }
 
-    public static _typeRef of( Type t ) {
-        return new _typeRef( t );
+    public static _typeDecl of( Type t ) {
+        return new _typeDecl( t );
     }
 
     private final T astType;
 
-    public _typeRef( T t ) {
+    public _typeDecl( T t ) {
         this.astType = t;
     }
 
@@ -71,7 +70,7 @@ public final class _typeRef<T extends Type>
         return astType.isVoidType();
     }
 
-    public int getDimensions() {
+    public int getArrayDimensions() {
         return astType.getArrayLevel();
     }
 
@@ -85,7 +84,7 @@ public final class _typeRef<T extends Type>
         return Deconstructed.of(this.astType.toString() ).normalize().hashCode();
     }
 
-    public _typeRef copy(){
+    public _typeDecl copy(){
         return of(this.astType.clone());
     }
     
@@ -138,7 +137,7 @@ public final class _typeRef<T extends Type>
         if( getClass() != obj.getClass() ) {
             return false;
         }
-        final _typeRef<?> other = (_typeRef<?>)obj;
+        final _typeDecl<?> other = (_typeDecl<?>)obj;
         if( this.astType == other.astType){
             return true; // two _typeRef s pointing to the same ast Type
         }

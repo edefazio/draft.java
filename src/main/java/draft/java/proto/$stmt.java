@@ -27,7 +27,7 @@ import java.util.function.*;
  *     .fill([Translator], values)
  * PARAMETERIZE
  *     .$(Tokens)
- *     .assign$([translator], target, value)
+ *     .hardcode$([translator], target, value)
  * MATCH
  *     .constraint(Predicate<T>) //set the matching constraint
  *     .matches(Statement)
@@ -1396,8 +1396,8 @@ public final class $stmt<T extends Statement>
      * @param kvs the key parameter NAME and String VALUE to assign to the
      * @return the modified Stencil
      */
-    public $stmt assign$( Tokens kvs ) {
-        return assign$( Translator.DEFAULT_TRANSLATOR, kvs );
+    public $stmt hardcode$( Tokens kvs ) {
+        return hardcode$( Translator.DEFAULT_TRANSLATOR, kvs );
     }
 
     /**
@@ -1407,8 +1407,8 @@ public final class $stmt<T extends Statement>
      * @param keyValues the key parameter NAME and String VALUE to assign to the
      * @return the modified Stencil
      */
-    public $stmt assign$( Object... keyValues ) {
-        return assign$( Translator.DEFAULT_TRANSLATOR, Tokens.of( keyValues ) );
+    public $stmt hardcode$( Object... keyValues ) {
+        return hardcode$( Translator.DEFAULT_TRANSLATOR, Tokens.of( keyValues ) );
     }
 
     /**
@@ -1419,8 +1419,8 @@ public final class $stmt<T extends Statement>
      * @param keyValues the key parameter NAME and String VALUE to assign to the
      * @return the modified Stencil
      */
-    public $stmt assign$( Translator translator, Object... keyValues ) {
-        return assign$( translator, Tokens.of( keyValues ) );
+    public $stmt hardcode$( Translator translator, Object... keyValues ) {
+        return hardcode$( translator, Tokens.of( keyValues ) );
     }
 
     /**
@@ -1429,12 +1429,12 @@ public final class $stmt<T extends Statement>
      * @param kvs
      * @return 
      */
-    public $stmt assign$( Translator translator, Tokens kvs ) {
+    public $stmt hardcode$( Translator translator, Tokens kvs ) {
         if( this.commentPattern != null ){
-            this.commentPattern = this.commentPattern.assign$(translator, kvs);
-            this.stmtPattern = this.stmtPattern.assign$(translator,kvs);
+            this.commentPattern = this.commentPattern.hardcode$(translator, kvs);
+            this.stmtPattern = this.stmtPattern.hardcode$(translator,kvs);
         } else {
-            this.stmtPattern = this.stmtPattern.assign$(translator, kvs);
+            this.stmtPattern = this.stmtPattern.hardcode$(translator, kvs);
         }
         return this;
     }

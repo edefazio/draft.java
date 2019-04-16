@@ -275,8 +275,8 @@ public final class $snip implements Template<List<Statement>>, $proto<List<State
      * @param kvs the key parameter NAME and String VALUE to assign to the
      * @return the modified Stencil
      */
-    public $snip assign$( Tokens kvs ) {
-        return assign$( Translator.DEFAULT_TRANSLATOR, kvs );
+    public $snip hardcode$( Tokens kvs ) {
+        return hardcode$( Translator.DEFAULT_TRANSLATOR, kvs );
     }
 
     /**
@@ -286,8 +286,8 @@ public final class $snip implements Template<List<Statement>>, $proto<List<State
      * @param keyValues the key parameter NAME and String VALUE to assign to the
      * @return the modified Stencil
      */
-    public $snip assign$( Object... keyValues ) {
-        return assign$( Translator.DEFAULT_TRANSLATOR, Tokens.of( keyValues ) );
+    public $snip hardcode$( Object... keyValues ) {
+        return hardcode$( Translator.DEFAULT_TRANSLATOR, Tokens.of( keyValues ) );
     }
 
     /**
@@ -298,8 +298,8 @@ public final class $snip implements Template<List<Statement>>, $proto<List<State
      * @param keyValues the key parameter NAME and String VALUE to assign to the
      * @return the modified Stencil
      */
-    public $snip assign$( Translator translator, Object... keyValues ) {
-        return assign$( translator, Tokens.of( keyValues ) );
+    public $snip hardcode$( Translator translator, Object... keyValues ) {
+        return hardcode$( translator, Tokens.of( keyValues ) );
     }
 
     /**
@@ -308,8 +308,8 @@ public final class $snip implements Template<List<Statement>>, $proto<List<State
      * @param kvs
      * @return 
      */
-    public $snip assign$( Translator translator, Tokens kvs ) {
-        this.$sts.forEach( $s -> $s.assign$(translator, kvs));
+    public $snip hardcode$( Translator translator, Tokens kvs ) {
+        this.$sts.forEach( $s -> $s.hardcode$(translator, kvs));
         return this;
     }
     

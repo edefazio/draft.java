@@ -93,7 +93,7 @@ public class SmethodTest extends TestCase {
         _c = _class.of(Loc.class);
         
         // call replace with a setFluent prototype
-        $set.replaceIn(_c, $setFleunt.assign$("className", "Loc") );
+        $set.replaceIn(_c, $setFleunt.hardcode$("className", "Loc") );
         
         //verify there are no simple sets left 
         assertEquals(0, $set.listIn(_c).size());

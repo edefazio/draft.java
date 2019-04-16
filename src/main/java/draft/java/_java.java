@@ -111,7 +111,7 @@ public enum _java {
     public static final Class<_receiverParameter> RECEIVER_PARAMETER = _receiverParameter.class;
     public static final Class<_staticBlock> STATIC_BLOCK = _staticBlock.class;
     public static final Class<_throws> THROWS = _throws.class;
-    public static final Class<_typeRef> TYPEREF = _typeRef.class;
+    public static final Class<_typeDecl> TYPEREF = _typeDecl.class;
    
     public static final Class<_hasThrows> HAS_THROWS = _hasThrows.class;
     public static final Class<_hasBody> HAS_BODY = _hasBody.class;
@@ -150,7 +150,7 @@ public enum _java {
         _JAVA_TO_AST_NODE_CLASSES.put(_receiverParameter.class, ReceiverParameter.class);
         _JAVA_TO_AST_NODE_CLASSES.put(_staticBlock.class, InitializerDeclaration.class);
         _JAVA_TO_AST_NODE_CLASSES.put(_typeParameter.class, TypeParameter.class);
-        _JAVA_TO_AST_NODE_CLASSES.put(_typeRef.class, Type.class);
+        _JAVA_TO_AST_NODE_CLASSES.put(_typeDecl.class, Type.class);
 
         _JAVA_TO_AST_NODE_CLASSES.put(_type.class, TypeDeclaration.class);
         _JAVA_TO_AST_NODE_CLASSES.put(_annotation.class, AnnotationDeclaration.class);
@@ -184,16 +184,16 @@ public enum _java {
         AST_NODE_TO_JAVA_CLASSES.put(InitializerDeclaration.class, _staticBlock.class);
         AST_NODE_TO_JAVA_CLASSES.put(TypeParameter.class, _typeParameter.class);
 
-        AST_NODE_TO_JAVA_CLASSES.put(Type.class, _typeRef.class);
-        AST_NODE_TO_JAVA_CLASSES.put(ArrayType.class, _typeRef.class);
-        AST_NODE_TO_JAVA_CLASSES.put(ClassOrInterfaceType.class, _typeRef.class);
-        AST_NODE_TO_JAVA_CLASSES.put(IntersectionType.class, _typeRef.class);
-        AST_NODE_TO_JAVA_CLASSES.put(PrimitiveType.class, _typeRef.class);
-        AST_NODE_TO_JAVA_CLASSES.put(ReferenceType.class, _typeRef.class);
-        AST_NODE_TO_JAVA_CLASSES.put(UnionType.class, _typeRef.class);
-        AST_NODE_TO_JAVA_CLASSES.put(VarType.class, _typeRef.class);
-        AST_NODE_TO_JAVA_CLASSES.put(VoidType.class, _typeRef.class);
-        AST_NODE_TO_JAVA_CLASSES.put(WildcardType.class, _typeRef.class);
+        AST_NODE_TO_JAVA_CLASSES.put(Type.class, _typeDecl.class);
+        AST_NODE_TO_JAVA_CLASSES.put(ArrayType.class, _typeDecl.class);
+        AST_NODE_TO_JAVA_CLASSES.put(ClassOrInterfaceType.class, _typeDecl.class);
+        AST_NODE_TO_JAVA_CLASSES.put(IntersectionType.class, _typeDecl.class);
+        AST_NODE_TO_JAVA_CLASSES.put(PrimitiveType.class, _typeDecl.class);
+        AST_NODE_TO_JAVA_CLASSES.put(ReferenceType.class, _typeDecl.class);
+        AST_NODE_TO_JAVA_CLASSES.put(UnionType.class, _typeDecl.class);
+        AST_NODE_TO_JAVA_CLASSES.put(VarType.class, _typeDecl.class);
+        AST_NODE_TO_JAVA_CLASSES.put(VoidType.class, _typeDecl.class);
+        AST_NODE_TO_JAVA_CLASSES.put(WildcardType.class, _typeDecl.class);
 
         AST_NODE_TO_JAVA_CLASSES.put(TypeDeclaration.class, _type.class);
         AST_NODE_TO_JAVA_CLASSES.put(ClassOrInterfaceDeclaration.class, _type.class);
@@ -231,7 +231,7 @@ public enum _java {
         if (_constructor.class == nodeClass) {
             return ctor(code);
         }
-        if (_typeRef.class == nodeClass) {
+        if (_typeDecl.class == nodeClass) {
             return typeRef(Text.combine(code).trim());
         }
         if (_staticBlock.class == nodeClass) {
@@ -283,7 +283,7 @@ public enum _java {
      * {@link _receiverParameter}
      * {@link _staticBlock}
      * {@link _typeParameter}
-     * {@link _typeRef}
+     * {@link _typeDecl}
      * </PRE>
      *
      * @param node the ast node
@@ -357,7 +357,7 @@ public enum _java {
             return _typeParameter.of(tp);
         }
         if (node instanceof Type) {
-            return _typeRef.of((Type) node);
+            return _typeDecl.of((Type) node);
         }
         if (node instanceof CompilationUnit) {
             CompilationUnit astRoot = (CompilationUnit) node;
@@ -417,7 +417,7 @@ public enum _java {
         NESTS("nests", List.class, _type.class),
         NEST("nest", _type.class),
         
-        TYPE("type", _typeRef.class), //annotation.element
+        TYPE("type", _typeDecl.class), //annotation.element
         DEFAULT("default", Expression.class), //_annotation.element
 
         EXTENDS("extends", List.class, ClassOrInterfaceType.class), //_class, //_interface

@@ -23,7 +23,7 @@ import java.util.function.Consumer;
 public class $annos 
     implements Template<_anno>, $proto<_anno> {
 
-    List<$anno> $annosList = new ArrayList<$anno>();
+    List<$anno> $annosList = new ArrayList<>();
     
     public $annos( String...form ){
         this(_annos.of(form));

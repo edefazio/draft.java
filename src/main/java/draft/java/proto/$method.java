@@ -416,7 +416,7 @@ public class $method
     public $component<_javadoc> javadoc = new $component( "$javadoc$", t->true);
     public $component<_annos> annos = new $component( "$annos$", t->true);    
     public $component<_modifiers> modifiers = new $component( "$modifiers$", t->true);
-    public $component<_typeRef> type = new $component( "$type$", t->true);
+    public $component<_typeDecl> type = new $component( "$type$", t->true);
     public $component<_typeParameters> typeParameters = new $component( "$typeParameters$", t->true);
     public $component<String> name = new $component( "$name$", t->true);    
     public $component<_parameters> parameters = new $component( "$parameters$", t-> true);
@@ -708,8 +708,8 @@ public class $method
      * @param kvs the key parameter NAME and String VALUE to assign to the
      * @return the modified Stencil
      */
-    public $method assign$( Tokens kvs ) {
-        return assign$( Translator.DEFAULT_TRANSLATOR, kvs );
+    public $method hardcode$( Tokens kvs ) {
+        return hardcode$( Translator.DEFAULT_TRANSLATOR, kvs );
     }
 
     /**
@@ -719,8 +719,8 @@ public class $method
      * @param keyValues the key parameter NAME and String VALUE to assign to the
      * @return the modified Stencil
      */
-    public $method assign$( Object... keyValues ) {
-        return assign$( Translator.DEFAULT_TRANSLATOR, Tokens.of( keyValues ) );
+    public $method hardcode$( Object... keyValues ) {
+        return hardcode$( Translator.DEFAULT_TRANSLATOR, Tokens.of( keyValues ) );
     }
 
     /**
@@ -731,8 +731,8 @@ public class $method
      * @param keyValues the key parameter NAME and String VALUE to assign to the
      * @return the modified Stencil
      */
-    public $method assign$( Translator translator, Object... keyValues ) {
-        return assign$( translator, Tokens.of( keyValues ) );
+    public $method hardcode$( Translator translator, Object... keyValues ) {
+        return hardcode$( translator, Tokens.of( keyValues ) );
     }
 
     /**
@@ -741,16 +741,16 @@ public class $method
      * @param kvs
      * @return 
      */
-    public $method assign$( Translator translator, Tokens kvs ) {
-        javadoc.$form = javadoc.$form.assign$(translator, kvs);
-        annos.$form = annos.$form.assign$(translator, kvs);
-        modifiers.$form = modifiers.$form.assign$(translator, kvs);
-        typeParameters.$form = typeParameters.$form.assign$(translator, kvs);
-        type.$form = type.$form.assign$(translator, kvs);
-        name.$form = name.$form.assign$(translator, kvs);
-        parameters.$form = parameters.$form.assign$(translator, kvs);
-        thrown.$form = thrown.$form.assign$(translator, kvs);
-        body.$form = body.$form.assign$(translator, kvs);
+    public $method hardcode$( Translator translator, Tokens kvs ) {
+        javadoc.$form = javadoc.$form.hardcode$(translator, kvs);
+        annos.$form = annos.$form.hardcode$(translator, kvs);
+        modifiers.$form = modifiers.$form.hardcode$(translator, kvs);
+        typeParameters.$form = typeParameters.$form.hardcode$(translator, kvs);
+        type.$form = type.$form.hardcode$(translator, kvs);
+        name.$form = name.$form.hardcode$(translator, kvs);
+        parameters.$form = parameters.$form.hardcode$(translator, kvs);
+        thrown.$form = thrown.$form.hardcode$(translator, kvs);
+        body.$form = body.$form.hardcode$(translator, kvs);
         
         return this;
     }
@@ -1165,7 +1165,7 @@ public class $method
             return _m.isType(type);
         }
         
-        public boolean isType( _typeRef _tr ){
+        public boolean isType( _typeDecl _tr ){
             return _m.isType(_tr);
         }
         

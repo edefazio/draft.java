@@ -170,8 +170,8 @@ public final class $constructor
      * @param kvs the key parameter NAME and String VALUE to assign to the
      * @return the modified Stencil
      */
-    public $constructor assign$( Tokens kvs ) {
-        return assign$( Translator.DEFAULT_TRANSLATOR, kvs );
+    public $constructor hardcode$( Tokens kvs ) {
+        return hardcode$( Translator.DEFAULT_TRANSLATOR, kvs );
     }
 
     /**
@@ -181,8 +181,8 @@ public final class $constructor
      * @param keyValues the key parameter NAME and String VALUE to assign to the
      * @return the modified Stencil
      */
-    public $constructor assign$( Object... keyValues ) {
-        return assign$( Translator.DEFAULT_TRANSLATOR, Tokens.of( keyValues ) );
+    public $constructor hardcode$( Object... keyValues ) {
+        return hardcode$( Translator.DEFAULT_TRANSLATOR, Tokens.of( keyValues ) );
     }
 
     /**
@@ -193,8 +193,8 @@ public final class $constructor
      * @param keyValues the key parameter NAME and String VALUE to assign to the
      * @return the modified Stencil
      */
-    public $constructor assign$( Translator translator, Object... keyValues ) {
-        return assign$( translator, Tokens.of( keyValues ) );
+    public $constructor hardcode$( Translator translator, Object... keyValues ) {
+        return hardcode$( translator, Tokens.of( keyValues ) );
     }
 
     /**
@@ -203,12 +203,12 @@ public final class $constructor
      * @param kvs
      * @return 
      */
-    public $constructor assign$( Translator translator, Tokens kvs ) {
+    public $constructor hardcode$( Translator translator, Tokens kvs ) {
         if(this.javadocPattern != null ){
-            this.javadocPattern = this.javadocPattern.assign$(translator,kvs);
+            this.javadocPattern = this.javadocPattern.hardcode$(translator,kvs);
         }
-        this.signaturePattern = this.signaturePattern.assign$(translator,kvs);
-        this.$body = this.$body.assign$(translator, kvs);
+        this.signaturePattern = this.signaturePattern.hardcode$(translator,kvs);
+        this.$body = this.$body.hardcode$(translator, kvs);
         return this;
     }
 

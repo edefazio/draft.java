@@ -83,7 +83,7 @@ public class _replaceSystemOutWithLog implements _macro<_type> {
             }
             /** add the actual log statement */
             $anySystemOut.replaceIn(_t, $snip.of( loggerStatementsFormat )
-                    .assign$("name", _f.getName() ) );
+                    .hardcode$("name", _f.getName() ) );
         }
         return _t;
     }

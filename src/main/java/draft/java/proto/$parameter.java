@@ -37,7 +37,7 @@ public class $parameter implements Template<_parameter>, $proto<_parameter> {
     
     public $component<String> name = new $component("$name$", t->true);
     
-    public $typeRef type;
+    public $typeDecl type;
     
     //TODO $annos
     
@@ -55,7 +55,7 @@ public class $parameter implements Template<_parameter>, $proto<_parameter> {
             this.isVarArg = true;
         }
         this.name.$form = Stencil.of(_p.getName() );
-        this.type = $typeRef.of(_p.getType());                
+        this.type = $typeDecl.of(_p.getType());                
     }
     
     
@@ -148,7 +148,7 @@ public class $parameter implements Template<_parameter>, $proto<_parameter> {
             return null;
         }
         //$args args = this.type.deconstruct(_p.getType() );
-        $typeRef.Select sel = type.select(_p.getType());
+        $typeDecl.Select sel = type.select(_p.getType());
         
         if( sel != null ){
             $args as = sel.args;

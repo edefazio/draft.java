@@ -139,6 +139,13 @@ public final class TextBlanks{
         return builder.compile();
     }
 
+    /**
+     * Builds a TestBlanks with the fixedText and a bitSet representing character
+     * positions of the blanks within the fixedText
+     * @param fixedText the static text of the text blanks
+     * @param blankIndexes the character positions where "blanks" are to be filled
+     * within the document
+     */
     public TextBlanks( String fixedText, BitSet blankIndexes ) {
         this.fixedText = fixedText;
         this.blankIndexes = blankIndexes;
@@ -161,6 +168,11 @@ public final class TextBlanks{
         return Objects.hash(fixedText, blankIndexes);
     }
 
+    /**
+     * Builds the regex pattern to represent the textblanks (where the static 
+     * text is and where the blanks are)
+     * @return the regex pattern
+     */
     public Pattern getRegexPattern(){
         if( this.pattern == null ){
             this.pattern = Pattern.compile( buildRegexPattern( this ), Pattern.DOTALL );
@@ -238,14 +250,26 @@ public final class TextBlanks{
         return builder.compile();
     }
 
+    /**
+     * Is the first thing in the TextBlanks a character?
+     * @return true if the first thing in the text is a character (NOT a blank)
+     */
     public boolean startsWithText(){
         return !this.blankIndexes.get(0);
     }
 
+    /**
+     * Is the first thing in the TextBlanks a blank?
+     * @return true if the first thing in the text is a blank (not a textual char)
+     */
     public boolean startsWithBlank(){
         return this.blankIndexes.get(0);
     }
 
+    /**
+     * Returns a list of textual segments that make up the text
+     * @return a list of text segments
+     */
     public List<String> getTextSegments(){
         List<String> segs = new ArrayList<>();
         for(int i=0;i<this.getBlanksCount() +1;i++){
@@ -261,10 +285,19 @@ public final class TextBlanks{
         return segs;
     }
 
+    /**
+     * Does this textBlanks have ANY blanks? 
+     * @return true if there are ANY blanks in the TextBlanks
+     */
     public boolean hasBlanks() {
         return blankIndexes.cardinality() > 0;
     }
 
+    /**
+     * Fill the blanks matching the order of the blanks with the fills
+     * @param fillsInOrder the fills objects in order of
+     * @return the filled in TextBlanks
+     */
     public String fill( Object... fillsInOrder ) {
         return fill( Translator.DEFAULT_TRANSLATOR, fillsInOrder );
     }

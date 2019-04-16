@@ -20,7 +20,7 @@ import static junit.framework.TestCase.assertEquals;
 public class _typeRefTest extends TestCase {
 
     public void testSimplify(){
-        _typeRef _tr = _typeRef.of("java.util.List<java.util.Map>");
+        _typeDecl _tr = _typeDecl.of("java.util.List<java.util.Map>");
         assertTrue( _tr.is(Ast.typeRef("List<Map>")));
         assertEquals( "List<Map>", _tr.normalized());
         
@@ -28,19 +28,19 @@ public class _typeRefTest extends TestCase {
     
     public void testLocalAnonymousTypeRefEquality(){
        String className = "draft.java._classTest$1$Hoverboard";
-       _typeRef _tr = _typeRef.of(className);
+       _typeDecl _tr = _typeDecl.of(className);
        assertTrue( _tr.is("Hoverboard"));
     }
 
     public void testEqHashCode(){
-        _typeRef tr = _typeRef.of("List<Integer>");
-        _typeRef tr2 = _typeRef.of("List<java.lang.Integer>");
+        _typeDecl tr = _typeDecl.of("List<Integer>");
+        _typeDecl tr2 = _typeDecl.of("List<java.lang.Integer>");
         assertEquals( tr, tr2);        
         assertEquals( tr.hashCode(), tr2.hashCode() );                
-        tr2 = _typeRef.of("java.util.List<java.lang.Integer>");
+        tr2 = _typeDecl.of("java.util.List<java.lang.Integer>");
         assertEquals( tr, tr2);        
         assertEquals( tr.hashCode(), tr2.hashCode() );        
-        tr2 = _typeRef.of("java.util.List<Integer>");
+        tr2 = _typeDecl.of("java.util.List<Integer>");
         assertEquals( tr, tr2);        
         assertEquals( tr.hashCode(), tr2.hashCode() );                
     }
@@ -137,7 +137,7 @@ public class _typeRefTest extends TestCase {
       _typeParameter._typeParameters _args = _c.getMethod( "intersection" ).getTypeParameters();
       //Type t = mds.getAt( 0 ).getType();
       //System.out.println( _typeParams );
-      _typeRef wc = _c.getMethod("wildcard").getType();
+      _typeDecl wc = _c.getMethod("wildcard").getType();
       //assertTrue( wc.is( "List<? extends GenericTypes>") );
       //NodeList<Type> args = wc.getTypeArgs();
       //assertEquals( "List", wc.getRootTypeName() );
@@ -167,7 +167,7 @@ public class _typeRefTest extends TestCase {
         */
    }
    public void testGeneric(){
-      _typeRef _tr = _typeRef.of( "Map<K,V>" );
+      _typeDecl _tr = _typeDecl.of( "Map<K,V>" );
       //assertTrue( _tr.isGenericType() );
 
       //_typeRef _n = _typeRef.swap(new _typeRef("String"), "String", "Integer" );
@@ -200,17 +200,17 @@ public class _typeRefTest extends TestCase {
    }
    public void testArr(){
 
-      _typeRef _t = _typeRef.of("int");
+      _typeDecl _t = _typeDecl.of("int");
       assertTrue( _t.isPrimitive());
 
-      _t = _typeRef.of("int[]");
+      _t = _typeDecl.of("int[]");
       assertTrue( _t.isArray());
-      assertEquals(1, _t.getDimensions() );
+      assertEquals(1, _t.getArrayDimensions() );
       assertEquals( "int[]", _t.toString() );
 
-      _t = _typeRef.of("int[][]");
+      _t = _typeDecl.of("int[][]");
       assertTrue( _t.isArray());
-      assertEquals(2, _t.getDimensions() );
+      assertEquals(2, _t.getArrayDimensions() );
       assertEquals( "int[][]", _t.toString() );
 
    }
@@ -227,45 +227,45 @@ public class _typeRefTest extends TestCase {
       //make sure I can
       String[] primitiveNames = {"int", "char", "float"};
       for(int i=0;i<primitiveNames.length;i++){
-         _typeRef.of(primitiveNames[i]);
+         _typeDecl.of(primitiveNames[i]);
       }
-      _typeRef sn = _typeRef.of("_A");
-      sn = _typeRef.of("$A");
-      sn = _typeRef.of("$A8");
+      _typeDecl sn = _typeDecl.of("_A");
+      sn = _typeDecl.of("$A");
+      sn = _typeDecl.of("$A8");
 
-      _typeRef.of( "java.util.Set<String>" ); //fully qualified
+      _typeDecl.of( "java.util.Set<String>" ); //fully qualified
 
       //generics
-      sn = _typeRef.of( "List<?>" );
+      sn = _typeDecl.of( "List<?>" );
       // System.out.println( sn );
       //assertTrue( sn.isClass() );
 
 
       //assertTrue( sn.isGenericType());
 
-      _typeRef.of( "java.util.Set<String>" ); //fully qualified
-      _typeRef.of( "Map<String,Integer<K,V>>" );
-      sn = _typeRef.of( "Map<String,Integer< K , V > >" ); //nested spaces
+      _typeDecl.of( "java.util.Set<String>" ); //fully qualified
+      _typeDecl.of( "Map<String,Integer<K,V>>" );
+      sn = _typeDecl.of( "Map<String,Integer< K , V > >" ); //nested spaces
       // System.out.println( sn );
-      _typeRef.of( "List<? extends Foo>" ); //wildcard
-      _typeRef.of( "Box<>" );
+      _typeDecl.of( "List<? extends Foo>" ); //wildcard
+      _typeDecl.of( "Box<>" );
 
-      _typeRef.of( "Pair<K, V>");
+      _typeDecl.of( "Pair<K, V>");
 
-      _typeRef aa = _typeRef.of( "@yolo Pair<K, V>");
-
-      // System.out.println( aa.getName() );
-
-      aa = _typeRef.of( "/** jd */ Pair<K, V>");
+      _typeDecl aa = _typeDecl.of( "@yolo Pair<K, V>");
 
       // System.out.println( aa.getName() );
 
-      sn = _typeRef.of("to$A");
+      aa = _typeDecl.of( "/** jd */ Pair<K, V>");
+
+      // System.out.println( aa.getName() );
+
+      sn = _typeDecl.of("to$A");
       //sn = _typeRef.of("<T extends B1 & B2 & B3>");
 
-      _typeRef.of( "List<? extends Number>");
-      _typeRef.of( "List<? super Integer>" );
-      _typeRef.of( "Pair<Integer, Character>" );
+      _typeDecl.of( "List<? extends Number>");
+      _typeDecl.of( "List<? super Integer>" );
+      _typeDecl.of( "Pair<Integer, Character>" );
    }
 
    public void testGenericParams(){
@@ -273,7 +273,7 @@ public class _typeRefTest extends TestCase {
    }
 
    public void testFailType(){
-      try{ _typeRef.of( "3542" );fail("expected excep"); }catch( Exception e ){ }
+      try{ _typeDecl.of( "3542" );fail("expected excep"); }catch( Exception e ){ }
    }
 
    public static final Map<Integer,String> aValue = null;
@@ -283,25 +283,25 @@ public class _typeRefTest extends TestCase {
 
 
    public void testEquals() throws NoSuchFieldException{
-      assertEquals( _typeRef.of( Map.class), _typeRef.of("java.util.Map"));
-      assertEquals( _typeRef.of( "Map<String,Integer>"),
-              _typeRef.of("Map < String, Integer >"));
+      assertEquals( _typeDecl.of( Map.class), _typeDecl.of("java.util.Map"));
+      assertEquals( _typeDecl.of( "Map<String,Integer>"),
+              _typeDecl.of("Map < String, Integer >"));
 
       assertEquals(
-              _typeRef.of(
+              _typeDecl.of(
                       _typeRefTest.class.getField( "aNum" ).getAnnotatedType() ),
-              _typeRef.of( "java.util.List<? extends java.lang.Number>" ) );
+              _typeDecl.of( "java.util.List<? extends java.lang.Number>" ) );
 
       assertEquals(
-              _typeRef.of(
+              _typeDecl.of(
                       _typeRefTest.class.getField( "aInt" ).getAnnotatedType() ),
-              _typeRef.of( "java.util.List<? super java.lang.Integer>" ) );
+              _typeDecl.of( "java.util.List<? super java.lang.Integer>" ) );
 
 
       //verify that the Type is equal
       assertEquals(
-              _typeRef.of(_typeRefTest.class.getField("aValue").getGenericType() ),
-              _typeRef.of( " Map < Integer , String >" ) );
+              _typeDecl.of(_typeRefTest.class.getField("aValue").getGenericType() ),
+              _typeDecl.of( " Map < Integer , String >" ) );
 
    }
 }

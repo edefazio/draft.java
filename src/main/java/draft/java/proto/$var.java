@@ -567,7 +567,7 @@ public class $var
      * @return 
      */
     public static $var ofType( Class varType ){
-        final _typeRef e = _typeRef.of(varType );
+        final _typeDecl e = _typeDecl.of(varType );
         return any().constraint( v-> e.is(v.getType()) );
     }
     
@@ -577,7 +577,7 @@ public class $var
      * @return 
      */
     public static $var ofType( Type varType ){
-        final _typeRef e = _typeRef.of(varType );
+        final _typeDecl e = _typeDecl.of(varType );
         return any().constraint( v-> e.is(v) );
     }
 
@@ -586,7 +586,7 @@ public class $var
      * @param varType
      * @return 
      */
-    public static $var ofType( _typeRef varType ){        
+    public static $var ofType( _typeDecl varType ){        
         return any().constraint( v-> varType.is(v) );
     }    
     
@@ -761,8 +761,8 @@ public class $var
      * @param kvs the key parameter NAME and String VALUE to assign to the
      * @return the modified Stencil
      */
-    public $var assign$( Tokens kvs ) {
-        return assign$( Translator.DEFAULT_TRANSLATOR, kvs );
+    public $var hardcode$( Tokens kvs ) {
+        return hardcode$( Translator.DEFAULT_TRANSLATOR, kvs );
     }
 
     /**
@@ -772,8 +772,8 @@ public class $var
      * @param keyValues the key parameter NAME and String VALUE to assign to the
      * @return the modified Stencil
      */
-    public $var assign$( Object... keyValues ) {
-        return assign$( Translator.DEFAULT_TRANSLATOR, Tokens.of( keyValues ) );
+    public $var hardcode$( Object... keyValues ) {
+        return hardcode$( Translator.DEFAULT_TRANSLATOR, Tokens.of( keyValues ) );
     }
 
     /**
@@ -784,8 +784,8 @@ public class $var
      * @param keyValues the key parameter NAME and String VALUE to assign to the
      * @return the modified $field
      */
-    public $var assign$( Translator translator, Object... keyValues ) {
-        return assign$( translator, Tokens.of( keyValues ) );
+    public $var hardcode$( Translator translator, Object... keyValues ) {
+        return hardcode$( translator, Tokens.of( keyValues ) );
     }
 
     /**
@@ -794,10 +794,10 @@ public class $var
      * @param kvs
      * @return 
      */
-    public $var assign$( Translator translator, Tokens kvs ) {
-        this.varPattern = this.varPattern.assign$(translator,kvs);
+    public $var hardcode$( Translator translator, Tokens kvs ) {
+        this.varPattern = this.varPattern.hardcode$(translator,kvs);
         if( this.initPattern != null ){
-            this.initPattern = this.initPattern.assign$(translator,kvs);
+            this.initPattern = this.initPattern.hardcode$(translator,kvs);
         }
         return this;
     }
@@ -1295,19 +1295,19 @@ public class $var
         }
         
         public boolean isType( Class expectedType){
-            return _typeRef.of(astVar.getType()).is( expectedType );
+            return _typeDecl.of(astVar.getType()).is( expectedType );
         }
         
         public boolean isType( String expectedType){
-            return _typeRef.of(astVar.getType()).is( expectedType );
+            return _typeDecl.of(astVar.getType()).is( expectedType );
         }
         
-        public boolean isType( _typeRef expectedType){
-            return _typeRef.of(astVar.getType()).equals( expectedType );
+        public boolean isType( _typeDecl expectedType){
+            return _typeDecl.of(astVar.getType()).equals( expectedType );
         }
         
         public boolean isType( Type expectedType){
-            return _typeRef.of(astVar.getType()).is( expectedType );
+            return _typeDecl.of(astVar.getType()).is( expectedType );
         }
         
         @Override

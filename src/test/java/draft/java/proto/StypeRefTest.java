@@ -2,12 +2,12 @@ package draft.java.proto;
 
 import com.github.javaparser.ast.expr.Expression;
 import com.github.javaparser.ast.expr.MethodCallExpr;
-import draft.java.proto.$typeRef;
+import draft.java.proto.$typeDecl;
 import draft.java.Ast;
 import draft.java.Expr;
 import draft.java.Walk;
 import draft.java._class;
-import draft.java._typeRef;
+import draft.java._typeDecl;
 import junit.framework.TestCase;
 
 import java.util.*;
@@ -55,13 +55,13 @@ public class StypeRefTest extends TestCase {
             }            
         });
         
-        $typeRef.replace(_c, OldT.class, NewT.class );
+        $typeDecl.replace(_c, OldT.class, NewT.class );
         System.out.println( _c );
         
         //assertEquals( 12, $typeRef.of(OldT.class).listIn(_c).size() );
         
-        $typeRef $t = $typeRef.of("OldT");
-        $t.replaceIn(_c, _typeRef.of("NewT"));
+        $typeDecl $t = $typeDecl.of("OldT");
+        $t.replaceIn(_c, _typeDecl.of("NewT"));
         
         List<MethodCallExpr> ms = Walk.list(_c, Ast.METHOD_CALL_EXPR );
         ms.forEach(m -> System.out.println( "METHOD SCOPE " + m.getScope().get().toString() ));
@@ -129,21 +129,21 @@ public class StypeRefTest extends TestCase {
             }
         }
         _class _c = _class.of(F.class);
-        assertEquals("expected (4) instance of int in _c", 4, $typeRef.list(_c, int.class).size());
+        assertEquals("expected (4) instance of int in _c", 4, $typeDecl.list(_c, int.class).size());
         
-        $typeRef.replace(_c, int.class, float.class); //change all int TYPE references to float
+        $typeDecl.replace(_c, int.class, float.class); //change all int TYPE references to float
         //System.out.println( _c );
-        assertEquals("expected (0) instance of int in _c", 0, $typeRef.list(_c, int.class).size());
-        assertEquals("expected (4) instance of float in _c", 4, $typeRef.of(float.class).selectListIn(_c).size());
+        assertEquals("expected (0) instance of int in _c", 0, $typeDecl.list(_c, int.class).size());
+        assertEquals("expected (4) instance of float in _c", 4, $typeDecl.of(float.class).selectListIn(_c).size());
 
         //find all float types in _c and replaceIn them with double
-        $typeRef.replace(_c, float.class, double.class);
-        assertEquals("expected (4) instance of double in _class", 4, $typeRef.of(double.class).selectListIn(_c).size());
+        $typeDecl.replace(_c, float.class, double.class);
+        assertEquals("expected (4) instance of double in _class", 4, $typeDecl.of(double.class).selectListIn(_c).size());
     }
     
     public void testSimple(){
-        $typeRef $t = $typeRef.of(int.class);
-        assertEquals(_typeRef.of(int.class), $t.construct());
+        $typeDecl $t = $typeDecl.of(int.class);
+        assertEquals(_typeDecl.of(int.class), $t.construct());
 
         assertNotNull( $t.select(Ast.INT_TYPE));
         assertNull( $t.select(Ast.FLOAT_TYPE));
@@ -164,11 +164,11 @@ public class StypeRefTest extends TestCase {
         $t.replaceIn(_c, float.class); //change all int TYPE references to float
         //System.out.println( _c );
         assertEquals( "expected (0) instance of int in _c", 0, $t.selectListIn(_c).size());
-        assertEquals("expected (4) instance of float in _c", 4, $typeRef.of(float.class).selectListIn(_c).size());
+        assertEquals("expected (4) instance of float in _c", 4, $typeDecl.of(float.class).selectListIn(_c).size());
 
         //find all float types in _c and replaceIn them with double
-        $typeRef.of(float.class).replaceIn(_c, double.class);
-        assertEquals("expected (4) instance of double in _class", 4, $typeRef.of(double.class).selectListIn(_c).size());
+        $typeDecl.of(float.class).replaceIn(_c, double.class);
+        assertEquals("expected (4) instance of double in _class", 4, $typeDecl.of(double.class).selectListIn(_c).size());
     }
 
 
@@ -182,12 +182,12 @@ public class StypeRefTest extends TestCase {
             }
 
         }
-        $typeRef $anyTreeSet = $typeRef.of("TreeSet<$any$>");
+        $typeDecl $anyTreeSet = $typeDecl.of("TreeSet<$any$>");
         _class _c = _class.of(FF.class);
         //verify I can find a
         assertEquals(4, $anyTreeSet.selectListIn(_c).size());
 
-        $anyTreeSet.replaceIn(_c, $typeRef.of("HashSet<$any$>") ); //convert TreeSet to HashSet
+        $anyTreeSet.replaceIn(_c, $typeDecl.of("HashSet<$any$>") ); //convert TreeSet to HashSet
         //System.out.println( _c );
     }
 
@@ -210,8 +210,8 @@ public class StypeRefTest extends TestCase {
         //$typeRef $anyTreeSet = $typeRef.of("TreeSet<$any$>");
         _class _c = _class.of(FF.class);
         //verify I can find a
-        assertEquals(5, $typeRef.list(_c, "TreeSet<$any$>").size());
-        $typeRef.replace(_c, "TreeSet<$any$>", "HashSet<$any$>");
+        assertEquals(5, $typeDecl.list(_c, "TreeSet<$any$>").size());
+        $typeDecl.replace(_c, "TreeSet<$any$>", "HashSet<$any$>");
         //$anyTreeSet.replaceIn(_c, $typeRef.of("HashSet<$any$>") ); //convert TreeSet to HashSet
         System.out.println( _c );
     }
@@ -226,7 +226,7 @@ public class StypeRefTest extends TestCase {
             }
         }
         _class _c = _class.of(GG.class);
-        $typeRef.of(Integer.class).replaceIn(_c, $typeRef.of(Float.class));
+        $typeDecl.of(Integer.class).replaceIn(_c, $typeDecl.of(Float.class));
         //System.out.println( _c );
     }
 }

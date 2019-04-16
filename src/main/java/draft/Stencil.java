@@ -107,8 +107,8 @@ public final class Stencil implements Template<String>{
      */ 
     public boolean isMatchAll(){
         return this.$Names.size() == 1 && 
-                this.textBlanks.getFixedText() == null || 
-                this.textBlanks.getFixedText().length() == 0;
+            this.textBlanks.getFixedText() == null || 
+            this.textBlanks.getFixedText().length() == 0;
     }
     
     /**
@@ -256,8 +256,8 @@ public final class Stencil implements Template<String>{
      * @param kvs the key parameter NAME and String VALUE to assign to the
      * @return a ** NEW ** Stencil instance
      */
-    public Stencil assign$( Tokens kvs ) {
-        return assign$( Translator.DEFAULT_TRANSLATOR, kvs );
+    public Stencil hardcode$( Tokens kvs ) {
+        return hardcode$( Translator.DEFAULT_TRANSLATOR, kvs );
     }
 
     /**
@@ -267,8 +267,8 @@ public final class Stencil implements Template<String>{
      * @param keyValues the key parameter NAME and String VALUE to assign to the
      * @return a ** NEW ** Stencil instance
      */
-    public Stencil assign$( Object... keyValues ) {
-        return assign$( Translator.DEFAULT_TRANSLATOR, Tokens.of( keyValues ) );
+    public Stencil hardcode$( Object... keyValues ) {
+        return hardcode$( Translator.DEFAULT_TRANSLATOR, Tokens.of( keyValues ) );
     }
 
     /**
@@ -279,8 +279,8 @@ public final class Stencil implements Template<String>{
      * @param keyValues the key parameter NAME and String VALUE to assign to the
      * @return a ** NEW ** Stencil instance
      */
-    public Stencil assign$( Translator translator, Object... keyValues ) {
-        return assign$( translator, Tokens.of( keyValues ) );
+    public Stencil hardcode$( Translator translator, Object... keyValues ) {
+        return hardcode$( translator, Tokens.of( keyValues ) );
     }
 
     /**
@@ -288,11 +288,11 @@ public final class Stencil implements Template<String>{
      * ************** and return the NEW Stencil instance*****************
      * (the opposite of $() method which parameterizes the instance of some text
      * within the
-     * Stencil, assign$() will removeAll a parameter
+     * Stencil, hardcode$() will removeAll a parameter
      * for instance:
      * <PRE>
      * Stencil query = Stencil.of("SELECT $query$ FROM $from$ WHERE $where$");
-     * query = query.assign$("FROM", "NyTable");
+     * query = query.hardcode$("FROM", "NyTable");
      * // query is now the following Stencil:
      * "SELECT $query$ FROM MyTable WHERE $where$"
      * </PRE>
@@ -301,7 +301,7 @@ public final class Stencil implements Template<String>{
      * @param kvs tokens to assign
      * @return the NEW Stencil instance
      */
-    public Stencil assign$( Translator translator, Tokens kvs ) {
+    public Stencil hardcode$( Translator translator, Tokens kvs ) {
         if( this.$Names.isEmpty() ) {
             return this;
         }

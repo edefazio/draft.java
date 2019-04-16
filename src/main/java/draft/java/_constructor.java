@@ -235,7 +235,7 @@ public final class _constructor implements _anno._hasAnnos<_constructor>,
             }            
         }
         for(int i=0;i<pl.size(); i++){
-            _typeRef _t = _typeRef.of(genericParameterTypes[i+delta]);
+            _typeDecl _t = _typeDecl.of(genericParameterTypes[i+delta]);
             if( !pl.get(i).isType( _t ) ){ 
                 if( ctor.isVarArgs() &&  //if last parameter and varargs
                     Ast.typesEqual( pl.get(i).getType().getElementType(), 

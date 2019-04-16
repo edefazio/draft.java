@@ -20,7 +20,7 @@ import java.util.function.*;
  *     .fill([Translator], values)
  * PARAMETERIZE
  *     .$(target, parameter)
- *     .assign$([translator], target, value)
+ *     .hardcode$([translator], target, value)
  * MATCH
  *     .constraint(Predicate<T>) //set the matching constraint
  *     .matches(AnnotationExpr)
@@ -730,8 +730,8 @@ public final class $anno
      * @param kvs the key parameter NAME and String VALUE to assign to the
      * @return the modified Stencil
      */
-    public $anno assign$( Tokens kvs ) {
-        return assign$( Translator.DEFAULT_TRANSLATOR, kvs );
+    public $anno hardcode$( Tokens kvs ) {
+        return hardcode$( Translator.DEFAULT_TRANSLATOR, kvs );
     }
 
     /**
@@ -741,8 +741,8 @@ public final class $anno
      * @param keyValues the key parameter NAME and String VALUE to assign to the
      * @return the modified Stencil
      */
-    public $anno assign$( Object... keyValues ) {
-        return assign$( Translator.DEFAULT_TRANSLATOR, Tokens.of( keyValues ) );
+    public $anno hardcode$( Object... keyValues ) {
+        return hardcode$( Translator.DEFAULT_TRANSLATOR, Tokens.of( keyValues ) );
     }
 
     /**
@@ -753,8 +753,8 @@ public final class $anno
      * @param keyValues the key parameter NAME and String VALUE to assign to the
      * @return the modified Stencil
      */
-    public $anno assign$( Translator translator, Object... keyValues ) {
-        return assign$( translator, Tokens.of( keyValues ) );
+    public $anno hardcode$( Translator translator, Object... keyValues ) {
+        return hardcode$( translator, Tokens.of( keyValues ) );
     }
 
     /**
@@ -763,8 +763,8 @@ public final class $anno
      * @param kvs
      * @return 
      */
-    public $anno assign$( Translator translator, Tokens kvs ) {
-        this.pattern = this.pattern.assign$(translator,kvs);          
+    public $anno hardcode$( Translator translator, Tokens kvs ) {
+        this.pattern = this.pattern.hardcode$(translator,kvs);          
         return this;
     }
 

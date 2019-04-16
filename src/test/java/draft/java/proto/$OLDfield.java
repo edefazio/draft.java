@@ -527,8 +527,8 @@ public class $OLDfield
      * @param kvs the key parameter NAME and String VALUE to assign to the
      * @return the modified Stencil
      */
-    public $OLDfield assign$( Tokens kvs ) {
-        return assign$( Translator.DEFAULT_TRANSLATOR, kvs );
+    public $OLDfield hardcode$( Tokens kvs ) {
+        return hardcode$( Translator.DEFAULT_TRANSLATOR, kvs );
     }
 
     /**
@@ -538,8 +538,8 @@ public class $OLDfield
      * @param keyValues the key parameter NAME and String VALUE to assign to the
      * @return the modified Stencil
      */
-    public $OLDfield assign$( Object... keyValues ) {
-        return assign$( Translator.DEFAULT_TRANSLATOR, Tokens.of( keyValues ) );
+    public $OLDfield hardcode$( Object... keyValues ) {
+        return hardcode$( Translator.DEFAULT_TRANSLATOR, Tokens.of( keyValues ) );
     }
 
     /**
@@ -550,8 +550,8 @@ public class $OLDfield
      * @param keyValues the key parameter NAME and String VALUE to assign to the
      * @return the modified $field
      */
-    public $OLDfield assign$( Translator translator, Object... keyValues ) {
-        return assign$( translator, Tokens.of( keyValues ) );
+    public $OLDfield hardcode$( Translator translator, Object... keyValues ) {
+        return hardcode$( translator, Tokens.of( keyValues ) );
     }
 
     /**
@@ -560,11 +560,11 @@ public class $OLDfield
      * @param kvs
      * @return 
      */
-    public $OLDfield assign$( Translator translator, Tokens kvs ) {
+    public $OLDfield hardcode$( Translator translator, Tokens kvs ) {
         if( this.commentStencil != null ){
-            this.commentStencil = this.commentStencil.assign$(translator, kvs);
+            this.commentStencil = this.commentStencil.hardcode$(translator, kvs);
         }
-        this.fieldStencil = this.fieldStencil.assign$(translator,kvs);
+        this.fieldStencil = this.fieldStencil.hardcode$(translator,kvs);
         return this;
     }
 

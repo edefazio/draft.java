@@ -425,7 +425,7 @@ public class $field implements Template<_field>, $proto<_field> {
     }
     
     public static $field ofType( Class clazz ){
-        return ofType( _typeRef.of(clazz) );
+        return ofType( _typeDecl.of(clazz) );
     }
     
     /**
@@ -433,7 +433,7 @@ public class $field implements Template<_field>, $proto<_field> {
      * @param type
      * @return 
      */
-    public static $field ofType( _typeRef type ){
+    public static $field ofType( _typeDecl type ){
         _field _f = _field.of( type+ " $name$;" );
         return of( _f );
     }
@@ -442,7 +442,7 @@ public class $field implements Template<_field>, $proto<_field> {
         return of( _field.of( type+" $name$;") );
     }
     
-    public static $field ofType( Predicate<_typeRef> _typeConstraint ){
+    public static $field ofType( Predicate<_typeDecl> _typeConstraint ){
         return any().$type(_typeConstraint);
     }
     
@@ -473,7 +473,7 @@ public class $field implements Template<_field>, $proto<_field> {
     public $component<_javadoc> javadoc = new $component( "$javadoc$", t->true);
     public $component<_annos> annos = new $component( "$annos$", t->true);    
     public $component<_modifiers> modifiers = new $component( "$modifiers$", t->true);
-    public $component<_typeRef> type = new $component( "$type$", t->true);
+    public $component<_typeDecl> type = new $component( "$type$", t->true);
     public $component<String> name = new $component( "$name$", t->true);    
     public $component<Expression> init = new $component( "$init$", t->true);
     
@@ -517,11 +517,11 @@ public class $field implements Template<_field>, $proto<_field> {
     }
     
     public $field $type( String typeRefForm ){
-        this.type.$form = Stencil.of(_typeRef.of(typeRefForm).toString());
+        this.type.$form = Stencil.of(_typeDecl.of(typeRefForm).toString());
         return this;
     }
     
-    public $field $type(Predicate<_typeRef> typeConstraint ){
+    public $field $type(Predicate<_typeDecl> typeConstraint ){
         this.type.constraint = this.type.constraint.and(typeConstraint);
         return this;
     }
@@ -1104,7 +1104,7 @@ public class $field implements Template<_field>, $proto<_field> {
             return _f.isType(expectedType);
         }
         
-        public boolean isType( _typeRef expectedType){
+        public boolean isType( _typeDecl expectedType){
             return _f.isType(expectedType);
         }
         

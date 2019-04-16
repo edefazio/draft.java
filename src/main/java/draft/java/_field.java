@@ -316,8 +316,8 @@ public final class _field
     }
 
     @Override
-    public _typeRef getType() {
-        return _typeRef.of(astVar.getType());
+    public _typeDecl getType() {
+        return _typeDecl.of(astVar.getType());
     }
 
     @Override

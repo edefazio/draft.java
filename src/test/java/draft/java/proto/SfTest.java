@@ -1,7 +1,7 @@
 package draft.java.proto;
 
 import draft.java._field;
-import draft.java._typeRef;
+import draft.java._typeDecl;
 import java.util.function.Predicate;
 import junit.framework.TestCase;
 
@@ -76,7 +76,7 @@ public class SfTest extends TestCase {
         
         assertTrue($typeField.select("String i").isType("String") );
         
-        assertTrue($typeField.select("String i").isType(_typeRef.of(String.class)));        
+        assertTrue($typeField.select("String i").isType(_typeDecl.of(String.class)));        
     }
     
     public void testTypeGeneric$field(){
@@ -86,7 +86,7 @@ public class SfTest extends TestCase {
         
         assertFalse( $listType.matches("Map<List<Integer>,String> g;") );
         
-        $listType = $field.ofType( _typeRef.of("List<$elType$>"));
+        $listType = $field.ofType(_typeDecl.of("List<$elType$>"));
         assertTrue( $listType.matches("List<String> f;") );
         assertTrue( $listType.matches("List<Map<Integer,String>> g;") );
         

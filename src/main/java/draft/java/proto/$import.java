@@ -805,17 +805,28 @@ public final class $import
         
     public Stencil importPattern;
     
+    /** 
+     * Only match on static imports & compose a static import 
+     * NOTE: if isStatic is False, this will still match static imports
+     */
+    public Boolean isStatic = false;
+    
+    /** 
+     * Only match on wildcard (.*) imports & compose a wildcard (.*) import 
+     * NOTE: if isWildcard is false, this will still match wildcard imports
+     */
+    public Boolean isWildcard = false;
     
     private $import(_import proto ){
         this.importPattern = Stencil.of( proto.getName() );
-        
+        this.isStatic = proto.isStatic();
+        this.isWildcard = proto.isWildcard();        
     }
 
     private $import( Predicate<_import> constraint ){
         this.importPattern = Stencil.of("$any$");
         this.constraint = constraint;
     }
-    
     
     /**
      * ADDS an additional matching constraint to the prototype
@@ -852,7 +863,7 @@ public final class $import
      * @return 
      */
     public boolean matches( ImportDeclaration astImport ){
-        return deconstruct(astImport ) != null;
+        return select(astImport ) != null;
     }
 
     /**
@@ -861,7 +872,7 @@ public final class $import
      * @return 
      */
     public boolean matches( _import _i){
-        return deconstruct( _i ) != null;
+        return select( _i ) != null;
     }
 
     /**
@@ -869,7 +880,7 @@ public final class $import
      *
      * @param _i
      * @return Tokens from the stencil, or null if the expression doesnt match
-     */
+     
     public $args deconstruct(_import _i ){
         if( this.constraint.test(_i)){
             //System.out.println( "STATIC " + _i.isStatic() +"  WILDCARD "+_i.isWildcard()+ " I "+ _i.getName());
@@ -881,13 +892,14 @@ public final class $import
         }
         return null;
     }
+    */ 
 
     /**
      * Deconstruct the expression into tokens, or return null if the statement doesnt match
      *
      * @param astImport
      * @return Tokens from the stencil, or null if the expression doesnt match
-     */
+     
     public $args deconstruct(ImportDeclaration astImport ){
         if(this.constraint.test(_import.of(astImport))){ 
             //if( this.isStatic == astImport.isStatic() && this.isWildcard == astImport.isAsterisk()){
@@ -896,6 +908,7 @@ public final class $import
         }
         return null;
     }
+    */ 
 
      /**
      * 
@@ -903,7 +916,21 @@ public final class $import
      * @return 
      */
     public Select select(_import _i){
-        return select( _i.ast() );
+        if( this.constraint.test(_i)){
+            if( this.isStatic && !_i.isStatic() || this.isWildcard && ! _i.isWildcard() ){
+                return null;
+            }
+            //System.out.println( "STATIC " + _i.isStatic() +"  WILDCARD "+_i.isWildcard()+ " I "+ _i.getName());
+            //System.out.println( "THIS STATIC " + this.isStatic +"  THIS WILDCARD "+this.isWildcard + " I "+ _i);
+            //System.out.println( "IMPORT PATTERN " + importPattern );
+            //if( this.isStatic == _i.isStatic() && this.isWildcard == _i.isWildcard() ){                
+            Tokens ts = importPattern.deconstruct( _i.getName().replace(".*", "").trim() );
+            if( ts != null ){
+                return new Select(_i, $args.of(ts) );
+            }
+            //}
+        }
+        return null;
     }
 
     /**
@@ -912,11 +939,7 @@ public final class $import
      * @return 
      */
     public Select select(ImportDeclaration astImport){
-        $args ts = this.deconstruct(astImport);
-        if( ts != null){
-            return new Select( astImport, ts );
-        }
-        return null;
+        return select(_import.of(astImport) );        
     }
     
     @Override
@@ -926,7 +949,11 @@ public final class $import
 
     @Override
     public _import construct(Translator translator, Map<String, Object> keyValues) {
-        return _import.of(importPattern.construct(translator, keyValues));
+        
+        _import _ii = _import.of(importPattern.construct(translator, keyValues));
+        _ii.setStatic(this.isStatic);
+        _ii.setWildcard(this.isWildcard);
+        return _ii;
     }
     
     @Override
@@ -936,14 +963,14 @@ public final class $import
     }
 
     /**
-     * Hardcode parameterized values
+     * Hardcode (one or more) parameterized values
      * (i.e. what was once a parameter, now is static text)
      *
-     * @param kvs the key parameter NAME and String VALUE to assign to the
+     * @param hardcodedKeyValues the key parameter NAME and VALUE to hardcode
      * @return the modified Stencil
      */
-    public $import assign$( Tokens kvs ) {
-        return assign$( Translator.DEFAULT_TRANSLATOR, kvs );
+    public $import hardcode$( Tokens hardcodedKeyValues ) {
+        return hardcode$(Translator.DEFAULT_TRANSLATOR, hardcodedKeyValues );
     }
 
     /**
@@ -953,8 +980,8 @@ public final class $import
      * @param keyValues the key parameter NAME and String VALUE to assign to the
      * @return the modified Stencil
      */
-    public $import assign$( Object... keyValues ) {
-        return assign$( Translator.DEFAULT_TRANSLATOR, Tokens.of( keyValues ) );
+    public $import hardcode$( Object... keyValues ) {
+        return hardcode$( Translator.DEFAULT_TRANSLATOR, Tokens.of( keyValues ) );
     }
 
     /**
@@ -965,8 +992,8 @@ public final class $import
      * @param keyValues the key parameter NAME and String VALUE to assign to the
      * @return the modified Stencil
      */
-    public $import assign$( Translator translator, Object... keyValues ) {
-        return assign$( translator, Tokens.of( keyValues ) );
+    public $import hardcode$( Translator translator, Object... keyValues ) {
+        return hardcode$( translator, Tokens.of( keyValues ) );
     }
 
     /**
@@ -975,8 +1002,8 @@ public final class $import
      * @param kvs
      * @return 
      */
-    public $import assign$( Translator translator, Tokens kvs ) {
-        this.importPattern = this.importPattern.assign$(translator,kvs);
+    public $import hardcode$( Translator translator, Tokens kvs ) {
+        this.importPattern = this.importPattern.hardcode$(translator,kvs);
         return this;
     }
 
@@ -1231,9 +1258,10 @@ public final class $import
     @Override
     public <N extends Node> N forEachIn(N astNode, Consumer<_import> _importActionFn){
         astNode.walk(ImportDeclaration.class, e-> {
-            $args tokens = deconstruct( e );
-            if( tokens != null ){
-                _importActionFn.accept( _import.of(e));
+            //$args tokens = deconstruct( e );
+            Select sel = select(e);
+            if( sel != null ){
+                _importActionFn.accept( sel._i );
             }
         });
         return astNode;
