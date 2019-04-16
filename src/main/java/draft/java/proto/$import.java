@@ -11,7 +11,7 @@ import java.util.function.Consumer;
 import java.util.function.Predicate;
 
 /**
- * Template for an import declaration on a Java top level _type 
+ * prototype for an _import declaration on a Java top level _type 
  *
  */
 public final class $import
@@ -239,7 +239,7 @@ public final class $import
      * @param <T>
      * @param _type
      * @param target
-     * @r
+     * @return the first _import matching
      */ 
     public static final <T extends _type> _import first( T _type, Class target ){
         return $import.of(target).firstIn(_type);
@@ -838,6 +838,24 @@ public final class $import
         return this;
     }
     
+    public $import setStatic(){
+        return setStatic(true);        
+    }
+    
+    public $import setStatic(boolean toSet){
+        this.isStatic = toSet;
+        return this;
+    }
+    
+    public $import setWildcard(){
+        return setWildcard(true);        
+    }
+    
+    public $import setWildcard(boolean toSet){
+        this.isWildcard = toSet;
+        return this;
+    }
+    
     /**
      * ADD a constraint
      * @param constraint
@@ -876,41 +894,6 @@ public final class $import
     }
 
     /**
-     * Deconstruct the expression into tokens, or return null if the statement doesnt match
-     *
-     * @param _i
-     * @return Tokens from the stencil, or null if the expression doesnt match
-     
-    public $args deconstruct(_import _i ){
-        if( this.constraint.test(_i)){
-            //System.out.println( "STATIC " + _i.isStatic() +"  WILDCARD "+_i.isWildcard()+ " I "+ _i.getName());
-            //System.out.println( "THIS STATIC " + this.isStatic +"  THIS WILDCARD "+this.isWildcard + " I "+ _i);
-            //System.out.println( "IMPORT PATTERN " + importPattern );
-            //if( this.isStatic == _i.isStatic() && this.isWildcard == _i.isWildcard() ){                
-            return $args.of(importPattern.deconstruct( _i.getName().replace(".*", "").trim() ));
-            //}
-        }
-        return null;
-    }
-    */ 
-
-    /**
-     * Deconstruct the expression into tokens, or return null if the statement doesnt match
-     *
-     * @param astImport
-     * @return Tokens from the stencil, or null if the expression doesnt match
-     
-    public $args deconstruct(ImportDeclaration astImport ){
-        if(this.constraint.test(_import.of(astImport))){ 
-            //if( this.isStatic == astImport.isStatic() && this.isWildcard == astImport.isAsterisk()){
-            return $args.of( importPattern.deconstruct( astImport.getNameAsString().trim() ));
-            //}
-        }
-        return null;
-    }
-    */ 
-
-     /**
      * 
      * @param _i
      * @return 
@@ -919,16 +902,11 @@ public final class $import
         if( this.constraint.test(_i)){
             if( this.isStatic && !_i.isStatic() || this.isWildcard && ! _i.isWildcard() ){
                 return null;
-            }
-            //System.out.println( "STATIC " + _i.isStatic() +"  WILDCARD "+_i.isWildcard()+ " I "+ _i.getName());
-            //System.out.println( "THIS STATIC " + this.isStatic +"  THIS WILDCARD "+this.isWildcard + " I "+ _i);
-            //System.out.println( "IMPORT PATTERN " + importPattern );
-            //if( this.isStatic == _i.isStatic() && this.isWildcard == _i.isWildcard() ){                
+            }             
             Tokens ts = importPattern.deconstruct( _i.getName().replace(".*", "").trim() );
             if( ts != null ){
                 return new Select(_i, $args.of(ts) );
             }
-            //}
         }
         return null;
     }
@@ -948,8 +926,7 @@ public final class $import
     }
 
     @Override
-    public _import construct(Translator translator, Map<String, Object> keyValues) {
-        
+    public _import construct(Translator translator, Map<String, Object> keyValues) {        
         _import _ii = _import.of(importPattern.construct(translator, keyValues));
         _ii.setStatic(this.isStatic);
         _ii.setWildcard(this.isWildcard);
@@ -1080,6 +1057,47 @@ public final class $import
         return null;
     }
     
+    /**
+     * Returns the first _import that matches the pattern and constraint
+     * @param _n the _java node
+     * @param selectConstraint
+     * @return  the first _import that matches (or null if none found)
+     */
+    public Select selectFirstIn( _node _n, Predicate<Select> selectConstraint ){
+        if( _n.ast().findCompilationUnit().isPresent() ){
+            Optional<ImportDeclaration> f = _n.ast().findCompilationUnit().get()
+                    .findFirst(ImportDeclaration.class, s -> {
+                        Select sel = this.select(s); 
+                        return sel != null && selectConstraint.test(sel);
+                    });                
+            if( f.isPresent()){
+                return select(f.get());
+            }
+        }
+        return null;
+    }
+
+    /**
+     * Returns the first _import that matches the pattern and constraint
+     * @param astNode the node to look through
+     * @param selectConstraint
+     * @return  the first _import that matches (or null if none found)
+     */
+    public Select selectFirstIn( Node astNode, Predicate<Select> selectConstraint ){
+        if( astNode.findCompilationUnit().isPresent() ){
+            Optional<ImportDeclaration> f = astNode.findCompilationUnit().get()
+                    .findFirst(ImportDeclaration.class, s -> {
+                        Select sel = this.select(s); 
+                        return sel != null && selectConstraint.test(sel);
+                    });         
+            if( f.isPresent()){
+                return select(f.get());
+            }         
+        }
+        return null;
+    }
+    
+    
     @Override
     public List<_import> listIn( _node _n ){
         return listIn( _n.ast() );
@@ -1117,7 +1135,45 @@ public final class $import
     public List<Select> selectListIn( _node _n ){
         return selectListIn( _n.ast() );        
     }
+    
+    /**
+     * 
+     * @param astNode
+     * @param selectConstraint
+     * @return 
+     */
+    public List<Select> selectListIn( Node astNode, Predicate<Select> selectConstraint ){
+        List<Select>sts = new ArrayList<>();
+        if(astNode.findCompilationUnit().isPresent() ){
+            astNode.findCompilationUnit().get().walk(ImportDeclaration.class, e-> {
+                Select s = select( e );
+                if( s != null && selectConstraint.test(s)){
+                    sts.add( s);
+                }
+            });
+        }
+        return sts;
+    }
 
+    /**
+     * 
+     * @param _n
+     * @param selectConstraint
+     * @return 
+     */
+    public List<Select> selectListIn( _node _n, Predicate<Select> selectConstraint ){
+        return selectListIn( _n.ast() );        
+    }
+
+    /**
+     * Build ans return a _type with the import prototypes removed
+     * @param clazz
+     * @return 
+     */
+    public _type removeIn( Class clazz){
+        return removeIn( _type.of(clazz));
+    }
+    
     /**
      * Remove all matching occurrences of the proto in the node and return the
      * modified node
@@ -1152,22 +1208,22 @@ public final class $import
      * 
      * @param <N>
      * @param _n
-     * @param clazz
+     * @param importClass
      * @return 
      */
-    public <N extends _node> N replaceIn(N _n, Class clazz){
-        return replaceIn(_n, $import.of(clazz));
+    public <N extends _node> N replaceIn(N _n, Class importClass){
+        return replaceIn(_n, $import.of(importClass));
     }
     
     /**
      * 
      * @param <N>
      * @param _n
-     * @param imp
+     * @param importDecl
      * @return 
      */
-    public <N extends _node> N replaceIn(N _n, String imp){
-        return replaceIn(_n, _import.of(imp));
+    public <N extends _node> N replaceIn(N _n, String importDecl){
+        return replaceIn(_n, _import.of(importDecl));
     }
     
     /**
@@ -1255,6 +1311,39 @@ public final class $import
         return astNode;
     }
 
+    /**
+     * 
+     * @param <N>
+     * @param _n
+     * @param selectConstraint
+     * @param selectConsumer
+     * @return 
+     */
+    public <N extends _node> N forSelectedIn(N _n, Predicate<Select> selectConstraint, Consumer<Select> selectConsumer ){
+        forSelectedIn(_n.ast(), selectConstraint, selectConsumer);
+        return _n;
+    }
+
+    /**
+     * 
+     * @param <N>
+     * @param astNode
+     * @param selectConstraint
+     * @param selectConsumer
+     * @return 
+     */
+    public <N extends Node> N forSelectedIn(N astNode, Predicate<Select> selectConstraint, Consumer<Select> selectConsumer ){
+        if( astNode.findCompilationUnit().isPresent()){
+            astNode.findCompilationUnit().get().walk(ImportDeclaration.class, e-> {
+                Select sel = select( e );
+                if( sel != null && selectConstraint.test(sel) ){
+                    selectConsumer.accept( sel );
+                }
+            });
+        }
+        return astNode;
+    }
+    
     @Override
     public <N extends Node> N forEachIn(N astNode, Consumer<_import> _importActionFn){
         astNode.walk(ImportDeclaration.class, e-> {
@@ -1312,7 +1401,23 @@ public final class $import
         public ImportDeclaration ast() {
             return _i.ast();
         }
+        
+        public boolean isStatic(){
+            return _i.isStatic();
+        }
+        
+        public boolean isWildcard(){
+            return _i.isWildcard();
+        }
 
+        public boolean is(String importDecl){
+            return _i.is(importDecl);
+        }
+        
+        public boolean is(Class clazz){
+            return _i.is(clazz);
+        }
+        
         @Override
         public _import model() {
             return _i;

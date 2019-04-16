@@ -9,11 +9,25 @@ import static junit.framework.TestCase.assertFalse;
 import static junit.framework.TestCase.assertTrue;
 import org.hamcrest.MatcherAssert;
 import org.junit.Assert;
+
 /**
  *
  * @author Eric
  */
 public class SimportTest extends TestCase {
+    
+    public void testPostSet(){
+        $import $i = $import.of("import a.MyClass");
+        assertTrue( $i.matches("import a.MyClass"));
+        
+        $i.setStatic();
+        assertFalse( $i.matches("import a.MyClass"));        
+        assertTrue( $i.matches("import static a.MyClass"));
+        
+        $i.setWildcard();
+        assertFalse( $i.matches("import static a.MyClass"));
+        assertTrue( $i.matches("import static a.MyClass.*"));
+    }
     
     public void testStaticImports(){
         $import $i = $import.of("import a.MyClass");

@@ -11,6 +11,7 @@ import draft.java._anno._annos;
 import draft.java.*;
 import draft.java._model._node;
 import draft.java.proto.$proto.$component;
+import java.lang.annotation.Annotation;
 import java.util.*;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
@@ -126,6 +127,7 @@ public class $field implements Template<_field>, $proto<_field> {
      * 
      * @param clazz
      * @param proto
+     * @param constraint
      * @return 
      */
     public static final _field first(Class clazz, String proto, Predicate<_field> constraint){
@@ -394,8 +396,7 @@ public class $field implements Template<_field>, $proto<_field> {
             .replaceIn(_type.of(clazz), $field.of(_protoTarget));
     }
     
-    /** BUILD AND RETURN prototype instances */
-    
+    /** @return BUILD AND RETURN prototype instances */    
     public static $field any(){
         return of (_field.of(" $type$ $name$;") );
     }
@@ -493,11 +494,11 @@ public class $field implements Template<_field>, $proto<_field> {
     
     /**
      * Post parameterize the javadoc (expecting a specific form)
-     * @param form
+     * @param pattern
      * @return 
      */
-    public $field $javadoc(String... form){
-        this.javadoc.$form = Stencil.of(Text.combine(form) );
+    public $field $javadoc(String... pattern){
+        this.javadoc.$form = Stencil.of(Text.combine(pattern) );
         return this;
     }
     
@@ -516,8 +517,8 @@ public class $field implements Template<_field>, $proto<_field> {
         return this;
     }
     
-    public $field $type( String typeRefForm ){
-        this.type.$form = Stencil.of(_typeDecl.of(typeRefForm).toString());
+    public $field $type( String pattern ){
+        this.type.$form = Stencil.of(_typeDecl.of(pattern).toString());
         return this;
     }
     
@@ -531,8 +532,8 @@ public class $field implements Template<_field>, $proto<_field> {
         return this;
     }
     
-    public $field $name(String name ){
-        this.name.$form = Stencil.of( name );
+    public $field $name(String pattern ){
+        this.name.$form = Stencil.of(pattern );
         return this;
     }
     
@@ -581,8 +582,6 @@ public class $field implements Template<_field>, $proto<_field> {
         return this;
     }
     
-   
-
     /**
      * Returns the first _field that matches the pattern and constraint
      * @param _n the _java node
@@ -616,16 +615,9 @@ public class $field implements Template<_field>, $proto<_field> {
      */
     public Select selectFirstIn( _node _n ){
         Optional<VariableDeclarator> f = 
-                _n.ast().findFirst( 
-                        VariableDeclarator.class, 
-                        (VariableDeclarator s) -> select(s) != null );
-                    //s.getParentNode().isPresent() 
-                    //    && (s.getParentNode().get() instanceof FieldDeclaration) 
-                    //    && (select(s) != null) ; 
-                    //if( ){
-                    //    return this.matches(s); 
-                   // }
-                //});         
+            _n.ast().findFirst( 
+                VariableDeclarator.class, 
+                (VariableDeclarator s) -> select(s) != null );                     
         if( f.isPresent()){
             return select(f.get());
         }
@@ -639,6 +631,34 @@ public class $field implements Template<_field>, $proto<_field> {
      */
     public Select selectFirstIn( Node astNode ){
         Optional<VariableDeclarator> f = astNode.findFirst(VariableDeclarator.class, s -> this.matches(s) );         
+        if( f.isPresent()){
+            return select(f.get());
+        }
+        return null;
+    }
+    
+    /**
+     * Returns the first _field that matches the pattern and constraint
+     * @param _n the _java node
+     * @param selectConstraint
+     * @return  the first _field that matches (or null if none found)
+     */
+    public Select selectFirstIn( _node _n, Predicate<Select> selectConstraint){
+        return selectFirstIn(_n.ast(), selectConstraint );        
+    }
+
+    /**
+     * Returns the first _field that matches the pattern and constraint
+     * @param astNode the node to look through
+     * @param selectConstraint
+     * @return  the first _field that matches (or null if none found)
+     */
+    public Select selectFirstIn( Node astNode, Predicate<Select> selectConstraint){
+        Optional<VariableDeclarator> f = astNode.findFirst(VariableDeclarator.class, s ->{
+            Select sel = this.select(s);
+            return sel != null && selectConstraint.test(sel);
+            });         
+        
         if( f.isPresent()){
             return select(f.get());
         }
@@ -675,16 +695,36 @@ public class $field implements Template<_field>, $proto<_field> {
 
     @Override
     public List<Select> selectListIn(_node _n ){
+        return selectListIn(_n.ast());        
+    }
+
+    /**
+     * 
+     * @param astNode
+     * @param selectConstraint
+     * @return 
+     */
+    public List<Select> selectListIn(Node astNode, Predicate<Select> selectConstraint){
         List<Select>sts = new ArrayList<>();
-        Walk.in(_n, VariableDeclarator.class, e -> {
+        astNode.walk(VariableDeclarator.class, e-> {
             Select s = select( e );
-            if( s != null ){
+            if( s != null && selectConstraint.test(s) ){
                 sts.add( s);
             }
         });
         return sts;
     }
 
+    /**
+     * 
+     * @param _n
+     * @param selectConstraint
+     * @return 
+     */
+    public List<Select> selectListIn(_node _n, Predicate<Select> selectConstraint){
+        return selectListIn(_n.ast(), selectConstraint);        
+    }
+    
     @Override
     public <N extends Node> N removeIn(N astNode ){
         astNode.walk(VariableDeclarator.class, e-> {
@@ -774,6 +814,44 @@ public class $field implements Template<_field>, $proto<_field> {
         });
         return astNode;
     }
+    
+    
+    /**
+     * 
+     * @param <N>
+     * @param _n
+     * @param selectConstraint
+     * @param selectConsumer
+     * @return 
+     */
+    public <N extends _node> N forSelectedIn(N _n, Predicate<Select> selectConstraint, Consumer<Select> selectConsumer ){
+        Walk.in(_n, VariableDeclarator.class, e-> {
+            Select sel = select( e );
+            if( sel != null && selectConstraint.test(sel)){
+                selectConsumer.accept( sel );
+            }
+        });
+        return _n;
+    }
+
+    /**
+     * 
+     * @param <N>
+     * @param astNode
+     * @param selectConstraint
+     * @param selectConsumer
+     * @return 
+     */
+    public <N extends Node> N forSelectedIn(N astNode, Predicate<Select> selectConstraint, Consumer<Select> selectConsumer ){
+        astNode.walk(VariableDeclarator.class, e-> {
+            Select sel = select( e );
+            if( sel != null && selectConstraint.test(sel)){
+                selectConsumer.accept( sel );
+            }
+        });
+        return astNode;
+    }
+    
 
     @Override
     public <N extends Node> N forEachIn(N astNode, Consumer<_field> _fieldActionFn){
@@ -799,7 +877,7 @@ public class $field implements Template<_field>, $proto<_field> {
         return _n;
     }
     
-    /** matching / decomposition */
+    /** @return true is the field declaration  matches the prototype*/
     public boolean matches( String...field ){
         try{
             return matches(_field.of(field));
@@ -808,45 +886,30 @@ public class $field implements Template<_field>, $proto<_field> {
         }
     }
     
+    /**
+     * does this variable match the prototype
+     * @param vd
+     * @return 
+     */
     public boolean matches( VariableDeclarator vd ){
         return select(vd) != null;        
     }
     
+    /**
+     * does this field match the prototype?
+     * @param _f
+     * @return 
+     */
     public boolean matches( _field _f ){
         return select(_f) != null;
     }
-    
-    /*
-    public $proto.$args deconstruct( String...field ){
-        try{
-            _field _f = _field.of(field);
-            return deconstruct( _f);
-        }catch(Exception e){
-            return null;
-        }
-    }
-    
-    public $proto.$args deconstruct( VariableDeclarator astVar){
-        return deconstruct( _field.of(astVar ) ); 
-    }
-    
-    public $proto.$args deconstruct ( _field _f){
-        if( this.constraint.test(_f) ){
-            Tokens all = new Tokens();
-            all = javadoc.decomposeTo(_f.getJavadoc(), all);
-            all = annos.decomposeTo(_f.getAnnos(), all);
-            all = modifiers.decomposeTo(_f.getModifiers(), all);
-            all = type.decomposeTo(_f.getType(), all);
-            all = name.decomposeTo(_f.getName(), all);
-            all = init.decomposeTo(_f.getInit(), all);
-            if(all != null){
-                return $proto.$args.of(all);
-            }
-        }
-        return null;
-    }    
-    */
-    
+
+    /**
+     * Returns a Select based on a field declaration 
+     * OR NULL if this field declaration does not fit the prototype
+     * @param field field declaration
+     * @return a Select of the field
+     */
     public Select select(String...field){
         try{
             return select(_field.of(field));
@@ -854,6 +917,7 @@ public class $field implements Template<_field>, $proto<_field> {
             return null;
         }        
     }
+    
     /**
      * 
      * @param _f
@@ -873,13 +937,6 @@ public class $field implements Template<_field>, $proto<_field> {
             }
         }
         return null;
-        /*
-        $args ts = deconstruct(_f.ast() );
-        if( ts != null ){
-            return new Select(_f, ts);
-        }
-        return null;
-        */
     }
 
     /**
@@ -905,11 +962,7 @@ public class $field implements Template<_field>, $proto<_field> {
      */
     public Select select(VariableDeclarator astVar){
         if( astVar.getParentNode().isPresent() && astVar.getParentNode().get() instanceof FieldDeclaration ){
-            return select( _field.of(astVar));
-            //$args ts = this.select(astVar);
-            //if( ts != null){
-            //    return new Select( _field.of(astVar), ts );
-            //}            
+            return select( _field.of(astVar));            
         }   
         return null;
     } 
@@ -960,6 +1013,7 @@ public class $field implements Template<_field>, $proto<_field> {
         DEFAULT_COMPONENT_$NAMES.add("init");
     }
     
+    @Override
     public $field $(String target, String $Name) {
         javadoc.$form.$(target, $Name);
         annos.$form.$(target, $Name);
@@ -1052,7 +1106,27 @@ public class $field implements Template<_field>, $proto<_field> {
             return _f.is(fieldDeclaration);
         }
         
-        public boolean isInit( Predicate<Expression> initMatchFn){
+        public boolean hasJavadoc(){
+            return _f.hasJavadoc();
+        }
+        
+        public boolean isStatic(){
+            return _f.isStatic();
+        }
+        
+        public boolean isFinal(){            
+            return _f.isFinal();
+        }
+        
+        public boolean hasAnnos(){
+            return _f.hasAnnos();
+        }
+        
+        public boolean hasAnno(Class<? extends Annotation> annoClass){            
+            return _f.hasAnno(annoClass);
+        }
+        
+        public boolean isInit( Predicate<Expression> initMatchFn){            
             return _f.isInit(initMatchFn);
         }
         

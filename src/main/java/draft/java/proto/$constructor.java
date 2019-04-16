@@ -330,12 +330,47 @@ public final class $constructor
         return null;
     }
     
+    
+    /**
+     * Returns the first _constructor that matches the pattern and constraint
+     * @param _n the _java node
+     * @param selectConstraint
+     * @return  the first _constructor that matches (or null if none found)
+     */
+    public Select selectFirstIn( _node _n, Predicate<Select> selectConstraint){
+        Optional<ConstructorDeclaration> f = _n.ast().findFirst(ConstructorDeclaration.class, s -> {
+            Select sel = select(s);
+            return sel != null && selectConstraint.test(sel);
+                });         
+        if( f.isPresent()){
+            return select(f.get());
+        }
+        return null;
+    }
+
+    /**
+     * Returns the first _constructor that matches the pattern and constraint
+     * @param astNode the node to look through
+     * @param selectConstraint
+     * @return  the first _constructor that matches (or null if none found)
+     */
+    public Select selectFirstIn( Node astNode, Predicate<Select> selectConstraint){
+        Optional<ConstructorDeclaration> f = astNode.findFirst(ConstructorDeclaration.class, s -> {
+            Select sel = select(s);
+            return sel != null && selectConstraint.test(sel);
+                });            
+        if( f.isPresent()){
+            return select(f.get());
+        }
+        return null;
+    }
+    
     @Override
     public String toString(){
         if( this.javadocPattern != null ){
             return this.javadocPattern.toString() +System.lineSeparator() 
-                    + this.signaturePattern.toString()+System.lineSeparator() +
-                    this.$body.toString();
+                + this.signaturePattern.toString()+System.lineSeparator() 
+                + this.$body.toString();
         }
         return this.signaturePattern.toString()+System.lineSeparator()+ this.$body.toString();
     }
@@ -385,7 +420,6 @@ public final class $constructor
             }
         }
         return null; //the BODY or signature isnt the same or BODY / signature tokens were inconsistent
-        //return select( _c.ast());
     }
 
     /**
@@ -394,12 +428,7 @@ public final class $constructor
      * @return 
      */
     public Select select( ConstructorDeclaration astCtor){
-        return select(_constructor.of(astCtor));
-        //$args ts = deconstruct( astCtor );
-        //if( ts != null ){
-        //    return new Select( astCtor, ts );
-        //}
-        //return null;
+        return select(_constructor.of(astCtor));        
     }
     
     @Override
@@ -442,6 +471,40 @@ public final class $constructor
         return sts;
     }
 
+    /**
+     * 
+     * @param astNode
+     * @param selectConstraint
+     * @return 
+     */
+    public List<Select> selectListIn(Node astNode, Predicate<Select> selectConstraint){
+        List<Select>sts = new ArrayList<>();
+        astNode.walk(ConstructorDeclaration.class, c-> {
+            Select sel = select( c );
+            if( sel != null && selectConstraint.test(sel) ){
+                sts.add(sel);
+            }
+        });
+        return sts;
+    }
+
+    /**
+     * 
+     * @param _n
+     * @param selectConstraint
+     * @return 
+     */
+    public List<Select> selectListIn(_node _n, Predicate<Select> selectConstraint){
+        List<Select>sts = new ArrayList<>();
+        Walk.in(_n, ConstructorDeclaration.class, c-> {
+            Select sel = select( c );
+            if( sel != null && selectConstraint.test(sel) ){
+                sts.add(sel);
+            }
+        });
+        return sts;
+    }
+    
     @Override
     public <N extends Node> N forEachIn(N astNode, Consumer<_constructor> _constructorActionFn ){
         astNode.walk( ConstructorDeclaration.class, c-> {
@@ -483,7 +546,7 @@ public final class $constructor
      * @param selectedActionFn
      * @return 
      */
-    public <N extends Node> N forSelectedIn(N astNode, Consumer<Select> selectedActionFn ){
+    public <N extends Node> N forSelectedIn(N astNode, Consumer<Select> selectedActionFn ){        
         astNode.walk( ConstructorDeclaration.class, c-> {
             Select s = select( c );
             if( s != null ){
@@ -509,6 +572,43 @@ public final class $constructor
         });
         return _n;
     }
+    
+    /**
+     * 
+     * @param <N>
+     * @param astNode
+     * @param selectConstraint
+     * @param selectedActionFn
+     * @return 
+     */
+    public <N extends Node> N forSelectedIn(N astNode, Predicate<Select> selectConstraint, Consumer<Select> selectedActionFn ){        
+        astNode.walk( ConstructorDeclaration.class, c-> {
+            Select s = select( c );
+            if( s != null && selectConstraint.test(s)){
+                selectedActionFn.accept( s );
+            }
+        });
+        return astNode;
+    }
+
+    /**
+     * 
+     * @param <N>
+     * @param _n
+     * @param selectConstraint
+     * @param selectedActionFn
+     * @return 
+     */
+    public <N extends _node> N forSelectedIn(N _n, Predicate<Select> selectConstraint, Consumer<Select> selectedActionFn ){
+        Walk.in(_n, _constructor.class, c-> {
+            Select s = select( c );
+            if( s != null && selectConstraint.test(s )){
+                selectedActionFn.accept( s );
+            }
+        });
+        return _n;
+    }
+    
 
     private static final BlockStmt EMPTY = Stmt.block("{}");
    
@@ -533,9 +633,6 @@ public final class $constructor
             this.args = tokens;
         }
         
-        //In select
-        
-
         @Override
         public $args getArgs(){
             return args;
@@ -547,6 +644,34 @@ public final class $constructor
                     Text.indent(_ct.toString() )+ System.lineSeparator()+
                     Text.indent("$args : " + args) + System.lineSeparator()+
                     "}";
+        }
+        
+        public boolean isVarArg(){
+            return _ct.isVarArg();
+        }
+        
+        public boolean hasBody(){
+            return _ct.hasBody();
+        }
+        
+        public boolean hasThrows(){
+            return _ct.hasThrows();
+        }
+        
+        public boolean hasThrow(Class<? extends Throwable> throwsClass){            
+            return _ct.hasThrow(throwsClass);
+        }
+        
+        public boolean hasParameters(){            
+            return _ct.hasParameters();
+        }
+        
+        public boolean is(String...ctorDeclaration){
+            return _ct.is(ctorDeclaration);
+        }
+        
+        public boolean hasTypeParameters(){            
+            return _ct.hasTypeParameters();
         }
         
         @Override

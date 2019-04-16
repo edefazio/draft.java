@@ -2004,43 +2004,6 @@ public final class $expr <T extends Expression>
 
     /**
      * 
-     * @param expression
-     * @return 
-     
-    public $args deconstruct( String... expression ){
-        return deconstruct( Expr.of(expression) );
-    }
-    */ 
-    
-    /**
-     * Deconstruct the expression into tokens, or return null if the statement doesnt match
-     *
-     * @param astExpr expression
-     * @return Tokens from the stencil, or null if the expression doesnt match
-     
-    public $args deconstruct( Expression astExpr ){
-        if( expressionClass.isAssignableFrom(astExpr.getClass()) 
-                && constraint.test((T)astExpr)){
-            //slight modification..
-            if( astExpr instanceof LiteralStringValueExpr ) {
-                //there is an issue here the lowercase and uppercase Expressions 1.23d =/= 1.23D (which they are equivalent
-                //need to handle postfixes 1.2f, 2.3d, 1000l
-                //need to handle postfixes 1.2F, 2.3D, 1000L
-            }
-            if( astExpr instanceof DoubleLiteralExpr ){
-                DoubleLiteralExpr dle = (DoubleLiteralExpr)astExpr;
-            }
-            Tokens ts = exprPattern.deconstruct(astExpr.toString(Ast.PRINT_NO_COMMENTS) );
-            if( ts != null ){
-                return $args.of(ts);
-            }
-        }
-        return null;
-    }
-    */ 
-
-    /**
-     * 
      * @param astExpr
      * @return 
      */
@@ -2062,13 +2025,7 @@ public final class $expr <T extends Expression>
                 //return $args.of(ts);
             }
         }
-        return null;
-        
-        //$args ts = this.deconstruct(astExpr);
-        //if( ts != null){
-        //    return new Select( astExpr, ts );
-        //}
-        //return null;
+        return null;        
     }
     
     public Select<T> select(String...expr){
@@ -2125,6 +2082,40 @@ public final class $expr <T extends Expression>
      */
     public Select<T> selectFirstIn( Node astNode ){
         Optional<T> f = astNode.findFirst(this.expressionClass, s -> this.matches(s) );         
+        if( f.isPresent()){
+            return select(f.get());
+        }
+        return null;
+    }
+    
+    /**
+     * Returns the first Expression that matches the pattern and constraint
+     * @param _n the _java node
+     * @param selectConstraint
+     * @return  the first Expression that matches (or null if none found)
+     */
+    public Select<T> selectFirstIn( _node _n,Predicate<Select<T>> selectConstraint){
+        Optional<T> f = _n.ast().findFirst(this.expressionClass, s -> {
+            Select<T> sel = select(s);
+            return sel != null && selectConstraint.test(sel);
+        });         
+        if( f.isPresent()){
+            return select(f.get());
+        }
+        return null;
+    }
+
+    /**
+     * Returns the first Expression that matches the pattern and constraint
+     * @param astNode the node to look through
+     * @param selectConstraint
+     * @return  the first Expression that matches (or null if none found)
+     */
+    public Select<T> selectFirstIn( Node astNode,Predicate<Select<T>> selectConstraint){
+        Optional<T> f = astNode.findFirst(this.expressionClass, s -> {
+            Select<T> sel = select(s);
+            return sel != null && selectConstraint.test(sel);
+        });          
         if( f.isPresent()){
             return select(f.get());
         }
@@ -2194,7 +2185,41 @@ public final class $expr <T extends Expression>
         });
         return sts;
     }
+    
+    /**
+     * 
+     * @param astNode
+     * @param selectConstraint
+     * @return 
+     */
+    public List<Select<T>> selectListIn(Node astNode , Predicate<Select<T>> selectConstraint){
+        List<Select<T>>sts = new ArrayList<>();
+        astNode.walk(this.expressionClass, e-> {
+            Select s = select( e );
+            if( s != null  && selectConstraint.test(s)){
+                sts.add( s);
+            }
+        });
+        return sts;
+    }
 
+    /**
+     * 
+     * @param _n
+     * @param selectConstraint
+     * @return 
+     */
+    public List<Select<T>> selectListIn(_node _n, Predicate<Select<T>> selectConstraint){
+        List<Select<T>>sts = new ArrayList<>();
+        Walk.in(_n, this.expressionClass, e -> {
+            Select s = select( e );
+            if( s != null  && selectConstraint.test(s)){
+                sts.add( s);
+            }
+        });
+        return sts;
+    }
+    
     @Override
     public <N extends Node> N removeIn(N astNode){
         astNode.walk( this.expressionClass, e-> {
@@ -2296,6 +2321,43 @@ public final class $expr <T extends Expression>
         });
         return astNode;
     }
+    
+    /**
+     * 
+     * @param <N>
+     * @param _n
+     * @param selectConstraint
+     * @param selectConsumer
+     * @return 
+     */
+    public <N extends _node> N forSelectedIn(N _n, Predicate<Select<T>> selectConstraint, Consumer<Select> selectConsumer ){
+        Walk.in(_n, this.expressionClass, e-> {
+            Select sel = select( e );
+            if( sel != null  && selectConstraint.test(sel)){
+                selectConsumer.accept( sel );
+            }
+        });
+        return _n;
+    }
+
+    /**
+     * 
+     * @param <N>
+     * @param astNode
+     * @param selectConstraint
+     * @param selectConsumer
+     * @return 
+     */
+    public <N extends Node> N forSelectedIn(N astNode, Predicate<Select<T>> selectConstraint, Consumer<Select<T>> selectConsumer ){
+        astNode.walk(this.expressionClass, e-> {
+            Select sel = select( e );
+            if( sel != null && selectConstraint.test(sel)){
+                selectConsumer.accept( sel );
+            }
+        });
+        return astNode;
+    }
+    
 
     @Override
     public String toString() {
