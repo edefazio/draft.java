@@ -15,6 +15,57 @@ import junit.framework.TestCase;
  */
 public class SaTest extends TestCase {
     
+    public void goal(){
+        //this is a prototype for a $method which matches all methods that
+        //have a matching annotation @A(count=1)
+        
+        // $method.of( $anno.of("@A(count=1)"), $typeDecl.of(String.class) );
+    }
+    
+    public void testSsa(){
+        $a a = $a.of("@A(count=1)");
+        assertTrue( a.matches("@A(count=1)") );
+    }
+    
+    public void testG(){
+        //a marker annotation match
+        $a a = $a.of("@A");
+        assertTrue( a.matches("@A") ); //matches a marker
+        assertTrue( a.matches("@A()") ); //matches a marker with parens
+        assertTrue( a.matches("@A(1)") ); //matches a "value" annotation
+        assertTrue( a.matches("@A(count=1)") ); //matches a keyvalue
+        assertTrue( a.matches("@A(count=1,str=\"eric\")") );//matches a multi key value
+        
+        assertTrue( a.matches("@fully.qualified.A") );
+        
+        //an annotation with single value
+        a = $a.of("@A(\"value\")");
+        assertFalse( a.matches("@A") ); //X missing a value
+        assertTrue( a.matches("@A(\"value\")") ); //exact match w/ value
+        assertTrue( a.matches("@A(key=\"value\")") );// with a key=(value)
+        assertFalse( a.matches("@A(key=\"val\")") ); // X not the correct value
+        
+        //an annotation with key value
+        a = $a.of("@A(count=1)");
+        assertFalse( a.matches("@A") );
+        assertTrue( a.matches("@A(1)") ); //simple value matches
+        assertTrue( a.matches("@A(count=1)") ); //exact match
+        assertFalse( a.matches("@A(count=2)") ); //X wrong value
+        assertTrue( a.matches("@A(count=1,str=\"eric\")") ); 
+        assertTrue( a.matches("@A(str=\"eric\", count=1)") ); //in whatever order
+        
+        //an annotation with multiple keyvalues
+        a = $a.of("@A(count=1,str=\"e\")");
+        assertFalse( a.matches("@A(1)") ); //simple value matches
+        assertFalse( a.matches("@A(count=1)") ); //exact match
+        assertFalse( a.matches("@A(count=2)") ); //X wrong value
+        assertTrue( a.matches("@A(count=1,str=\"e\")") ); 
+        assertTrue( a.matches("@A(str=\"e\",count=1)") ); // different order
+        assertTrue( a.matches("@A(str=\"e\", count=1,extra=3.4)") ); //extra args
+        
+        assertFalse( a.matches("@A(count=1, str=\"d\")") ); //X wrong value
+        
+    }
     public void testA(){
         $a a = $a.of("@A");
         assertTrue( a.matches("@A"));

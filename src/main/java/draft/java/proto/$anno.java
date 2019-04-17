@@ -1043,8 +1043,7 @@ public final class $anno
         public boolean isNamed(String name){            
             return astAnno.getNameAsString().equals(name);
         }
-        
-        
+                
         public boolean isSingleValue(){
             return astAnno instanceof SingleMemberAnnotationExpr;
         }
