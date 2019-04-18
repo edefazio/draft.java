@@ -401,24 +401,8 @@ public interface $proto<Q> {
      */
     public static class $component<T> {
 
-        /*
-        public static final $component<?> of( String template){
-            return new $component(template, t->true);
-        }
-        
-        public static final $component<?> of( String template, Predicate<?> constraint ){
-            return new $component(template, constraint);
-        }        
-        */
-        
         public Stencil $form;
         public Predicate<T> constraint = t -> true;
-
-        /*
-        public $component(T t) {
-            this.$form = Stencil.of(t.toString());
-        } 
-        */
 
         /**
          * 
@@ -482,8 +466,6 @@ public interface $proto<Q> {
         }
         
         public String compose( Translator t, Map<String,Object> keyValues ){
-            //System.out.println( "In compose KeyValues "+ keyValues );
-            //System.out.println( "In compose FORM "+ this.$form );
             return this.$form.construct(t, keyValues);
         }
                 
@@ -515,8 +497,6 @@ public interface $proto<Q> {
                     return $form.deconstruct( ((_node)t).toString(Ast.PRINT_NO_COMMENTS).trim() );
                 }
                 if( t instanceof _body ){
-                    //System.out.println("THE BODY >>" +t+"<<");
-                    //System.out.println("THE FORM >>" +$form+"<<");
                     return $form.deconstruct( ((_body)t).toString(Ast.PRINT_NO_COMMENTS).trim() );
                 }
                 return $form.deconstruct( t.toString() );
@@ -532,10 +512,8 @@ public interface $proto<Q> {
             if (ts != null) {                
                 if (args.isConsistent(ts)) {                   
                     args.putAll(ts);
-                    //System.out.println( " CONSISTENT "+all);
                     return args;
                 }
-                //System.out.println( "NOT  CONSISTENT "+all+ " " +ts );
             }
             return null;
         }
@@ -546,24 +524,13 @@ public interface $proto<Q> {
             }
             
             Tokens ts = decompose(t);
-            
-            /*
-            if( t instanceof _node){
-                ts = decompose( ((_node)t).toString(Ast.PRINT_NO_COMMENTS) );
-            }
-            else {
-                ts = decompose(t);
-            } //decompose
-            */
+
             if (ts != null) {                
                 if (all.isConsistent(ts)) {                   
                     all.putAll(ts);
-                    //System.out.println( " CONSISTENT "+all);
                     return all;
                 }
-                //System.out.println( "NOT  CONSISTENT "+all+ " " +ts );
             }
-            //System.out.println( t + " didnt work for "+ this.$form );
             return null;
         }
     }

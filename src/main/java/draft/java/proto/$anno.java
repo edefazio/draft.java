@@ -589,6 +589,8 @@ public final class $anno
     
     public Stencil pattern;
     
+    
+    
     private $anno( String stencil) {
         this.pattern = Stencil.of(stencil );
     }

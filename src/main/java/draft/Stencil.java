@@ -480,7 +480,7 @@ public final class Stencil implements Template<String>{
         String[] fills = this.$Names.toArray( new String[ 0 ] );
         for( int i = 0; i < fills.length; i++ ) {
             fills[ i ] = "$" + fills[ i ] + "$"; //accept $ delimeters around $Names
-            fillMap.put( fills[ i ], "$" + fills[ i ] + "$" );
+            fillMap.put( fills[ i ],  "$" + fills[ i ] +"$" );
         }
 
         Object[] fis = inline( Translator.DEFAULT_TRANSLATOR, $Names, fillMap );

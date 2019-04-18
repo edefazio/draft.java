@@ -93,6 +93,7 @@ public final class _anno
         return this;
     }
 
+    @Override
     public boolean isNamed( String name ) {
         return this.astAnno.getName().asString().equals( name );
     }
@@ -613,8 +614,6 @@ public final class _anno
             Set<MemberValuePair> mvp = new HashSet<>();
             mvp.add(new MemberValuePair( "value", this.astAnno.asSingleMemberAnnotationExpr().getMemberValue()));            
             return Objects.hash(name, mvp );    
-            //return Objects.hash(name, 
-            //        this.astAnno.asSingleMemberAnnotationExpr().getMemberValue() );
         }        
         Set<MemberValuePair> mvp = new HashSet<>();
         this.astAnno.asNormalAnnotationExpr().getPairs().forEach(p -> mvp.add(p) );        
@@ -850,6 +849,10 @@ public final class _anno
             return (T)this;
         }
 
+        /**
+         * 
+         * @return 
+         */
         default boolean hasAnnos() {
             return !getAnnos().isEmpty();
         }
@@ -997,8 +1000,8 @@ public final class _anno
          */
         public List<_anno> list( Class<? extends Annotation> clazz ) {
             return list( a -> a.getName().equals( clazz.getSimpleName() )
-                    || a.getName().equals( clazz.getCanonicalName() )
-                    || a.getName().endsWith( "."+clazz.getSimpleName() ) );
+                || a.getName().equals( clazz.getCanonicalName() )
+                || a.getName().endsWith( "."+clazz.getSimpleName() ) );
         }
 
         /**
@@ -1052,8 +1055,8 @@ public final class _anno
 
             //send a predicate
             return remove( a -> ls.stream().filter(
-                    c -> c.getSimpleName().equals( a.getName() )
-                            || c.getCanonicalName().equals( a.getName() ) ).findFirst().isPresent() );
+                c -> c.getSimpleName().equals( a.getName() )
+                    || c.getCanonicalName().equals( a.getName() ) ).findFirst().isPresent() );
         }
 
         /**

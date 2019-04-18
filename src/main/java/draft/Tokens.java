@@ -182,7 +182,7 @@ public class Tokens implements Map<String,Object>{
      */
     public boolean isConsistent( Tokens t ){
         Optional<String> unmatchedKey = 
-                t.kvMap.keySet().stream().filter( k-> containsKey(k) && (!t.get(k).equals(get(k)) )).findFirst();
+            t.kvMap.keySet().stream().filter( k-> containsKey(k) && (!Objects.equals( t.get(k), get(k)) )).findFirst();
         if( unmatchedKey.isPresent() ){
             System.out.println( "Unmatched key \""+ unmatchedKey.get()+"\" values : \""+ t.get(unmatchedKey.get())+ "\"  \""+ get(unmatchedKey.get())+"\""  );
             return false;
