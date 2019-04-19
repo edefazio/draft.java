@@ -24,7 +24,7 @@ public final class _parameter
         _hasFinal<_parameter>, _node<Parameter> {
 
     public static _parameter of( Class type, String name ) {
-        return of( new Parameter( Ast.typeRef( type ), name ) );
+        return of( new Parameter( Ast.typeDecl( type ), name ) );
     }
 
     public static _parameter of( Type type, String name ) {
@@ -88,7 +88,7 @@ public final class _parameter
 
     @Override
     public boolean isType( String type ) {
-        Type t = Ast.typeRef( type );
+        Type t = Ast.typeDecl( type );
         return this.astParameter.getType().equals( t );
     }
 

@@ -1,12 +1,19 @@
 package draft.java.proto;
 
 import com.github.javaparser.ast.Node;
+import com.github.javaparser.ast.expr.Name;
+import com.github.javaparser.ast.expr.SimpleName;
+import com.github.javaparser.ast.type.ClassOrInterfaceType;
 import draft.java._model;
 import draft.java._type;
+import draft.java.proto.$node.Select;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
+import java.util.function.Consumer;
 import java.util.function.Predicate;
+import java.util.stream.Collectors;
 
 /**
  * Prototype representing any uses of a specific Class within code
@@ -38,15 +45,15 @@ public class $classUse {
         return new $classUse(clazz);
     }
     
-    String packageName;
-    Class type;
+    public final String packageName;
+    public final Class type;
     
     /** 
      * Whenever the fully qualified name (i.e. java.util.Map)
      * (i.e. imports, implements, extends, throws, annotationName, cast, 
      * instanceof, etc.)
      */ 
-    $node $fullName;
+    public $node $fullName;
     
     /**
      * If the class is a member class (or a member of a member class)
@@ -60,13 +67,23 @@ public class $classUse {
      * this will create an ordered list of names that can be used to be refer
      * to the class in this fashion
      */
-    List<$node> $memberNames; 
+    public List<$node> $memberNames; 
     
     /**
      * Whenever the simple name (i.e. Map) is used
      * i.e. static method call Map.of(...), static field access, cast, etc.)
      */
-    $node $simpleName;
+    public $node $simpleName;
+    
+    /**
+     * This should greatly speed up the matching, since
+     * we wont toString (in order to test) EVERY SINGLE NODE
+     * but only specific nodeTypes
+     */
+    private static final Predicate<Node> IS_EXPECTED_NODE_TYPE = 
+        n-> n instanceof Name || 
+        n instanceof SimpleName || 
+        n instanceof ClassOrInterfaceType;
     
     public $classUse( Class type ){
         if( type.getPackage() != null ) {
@@ -75,19 +92,34 @@ public class $classUse {
             this.packageName ="";
         }
         this.type = type;
-        this.$fullName = new $node(type.getCanonicalName());
+        this.$fullName = new $node(type.getCanonicalName())
+            .constraint( IS_EXPECTED_NODE_TYPE );
         //Note: there can be (0, 1, or more OTHER nodes that represent
         //Inner member classes, i.e. not fully qualified 
         
-        this.$simpleName = new $node(type.getSimpleName());        
+        this.$simpleName = new $node(type.getSimpleName()).constraint(IS_EXPECTED_NODE_TYPE);        
         $memberNames = $classUse.buildMemberClassNames( type );
     }
     
     public $classUse constraint(Predicate<Node> constraint){
         $fullName.constraint(constraint);
-        $simpleName.constraint(constraint);
         $memberNames.forEach(m -> constraint(constraint));
+        $simpleName.constraint(constraint);        
         return this;
+    }
+    
+    public $node.Select select( Node n ){
+        Select sel = $fullName.select(n);
+        if( sel != null ){
+            return sel;
+        }
+        Optional<$node> on = 
+            $memberNames.stream().filter( m -> m.select(n) != null ).findFirst();
+        if( on.isPresent() ){
+            return on.get().select(n);
+        }
+        sel = $simpleName.select(n);
+        return sel;
     }
     
     public <N extends _model._node> N replaceIn(N _n, Class replacement) {
@@ -106,7 +138,7 @@ public class $classUse {
         String currentPath = clazz.getSimpleName();
         buildMemberClassNames(clazz, currentPath, nodes);
         
-        //reverse the order of the nmes... (which puts the LONGER NAMES UP FRONT)
+        //reverse the order of the names... (which puts the LONGER NAMES UP FRONT)
         // so that when we match/replace, we look for a pattern in the longer 
         // name FIRST before looking at shorter names (to match and replace)
         Collections.reverse(nodes);
@@ -117,7 +149,7 @@ public class $classUse {
         if( clazz.isMemberClass()){
             Class declaringClass = clazz.getDeclaringClass();
             currentPath = declaringClass.getSimpleName()+"."+currentPath;
-            nodes.add( $node.of(currentPath) );
+            nodes.add( $node.of(currentPath).addConstraint(IS_EXPECTED_NODE_TYPE) );
             buildMemberClassNames( declaringClass, currentPath, nodes);
         }
     }
@@ -171,5 +203,82 @@ public class $classUse {
     
     public _type replaceIn(Class clazz, Node replacement){
         return replaceIn(_type.of(clazz), replacement);
+    }
+    
+    public _type removeIn(Class clazz){
+        return removeIn(_type.of(clazz) );
+    }
+    
+    public <N extends _model._node> N removeIn(N _n ) {
+        if( _n instanceof _type && ((_type)_n).isTopClass()){
+            removeIn( ((_type)_n).findCompilationUnit() );
+            return _n;
+        }
+        removeIn(_n.ast() );
+        return _n;
+    }
+    
+    public <N extends Node> N removeIn(N astRootNode ) {
+        $fullName.removeIn(astRootNode);
+        $memberNames.forEach(n -> n.removeIn(astRootNode));
+        $simpleName.removeIn(astRootNode);        
+        return astRootNode;
+    }
+    
+    //TODO add a predicate<>
+    //ForSelectedIn
+
+    public <N extends Node> N forEachIn(N astRootNode, Consumer<Node> nodeActionFn ) {
+        $fullName.forEachIn(astRootNode, nodeActionFn);
+        $memberNames.forEach(n -> n.forEachIn(astRootNode, nodeActionFn ) );
+        $simpleName.forEachIn(astRootNode, nodeActionFn);        
+        return astRootNode;
+    }
+    
+    public <N extends Node> N forSelectedIn(N astRootNode, Consumer<$node.Select> selectActionFn ) {
+        $fullName.forSelectedIn(astRootNode, selectActionFn);
+        $memberNames.forEach( e-> e.forSelectedIn(astRootNode, selectActionFn) );
+        $simpleName.forSelectedIn(astRootNode, selectActionFn);
+        return astRootNode;
+    }
+        
+    public <N extends Node> List<$node.Select> listSelectedIn( N astRootNode ){
+        List<$node.Select> sels = new ArrayList<>();
+        sels.addAll( $fullName.selectListIn(astRootNode) );
+        $memberNames.forEach( e-> sels.addAll( e.selectListIn(astRootNode) ) );
+        sels.addAll( $simpleName.selectListIn(astRootNode) );
+        
+        //dedupe
+        List<$node.Select>uniqueSels = sels.stream().distinct().collect(Collectors.toList());
+        
+        //the selections are interleaved, so lets organize them in positional 
+        //order (in the file)
+        Collections.sort(sels, $node.SELECT_START_POSITION_COMPARATOR);
+        
+        return sels;        
+    }
+    
+    
+        public <N extends Node> N forSelectedIn(N astRootNode, Predicate<$node.Select> selectConstraint, Consumer<$node.Select> selectActionFn ) {
+        $fullName.forSelectedIn(astRootNode, selectConstraint, selectActionFn);
+        $memberNames.forEach( e-> e.forSelectedIn(astRootNode, selectConstraint, selectActionFn) );
+        $simpleName.forSelectedIn(astRootNode, selectConstraint, selectActionFn);
+        return astRootNode;
+    }
+        
+    public <N extends Node> List<$node.Select> listSelectedIn( N astRootNode, Predicate<$node.Select> selectConstraint){
+        List<$node.Select> sels = new ArrayList<>();
+        sels.addAll( $fullName.selectListIn(astRootNode, selectConstraint) );
+        $memberNames.forEach( e-> sels.addAll( e.selectListIn(astRootNode) ) );
+        sels.addAll( $simpleName.selectListIn(astRootNode) );
+        
+        //dedupe
+        List<$node.Select>uniqueSels = sels.stream().distinct().collect(Collectors.toList());
+        
+        //the selections are interleaved, so lets organize them in positional 
+        //order (in the file)
+        Collections.sort(sels, $node.SELECT_START_POSITION_COMPARATOR);
+        
+        return sels;        
     }
 }

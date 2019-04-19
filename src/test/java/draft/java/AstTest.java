@@ -73,10 +73,10 @@ public class AstTest extends TestCase {
     }
     
     public void testTypeEquals(){
-        Ast.typesEqual( Ast.typeRef("java.util.List<java.lang.String>"),
-                Ast.typeRef("List<String>") );
+        Ast.typesEqual( Ast.typeDecl("java.util.List<java.lang.String>"),
+                Ast.typeDecl("List<String>") );
 
-        Ast.typesEqual( Ast.typeRef(int.class), Ast.typeRef("int"));
+        Ast.typesEqual( Ast.typeDecl(int.class), Ast.typeDecl("int"));
     }
 
     public void testTypeParameterAst(){
@@ -445,8 +445,8 @@ public class AstTest extends TestCase {
     }
 
     public void testType(){
-        Type t = Ast.typeRef("MyType");
-        t = Ast.typeRef("MyType<String,Integer>");
+        Type t = Ast.typeDecl("MyType");
+        t = Ast.typeDecl("MyType<String,Integer>");
     }
     public void testComment() {
         Comment c = Ast.comment("// hello");
@@ -606,9 +606,9 @@ public class AstTest extends TestCase {
         assertEquals( Ast.compilationUnit( "package h;", "import java.util.*;", "public class V{", "}"),
                 Ast.compilationUnit("package h;", "import java.util.*;", "", "public class V", "{}" ) );
 
-        Ast.typeRef("String" );
-        Ast.typeRef("List<String>" );
-        assertEquals( Ast.typeRef("Map< Integer,List< String >>"), Ast.typeRef("Map<Integer, List<String>>" ));
+        Ast.typeDecl("String" );
+        Ast.typeDecl("List<String>" );
+        assertEquals( Ast.typeDecl("Map< Integer,List< String >>"), Ast.typeDecl("Map<Integer, List<String>>" ));
         assertEquals( Ast.compilationUnit("public class MyClass<T> extends BaseClass implements IClass{} "),
                 Ast.compilationUnit("public class MyClass<T>","    extends BaseClass","     implements IClass","{", "}"));
 

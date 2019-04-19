@@ -553,7 +553,7 @@ public final class _class implements _type<ClassOrInterfaceDeclaration, _class>,
 
     @Override
     public _class extend( Class toExtend ){
-        return extend( (ClassOrInterfaceType) Ast.typeRef(toExtend.getCanonicalName() ) );
+        return extend( (ClassOrInterfaceType) Ast.typeDecl(toExtend.getCanonicalName() ) );
     }
 
     @Override
@@ -664,7 +664,7 @@ public final class _class implements _type<ClassOrInterfaceDeclaration, _class>,
     public boolean isExtends( String str ){
         try{
 
-            return isExtends( (ClassOrInterfaceType)Ast.typeRef( str ) );
+            return isExtends( (ClassOrInterfaceType)Ast.typeDecl( str ) );
         }catch( Exception e){}
         return false;
     }
@@ -672,8 +672,8 @@ public final class _class implements _type<ClassOrInterfaceDeclaration, _class>,
     @Override
     public boolean isExtends( Class clazz ){
         try{
-            return isExtends( (ClassOrInterfaceType)Ast.typeRef( clazz ) ) ||
-                isExtends( (ClassOrInterfaceType)Ast.typeRef( clazz.getSimpleName() ) );
+            return isExtends( (ClassOrInterfaceType)Ast.typeDecl( clazz ) ) ||
+                isExtends( (ClassOrInterfaceType)Ast.typeDecl( clazz.getSimpleName() ) );
         }catch( Exception e){}
         return false;
     }

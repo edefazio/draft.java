@@ -200,13 +200,13 @@ public final class _interface implements _type<ClassOrInterfaceDeclaration, _int
 
     
     public _interface extend( Class...toExtends ){
-        Arrays.stream(toExtends).forEach( e -> extend( (ClassOrInterfaceType)Ast.typeRef(e) ) );
+        Arrays.stream(toExtends).forEach( e -> extend( (ClassOrInterfaceType)Ast.typeDecl(e) ) );
         return this;
     }
     
     @Override
     public _interface extend( Class toExtend ){
-        this.astInterface.addExtendedType( (ClassOrInterfaceType)Ast.typeRef(toExtend) );
+        this.astInterface.addExtendedType( (ClassOrInterfaceType)Ast.typeDecl(toExtend) );
         this.astInterface.tryAddImportToParentCompilationUnit(toExtend);
         return this;
     }
@@ -255,13 +255,13 @@ public final class _interface implements _type<ClassOrInterfaceDeclaration, _int
     @Override
     public boolean isExtends( ClassOrInterfaceType ct ){
         return this.astInterface.getExtendedTypes().contains( ct ) ||
-                this.astInterface.getExtendedTypes().contains( (ClassOrInterfaceType)Ast.typeRef(ct.getNameAsString()) );
+                this.astInterface.getExtendedTypes().contains( (ClassOrInterfaceType)Ast.typeDecl(ct.getNameAsString()) );
     }
 
     @Override
     public boolean isExtends( String str ){
         try{
-            return isExtends( (ClassOrInterfaceType)Ast.typeRef( str ) );
+            return isExtends( (ClassOrInterfaceType)Ast.typeDecl( str ) );
         }catch( Exception e){}
         return false;
     }
@@ -269,7 +269,7 @@ public final class _interface implements _type<ClassOrInterfaceDeclaration, _int
     @Override
     public boolean isExtends( Class clazz ){
         try{
-            return isExtends( (ClassOrInterfaceType)Ast.typeRef( clazz ) );
+            return isExtends( (ClassOrInterfaceType)Ast.typeDecl( clazz ) );
         }catch( Exception e){}
         return false;
     }

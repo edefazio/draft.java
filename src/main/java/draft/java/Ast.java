@@ -630,7 +630,7 @@ public enum Ast {
             return new Name( Text.combine(code));
         }
         if( Type.class.isAssignableFrom(nodeClass )){
-            return typeRef( Text.combine(code));
+            return typeDecl( Text.combine(code));
         }
         if( Modifier.class == nodeClass ){
             return _modifiers.KEYWORD_TO_ENUM_MAP.get(Text.combine(code) );
@@ -1227,12 +1227,13 @@ public enum Ast {
     }
 
     public static Type typeRef(AnnotatedType at) {
-        return typeRef(at.getType().toString());
+        return typeDecl(at.getType().toString());
     }
 
     /**
-     * When we create a Local Class and ask for it's name, it will have this
-     * weird "$#$" qualifier, where # is some number... Here is an example:
+     * When we create an anonymous Local Class and ask for it's name, it will 
+     * have this weird "$#$" qualifier, where # is some number... Here is an 
+     * example:
      * <PRE>
      * draft.java._classTest$1$Hoverboard
      * </PRE> ...well we want to identify these patterns and convert them into
@@ -1242,20 +1243,20 @@ public enum Ast {
 
     public static final Pattern PATTERN_LOCAL_CLASS = Pattern.compile(LOCAL_CLASS_NAME_PACKAGE_PATTERN);
 
-    public static Type typeRef(java.lang.reflect.Type t) {
+    public static Type typeDecl(java.lang.reflect.Type t) {
         //System.out.println( "TYPE NAME " + t.getTypeName().replace('$', '.') );
         String str = t.getTypeName();
         if (PATTERN_LOCAL_CLASS.matcher(str).find()) {
             //lets remove all the local stuff... return a type without package
             str = str.replaceAll(LOCAL_CLASS_NAME_PACKAGE_PATTERN, ".");
             //System.out.println( "Str \"" + str +"\"");
-            return typeRef(str.substring(str.lastIndexOf('.') + 1));
+            return typeDecl(str.substring(str.lastIndexOf('.') + 1));
         }
         //String name = str.replace('$', '.');
-        return typeRef(str);
+        return typeDecl(str);
     }
 
-    public static Type typeRef(Class clazz) {
+    public static Type typeDecl(Class clazz) {
         if (clazz.isArray()) {
             Class<?> cl = clazz;
             int dimensions = 0;
@@ -1266,9 +1267,9 @@ public enum Ast {
                 cl = cl.getComponentType();
             }
             String tr = cl.getCanonicalName() + sb.toString();
-            return typeRef(tr);
+            return typeDecl(tr);
         }
-        return typeRef(clazz.getCanonicalName());
+        return typeDecl(clazz.getCanonicalName());
     }
 
     public static PrimitiveType BOOLEAN_TYPE = PrimitiveType.booleanType();
@@ -1280,7 +1281,7 @@ public enum Ast {
     public static PrimitiveType DOUBLE_TYPE = PrimitiveType.doubleType();
     public static PrimitiveType LONG_TYPE = PrimitiveType.longType();
 
-    public static Type typeRef(String code) {
+    public static Type typeDecl(String code) {
 
         if (code.contains("|")) { //Could only be a Union Type i.e. from a catch clause
             code = "catch(" + code + " e ) {}";
@@ -1293,7 +1294,7 @@ public enum Ast {
             //lets remove all the local stuff... return a type without package
             code = code.replaceAll(LOCAL_CLASS_NAME_PACKAGE_PATTERN, ".");
             //System.out.println( "Str \"" + code +"\"");
-            return typeRef(code.substring(code.lastIndexOf('.') + 1));
+            return typeDecl(code.substring(code.lastIndexOf('.') + 1));
         }
         //System.out.println( "THE CODE IS \""+ code+"\"");
         return StaticJavaParser.parseType(code);
@@ -2802,5 +2803,35 @@ public enum Ast {
             return true;
         }
         return false;
+    }
+    
+    /**
+     * Singleton instance for comparing AST nodes by
+     */
+    public static final NodeStartPositionComparator COMPARE_NODE_BY_LOCATION = 
+        new NodeStartPositionComparator();
+    
+    /**
+     * Comparator for Nodes within an AST node that organizes based on the
+     * start position.
+     */
+    public static class NodeStartPositionComparator implements Comparator<Node> {
+
+        @Override
+        public int compare(Node o1, Node o2) {
+            if (o1.getBegin().isPresent() && o2.getBegin().isPresent()) {
+                return o1.getBegin().get().compareTo(o2.getBegin().get());
+            }
+            //if one or the other doesnt have a begin
+            // put the one WITHOUT a being BEFORE the other
+            // if neither have a being, return
+            if (!o1.getBegin().isPresent() && !o2.getBegin().isPresent()) {
+                return 0;
+            }
+            if (o1.getBegin().isPresent()) {
+                return -1;
+            }
+            return 1;
+        }
     }
 }

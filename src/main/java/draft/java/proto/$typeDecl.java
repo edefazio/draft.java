@@ -353,7 +353,7 @@ public final class $typeDecl
      * @return 
      */
     public static $typeDecl of(String pattern ){
-        return new $typeDecl(Ast.typeRef(pattern));
+        return new $typeDecl(Ast.typeDecl(pattern));
     }
 
     /**
@@ -363,7 +363,7 @@ public final class $typeDecl
      * @return 
      */
     public static $typeDecl of(String pattern, Predicate<_typeDecl> constraint){
-        return new $typeDecl(Ast.typeRef(pattern)).constraint(constraint);
+        return new $typeDecl(Ast.typeDecl(pattern)).constraint(constraint);
     }
     
     /**
@@ -372,7 +372,7 @@ public final class $typeDecl
      * @return 
      */
     public static $typeDecl of( Class typeClass ){
-        return of( Ast.typeRef(typeClass) );
+        return of( Ast.typeDecl(typeClass) );
     }
 
     /**
@@ -537,7 +537,7 @@ public final class $typeDecl
      * @return 
      */
     public boolean matches( String type ){
-        return select( Ast.typeRef(type)) != null;
+        return select( Ast.typeDecl(type)) != null;
     }
 
     /**

@@ -284,7 +284,7 @@ public interface _model {
          * @return the modified entity after setting the TYPE
          */
         default T type( String typeRef ){
-            return type( Ast.typeRef( typeRef) );
+            return type( Ast.typeDecl( typeRef) );
         }
 
         /**
@@ -293,7 +293,7 @@ public interface _model {
          * @return the modified entity after setting the TYPE
          */
         default T type( Class clazz ){
-            return type( Ast.typeRef(clazz.getCanonicalName() ));
+            return type( Ast.typeDecl(clazz.getCanonicalName() ));
         }
 
         /**
@@ -380,7 +380,7 @@ public interface _model {
          */
         default boolean isType( String type ) {
             try{
-                return isType( Ast.typeRef( type ));
+                return isType( Ast.typeDecl( type ));
             }catch(Exception e){
             }
             return false;
