@@ -454,7 +454,8 @@ public class $field implements Template<_field>, $proto<_field> {
         }
         if( _f.hasAnnos() ){
             //ugg
-            $inst.annos = new $component<>(_f.getAnnos().toString());
+            $inst.annos = $annos.of(_f.getAnnos());
+            //$inst.annos = new $component<>(_f.getAnnos().toString());
         }
         if( !_f.getModifiers().isEmpty() ){
             final _modifiers ms = _f.getModifiers();
@@ -472,7 +473,8 @@ public class $field implements Template<_field>, $proto<_field> {
     
     public Predicate<_field> constraint = t->true;
     public $component<_javadoc> javadoc = new $component( "$javadoc$", t->true);
-    public $component<_annos> annos = new $component( "$annos$", t->true);    
+    //public $component<_annos> annos = new $component( "$annos$", t->true);  
+    public $annos annos = new $annos(); 
     public $component<_modifiers> modifiers = new $component( "$modifiers$", t->true);
     public $component<_typeDecl> type = new $component( "$type$", t->true);
     public $component<String> name = new $component( "$name$", t->true);    
@@ -984,7 +986,7 @@ public class $field implements Template<_field>, $proto<_field> {
         StringBuilder sb = new StringBuilder();
         sb.append(javadoc.$form.construct(translator, baseMap) );
         sb.append(System.lineSeparator());
-        sb.append(annos.$form.construct(translator, baseMap) );
+        sb.append(annos.construct(translator, baseMap) );
         sb.append(System.lineSeparator());
         sb.append(modifiers.$form.construct(translator, baseMap) );
         sb.append(" ");
@@ -1016,7 +1018,7 @@ public class $field implements Template<_field>, $proto<_field> {
     @Override
     public $field $(String target, String $Name) {
         javadoc.$form.$(target, $Name);
-        annos.$form.$(target, $Name);
+        annos.$(target, $Name);
         modifiers.$form.$(target, $Name);
         type.$form.$(target, $Name);
         name.$form.$(target, $Name);
@@ -1028,7 +1030,7 @@ public class $field implements Template<_field>, $proto<_field> {
     public List<String> list$() {
         List<String> vars = new ArrayList<>();
         vars.addAll( javadoc.$form.list$() );
-        vars.addAll( annos.$form.list$() );
+        vars.addAll( annos.list$() );
         vars.addAll( modifiers.$form.list$() );
         vars.addAll( type.$form.list$() );
         vars.addAll( name.$form.list$() );
@@ -1041,7 +1043,7 @@ public class $field implements Template<_field>, $proto<_field> {
     public List<String> list$Normalized() {
         List<String> vars = new ArrayList<>();
         vars.addAll( javadoc.$form.list$Normalized() );
-        vars.addAll( annos.$form.list$Normalized() );
+        vars.addAll( annos.list$Normalized() );
         vars.addAll( modifiers.$form.list$Normalized() );
         vars.addAll( type.$form.list$Normalized() );
         vars.addAll( name.$form.list$Normalized() );
@@ -1054,7 +1056,7 @@ public class $field implements Template<_field>, $proto<_field> {
         StringBuilder sb = new StringBuilder();
         sb.append(javadoc.$form );
         sb.append(System.lineSeparator());
-        sb.append(annos.$form );
+        sb.append(annos );
         sb.append(System.lineSeparator());
         sb.append(modifiers.$form );
         sb.append(" ");

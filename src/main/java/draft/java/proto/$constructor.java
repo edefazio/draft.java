@@ -28,6 +28,9 @@ public final class $constructor
 
     public Stencil javadocPattern;
 
+    
+    //public $annos annos;
+    
     /** Additional matching constraint on the constructor */
     public Predicate<_constructor> constraint = t -> true;
     

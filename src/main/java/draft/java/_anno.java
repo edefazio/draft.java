@@ -720,7 +720,7 @@ public final class _anno
          * @return the first matching {@link _anno}, or null if none query
          */
         default _anno getAnno( Predicate<_anno> _annoMatchFn ) {
-            return getAnnos().get( _annoMatchFn );
+            return getAnnos().first( _annoMatchFn );
         }
 
         /**
@@ -730,7 +730,7 @@ public final class _anno
          * @return the first annotation that is of the annotationClass or null
          */
         default _anno getAnno( Class<? extends Annotation> annotationClass ) {
-            return getAnnos().get( annotationClass );
+            return getAnnos().first( annotationClass );
         }
 
         /**
@@ -740,7 +740,7 @@ public final class _anno
          * @return the first _anno that has the NAME, or null
          */
         default _anno getAnno( String annoName ) {
-            return getAnnos().get( annoName );
+            return getAnnos().first( annoName );
         }
 
         /**
@@ -954,7 +954,7 @@ public final class _anno
             return _anno.of( this.astAnnNode.getAnnotation( index ) );
         }
 
-        public _anno get( String name ) {
+        public _anno first( String name ) {
             List<_anno> a = this.list( name );
             if( a.size() >= 1 ) {
                 return a.get( 0 );
@@ -962,7 +962,7 @@ public final class _anno
             return null;
         }
 
-        public _anno get( Class<? extends Annotation> clazz ) {
+        public _anno first( Class<? extends Annotation> clazz ) {
             List<_anno> a = this.list( clazz );
             if( a.size() >= 1 ) {
                 return a.get( 0 );
@@ -970,7 +970,7 @@ public final class _anno
             return null;
         }
 
-        public _anno get( Predicate<_anno> _annoMatchFn ) {
+        public _anno first( Predicate<_anno> _annoMatchFn ) {
             List<_anno> a = this.list( _annoMatchFn );
             if( a.size() >= 1 ) {
                 return a.get( 0 );

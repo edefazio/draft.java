@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package draft.java.proto;
 
 import junit.framework.TestCase;
@@ -22,7 +17,20 @@ public class SfieldTest extends TestCase {
         assertTrue( $fi.matches("public int z = 100;") );
         assertTrue( $fi.matches("public int z = 5;") );
         
+    }
+    
+    public void testWithAnno(){
         
+        assertTrue( $field.of("@A int i;").matches("@A int i;"));
+        assertTrue( $field.of("@A int i;").matches("@A int i=0;"));        
+        assertTrue( $field.of("@A int i=0;").matches("@A int i=0;"));        
+        //expected annp
+        assertFalse( $field.of("@A int i=0;").matches("int i=0;"));
+        
+        assertFalse( $field.of("@A @B int i=0;").matches("int i=0;"));
+        assertFalse( $field.of("@A @B int i=0;").matches("@B int i=0;"));
+        assertFalse( $field.of("@A @B int i=0;").matches("@A int i=0;"));
+        assertTrue( $field.of("@A @B int i=0;").matches("@B @A int i=0;"));
         
     }
 }

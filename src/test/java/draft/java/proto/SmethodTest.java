@@ -31,7 +31,7 @@ public class SmethodTest extends TestCase {
         //_method _m = $m.construct( _field.of("private int count") );                
         //System.out.println( _m );
         
-        $m.annos.stencil("@Deprecated");
+        $m.$annos("@Deprecated");
         _method _m = $m.construct( _field.of("private int count") );                
         System.out.println( _m );
         

@@ -1,57 +1,52 @@
 package draft.java.proto;
 
-import com.github.javaparser.ast.*;
-import com.github.javaparser.ast.body.*;
-import com.github.javaparser.ast.expr.*;
-import draft.*;
-import draft.java.*;
+import com.github.javaparser.ast.Node;
+import com.github.javaparser.ast.NodeList;
+import com.github.javaparser.ast.body.AnnotationDeclaration;
+import com.github.javaparser.ast.body.BodyDeclaration;
+import com.github.javaparser.ast.expr.AnnotationExpr;
+import com.github.javaparser.ast.expr.Expression;
+import com.github.javaparser.ast.expr.MarkerAnnotationExpr;
+import com.github.javaparser.ast.expr.MemberValuePair;
+import com.github.javaparser.ast.expr.NormalAnnotationExpr;
+import com.github.javaparser.ast.expr.ObjectCreationExpr;
+import com.github.javaparser.ast.expr.SingleMemberAnnotationExpr;
+import draft.Stencil;
+import draft.Template;
+import draft.Text;
+import draft.Tokens;
+import draft.Translator;
+import draft.java.Expr;
+import draft.java.Walk;
+import draft.java._anno;
+import draft.java._model;
 import draft.java._model._node;
+import draft.java.proto.$proto.$component;
 import java.lang.annotation.Annotation;
-
-import java.util.*;
-import java.util.function.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.function.Consumer;
+import java.util.function.Predicate;
+import java.util.stream.Collectors;
 
 /**
- * Template for an {@link _anno}
-  * <PRE>
- * $anno
- * CONSTRUCT
- *     .construct([Translator], Tokens) build & return 
- *     .fill([Translator], values)
- * PARAMETERIZE
- *     .$(target, parameter)
- *     .hardcode$([translator], target, value)
- * MATCH
- *     .constraint(Predicate<T>) //set the matching constraint
- *     .matches(AnnotationExpr)
- *     .select(AnnotationExpr)
- *     .deconstruct( AnnotationExpr )
- * QUERY       
- *     .first/.firstIn(_node, proto) find the first matching statement in
- *     .list/.listIn(_node, proto, Predicate<>) list all matches in        
- *     .selectFirst/.selectFirstIn(_node, proto) return the first "selection" match
- *     .selectList/.selectListIn(_node, proto) return a list of selection matches
- * MODIFY
- *     .remove/.removeIn(_node, proto)
- *     .replace/.replaceIn(_node, protoTarget, protoReplacement)
- *     .forEach/forEachIn(_node, Consumer<T>)
- *     .forSelected/forSelectedIn(_node, Consumer<Select>) 
- *</PRE> 
+ * This will be the NEW $a
+ *
+ * @author Eric
  */
-public final class $anno
+public class $anno
     implements Template<_anno>, $proto<_anno> {
 
-    /** represents ANY annotation*/
-    public static final $anno ANY = $anno.of("@A").$("A", "any");
-    
-    /**
+     /**
      * 
      * @param <N>
      * @param _n
      * @param proto
      * @return 
      */
-    public static final <N extends _node> _anno first( N _n, String proto ){
+    public static final <N extends _model._node> _anno first( N _n, String proto ){
         return $anno.of(proto).firstIn(_n);
     }
     
@@ -62,7 +57,7 @@ public final class $anno
      * @param proto
      * @return 
      */
-    public static final <N extends _node> _anno first( Node astNode, String proto ){
+    public static final <N extends _model._node> _anno first( Node astNode, String proto ){
         return $anno.of(proto).firstIn(astNode);
     }
     
@@ -74,7 +69,7 @@ public final class $anno
      * @param constraint
      * @return 
      */
-    public static final <N extends _node> _anno first( N _n, String proto, Predicate<_anno> constraint){
+    public static final <N extends _model._node> _anno first( N _n, String proto, Predicate<_anno> constraint){
         return $anno.of(proto, constraint).firstIn(_n);
     }
     
@@ -86,7 +81,7 @@ public final class $anno
      * @param constraint
      * @return 
      */
-    public static final <N extends _node> _anno first( Node astNode, String proto,Predicate<_anno>constraint){
+    public static final <N extends _model._node> _anno first( Node astNode, String proto,Predicate<_anno>constraint){
         return $anno.of(proto, constraint).firstIn(astNode);
     }
          
@@ -97,7 +92,7 @@ public final class $anno
      * @param proto
      * @return 
      */
-    public static final <N extends _node> Select selectFirst( N _n, String proto ){
+    public static final <N extends _model._node> $anno.Select selectFirst( N _n, String proto ){
         return $anno.of(proto).selectFirstIn(_n);
     }
     
@@ -108,7 +103,7 @@ public final class $anno
      * @param proto
      * @return 
      */
-    public static final <N extends _node> Select selectFirst( Node astNode, String proto ){
+    public static final <N extends _model._node> $anno.Select selectFirst( Node astNode, String proto ){
         return $anno.of(proto).selectFirstIn(astNode);
     }
     
@@ -120,7 +115,7 @@ public final class $anno
      * @param constraint
      * @return 
      */
-    public static final <N extends _node> Select selectFirst( N _n, String proto, Predicate<_anno> constraint){
+    public static final <N extends _model._node> $anno.Select selectFirst( N _n, String proto, Predicate<_anno> constraint){
         return $anno.of(proto, constraint).selectFirstIn(_n);
     }
     
@@ -132,7 +127,7 @@ public final class $anno
      * @param constraint
      * @return 
      */
-    public static final <N extends _node> Select selectFirst( Node astNode, String proto,Predicate<_anno>constraint){
+    public static final <N extends _model._node> $anno.Select selectFirst( Node astNode, String proto,Predicate<_anno>constraint){
         return $anno.of(proto, constraint).selectFirstIn(astNode);
     }
     
@@ -142,8 +137,8 @@ public final class $anno
      * @param _n
      * @return 
      */
-    public static final <N extends _node> List<_anno> list( N _n ){
-        return ANY.listIn(_n);
+    public static final <N extends _model._node> List<_anno> list( N _n ){
+        return any().listIn(_n);
     }
     
     /**
@@ -153,8 +148,8 @@ public final class $anno
      * @param constraint
      * @return 
      */
-    public static final <N extends _node> List<_anno> list( N _n, Predicate<_anno> constraint){
-        return new $anno( "@a" ).$("@a", "any").constraint(constraint).listIn(_n);
+    public static final <N extends _model._node> List<_anno> list( N _n, Predicate<_anno> constraint){
+        return any().constraint(constraint).listIn(_n);
     }
     
     /**
@@ -164,7 +159,7 @@ public final class $anno
      * @param proto
      * @return 
      */
-    public static final <N extends _node> List<_anno> list( N _n, String proto ){
+    public static final <N extends _model._node> List<_anno> list( N _n, String proto ){
         return $anno.of(proto).listIn(_n);
     }
     
@@ -176,7 +171,7 @@ public final class $anno
      * @param constraint
      * @return 
      */
-    public static final <N extends _node> List<_anno> list( N _n, String proto, Predicate<_anno> constraint){
+    public static final <N extends _model._node> List<_anno> list( N _n, String proto, Predicate<_anno> constraint){
         return $anno.of(proto, constraint).listIn(_n);
     }
     
@@ -187,7 +182,7 @@ public final class $anno
      * @param _proto
      * @return 
      */
-    public static final <N extends _node> List<_anno> list( N _n, _anno _proto ){
+    public static final <N extends _model._node> List<_anno> list( N _n, _anno _proto ){
         return $anno.of(_proto).listIn(_n);
     }
     
@@ -199,7 +194,7 @@ public final class $anno
      * @param constraint
      * @return 
      */
-    public static final <N extends _node> List<_anno> list( N _n, _anno _proto, Predicate<_anno> constraint){
+    public static final <N extends _model._node> List<_anno> list( N _n, _anno _proto, Predicate<_anno> constraint){
         return $anno.of(_proto, constraint).listIn(_n);
     }
         
@@ -210,8 +205,8 @@ public final class $anno
      * @param _annoConsumer
      * @return 
      */
-    public static final <N extends _node> N forEach( N _n, Consumer<_anno> _annoConsumer){
-        return ANY.forEachIn(_n, _annoConsumer);
+    public static final <N extends _model._node> N forEach( N _n, Consumer<_anno> _annoConsumer){
+        return any().forEachIn(_n, _annoConsumer);
     }
     
     /**
@@ -222,8 +217,8 @@ public final class $anno
      * @param _annoConsumer
      * @return 
      */
-    public static final <N extends _node> N forEach( N _n, Predicate<_anno> constraint, Consumer<_anno> _annoConsumer){
-        return new $anno( "@a" ).$("@a", "any").constraint(constraint).forEachIn(_n, _annoConsumer);
+    public static final <N extends _model._node> N forEach( N _n, Predicate<_anno> constraint, Consumer<_anno> _annoConsumer){
+        return any().constraint(constraint).forEachIn(_n, _annoConsumer);
     }
     
     /**
@@ -234,7 +229,7 @@ public final class $anno
      * @param _annoConsumer
      * @return 
      */
-    public static final <N extends _node> N forEach( N _n, String proto, Consumer<_anno> _annoConsumer){
+    public static final <N extends _model._node> N forEach( N _n, String proto, Consumer<_anno> _annoConsumer){
         return $anno.of(proto).forEachIn(_n, _annoConsumer);
     }
     
@@ -247,7 +242,7 @@ public final class $anno
      * @param _annoConsumer
      * @return 
      */
-    public static final <N extends _node> N forEach( N _n, String proto, Predicate<_anno> constraint, Consumer<_anno> _annoConsumer){
+    public static final <N extends _model._node> N forEach( N _n, String proto, Predicate<_anno> constraint, Consumer<_anno> _annoConsumer){
         return $anno.of(proto, constraint).forEachIn(_n, _annoConsumer);
     }
     
@@ -259,7 +254,7 @@ public final class $anno
      * @param _annoConsumer
      * @return 
      */
-    public static final <N extends _node> N forEach( N _n, _anno _proto , Consumer<_anno> _annoConsumer){
+    public static final <N extends _model._node> N forEach( N _n, _anno _proto , Consumer<_anno> _annoConsumer){
         return $anno.of(_proto).forEachIn(_n, _annoConsumer);
     }
     
@@ -272,7 +267,7 @@ public final class $anno
      * @param _annoConsumer
      * @return 
      */
-    public static final <N extends _node> N forEach( N _n, _anno _proto, Predicate<_anno> constraint, Consumer<_anno> _annoConsumer){
+    public static final <N extends _model._node> N forEach( N _n, _anno _proto, Predicate<_anno> constraint, Consumer<_anno> _annoConsumer){
         return $anno.of(_proto, constraint).forEachIn(_n, _annoConsumer);
     }
     
@@ -283,8 +278,8 @@ public final class $anno
      * @param _annoConsumer
      * @return 
      */
-    public static final <N extends _node> N forSelected( N _n, Consumer<Select> _annoConsumer){
-        return ANY.forSelectedIn(_n, _annoConsumer);
+    public static final <N extends _model._node> N forSelected( N _n, Consumer<$anno.Select> _annoConsumer){
+        return any().forSelectedIn(_n, _annoConsumer);
     }
     
     /**
@@ -295,20 +290,20 @@ public final class $anno
      * @param _annoConsumer
      * @return 
      */
-    public static final <N extends _node> N forSelected( N _n, Predicate<_anno> constraint, Consumer<Select> _annoConsumer){
-        return new $anno( "@a" ).$("@a", "any").constraint(constraint).forSelectedIn(_n, _annoConsumer);
+    public static final <N extends _model._node> N forSelected( N _n, Predicate<_anno> constraint, Consumer<$anno.Select> _annoConsumer){
+        return any().constraint(constraint).forSelectedIn(_n, _annoConsumer);
     }
     
     /**
      * lists all occurrences of annos that match the 
      * @param <N>
      * @param _n
-     * @param proto
+     * @param pattern
      * @param _annoConsumer
      * @return 
      */
-    public static final <N extends _node> N forSelected( N _n, String proto, Consumer<Select> _annoConsumer){
-        return $anno.of(proto).forSelectedIn(_n, _annoConsumer);
+    public static final <N extends _model._node> N forSelected( N _n, String pattern, Consumer<$anno.Select> _annoConsumer){
+        return $anno.of(pattern).forSelectedIn(_n, _annoConsumer);
     }
     
     /**
@@ -320,8 +315,8 @@ public final class $anno
      * @param _annoConsumer
      * @return 
      */
-    public static final <N extends _node> N forSelected( N _n, String proto, Predicate<_anno> constraint, Consumer<Select> _annoConsumer){
-        return $anno.of(proto, constraint).forSelectedIn(_n, _annoConsumer);
+    public static final <N extends _model._node> N forSelected( N _n, String pattern, Predicate<_anno> constraint, Consumer<$anno.Select> _annoConsumer){
+        return $anno.of(pattern, constraint).forSelectedIn(_n, _annoConsumer);
     }
     
     /**
@@ -332,7 +327,7 @@ public final class $anno
      * @param _annoConsumer
      * @return 
      */
-    public static final <N extends _node> N forSelected( N _n, _anno _proto , Consumer<Select> _annoConsumer){
+    public static final <N extends _model._node> N forSelected( N _n, _anno _proto , Consumer<$anno.Select> _annoConsumer){
         return $anno.of(_proto).forSelectedIn(_n, _annoConsumer);
     }
     
@@ -345,7 +340,7 @@ public final class $anno
      * @param _annoConsumer
      * @return 
      */
-    public static final <N extends _node> N forSelected( N _n, _anno _proto, Predicate<_anno> constraint, Consumer<Select> _annoConsumer){
+    public static final <N extends _model._node> N forSelected( N _n, _anno _proto, Predicate<_anno> constraint, Consumer<$anno.Select> _annoConsumer){
         return $anno.of(_proto, constraint).forSelectedIn(_n, _annoConsumer);
     }
     
@@ -353,11 +348,11 @@ public final class $anno
      * lists all occurrences of annos that match the 
      * @param <N>
      * @param _n
-     * @param proto
+     * @param pattern
      * @return 
      */
-    public static final <N extends _node> List<Select> selectList( N _n, String proto ){
-        return $anno.of(proto).selectListIn(_n);
+    public static final <N extends _model._node> List<$anno.Select> selectList( N _n, String pattern ){
+        return $anno.of(pattern).selectListIn(_n);
     }
     
     /**
@@ -367,20 +362,20 @@ public final class $anno
      * @param constraint
      * @return 
      */
-    public static final <N extends _node> List<Select> selectList( N _n, Predicate<_anno> constraint ){
-        return new $anno( "@a" ).$("@a", "any").constraint(constraint).selectListIn(_n);
+    public static final <N extends _model._node> List<$anno.Select> selectList( N _n, Predicate<_anno> constraint ){
+        return any().constraint(constraint).selectListIn(_n);
     }
     
     /**
      * lists all occurrences of annos that match the 
      * @param <N>
      * @param _n
-     * @param proto
+     * @param pattern
      * @param constraint
      * @return 
      */
-    public static final <N extends _node> List<Select> selectList( N _n, String proto, Predicate<_anno> constraint){
-        return $anno.of(proto, constraint).selectListIn(_n);
+    public static final <N extends _model._node> List<$anno.Select> selectList( N _n, String pattern, Predicate<_anno> constraint){
+        return $anno.of(pattern, constraint).selectListIn(_n);
     }
     
     /**
@@ -390,7 +385,7 @@ public final class $anno
      * @param _proto
      * @return 
      */
-    public static final <N extends _node> List<Select> selectList( N _n, _anno _proto ){
+    public static final <N extends _model._node> List<$anno.Select> selectList( N _n, _anno _proto ){
         return $anno.of(_proto).selectListIn(_n);
     }
     
@@ -402,7 +397,7 @@ public final class $anno
      * @param constraint
      * @return 
      */
-    public static final <N extends _node> List<Select> selectList( N _n, _anno _proto, Predicate<_anno> constraint){
+    public static final <N extends _model._node> List<$anno.Select> selectList( N _n, _anno _proto, Predicate<_anno> constraint){
         return $anno.of(_proto, constraint).selectListIn(_n);
     }
     
@@ -412,8 +407,8 @@ public final class $anno
      * @param _n
      * @return the modified N
      */
-    public static final <N extends _node> N remove( N _n ){
-        return ANY.removeIn(_n);
+    public static final <N extends _model._node> N remove( N _n ){
+        return any().removeIn(_n);
     }
     
     /**
@@ -423,7 +418,7 @@ public final class $anno
      * @param _proto
      * @return the modified N
      */
-    public static final <N extends _node> N remove( N _n, _anno _proto ){
+    public static final <N extends _model._node> N remove( N _n, _anno _proto ){
         return $anno.of(_proto).removeIn(_n);
     }
     
@@ -434,8 +429,8 @@ public final class $anno
      * @param constraint
      * @return the modified N
      */
-    public static final <N extends _node> N remove( N _n, Predicate<_anno> constraint ){
-        return new $anno( "@a" ).$("@a", "any").constraint(constraint).removeIn(_n);
+    public static final <N extends _model._node> N remove( N _n, Predicate<_anno> constraint ){
+        return $anno.of( "@a" ).$("@a", "any").constraint(constraint).removeIn(_n);
     }
     
     /**
@@ -446,7 +441,7 @@ public final class $anno
      * @param constraint
      * @return the modified N
      */
-    public static final <N extends _node> N remove( N _n, _anno _proto, Predicate<_anno> constraint){
+    public static final <N extends _model._node> N remove( N _n, _anno _proto, Predicate<_anno> constraint){
         return $anno.of(_proto, constraint).removeIn(_n);
     }
     
@@ -454,23 +449,23 @@ public final class $anno
      * 
      * @param <N>
      * @param _n
-     * @param proto
+     * @param pattern
      * @return 
      */
-    public static final <N extends _node> N remove( N _n, String proto ){
-        return $anno.of(proto).removeIn(_n);
+    public static final <N extends _model._node> N remove( N _n, String pattern ){
+        return $anno.of(pattern).removeIn(_n);
     }
     
     /**
      * 
      * @param <N>
      * @param _n
-     * @param proto
+     * @param pattern
      * @param constraint
      * @return 
      */
-    public static final <N extends _node> N remove( N _n, String proto, Predicate<_anno> constraint){
-        return $anno.of(proto, constraint).removeIn(_n);
+    public static final <N extends _model._node> N remove( N _n, String pattern, Predicate<_anno> constraint){
+        return $anno.of(pattern, constraint).removeIn(_n);
     }
     
     /**
@@ -481,7 +476,7 @@ public final class $anno
      * @param targetProto
      * @return 
      */
-    public static final <N extends _node> N replace(N _n, _anno sourceProto, _anno targetProto){
+    public static final <N extends _model._node> N replace(N _n, _anno sourceProto, _anno targetProto){
         return $anno.of(sourceProto)
             .replaceIn(_n, $anno.of(targetProto));
     }
@@ -490,13 +485,13 @@ public final class $anno
      * 
      * @param <N>
      * @param _n
-     * @param sourceProto
-     * @param targetProto
+     * @param sourcePattern
+     * @param targetPattern
      * @return 
      */
-    public static final <N extends _node> N replace(N _n, String sourceProto, String targetProto){
-        return $anno.of(sourceProto)
-            .replaceIn(_n, $anno.of(targetProto));
+    public static final <N extends _model._node> N replace(N _n, String sourcePattern, String targetPattern){
+        return $anno.of(sourcePattern)
+            .replaceIn(_n, $anno.of(targetPattern));
     }
     
     /**
@@ -507,7 +502,7 @@ public final class $anno
      * @param astTargetProto
      * @return 
      */
-    public static final <N extends _node> N replace(N _n, AnnotationDeclaration astSourceProto, AnnotationDeclaration astTargetProto){
+    public static final <N extends _model._node> N replace(N _n, AnnotationDeclaration astSourceProto, AnnotationDeclaration astTargetProto){
         return $anno.of(_anno.of(astSourceProto))
             .replaceIn(_n, $anno.of(_anno.of(astTargetProto)));
     }
@@ -520,35 +515,38 @@ public final class $anno
      * @param targetProto
      * @return 
      */
-    public static final <N extends _node> N replace( N _n, Class<? extends Annotation>sourceProto, Class<? extends Annotation>targetProto){
-        
+    public static final <N extends _model._node> N replace( N _n, Class<? extends Annotation>sourceProto, Class<? extends Annotation>targetProto){        
         return $anno.of(sourceProto)
             .replaceIn(_n, $anno.of(targetProto));
     }
     
-    public static $anno of( String code){
-        return of( new String[]{code} );
+    public static $anno any(){
+        return of("@A").$("A", "any");
+    } 
+    
+    public static $anno of(String pattern) {
+        return new $anno(_anno.of(pattern));
     }
     
-    public static $anno of( String code, Predicate<_anno> constraint){
-        return of( new String[]{code} ).constraint(constraint);
+    public static $anno of(String... pattern) {
+        return new $anno(_anno.of(pattern));
     }
     
-    public static $anno of( String...code){
-        _anno _a = _anno.of( code );
-        return new $anno( _a.toString().trim() );
+    public static $anno of(String pattern, Predicate<_anno>constraint) {
+        return new $anno(_anno.of(pattern)).constraint(constraint);
+    }
+    
+
+    public static $anno of(_anno _an) {
+        return new $anno(_an);
     }
 
-    public static $anno of( _anno _a ){
-        return new $anno( _a.toString().trim() ); 
+    public static $anno of(_anno _an, Predicate<_anno>constraint) {
+        return new $anno(_an).constraint(constraint);
     }
-    
-    public static $anno of( _anno _a, Predicate<_anno> constraint ){
-        return new $anno( _a.toString().trim() ).constraint(constraint);
-    }
-    
-    public static $anno of( Predicate<_anno> constraint ){
-        return new $anno( "@a" ).$("@a", "any").constraint(constraint);
+        
+    public static $anno of(Class<? extends Annotation>sourceAnnoClass) {
+        return new $anno(_anno.of(sourceAnnoClass));
     }
     
     /**
@@ -564,367 +562,272 @@ public final class $anno
         return of( _anno.of(bd.getAnnotation(0) ) );        
     }
     
-    public static $anno of( Class<? extends Annotation> clazz){
-        return $anno.of( a -> a.isInstance(clazz) );         
-    }
-    
-    public static $anno of( Class<? extends Annotation> clazz, String argumentStencil ){
+    public static $anno of(Class<? extends Annotation>sourceAnnoClass, String argumentStencil) {
         if( !argumentStencil.trim().startsWith("(") ){
             argumentStencil = "("+ argumentStencil + ")";
         }
-        $anno $a = $anno.of("@$annotationName$"+argumentStencil).constraint(a -> a.isInstance(clazz));
-        return $a;
+        //String str = "@$annoName$"+argumentStencil;
+        String str = "@"+sourceAnnoClass.getSimpleName()+argumentStencil;
+        //System.out.println("THE STR IS " + str );
+        return new $anno(_anno.of(str));
+                //.constraint( a -> a.isInstance(sourceAnnoClass));
+        
+        //$a a = new $a(_anno.of(sourceAnnoClass));
+        
+        //return a;
     }
-    
-    public static $anno of( Class<? extends Annotation> clazz, String argumentStencil, Predicate<_anno> constraint){
-        if( !argumentStencil.trim().startsWith("(") ){
-            argumentStencil = "("+ argumentStencil + ")";
+        
+    /** Default Matching constraint (by default ALWAYS Match)*/
+    public Predicate<_anno> constraint = a -> true;
+
+    /** */
+    public $id name;
+
+    public List<$memberValue> $mvs = new ArrayList<>();
+
+    public $anno(_anno proto) {
+        this.name = $id.of(proto.getName());
+        //this.$name.$form = Stencil.of(proto.getName());
+        AnnotationExpr astAnn = proto.ast();
+        if (astAnn instanceof NormalAnnotationExpr) {
+            NormalAnnotationExpr na = (NormalAnnotationExpr) astAnn;
+            na.getPairs().forEach(mv -> $mvs.add($memberValue.of(mv.getNameAsString(), mv.getValue())));
+        } else if (astAnn instanceof SingleMemberAnnotationExpr) {
+            SingleMemberAnnotationExpr sa = (SingleMemberAnnotationExpr) astAnn;
+            $mvs.add($memberValue.of(sa.getMemberValue()));
         }
-        $anno $a = $anno.of("@$annotationName$"+argumentStencil).constraint(a -> a.isInstance(clazz) && constraint.test(a));
-        return $a;
-    }
-    
-    /** An additional Match constraint (By default always true) */
-    public Predicate<_anno> constraint = a-> true;
-    
-    public Stencil pattern;
-    
-    
-    
-    private $anno( String stencil) {
-        this.pattern = Stencil.of(stencil );
     }
 
     /**
-     * 
+     * Sets the underlying constraint
      * @param constraint
      * @return 
      */
-    public $anno constraint( Predicate<_anno> constraint ){
+    public $anno constraint(Predicate<_anno> constraint) {
         this.constraint = constraint;
         return this;
     }
-    
-    
+
     /**
      * ADDS an additional matching constraint to the prototype
+     *
      * @param constraint a constraint to be added
      * @return the modified prototype
      */
-    public $anno addConstraint( Predicate<_anno>constraint ){
+    public $anno addConstraint(Predicate<_anno> constraint) {
         this.constraint = this.constraint.and(constraint);
         return this;
     }
-    
-    /**
-     * 
-     * @param annotation
-     * @return 
-     */
-    public boolean matches( String...annotation ){
-        return matches(_anno.of(annotation));
-    }
 
-    /**
-     * 
-     * @param astAnnoExpr
-     * @return 
-     */
-    public boolean matches( AnnotationExpr astAnnoExpr ){
-        return select(astAnnoExpr ) != null;
-    }
-
-    /**
-     * 
-     * @param _a
-     * @return 
-     */
-    public boolean matches( _anno _a){
-        return select( _a ) != null;
-    }
-
-    /**
-     * Deconstruct the expression into tokens, or return null if the statement doesnt match
-     *
-     * @param _a
-     * @return Tokens from the stencil, or null if the expression doesnt match
-     
-    public $args deconstruct(_anno _a ){
-        if( this.constraint.test(_a) ){
-            Tokens r = pattern.deconstruct( _a.toString() ); 
-            if( r != null){
-                return new $args(r);
-            }            
+    public Tokens decompose(_anno _a) {
+        //Tokens ts = $name.decompose(_a.getName());
+        if( ! this.constraint.test(_a)){
+            //System.out.println( "Didnt pass MVP Constraint");
+            return null;
+        }
+        
+        Tokens ts = name.decompose(_a.getName());
+        if ($mvs.isEmpty() || ts == null) {
+            //System.out.println( "Returning "+ts+" for name \""+_a.getName()+"\"");
+            return ts;
+        }
+        AnnotationExpr astAnn = _a.ast();
+        if (astAnn instanceof MarkerAnnotationExpr) {
+            //System.out.println( "Marketer");
+            if ($mvs.size() == 1) {
+                if ($mvs.get(0).isMatchAll()) {
+                    return ts;
+                }
+                return null;
+            }
+            return null;
+        }
+        if (astAnn instanceof SingleMemberAnnotationExpr) {
+            //System.out.println( "SingleMember");
+            if ($mvs.size() == 1) {
+                SingleMemberAnnotationExpr sme = (SingleMemberAnnotationExpr) astAnn;
+                Tokens props = $mvs.get(0).decompose(sme.getMemberValue());
+                if( props == null ){
+                    return null;
+                }
+                if (ts.isConsistent(props)) {                    
+                    ts.putAll(props);
+                    return ts;
+                } //else{
+                  //  System.out.println("Not consistent with "+ ts + props );
+                // }
+            }
+            return null;
+        }
+        if (astAnn instanceof NormalAnnotationExpr) {
+            //System.out.println( "Normal "+ astAnn );
+            NormalAnnotationExpr sme = (NormalAnnotationExpr) astAnn;
+            if( $mvs.size() == 1 && sme.getPairs().isEmpty() && $mvs.get(0).isMatchAll() ){
+                return new Tokens();
+            }
+            if ($mvs.size() <= sme.getPairs().size()) {
+                
+                List<MemberValuePair> mvpsC = new ArrayList<>();
+                mvpsC.addAll(sme.getPairs());
+                for (int i = 0; i < $mvs.size(); i++) {
+                    $memberValue.Select sel = $mvs.get(i).selectFirst(mvpsC);
+                    if (sel == null) {
+                        return null;
+                    } else {
+                        mvpsC.remove(sel.astMvp); //whenever I find a match, I remove the matcher
+                        if( !ts.isConsistent(sel.args.asTokens())){
+                            return null;
+                        }
+                        ts.putAll(sel.args.asTokens());
+                    }
+                }
+                return ts;                 
+            }
+            return null;
         }
         return null;
     }
-    */ 
 
-    /**
-     * Deconstruct the expression into tokens, or return null if the statement doesnt match
-     *
-     * @param astAnnoExpr
-     * @return Tokens from the stencil, or null if the expression doesnt match
-     
-    public $args deconstruct(AnnotationExpr astAnnoExpr ){
-        return deconstruct(_anno.of(astAnnoExpr) );
+    public boolean matches(String... anno) {
+        return matches(_anno.of(anno));
     }
-    */ 
-    
-     /**
-     * 
-     * @param _a
-     * @return 
-     */
-    public Select select(_anno _a){
-        if( this.constraint.test(_a) ){
-            Tokens r = pattern.deconstruct( _a.toString() ); 
-            if( r != null){
-                return new Select( _a, r );
-            }            
+
+    public boolean matches(_anno _a) {
+        return select(_a) != null;
+    }
+
+    public String compose(Translator translator, Map<String, Object> keyValues) {
+        StringBuilder sb = new StringBuilder();
+        //sb.append($name.compose(translator, keyValues));
+        sb.append(name.compose(translator, keyValues));
+        String properties = "";
+        for (int i = 0; i < $mvs.size(); i++) {
+            if ((properties.length() > 0) && (!properties.endsWith(","))) {
+                properties = properties + ",";
+            }
+            properties += $mvs.get(i).compose(translator, keyValues);
         }
-        return null;        
-    }
-
-    /**
-     * 
-     * @param anno
-     * @return 
-     */
-    public Select select(String anno){
-        try{
-            return select( _anno.of(anno));
-        }catch(Exception e){
-            return null;
+        if (properties.length() == 0) {
+            return sb.toString();
         }
+        return sb.toString() + "(" + properties + ")";
     }
     
-    /**
-     * 
-     * @param astExpr
-     * @return 
-     */
-    public Select select(AnnotationExpr astAnno){
-        return select(_anno.of(astAnno));        
-    }
-    
-
-    @Override
-    public String toString() {
-        return "($anno) : \"" + this.pattern + "\"";
-    }
-
     @Override
     public _anno construct(Translator translator, Map<String, Object> keyValues) {
-        return _anno.of(pattern.construct(translator, keyValues));
+        return _anno.of(compose(translator, keyValues));
+        /*
+        StringBuilder sb = new StringBuilder();
+        //sb.append($name.compose(translator, keyValues));
+        sb.append(name.compose(translator, keyValues));
+        String properties = "";
+        for (int i = 0; i < $mvs.size(); i++) {
+            if ((properties.length() > 0) && (!properties.endsWith(","))) {
+                properties = properties + ",";
+            }
+            properties += $mvs.get(i).compose(translator, keyValues);
+        }
+        if (properties.length() == 0) {
+            return _anno.of(sb.toString());
+        }
+        return _anno.of(sb.toString() + "(" + properties + ")");
+        */
     }
 
     @Override
     public $anno $(String target, String $Name) {
-        this.pattern = this.pattern.$(target, $Name);        
+        name.$(target, $Name);
+        $mvs.forEach(mv -> mv.name.$form = mv.name.$form.$(target, $Name));
+        return this;
+    }
+    
+    public $anno hardcode$( Translator tr, Object...keyValues){
+        name.hardcode$(tr, keyValues);
+        $mvs.forEach(mv -> mv.name.$form = mv.name.$form.hardcode$(tr, keyValues));
         return this;
     }
 
-    /**
-     * Hardcode parameterized values
-     * (i.e. what was once a parameter, now is static text)
-     *
-     * @param kvs the key parameter NAME and String VALUE to assign to the
-     * @return the modified Stencil
-     */
-    public $anno hardcode$( Tokens kvs ) {
-        return hardcode$( Translator.DEFAULT_TRANSLATOR, kvs );
+    public Select select( AnnotationExpr astAnn){
+        return select(_anno.of(astAnn));
     }
-
-    /**
-     * Hardcode parameterized values
-     * (i.e. what was once a parameter, now is static text)
-     *
-     * @param keyValues the key parameter NAME and String VALUE to assign to the
-     * @return the modified Stencil
-     */
-    public $anno hardcode$( Object... keyValues ) {
-        return hardcode$( Translator.DEFAULT_TRANSLATOR, Tokens.of( keyValues ) );
+    
+    public Select select(String... anno){
+        return select(_anno.of(anno));
     }
-
-    /**
-     * Hardcode parameterized values
-     * (i.e. what was once a parameter, now is static text)
-     *
-     * @param translator translates values to be hardcoded into the Stencil
-     * @param keyValues the key parameter NAME and String VALUE to assign to the
-     * @return the modified Stencil
-     */
-    public $anno hardcode$( Translator translator, Object... keyValues ) {
-        return hardcode$( translator, Tokens.of( keyValues ) );
+    
+    public Select select(_anno _a){
+        if(this.constraint.test(_a)){
+            //System.out.println( "Passed constraint");
+            Tokens ts = decompose(_a);
+            //System.out.println( "   TOKENS "+ ts);
+            if( ts != null ){
+                //System.out.println( "   TOKENS "+ ts);
+                return new Select(_a, ts);
+            }
+        }
+        return null;
     }
-
-    /**
-     * 
-     * @param translator
-     * @param kvs
-     * @return 
-     */
-    public $anno hardcode$( Translator translator, Tokens kvs ) {
-        this.pattern = this.pattern.hardcode$(translator,kvs);          
-        return this;
-    }
-
+    
     @Override
     public List<String> list$() {
-        return this.pattern.list$();
+        List<String> params = new ArrayList<>();
+        params.addAll( this.name.list$() );
+        this.$mvs.forEach(m -> {
+            params.addAll( m.name.$form.list$() ); 
+            params.addAll( m.value.$form.list$() ); 
+        });
+        return params;
     }
 
     @Override
     public List<String> list$Normalized() {
-        return this.pattern.list$Normalized();
-    }
-
-   
-
-    /**
-     * Returns the first _anno that matches the pattern and constraint
-     * @param _n the _java node
-     * @return  the first _anno that matches (or null if none found)
-     */
-    public _anno firstIn( _node _n ){
-        Optional<AnnotationExpr> f = _n.ast().findFirst(AnnotationExpr.class, s -> this.matches(s) );         
-        if( f.isPresent()){
-            return _anno.of(f.get());
-        }
-        return null;
-    }
-    
-    /**
-     * Returns the first _anno that matches the pattern and constraint
-     * @param _n the _java node
-     * @return  the first _anno that matches (or null if none found)
-     */
-    public Select selectFirstIn( _node _n ){
-        Optional<AnnotationExpr> f = _n.ast().findFirst(AnnotationExpr.class, s -> this.matches(s) );         
-        if( f.isPresent()){
-            return select(f.get());
-        }
-        return null;
-    }
-    
-
-    /**
-     * Returns the first _anno that matches the pattern and constraint
-     * @param astNode the node to look through
-     * @return  the first _anno that matches (or null if none found)
-     */
-    public _anno firstIn( Node astNode ){
-        Optional<AnnotationExpr> f = astNode.findFirst(AnnotationExpr.class, s -> this.matches(s) );         
-        if( f.isPresent()){
-            return _anno.of(f.get());
-        }
-        return null;
-    }
-    
-    /**
-     * Returns the first $anno.Select that matches the pattern and constraint
-     * @param astNode the node to look through
-     * @return a Select the first _anno that matches (or null if none found)
-     */
-    public Select selectFirstIn( Node astNode ){
-        Optional<AnnotationExpr> f = astNode.findFirst(AnnotationExpr.class, s -> this.matches(s) );         
-        if( f.isPresent()){
-            return select(f.get());
-        }
-        return null;
-    }
-    
-    
-    @Override
-    public List<_anno> listIn(_node _n ){
-        return listIn(_n.ast() );
-    }
-
-    @Override
-    public List<_anno> listIn(Node rootNode ){
-        List<_anno> annosList = new ArrayList<>();
-        rootNode.walk(AnnotationExpr.class, t->{
-            if( this.matches(t) ){
-                annosList.add(_anno.of(t));
-            }
-        } );
-        return annosList;
-    }
-
-    @Override
-    public List<Select> selectListIn(Node astNode ){
-        List<Select>sts = new ArrayList<>();
-        astNode.walk(AnnotationExpr.class, e-> {
-            Select s = select( e );
-            if( s != null ){
-                sts.add( s);
-            }
+        List<String> params = new ArrayList<>();
+        params.addAll( this.name.list$() );
+        this.$mvs.forEach(m -> {
+            params.addAll( m.name.$form.list$Normalized() ); 
+            params.addAll( m.value.$form.list$Normalized() ); 
         });
-        return sts;
+        return params.stream().distinct().collect(Collectors.toList() );
     }
 
     @Override
-    public List<Select> selectListIn(_node _n ){
-        List<Select>sts = new ArrayList<>();
-        Walk.in(_n, AnnotationExpr.class, e -> {
-            Select s = select( e );
-            if( s != null ){
-                sts.add( s);
-            }
-        });
-        return sts;
-    }
-
-    /**
-     * Remove all matching occurrences of the template in the node and return the
-     * modified node
-     * @param astNode the root node to start search
-     * @param <N> the input node TYPE
-     * @return the modified node
-     */
-    @Override
-    public <N extends Node> N removeIn(N astNode ){
-        astNode.walk( AnnotationExpr.class, e-> {
-            Select sel = select( e );
+    public List<_anno> listIn(_model._node _n) {
+        List<_anno> found = new ArrayList<>();
+        Walk.in(_n, _anno.class, a-> {
+            Select sel = select(a); 
             if( sel != null ){
-                sel.astAnno.removeForced();
+                found.add( sel._ann );
             }
-        });
-        return astNode;
+        }); 
+        return found;
     }
 
-    /**
-     *
-     * @param _n the root model node to start from
-     * @param <N> the TYPE of model node
-     * @return the modified model node
-     */
     @Override
-    public <N extends _node> N removeIn(N _n ){
-        Walk.in(_n, AnnotationExpr.class, e-> {
-            Select sel = select( e );
+    public List<_anno> listIn(Node astRootNode) {
+        List<_anno> found = new ArrayList<>();
+        astRootNode.walk(AnnotationExpr.class, a-> {
+            Select sel = select(_anno.of(a));
             if( sel != null ){
-                sel.astAnno.removeForced();
+                found.add( sel._ann );
             }
         });
-        return _n;
+        return found;
     }
-
+    
     /**
      * Replace all occurrences of the template in the code with the replacement
      * (composing the replacement from the constructed tokens in the source)
      *
      * @param _n the model to find replacements
-     * @param $a the template to be constructed as the replacement
+     * @param a the template to be constructed as the replacement
      * @param <N> the TYPE of model
      * @return
      */
-    public <N extends _node> N replaceIn(N _n, $anno $a ){
+    public <N extends _node> N replaceIn(N _n, $anno a ){
         Walk.in(_n, AnnotationExpr.class, e-> {
             Select sel = select( e );
             if( sel != null ){
-                sel.astAnno.replace($a.construct(sel.args).ast() );
+                sel._ann.ast().replace(a.construct(sel.args).ast() );
             }
         });
         return _n;
@@ -937,135 +840,383 @@ public final class $anno
      * @param $a
      * @return 
      */
-    public <N extends Node> N replaceIn(N astNode, $anno $a ){
+    public <N extends Node> N replaceIn(N astNode, $anno a ){
         astNode.walk(AnnotationExpr.class, e-> {
             Select sel = select( e );
             if( sel != null ){
-                sel.astAnno.replace($a.construct(sel.args).ast() );
+                sel._ann.ast().replace(a.construct(sel.args).ast() );
             }
         });
         return astNode;
     }
-
-    /**
-     * 
-     * @param <N>
-     * @param _n
-     * @param selectConsumer
-     * @return 
-     */
-    public <N extends _node> N forSelectedIn(N _n, Consumer<Select> selectConsumer ){
-        Walk.in(_n, AnnotationExpr.class, e-> {
-            Select sel = select( e );
-            if( sel != null ){
-                selectConsumer.accept( sel );
-            }
-        });
-        return _n;
+    
+    public _anno firstIn(Node astRootNode) {
+        Optional<Node>on = 
+            astRootNode.stream().filter(
+                n -> n instanceof AnnotationExpr 
+                    && select((AnnotationExpr)n) != null )
+                    .findFirst();
+        if( on.isPresent() ){
+            return _anno.of( (AnnotationExpr)on.get());
+        }
+        return null;        
     }
 
-    /**
-     * 
-     * @param <N>
-     * @param astNode
-     * @param selectConsumer
-     * @return 
-     */
-    public <N extends Node> N forSelectedIn(N astNode, Consumer<Select> selectConsumer ){
-        astNode.walk(AnnotationExpr.class, e-> {
-            Select sel = select( e );
+    public _anno firstIn(_model._node _n) {
+        return firstIn( _n.ast() );        
+    }
+    
+    
+    public Select selectFirstIn(Node astRootNode) {
+        Optional<Node>on = 
+            astRootNode.stream().filter(
+                n -> n instanceof AnnotationExpr 
+                                && select((AnnotationExpr)n) != null )
+                        .findFirst();
+        if( on.isPresent() ){
+            return select( (AnnotationExpr)on.get());
+        }
+        return null;        
+    }
+
+    public Select selectFirstIn(_model._node _n) {
+        return selectFirstIn( _n.ast() );        
+    }
+    
+    
+    @Override
+    public List<Select> selectListIn(Node astRootNode) {
+        List<Select> found = new ArrayList<>();
+        astRootNode.walk(AnnotationExpr.class, a-> {
+            Select sel = select(_anno.of(a));
             if( sel != null ){
-                selectConsumer.accept( sel );
+                found.add( sel  );
             }
         });
-        return astNode;
+        return found;
     }
 
     @Override
-    public <N extends Node> N forEachIn(N astNode, Consumer<_anno> _annoActionFn){
-        astNode.walk(AnnotationExpr.class, a-> {
-            //$args tokens = deconstruct(a );
-            Select select = select(a);
-            if( select != null ){
-                _annoActionFn.accept( select.model() );
+    public List<Select> selectListIn(_model._node _n) {
+        List<Select> found = new ArrayList<>();
+        Walk.in(_n, _anno.class, a-> {
+            Select sel = select(a); 
+            if( sel != null ){
+                found.add( sel );
             }
-        });
-        return astNode;
+        }); 
+        return found;
     }
 
     @Override
-    public <N extends _node> N forEachIn(N _n, Consumer<_anno> _annoActionFn){
-        Walk.in(_n, AnnotationExpr.class, a -> {
-            //$args tokens =  deconstruct(a );
-            Select select = select(a);
-            if( select != null ){
-                _annoActionFn.accept( select.model() );
-            }
-        });
-        return _n;
+    public <N extends Node> N removeIn(N astRootNode) {
+        return forEachIn(astRootNode, n -> n.ast().remove() );        
     }
 
+    @Override
+    public <N extends _model._node> N removeIn(N _n) {
+        return forEachIn(_n, n -> n.ast().remove() );   
+    }
+
+    @Override
+    public <N extends Node> N forEachIn(N astRootNode, Consumer<_anno> _nodeActionFn) {
+        astRootNode.walk(AnnotationExpr.class, a-> {
+            Select sel = select(_anno.of(a));
+            if( sel != null ){
+                _nodeActionFn.accept(sel._ann);
+            }
+        });
+        return astRootNode;
+    }
+
+    @Override
+    public <N extends _model._node> N forEachIn(N _n, Consumer<_anno> _nodeActionFn) {
+        return Walk.in(_n, _anno.class, a-> {
+            Select sel = select(a); 
+            if( sel != null ){
+                _nodeActionFn.accept( sel._ann );
+            }
+        }); 
+    }
+    
+    public <N extends Node> N forSelectedIn(N astRootNode, Consumer<Select> selectActionFn) {
+        astRootNode.walk(AnnotationExpr.class, a-> {
+            Select sel = select(_anno.of(a));
+            if( sel != null ){
+                selectActionFn.accept(sel);
+            }
+        });
+        return astRootNode;
+    }
+
+    public <N extends _model._node> N forSelectedIn(N _n, Consumer<Select> selectActionFn) {
+        return Walk.in(_n, _anno.class, a-> {
+            Select sel = select(a); 
+            if( sel != null ){
+                selectActionFn.accept( sel );
+            }
+        }); 
+    }
+
+    public String toString(){
+        StringBuilder sb = new StringBuilder();
+        sb.append("@");
+        sb.append(this.name);
+        if( this.$mvs.isEmpty() ){
+            return sb.toString();
+        }
+        sb.append("(");
+        for(int i=0;i<this.$mvs.size();i++){
+            if( i > 0 ){
+                sb.append(",");
+            }
+            sb.append( $mvs.toString() );            
+        }
+        sb.append(")");
+        sb.append(System.lineSeparator());
+        return sb.toString();        
+    }
+    
+    public static class $memberValue {
+
+        public $component<String> name = new $component("$key$", t -> true);
+        public $component<String> value = new $component("$value$", t -> true);
+        public Predicate<MemberValuePair> constraint = t -> true;
+
+        public static $memberValue of(Expression value) {
+            return new $memberValue("$_$", value);
+        }
+
+        public static $memberValue of(String key, String value) {
+            return new $memberValue(key, value);
+        }
+
+        public String compose(Translator translator, Map<String, Object> keyValues) {
+            String k = name.compose(translator, keyValues);
+            String v = value.compose(translator, keyValues);
+            if (k == null || k.length() == 0) {
+                return v;
+            }
+            return k + "=" + v;
+        }
+
+        public boolean isMatchAll() {
+            return name.$form.isMatchAll() && value.$form.isMatchAll();
+        }
+
+        public static $memberValue of(String key, Expression exp) {
+            return new $memberValue(key, exp);
+        }
+
+        public static $memberValue any() {
+            return new $memberValue("$key$", "$value$");
+        }
+
+        public $memberValue(String name, String value) {
+            this(name, Expr.of(value));
+        }
+
+        public $memberValue(String name, Expression value) {
+            this.name.$form = Stencil.of(name);
+            this.value.$form = Stencil.of(value.toString());
+        }
+
+        public $memberValue $(String target, String $name) {
+            this.name.$form = this.name.$form.$(target, $name);
+            this.value.$form = this.value.$form.$(target, $name);
+            return this;
+        }
+
+        
+        public Select selectFirst( List<MemberValuePair> pairs ){
+            for(int i=0;i<pairs.size();i++){
+                Select sel = select(pairs.get(i) );
+                if( sel != null ){
+                    return sel;
+                }
+            }            
+            return null;
+        }
+        
+        
+        public boolean matches(MemberValuePair mvp) {
+            return select(mvp) != null;
+        }
+
+        /**
+         * 
+         * @param onlyValueExpression
+         * @return 
+         */
+        public Tokens decompose(Expression onlyValueExpression){            
+            if( constraint.test( new MemberValuePair("_", onlyValueExpression) ) ) {
+                return value.decompose(onlyValueExpression.toString());
+            }
+            return null;
+        }
+        
+        public Tokens decompose(MemberValuePair mvp ){
+            if (mvp == null) {
+                return null;
+            }
+            if (constraint.test(mvp)) {
+                Tokens ts = name.decompose(mvp.getNameAsString());
+                ts = value.decomposeTo(mvp.getValue().toString(), ts);
+                return ts;
+            }
+            return null;
+        }
+        
+        /**
+         * When we have an anno like
+         * @param onlyValueExpression
+         * @return 
+         * @count(100)
+         * (a SingleMemberAnnotationExpr)
+         * 
+         */
+        public Select select (Expression onlyValueExpression){            
+            MemberValuePair mvp = new MemberValuePair("", onlyValueExpression); 
+            if( constraint.test( mvp ) ) {
+                Tokens ts = value.decompose(onlyValueExpression.toString());
+                return new Select(mvp, ts);
+            }
+            return null;
+        }
+        
+        /**
+         * 
+         * @param mvp
+         * @return 
+         */
+        public Select select(MemberValuePair mvp) {
+            if (mvp == null) {
+                return null;
+            }
+            if (constraint.test(mvp)) {
+                Tokens ts = name.decompose(mvp.getNameAsString());
+                ts = value.decomposeTo(mvp.getValue().toString(), ts);
+                if( ts != null ){
+                    return new Select(mvp, ts);
+                }
+            }
+            return null;
+        }
+
+        public static class Select
+            implements $proto.selected, selectedAstNode<MemberValuePair> {
+
+            public final MemberValuePair astMvp;
+            public final $args args;
+
+            public Select(MemberValuePair astMvp, Tokens tokens) {
+                this.astMvp = astMvp;
+                this.args = $args.of(tokens);
+            }
+
+            @Override
+            public $args getArgs() {
+                return args;
+            }
+
+            @Override
+            public String toString() {
+                return "$memberValue.Select {" + System.lineSeparator()
+                        + Text.indent(astMvp.toString()) + System.lineSeparator()
+                        + Text.indent("$args : " + args) + System.lineSeparator()
+                        + "}";
+            }
+
+            /**
+             * It's not a "true" member value pair, but rather a synthesized
+             * MemberValue Pair with no name... this is for cases where we have an 
+             * annotation like 
+             * @name("Eric")
+             * as apposed to cases where the key and value are spelled out
+             * @name(value="Eric")
+             * 
+             * @return true if its a "value only" member value pair
+             */
+            public boolean isValueOnly(){
+                return astMvp.getNameAsString().equals("_");
+            }
+            
+            @Override
+            public MemberValuePair ast() {
+                return astMvp;
+            }
+
+            public String getName() {
+                return astMvp.getNameAsString();
+            }
+
+            public Expression getValue() {
+                return astMvp.getValue();
+            }
+        }
+    }
+    
     /**
-     * A Matched Selection result returned from matching a prototype $anno
+     * A Matched Selection result returned from matching a prototype $a
      * inside of some Node or _node
      */
-    public static class Select 
+    public static class Select
         implements $proto.selected, selected_model<_anno>, selectedAstNode<AnnotationExpr> {
-        
-        public final AnnotationExpr astAnno;
+
+        public final _anno _ann;
         public final $args args;
 
-        public Select ( _anno _a, Tokens tokens){
-            this( _a, $args.of(tokens));
-        }
-        
-        public Select ( _anno _a, $args tokens){
-            this.astAnno = _a.ast();
-            args = tokens;
-        }
-        
-        public Select( AnnotationExpr expression, $args tokens){
-            this.astAnno = expression;
-            this.args = tokens; //$args.of( tokens);
-        }
-        
-        @Override
-        public $args getArgs(){
-            return args;
-        }
-        
-        @Override
-        public String toString(){
-            return "$anno.Select {"+ System.lineSeparator()+
-                Text.indent(astAnno.toString() )+ System.lineSeparator()+
-                Text.indent("$args : " + args) + System.lineSeparator()+
-                "}";
+        public Select(_anno _a, Tokens tokens) {
+            this(_a, $args.of(tokens));
         }
 
-        public boolean isNamed(String name){            
-            return astAnno.getNameAsString().equals(name);
+        public Select(_anno _a, $args tokens) {
+            this._ann = _a;
+            args = tokens;
         }
-                
-        public boolean isSingleValue(){
-            return astAnno instanceof SingleMemberAnnotationExpr;
+
+        public Select(AnnotationExpr astAnno, $args tokens) {
+            this._ann = _anno.of( astAnno );
+            this.args = tokens;
         }
-        
-        public boolean hasKeyValues(){
-            return astAnno instanceof NormalAnnotationExpr;
-        }
-        
-        public boolean hasNoValues(){
-            return astAnno instanceof MarkerAnnotationExpr;
-        }
-        
+
         @Override
-        public AnnotationExpr ast(){
-            return astAnno;
-        } 
-        
+        public $args getArgs() {
+            return args;
+        }
+
+        @Override
+        public String toString() {
+            return "$anno.Select {" + System.lineSeparator()
+                + Text.indent(_ann.toString()) + System.lineSeparator()
+                + Text.indent("$args : " + args) + System.lineSeparator()
+                + "}";
+        }
+
+        public boolean isNamed(String name) {
+            return _ann.isNamed(name);
+        }
+
+        public boolean isSingleValue() {
+            return _ann.ast() instanceof SingleMemberAnnotationExpr;
+        }
+
+        public boolean hasKeyValues() {
+            return _ann.ast() instanceof NormalAnnotationExpr;
+        }
+
+        public boolean hasNoValues() {
+            return _ann.ast() instanceof MarkerAnnotationExpr;
+        }
+
+        @Override
+        public AnnotationExpr ast() {
+            return _ann.ast();
+        }
+
         @Override
         public _anno model() {
-            return _anno.of(astAnno);
-        }        
+            return _ann;
+        }
     }
 }

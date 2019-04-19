@@ -8,7 +8,6 @@ import com.github.javaparser.ast.type.Type;
 import com.github.javaparser.printer.PrettyPrinterConfiguration;
 import draft.*;
 import draft.java.*;
-import draft.java._anno._annos;
 import draft.java._model._node;
 import draft.java._parameter._parameters;
 import draft.java._typeParameter._typeParameters;
@@ -414,7 +413,8 @@ public class $method
     public Predicate<_method> constraint = t -> true;
     
     public $component<_javadoc> javadoc = new $component( "$javadoc$", t->true);
-    public $component<_annos> annos = new $component( "$annos$", t->true);    
+    //public $component<_annos> annos = new $component( "$annos$", t->true);    
+    public $annos annos = new $annos();
     public $component<_modifiers> modifiers = new $component( "$modifiers$", t->true);
     public $component<_typeDecl> type = new $component( "$type$", t->true);
     public $component<_typeParameters> typeParameters = new $component( "$typeParameters$", t->true);
@@ -437,7 +437,7 @@ public class $method
             javadoc.stencil(_m.getJavadoc().toString() );
         }        
         if( _m.hasAnnos() ){
-            annos.stencil(_m.getAnnos() );
+            annos = $annos.of(_m.getAnnos() );
         }
         if( !_m.getModifiers().isEmpty() ){
             final _modifiers ms = _m.getModifiers();
@@ -493,7 +493,7 @@ public class $method
     public List<String> list$Normalized(){
         List<String>normalized$ = new ArrayList<>();
         normalized$.addAll( javadoc.$form.list$Normalized() );
-        normalized$.addAll( annos.$form.list$Normalized() );
+        normalized$.addAll( annos.list$Normalized() );
         normalized$.addAll( modifiers.$form.list$Normalized() );
         normalized$.addAll( typeParameters.$form.list$Normalized() );
         normalized$.addAll( type.$form.list$Normalized() );        
@@ -508,7 +508,7 @@ public class $method
     public List<String> list$(){
         List<String>all$ = new ArrayList<>();
         all$.addAll( javadoc.$form.list$() );
-        all$.addAll( annos.$form.list$() );
+        all$.addAll( annos.list$() );
         all$.addAll( modifiers.$form.list$() );
         all$.addAll( typeParameters.$form.list$() );
         all$.addAll( type.$form.list$() );        
@@ -517,6 +517,11 @@ public class $method
         all$.addAll( thrown.$form.list$() );
         all$.addAll( body.$form.list$() );        
         return all$;
+    }
+    
+    public $method $annos(String...annoPatterns ){
+        this.annos.add(annoPatterns);
+        return this;
     }
     
     public $method $name(){
@@ -537,12 +542,7 @@ public class $method
     public $method $modifiers(){
         this.modifiers.stencil("$modifiers$");
         return this;
-    }
-    
-    public $method $annos(){
-        this.annos.stencil("$annos$");
-        return this;
-    }
+    }    
     
     public $method $javadoc(){
         this.javadoc.stencil("$javadoc$");
@@ -743,7 +743,7 @@ public class $method
      */
     public $method hardcode$( Translator translator, Tokens kvs ) {
         javadoc.$form = javadoc.$form.hardcode$(translator, kvs);
-        annos.$form = annos.$form.hardcode$(translator, kvs);
+        annos = annos.hardcode$(translator, kvs);
         modifiers.$form = modifiers.$form.hardcode$(translator, kvs);
         typeParameters.$form = typeParameters.$form.hardcode$(translator, kvs);
         type.$form = type.$form.hardcode$(translator, kvs);
@@ -759,7 +759,7 @@ public class $method
     @Override
     public $method $(String target, String $Name) {
         javadoc.$form = javadoc.$form.$(target, $Name);
-        annos.$form = annos.$form.$(target, $Name);
+        annos = annos.$(target, $Name);
         modifiers.$form = modifiers.$form.$(target, $Name);
         typeParameters.$form = typeParameters.$form.$(target, $Name);
         type.$form = type.$form.$(target, $Name);
