@@ -197,7 +197,6 @@ public enum Walk {
         return of( Node.TreeTraversal.PREORDER, astRootNode, targetClass, matchFn, action );
     }
 
-
     /**
      *
      * <PRE>
@@ -220,7 +219,6 @@ public enum Walk {
         Ast.walk(astRootNode, targetNodeClass, t -> true, nodeActionFn);
         return astRootNode;
     }
-
 
     /**
      * <PRE>
@@ -634,7 +632,6 @@ public enum Walk {
         return _m;
     }
 
-
     /**
      * A preorder walk within the _model node _m
      * <PRE>
@@ -655,7 +652,6 @@ public enum Walk {
         of( Node.TreeTraversal.PREORDER, _m.ast(), Node.class, predicate, action );
         return _m;
     }
-
 
     /**
      * Walk the nodes within & collect all nodes that match all the predicate and return them in order
@@ -840,7 +836,7 @@ public enum Walk {
      * @param action the action to take on nodes that match the matchFn
      */
     public static <A, N extends Node, L extends _model, R extends Node> R of(
-            Node.TreeTraversal tt, R astRootNode, Class<A> targetClass, Predicate<A> matchFn, Consumer<A> action ) {
+        Node.TreeTraversal tt, R astRootNode, Class<A> targetClass, Predicate<A> matchFn, Consumer<A> action ) {
 
         if( Node.class.isAssignableFrom( targetClass ) //Stmts and Expressions
                 || targetClass.getPackage().getName().equals( NodeWithAnnotations.class.getPackage().getName() ) // (NodeWithAnnotations, NodeWithArguments, NodeWithBlockStmt, ...
@@ -863,11 +859,11 @@ public enum Walk {
                 return astRootNode;
             }else {
                 Ast.walk(tt,
-                        astRootNode,
-                        (Class<N>) targetClass,
-                        e -> targetClass.isAssignableFrom(e.getClass())
-                                && matchFn.test((A) e),
-                        (Consumer<N>) action);
+                    astRootNode,
+                    (Class<N>) targetClass,
+                    e -> targetClass.isAssignableFrom(e.getClass())
+                        && matchFn.test((A) e),
+                    (Consumer<N>) action);
                 return astRootNode;
             }
         }//maybe
@@ -1221,10 +1217,10 @@ public enum Walk {
         lhs.addAll(acs);
 
         //Collections.sort( lhs, new CommentPositionComparator());
-        lhs.stream()
-                .filter(c -> commentClass.isAssignableFrom(c.getClass())
-                        && commentMatchFn.test((C) c))
-                .forEach(c -> commentActionFn.accept((C) c));
+        lhs.stream().filter(c -> 
+            commentClass.isAssignableFrom(c.getClass())
+            && commentMatchFn.test((C) c))
+            .forEach(c -> commentActionFn.accept((C) c));
     }
     
     /**

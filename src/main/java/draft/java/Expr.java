@@ -80,7 +80,7 @@ public enum Expr {
         void consume(T t, U u, V v);
     }
 
-     /**
+    /**
      * Functional interface for (4) input PARAMETERS, no return lambda function
      * (Used when we pass in Lambdas to the {@link Expr#lambda(QuadConsumer)} 
      * operation
@@ -113,7 +113,7 @@ public enum Expr {
         return lambda( ste );
     }
 
-     /**
+    /**
      * Resolves and returns the AST LambdaExpr representing the Runtime Lambda passed in
      * for example:
      * <PRE>
@@ -152,7 +152,7 @@ public enum Expr {
         return lambda( ste );
     }
 
-     /**
+    /**
      * Resolves and returns the AST LambdaExpr representing the Runtime Lambda passed in
      * for example:
      * <PRE>
@@ -173,7 +173,7 @@ public enum Expr {
         return lambda( ste );
     }
 
-     /**
+    /**
      * Resolves and returns the AST LambdaExpr representing the Runtime Lambda passed in
      * for example:
      * <PRE>
@@ -193,7 +193,7 @@ public enum Expr {
         return lambda( ste );
     }
 
-     /**
+    /**
      * Resolves and returns the AST LambdaExpr representing the Runtime Lambda passed in
      * for example:
      * <PRE>
@@ -214,7 +214,7 @@ public enum Expr {
         return lambda( ste );
     }
 
-     /**
+    /**
      * Resolves and returns the AST LambdaExpr representing the Runtime Lambda passed in
      * for example:
      * <PRE>
@@ -236,7 +236,7 @@ public enum Expr {
         return lambda( ste );
     }
 
-     /**
+    /**
      * Resolves and returns the AST LambdaExpr representing the Runtime Lambda passed in
      * for example:
      * <PRE>
@@ -258,7 +258,7 @@ public enum Expr {
         return lambda( ste );
     }
 
-     /**
+    /**
      * Resolves and returns the AST LambdaExpr representing lambda expression 
      * that is referenced from this stackTraceElement line
      * for example:
@@ -330,21 +330,17 @@ public enum Expr {
         //What I need to do is to find the MethodCallExpr that is nested inside another MethodCallExpr
         //check if it begins before the stack trace line and ends aftrer the stack trace line
         List<MethodCallExpr> ln = Ast.listAll(
-                Ast.WALK_BREADTH_FIRST,
-                _t.ast(),
-                Ast.METHOD_CALL_EXPR,
-                mce->
-                    mce.getRange().isPresent() && mce.getRange().get().begin.line <= lineNumber
-                            && mce.getRange().get().end.line >= lineNumber
-                            && mce.getArguments().stream().filter(a-> a instanceof LambdaExpr).findFirst().isPresent()
-
-                        //&& Ast.first(Ast.WALK_DIRECT_CHILDREN, mce.get, Ast.LAMBDA_EXPR, t-> true) != null
+            Ast.WALK_BREADTH_FIRST,
+            _t.ast(),
+            Ast.METHOD_CALL_EXPR,
+            mce-> mce.getRange().isPresent() && mce.getRange().get().begin.line <= lineNumber
+                && mce.getRange().get().end.line >= lineNumber
+                && mce.getArguments().stream().filter(a-> a instanceof LambdaExpr).findFirst().isPresent()                
         );
 
         // we always want to start with the LAST one, since we could have a nested
         // grouping of statements
         for(int i=ln.size()-1;i>=0;i--){
-            //System.out.println("TRYING ("+i+" of "+ln.size()+") "+ ln.get(i).getClass().getSimpleName()+ " " + ln.get(i) );
             Optional<Node> on = ln.get(i).stream().filter(n -> n instanceof LambdaExpr).findFirst();
             if( on.isPresent() ){
                 return (LambdaExpr)on.get();
@@ -509,7 +505,7 @@ public enum Expr {
             _t = _type.of(clazz, resolver);
         } catch (Exception e) {
             throw new _ioException("no .java source for Runtime Class \"" + ste.getClassName() + "\" " + System.lineSeparator() +
-                    resolver.describe(), e); //print out the input config to help
+                resolver.describe(), e); //print out the input config to help
         }
 
         //find all of the potential method calls that could be the call 
@@ -526,8 +522,8 @@ public enum Expr {
             //find the particular methodCall containing the anonymous Object being created
             //
             Optional<Expression> on =
-                    mces.get(i).getArguments().stream().filter( a -> a instanceof ObjectCreationExpr
-                            && a.asObjectCreationExpr().getAnonymousClassBody().isPresent()).findFirst();
+                mces.get(i).getArguments().stream().filter( a -> a instanceof ObjectCreationExpr
+                    && a.asObjectCreationExpr().getAnonymousClassBody().isPresent()).findFirst();
             if( on.isPresent() ){
                 return (ObjectCreationExpr)on.get();
             }
@@ -567,7 +563,7 @@ public enum Expr {
             //it could be an arrayInitialationExpresssion
             Statement st = Stmt.of("Object[] arr = "+str+";");
             ArrayInitializerExpr aie = (ArrayInitializerExpr)
-                    st.asExpressionStmt().getExpression().asVariableDeclarationExpr().getVariable(0).getInitializer().get();
+                st.asExpressionStmt().getExpression().asVariableDeclarationExpr().getVariable(0).getInitializer().get();
             aie.removeForced();
             return aie;
         }
@@ -633,7 +629,6 @@ public enum Expr {
         ArrayInitializerExpr aie = of(ai).asArrayCreationExpr().getInitializer().get();
         aie.removeForced();
         return aie;
-        //return AST.expr( code ).asArrayInitializerExpr();
     }
 
     /** i.e. "a = 1", "a = 4" */
@@ -730,9 +725,11 @@ public enum Expr {
     public static DoubleLiteralExpr of( float d ){
         return new DoubleLiteralExpr( d );
     }
+    
     public static ArrayInitializerExpr arrayInitializer( int[] intArray ){
         return of( intArray);
     }
+    
     public static ArrayInitializerExpr of( int[] intArray ){
         StringBuilder sb = new StringBuilder();
         sb.append("{ ");
@@ -749,6 +746,7 @@ public enum Expr {
     public static ArrayInitializerExpr arrayInitializer( float[] floatArray ){
         return of( floatArray);
     }
+    
     public static ArrayInitializerExpr of( float[] array ){
         StringBuilder sb = new StringBuilder();
         sb.append("{ ");
@@ -1199,10 +1197,12 @@ public enum Expr {
      * i.e. {@code @Deprecated }
      */
     public static final Class<MarkerAnnotationExpr> ANNOTATION_MARKER = MarkerAnnotationExpr.class;
+    
     /**
      * @Generated("2/14/1985")
      */
     public static final Class<SingleMemberAnnotationExpr> ANNOTATION_SINGLE_MEMBER = SingleMemberAnnotationExpr.class;
+    
     /**
      * @KeyValue(key1="string",key2=12)
      */
@@ -1253,6 +1253,7 @@ public enum Expr {
         }
         return of( str ).asStringLiteralExpr();
     }
+    
     /** "super" */
     public static final Class<SuperExpr> SUPER = SuperExpr.class;
 
@@ -1318,7 +1319,6 @@ public enum Expr {
         return StaticJavaParser.parseVariableDeclarationExpr( Text.combine( code ));
     }    
     
-    
     /**
      * 
      * @param exp
@@ -1372,6 +1372,5 @@ public enum Expr {
             } 
         }
         return false;
-    }
-    
+    }    
 }

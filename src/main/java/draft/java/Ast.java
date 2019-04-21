@@ -696,20 +696,19 @@ public enum Ast {
                 }
             });
 
-            //System.out.println( tds );
             td = tds.get(0);
 
             List<LocalClassDeclarationStmt> localCand = new ArrayList<>();
             Constructor ct = clazz.getEnclosingConstructor();
             if (ct != null) {
-                td.walk(ConstructorDeclaration.class, cd
-                        -> cd.getBody().walk(
-                                LocalClassDeclarationStmt.class,
-                                (LocalClassDeclarationStmt lc) -> {
-                                    if (lc.getClassDeclaration().getNameAsString().equals(clazz.getName())) {
-                                        localCand.add(lc);
-                                    }
-                                })
+                td.walk(ConstructorDeclaration.class, cd -> 
+                    cd.getBody().walk(
+                        LocalClassDeclarationStmt.class,
+                        (LocalClassDeclarationStmt lc) -> {
+                            if (lc.getClassDeclaration().getNameAsString().equals(clazz.getName())) {
+                                localCand.add(lc);
+                            }
+                    })
                 );
             }
             Method md = clazz.getEnclosingMethod();
@@ -763,7 +762,7 @@ public enum Ast {
         _in _i = resolver.resolve(topClass);
         if (_i == null) {
             throw new _ioException("couldn't in .java source for: " + topClass + " containing " + clazz.getCanonicalName()
-                    + System.lineSeparator() + resolver.describe());
+                + System.lineSeparator() + resolver.describe());
         }
         //return TYPE( _i.getInputStream() );
 
@@ -819,7 +818,7 @@ public enum Ast {
             throw new DraftException("Cannot statically import a non-static method");
         }
         ImportDeclaration id = new ImportDeclaration(
-                m.getDeclaringClass().getCanonicalName() + "." + m.getName(), true, false);
+            m.getDeclaringClass().getCanonicalName() + "." + m.getName(), true, false);
         return id;
     }
 
@@ -831,8 +830,8 @@ public enum Ast {
      */
     public static ImportDeclaration importDeclaration(Class clazz) {
         if (clazz == null
-                || clazz.isPrimitive()
-                || clazz.isArray() && clazz.getComponentType().isPrimitive()) {
+            || clazz.isPrimitive()
+            || clazz.isArray() && clazz.getComponentType().isPrimitive()) {
             return null;
         }
         if (clazz.isArray()) {
@@ -1100,7 +1099,7 @@ public enum Ast {
 
     /**
      *
-     * @param param the string representation of the typeParameter
+     * @param code the string representation of the typeParameter
      * @return
      */
     public static NodeList<TypeParameter> typeParameters(String code) {
@@ -1141,15 +1140,15 @@ public enum Ast {
             // setting the JavadocComment on the
             List<JavadocComment> jc = new ArrayList<>();
             md.getAllContainedComments().forEach(
-                    j -> {
-                        if (j instanceof JavadocComment) {
-                            JavadocComment com = (JavadocComment) j;
-                            if (com.getBegin().get().isBefore(beforeMethodType)) {
-                                j.remove();
-                                jc.add(com);
-                            }
+                j -> {
+                    if (j instanceof JavadocComment) {
+                        JavadocComment com = (JavadocComment) j;
+                        if (com.getBegin().get().isBefore(beforeMethodType)) {
+                            j.remove();
+                            jc.add(com);
                         }
-                    });
+                    }
+                });
             if (!jc.isEmpty()) {
                 md.setJavadocComment(jc.get(0));
             }
@@ -1176,15 +1175,15 @@ public enum Ast {
             // setting the JavadocComment on the
             List<JavadocComment> jc = new ArrayList<>();
             cd.getAllContainedComments().forEach(
-                    j -> {
-                        if (j instanceof JavadocComment) {
-                            JavadocComment com = (JavadocComment) j;
-                            if (com.getBegin().get().isBefore(beforeMethodType)) {
-                                j.remove();
-                                jc.add(com);
-                            }
+                j -> {
+                    if (j instanceof JavadocComment) {
+                        JavadocComment com = (JavadocComment) j;
+                        if (com.getBegin().get().isBefore(beforeMethodType)) {
+                            j.remove();
+                            jc.add(com);
                         }
-                    });
+                    }
+                });
             if (!jc.isEmpty()) {
                 cd.setJavadocComment(jc.get(0));
             }
@@ -1293,10 +1292,8 @@ public enum Ast {
         if (PATTERN_LOCAL_CLASS.matcher(code).find()) {
             //lets remove all the local stuff... return a type without package
             code = code.replaceAll(LOCAL_CLASS_NAME_PACKAGE_PATTERN, ".");
-            //System.out.println( "Str \"" + code +"\"");
             return typeDecl(code.substring(code.lastIndexOf('.') + 1));
         }
-        //System.out.println( "THE CODE IS \""+ code+"\"");
         return StaticJavaParser.parseType(code);
     }
 
@@ -1344,7 +1341,7 @@ public enum Ast {
             str = str + ";";
         }
         ClassOrInterfaceDeclaration cd = Ast.compilationUnit("public class $$$$Y{" + str + "}")
-                .getClassByName("$$$$Y").get();
+            .getClassByName("$$$$Y").get();
         List<FieldDeclaration> fds = cd.getFields();
         fds.forEach(f -> cd.remove(f)); //disconnect from
         return fds;
@@ -1362,8 +1359,9 @@ public enum Ast {
         if (!str.endsWith(";")) {
             str = str + ";";
         }
-        ClassOrInterfaceDeclaration cd = Ast.compilationUnit("public class $$$$Y{" + System.lineSeparator() + str + System.lineSeparator() + "}")
-                .getClassByName("$$$$Y").get();
+        ClassOrInterfaceDeclaration cd = Ast.compilationUnit("public class $$$$Y{" 
+            + System.lineSeparator() + str + System.lineSeparator() + "}")
+            .getClassByName("$$$$Y").get();
         FieldDeclaration fd = cd.getFields().get(0);
         if (cd.getAllContainedComments().size() > 0) {
             fd.setJavadocComment((JavadocComment) cd.getAllContainedComments().get(0));
@@ -1458,7 +1456,6 @@ public enum Ast {
     }
 
     public static ClassOrInterfaceDeclaration classDeclaration(String... code) {
-        //System.out.println( "Class Decl");
         return (ClassOrInterfaceDeclaration) typeDeclaration(code);
     }
 

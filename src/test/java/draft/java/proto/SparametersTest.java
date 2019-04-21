@@ -1,6 +1,7 @@
 package draft.java.proto;
 
 import draft.java._parameter._parameters;
+import draft.java._type;
 import junit.framework.TestCase;
 
 /**
@@ -31,6 +32,7 @@ public class SparametersTest extends TestCase {
         assertTrue( $ps.matches(_parameters.of()) );
         
         //lets test compose...
+        assertEquals( _parameters.of(), $ps.construct());        
         assertEquals( _parameters.of("int i"), $ps.construct("parameters", "int i"));        
     }
     
@@ -39,6 +41,10 @@ public class SparametersTest extends TestCase {
         $parameters $ps = $parameters.of("int i");
         assertTrue($ps.matches("int i"));
         assertNotNull($ps.select("int i"));
+        
+        assertTrue($ps.matches("final int i"));
+        assertTrue($ps.matches("int... i"));
+        assertTrue($ps.matches("final int... i"));
         
         assertFalse( $ps.matches("int j"));
         assertFalse( $ps.matches("String i"));
@@ -58,6 +64,44 @@ public class SparametersTest extends TestCase {
         assertFalse($ps.matches("final int...j"));
         assertFalse($ps.matches("final String...f"));
         
+        
+        $ps = $parameters.of("@A final String a, @B @C @D(1) final List<TT>... b");
+        assertTrue( $ps.matches("@A final String a, @B @C @D(1) final List<TT>... b"));
+        assertTrue( $ps.matches("@A final String a, @D(1) @B @C final List<TT>... b")); //out of order
+        
+        assertFalse( $ps.matches("@A final String a, @D(1) @B final List<TT>... b")); //missing anno
+        assertFalse( $ps.matches("@A final String a, @D(1) @B @C List<TT>... b")); //missing final
+        assertFalse( $ps.matches("@A final String a, @D(1) @B @C final List<TT> b")); //missing vararg
     }
     
+    public void testDynamicParameters(){
+        $parameters $ps = $parameters.of("$type$ a");
+        assertEquals( _parameters.of("String a"), $ps.construct("type", String.class));
+        
+        //this will match any (single) parameters with only a
+        assertTrue($ps.matches("int a") );
+        assertTrue($ps.matches("String a") );
+        assertTrue($ps.matches("Map<Integer,String> a") );        
+        assertTrue($ps.matches("final Map<Integer,String>... a") );
+        
+        assertTrue($ps.select("int a").is("type", int.class) );
+        
+        $ps = $parameters.of("String $p1$, final int $p2$");
+        
+        assertTrue( $ps.matches("String s, final int i") );
+        assertTrue( $ps.matches("@ann1 @ann2 final String s, @ann2 final int i") );
+        assertTrue( $ps.matches("String tt, final int... z") );
+        
+        //when I select, I can easily access the parameter names
+        assertTrue( $ps.select("String tt, final int... z")
+            .is("p1", "tt", "p2", "z"));
+        
+        class c{
+            void m( String tt, final int...z ){
+                
+            }
+        }
+        assertTrue( $ps.listIn(c.class).size() == 1 );
+        assertTrue( $ps.listSelectedIn(c.class).size() == 1 );
+    }
 }

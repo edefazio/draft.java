@@ -1,6 +1,5 @@
 package draft.java;
 
-import com.github.javaparser.JavaParser;
 import com.github.javaparser.StaticJavaParser;
 import com.github.javaparser.ast.expr.LambdaExpr;
 import com.github.javaparser.ast.stmt.*;
@@ -170,15 +169,9 @@ public enum Stmt {
         if( !str.endsWith(";") && !str.endsWith("}") ){
             str = str + ";";
         }
-        /*
-        if( str.startsWith("case") ){
-            return switchCaseStmt( str );
-        }
-        */
         if( str.startsWith("/*") || str.startsWith("//") ){
             return block( str ).getStatement(0);
-        }
-        //return block(str).getStatement(0);
+        }        
         return StaticJavaParser.parseStatement( str );
     }
 
@@ -193,6 +186,7 @@ public enum Stmt {
     }
 
     public static final Class<BlockStmt> BLOCK = BlockStmt.class;
+    
     /**
      * NOTE: If you omit the opening and closing braces { }, they will be added
      *
@@ -408,34 +402,15 @@ public enum Stmt {
         return of( code ).asReturnStmt();
     }
 
-    //public static final Class<SwitchEntryStmt> SWITCH_CASE = SwitchEntryStmt.class;
-
-    /**
-     *
-     * case 1: return 1;
-     *
-     * case 2: case 3: System.out.println(23); break;
-     *
-     * @param code
-     * @return
-
-    public static SwitchEntryStmt switchCaseStmt(String... code ) {
-        String st = Text.combine(code);
-        st = "switch(a){"+System.lineSeparator()+st+System.lineSeparator()+"}";
-        SwitchStmt ss = switchStmt(st);
-        SwitchEntryStmt ses = ss.getEntry(0);
-        ses.removeForced(); //DISCONNECT
-        return ses;
-    }
-    */
-
     public static final Class<SwitchStmt> SWITCH = SwitchStmt.class;
+    
     public static SwitchStmt switchStmt( String... code ) {
 
         return of( code ).asSwitchStmt();
     }
 
     public static final Class<SynchronizedStmt> SYNCHRONIZED = SynchronizedStmt.class;
+    
     public static SynchronizedStmt synchronizedStmt( String... code ) {
         return of( code ).asSynchronizedStmt();
     }
