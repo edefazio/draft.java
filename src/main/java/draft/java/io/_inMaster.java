@@ -5,7 +5,7 @@ package draft.java.io;
  *
  * tries to accomplish:
  * 1) good defaults (should work out of the box for most projects)
- * 2) easily configurable out of the box (swap out via Thread local or system properties
+ * 2) easily configurable out of the box (swap out via Thread local or system properties)
  *
  * ..when resolving
  * 1) check threadLocal to see if there is a resolver

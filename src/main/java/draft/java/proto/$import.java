@@ -117,7 +117,7 @@ public final class $import
      * @return 
      */
     public static final <T extends _type> List<Select> selectList( T _type, _import _protoTarget){
-        return $import.of(_protoTarget).selectListIn(_type);
+        return $import.of(_protoTarget).listSelectedIn(_type);
     }
     
     /**
@@ -128,7 +128,7 @@ public final class $import
      * @return 
      */
     public static final <T extends _type> List<Select> selectList( T _type, String pattern ){
-        return $import.of(pattern).selectListIn(_type);
+        return $import.of(pattern).listSelectedIn(_type);
     }
     
     /**
@@ -139,7 +139,7 @@ public final class $import
      * @return 
      */
     public static final <T extends _type> List<Select> selectList( T _type, ImportDeclaration astProtoTarget ){
-        return $import.of(_import.of(astProtoTarget)).selectListIn(_type);
+        return $import.of(_import.of(astProtoTarget)).listSelectedIn(_type);
     }
     
     /**
@@ -150,7 +150,7 @@ public final class $import
      * @return 
      */
     public static final <T extends _type> List<Select> selectList( T _type, Class target ){
-        return $import.of(target).selectListIn(_type);
+        return $import.of(target).listSelectedIn(_type);
     }
     
     /**
@@ -162,7 +162,7 @@ public final class $import
      * @return 
      */
     public static final <T extends _type> List<Select> selectList( T _type, _import _protoTarget,Predicate<_import> constraint){
-        return $import.of(_protoTarget).constraint(constraint).selectListIn(_type);
+        return $import.of(_protoTarget).constraint(constraint).listSelectedIn(_type);
     }
     
     /**
@@ -174,7 +174,7 @@ public final class $import
      * @return 
      */
     public static final <T extends _type> List<Select> selectList( T _type, String pattern, Predicate<_import> constraint){
-        return $import.of(pattern).constraint(constraint).selectListIn(_type);
+        return $import.of(pattern).constraint(constraint).listSelectedIn(_type);
     }
     
     /**
@@ -186,7 +186,7 @@ public final class $import
      * @return 
      */
     public static final <T extends _type> List<Select> selectList( T _type, ImportDeclaration astProtoTarget, Predicate<_import> constraint){
-        return $import.of(_import.of(astProtoTarget)).constraint(constraint).selectListIn(_type);
+        return $import.of(_import.of(astProtoTarget)).constraint(constraint).listSelectedIn(_type);
     }
     
     /**
@@ -198,7 +198,7 @@ public final class $import
      * @return 
      */
     public static final <T extends _type> List<Select> selectList( T _type, Class target, Predicate<_import> constraint){
-        return $import.of(target).constraint(constraint).selectListIn(_type);
+        return $import.of(target).constraint(constraint).listSelectedIn(_type);
     }
    
     /**
@@ -732,6 +732,14 @@ public final class $import
     }
     
     /**
+     * Match ANY import
+     * @return 
+     */
+    public static $import any(){
+        return new $import( t-> true );        
+    }
+    
+    /**
      * 
      * @param pattern
      * @return 
@@ -1118,7 +1126,7 @@ public final class $import
     }
 
     @Override
-    public List<Select> selectListIn( Node astNode ){
+    public List<Select> listSelectedIn( Node astNode ){
         List<Select>sts = new ArrayList<>();
         if(astNode.findCompilationUnit().isPresent() ){
             astNode.findCompilationUnit().get().walk(ImportDeclaration.class, e-> {
@@ -1132,8 +1140,8 @@ public final class $import
     }
 
     @Override
-    public List<Select> selectListIn( _node _n ){
-        return selectListIn( _n.ast() );        
+    public List<Select> listSelectedIn( _node _n ){
+        return listSelectedIn( _n.ast() );        
     }
     
     /**
@@ -1162,7 +1170,7 @@ public final class $import
      * @return 
      */
     public List<Select> selectListIn( _node _n, Predicate<Select> selectConstraint ){
-        return selectListIn( _n.ast() );        
+        return listSelectedIn( _n.ast() );        
     }
 
     /**

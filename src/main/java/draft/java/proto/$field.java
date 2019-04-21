@@ -232,7 +232,7 @@ public class $field implements Template<_field>, $proto<_field> {
      * @return 
      */
     public static final <N extends _node> List<Select> selectList( N _n, String proto ){
-        return of(proto).selectListIn(_n);
+        return of(proto).listSelectedIn(_n);
     }
     
     /**
@@ -242,7 +242,7 @@ public class $field implements Template<_field>, $proto<_field> {
      * @return 
      */
     public static final List<Select> selectList( Class clazz, String proto ){
-        return of(proto).selectListIn(_type.of(clazz) );
+        return of(proto).listSelectedIn(_type.of(clazz) );
     }
     
     /**
@@ -254,7 +254,7 @@ public class $field implements Template<_field>, $proto<_field> {
      * @return 
      */
     public static final <N extends _node> List<Select> selectList( N _n, String proto, Predicate<_field> constraint){
-        return of(proto, constraint).selectListIn(_n);
+        return of(proto, constraint).listSelectedIn(_n);
     }
     
     /**
@@ -265,7 +265,7 @@ public class $field implements Template<_field>, $proto<_field> {
      * @return 
      */
     public static final List<Select> selectList( Class clazz, String proto, Predicate<_field>constraint){
-        return of(proto, constraint).selectListIn(_type.of(clazz) );
+        return of(proto, constraint).listSelectedIn(_type.of(clazz) );
     }
     
     /**
@@ -276,7 +276,7 @@ public class $field implements Template<_field>, $proto<_field> {
      * @return 
      */
     public static final <N extends _node> List<Select> selectList( N _n, _field proto ){
-        return of(proto).selectListIn(_n);
+        return of(proto).listSelectedIn(_n);
     }
     
     /**
@@ -288,7 +288,7 @@ public class $field implements Template<_field>, $proto<_field> {
      * @return 
      */
     public static final <N extends _node> List<Select> selectList( N _n, _field proto, Predicate<_field> constraint){
-        return of(proto, constraint).selectListIn(_n);
+        return of(proto, constraint).listSelectedIn(_n);
     }
     
     /**
@@ -473,7 +473,6 @@ public class $field implements Template<_field>, $proto<_field> {
     
     public Predicate<_field> constraint = t->true;
     public $component<_javadoc> javadoc = new $component( "$javadoc$", t->true);
-    //public $component<_annos> annos = new $component( "$annos$", t->true);  
     public $annos annos = new $annos(); 
     public $component<_modifiers> modifiers = new $component( "$modifiers$", t->true);
     public $component<_typeDecl> type = new $component( "$type$", t->true);
@@ -490,7 +489,7 @@ public class $field implements Template<_field>, $proto<_field> {
      * @return 
      */
     public $field $javadoc(){
-        this.javadoc.$form = Stencil.of("$javadoc$");
+        this.javadoc.pattern = Stencil.of("$javadoc$");
         return this;
     }
     
@@ -500,7 +499,8 @@ public class $field implements Template<_field>, $proto<_field> {
      * @return 
      */
     public $field $javadoc(String... pattern){
-        this.javadoc.$form = Stencil.of(Text.combine(pattern) );
+        this.javadoc.pattern = Stencil.of(Text.combine(pattern) );
+        //this.javadoc.$component.this.pattern = Stencil.of(Text.combine(pattern) );
         return this;
     }
     
@@ -515,12 +515,13 @@ public class $field implements Template<_field>, $proto<_field> {
     }
     
     public $field $type(){
-        this.type.$form = Stencil.of("$type$");
+        this.type.pattern = Stencil.of("$type$");
         return this;
     }
     
     public $field $type( String pattern ){
-        this.type.$form = Stencil.of(_typeDecl.of(pattern).toString());
+        this.type.pattern = Stencil.of(_typeDecl.of(pattern).toString());
+        //this.type.$component.this.pattern = Stencil.of(_typeDecl.of(pattern).toString());
         return this;
     }
     
@@ -530,12 +531,13 @@ public class $field implements Template<_field>, $proto<_field> {
     }
     
     public $field $name(){
-        this.name.$form = Stencil.of("$name$");
+        this.name.pattern = Stencil.of("$name$");
         return this;
     }
     
     public $field $name(String pattern ){
-        this.name.$form = Stencil.of(pattern );
+        this.name.pattern = Stencil.of(pattern);
+        //this.name.$component.this.pattern = Stencil.of(pattern );
         return this;
     }
     
@@ -545,17 +547,17 @@ public class $field implements Template<_field>, $proto<_field> {
     }
     
     public $field $init(){
-        this.init.$form = Stencil.of( "$init$" );
+        this.init.pattern = Stencil.of( "$init$" );
         return this;
     }
     
     public $field $init( String initPattern ){
-        this.init.$form = Stencil.of(Expr.of(initPattern).toString() );
+        this.init.pattern = Stencil.of(Expr.of(initPattern).toString() );
         return this;
     }
     
     public $field $init( Expression initProto ){
-        this.init.$form = Stencil.of(initProto.toString() );
+        this.init.pattern = Stencil.of(initProto.toString() );
         return this;
     }
     
@@ -684,7 +686,7 @@ public class $field implements Template<_field>, $proto<_field> {
     }
 
     @Override
-    public List<Select> selectListIn(Node astNode ){
+    public List<Select> listSelectedIn(Node astNode ){
         List<Select>sts = new ArrayList<>();
         astNode.walk(VariableDeclarator.class, e-> {
             Select s = select( e );
@@ -696,8 +698,8 @@ public class $field implements Template<_field>, $proto<_field> {
     }
 
     @Override
-    public List<Select> selectListIn(_node _n ){
-        return selectListIn(_n.ast());        
+    public List<Select> listSelectedIn(_node _n ){
+        return listSelectedIn(_n.ast());        
     }
 
     /**
@@ -817,7 +819,6 @@ public class $field implements Template<_field>, $proto<_field> {
         return astNode;
     }
     
-    
     /**
      * 
      * @param <N>
@@ -854,7 +855,6 @@ public class $field implements Template<_field>, $proto<_field> {
         return astNode;
     }
     
-
     @Override
     public <N extends Node> N forEachIn(N astNode, Consumer<_field> _fieldActionFn){
         astNode.walk(VariableDeclarator.class, e-> {
@@ -984,17 +984,17 @@ public class $field implements Template<_field>, $proto<_field> {
         baseMap.putAll(keyValues);
         
         StringBuilder sb = new StringBuilder();
-        sb.append(javadoc.$form.construct(translator, baseMap) );
+        sb.append(javadoc.pattern.construct(translator, baseMap) );
         sb.append(System.lineSeparator());
         sb.append(annos.construct(translator, baseMap) );
         sb.append(System.lineSeparator());
-        sb.append(modifiers.$form.construct(translator, baseMap) );
+        sb.append(modifiers.pattern.construct(translator, baseMap) );
         sb.append(" ");
-        sb.append(type.$form.construct(translator, baseMap) );
+        sb.append(type.pattern.construct(translator, baseMap) );
         sb.append(" ");
-        sb.append(name.$form.construct(translator, baseMap) );
+        sb.append(name.pattern.construct(translator, baseMap) );
         
-        String str = init.$form.construct(translator, baseMap);
+        String str = init.pattern.construct(translator, baseMap);
         if( str.length() > 0 ){
             sb.append(" = ");
             sb.append(str);
@@ -1006,6 +1006,7 @@ public class $field implements Template<_field>, $proto<_field> {
     }
 
     public static final List<String> DEFAULT_COMPONENT_$NAMES = new ArrayList();
+    
     static{
         DEFAULT_COMPONENT_$NAMES.add("javadoc");
         DEFAULT_COMPONENT_$NAMES.add("annos");
@@ -1017,24 +1018,24 @@ public class $field implements Template<_field>, $proto<_field> {
     
     @Override
     public $field $(String target, String $Name) {
-        javadoc.$form.$(target, $Name);
+        javadoc.pattern.$(target, $Name);
         annos.$(target, $Name);
-        modifiers.$form.$(target, $Name);
-        type.$form.$(target, $Name);
-        name.$form.$(target, $Name);
-        init.$form.$(target, $Name);
+        modifiers.pattern.$(target, $Name);
+        type.pattern.$(target, $Name);
+        name.pattern.$(target, $Name);
+        init.pattern.$(target, $Name);
         return this;
     }
 
     @Override
     public List<String> list$() {
         List<String> vars = new ArrayList<>();
-        vars.addAll( javadoc.$form.list$() );
+        vars.addAll( javadoc.pattern.list$() );
         vars.addAll( annos.list$() );
-        vars.addAll( modifiers.$form.list$() );
-        vars.addAll( type.$form.list$() );
-        vars.addAll( name.$form.list$() );
-        vars.addAll( init.$form.list$() );
+        vars.addAll( modifiers.pattern.list$() );
+        vars.addAll( type.pattern.list$() );
+        vars.addAll( name.pattern.list$() );
+        vars.addAll( init.pattern.list$() );
         
         return vars;
     }
@@ -1042,29 +1043,29 @@ public class $field implements Template<_field>, $proto<_field> {
     @Override
     public List<String> list$Normalized() {
         List<String> vars = new ArrayList<>();
-        vars.addAll( javadoc.$form.list$Normalized() );
+        vars.addAll( javadoc.pattern.list$Normalized() );
         vars.addAll( annos.list$Normalized() );
-        vars.addAll( modifiers.$form.list$Normalized() );
-        vars.addAll( type.$form.list$Normalized() );
-        vars.addAll( name.$form.list$Normalized() );
-        vars.addAll( init.$form.list$Normalized() );
+        vars.addAll( modifiers.pattern.list$Normalized() );
+        vars.addAll( type.pattern.list$Normalized() );
+        vars.addAll( name.pattern.list$Normalized() );
+        vars.addAll( init.pattern.list$Normalized() );
         return vars.stream().distinct().collect(Collectors.toList());
     }    
     
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
-        sb.append(javadoc.$form );
+        sb.append(javadoc.pattern );
         sb.append(System.lineSeparator());
         sb.append(annos );
         sb.append(System.lineSeparator());
-        sb.append(modifiers.$form );
+        sb.append(modifiers.pattern );
         sb.append(" ");
-        sb.append(type.$form );
+        sb.append(type.pattern );
         sb.append(" ");
-        sb.append(name.$form );
+        sb.append(name.pattern );
         sb.append(" = ");
-        sb.append(init.$form );
+        sb.append(init.pattern );
         sb.append(";");
         
         return "($field): "+ System.lineSeparator()+ Text.indent( sb.toString() );
@@ -1094,9 +1095,9 @@ public class $field implements Template<_field>, $proto<_field> {
         @Override
         public String toString(){
             return "$field.Select{"+ System.lineSeparator()+
-                    Text.indent( _f.toString() )+ System.lineSeparator()+
-                    Text.indent("$args : " + args) + System.lineSeparator()+
-                    "}";
+                Text.indent( _f.toString() )+ System.lineSeparator()+
+                Text.indent("$args : " + args) + System.lineSeparator()+
+                "}";
         }
 
         @Override

@@ -11,7 +11,7 @@ public class _parametersTest extends TestCase {
     
     public void testP(){
         _parameters _ps = _parameters.of("int a, String b");
-        assertEquals( 2, _ps.count() );
+        assertEquals( 2, _ps.size() );
         assertEquals( _parameter.of( "int a" ), _ps.get( 0 ) );
         assertEquals( _parameter.of( "String b" ), _ps.get( 1 ) );
         assertTrue( _ps.is("int  a", "String  b" ));
@@ -19,7 +19,7 @@ public class _parametersTest extends TestCase {
     
     public void testFullThing(){
         _parameters _ps = _parameters.of( "final List<String,Integer>vals, @ann(key=1,VALUE=2) @ann2(key2=1,value2=1)Object...vargs");
-        assertEquals(2, _ps.count());
+        assertEquals(2, _ps.size());
         assertEquals( _parameter.of("final List<String,Integer>vals"), _ps.get( 0));
         //verify that with annotation ELEMENTS out of order, and ANNOTATIONS out of order, I can STILL
         // understand that the two are equivalent
@@ -146,7 +146,7 @@ public class _parametersTest extends TestCase {
     public void testParamsOf(){
         _parameters _ps =
                 _parameters.of( "@ann final Map<? extends Integer, String>compose, String... names" );
-        assertEquals( _ps.count(), 2);
+        assertEquals( _ps.size(), 2);
         assertNotNull( _ps.get( 0 ).getAnnos().first("ann"));
         assertTrue( _ps.get( 0 ).isFinal() );
         assertEquals(

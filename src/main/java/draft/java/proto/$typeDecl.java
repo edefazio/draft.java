@@ -234,7 +234,7 @@ public final class $typeDecl
      * @return 
      */
     public static final <N extends _node> List<Select> selectList( N _n, String pattern ){
-        return $typeDecl.of(pattern).selectListIn(_n);
+        return $typeDecl.of(pattern).listSelectedIn(_n);
     }
     
     /**
@@ -245,7 +245,7 @@ public final class $typeDecl
      * @return 
      */
     public static final <N extends _node> List<Select> selectList( N _n, Class typeClass ){
-        return $typeDecl.of(typeClass).selectListIn(_n);
+        return $typeDecl.of(typeClass).listSelectedIn(_n);
     }
         
     /**
@@ -256,7 +256,7 @@ public final class $typeDecl
      * @return 
      */
     public static final <N extends _node> List<Select> selectList( N _n, _typeDecl proto ){
-        return $typeDecl.of(proto).selectListIn(_n);
+        return $typeDecl.of(proto).listSelectedIn(_n);
     }    
     
     /**
@@ -268,7 +268,7 @@ public final class $typeDecl
      * @return 
      */
     public static final <N extends _node> List<Select> selectList( N _n, String pattern, Predicate<_typeDecl> constraint){
-        return $typeDecl.of(pattern).constraint(constraint).selectListIn(_n);
+        return $typeDecl.of(pattern).constraint(constraint).listSelectedIn(_n);
     }
     
     /**
@@ -280,7 +280,7 @@ public final class $typeDecl
      * @return 
      */
     public static final <N extends _node> List<Select> selectList( N _n, Class typeClass, Predicate<_typeDecl> constraint ){
-        return $typeDecl.of(typeClass).constraint(constraint).selectListIn(_n);
+        return $typeDecl.of(typeClass).constraint(constraint).listSelectedIn(_n);
     }
         
     /**
@@ -292,7 +292,7 @@ public final class $typeDecl
      * @return 
      */
     public static final <N extends _node> List<Select> selectList( N _n, _typeDecl proto, Predicate<_typeDecl> constraint){
-        return $typeDecl.of(proto).constraint(constraint).selectListIn(_n);
+        return $typeDecl.of(proto).constraint(constraint).listSelectedIn(_n);
     }
     
     /**
@@ -654,7 +654,7 @@ public final class $typeDecl
     }
 
     @Override
-    public List<Select> selectListIn(Node astNode ){
+    public List<Select> listSelectedIn(Node astNode ){
         List<Select>sts = new ArrayList<>();
         astNode.walk( Type.class, e-> {
             Select s = select( e );
@@ -666,8 +666,8 @@ public final class $typeDecl
     }
 
     @Override
-    public List<Select> selectListIn(_node _n ){
-        return selectListIn(_n.ast() );
+    public List<Select> listSelectedIn(_node _n ){
+        return listSelectedIn(_n.ast() );
     }
 
     /**

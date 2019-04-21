@@ -54,11 +54,9 @@ public final class _javaFiles
 
     private final List<_javaFile> javaFiles = new ArrayList<>();
 
-
     public static _javaFiles of(  ){
         return new _javaFiles( DEFAULT_NAME, true );
     }
-
 
     public static _javaFiles of(_type...types ){
         _javaFiles _sd = new _javaFiles( DEFAULT_NAME, true );
@@ -83,7 +81,7 @@ public final class _javaFiles
     public _javaFiles( _javaFiles prototype ) {
         this.locationName = prototype.locationName;
         this.isOutputLocation = prototype.isOutputLocation;
-        for( int i = 0; i < prototype.count(); i++ ) {
+        for( int i = 0; i < prototype.size(); i++ ) {
             this.javaFiles.add( new _javaFile( prototype.javaFiles.get( i )) );
             //clone all of the types in the workspace to avoid modification
         }
@@ -105,7 +103,7 @@ public final class _javaFiles
         return typesRemoved;
     }
 
-    public int count() {
+    public int size() {
         return javaFiles.size();
     }
 
@@ -125,7 +123,7 @@ public final class _javaFiles
 
     @Override
     public boolean isEmpty() {
-        return count() == 0;
+        return size() == 0;
     }
 
     @Override
@@ -245,6 +243,11 @@ public final class _javaFiles
         return this;
     }
 
+    /**
+     * 
+     * @param _types
+     * @return 
+     */
     public _javaFiles add(_type... _types ) {
         if( !this.isOpen.get() ){
             throw new DraftException("CLOSED, could not accept types");
@@ -260,6 +263,11 @@ public final class _javaFiles
         return this;
     }
 
+    /**
+     * 
+     * @param className
+     * @return 
+     */
     public _javaFile getFile( String className ) {
         for(int i=0;i<this.javaFiles.size();i++){
             _javaFile javaFile = javaFiles.get( i );
@@ -387,15 +395,11 @@ public final class _javaFiles
             if( _t != null ){
                 if( includeNestedTypes ){
                     if( this.isOpen.get( )){
-
                         _types.addAll( Walk.list(_t, (Class<T>)_typeClass, (Predicate<T>)_typeMatchFn) );
-                        //_types.addAll( _t.findAllIn(_typeClass, _typeMatchFn) );
-                        //_types.addAll( _t.listEvery( _type.class, _typeMatchFn ));
                     }
                     else{ //not open, return copies
-                        //_t.findAllIn(_typeClass, _typeMatchFn)
                         Walk.list(_t, (Class<T>)_typeClass, (Predicate<T>)_typeMatchFn)
-                                .forEach( t -> _types.add( _typeClass.cast( ((_type)t).copy()) ) );
+                            .forEach( t -> _types.add( _typeClass.cast( ((_type)t).copy()) ) );
                     }
                 }
                 else{
@@ -428,12 +432,10 @@ public final class _javaFiles
                 if( includeNestedTypes ){
                     if( this.isOpen.get() ){
                         _types.addAll( Walk.list(javaFiles.get( i ).type, _type.class ) );
-                        //_types.addAll( javaFiles.get( i ).TYPE.findAllIn(_type.class) );
                     }
                     else{
-                        //javaFiles.get( i ).TYPE.findAllIn(_type.class)
                         Walk.list( javaFiles.get( i ).type, _type.class )
-                                .forEach( t -> _types.add( ((_type)t).copy()));
+                            .forEach( t -> _types.add( ((_type)t).copy()));
                     }
                 }
                 else{
@@ -492,7 +494,6 @@ public final class _javaFiles
 
     public List<_type> list(String pkgName ) {
         return list(pkgName, false, false );
-
     }
 
     public List<_type> list(String pkgName, boolean includeSubPkgs ) {
@@ -513,12 +514,10 @@ public final class _javaFiles
                     if( includeNestedTypes ){
                         if( this.isOpen.get( )){
                             Walk.list(_t, _type.class).forEach( t -> _types.add( (_type)t) );
-                            //_t.findAllIn(_type.class).forEach( t -> _types.add( (_type)t) );
                             _types.add( _t );
                         }
                         else{ //not open, return copies
                             Walk.list(_t, _type.class).forEach( t -> _types.add( ((_type)t).copy() ) );
-                            //_t.findAllIn(_type.class).forEach( t -> _types.add( ((_type)t).copy() ) );
                         }
                     }
                     else{

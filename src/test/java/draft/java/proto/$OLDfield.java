@@ -170,7 +170,7 @@ public class $OLDfield
      * @return 
      */
     public static final <N extends _node> List<Select> selectList( N _n, String proto ){
-        return $OLDfield.of(proto).selectListIn(_n);
+        return $OLDfield.of(proto).listSelectedIn(_n);
     }
     
     /**
@@ -182,7 +182,7 @@ public class $OLDfield
      * @return 
      */
     public static final <N extends _node> List<Select> selectList( N _n, String proto, Predicate<_field> constraint){
-        return $OLDfield.of(proto, constraint).selectListIn(_n);
+        return $OLDfield.of(proto, constraint).listSelectedIn(_n);
     }
     
     /**
@@ -193,7 +193,7 @@ public class $OLDfield
      * @return 
      */
     public static final <N extends _node> List<Select> selectList( N _n, _field proto ){
-        return $OLDfield.of(proto).selectListIn(_n);
+        return $OLDfield.of(proto).listSelectedIn(_n);
     }
     
     /**
@@ -205,7 +205,7 @@ public class $OLDfield
      * @return 
      */
     public static final <N extends _node> List<Select> selectList( N _n, _field proto, Predicate<_field> constraint){
-        return $OLDfield.of(proto, constraint).selectListIn(_n);
+        return $OLDfield.of(proto, constraint).listSelectedIn(_n);
     }
     
     /**
@@ -697,7 +697,7 @@ public class $OLDfield
     }
 
     @Override
-    public List<Select> selectListIn(Node astNode ){
+    public List<Select> listSelectedIn(Node astNode ){
         List<Select>sts = new ArrayList<>();
         astNode.walk(VariableDeclarator.class, e-> {
             Select s = select( e );
@@ -709,7 +709,7 @@ public class $OLDfield
     }
 
     @Override
-    public List<Select> selectListIn(_node _n ){
+    public List<Select> listSelectedIn(_node _n ){
         List<Select>sts = new ArrayList<>();
         Walk.in(_n, VariableDeclarator.class, e -> {
             Select s = select( e );

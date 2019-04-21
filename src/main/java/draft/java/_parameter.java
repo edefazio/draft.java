@@ -373,7 +373,7 @@ public final class _parameter
 
         public boolean isVarArg() {
             if( !isEmpty() ) {
-                return get( count() - 1 ).isVarArg();
+                return get( size() - 1 ).isVarArg();
             }
             return false;
         }
@@ -406,7 +406,7 @@ public final class _parameter
             return this.astNodeWithParams.getParameters().isEmpty();
         }
 
-        public int count() {
+        public int size() {
             return this.astNodeWithParams.getParameters().size();
         }
 
@@ -436,8 +436,8 @@ public final class _parameter
         }
         
         public _typeDecl[] types(){
-            _typeDecl[] ts = new _typeDecl[count()];
-            for(int i=0;i<this.count();i++){
+            _typeDecl[] ts = new _typeDecl[size()];
+            for(int i=0;i<this.size();i++){
                 ts[i] = _typeDecl.of( this.astNodeWithParams.getParameter(i).getType() );
             }
             return ts;
@@ -554,7 +554,7 @@ public final class _parameter
             if( this.astNodeWithParams.getParameters().size() != other.astNodeWithParams.getParameters().size() ) {
                 return false;
             }
-            for( int i = 0; i < this.count(); i++ ) {
+            for( int i = 0; i < this.size(); i++ ) {
                 _parameter t = _parameter.of(this.astNodeWithParams.getParameter( i ));
                 _parameter o = _parameter.of(other.astNodeWithParams.getParameter( i ));
 

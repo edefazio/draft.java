@@ -13,10 +13,7 @@ import draft.java.macro._remove;
 
 import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
-import java.util.function.BiConsumer;
-import java.util.function.BiFunction;
-import java.util.function.Consumer;
-import java.util.function.Function;
+import java.util.function.*;
 
 /**
  * Template of a Java code snippet (one or more {@link Statement}s
@@ -38,6 +35,19 @@ public final class $snip implements Template<List<Statement>>, $proto<List<State
         $snip.of(sourceProto).replaceIn(_n, $snip.of(targetProto));
         return _n;
     } 
+    
+    /**
+     * 
+     * @param clazz
+     * @param sourceProto
+     * @param targetProto
+     * @return 
+     */
+    public static final _type replace( Class clazz, String[] sourceProto, String[] targetProto){
+        _type _t = _type.of(clazz);
+        $snip.of(sourceProto).replaceIn(_t, $snip.of(targetProto));
+        return _t;
+    } 
         
     /**
      * 
@@ -51,6 +61,18 @@ public final class $snip implements Template<List<Statement>>, $proto<List<State
         $snip.of(sourceProto).replaceIn(_n, $snip.of(targetProto));
         return _n;
     } 
+    
+    /**
+     * 
+     * @param clazz
+     * @param proto
+     * @return 
+     */
+    public static final _type remove( Class clazz, String... proto){
+        _type _t = _type.of(clazz);
+        $snip.of(proto).removeIn(_t);
+        return _t;
+    }
     
     /**
      * 
@@ -105,7 +127,7 @@ public final class $snip implements Template<List<Statement>>, $proto<List<State
      * @return 
      */
     public static final <N extends _node> List<Select> selectList( N _n, String... proto){
-        return $snip.of(proto).selectListIn(_n);
+        return $snip.of(proto).listSelectedIn(_n);
     }
         
     public List<$stmt> $sts = new ArrayList<>();
@@ -428,22 +450,6 @@ public final class $snip implements Template<List<Statement>>, $proto<List<State
     }
 
     /**
-     * Deconstruct the statement(s) into tokens, or return null if the statement 
-     * doesnt match
-     *
-     * @param astStmt the statement to partsMap
-     * @return Tokens from the stencil, or null if the statement doesnt match
-     
-    public Tokens deconstruct( Statement astStmt ){
-        Select s  = select(astStmt );
-        if( s != null ){
-            return s.args.asTokens();
-        }
-        return null;
-    }
-    */ 
-
-    /**
      * 
      * @param _b
      * @return 
@@ -511,8 +517,8 @@ public final class $snip implements Template<List<Statement>>, $proto<List<State
      */
     public Select selectFirstIn( Node astNode ){
         Optional<Node> os = astNode.stream().filter(
-                n -> n instanceof Statement &&
-                    select( (Statement)n ) !=null ).findFirst();
+            n -> n instanceof Statement &&
+                select( (Statement)n ) !=null ).findFirst();
         
         if( os.isPresent() ){
             return select( (Statement)os.get());
@@ -555,7 +561,7 @@ public final class $snip implements Template<List<Statement>>, $proto<List<State
     }
 
     @Override
-    public List<Select> selectListIn(_node _n ){
+    public List<Select> listSelectedIn(_node _n ){
         List<Select>sts = new ArrayList<>();
         Walk.in(_n, this.$sts.get(0).statementClass, st -> {
             Select sel = select( (Statement)st );
@@ -567,7 +573,7 @@ public final class $snip implements Template<List<Statement>>, $proto<List<State
     }
 
     @Override
-    public List<Select> selectListIn(Node astNode ){
+    public List<Select> listSelectedIn(Node astNode ){
         List<Select>sts = new ArrayList<>();
         astNode.walk(this.$sts.get(0).statementClass, st -> {
             Select sel = select( (Statement)st );
@@ -580,13 +586,13 @@ public final class $snip implements Template<List<Statement>>, $proto<List<State
 
     @Override
     public <N extends Node> N removeIn( N astNode ){
-        selectListIn(astNode ).forEach(s -> s.statements.forEach(st-> st.removeForced()));
+        listSelectedIn(astNode ).forEach(s -> s.statements.forEach(st-> st.removeForced()));
         return astNode;
     }
 
     @Override
     public <N extends _node> N removeIn( N _n ){
-        selectListIn(_n ).forEach(s -> s.statements.forEach(st-> st.removeForced()));
+        listSelectedIn(_n ).forEach(s -> s.statements.forEach(st-> st.removeForced()));
         return _n;
     }
 

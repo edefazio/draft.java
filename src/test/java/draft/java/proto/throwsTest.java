@@ -8,6 +8,7 @@ package draft.java.proto;
 import draft.java.Walk;
 import draft.java._class;
 import java.io.IOException;
+import java.net.BindException;
 import junit.framework.TestCase;
 
 /**
@@ -29,6 +30,9 @@ public class throwsTest extends TestCase {
         System.out.println( _c );
         
         $classUse.replace(_c, IOException.class, java.net.BindException.class);
+        System.out.println( _c );
+        
+        $classUse.of(BindException.class).removeIn(_c);
         System.out.println( _c );
     }
 }

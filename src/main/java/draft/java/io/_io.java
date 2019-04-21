@@ -39,7 +39,6 @@ public class _io{
         return _inMaster.INSTANCE.resolve(clazz);
     }
 
-
     public static _in in(_config cfg, String id ){
         return _inMaster.resolve(cfg.in, id);
     }
@@ -55,8 +54,6 @@ public class _io{
     public static _in in(_inConfig ic, Class clazz){
         return _inMaster.resolve(ic, clazz);
     }
-
-
 
     /**
      * Returns the _in.resolver from ThreadLocal storage
@@ -582,29 +579,30 @@ public class _io{
             outDir(_io.getOutDir());
         }
 
-        public _outConfig outDir( String outDir ){
+        public final _outConfig outDir( String outDir ){
             this.outDir = outDir;
             return this;
         }
-        public _outConfig outJavaDir( String outJavaDir ){
+        public final _outConfig outJavaDir( String outJavaDir ){
             this.outJavaDir = outJavaDir;
             return this;
         }
-        public _outConfig outClassesDir( String outClassesDir ){
+        public final _outConfig outClassesDir( String outClassesDir ){
             this.outClassesDir = outClassesDir;
             return this;
         }
-        public _outConfig outResourcesDir( String outResourcesDir ){
+        public final _outConfig outResourcesDir( String outResourcesDir ){
             this.outResourcesDir = outResourcesDir;
             return this;
         }
 
+        @Override
         public String toString(){
             return "Draft Output Config"+ System.lineSeparator()+
-                    "  draft.java.io.OutJavaDir      : " + this.outJavaDir+ System.lineSeparator()+
-                    "  draft.java.io.OutClassesDir   : " + this.outClassesDir+ System.lineSeparator()+
-                    "  draft.java.io.OutResourcesDir : " + this.outResourcesDir+ System.lineSeparator()+
-                    "  draft.java.io.OutDir          : " + this.outDir+ System.lineSeparator();
+                "  draft.java.io.OutJavaDir      : " + this.outJavaDir+ System.lineSeparator()+
+                "  draft.java.io.OutClassesDir   : " + this.outClassesDir+ System.lineSeparator()+
+                "  draft.java.io.OutResourcesDir : " + this.outResourcesDir+ System.lineSeparator()+
+                "  draft.java.io.OutDir          : " + this.outDir+ System.lineSeparator();
         }
     }
 }

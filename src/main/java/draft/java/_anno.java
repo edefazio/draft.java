@@ -1020,7 +1020,7 @@ public final class _anno
             return l;
         }
 
-        public int count() {
+        public int size() {
             return this.astAnnNode.getAnnotations().size();
         }
 

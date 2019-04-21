@@ -42,10 +42,12 @@ public final class _files implements JavaFileManager.Location {
         return _ffs;
     }
 
+    @Override
     public String getName() {
         return "Files";
     }
 
+    @Override
     public boolean isOutputLocation() {
         return true;
     }
@@ -60,13 +62,13 @@ public final class _files implements JavaFileManager.Location {
     }
 
     public List<String> listNames(){
-        List<String> names = new ArrayList<String>();
+        List<String> names = new ArrayList<>();
         this.files.forEach( f -> names.add( f.getName() ) );
         return names;
     }
 
     public List<URL> listUrls(){
-        List<URL> urls = new ArrayList<URL>();
+        List<URL> urls = new ArrayList<>();
         this.files.forEach( f -> urls.add( f.url ) );
         return urls;
     }
@@ -75,7 +77,7 @@ public final class _files implements JavaFileManager.Location {
         return files.isEmpty();
     }
 
-    public int count() {
+    public int size() {
         return files.size();
     }
 
@@ -112,7 +114,7 @@ public final class _files implements JavaFileManager.Location {
         return null;
     }
 
-    public List<_file> files = new ArrayList<_file>();
+    public List<_file> files = new ArrayList<>();
 
     public _files() {
     }
@@ -170,6 +172,7 @@ public final class _files implements JavaFileManager.Location {
         return this;
     }
 
+    @Override
     public String toString(){
         return "_files ("+listNames()+")" + hashCode();
     }

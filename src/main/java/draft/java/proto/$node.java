@@ -22,17 +22,197 @@ import java.util.function.Predicate;
  */
 public class $node implements $proto<Node> {
     
-    public static <N extends Node> N replace(  N astRootNode, String source, String target ){
-        return $node.of(source).replaceIn(astRootNode, target);
+    /**
+     * 
+     * @param <N>
+     * @param astRootNode
+     * @param pattern
+     * @param selectConsumer
+     * @return 
+     */
+    public static <N extends Node> N forEach(N astRootNode, String pattern, Consumer<Node> selectConsumer){
+        return $node.of(pattern)
+            .forEachIn(astRootNode, selectConsumer);
     }
     
+    /**
+     * 
+     * @param <N>
+     * @param _n
+     * @param pattern
+     * @param selectConsumer
+     * @return 
+     */
+    public static <N extends _node> N forEach(N _n, String pattern, Consumer<Node> selectConsumer){
+        return $node.of(pattern)
+            .forEachIn(_n, selectConsumer);
+    }
+    
+    /**
+     * 
+     * @param <N>
+     * @param astRootNode
+     * @param pattern
+     * @param selectConsumer
+     * @return 
+     */
+    public static <N extends Node> N forSelected(N astRootNode, String pattern, Consumer<Select> selectConsumer){
+        return $node.of(pattern).forSelectedIn(astRootNode, selectConsumer);
+    }
+    
+    /**
+     * 
+     * @param <N>
+     * @param _n
+     * @param pattern
+     * @param selectConsumer
+     * @return 
+     */
+    public static <N extends _node> N forSelected(N _n, String pattern, Consumer<Select> selectConsumer){
+        return $node.of(pattern).forSelectedIn(_n, selectConsumer);
+    }
+    
+    /**
+     * 
+     * @param <N>
+     * @param astRootNode
+     * @param matchPattern
+     * @param targetPattern
+     * @return 
+     */
+    public static <N extends Node> N replace( N astRootNode, String matchPattern, String targetPattern ){
+        return $node.of(matchPattern).replaceIn(astRootNode, targetPattern);
+    }
+    
+    /**
+     * 
+     * @param <N>
+     * @param _n
+     * @param matchPattern
+     * @param targetPattern
+     * @return 
+     */
+    public static <N extends _node> N replace( N _n, String matchPattern, String targetPattern ){
+        return $node.of(matchPattern).replaceIn(_n, targetPattern);
+    }
+
+    /**
+     * 
+     * @param clazz the runtime Class 
+     * @param matchPattern
+     * @param targetPattern
+     * @return 
+     */
+    public static _type replace( Class clazz, String matchPattern, String targetPattern ){
+        return $node.of(matchPattern).replaceIn(_type.of(clazz), targetPattern);
+    }
+    
+    /**
+     * 
+     * @param <N>
+     * @param astRootNode
+     * @param pattern
+     * @return 
+     */
+    public static <N extends Node> N remove( N astRootNode, String pattern ){
+        return $node.of(pattern).removeIn(astRootNode );
+    }
+    
+    /**
+     * 
+     * @param <N>
+     * @param _n
+     * @param pattern
+     * @return 
+     */
+    public static <N extends _node> N remove( N _n, String pattern ){
+        return $node.of(pattern).removeIn(_n);
+    }
+
+    /**
+     * 
+     * @param clazz the runtime Class 
+     * @param pattern
+     * @return 
+     */
+    public static _type remove( Class clazz, String pattern ){
+        return $node.of(pattern).removeIn(_type.of(clazz));
+    }
+    
+    /**
+     * 
+     * @param clazz
+     * @param pattern
+     * @return 
+     */
+    public static List<Node> list( Class clazz, String pattern ){
+        return list(_type.of(clazz), pattern);
+    }
+    
+    /**
+     * 
+     * @param <N>
+     * @param astRootNode
+     * @param pattern
+     * @return 
+     */
+    public static <N extends Node> List<Node> list( N astRootNode, String pattern ){
+        return $node.of(pattern).listIn(astRootNode );
+    }
+    
+    /**
+     * 
+     * @param <N>
+     * @param _n
+     * @param pattern
+     * @return 
+     */
+    public static <N extends _node> List<Node> list( N _n, String pattern ){
+        return $node.of(pattern).listIn(_n );
+    }
+    
+    /**
+     * 
+     * @param clazz
+     * @param pattern
+     * @return 
+     */
+    public static List<Select> listSelected( Class clazz, String pattern ){
+        return listSelected(_type.of(clazz), pattern);
+    }
+    
+    /**
+     * 
+     * @param <N>
+     * @param astRootNode
+     * @param pattern
+     * @return 
+     */
+    public static <N extends Node> List<Select> listSelected( N astRootNode, String pattern ){
+        return $node.of(pattern).listSelectedIn(astRootNode );
+    }
+    
+    /**
+     * 
+     * @param <N>
+     * @param astRootNode
+     * @param pattern
+     * @return 
+     */
+    public static <N extends _node> List<Select> listSelected( N astRootNode, String pattern ){
+        return $node.of(pattern).listSelectedIn(astRootNode );
+    }
+    
+    /**
+     * 
+     * @param name
+     * @return 
+     */
     public static $node of( String name ){
         return new $node( name );
     }
     
-    /**
-     * the string pattern
-     */
+    /** the string pattern */
     public Stencil pattern;
     
     public Predicate<Node> constraint = t -> true;
@@ -46,6 +226,11 @@ public class $node implements $proto<Node> {
         this.constraint = t-> true;
     }
     
+    /**
+     * 
+     * @param constraint
+     * @return 
+     */
     public $node constraint( Predicate<Node> constraint ){
         this.constraint = constraint;
         return this;
@@ -61,15 +246,29 @@ public class $node implements $proto<Node> {
         return this;
     }
     
+   /**
+    * 
+    * @param target
+    * @param $Name
+    * @return 
+    */
     public $node $(String target, String $Name) {
         this.pattern = this.pattern.$(target, $Name);
         return this;
     }
     
+    /**
+     * 
+     * @return 
+     */
     public List<String> list$() {
         return this.pattern.list$();
     }
 
+    /**
+     * 
+     * @return 
+     */
     public List<String> list$Normalized() {
         return this.pattern.list$Normalized();
     }
@@ -110,7 +309,7 @@ public class $node implements $proto<Node> {
     }
 
     @Override
-    public List<Select> selectListIn(Node astRootNode) {
+    public List<Select> listSelectedIn(Node astRootNode) {
         List<Select> found = new ArrayList<>();
         astRootNode.walk(n -> {
             Select select = select(n);
@@ -122,11 +321,11 @@ public class $node implements $proto<Node> {
     }
 
     @Override
-    public List<Select> selectListIn(_node _n) {
+    public List<Select> listSelectedIn(_node _n) {
         if( _n instanceof _type && ((_type)_n).isTopClass()){
-            return selectListIn( ((_type)_n).findCompilationUnit() );
+            return listSelectedIn( ((_type)_n).findCompilationUnit() );
         }
-        return selectListIn(_n.ast());
+        return listSelectedIn(_n.ast());
     }
 
     /**
@@ -183,27 +382,19 @@ public class $node implements $proto<Node> {
     private static boolean replaceNode( Node target, Node replacement ){
         boolean isRep = false;
         
-        //System.out.println( "replacing "+target+" with "+ replacement);
-        if( target.getClass() != replacement.getClass() ){
-            
-            //System.out.println( "replacing "+target.getClass()+" with "+ replacement.getClass());
+        if( target.getClass() != replacement.getClass() ){            
             if( target instanceof ClassOrInterfaceType ){
-                //System.out.println("   <amual replace");
                 isRep = target.replace( Ast.typeDecl( replacement.toString() ) );                
             }else if( target instanceof Name) {
-                //System.out.println("   <amual replace");
                 isRep = target.replace( new Name( replacement.toString()) );                
             } else if( target instanceof SimpleName) {
-                //System.out.println("   <amual replace");
                 isRep = target.replace( new SimpleName( replacement.toString()) );
             }
         }
         //
-        if( ! isRep ){      
-            //System.out.println( " NEITHER ");
+        if( ! isRep ){
             isRep = target.replace(replacement);                                
         }
-        //System.out.println( isRep + " "+ target+" "+replacement );
         return isRep;        
     }
     
@@ -237,13 +428,9 @@ public class $node implements $proto<Node> {
      */
     public <N extends Node> N replaceIn(N astRootNode, $node $replacement) {
         astRootNode.walk(n -> {
-            //System.out.println( "+++++ ON NODE "+ n );
             if( this.constraint.test(n) ) {
-                //System.out.println( "   -> Passed Constraint "+ n );
                 Tokens ts = this.pattern.deconstruct( n.toString(Ast.PRINT_NO_COMMENTS) );
                 if( ts != null ){
-                    //System.out.println( "   -> Tokens "+ ts );
-                    //specialize the replacement node
                     String constructed = $replacement.pattern.construct(ts);
                     if( ! replaceNode( n, constructed ) ){
                         //System.out.println("DIDNT REPLACE "+ n);
@@ -278,20 +465,13 @@ public class $node implements $proto<Node> {
      * @return 
      */
     public <N extends Node> N replaceIn(N astRootNode, String replacement) {
-        //System.out.println( "IN WALK PATTERN "+ this.pattern );
-        
         astRootNode.walk(n -> {
-               //System.out.println( "   !>>>" + n.getClass() );
             if( this.constraint.test(n)) {
                 String st = n.toString(Ast.PRINT_NO_COMMENTS);
-                //System.out.println( "   >>>"+st);
                 Tokens ts = this.pattern.deconstruct( st );
-                if( ts != null ){
-                    //System.out.println( " ***** FOUND "+this.pattern);   
-                    
+                if( ts != null ){                    
                     boolean isRep = replaceNode( n, replacement );                    
                     if( !isRep ){
-                        //System.out.println( "NOT REPALCED");
                     }
                 }                
             }

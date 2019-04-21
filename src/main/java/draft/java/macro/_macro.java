@@ -326,8 +326,8 @@ public interface _macro<M extends _anno._hasAnnos>
                 Constructor ct = cs.get(i);
                 if( _c.hasParametersOf( ct ) ){
                     Parameter[] ps = ct.getParameters();
-                    int delta = ps.length - _c.getParameters().count();
-                    for(int j =0; j< _c.getParameters().count();j++ ){
+                    int delta = ps.length - _c.getParameters().size();
+                    for(int j =0; j< _c.getParameters().size();j++ ){
                         applyAllAnnotationMacros(_c.getParameter(j), ps[j+delta]);
                     }
                     return applyAllAnnotationMacros(_c, ct); //process the constructor
@@ -358,8 +358,8 @@ public interface _macro<M extends _anno._hasAnnos>
                 //Constructor ct = cs.get(i);
                 if( _c.hasParametersOf( ct ) ){
                     Parameter[] ps = ct.getParameters();
-                    int delta = ps.length - _c.getParameters().count();
-                    for(int j =0; j< _c.getParameters().count();j++ ){
+                    int delta = ps.length - _c.getParameters().size();
+                    for(int j =0; j< _c.getParameters().size();j++ ){
                         applyAllAnnotationMacros(_c.getParameter(j), ps[j+delta]);
                     }
                     return applyAllAnnotationMacros(_c, ct); //process the constructor

@@ -36,6 +36,26 @@ public class SparameterTest extends TestCase {
         $p = $parameter.of("$type$ name");
         
         assertEquals(_parameter.of(" String name"), $p.construct("type", String.class));
+        
+        //make sure if I have (one or more) annos they are composed 
+        $p = $parameter.of("@A int i");        
+        assertEquals(_parameter.of("@A int i"), $p.construct());
+        
+        $p = $parameter.of("@A @B @C final int... i");
+        assertEquals(_parameter.of("@A @B @C final int... i"), $p.construct());
+        
+    }
+    
+    public void testAnno(){
+        $parameter $withAnno = $parameter.of("@Deprecated int i");
+        assertTrue($withAnno.matches("@Deprecated int i") );
+        assertTrue($withAnno.matches("@Deprecated @A int i") );
+        assertTrue($withAnno.matches("@B @Deprecated @A int i") );
+        
+        assertFalse($withAnno.matches("int i") );
+        assertFalse($withAnno.matches("@B @A int i") );
+        assertFalse($withAnno.matches("@Deprecated String i") );
+        assertFalse($withAnno.matches("@Deprecated int j") );        
     }
     
     public void testMatches(){

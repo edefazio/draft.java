@@ -28,6 +28,7 @@ public interface _types <T extends _types>
         return _impl.of(types);
     }
     
+    public int size();
     
     /**
      * Adds this type to the 
@@ -95,6 +96,11 @@ public interface _types <T extends _types>
         
         public _impl(){
             this.types = new ArrayList<>();
+        }
+        
+        @Override
+        public int size(){
+            return types.size();
         }
         
         @Override

@@ -5,26 +5,12 @@ import com.github.javaparser.ast.expr.Expression;
 import com.github.javaparser.ast.expr.NullLiteralExpr;
 import com.github.javaparser.ast.stmt.Statement;
 import com.github.javaparser.ast.type.Type;
-import draft.DraftException;
-import draft.Stencil;
-import draft.Text;
-import draft.Tokens;
-import draft.Translator;
-import draft.java.Ast;
-import draft.java.Expr;
-import draft.java.Stmt;
-import draft.java._body;
-
-import draft.java._model;
+import draft.*;
+import draft.java.*;
 import draft.java._model._node;
 import draft.java._typeDecl;
-import java.util.Collection;
-import java.util.Collections;
+import java.util.*;
 
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Set;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
 
@@ -36,6 +22,17 @@ import java.util.function.Predicate;
  */
 public interface $proto<Q> {
 
+    
+    /**
+     * Find and return a List of all matching node types within _n
+     *
+     * @param clazz the runtime class (MUST HAVE JAVA SOURCE AVAILABLE IN CLASSPATH)
+     * @return a List of Q that match the query
+     */
+    default List<Q> listIn(Class clazz){
+        return listIn(_type.of(clazz));
+    }
+    
     /**
      * Find and return a List of all matching node types within _n
      *
@@ -56,11 +53,22 @@ public interface $proto<Q> {
      * return the selections (containing the node and deconstructed parts) of
      * all matching entities within the astRootNode
      *
+     * @param clazz runtime class (MUST HAVE .java source code in CLASSPATH)
+     * @return the selected
+     */
+    default List<? extends selected> listSelectedIn(Class clazz){
+        return listSelectedIn(_type.of(clazz));
+    }
+    
+    /**
+     * return the selections (containing the node and deconstructed parts) of
+     * all matching entities within the astRootNode
+     *
      * @param astRootNode the node to start the search (TypeDeclaration,
      * MethodDeclaration)
      * @return the selected
      */
-    List<? extends selected> selectListIn(Node astRootNode);
+    List<? extends selected> listSelectedIn(Node astRootNode);
 
     /**
      * return the selections (containing the node and deconstructed parts) of
@@ -70,9 +78,18 @@ public interface $proto<Q> {
      * search
      * @return a list of the selected
      */
-    List<? extends selected> selectListIn(_node _n);
+    List<? extends selected> listSelectedIn(_node _n);
     
     /**
+     * 
+     * @param clazz the runtime _type (MUST have .java SOURCE in the classpath) 
+     * @return the _type with all entities matching the prototype (& constraint) removed
+     */
+    default _type removeIn(Class clazz){
+        return removeIn(_type.of(clazz));
+    } 
+    
+   /**
      * Remove all matching occurrences of the template in the node and return
      * the modified node
      *
@@ -90,6 +107,16 @@ public interface $proto<Q> {
      */
     <N extends _node> N removeIn(N _n);
 
+    /**
+     * 
+     * @param clazz the runtime Class (.java source must be on the classpath)
+     * @param _nodeActionFn what to do with each entity matching the prototype
+     * @return the (potentially modified) _type 
+     */
+    default _type forEachIn(Class clazz, Consumer<Q>_nodeActionFn ){
+        return forEachIn(_type.of(clazz), _nodeActionFn);
+    }
+    
     /**
      * Find and execute a function on all of the matching occurrences within
      * astRootNode
@@ -401,7 +428,7 @@ public interface $proto<Q> {
      */
     public static class $component<T> {
 
-        public Stencil $form;
+        public Stencil pattern;
         public Predicate<T> constraint = t -> true;
 
         /**
@@ -409,11 +436,11 @@ public interface $proto<Q> {
          * @param pattern 
          */
         public $component(String pattern) {
-            this.$form = Stencil.of(pattern);
+            this.pattern = Stencil.of(pattern);
         }
 
         public $component(String pattern, Predicate<T> constraint) {
-            this.$form = Stencil.of(pattern);
+            this.pattern = Stencil.of(pattern);
             this.constraint = constraint;
         }
         
@@ -447,26 +474,26 @@ public interface $proto<Q> {
         }
         
         public $component stencil(  Stencil pattern ){
-            this.$form = pattern;
+            this.pattern = pattern;
             return this;
         } 
         
         
         public $component $( String target, String $name ){
-            this.$form = this.$form.$(target, $name);
+            this.pattern = this.pattern.$(target, $name);
             return this;
         }
         
         public List<String> list$(){
-            return this.$form.list$();
+            return this.pattern.list$();
         }
         
         public List<String> list$Normalized(){
-            return this.$form.list$Normalized();
+            return this.pattern.list$Normalized();
         }
         
         public String compose( Translator t, Map<String,Object> keyValues ){
-            return this.$form.construct(t, keyValues);
+            return this.pattern.construct(t, keyValues);
         }
                 
         /**
@@ -487,19 +514,19 @@ public interface $proto<Q> {
             
             if (t == null) {
                 /** Null is allowed IF and ONLY If the Stencil $form isMatchAll*/
-                if ($form.isMatchAll()) {                    
-                    return Tokens.of($form.list$().get(0), "");
+                if (pattern.isMatchAll()) {                    
+                    return Tokens.of(pattern.list$().get(0), "");
                 }
                 return null;
             }
             if (constraint.test(t)){                
                 if( t instanceof _node){
-                    return $form.deconstruct( ((_node)t).toString(Ast.PRINT_NO_COMMENTS).trim() );
+                    return pattern.deconstruct( ((_node)t).toString(Ast.PRINT_NO_COMMENTS).trim() );
                 }
                 if( t instanceof _body ){
-                    return $form.deconstruct( ((_body)t).toString(Ast.PRINT_NO_COMMENTS).trim() );
+                    return pattern.deconstruct( ((_body)t).toString(Ast.PRINT_NO_COMMENTS).trim() );
                 }
-                return $form.deconstruct( t.toString() );
+                return pattern.deconstruct( t.toString() );
             }
             return null;
         }
@@ -569,7 +596,7 @@ public interface $proto<Q> {
         }
 
         default boolean is(String key, String value) {
-            System.out.println( "ARGS "+ getArgs() );
+            //System.out.println( "ARGS "+ getArgs() );
             return getArgs().is(key, value);
         }
 

@@ -1,22 +1,14 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package draft.java.proto;
 
 import com.github.javaparser.StaticJavaParser;
 import com.github.javaparser.ast.CompilationUnit;
 import com.github.javaparser.ast.expr.AnnotationExpr;
-import com.github.javaparser.ast.type.ClassOrInterfaceType;
 import draft.java.Ast;
 import draft.java._class;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
-import java.util.function.Function;
-import java.util.function.Supplier;
 import junit.framework.TestCase;
 
 /**
@@ -163,8 +155,6 @@ public class SnodeTest extends TestCase {
         $n = new $node("Base");
         $n.replaceIn(_c, "Replace");
         
-        System.out.println( _c );
-        
-    }
-    
+        System.out.println( _c );        
+    }    
 }

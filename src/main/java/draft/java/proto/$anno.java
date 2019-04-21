@@ -4,29 +4,13 @@ import com.github.javaparser.ast.Node;
 import com.github.javaparser.ast.NodeList;
 import com.github.javaparser.ast.body.AnnotationDeclaration;
 import com.github.javaparser.ast.body.BodyDeclaration;
-import com.github.javaparser.ast.expr.AnnotationExpr;
-import com.github.javaparser.ast.expr.Expression;
-import com.github.javaparser.ast.expr.MarkerAnnotationExpr;
-import com.github.javaparser.ast.expr.MemberValuePair;
-import com.github.javaparser.ast.expr.NormalAnnotationExpr;
-import com.github.javaparser.ast.expr.ObjectCreationExpr;
-import com.github.javaparser.ast.expr.SingleMemberAnnotationExpr;
-import draft.Stencil;
-import draft.Template;
-import draft.Text;
-import draft.Tokens;
-import draft.Translator;
-import draft.java.Expr;
-import draft.java.Walk;
-import draft.java._anno;
-import draft.java._model;
+import com.github.javaparser.ast.expr.*;
+import draft.*;
+import draft.java.*;
 import draft.java._model._node;
 import draft.java.proto.$proto.$component;
 import java.lang.annotation.Annotation;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
@@ -43,92 +27,90 @@ public class $anno
      * 
      * @param <N>
      * @param _n
-     * @param proto
+     * @param pattern
      * @return 
      */
-    public static final <N extends _model._node> _anno first( N _n, String proto ){
-        return $anno.of(proto).firstIn(_n);
+    public static final <N extends _model._node> _anno first( N _n, String pattern ){
+        return $anno.of(pattern).firstIn(_n);
     }
     
     /**
      * 
      * @param <N>
      * @param astNode
-     * @param proto
+     * @param pattern
      * @return 
      */
-    public static final <N extends _model._node> _anno first( Node astNode, String proto ){
-        return $anno.of(proto).firstIn(astNode);
+    public static final <N extends _model._node> _anno first( Node astNode, String pattern ){
+        return $anno.of(pattern).firstIn(astNode);
     }
     
     /**
      * 
      * @param <N>
      * @param _n
-     * @param proto
+     * @param pattern
      * @param constraint
      * @return 
      */
-    public static final <N extends _model._node> _anno first( N _n, String proto, Predicate<_anno> constraint){
-        return $anno.of(proto, constraint).firstIn(_n);
+    public static final <N extends _model._node> _anno first( N _n, String pattern, Predicate<_anno> constraint){
+        return $anno.of(pattern, constraint).firstIn(_n);
     }
     
     /**
      * 
      * @param <N>
      * @param astNode
-     * @param proto
+     * @param pattern
      * @param constraint
      * @return 
      */
-    public static final <N extends _model._node> _anno first( Node astNode, String proto,Predicate<_anno>constraint){
-        return $anno.of(proto, constraint).firstIn(astNode);
+    public static final <N extends _model._node> _anno first( Node astNode, String pattern,Predicate<_anno>constraint){
+        return $anno.of(pattern, constraint).firstIn(astNode);
     }
          
     /**
      * 
      * @param <N>
      * @param _n
-     * @param proto
+     * @param pattern
      * @return 
      */
-    public static final <N extends _model._node> $anno.Select selectFirst( N _n, String proto ){
-        return $anno.of(proto).selectFirstIn(_n);
-    }
-    
-    /**
-     * 
-     * @param <N>
-     * @param astNode
-     * @param proto
-     * @return 
-     */
-    public static final <N extends _model._node> $anno.Select selectFirst( Node astNode, String proto ){
-        return $anno.of(proto).selectFirstIn(astNode);
+    public static final <N extends _model._node> $anno.Select selectFirst( N _n, String pattern ){
+        return $anno.of(pattern).selectFirstIn(_n);
     }
     
     /**
      * 
      * @param <N>
      * @param _n
-     * @param proto
-     * @param constraint
+     * @param pattern
+     * @param selectConstraint
      * @return 
      */
-    public static final <N extends _model._node> $anno.Select selectFirst( N _n, String proto, Predicate<_anno> constraint){
-        return $anno.of(proto, constraint).selectFirstIn(_n);
+    public static final <N extends _model._node> $anno.Select selectFirst( N _n, String pattern, Predicate<$anno.Select>selectConstraint){
+        return $anno.of(pattern).selectFirstIn(_n, selectConstraint);
     }
     
     /**
      * 
-     * @param <N>
-     * @param astNode
-     * @param proto
-     * @param constraint
+     * @param clazz
+     * @param pattern
      * @return 
      */
-    public static final <N extends _model._node> $anno.Select selectFirst( Node astNode, String proto,Predicate<_anno>constraint){
-        return $anno.of(proto, constraint).selectFirstIn(astNode);
+    public static final $anno.Select selectFirst( Class clazz, String pattern ){
+        return $anno.of(pattern).selectFirstIn(_type.of(clazz));
+    }
+    
+    /**
+     * 
+     * @param clazz
+     * @param pattern
+     * @param selectConstraint
+     * @return 
+     */
+    public static final $anno.Select selectFirst( Class clazz, String pattern, Predicate<$anno.Select>selectConstraint){
+        return $anno.of(pattern).selectFirstIn(_type.of(clazz), selectConstraint);
     }
     
     /**
@@ -156,23 +138,23 @@ public class $anno
      * lists all occurrences of annos that match the 
      * @param <N>
      * @param _n
-     * @param proto
+     * @param pattern
      * @return 
      */
-    public static final <N extends _model._node> List<_anno> list( N _n, String proto ){
-        return $anno.of(proto).listIn(_n);
+    public static final <N extends _model._node> List<_anno> list( N _n, String pattern ){
+        return $anno.of(pattern).listIn(_n);
     }
     
     /**
      * lists all occurrences of annos that match the 
      * @param <N>
      * @param _n
-     * @param proto
+     * @param pattern
      * @param constraint
      * @return 
      */
-    public static final <N extends _model._node> List<_anno> list( N _n, String proto, Predicate<_anno> constraint){
-        return $anno.of(proto, constraint).listIn(_n);
+    public static final <N extends _model._node> List<_anno> list( N _n, String pattern, Predicate<_anno> constraint){
+        return $anno.of(pattern, constraint).listIn(_n);
     }
     
     /**
@@ -225,25 +207,25 @@ public class $anno
      * lists all occurrences of annos that match the 
      * @param <N>
      * @param _n
-     * @param proto
+     * @param pattern
      * @param _annoConsumer
      * @return 
      */
-    public static final <N extends _model._node> N forEach( N _n, String proto, Consumer<_anno> _annoConsumer){
-        return $anno.of(proto).forEachIn(_n, _annoConsumer);
+    public static final <N extends _model._node> N forEach( N _n, String pattern, Consumer<_anno> _annoConsumer){
+        return $anno.of(pattern).forEachIn(_n, _annoConsumer);
     }
     
     /**
      * lists all occurrences of annos that match the 
      * @param <N>
      * @param _n
-     * @param proto
+     * @param pattern
      * @param constraint
      * @param _annoConsumer
      * @return 
      */
-    public static final <N extends _model._node> N forEach( N _n, String proto, Predicate<_anno> constraint, Consumer<_anno> _annoConsumer){
-        return $anno.of(proto, constraint).forEachIn(_n, _annoConsumer);
+    public static final <N extends _model._node> N forEach( N _n, String pattern, Predicate<_anno> constraint, Consumer<_anno> _annoConsumer){
+        return $anno.of(pattern, constraint).forEachIn(_n, _annoConsumer);
     }
     
     /**
@@ -254,7 +236,7 @@ public class $anno
      * @param _annoConsumer
      * @return 
      */
-    public static final <N extends _model._node> N forEach( N _n, _anno _proto , Consumer<_anno> _annoConsumer){
+    public static final <N extends _model._node> N forEach( N _n, _anno _proto, Consumer<_anno> _annoConsumer){
         return $anno.of(_proto).forEachIn(_n, _annoConsumer);
     }
     
@@ -310,7 +292,7 @@ public class $anno
      * lists all occurrences of annos that match the 
      * @param <N>
      * @param _n
-     * @param proto
+     * @param pattern
      * @param constraint
      * @param _annoConsumer
      * @return 
@@ -351,19 +333,19 @@ public class $anno
      * @param pattern
      * @return 
      */
-    public static final <N extends _model._node> List<$anno.Select> selectList( N _n, String pattern ){
-        return $anno.of(pattern).selectListIn(_n);
+    public static final <N extends _model._node> List<$anno.Select> listSelected( N _n, String pattern ){
+        return $anno.of(pattern).listSelectedIn(_n);
     }
     
     /**
      * lists all occurrences of annos that match the 
      * @param <N>
      * @param _n
-     * @param constraint
+     * @param selectConstraint
      * @return 
      */
-    public static final <N extends _model._node> List<$anno.Select> selectList( N _n, Predicate<_anno> constraint ){
-        return any().constraint(constraint).selectListIn(_n);
+    public static final <N extends _model._node> List<$anno.Select> listSelected( N _n, Predicate<Select> selectConstraint ){
+        return any().listSelectedIn(_n, selectConstraint);
     }
     
     /**
@@ -371,11 +353,11 @@ public class $anno
      * @param <N>
      * @param _n
      * @param pattern
-     * @param constraint
+     * @param selectConstraint
      * @return 
      */
-    public static final <N extends _model._node> List<$anno.Select> selectList( N _n, String pattern, Predicate<_anno> constraint){
-        return $anno.of(pattern, constraint).selectListIn(_n);
+    public static final <N extends _model._node> List<$anno.Select> listSelected( N _n, String pattern, Predicate<Select> selectConstraint){
+        return $anno.of(pattern).listSelectedIn(_n, selectConstraint);
     }
     
     /**
@@ -385,8 +367,8 @@ public class $anno
      * @param _proto
      * @return 
      */
-    public static final <N extends _model._node> List<$anno.Select> selectList( N _n, _anno _proto ){
-        return $anno.of(_proto).selectListIn(_n);
+    public static final <N extends _model._node> List<$anno.Select> listSelected( N _n, _anno _proto ){
+        return $anno.of(_proto).listSelectedIn(_n);
     }
     
     /**
@@ -394,11 +376,11 @@ public class $anno
      * @param <N>
      * @param _n
      * @param _proto
-     * @param constraint
+     * @param selectConstraint
      * @return 
      */
-    public static final <N extends _model._node> List<$anno.Select> selectList( N _n, _anno _proto, Predicate<_anno> constraint){
-        return $anno.of(_proto, constraint).selectListIn(_n);
+    public static final <N extends _model._node> List<$anno.Select> listSelected( N _n, _anno _proto, Predicate<Select> selectConstraint){
+        return $anno.of(_proto).listSelectedIn(_n, selectConstraint);
     }
     
     /**
@@ -511,15 +493,19 @@ public class $anno
      * 
      * @param <N>
      * @param _n
-     * @param sourceProto
-     * @param targetProto
+     * @param targetAnno
+     * @param replacementAnno
      * @return 
      */
-    public static final <N extends _model._node> N replace( N _n, Class<? extends Annotation>sourceProto, Class<? extends Annotation>targetProto){        
-        return $anno.of(sourceProto)
-            .replaceIn(_n, $anno.of(targetProto));
+    public static final <N extends _model._node> N replace( N _n, Class<? extends Annotation>targetAnno, Class<? extends Annotation>replacementAnno){        
+        return $anno.of(targetAnno)
+            .replaceIn(_n, $anno.of(replacementAnno));
     }
     
+    /**
+     * A prototype that matches ANY annotation
+     * @return 
+     */
     public static $anno any(){
         return of("@A").$("A", "any");
     } 
@@ -536,7 +522,6 @@ public class $anno
         return new $anno(_anno.of(pattern)).constraint(constraint);
     }
     
-
     public static $anno of(_anno _an) {
         return new $anno(_an);
     }
@@ -566,15 +551,8 @@ public class $anno
         if( !argumentStencil.trim().startsWith("(") ){
             argumentStencil = "("+ argumentStencil + ")";
         }
-        //String str = "@$annoName$"+argumentStencil;
         String str = "@"+sourceAnnoClass.getSimpleName()+argumentStencil;
-        //System.out.println("THE STR IS " + str );
-        return new $anno(_anno.of(str));
-                //.constraint( a -> a.isInstance(sourceAnnoClass));
-        
-        //$a a = new $a(_anno.of(sourceAnnoClass));
-        
-        //return a;
+        return new $anno(_anno.of(str));               
     }
         
     /** Default Matching constraint (by default ALWAYS Match)*/
@@ -587,7 +565,6 @@ public class $anno
 
     public $anno(_anno proto) {
         this.name = $id.of(proto.getName());
-        //this.$name.$form = Stencil.of(proto.getName());
         AnnotationExpr astAnn = proto.ast();
         if (astAnn instanceof NormalAnnotationExpr) {
             NormalAnnotationExpr na = (NormalAnnotationExpr) astAnn;
@@ -653,9 +630,7 @@ public class $anno
                 if (ts.isConsistent(props)) {                    
                     ts.putAll(props);
                     return ts;
-                } //else{
-                  //  System.out.println("Not consistent with "+ ts + props );
-                // }
+                } 
             }
             return null;
         }
@@ -698,7 +673,6 @@ public class $anno
 
     public String compose(Translator translator, Map<String, Object> keyValues) {
         StringBuilder sb = new StringBuilder();
-        //sb.append($name.compose(translator, keyValues));
         sb.append(name.compose(translator, keyValues));
         String properties = "";
         for (int i = 0; i < $mvs.size(); i++) {
@@ -715,35 +689,19 @@ public class $anno
     
     @Override
     public _anno construct(Translator translator, Map<String, Object> keyValues) {
-        return _anno.of(compose(translator, keyValues));
-        /*
-        StringBuilder sb = new StringBuilder();
-        //sb.append($name.compose(translator, keyValues));
-        sb.append(name.compose(translator, keyValues));
-        String properties = "";
-        for (int i = 0; i < $mvs.size(); i++) {
-            if ((properties.length() > 0) && (!properties.endsWith(","))) {
-                properties = properties + ",";
-            }
-            properties += $mvs.get(i).compose(translator, keyValues);
-        }
-        if (properties.length() == 0) {
-            return _anno.of(sb.toString());
-        }
-        return _anno.of(sb.toString() + "(" + properties + ")");
-        */
+        return _anno.of(compose(translator, keyValues));      
     }
 
     @Override
     public $anno $(String target, String $Name) {
         name.$(target, $Name);
-        $mvs.forEach(mv -> mv.name.$form = mv.name.$form.$(target, $Name));
+        $mvs.forEach(mv -> mv.name.pattern = mv.name.pattern.$(target, $Name));
         return this;
     }
     
     public $anno hardcode$( Translator tr, Object...keyValues){
         name.hardcode$(tr, keyValues);
-        $mvs.forEach(mv -> mv.name.$form = mv.name.$form.hardcode$(tr, keyValues));
+        $mvs.forEach(mv -> mv.name.pattern = mv.name.pattern.hardcode$(tr, keyValues));
         return this;
     }
 
@@ -757,11 +715,8 @@ public class $anno
     
     public Select select(_anno _a){
         if(this.constraint.test(_a)){
-            //System.out.println( "Passed constraint");
             Tokens ts = decompose(_a);
-            //System.out.println( "   TOKENS "+ ts);
             if( ts != null ){
-                //System.out.println( "   TOKENS "+ ts);
                 return new Select(_a, ts);
             }
         }
@@ -773,8 +728,8 @@ public class $anno
         List<String> params = new ArrayList<>();
         params.addAll( this.name.list$() );
         this.$mvs.forEach(m -> {
-            params.addAll( m.name.$form.list$() ); 
-            params.addAll( m.value.$form.list$() ); 
+            params.addAll( m.name.pattern.list$() ); 
+            params.addAll( m.value.pattern.list$() ); 
         });
         return params;
     }
@@ -784,8 +739,8 @@ public class $anno
         List<String> params = new ArrayList<>();
         params.addAll( this.name.list$() );
         this.$mvs.forEach(m -> {
-            params.addAll( m.name.$form.list$Normalized() ); 
-            params.addAll( m.value.$form.list$Normalized() ); 
+            params.addAll( m.name.pattern.list$Normalized() ); 
+            params.addAll( m.value.pattern.list$Normalized() ); 
         });
         return params.stream().distinct().collect(Collectors.toList() );
     }
@@ -837,7 +792,7 @@ public class $anno
      * 
      * @param <N>
      * @param astNode
-     * @param $a
+     * @param a
      * @return 
      */
     public <N extends Node> N replaceIn(N astNode, $anno a ){
@@ -871,21 +826,53 @@ public class $anno
         Optional<Node>on = 
             astRootNode.stream().filter(
                 n -> n instanceof AnnotationExpr 
-                                && select((AnnotationExpr)n) != null )
-                        .findFirst();
+                    && select((AnnotationExpr)n) != null )
+                .findFirst();
         if( on.isPresent() ){
             return select( (AnnotationExpr)on.get());
         }
         return null;        
     }
 
-    public Select selectFirstIn(_model._node _n) {
+    public Select selectFirstIn( _node _n) {
         return selectFirstIn( _n.ast() );        
     }
     
+    /**
+     * 
+     * @param astRootNode
+     * @param selectConstraint
+     * @return 
+     */
+    public Select selectFirstIn(Node astRootNode, Predicate<Select> selectConstraint) {
+        Optional<Node>on = 
+            astRootNode.stream().filter(
+                n -> {
+                    if( n instanceof AnnotationExpr){
+                        Select sel = select( (AnnotationExpr)n);
+                        return sel != null && selectConstraint.test(sel);
+                    }
+                    return false;
+                }).findFirst();
+        
+        if( on.isPresent() ){
+            return select( (AnnotationExpr)on.get());
+        }
+        return null;        
+    }
+
+    /**
+     * 
+     * @param _n
+     * @param selectConstraint
+     * @return 
+     */
+    public Select selectFirstIn(_model._node _n, Predicate<Select>selectConstraint) {
+        return selectFirstIn( _n.ast(), selectConstraint);        
+    }
     
     @Override
-    public List<Select> selectListIn(Node astRootNode) {
+    public List<Select> listSelectedIn(Node astRootNode) {
         List<Select> found = new ArrayList<>();
         astRootNode.walk(AnnotationExpr.class, a-> {
             Select sel = select(_anno.of(a));
@@ -897,7 +884,7 @@ public class $anno
     }
 
     @Override
-    public List<Select> selectListIn(_model._node _n) {
+    public List<Select> listSelectedIn(_model._node _n) {
         List<Select> found = new ArrayList<>();
         Walk.in(_n, _anno.class, a-> {
             Select sel = select(a); 
@@ -907,7 +894,41 @@ public class $anno
         }); 
         return found;
     }
+    
+    /**
+     * 
+     * @param astRootNode
+     * @param selectConstraint
+     * @return 
+     */
+    public List<Select> listSelectedIn(Node astRootNode, Predicate<Select> selectConstraint) {
+        List<Select> found = new ArrayList<>();
+        astRootNode.walk(AnnotationExpr.class, a-> {
+            Select sel = select(_anno.of(a));
+            if( sel != null && selectConstraint.test(sel)){
+                found.add( sel  );
+            }
+        });
+        return found;
+    }
 
+    /**
+     * 
+     * @param _n
+     * @param selectConstraint
+     * @return 
+     */
+    public List<Select> listSelectedIn(_node _n, Predicate<Select> selectConstraint) {
+        List<Select> found = new ArrayList<>();
+        Walk.in(_n, _anno.class, a-> {
+            Select sel = select(a); 
+            if( sel != null && selectConstraint.test(sel)){
+                found.add( sel );
+            }
+        }); 
+        return found;
+    }
+    
     @Override
     public <N extends Node> N removeIn(N astRootNode) {
         return forEachIn(astRootNode, n -> n.ast().remove() );        
@@ -939,6 +960,13 @@ public class $anno
         }); 
     }
     
+    /**
+     * 
+     * @param <N>
+     * @param astRootNode
+     * @param selectActionFn
+     * @return 
+     */
     public <N extends Node> N forSelectedIn(N astRootNode, Consumer<Select> selectActionFn) {
         astRootNode.walk(AnnotationExpr.class, a-> {
             Select sel = select(_anno.of(a));
@@ -949,6 +977,13 @@ public class $anno
         return astRootNode;
     }
 
+    /**
+     * 
+     * @param <N>
+     * @param _n
+     * @param selectActionFn
+     * @return 
+     */
     public <N extends _model._node> N forSelectedIn(N _n, Consumer<Select> selectActionFn) {
         return Walk.in(_n, _anno.class, a-> {
             Select sel = select(a); 
@@ -958,6 +993,11 @@ public class $anno
         }); 
     }
 
+    /**
+     * 
+     * @return 
+     */
+    @Override
     public String toString(){
         StringBuilder sb = new StringBuilder();
         sb.append("@");
@@ -977,6 +1017,10 @@ public class $anno
         return sb.toString();        
     }
     
+    /**
+     * prototype for member values (i.e. the key values inside the annotation)
+     * i.e. @A(key="value")
+     */
     public static class $memberValue {
 
         public $component<String> name = new $component("$key$", t -> true);
@@ -1001,7 +1045,7 @@ public class $anno
         }
 
         public boolean isMatchAll() {
-            return name.$form.isMatchAll() && value.$form.isMatchAll();
+            return name.pattern.isMatchAll() && value.pattern.isMatchAll();
         }
 
         public static $memberValue of(String key, Expression exp) {
@@ -1017,16 +1061,15 @@ public class $anno
         }
 
         public $memberValue(String name, Expression value) {
-            this.name.$form = Stencil.of(name);
-            this.value.$form = Stencil.of(value.toString());
+            this.name.pattern = Stencil.of(name);
+            this.value.pattern = Stencil.of(value.toString());
         }
 
         public $memberValue $(String target, String $name) {
-            this.name.$form = this.name.$form.$(target, $name);
-            this.value.$form = this.value.$form.$(target, $name);
+            this.name.pattern = this.name.pattern.$(target, $name);
+            this.value.pattern = this.value.pattern.$(target, $name);
             return this;
         }
-
         
         public Select selectFirst( List<MemberValuePair> pairs ){
             for(int i=0;i<pairs.size();i++){
@@ -1037,7 +1080,6 @@ public class $anno
             }            
             return null;
         }
-        
         
         public boolean matches(MemberValuePair mvp) {
             return select(mvp) != null;

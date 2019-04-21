@@ -513,7 +513,7 @@ public class _methodTest extends TestCase {
         assertNotNull(_m.getTypeParameters());
         assertTrue( _m.hasTypeParameters() );
         assertNotNull(_m.getTypeParameters().is("<E extends element>"));
-        assertEquals(1, _m.getTypeParameters().count());
+        assertEquals(1, _m.getTypeParameters().size());
         
         assertTrue( _m.isType( "List<String>"));
         assertTrue( _m.isType( Ast.typeDecl( "List<String>")) );

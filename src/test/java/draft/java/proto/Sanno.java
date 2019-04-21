@@ -358,7 +358,7 @@ public final class Sanno
      * @return 
      */
     public static final <N extends _node> List<Select> selectList( N _n, String proto ){
-        return Sanno.of(proto).selectListIn(_n);
+        return Sanno.of(proto).listSelectedIn(_n);
     }
     
     /**
@@ -369,7 +369,7 @@ public final class Sanno
      * @return 
      */
     public static final <N extends _node> List<Select> selectList( N _n, Predicate<_anno> constraint ){
-        return new Sanno( "@a" ).$("@a", "any").constraint(constraint).selectListIn(_n);
+        return new Sanno( "@a" ).$("@a", "any").constraint(constraint).listSelectedIn(_n);
     }
     
     /**
@@ -381,7 +381,7 @@ public final class Sanno
      * @return 
      */
     public static final <N extends _node> List<Select> selectList( N _n, String proto, Predicate<_anno> constraint){
-        return Sanno.of(proto, constraint).selectListIn(_n);
+        return Sanno.of(proto, constraint).listSelectedIn(_n);
     }
     
     /**
@@ -392,7 +392,7 @@ public final class Sanno
      * @return 
      */
     public static final <N extends _node> List<Select> selectList( N _n, _anno _proto ){
-        return Sanno.of(_proto).selectListIn(_n);
+        return Sanno.of(_proto).listSelectedIn(_n);
     }
     
     /**
@@ -404,7 +404,7 @@ public final class Sanno
      * @return 
      */
     public static final <N extends _node> List<Select> selectList( N _n, _anno _proto, Predicate<_anno> constraint){
-        return Sanno.of(_proto, constraint).selectListIn(_n);
+        return Sanno.of(_proto, constraint).listSelectedIn(_n);
     }
     
     /**
@@ -854,7 +854,7 @@ public final class Sanno
     }
 
     @Override
-    public List<Select> selectListIn(Node astNode ){
+    public List<Select> listSelectedIn(Node astNode ){
         List<Select>sts = new ArrayList<>();
         astNode.walk(AnnotationExpr.class, e-> {
             Select s = select( e );
@@ -866,7 +866,7 @@ public final class Sanno
     }
 
     @Override
-    public List<Select> selectListIn(_node _n ){
+    public List<Select> listSelectedIn(_node _n ){
         List<Select>sts = new ArrayList<>();
         Walk.in(_n, AnnotationExpr.class, e -> {
             Select s = select( e );

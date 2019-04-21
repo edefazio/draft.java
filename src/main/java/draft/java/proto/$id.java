@@ -12,6 +12,14 @@ import java.util.function.Predicate;
  */
 public class $id {
 
+    public static $id any(){
+        return of("$any$");
+    }
+    
+    public static $id of(Predicate<String> constraint){
+        return any().constraint(constraint);
+    }
+    
     public static $id of( String id ){
         return new $id( id );
     }
@@ -19,7 +27,7 @@ public class $id {
     /** the pattern of the id*/
     public Stencil pattern;
 
-    
+    /**  */
     public Predicate<String> constraint = t -> true;
 
     /**

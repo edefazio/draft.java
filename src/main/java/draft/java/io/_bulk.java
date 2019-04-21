@@ -63,7 +63,6 @@ public enum _bulk {
         return load( Paths.get(rootPath), _typeFns);
     }
 
-
     /**
      * Will read in bulk, if the rootPath is a .zip or a .jar file, will delegate to reading these in
      * if rootPath is a Directory, will read
@@ -250,6 +249,7 @@ public enum _bulk {
             return null;
         }
 
+        @Override
         public String toString(){
             StringBuilder sb = new StringBuilder();
             sb.append( "Read and Processed ("+types.size()+") .java files from \""+ baseReadPath +"\" in : "+(processedTimestamp - startTimestamp)+"ms"+System.lineSeparator());

@@ -13,6 +13,20 @@ import junit.framework.TestCase;
 
 public class SmethodTest extends TestCase {
             
+    interface I{
+        void noBody();
+        
+        public static int someBody(){
+            return 103;
+        }
+        
+        /** Javadoc */ @Deprecated void f();
+    }
+    public void testAnyPrototype(){
+        //verify that the any() prototype will list methods with or without body
+        assertEquals( 3, $method.any().listIn(I.class).size() );
+    }
+    
     public void testSimpleMatch(){
         $method $m = $method.of( new Object(){
             $type$ $name$;
@@ -205,9 +219,9 @@ public class SmethodTest extends TestCase {
 
 
         //find all (3) getter METHODS in the TYPE above
-        assertEquals( 3, $get.selectListIn(_c).size());
+        assertEquals( 3, $get.listSelectedIn(_c).size());
         assertEquals($get.select(_c.getMethod("getX") )._m, _method.of("public int getX(){ return x; }") );
-        assertEquals( 3, $set.selectListIn(_c).size());
+        assertEquals( 3, $set.listSelectedIn(_c).size());
 
         //print all get METHODS
         $get.forSelectedIn(_c, g -> System.out.println(g._m ));

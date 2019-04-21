@@ -187,7 +187,7 @@ public final class _typeParameter
             return astNodeWithTypeParams.getTypeParameters();
         }
 
-        public int count() {
+        public int size() {
             return astNodeWithTypeParams.getTypeParameters().size();
         }
 

@@ -214,7 +214,7 @@ public final class _method
      */
     public static final Predicate<_method> IS_MAIN = m
             -> m.isPublic() && m.isStatic() && m.getName().equals("main") && m.isVoid()
-            && m.getParameters().count() == 1 && m.getParameter(0).isType(String[].class);
+            && m.getParameters().size() == 1 && m.getParameter(0).isType(String[].class);
 
     @Override
     public boolean equals(Object obj) {
@@ -789,7 +789,7 @@ public final class _method
         StringBuilder sb = new StringBuilder();
         sb.append(_m.getName());
         sb.append("(");
-        for (int i = 0; i < _m.getParameters().count(); i++) {
+        for (int i = 0; i < _m.getParameters().size(); i++) {
             if (i > 0) {
                 sb.append(", ");
             }

@@ -288,6 +288,11 @@ public class _import implements _model {
             this.astCompilationUnit = astCu;
         }
         
+        /** returns the number of imports */
+        public int size(){
+            return this.astCompilationUnit.getImports().size();
+        }
+        
         /**
          * Top level Classes in the same package are "implied imports"
          * @param clazz the class to check

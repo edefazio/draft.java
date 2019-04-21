@@ -27,7 +27,6 @@ import java.lang.annotation.Annotation;
  * _classLoader _cl = (_classLoader) clazz.getClassLoader();
  *
  * _type _t = _cl.get_type(clazz);
- * </PRE>
  *
  *
  * //in( this will chekc clazz's _classLoader, which contains a reference
@@ -54,9 +53,9 @@ public final class _in_classLoader implements _in._resolver {
             _type _t = _cl.get_type( clazz );
             if( _t != null ){
                 return _in._source.of(
-                        clazz.getCanonicalName()+".java",
-                        "_classLoader cached .java file : \""+clazz.getCanonicalName()+".java\"",
-                        new ByteArrayInputStream( _t.toString().getBytes() ) );
+                    clazz.getCanonicalName()+".java",
+                    "_classLoader cached .java file : \""+clazz.getCanonicalName()+".java\"",
+                    new ByteArrayInputStream( _t.toString().getBytes() ) );
             }
         }
         return null;

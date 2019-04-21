@@ -451,7 +451,7 @@ public final class $constructor
     }
 
     @Override
-    public List<Select> selectListIn(Node astNode){
+    public List<Select> listSelectedIn(Node astNode){
         List<Select>sts = new ArrayList<>();
         astNode.walk(ConstructorDeclaration.class, c-> {
             Select sel = select( c );
@@ -463,7 +463,7 @@ public final class $constructor
     }
 
     @Override
-    public List<Select> selectListIn(_node _n){
+    public List<Select> listSelectedIn(_node _n){
         List<Select>sts = new ArrayList<>();
         Walk.in(_n, ConstructorDeclaration.class, c-> {
             Select sel = select( c );
@@ -480,7 +480,7 @@ public final class $constructor
      * @param selectConstraint
      * @return 
      */
-    public List<Select> selectListIn(Node astNode, Predicate<Select> selectConstraint){
+    public List<Select> listSelectedIn(Node astNode, Predicate<Select> selectConstraint){
         List<Select>sts = new ArrayList<>();
         astNode.walk(ConstructorDeclaration.class, c-> {
             Select sel = select( c );
@@ -497,7 +497,7 @@ public final class $constructor
      * @param selectConstraint
      * @return 
      */
-    public List<Select> selectListIn(_node _n, Predicate<Select> selectConstraint){
+    public List<Select> listSelectedIn(_node _n, Predicate<Select> selectConstraint){
         List<Select>sts = new ArrayList<>();
         Walk.in(_n, ConstructorDeclaration.class, c-> {
             Select sel = select( c );
@@ -532,13 +532,13 @@ public final class $constructor
 
     @Override
     public <N extends _node> N removeIn(N _n ){
-        selectListIn(_n).forEach(s -> s._ct.ast().remove() );
+        $constructor.this.listSelectedIn(_n).forEach(s -> s._ct.ast().remove() );
         return _n;
     }
 
     @Override
     public <N extends Node> N removeIn(N astNode ){
-        selectListIn(astNode).forEach(s -> s._ct.ast().remove() );
+        $constructor.this.listSelectedIn(astNode).forEach(s -> s._ct.ast().remove() );
         return astNode;
     }
 

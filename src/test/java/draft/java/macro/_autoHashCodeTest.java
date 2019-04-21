@@ -80,7 +80,7 @@ public class _autoHashCodeTest extends TestCase {
         //assertEquals( 4, l.size());
 
         //verify that
-        List<$stmt.Select> ss = $st.selectListIn(_m);
+        List<$stmt.Select> ss = $st.listSelectedIn(_m);
         assertTrue( ss.stream().filter(s-> s.args.is("fieldHash", Expr.of("( b ? 1 : 0 )").toString())).findAny().isPresent());
         assertTrue( ss.stream().filter(s-> s.args.is("fieldHash", "i") ).findAny().isPresent()); //int
         assertTrue( ss.stream().filter(s-> s.args.is("fieldHash", "by") ).findAny().isPresent()); //ibyte

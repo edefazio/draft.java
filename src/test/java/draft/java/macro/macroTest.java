@@ -80,12 +80,12 @@ public class macroTest extends TestCase {
         _class _c = _class.of(E.class);
         assertNotNull( _c.getMethod("equals") );
         System.out.println( "EEEEEEEEEEEEEEEEEEEEEEEEE " + _c.getMethod("equals"));
-        assertEquals(1, _autoEquals.Macro.$primitive.selectListIn(_c).size());  //int a;
-        assertEquals(1, _autoEquals.Macro.$float.selectListIn(_c).size());      //float f
-        assertEquals(1, _autoEquals.Macro.$double.selectListIn(_c).size());     // double d
-        assertEquals(1, _autoEquals.Macro.$default.selectListIn(_c).size());    // String s
-        assertEquals(1, _autoEquals.Macro.$arrayOfPrimitives.selectListIn(_c).size()); //boolean ba
-        assertEquals(1, _autoEquals.Macro.$arrayOfObject.selectListIn(_c).size()); //UUID uuids
+        assertEquals(1, _autoEquals.Macro.$primitive.listSelectedIn(_c).size());  //int a;
+        assertEquals(1, _autoEquals.Macro.$float.listSelectedIn(_c).size());      //float f
+        assertEquals(1, _autoEquals.Macro.$double.listSelectedIn(_c).size());     // double d
+        assertEquals(1, _autoEquals.Macro.$default.listSelectedIn(_c).size());    // String s
+        assertEquals(1, _autoEquals.Macro.$arrayOfPrimitives.listSelectedIn(_c).size()); //boolean ba
+        assertEquals(1, _autoEquals.Macro.$arrayOfObject.listSelectedIn(_c).size()); //UUID uuids
     }
 
     public void testAutoGet(){
@@ -142,9 +142,9 @@ public class macroTest extends TestCase {
         }
         _class _c = _class.of(E.class);
         assertNotNull( _c.getMethod("toString") );
-        assertEquals(1, _autoToString.Macro.$simple.selectListIn(_c).size());  //String s;
-        assertEquals(1, _autoToString.Macro.$arrayOfObjects.selectListIn(_c).size());      //uuids f
-        assertEquals(1, _autoToString.Macro.$arrayOfPrimitives.selectListIn(_c).size());   //boolean[] ba
+        assertEquals(1, _autoToString.Macro.$simple.listSelectedIn(_c).size());  //String s;
+        assertEquals(1, _autoToString.Macro.$arrayOfObjects.listSelectedIn(_c).size());      //uuids f
+        assertEquals(1, _autoToString.Macro.$arrayOfPrimitives.listSelectedIn(_c).size());   //boolean[] ba
     }
 
     interface A{

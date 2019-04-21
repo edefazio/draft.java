@@ -68,8 +68,9 @@ public final class _javaFile implements JavaFileObject {
 
     /**
      * This constructor is used when we derive _project
-     * (when classes are GENERATED at COMPILE-TIME (i.e. via annotation processors))
+     * (when classes are GENERATED at COMPILE-TIME (i.e.via annotation processors))
      *
+     * @param fullClassName
      */
     public _javaFile( String fullClassName ){
         //this.fullClassName = _id._qualifiedName.of( fullClassName );
@@ -78,12 +79,13 @@ public final class _javaFile implements JavaFileObject {
         //no TYPE as of yet (we are probably reserving the file)
     }
 
-
+    /**
+     * Copy constructor, build a new _javaFile from this prototype file
+     * and return
+     * @param prototype  the prototype _javaFile
+     */
     public _javaFile( _javaFile prototype ){
-        //this.fullClassName = prototype.fullClassName;
         this.lastUpdateTimeMillis = prototype.lastUpdateTimeMillis;
-        //_java._type()
-        //_type.of( prototype.TYPE.ast().clone() ); //prototype.TYPE.copy();
         this.type = (_type)_java.of( prototype.type.findCompilationUnit().clone());
     }
 
@@ -95,6 +97,7 @@ public final class _javaFile implements JavaFileObject {
         return this.type;
     }
 
+    @Override
     public boolean equals( Object obj ) {
         if( this == obj ) {
             return true;
@@ -112,16 +115,19 @@ public final class _javaFile implements JavaFileObject {
         return true;
     }
 
+    @Override
     public int hashCode() {
         int hash = 5;
         hash = 71 * hash + Objects.hash( this.type );
         return hash;
     }
 
+    @Override
     public Kind getKind() {
         return Kind.SOURCE;
     }
 
+    @Override
     public boolean isNameCompatible( String simpleName, Kind kind ) {
         String baseName = simpleName + kind.extension;
         return kind.equals( getKind() )
@@ -129,24 +135,29 @@ public final class _javaFile implements JavaFileObject {
                 || toUri().getPath().endsWith( "/" + baseName ));
     }
 
+    @Override
     public NestingKind getNestingKind() {
         return NestingKind.TOP_LEVEL;
     }
 
+    @Override
     public Modifier getAccessLevel() {
         return null;
     }
 
+    @Override
     public URI toUri() {
         return URI.create("file:///" + this.type.getFullName().replace('.','/')
                 + Kind.SOURCE.extension );
     }
 
+    @Override
     public String toString() {
         return "_sourceFile " + getName();
     }
 
     /** NAME "java.util.Map" returns "java/util/Map.java"*/
+    @Override
     public String getName() {
         return toUri().getPath();
     }
@@ -164,6 +175,7 @@ public final class _javaFile implements JavaFileObject {
         return "." + this.type.getFullName();
     }
 
+    @Override
     public InputStream openInputStream()
             throws IOException {
         //you cant read from a _sourceFile that is initialized but no TYPE exists yet
@@ -176,11 +188,13 @@ public final class _javaFile implements JavaFileObject {
         return new ByteArrayInputStream( this.type.toString().getBytes() );
     }
 
+    @Override
     public OutputStream openOutputStream() {
 
         return new _typeAfterCloseOutputStream( this );
     }
 
+    @Override
     public Reader openReader( boolean ignoreEncodingErrors )
             throws IOException {
         CharSequence charContent = getCharContent( ignoreEncodingErrors );
@@ -196,6 +210,7 @@ public final class _javaFile implements JavaFileObject {
         return new StringReader( charContent.toString() );
     }
 
+    @Override
     public CharSequence getCharContent( boolean ignoreEncodingErrors )
             throws IOException {
         if( this.type == null ){
@@ -208,15 +223,17 @@ public final class _javaFile implements JavaFileObject {
         return new _javaFile( this );
     }
 
+    @Override
     public Writer openWriter() {
         return new _typeAfterCloseWriter( this );
     }
 
-
+    @Override
     public long getLastModified() {
         return this.lastUpdateTimeMillis;
     }
 
+    @Override
     public boolean delete() {
         return false; //lets say you cant delete it...?
     }
@@ -228,7 +245,6 @@ public final class _javaFile implements JavaFileObject {
     public String getFullName() {
         return this.type.getFullName();
     }
-
 
     /**'
      *
@@ -242,6 +258,7 @@ public final class _javaFile implements JavaFileObject {
             this._javaFile = _javaFile;
         }
 
+        @Override
         public void afterClose(){
             _javaFile.type = _type.of( new String(os.toByteArray()));
             _javaFile.lastUpdateTimeMillis = System.currentTimeMillis();
@@ -257,6 +274,7 @@ public final class _javaFile implements JavaFileObject {
             this._javaFile = _javaFile;
         }
 
+        @Override
         public void afterClose(){
             _javaFile.type = _type.of( this.writer.toString() );
             _javaFile.lastUpdateTimeMillis = System.currentTimeMillis();

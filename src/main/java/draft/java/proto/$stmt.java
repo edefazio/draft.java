@@ -222,7 +222,7 @@ public final class $stmt<T extends Statement>
      * @return a List of Select<T>
      */
     public static final <T extends Statement> List<Select<T>> selectList( _node _n, $stmt<T> proto){
-        return proto.selectListIn(_n);
+        return proto.listSelectedIn(_n);
     }
     
     /**
@@ -234,7 +234,7 @@ public final class $stmt<T extends Statement>
      * @return 
      */
     public static final <T extends Statement, N extends _node> List<Select<T>> selectList( N _n, String pattern ){
-        return $stmt.of(pattern).selectListIn(_n);
+        return $stmt.of(pattern).listSelectedIn(_n);
     }
     
     /**
@@ -247,7 +247,7 @@ public final class $stmt<T extends Statement>
      * @return 
      */
     public static final <T extends Statement, N extends _node> List<Select<T>> selectList( N _n, String pattern, Predicate<T>constraint){
-        return $stmt.of(pattern).constraint(constraint).selectListIn(_n);
+        return $stmt.of(pattern).constraint(constraint).listSelectedIn(_n);
     }
     
     /**
@@ -258,7 +258,7 @@ public final class $stmt<T extends Statement>
      * @return true if found else false
      */
     public static final <T extends Statement> List<Select<T>> selectList( _node _n, String... pattern ){
-        return $stmt.of(pattern).selectListIn(_n);
+        return $stmt.of(pattern).listSelectedIn(_n);
     }
     
     /**
@@ -1715,7 +1715,7 @@ public final class $stmt<T extends Statement>
             .setPrintComments(false).setPrintJavadoc(false);
 
     @Override
-    public List<Select<T>> selectListIn(Node astNode ){
+    public List<Select<T>> listSelectedIn(Node astNode ){
         List<Select<T>>sts = new ArrayList<>();
         astNode.walk(this.statementClass, st-> {
             //$args tokens = deconstruct( st );
@@ -1728,7 +1728,7 @@ public final class $stmt<T extends Statement>
     }
     
     @Override
-    public List<Select<T>> selectListIn(_node _n ){
+    public List<Select<T>> listSelectedIn(_node _n ){
         List<Select<T>>sts = new ArrayList<>();
         Walk.in(_n, this.statementClass, st->{
             //$args tokens = deconstruct(st);
@@ -1766,13 +1766,13 @@ public final class $stmt<T extends Statement>
     
     @Override
     public <N extends _node> N removeIn(N _n ){
-        this.selectListIn(_n).forEach(s-> s.astStatement.removeForced() );
+        this.listSelectedIn(_n).forEach(s-> s.astStatement.removeForced() );
         return _n;
     }
 
     @Override
     public <N extends Node> N removeIn(N astNode ){
-        this.selectListIn(astNode).forEach(s-> s.astStatement.removeForced() );
+        this.listSelectedIn(astNode).forEach(s-> s.astStatement.removeForced() );
         return astNode;
     }
 

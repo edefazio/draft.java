@@ -37,10 +37,48 @@ import java.util.stream.Collectors;
  */
 public class $classUse {
     
+    /**
+     * Find all situations where we use the target class and replace it with 
+     * the replacement class
+     * @param <N>
+     * @param _n
+     * @param target
+     * @param replacement
+     * @return 
+     */
     public static <N extends _model._node> N replace(N _n, Class target, Class replacement) {
         return $classUse.of(target).replaceIn(_n, replacement);
     }
     
+    /**
+     * 
+     * @param <N>
+     * @param astNode
+     * @param target
+     * @param replacement
+     * @return 
+     */
+    public static <N extends Node> N replace(N astNode, Class target, Class replacement) {
+        return $classUse.of(target).replaceIn(astNode, replacement);
+    }
+    
+    /**
+     * 
+     * @param <N>
+     * @param astNode
+     * @param target
+     * @param nodeAction
+     * @return 
+     */
+    public static <N extends Node> N forEach(N astNode, Class target, Consumer<Node> nodeAction) {
+        return $classUse.of(target).forEachIn(astNode, nodeAction);
+    }
+    
+    /**
+     * 
+     * @param clazz
+     * @return 
+     */
     public static $classUse of( Class clazz ){
         return new $classUse(clazz);
     }
@@ -76,9 +114,13 @@ public class $classUse {
     public $node $simpleName;
     
     /**
+     * Only match nodes that are of these types
+     * (i.e. dont try to toString() a node (to match it) that is not one
+     * of these (3) types.
+     * 
      * This should greatly speed up the matching, since
      * we wont toString (in order to test) EVERY SINGLE NODE
-     * but only specific nodeTypes
+     * as we walk each entity.
      */
     private static final Predicate<Node> IS_EXPECTED_NODE_TYPE = 
         n-> n instanceof Name || 
@@ -244,9 +286,9 @@ public class $classUse {
         
     public <N extends Node> List<$node.Select> listSelectedIn( N astRootNode ){
         List<$node.Select> sels = new ArrayList<>();
-        sels.addAll( $fullName.selectListIn(astRootNode) );
-        $memberNames.forEach( e-> sels.addAll( e.selectListIn(astRootNode) ) );
-        sels.addAll( $simpleName.selectListIn(astRootNode) );
+        sels.addAll( $fullName.listSelectedIn(astRootNode) );
+        $memberNames.forEach( e-> sels.addAll( e.listSelectedIn(astRootNode) ) );
+        sels.addAll( $simpleName.listSelectedIn(astRootNode) );
         
         //dedupe
         List<$node.Select>uniqueSels = sels.stream().distinct().collect(Collectors.toList());
@@ -259,7 +301,7 @@ public class $classUse {
     }
     
     
-        public <N extends Node> N forSelectedIn(N astRootNode, Predicate<$node.Select> selectConstraint, Consumer<$node.Select> selectActionFn ) {
+    public <N extends Node> N forSelectedIn(N astRootNode, Predicate<$node.Select> selectConstraint, Consumer<$node.Select> selectActionFn ) {
         $fullName.forSelectedIn(astRootNode, selectConstraint, selectActionFn);
         $memberNames.forEach( e-> e.forSelectedIn(astRootNode, selectConstraint, selectActionFn) );
         $simpleName.forSelectedIn(astRootNode, selectConstraint, selectActionFn);
@@ -269,8 +311,8 @@ public class $classUse {
     public <N extends Node> List<$node.Select> listSelectedIn( N astRootNode, Predicate<$node.Select> selectConstraint){
         List<$node.Select> sels = new ArrayList<>();
         sels.addAll( $fullName.selectListIn(astRootNode, selectConstraint) );
-        $memberNames.forEach( e-> sels.addAll( e.selectListIn(astRootNode) ) );
-        sels.addAll( $simpleName.selectListIn(astRootNode) );
+        $memberNames.forEach( e-> sels.addAll( e.listSelectedIn(astRootNode) ) );
+        sels.addAll( $simpleName.listSelectedIn(astRootNode) );
         
         //dedupe
         List<$node.Select>uniqueSels = sels.stream().distinct().collect(Collectors.toList());

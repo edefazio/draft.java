@@ -26,10 +26,10 @@ public final class _classFiles{
      * in unique files (i.e. the nested interface java.util.Map.Entry is
      * stored in by NAME "java.util.Map$Entry"
      */
-    private final Map<String, _classFile> nameTo_classFile = new TreeMap<String, _classFile>();
+    private final Map<String, _classFile> nameTo_classFile = new TreeMap<>();
 
     /** Packages defined in an _classFiles Manner for housing the _classFiles*/
-    private final Map<String, Package> nameToPackage  = new TreeMap<String, Package>();
+    private final Map<String, Package> nameToPackage  = new TreeMap<>();
 
     /** Open _classFiles accept classes/ packages to be added */
     private final AtomicBoolean isOpen;
@@ -155,18 +155,19 @@ public final class _classFiles{
      * @return an ordered list
      */
     public List<String> listPackageNames() {
-        TreeSet<String> packageNames = new TreeSet<String>();
+        TreeSet<String> packageNames = new TreeSet<>();
         List<_classFile> _cfs = list();
         for( int i = 0; i < _cfs.size(); i++ ) {
             packageNames.add( _cfs.get( i ).getPackageName().replace( "/", "." ) );
         }
-        List<String> list = new ArrayList<String>();
+        List<String> list = new ArrayList<>();
         list.addAll( packageNames );
         return list;
     }
 
     /**
      * adds a Package to the _classFiles
+     * @param pkg
      * @return the updated _classFiles
      */
     public _classFiles addPackage(Package pkg ){
@@ -184,7 +185,7 @@ public final class _classFiles{
      */
     public List<Package> listPackages(Predicate<Package>pkgMatchFn ){
         return this.nameToPackage.values()
-                .stream().filter( pkgMatchFn ).collect( Collectors.toList());
+            .stream().filter( pkgMatchFn ).collect( Collectors.toList());
     }
 
     /**
@@ -234,20 +235,25 @@ public final class _classFiles{
         return list(pkgName, false );
     }
 
+    /**
+     * gets the Package object for this string
+     * @param name
+     * @return 
+     */
     public Package getPackage( String name ){
         return this.nameToPackage.get( name );
     }
 
     /** @return a map of className -> {@link Package} */
     public Map<String,Package>mapNameToPackage(){
-        Map<String,Package> mm = new TreeMap<String,Package>();
+        Map<String,Package> mm = new TreeMap<>();
         mm.putAll( this.nameToPackage );
         return mm;
     }
 
     /** @return a Map between className -> {@link _classFile} */
     public Map<String, _classFile> mapNameTo_classFile(){
-        Map<String,_classFile> cm = new TreeMap<String,_classFile>();
+        Map<String,_classFile> cm = new TreeMap<>();
         cm.putAll( this.nameTo_classFile );
         return cm;
     }
@@ -266,17 +272,16 @@ public final class _classFiles{
             pkgName = "";
         }
         pkgName = pkgName.replace( '/', '.' );
-        List<_classFile> _classFilesByPackage = new ArrayList<_classFile>();
+        List<_classFile> _classFilesByPackage = new ArrayList<>();
         String[] fullClassNames = listClassNames().toArray( new String[ 0 ] );
 
         for( int i = 0; i < fullClassNames.length; i++ ) {
-            //System.out.println( "TRYING FULLCLASSNAME " + fullClassNames[i] );
             if( pkgName == null || pkgName.length() == 0 ) {
                 if( includeSubPkgs ) { //they want of class files
                     _classFilesByPackage.add(
                             get( fullClassNames[ i ] ) );
                 }
-                else if( !fullClassNames[ i ].contains( "." ) ) {//")) { //." ) ) {
+                else if( !fullClassNames[ i ].contains( "." ) ) {
                     _classFilesByPackage.add(
                             get( fullClassNames[ i ] ) );
                 }
@@ -303,7 +308,6 @@ public final class _classFiles{
         return nameTo_classFile.get( className );
     }
 
-
     /**
      * Removes classes based on the names provided
      *
@@ -314,7 +318,7 @@ public final class _classFiles{
         if( !this.isOpen.get( ) ){
             throw new DraftException("CLOSED, cannot removeAll "+classNames );
         }
-        List<_classFile>removedFiles = new ArrayList<_classFile>();
+        List<_classFile>removedFiles = new ArrayList<>();
         for(int i=0;i<classNames.size();i++){
             _classFile _clf = nameTo_classFile.remove( classNames.get(i).replace( '.', '/' ) );
             if( _clf != null ){
@@ -325,6 +329,7 @@ public final class _classFiles{
         return removedFiles;
     }
 
+    /** @return true if are there no class files present */
     public boolean isEmpty(){
         return this.nameTo_classFile.isEmpty() && this.nameToPackage.isEmpty();
     }
@@ -334,7 +339,7 @@ public final class _classFiles{
      * are counted as well)
      * @return
      */
-    public int count(){
+    public int size(){
         return this.nameTo_classFile.size();
     }
 
@@ -344,7 +349,7 @@ public final class _classFiles{
      * @return of _classFiles
      */
     public List<_classFile> list() {
-        List<_classFile> all = new ArrayList<_classFile>();
+        List<_classFile> all = new ArrayList<>();
         all.addAll( this.nameTo_classFile.values() );
         return all;
     }
@@ -356,7 +361,7 @@ public final class _classFiles{
      * @return a List of of fully qualified Class Names in the ClassLoader
      */
     public List<String> listClassNames() {
-        List<String> allClassNames = new ArrayList<String>();
+        List<String> allClassNames = new ArrayList<>();
         String[] toAdd = nameTo_classFile.keySet().toArray( new String[ 0 ] );
         for( int i = 0; i < toAdd.length; i++ ) {
             allClassNames.add( toAdd[ i ].replace( '/', '.' ) );
@@ -367,7 +372,7 @@ public final class _classFiles{
     @Override
     public String toString(){
         StringBuilder sb = new StringBuilder();
-        sb.append( "Class Files ("+this.nameTo_classFile.size()+")");
+        sb.append( "Class Files (").append(this.nameTo_classFile.size()).append(")");
         if( this.isOpen.get() ){
             sb.append(" *OPEN* ");
         }

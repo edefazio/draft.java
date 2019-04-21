@@ -49,10 +49,11 @@ public final class _inProject implements _in._resolver {
     }
 
     public static List<_inModule> findModules( String projectDir) {
-        final List<_inModule>_modules = new ArrayList<_inModule>();
+        final List<_inModule>_modules = new ArrayList<>();
 
         //find all module-info.java files that exist under the classes directory
         FileVisitor<Path> fileProcessor = new SimpleFileVisitor<Path>() {
+            @Override
             public FileVisitResult visitFile(Path aFile, BasicFileAttributes aAttrs){
                 String simpleName = aFile.getName( aFile.getNameCount()-1).toString();
                 if(simpleName.equals("module-info.java")){
@@ -64,13 +65,13 @@ public final class _inProject implements _in._resolver {
         try{
             Files.walkFileTree(Paths.get(projectDir+"/src/"),fileProcessor);
         } catch(IOException ioe){
-            return new ArrayList<_inModule>();
+            return new ArrayList<>();
         }
         return _modules;
     }
 
     public static List<_in._resolver> projectTestPaths(String rootProjectDir) {
-        List<_in._resolver> paths = new ArrayList<_in._resolver>();
+        List<_in._resolver> paths = new ArrayList<>();
         paths.add(_inFilePath.of(rootProjectDir + "/test/"));
         paths.add(_inFilePath.of(rootProjectDir + "/src/test/java/"));
         paths.add(_inFilePath.of(rootProjectDir + "/src/test/resources/"));
@@ -78,7 +79,7 @@ public final class _inProject implements _in._resolver {
     }
 
     public static List<_in._resolver> projectSourcePaths(String rootProjectDir) {
-        List<_in._resolver> paths = new ArrayList<_in._resolver>();
+        List<_in._resolver> paths = new ArrayList<>();
         paths.add(_inFilePath.of(rootProjectDir + "/src/"));
         paths.add(_inFilePath.of(rootProjectDir + "/src/main/java/"));
         paths.add(_inFilePath.of(rootProjectDir + "/src/main/resources/"));
@@ -88,7 +89,6 @@ public final class _inProject implements _in._resolver {
 
     @Override
     public _in resolve(String sourceId) {
-        //System.out.println( "resolving from "+mp.describe() +" Of "+ sourceId);
         return mp.resolve( sourceId );
     }
 
@@ -103,12 +103,11 @@ public final class _inProject implements _in._resolver {
         paths += this.projectRoot +"\\src\\test\\resources\\" + System.lineSeparator();
 
         return "Project ["+this.projectRoot+"]" + System.lineSeparator()+
-                Text.indent(paths);
+            Text.indent(paths);
     }
 
     @Override
     public _in resolve(Class clazz) {
-        //System.out.println( "resolving from "+proj.mp.describe() +" Of "+ clazz);
         return mp.resolve( clazz );
     }
 }

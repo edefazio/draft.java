@@ -28,20 +28,11 @@ public final class _file implements FileObject {
     /** it COULD be binary... could be text... dunno, it's bytes **/
     public byte[] data;
 
+    /** url to the file */
     public final URL url;
 
+    /** update timestamp in millis when the file was last changed*/
     public long lastUpdateTimeMills;
-
-    /**
-     * Export the
-     * @param rootDir
-     * @return
-     * @throws DraftException
-
-    public String export( String rootDir ) throws DraftException {
-    return _export.to(rootDir, this);
-    }
-     */
 
     /**
      * Create and return a "textual" _file at the filePath with the data provided
@@ -113,13 +104,14 @@ public final class _file implements FileObject {
         }
     }
 
+    /** is this file name the same as the file name provided */
     public boolean is( String fileName ){
         return (filePath + relativeName).equals( fileName );
     }
 
     @Override
     public String toString(){
-        return "_file \""+filePath+relativeName+"\" ("+hashCode()+")";
+        return "_file \"" + filePath + relativeName + "\" ("+hashCode()+")";
     }
 
     @Override
@@ -172,7 +164,6 @@ public final class _file implements FileObject {
 
     @Override
     public CharSequence getCharContent( boolean ignoreEncodingErrors ) {
-
         return new String(this.data);
     }
 

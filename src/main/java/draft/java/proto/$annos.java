@@ -2,10 +2,7 @@ package draft.java.proto;
 
 import com.github.javaparser.ast.Node;
 import com.github.javaparser.ast.nodeTypes.NodeWithAnnotations;
-import draft.Template;
-import draft.Text;
-import draft.Tokens;
-import draft.Translator;
+import draft.*;
 import draft.java.Walk;
 import draft.java._anno;
 import draft.java._anno._annos;
@@ -13,11 +10,7 @@ import draft.java._anno._hasAnnos;
 import draft.java._java;
 import draft.java._model;
 import draft.java._model._node;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
@@ -28,7 +21,19 @@ import java.util.stream.Collectors;
 public class $annos 
     implements Template<_annos>, $proto<_annos> {
 
+    /** 
+     * List of anno prototypes, note: an empty list means it matches ANY list 
+     * of _annos
+     */
     List<$anno> $annosList = new ArrayList<>();
+    
+    /**
+     * prototype that matches any grouping of annos
+     * @return 
+     */
+    public static $annos any(){
+        return new $annos();
+    }
     
     public static $annos of( $anno...$anns ){
         $annos $as = new $annos();
@@ -49,19 +54,46 @@ public class $annos
     }
     
     public $annos( _annos _anns){
-        for(int i=0;i<_anns.count();i++){
-            $anno a = $anno.of(_anns.get(i) );
-            $annosList.add(a);
-        }
+        if( _anns != null ){
+            for(int i=0;i<_anns.size();i++){
+                $anno a = $anno.of(_anns.get(i) );
+                $annosList.add(a);
+            }    
+        }        
     }
     
-    public String compose( Translator translator, Map<String, Object> keyValues) {
+    /**
+     * 
+     * @param translator
+     * @param keyValues
+     * @return 
+     */
+    public String compose( Translator translator, Map<String, Object> keyValues){
+        return compose(translator, keyValues, System.lineSeparator() );
+    }
+    
+    /**
+     * 
+     * @param translator
+     * @param keyValues
+     * @param separator the separator to use between each anno 
+     * (usually this will be a line break, but, for parameters we use an " " 
+     * empty space
+     * 
+     * @return 
+     */        
+    public String compose( Translator translator, Map<String, Object> keyValues, String separator) {
         StringBuilder sb = new StringBuilder();
         for(int i=0;i<$annosList.size();i++){            
             if( i > 0 ){
-                sb.append(System.lineSeparator());
+                sb.append(separator);
             }
             sb.append( $annosList.get(i).construct(translator, keyValues) );
+        }
+        if( $annosList.size() > 0 ){
+            //add another separator AFTER the end (a line break of space) so
+            // annos dont bleed into other code
+            sb.append( separator );
         }
         return sb.toString();
     }
@@ -201,12 +233,12 @@ public class $annos
     }
 
     @Override
-    public List<Select> selectListIn(Node astRootNode) {
-        return selectListIn( (_node)_java.of(astRootNode) );        
+    public List<Select> listSelectedIn(Node astRootNode) {
+        return listSelectedIn( (_node)_java.of(astRootNode) );        
     }
 
     @Override
-    public List<Select> selectListIn( _node _n) {
+    public List<Select> listSelectedIn( _node _n) {
         List<Select> found = new ArrayList<>();
         Walk.in(_n, _hasAnnos.class, _ha-> {
             Select sel = select(_ha);

@@ -28,11 +28,11 @@ public class $method
      * 
      * @param <N>
      * @param _n
-     * @param proto
+     * @param pattern
      * @return 
      */
-    public static final <N extends _node> List<_method> list( N _n, String proto ){
-        return $method.of(proto).listIn(_n);
+    public static final <N extends _node> List<_method> list( N _n, String... pattern ){
+        return $method.of(pattern).listIn(_n);
     }
     
     /**
@@ -50,12 +50,12 @@ public class $method
      * 
      * @param <N>
      * @param _n
-     * @param proto
+     * @param pattern
      * @param constraint
      * @return 
      */
-    public static final <N extends _node> List<_method> list( N _n, String proto, Predicate<_method> constraint){
-        return $method.of(proto, constraint).listIn(_n);
+    public static final <N extends _node> List<_method> list( N _n, String pattern, Predicate<_method> constraint){
+        return $method.of(pattern, constraint).listIn(_n);
     }
     
     /**
@@ -73,11 +73,11 @@ public class $method
     /**
      * 
      * @param clazz
-     * @param proto
+     * @param pattern
      * @return 
      */
-    public static final List<_method> list( Class clazz, String proto ){
-        return $method.of(proto).listIn(_type.of(clazz));
+    public static final List<_method> list( Class clazz, String... pattern ){
+        return $method.of(pattern).listIn(_type.of(clazz));
     }
     
     /**
@@ -111,9 +111,186 @@ public class $method
     public static final List<_method> list( Class clazz, _method _proto, Predicate<_method> constraint){
         return $method.of(_proto, constraint).listIn(_type.of(clazz) );
     }
+
+    /**
+     * 
+     * @param clazz
+     * @param pattern
+     * @return 
+     */
+    public static final _method first(Class clazz, String... pattern){
+        return $method.of(pattern).firstIn(_type.of(clazz) );
+    }
     
     /**
-     * Removes all occurrences of the source anno in the rootNode (recursively)
+     * 
+     * @param clazz
+     * @param _proto
+     * @return 
+     */
+    public static final _method first(Class clazz, _method _proto){
+        return $method.of(_proto).firstIn(_type.of(clazz) );
+    }
+    
+    /**
+     * 
+     * @param clazz
+     * @param pattern
+     * @param constraint
+     * @return 
+     */
+    public static final _method first(Class clazz, String pattern, Predicate<_method> constraint){
+        return $method.of(pattern, constraint).firstIn(_type.of(clazz) );
+    }
+    
+    /**
+     * 
+     * @param clazz
+     * @param _proto
+     * @param constraint
+     * @return 
+     */
+    public static final _method first(Class clazz, _method _proto, Predicate<_method> constraint){
+        return $method.of(_proto, constraint).firstIn(_type.of(clazz) );
+    }
+    
+    /**
+     * 
+     * @param <N>
+     * @param _n
+     * @param pattern
+     * @return 
+     */
+    public static final <N extends _node> _method first(N _n, String... pattern){
+        return $method.of(pattern).firstIn(_n );
+    }
+    
+    /**
+     * 
+     * @param <N>
+     * @param _n
+     * @param _proto
+     * @return 
+     */
+    public static final<N extends _node> _method first(N _n, _method _proto){
+        return $method.of(_proto).firstIn(_n );
+    }
+    
+    /**
+     * 
+     * @param <N>
+     * @param _n
+     * @param pattern
+     * @param constraint
+     * @return 
+     */
+    public static final <N extends _node> _method first(N _n,  String pattern, Predicate<_method> constraint){
+        return $method.of(pattern, constraint).firstIn(_n );
+    }
+    
+    /**
+     * 
+     * @param <N>
+     * @param _n
+     * @param clazz
+     * @param _proto
+     * @param constraint
+     * @return 
+     */
+    public static final <N extends _node> _method first(N _n, _method _proto, Predicate<_method> constraint){
+        return $method.of(_proto, constraint).firstIn(_n );
+    }
+    
+    /**
+     * 
+     * @param clazz
+     * @param pattern
+     * @return 
+     */
+    public static final Select selectFirst(Class clazz, String... pattern){
+        return $method.of(pattern).selectFirstIn(_type.of(clazz) );
+    }
+    
+    /**
+     * 
+     * @param clazz
+     * @param _proto
+     * @return 
+     */
+    public static final Select selectFirst(Class clazz, _method _proto){
+        return $method.of(_proto).selectFirstIn(_type.of(clazz) );
+    }
+    
+    /**
+     * 
+     * @param clazz
+     * @param pattern
+     * @param selectConstraint
+     * @return 
+     */
+    public static final Select selectFirst(Class clazz, String pattern, Predicate<Select> selectConstraint){
+        return $method.of(pattern).selectFirstIn(_type.of(clazz), selectConstraint );
+    }
+    
+    /**
+     * 
+     * @param clazz
+     * @param _proto
+     * @param selectConstraint
+     * @return 
+     */
+    public static final Select selectFirst(Class clazz, _method _proto, Predicate<Select> selectConstraint){
+        return $method.of(_proto ).selectFirstIn(_type.of(clazz), selectConstraint);
+    }
+    
+    /**
+     * 
+     * @param <N>
+     * @param _n
+     * @param pattern
+     * @return 
+     */
+    public static final <N extends _node> Select selectFirst(N _n, String... pattern){
+        return $method.of(pattern).selectFirstIn(_n);
+    }
+    
+    /**
+     * 
+     * @param <N>
+     * @param _n
+     * @param _proto
+     * @return 
+     */
+    public static final <N extends _node> Select selectFirst(N _n, _method _proto){
+        return $method.of(_proto).selectFirstIn(_n );
+    }
+    
+    /**
+     * 
+     * @param <N>
+     * @param _n
+     * @param pattern
+     * @param selectConstraint
+     * @return 
+     */
+    public static final <N extends _node> Select selectFirst(N _n, String pattern, Predicate<Select> selectConstraint){
+        return $method.of(pattern).selectFirstIn(_n, selectConstraint );
+    }
+    
+    /**
+     * 
+     * @param <N>
+     * @param _proto
+     * @param selectConstraint
+     * @return 
+     */
+   
+    public static final <N extends _node> Select selectFirst(N _n, _method _proto, Predicate<Select> selectConstraint){
+        return $method.of(_proto ).selectFirstIn(_n, selectConstraint);
+    }
+    
+    /**
+     * Removes all occurrences of the prototype method in the rootNode (recursively)
      * @param <N>
      * @param _n
      * @param _proto
@@ -134,7 +311,6 @@ public class $method
         return $method.of(proto).removeIn(_n);
     }
     
-    
     /**
      * Removes all occurrences of the source anno in the rootNode (recursively)
      * @param clazz
@@ -153,7 +329,6 @@ public class $method
     public static final _type remove( Class clazz, String... proto ){
         return $method.of(proto).removeIn(_type.of(clazz));
     }
-    
     
     /**
      * 
@@ -361,6 +536,9 @@ public class $method
         return of(_method.updateBody(_m, le));
     }
 
+    public static $method any(){
+        return new $method(_method.of("$type$ $name$();") );
+    }
     /**
      * 
      * @param _m
@@ -412,8 +590,7 @@ public class $method
 
     public Predicate<_method> constraint = t -> true;
     
-    public $component<_javadoc> javadoc = new $component( "$javadoc$", t->true);
-    //public $component<_annos> annos = new $component( "$annos$", t->true);    
+    public $component<_javadoc> javadoc = new $component( "$javadoc$", t->true);    
     public $annos annos = new $annos();
     public $component<_modifiers> modifiers = new $component( "$modifiers$", t->true);
     public $component<_typeDecl> type = new $component( "$type$", t->true);
@@ -492,30 +669,30 @@ public class $method
     @Override
     public List<String> list$Normalized(){
         List<String>normalized$ = new ArrayList<>();
-        normalized$.addAll( javadoc.$form.list$Normalized() );
+        normalized$.addAll( javadoc.pattern.list$Normalized() );
         normalized$.addAll( annos.list$Normalized() );
-        normalized$.addAll( modifiers.$form.list$Normalized() );
-        normalized$.addAll( typeParameters.$form.list$Normalized() );
-        normalized$.addAll( type.$form.list$Normalized() );        
-        normalized$.addAll( name.$form.list$Normalized() );
-        normalized$.addAll( parameters.$form.list$Normalized() );
-        normalized$.addAll( thrown.$form.list$Normalized() );
-        normalized$.addAll( body.$form.list$Normalized() );
+        normalized$.addAll( modifiers.pattern.list$Normalized() );
+        normalized$.addAll( typeParameters.pattern.list$Normalized() );
+        normalized$.addAll( type.pattern.list$Normalized() );        
+        normalized$.addAll( name.pattern.list$Normalized() );
+        normalized$.addAll( parameters.pattern.list$Normalized() );
+        normalized$.addAll( thrown.pattern.list$Normalized() );
+        normalized$.addAll( body.pattern.list$Normalized() );
         return normalized$.stream().distinct().collect(Collectors.toList());        
     }
 
     @Override
     public List<String> list$(){
         List<String>all$ = new ArrayList<>();
-        all$.addAll( javadoc.$form.list$() );
+        all$.addAll( javadoc.pattern.list$() );
         all$.addAll( annos.list$() );
-        all$.addAll( modifiers.$form.list$() );
-        all$.addAll( typeParameters.$form.list$() );
-        all$.addAll( type.$form.list$() );        
-        all$.addAll( name.$form.list$() );
-        all$.addAll( parameters.$form.list$() );
-        all$.addAll( thrown.$form.list$() );
-        all$.addAll( body.$form.list$() );        
+        all$.addAll( modifiers.pattern.list$() );
+        all$.addAll( typeParameters.pattern.list$() );
+        all$.addAll( type.pattern.list$() );        
+        all$.addAll( name.pattern.list$() );
+        all$.addAll( parameters.pattern.list$() );
+        all$.addAll( thrown.pattern.list$() );
+        all$.addAll( body.pattern.list$() );        
         return all$;
     }
     
@@ -555,12 +732,12 @@ public class $method
     }
     
     public $method noBody(){
-        body.$form = Stencil.of( ";" );
+        body.pattern = Stencil.of( ";" );
         return this;
     }
     
     public $method emptyBody(){
-        body.$form = Stencil.of( "{}" );
+        body.pattern = Stencil.of( "{}" );
         return this;
     }
     
@@ -653,7 +830,6 @@ public class $method
             sb.append( str );
             return _method.of(sb.toString());     
         }        
-        //return _method.of(sb.toString());
     }
     
     /**
@@ -742,15 +918,15 @@ public class $method
      * @return 
      */
     public $method hardcode$( Translator translator, Tokens kvs ) {
-        javadoc.$form = javadoc.$form.hardcode$(translator, kvs);
+        javadoc.pattern = javadoc.pattern.hardcode$(translator, kvs);
         annos = annos.hardcode$(translator, kvs);
-        modifiers.$form = modifiers.$form.hardcode$(translator, kvs);
-        typeParameters.$form = typeParameters.$form.hardcode$(translator, kvs);
-        type.$form = type.$form.hardcode$(translator, kvs);
-        name.$form = name.$form.hardcode$(translator, kvs);
-        parameters.$form = parameters.$form.hardcode$(translator, kvs);
-        thrown.$form = thrown.$form.hardcode$(translator, kvs);
-        body.$form = body.$form.hardcode$(translator, kvs);
+        modifiers.pattern = modifiers.pattern.hardcode$(translator, kvs);
+        typeParameters.pattern = typeParameters.pattern.hardcode$(translator, kvs);
+        type.pattern = type.pattern.hardcode$(translator, kvs);
+        name.pattern = name.pattern.hardcode$(translator, kvs);
+        parameters.pattern = parameters.pattern.hardcode$(translator, kvs);
+        thrown.pattern = thrown.pattern.hardcode$(translator, kvs);
+        body.pattern = body.pattern.hardcode$(translator, kvs);
         
         return this;
     }
@@ -758,15 +934,15 @@ public class $method
     /** Post - parameterize, create a parameter from the target string named $Name#$*/
     @Override
     public $method $(String target, String $Name) {
-        javadoc.$form = javadoc.$form.$(target, $Name);
+        javadoc.pattern = javadoc.pattern.$(target, $Name);
         annos = annos.$(target, $Name);
-        modifiers.$form = modifiers.$form.$(target, $Name);
-        typeParameters.$form = typeParameters.$form.$(target, $Name);
-        type.$form = type.$form.$(target, $Name);
-        name.$form = name.$form.$(target, $Name);
-        parameters.$form = parameters.$form.$(target, $Name);
-        thrown.$form = thrown.$form.$(target, $Name);
-        body.$form = body.$form.$(target, $Name);        
+        modifiers.pattern = modifiers.pattern.$(target, $Name);
+        typeParameters.pattern = typeParameters.pattern.$(target, $Name);
+        type.pattern = type.pattern.$(target, $Name);
+        name.pattern = name.pattern.$(target, $Name);
+        parameters.pattern = parameters.pattern.$(target, $Name);
+        thrown.pattern = thrown.pattern.$(target, $Name);
+        body.pattern = body.pattern.$(target, $Name);        
         return this;
     }
 
@@ -800,6 +976,15 @@ public class $method
     }
 
     /**
+     * returns the first matching method from the source of the _class (or null)
+     * @param clazz
+     * @return 
+     */
+    public _method firstIn( Class clazz){
+        return firstIn(_type.of(clazz));
+    }
+    
+    /**
      * Returns the first _method that matches the pattern and constraint
      * @param _n the _java node
      * @return  the first _method that matches (or null if none found)
@@ -823,6 +1008,25 @@ public class $method
             return _method.of(f.get());
         }
         return null;
+    }
+
+    /**
+     * Returns the first _method that matches the pattern and constraint
+     * @param clazz the runtime class (WITH source available in classpath)
+     * @return  the first _method that matches (or null if none found)
+     */
+    public Select selectFirstIn( Class clazz){
+        return selectFirstIn( _type.of(clazz));
+    }
+    
+    /**
+     * Returns the first _method that matches the pattern and constraint
+     * @param clazz the runtime class (WITH source available in classpath)
+     * @param selectConstraint
+     * @return  the first _method that matches (or null if none found)
+     */
+    public Select selectFirstIn( Class clazz, Predicate<Select> selectConstraint){
+        return selectFirstIn( _type.of(clazz), selectConstraint);
     }
     
     /**
@@ -886,7 +1090,7 @@ public class $method
     }
     
     @Override
-    public List<Select> selectListIn(Node astNode){
+    public List<Select> listSelectedIn(Node astNode){
         List<Select>sts = new ArrayList<>();
         astNode.walk(MethodDeclaration.class, m-> {
             Select sel = select( m );
@@ -898,7 +1102,7 @@ public class $method
     }
 
     @Override
-    public List<Select> selectListIn(_node _n){
+    public List<Select> listSelectedIn(_node _n){
         List<Select>sts = new ArrayList<>();
         Walk.in(_n, MethodDeclaration.class, m -> {
             Select sel = select( m );
@@ -909,6 +1113,31 @@ public class $method
         return sts;
     }
     
+    /**
+     * 
+     * @param clazz
+     * @return 
+     */
+    public List<Select> selectListIn(Class clazz){
+        return listSelectedIn( _type.of(clazz));        
+    }
+    
+    /**
+     * 
+     * @param clazz
+     * @param selectConstraint
+     * @return 
+     */
+    public List<Select> selectListIn(Class clazz, Predicate<Select> selectConstraint){
+        return selectListIn( _type.of(clazz), selectConstraint);        
+    }
+    
+    /**
+     * 
+     * @param astNode
+     * @param selectConstraint
+     * @return 
+     */
     public List<Select> selectListIn(Node astNode, Predicate<Select> selectConstraint){
         List<Select>sts = new ArrayList<>();
         astNode.walk(MethodDeclaration.class, m-> {
@@ -920,6 +1149,12 @@ public class $method
         return sts;
     }
 
+    /**
+     * 
+     * @param _n
+     * @param selectConstraint
+     * @return 
+     */
     public List<Select> selectListIn(_node _n, Predicate<Select> selectConstraint){
         List<Select>sts = new ArrayList<>();
         Walk.in(_n, MethodDeclaration.class, m -> {
@@ -1003,6 +1238,49 @@ public class $method
     
     /**
      * 
+     * @param clazz
+     * @param $replace
+     * @return 
+     */
+    public _type replaceIn(Class clazz,  $method $replace ){
+        return forSelectedIn(_type.of(clazz), s -> {
+            _method repl = $replace.construct(Translator.DEFAULT_TRANSLATOR, s.args);
+            s._m.ast().replace(repl.ast());
+        });
+    }
+
+    /**
+     * 
+     * @param clazz
+     * @param replacementProto
+     * @return 
+     */
+    public _type replaceIn(Class clazz,  String... replacementProto ){
+        return replaceIn(_type.of(clazz), $method.of(replacementProto));        
+    }
+    
+    /**
+     * 
+     * @param clazz
+     * @param method
+     * @return 
+     */
+    public _type replaceIn(Class clazz,  _method method ){
+        return replaceIn(_type.of(clazz), $method.of(method));        
+    }
+    
+    /**
+     * 
+     * @param clazz
+     * @param astMethod
+     * @return 
+     */
+    public _type replaceIn(Class clazz, MethodDeclaration astMethod ){
+        return replaceIn(_type.of(clazz), $method.of(astMethod));        
+    }
+    
+    /**
+     * 
      * @param <N>
      * @param _n
      * @param $replace
@@ -1048,6 +1326,16 @@ public class $method
         return replaceIn(_n, $method.of(astMethod));        
     }
     
+    /**
+     * removes the matching prototype methods from the source of the class
+     * and returns the modified _type
+     * @param clazz
+     * @return 
+     */
+    public _type removeIn(Class clazz){
+        return removeIn(_type.of(clazz));
+    }
+    
     @Override
     public <N extends _node> N removeIn(N _n ){
         Walk.in(_n, MethodDeclaration.class, e-> {
@@ -1070,7 +1358,7 @@ public class $method
         });
         return astNode;
     }
-
+    
     @Override
     public <N extends Node> N forEachIn(N astNode, Consumer<_method> _methodActionFn){
         astNode.walk(MethodDeclaration.class, e-> {
@@ -1093,6 +1381,10 @@ public class $method
         return _n;
     }
 
+    public List<_method> listIn( Class clazz){
+        return listIn(_type.of(clazz));
+    }
+    
     @Override
     public List<_method> listIn(_node _n ){
         return listIn(_n.ast() );

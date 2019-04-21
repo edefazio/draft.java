@@ -143,7 +143,7 @@ public final class _throws
         return this;
     }
 
-    public int count() {
+    public int size() {
         return this.astNodeWithThrows.getThrownExceptions().size();
     }
 

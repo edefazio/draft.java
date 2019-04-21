@@ -138,7 +138,7 @@ public class _fieldTest extends TestCase {
         assertNotNull( _f.getJavadoc() );
         assertTrue( _f.getJavadoc().getContent().contains( "JAVADOC"));
         _annos _as = _f.getAnnos();
-        assertEquals( 2, _as.count() );
+        assertEquals( 2, _as.size() );
         assertTrue( _as.is("@ann(1)", "@ann2(3)") );
         
         assertEquals( _modifiers.of( "public", "static", "final"), _f.getModifiers() );

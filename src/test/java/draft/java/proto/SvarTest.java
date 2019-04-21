@@ -32,7 +32,9 @@ public class SvarTest extends TestCase {
         
         //
         assertEquals( 1, $var.list(Holder.class, (v)-> v.getInitializer().isPresent()).size() );
+        assertEquals( 1, $var.any().selectListIn(Holder.class, s-> s.hasInit()).size() );        
         assertEquals( 4, $var.list(Holder.class, "int $name$").size() );
+        
         assertEquals( 4, $var.ofType(int.class).listIn(Holder.class).size() );
         
         assertEquals( 3, $var.ofType(int.class).selectListIn(Holder.class, s-> s.isFieldVar()).size() );

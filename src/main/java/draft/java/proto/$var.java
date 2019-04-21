@@ -21,6 +21,12 @@ import java.util.function.Predicate;
  *    <LI>FIELDS (member fields defined on a type)
  *    <LI>VARIABLES (variables created within a scope body)
  * </UL>
+ * 
+ * if you would like to operate ONLY on fields, you have the same features on
+ * $field... (use this abstraction instead)
+ * 
+ * if you want to operate ONLY on (local body variables) you can use Select
+ * and 
  */
 public class $var
     implements Template<VariableDeclarator>, $proto<VariableDeclarator> {
@@ -455,7 +461,7 @@ public class $var
      * @return 
      */
     public static final <N extends _node> List<Select> selectList( N _n, String pattern ){
-        return $var.of(pattern).selectListIn(_n);
+        return $var.of(pattern).listSelectedIn(_n);
     }
     
     /**
@@ -463,11 +469,12 @@ public class $var
      * @param <N>
      * @param _n
      * @param pattern
-     * @param constraint
+     * @param selectConstraint
      * @return 
      */
-    public static final <N extends _node> List<Select> selectList( N _n, String pattern, Predicate<VariableDeclarator> constraint){
-        return $var.of(pattern, constraint).selectListIn(_n);
+    public static final <N extends _node> List<Select> selectList( N _n, String pattern, Predicate<Select> selectConstraint){
+        return $var.of(pattern)
+                .selectListIn(_n, selectConstraint);
     }
     
     /**
@@ -478,7 +485,7 @@ public class $var
      * @return 
      */
     public static final <N extends _node> List<Select> selectList( N _n, VariableDeclarator proto ){
-        return $var.of(proto).selectListIn(_n);
+        return $var.of(proto).listSelectedIn(_n);
     }
     
     /**
@@ -490,7 +497,7 @@ public class $var
      * @return 
      */
     public static final <N extends _node> List<Select> selectList( N _n, VariableDeclarator proto, Predicate<VariableDeclarator> constraint){
-        return $var.of(proto, constraint).selectListIn(_n);
+        return $var.of(proto, constraint).listSelectedIn(_n);
     }
     
     /**
@@ -925,11 +932,11 @@ public class $var
     }
 
     public List<Select> selectListIn(Class clazz){
-        return selectListIn(_type.of(clazz));
+        return listSelectedIn(_type.of(clazz));
     }
     
     @Override
-    public List<Select> selectListIn(Node astNode ){
+    public List<Select> listSelectedIn(Node astNode ){
         List<Select>sts = new ArrayList<>();
         astNode.walk(VariableDeclarator.class, e-> {
             Select s = select( e );
@@ -941,7 +948,7 @@ public class $var
     }
 
     @Override
-    public List<Select> selectListIn(_node _n ){
+    public List<Select> listSelectedIn(_node _n ){
         List<Select>sts = new ArrayList<>();
         Walk.in(_n, VariableDeclarator.class, e -> {
             Select s = select( e );
@@ -1224,10 +1231,10 @@ public class $var
         
         /**
          * is this selected var part of a local variable (i.e. declared within a
-         * body or lambda, not a "member" of a Class)
+         * body or lambda, not a "member" of a Class) as apposed to a Field
          * @return 
          */
-        public boolean isBodyVar(){
+        public boolean isLocalVar(){
             return !isFieldVar();
         }
         
@@ -1241,6 +1248,10 @@ public class $var
             }catch(Exception e){
                 return false; 
             }
+        }
+        
+        public boolean hasInit(){
+            return getInit() != null;
         }
         
         public Expression getInit(){
