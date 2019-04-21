@@ -183,6 +183,57 @@ public class $parameters implements Template<_parameters>, $proto<_parameters> {
         return forEachIn( _n, n-> n.forEach( p-> p.ast().remove() ) );
     }
 
+    /**
+     * 
+     * @param <N>
+     * @param astRootNode
+     * @param parametersPattern
+     * @return 
+     */
+    public <N extends Node> N replaceIn(N astRootNode, String...parametersPattern ) {        
+        return replaceIn(astRootNode, $parameters.of(parametersPattern));        
+    }
+
+    /**
+     * 
+     * @param <N>
+     * @param astRootNode
+     * @param $replacementProto
+     * @return 
+     */
+    public <N extends Node> N replaceIn(N astRootNode, $parameters $replacementProto) {
+        
+        return forSelectedIn( astRootNode, s->{            
+            _parameters _replaceParams = $replacementProto.construct(s.args);
+            s._params.astHolder().setParameters(_replaceParams.ast());             
+            } );
+    }
+    
+    /**
+     * 
+     * @param <N>
+     * @param _n
+     * @param parametersPattern
+     * @return 
+     */
+    public <N extends _node> N replaceIn(N _n, String...parametersPattern ) {     
+        return replaceIn(_n, $parameters.of(parametersPattern));    
+    }
+
+    /**
+     * 
+     * @param <N>
+     * @param _n
+     * @param $replacementProto
+     * @return 
+     */
+    public <N extends _node> N replaceIn(N _n, $parameters $replacementProto) {
+        return forSelectedIn( _n, s->{            
+            _parameters _replaceParams = $replacementProto.construct(s.args);
+            s._params.astHolder().setParameters(_replaceParams.ast());             
+            } );
+    }
+    
     @Override
     public <N extends Node> N forEachIn(N astRootNode, Consumer<_parameters> _parametersActionFn) {        
         astRootNode.walk( Node.class, n-> {            

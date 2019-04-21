@@ -1,5 +1,6 @@
 package draft.java.proto;
 
+import draft.java._class;
 import draft.java._parameter._parameters;
 import draft.java._type;
 import junit.framework.TestCase;
@@ -103,5 +104,10 @@ public class SparametersTest extends TestCase {
         }
         assertTrue( $ps.listIn(c.class).size() == 1 );
         assertTrue( $ps.listSelectedIn(c.class).size() == 1 );
+        assertTrue( $ps.listSelectedIn(c.class).get(0).is("p1","tt","p2","z"));
+        
+        _class _c = _class.of(c.class);
+        _type _rep = $ps.replaceIn(_c, $parameters.of("int i"));
+        System.out.println(_rep);
     }
 }
