@@ -271,6 +271,23 @@ public class $parameter implements Template<_parameter>, $proto<_parameter> {
     }
     
     @Override
+    public String toString(){
+        StringBuilder sb = new StringBuilder();
+        sb.append( this.annos.toString() );
+        if( isFinal ){
+            sb.append("final ");
+        }
+        sb.append( type );
+        if( isVarArg ){
+            sb.append("...");
+        }
+        sb.append(" ");
+        sb.append(name);
+        return sb.toString();
+        
+    }
+    
+    @Override
     public _parameter construct(Translator translator, Map<String, Object> keyValues) {
         return _parameter.of( compose(translator, keyValues));
     }
@@ -566,6 +583,7 @@ public class $parameter implements Template<_parameter>, $proto<_parameter> {
             }
         });
     }
+    
     
     
     /**
