@@ -1086,6 +1086,20 @@ public enum Walk {
                     });
             return astRootNode;
         }
+        else if( _modelClass == _parameter._parameters.class ) {
+            Ast.walk( tt,
+                    astRootNode,
+                    Node.class,
+                    n-> n instanceof NodeWithParameters,
+                    n-> {
+                        _parameter._hasParameters hp = (_parameter._hasParameters)_java.of( n );
+                            
+                        if( ((Predicate<_parameter._parameters>)_modelMatchFn).test( hp.getParameters() ) ){
+                            ((Consumer<_parameter._parameters>)_modelAction).accept( hp.getParameters() );
+                        }
+                    });
+            return astRootNode;
+        }
         else if( _modelClass == _receiverParameter._hasReceiverParameter.class ) {
             Ast.walk( tt,
                     astRootNode,
