@@ -506,6 +506,17 @@ public interface $proto<Q> {
             return this;
         }
         
+        public boolean isMatchAny(){
+            if( this.pattern.isMatchAny() ){
+                try{
+                    return this.constraint.test(null);
+                }catch(Exception e){
+                    return false;
+                }
+            }
+            return false;
+        }
+        
         public boolean matches(T t) {
             return decompose(t) != null;
         }
@@ -514,7 +525,7 @@ public interface $proto<Q> {
             
             if (t == null) {
                 /** Null is allowed IF and ONLY If the Stencil $form isMatchAll*/
-                if (pattern.isMatchAll()) {                    
+                if (pattern.isMatchAny()) {                    
                     return Tokens.of(pattern.list$().get(0), "");
                 }
                 return null;
@@ -596,7 +607,6 @@ public interface $proto<Q> {
         }
 
         default boolean is(String key, String value) {
-            //System.out.println( "ARGS "+ getArgs() );
             return getArgs().is(key, value);
         }
 

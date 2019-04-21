@@ -295,13 +295,12 @@ public class $var
         return  astNode;
     }
     
-    
-    
     /**
      * 
      * @param <N>
      * @param _n
      * @param pattern
+     * @param selectConstraint
      * @param varActionFn
      * @return 
      */
@@ -315,6 +314,7 @@ public class $var
      * @param <N>
      * @param astNode
      * @param pattern
+     * @param selectConstraint
      * @param varActionFn
      * @return 
      */
@@ -328,6 +328,7 @@ public class $var
      * @param <N>
      * @param _n
      * @param proto
+     * @param selectConstraint
      * @param varActionFn
      * @return 
      */
@@ -341,6 +342,7 @@ public class $var
      * @param <N>
      * @param astNode
      * @param proto
+     * @param selectConstraint
      * @param varActionFn
      * @return 
      */
@@ -423,7 +425,7 @@ public class $var
      * @param <N>
      * @param _n
      * @param pattern
-     * @param constraint
+     * @param selectConstraint
      * @return 
      */
     public static final <N extends _node> Select selectFirst( N _n, String pattern, Predicate<Select> selectConstraint ){
@@ -446,7 +448,7 @@ public class $var
      * @param <N>
      * @param _n
      * @param proto
-     * @param constraint
+     * @param selectConstraint
      * @return 
      */
     public static final <N extends _node> Select selectFirst( N _n, VariableDeclarator proto, Predicate<Select> selectConstraint){
@@ -911,6 +913,7 @@ public class $var
         return null;
     }
     
+    @Override
     public List<VariableDeclarator> listIn(Class clazz){
         return listIn(_type.of(clazz) );
     }
@@ -1003,6 +1006,7 @@ public class $var
         return sts;
     }
     
+    @Override
     public _type removeIn( Class clazz){
         return removeIn(_type.of(clazz) );
     }
@@ -1164,6 +1168,7 @@ public class $var
         return astNode;
     }
 
+    @Override
     public _type forEachIn( Class clazz, Consumer<VariableDeclarator> varActionFn){
         return forEachIn( _type.of(clazz), varActionFn);
     }

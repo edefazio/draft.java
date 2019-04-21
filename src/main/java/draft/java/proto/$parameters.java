@@ -66,14 +66,31 @@ public class $parameters implements Template<_parameters>, $proto<_parameters> {
     }
 
     public Select select( _parameters _ps ){
-        if( _ps.size() != this.$params.size() ){
-            return null;
-        }
-        
-        
-        //TODO THIS
+        if( this.constraint.test(_ps)){
+            if( this.$params.isEmpty()|| this.$params.size() == 1 && 
+                    this.$params.get(0).isMatchAny() ){
+                return new Select(_ps, new Tokens() );
+            }
+            if( _ps.size() != this.$params.size() ){
+                return null;
+            }
+        }        
         return null;
     } 
+    
+    public boolean isMatchAny(){
+        if( this.$params.isEmpty() || 
+            this.$params.size() == 1 && 
+            this.$params.get(0).isMatchAny() ){
+            
+            try{
+                return constraint.test(null);
+            } catch(Exception e){
+                return false;
+            }    
+        }
+        return false;
+    }
     
     @Override
     public List<String> list$() {

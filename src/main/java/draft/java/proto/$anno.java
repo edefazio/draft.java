@@ -576,6 +576,14 @@ public class $anno
     }
 
     /**
+     * 
+     * @return 
+     */
+    public boolean isMatchAny(){
+        return name.isMatchAny() && ( this.$mvs.size() == 0 || (this.$mvs.size() ==1 && this.$mvs.get(0).isMatchAll() ));
+    }
+    
+    /**
      * Sets the underlying constraint
      * @param constraint
      * @return 
@@ -1045,7 +1053,7 @@ public class $anno
         }
 
         public boolean isMatchAll() {
-            return name.pattern.isMatchAll() && value.pattern.isMatchAll();
+            return name.pattern.isMatchAny() && value.pattern.isMatchAny();
         }
 
         public static $memberValue of(String key, Expression exp) {

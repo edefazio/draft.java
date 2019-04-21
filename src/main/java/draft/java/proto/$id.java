@@ -32,6 +32,21 @@ public class $id {
 
     /**
      * 
+     * @return 
+     */
+    public boolean isMatchAny(){
+        if( this.pattern.isMatchAny()) {
+            try{
+                return this.constraint.test( null );
+            } catch(Exception e){
+                return false;
+            }
+        }
+        return false;
+    }
+    
+    /**
+     * 
      * @param pattern
      */
     public $id(String pattern) {
@@ -96,7 +111,7 @@ public class $id {
             /**
              * Null is allowed IF and ONLY If the Stencil $form isMatchAll
              */
-            if (pattern.isMatchAll()) {
+            if (pattern.isMatchAny()) {
                 return Tokens.of(pattern.list$().get(0), "");
             }
             //System.out.println( "EXPECTED NOT NULL ");

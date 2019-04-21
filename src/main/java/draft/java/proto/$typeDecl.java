@@ -436,6 +436,21 @@ public final class $typeDecl
     }
     
     /**
+     * Will this typeDecl match ALL typeDecl's 
+     * @return 
+     */
+    public boolean isMatchAny(){
+        if( this.typePattern.isMatchAny() ){
+            try{ //test that the predicate is a match all, if we pass in null
+                return this.constraint.test(null);
+            }catch(Exception e){
+                return false;
+            }
+        }
+        return false;
+    }
+    
+    /**
      * SETS/ OVERRIDES the constraint
      * @param constraint the new constraint
      * @return the modified 

@@ -241,6 +241,14 @@ public class $parameter implements Template<_parameter>, $proto<_parameter> {
     }
     
     /**
+     * Will this $parameter match ANY
+     * @return 
+     */
+    public boolean isMatchAny(){
+        return this.annos.isMatchAny() && isFinal != true && isVarArg != true && this.name.isMatchAny() && this.type.isMatchAny();
+    }
+    
+    /**
      * Compose the parameter into a String 
      * @param translator
      * @param keyValues

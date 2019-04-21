@@ -62,6 +62,11 @@ public class $annos
         }        
     }
     
+    
+    public boolean isMatchAny(){
+        return this.$annosList.isEmpty() || 
+            this.$annosList.size() == 1 && this.$annosList.get(0).isMatchAny();
+    }
     /**
      * 
      * @param translator
