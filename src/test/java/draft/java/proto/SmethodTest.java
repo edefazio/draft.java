@@ -13,6 +13,12 @@ import junit.framework.TestCase;
 
 public class SmethodTest extends TestCase {
             
+    
+    public void testSetTest(){
+        $method SET = $method.of("public void set$Name$( $type$ $name$ ) {this.$name$ = $name$;}");
+        System.out.println( SET.construct("type",int.class, "name", "x") );
+    }
+    
     interface I{
         void noBody();
         
@@ -106,6 +112,7 @@ public class SmethodTest extends TestCase {
         //rebuild
         _c = _class.of(Loc.class);
         
+        $set.listSelectedIn(_c).get(0).is("type", int.class);
         // call replace with a setFluent prototype
         $set.replaceIn(_c, $setFleunt.hardcode$("className", "Loc") );
         

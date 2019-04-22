@@ -92,10 +92,20 @@ public final class _class implements _type<ClassOrInterfaceDeclaration, _class>,
         throw new DraftException("Abstract or synthetic classes are not supported"+ clazz);
     }
 
+    /**
+     * return a _class from this input
+     * @param in
+     * @return 
+     */
     public static _class of( _in in ){
         return of( in.getInputStream() );
     }
 
+    /**
+     * create and return a _class representing the Class source within the inputStream
+     * @param is
+     * @return 
+     */
     public static _class of( InputStream is ){
         return (_class)_type.of(is);
     }
@@ -165,6 +175,11 @@ public final class _class implements _type<ClassOrInterfaceDeclaration, _class>,
         throw new DraftException("No Class Body for Anonymous Object containing a Local class to build");
     }
 
+    /**
+     * Return the _class represented by this single line ClassDef
+     * @param classDef
+     * @return 
+     */
     public static _class of( String classDef){
         return of( new String[]{classDef});
     }
@@ -199,7 +214,7 @@ public final class _class implements _type<ClassOrInterfaceDeclaration, _class>,
                         shortcutClass = shortcutClass + "{}";
                     }
                     return of( Ast.compilationUnit( "package "+packageName+";"+System.lineSeparator()+
-                            "public class "+shortcutClass));
+                        "public class "+shortcutClass));
                 }
                 if(!shortcutClass.endsWith("}")){
                     shortcutClass = shortcutClass + "{}";
@@ -215,11 +230,16 @@ public final class _class implements _type<ClassOrInterfaceDeclaration, _class>,
         return of( Ast.compilationUnit( classDef ));
     }
 
-    public static _class of( TypeDeclaration td ){
-        if( td instanceof ClassOrInterfaceDeclaration && !td.asClassOrInterfaceDeclaration().isInterface() ) {
-            return new _class( (ClassOrInterfaceDeclaration)td);
+    /**
+     * return the _class represented by this Ast TypeDeclaration
+     * @param astTypeDecl the ast type declaration
+     * @return the _class representing the TypeDeclaration
+     */
+    public static _class of( TypeDeclaration astTypeDecl ){
+        if( astTypeDecl instanceof ClassOrInterfaceDeclaration && !astTypeDecl.asClassOrInterfaceDeclaration().isInterface() ) {
+            return new _class( (ClassOrInterfaceDeclaration)astTypeDecl);
         }
-        throw new DraftException("Expected AST ClassOrInterfaceDeclaration as Class, got "+ td.getClass() );        
+        throw new DraftException("Expected AST ClassOrInterfaceDeclaration as Class, got "+ astTypeDecl.getClass() );        
     }
     
     public static _class of( CompilationUnit cu ){
@@ -292,8 +312,10 @@ public final class _class implements _type<ClassOrInterfaceDeclaration, _class>,
                 if( bd instanceof MethodDeclaration ){
                     MethodDeclaration md = (MethodDeclaration)bd;
                     if( md.getNameAsString().equals(_c.getName() ) && md.getType().isVoidType() ){
+                    //if( _method.of(md).hasAnno(_ctor.class) ){
                         //this is REALLY a method that is a constructor
-                        _c.ast().addMember( _ctor.Macro.fromMethod(md) );
+                        //_c.ast().addMember( _ctor.Macro.fromMethod(md) );
+                        _c.constructor(_constructor.of(_ctor.Macro.fromMethod(md)));
                     } else{
                         _c.ast().addMember( bd );    
                     }
@@ -637,6 +659,7 @@ public final class _class implements _type<ClassOrInterfaceDeclaration, _class>,
         return _annos.of(this.astClass );
     }
 
+    @Override
     public boolean is( String...classDeclaration){
         try{
             _class _o = of( classDeclaration );
@@ -646,6 +669,7 @@ public final class _class implements _type<ClassOrInterfaceDeclaration, _class>,
         }
     }
 
+    @Override
     public boolean is( ClassOrInterfaceDeclaration astC ){
         try{
             _class _o = of( astC );

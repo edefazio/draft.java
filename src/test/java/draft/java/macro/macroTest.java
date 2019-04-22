@@ -110,6 +110,7 @@ public class macroTest extends TestCase {
             static final int r = 100; //no setter
         }
         _class _c = _class.of(A.class);
+        System.out.println( _c );
         assertTrue( _c.getMethod("setX").getParameter(0).isType(int.class));
         assertTrue( _c.getMethod("setG").getParameter(0).isType(String.class));
         assertNull( _c.getMethod("setFin") );

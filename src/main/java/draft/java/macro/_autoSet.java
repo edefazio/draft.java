@@ -26,7 +26,7 @@ public @interface _autoSet {
 
         /** template method for a setXXX() method */
         public static $method $SET = $method.of(
-                "public void set$Name$($type$ $name$){ this.$name$ = $name$; }" );
+            "public void set$Name$($type$ $name$){ this.$name$ = $name$; }" );
 
         @Override
         public _type apply(_type _t) {

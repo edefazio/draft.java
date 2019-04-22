@@ -528,7 +528,7 @@ public final class $typeDecl
      * @return 
      */
     public $typeDecl hardcode$( Translator translator, Tokens kvs ) {
-        this.typePattern.hardcode$(translator,kvs);
+        this.typePattern = this.typePattern.hardcode$(translator,kvs);
         return this;
     }
     

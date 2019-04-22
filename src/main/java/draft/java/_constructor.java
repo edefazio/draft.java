@@ -66,6 +66,8 @@ public final class _constructor implements _anno._hasAnnos<_constructor>,
         if( theMethod.hasJavaDocComment() ){
             _ct.javadoc(theMethod.getJavadocComment().get());
         }
+        System.out.println( "Setting throws");
+        _ct.setThrows( theMethod.getThrownExceptions() );
         _ct.annotate( theMethod.getAnnotations()); //add annos
         _ct.removeAnnos(_ctor.class); //remove the _ctor anno if it exists
         _ct.setBody( theMethod.getBody().get() ); //BODY
@@ -218,10 +220,12 @@ public final class _constructor implements _anno._hasAnnos<_constructor>,
         return this;
     }
 
+    @Override
     public _typeParameters getTypeParameters() {
         return _typeParameters.of( this.astCtor );
     }
 
+    @Override
     public boolean hasTypeParameters() {
         return this.astCtor.getTypeParameters().isNonEmpty();
     }
@@ -482,6 +486,7 @@ public final class _constructor implements _anno._hasAnnos<_constructor>,
             if(theMethod.isPrivate()){
                 _ct.setPrivate();
             }
+            _ct.setThrows( theMethod.getThrownExceptions() ); 
             _ct.setBody( theMethod.getBody().get() ); //BODY
             _ct.annotate( theMethod.getAnnotations() ); //ANNOTATIONS
             if( theMethod.hasJavaDocComment() ){
@@ -497,7 +502,6 @@ public final class _constructor implements _anno._hasAnnos<_constructor>,
          * @return 
          */
         T constructor( ConstructorDeclaration astConstructor );
-
 
         /**
          * Build & Add a constructor from the String representation of the code

@@ -9,7 +9,6 @@ import draft.DraftException;
 import draft.java.Walk;
 import draft.java._constructor;
 import draft.java._method;
-import draft.java._type;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
@@ -28,7 +27,7 @@ import java.util.List;
  *     _class _c = _class.of("aaaa.bbbb.C", new Object(){
  *         public @_final int x;
  *
- *         public @_ctor void C( int x){
+ *         public @_ctor void m( int x){
  *             this.x = x;
  *         }
  *     }
@@ -75,6 +74,8 @@ public @interface _ctor {
                 _ct.annotate(_m.ast().getAnnotations() );
             }
             _ct.setBody( _m.getBody() );
+            _ct.setThrows(_m.ast().getThrownExceptions());
+            _ct.setTypeParameters(_m.getTypeParameters());
             if( _m.hasJavadoc() ){
                 _ct.ast().setJavadocComment(_m.ast().getJavadocComment().get());
             }

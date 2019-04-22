@@ -28,9 +28,6 @@ public final class $constructor
 
     public Stencil javadocPattern;
 
-    
-    //public $annos annos;
-    
     /** Additional matching constraint on the constructor */
     public Predicate<_constructor> constraint = t -> true;
     
@@ -82,11 +79,11 @@ public final class $constructor
         StackTraceElement ste = Thread.currentThread().getStackTrace()[2];
         ObjectCreationExpr oce = Expr.anonymousObject( ste );
         MethodDeclaration theMethod = (MethodDeclaration)
-                oce.getAnonymousClassBody().get().stream().filter(m -> m instanceof MethodDeclaration &&
-                        !m.isAnnotationPresent(_remove.class) ).findFirst().get();
+            oce.getAnonymousClassBody().get().stream().filter(m -> m instanceof MethodDeclaration &&
+                !m.isAnnotationPresent(_remove.class) ).findFirst().get();
 
         _constructor _ct = _constructor.of(theMethod.getNameAsString());
-        _ct.annotate( theMethod.getAnnotations() );
+        //_ct.annotate( theMethod.getAnnotations() );
         if( theMethod.hasJavaDocComment() ){
             _ct.ast().setJavadocComment( theMethod.getJavadocComment().get() );
         }
@@ -94,6 +91,10 @@ public final class $constructor
         theMethod.getParameters().forEach( p -> _ct.addParameter(p)); //params
         _ct.ast().setModifiers( Ast.merge( _ct.ast().getModifiers(), theMethod.getModifiers() ) );
         //_ct.ast().getModifiers().addAll( theMethod.getModifiers() ); //MODIFIERS
+        //if( theMethod.hasJavaDocComment() ){
+        //    _ct.javadoc(theMethod.getJavadocComment().get());
+        //}
+        _ct.annotate( theMethod.getAnnotations()); //add annos        
         _ct.ast().setBody( theMethod.getBody().get()); //BODY
         _ct.removeAnnos(_ctor.class);
         return of( _ct );

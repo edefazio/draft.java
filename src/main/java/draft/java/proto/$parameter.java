@@ -283,8 +283,14 @@ public class $parameter implements Template<_parameter>, $proto<_parameter> {
         }
         sb.append(" ");
         sb.append(name);
-        return sb.toString();
-        
+        return sb.toString();        
+    }
+    
+    public $parameter hardcode$(Object...keyValues){
+        this.name.hardcode$(keyValues);
+        this.annos.hardcode$(Translator.DEFAULT_TRANSLATOR, keyValues);
+        this.type.hardcode$(keyValues);
+        return this;
     }
     
     @Override

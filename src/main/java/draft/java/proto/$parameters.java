@@ -58,19 +58,24 @@ public class $parameters implements Template<_parameters>, $proto<_parameters> {
     
     @Override
     public _parameters construct(Translator translator, Map<String, Object> keyValues) {
-        if( this.isMatchAny() ){
-            if( keyValues.containsKey("parameters")){
-                return _parameters.of((String)(keyValues.get("parameters")).toString());
-            } else{
-                return _parameters.of();
-            }
-        }
+        System.out.println("IN CONSTRUCT PARAMETERS WITH "+$params.size());
+        
         _parameters _ps = _parameters.of();
         
         for(int i=0;i<$params.size(); i++){            
             _ps.add($params.get(i).construct(translator, keyValues));
         }
         return _ps;
+        /*
+        if( this.isMatchAny() ){
+            System.out.println( "Its Match any");
+            if( keyValues.containsKey("parameters")){
+                return _parameters.of((String)(keyValues.get("parameters")).toString());
+            } else{
+                return _parameters.of();
+            }
+        }
+        */
     }
 
     @Override
@@ -93,13 +98,16 @@ public class $parameters implements Template<_parameters>, $proto<_parameters> {
     
     public Select select( _parameters _ps ){
         if( this.constraint.test(_ps)){
+            
             if( this.$params.isEmpty() ){
                 return new Select(_ps, Tokens.of("parameters", _ps.toString() ));
             }
+            /*
             if( this.$params.size() == 1 && 
                 this.$params.get(0).isMatchAny() ){
                 return new Select(_ps, Tokens.of("parameters", _ps.toString() ));
-            }                
+            } 
+            */
             if( _ps.size() != this.$params.size() ){
                 return null;
             }
@@ -115,6 +123,28 @@ public class $parameters implements Template<_parameters>, $proto<_parameters> {
             return new Select(_ps, ts);
         }        
         return null;
+    } 
+    
+     public Tokens decomposeTo(_parameters p, Tokens all) {
+        if (all == null) { /* Skip decompose if the tokens already null*/
+            return null;
+        }
+            
+        Select sel = select(p);
+        if( sel != null ){
+            if( all.isConsistent(sel.args.asTokens())){
+                System.out.println("adding "+sel.args.asTokens() );
+                all.putAll(sel.args.asTokens());
+                return all;
+            }
+        }
+        return null;        
+    }
+    
+     
+    public $parameters hardcode$(Object...keyValues){
+        this.$params.forEach(p -> p.hardcode$(keyValues));
+        return this;
     } 
     
     public boolean isMatchAny(){
@@ -295,6 +325,7 @@ public class $parameters implements Template<_parameters>, $proto<_parameters> {
         return _n;        
     }
     
+    @Override
     public String toString(){
         if( isMatchAny() ){
             return "( $any$ )";

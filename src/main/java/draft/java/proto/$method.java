@@ -19,7 +19,7 @@ import java.util.function.*;
 import java.util.stream.Collectors;
 
 /**
- * Template for a Java {@link _method}
+ * prototype/template for a Java {@link _method}
  */
 public class $method
     implements Template<_method>, $proto<_method> {
@@ -192,7 +192,6 @@ public class $method
      * 
      * @param <N>
      * @param _n
-     * @param clazz
      * @param _proto
      * @param constraint
      * @return 
@@ -280,11 +279,11 @@ public class $method
     /**
      * 
      * @param <N>
+     * @param _n
      * @param _proto
      * @param selectConstraint
      * @return 
-     */
-   
+     */   
     public static final <N extends _node> Select selectFirst(N _n, _method _proto, Predicate<Select> selectConstraint){
         return $method.of(_proto ).selectFirstIn(_n, selectConstraint);
     }
@@ -596,7 +595,8 @@ public class $method
     public $component<_typeDecl> type = new $component( "$type$", t->true);
     public $component<_typeParameters> typeParameters = new $component( "$typeParameters$", t->true);
     public $component<String> name = new $component( "$name$", t->true);    
-    public $component<_parameters> parameters = new $component( "$parameters$", t-> true);
+    //public $component<_parameters> parameters = new $component( "$parameters$", t-> true);
+    public $parameters parameters = $parameters.of();
     public $component<_throws> thrown = new $component( "$throws$", t-> true);
     public $component<_body> body = new $component("$body$", t->true);
     
@@ -632,7 +632,8 @@ public class $method
         }
         name = new $component(_m.getName());
         if( _m.hasParameters() ){
-            parameters = new $component( _m.getParameters().toString() );
+            parameters = $parameters.of(_m.getParameters());
+            //parameters = new $component( _m.getParameters().toString() );
         }        
         if( _m.hasThrows() ){
             final _throws ths = _m.getThrows();
@@ -675,7 +676,7 @@ public class $method
         normalized$.addAll( typeParameters.pattern.list$Normalized() );
         normalized$.addAll( type.pattern.list$Normalized() );        
         normalized$.addAll( name.pattern.list$Normalized() );
-        normalized$.addAll( parameters.pattern.list$Normalized() );
+        normalized$.addAll( parameters.list$Normalized() );
         normalized$.addAll( thrown.pattern.list$Normalized() );
         normalized$.addAll( body.pattern.list$Normalized() );
         return normalized$.stream().distinct().collect(Collectors.toList());        
@@ -690,7 +691,7 @@ public class $method
         all$.addAll( typeParameters.pattern.list$() );
         all$.addAll( type.pattern.list$() );        
         all$.addAll( name.pattern.list$() );
-        all$.addAll( parameters.pattern.list$() );
+        all$.addAll( parameters.list$() );
         all$.addAll( thrown.pattern.list$() );
         all$.addAll( body.pattern.list$() );        
         return all$;
@@ -800,7 +801,7 @@ public class $method
         sb.append(" ");
         sb.append( name.compose(translator, base));
         sb.append(" ");
-        sb.append( parameters.compose(translator, base));
+        sb.append( parameters.construct(translator, base));
         sb.append(" ");
         sb.append( thrown.compose(translator, base));
         sb.append(System.lineSeparator());
@@ -924,7 +925,7 @@ public class $method
         typeParameters.pattern = typeParameters.pattern.hardcode$(translator, kvs);
         type.pattern = type.pattern.hardcode$(translator, kvs);
         name.pattern = name.pattern.hardcode$(translator, kvs);
-        parameters.pattern = parameters.pattern.hardcode$(translator, kvs);
+        parameters = parameters.hardcode$(translator, kvs);
         thrown.pattern = thrown.pattern.hardcode$(translator, kvs);
         body.pattern = body.pattern.hardcode$(translator, kvs);
         
@@ -940,7 +941,7 @@ public class $method
         typeParameters.pattern = typeParameters.pattern.$(target, $Name);
         type.pattern = type.pattern.$(target, $Name);
         name.pattern = name.pattern.$(target, $Name);
-        parameters.pattern = parameters.pattern.$(target, $Name);
+        parameters = parameters.$(target, $Name);
         thrown.pattern = thrown.pattern.$(target, $Name);
         body.pattern = body.pattern.$(target, $Name);        
         return this;
@@ -1288,7 +1289,7 @@ public class $method
      */
     public <N extends _node> N replaceIn( N _n, $method $replace ){
         return forSelectedIn(_n, s -> {
-            _method repl = $replace.construct(Translator.DEFAULT_TRANSLATOR, s.args);
+            _method repl = $replace.construct(Translator.DEFAULT_TRANSLATOR, s.args.asTokens());
             s._m.ast().replace(repl.ast());
         });
     }

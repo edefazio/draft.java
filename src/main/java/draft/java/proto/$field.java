@@ -4,12 +4,15 @@ import com.github.javaparser.ast.Node;
 import com.github.javaparser.ast.body.FieldDeclaration;
 import com.github.javaparser.ast.body.VariableDeclarator;
 import com.github.javaparser.ast.expr.Expression;
+import com.github.javaparser.ast.expr.ObjectCreationExpr;
 import com.github.javaparser.ast.type.Type;
 import draft.*;
 import draft.java.Expr;
 import draft.java._anno._annos;
 import draft.java.*;
 import draft.java._model._node;
+import draft.java.macro._macro;
+import draft.java.macro._remove;
 import draft.java.proto.$proto.$component;
 import java.lang.annotation.Annotation;
 import java.util.*;
@@ -401,6 +404,24 @@ public class $field implements Template<_field>, $proto<_field> {
         return of (_field.of(" $type$ $name$;") );
     }
         
+    public static final $field of( Object anonymousObjectWithField ){
+        StackTraceElement ste = Thread.currentThread().getStackTrace()[2];
+        ObjectCreationExpr oce = Expr.anonymousObject(ste);
+        FieldDeclaration fd = (FieldDeclaration) oce.getAnonymousClassBody().get().stream().filter(bd -> bd instanceof FieldDeclaration
+                && !bd.getAnnotationByClass(_remove.class).isPresent()).findFirst().get();
+
+        //add the field to a class so I can run macros
+        _class _c = _class.of("Temp").add(_field.of(fd.clone().getVariable(0)));
+        _macro.to(anonymousObjectWithField.getClass(), _c);
+
+        return of( _c.getField(0) );        
+    }
+    
+ 
+    public static $field of(String field ){
+        return of( _field.of(field));
+    }
+    
     public static $field of( String...field ){
         return of( _field.of(field));
     }

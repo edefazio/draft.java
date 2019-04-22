@@ -495,6 +495,11 @@ public interface $proto<Q> {
         public String compose( Translator t, Map<String,Object> keyValues ){
             return this.pattern.construct(t, keyValues);
         }
+        
+        public $component hardcode$(Object...keyValues){
+            this.pattern = this.pattern.hardcode$(keyValues);
+            return this;
+        }
                 
         /**
          * 
