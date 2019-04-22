@@ -15,6 +15,7 @@ import draft.java._model.*;
 import draft.java._anno.*;
 import draft.java._parameter.*;
 import draft.java._typeParameter.*;
+import draft.java.macro._ctor;
 import draft.java.macro._remove;
 
 import java.util.*;
@@ -46,7 +47,7 @@ public final class _constructor implements _anno._hasAnnos<_constructor>,
      */
     public static _constructor of(Object anonymousObjectBody ){
         StackTraceElement ste = Thread.currentThread().getStackTrace()[2];
-        ObjectCreationExpr oce = Expr.anonymousObject( ste );
+        ObjectCreationExpr oce = Expr.anonymousObject( ste );        
         MethodDeclaration theMethod = (MethodDeclaration)
             oce.getAnonymousClassBody().get().stream().filter(m -> m instanceof MethodDeclaration &&
                 !m.isAnnotationPresent(_remove.class) ).findFirst().get();
@@ -62,6 +63,11 @@ public final class _constructor implements _anno._hasAnnos<_constructor>,
         if(theMethod.isPrivate()){
             _ct.setPrivate();
         }
+        if( theMethod.hasJavaDocComment() ){
+            _ct.javadoc(theMethod.getJavadocComment().get());
+        }
+        _ct.annotate( theMethod.getAnnotations()); //add annos
+        _ct.removeAnnos(_ctor.class); //remove the _ctor anno if it exists
         _ct.setBody( theMethod.getBody().get() ); //BODY
         return _ct;
     }
