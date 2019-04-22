@@ -1,6 +1,7 @@
 package draft.java.macro;
 
 //import com.github.javaparser.ast.Node;
+import com.github.javaparser.ast.Node;
 import com.github.javaparser.ast.body.ConstructorDeclaration;
 import com.github.javaparser.ast.body.MethodDeclaration;
 import com.github.javaparser.ast.body.TypeDeclaration;
@@ -8,6 +9,7 @@ import draft.DraftException;
 import draft.java.Walk;
 import draft.java._constructor;
 import draft.java._method;
+import draft.java._type;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
@@ -94,6 +96,9 @@ public @interface _ctor {
             if( ! removed ){
                 throw new DraftException("Unable to remove "+_m+" from parent TYPE");
             }
+            // set the name of the constructor to the name of 
+            // the parent type (since it's no longer a method 
+            _ct.name(astParentType.getNameAsString());
             //note this is dangerous, seeing as _m is removed... but we'll return it
             return _m;
         }
