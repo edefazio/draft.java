@@ -1,6 +1,5 @@
 package draft.java;
 
-import java.io.File;
 import java.io.IOException;
 import java.io.Serializable;
 import java.util.*;
@@ -223,12 +222,12 @@ public class _classTest extends TestCase {
 
     public void testImports(){
         _class _c = _class.of("aaaa.b.C")
-                .importStatic( System.class )
-                .main( "out.println(111);");
+            .importStatic( System.class )
+            .main( "out.println(111);");
         _javac.of(_c);
 
         _c = _class.of("G").imports("java.util.*")
-                .main(()-> System.out.println(UUID.randomUUID()));
+            .main(()-> System.out.println(UUID.randomUUID()));
         _javac.of(_c);
         //_proxy.of(_c).main();
 
@@ -577,6 +576,11 @@ public class _classTest extends TestCase {
         //_c = _class.of("aaaa.V").method("myMethod", (String a, Map<Integer,String>mi)-> System.out.println("a : "+a+" "+ mi));
 
     }
+    
+    @interface annotat{
+        
+    }
+    
     public void testConstructorLambda(){
         //_class _c = _class.of("aaaa.bbbb.C").constructor(()->System.out.println("in constructor"));
         _class _c = _class.of("aaaa.bbbb.C").constructor(new Object(){ public void m(){ System.out.println("in constructor");} });
@@ -588,7 +592,8 @@ public class _classTest extends TestCase {
 
         //_c = _class.of("D").constructor((final @_annotat String s)->System.out.println("in constructor with "+s));
         //_c = _class.of("D").constructor(new Object(final @_annotat String s)->System.out.println("in constructor with "+s));
-        _c = _class.of("D").constructor(new Object(){ public void c(String s){System.out.println("in constructor with "+s);} } );
+        _c = _class.of("D").constructor(new Object(){ public void c(final @annotat String s){System.out.println("in constructor with "+s);} } );
+        assertTrue( _c.getConstructor(0).getParameter("s").hasAnno(annotat.class));
         System.out.println( _c );
     }
 

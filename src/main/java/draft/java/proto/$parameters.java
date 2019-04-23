@@ -58,7 +58,7 @@ public class $parameters implements Template<_parameters>, $proto<_parameters> {
     
     @Override
     public _parameters construct(Translator translator, Map<String, Object> keyValues) {
-        System.out.println("IN CONSTRUCT PARAMETERS WITH "+$params.size());
+        //System.out.println("IN CONSTRUCT PARAMETERS WITH "+$params.size());
         
         _parameters _ps = _parameters.of();
         

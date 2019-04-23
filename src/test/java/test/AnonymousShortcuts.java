@@ -85,6 +85,24 @@ public class AnonymousShortcuts extends TestCase {
             }
         });        
         System.out.println( _c );
+        /*
+        $constructor $c = $constructor.of( new Object(){
+            private int a, b;
+            
+            /**
+             * Some Javadoc 
+             * @param a
+             * @param b
+          
+            @Deprecated
+            public void C(int a, final int b){
+                this.a = a;
+                this.b = b;
+            }
+        });        
+        System.out.println( $c.construct() );  
+        */
+        
         $constructor $c = $constructor.of( new Object(){
             private int a, b;
             
@@ -99,7 +117,8 @@ public class AnonymousShortcuts extends TestCase {
                 this.b = b;
             }
         });        
-        System.out.println( $c.construct() );        
+        System.out.println( $c.construct() );  
+        
     }
     
     /**

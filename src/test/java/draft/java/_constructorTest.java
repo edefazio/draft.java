@@ -1,5 +1,6 @@
 package draft.java;
 
+import draft.java.macro._public;
 import draft.java.runtime._javac;
 import junit.framework.TestCase;
 
@@ -9,6 +10,15 @@ import junit.framework.TestCase;
  */
 public class _constructorTest extends TestCase {
 
+    public void testConstructorWithAnnoMacros(){
+        _constructor _ct = _constructor.of( new Object(){
+            @_public void m(){
+                System.out.println( " M ");
+            }
+        });
+        assertTrue( _ct.isPublic() );
+    }
+    
     enum E{
         A;
 

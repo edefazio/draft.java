@@ -1,70 +1,386 @@
 package draft.java.proto;
 
 import com.github.javaparser.ast.Node;
-import com.github.javaparser.ast.NodeList;
 import com.github.javaparser.ast.body.ConstructorDeclaration;
 import com.github.javaparser.ast.body.MethodDeclaration;
-import com.github.javaparser.ast.expr.Expression;
-import com.github.javaparser.ast.expr.ObjectCreationExpr;
-import com.github.javaparser.ast.stmt.BlockStmt;
-import com.github.javaparser.ast.stmt.Statement;
+import com.github.javaparser.ast.expr.*;
+import com.github.javaparser.ast.stmt.*;
+import com.github.javaparser.printer.PrettyPrinterConfiguration;
 import draft.*;
 import draft.java.*;
 import draft.java._model._node;
-import draft.java.macro._ctor;
+import draft.java._typeParameter._typeParameters;
+import draft.java.macro._macro;
 import draft.java.macro._remove;
 
 import java.util.*;
-import java.util.concurrent.atomic.AtomicBoolean;
-import java.util.function.Consumer;
-import java.util.function.Predicate;
+import java.util.function.*;
+import java.util.stream.Collectors;
 
 /**
- * Prototype for a Java constructor
- *
+ * prototype/template for a Java {@link _constructor}
  */
-public final class $constructor
+public class $constructor
     implements Template<_constructor>, $proto<_constructor> {
-
-    public Stencil javadocPattern;
-
-    /** Additional matching constraint on the constructor */
-    public Predicate<_constructor> constraint = t -> true;
+       
+    /**
+     * 
+     * @param <N>
+     * @param _n
+     * @param pattern
+     * @return 
+     */
+    public static final <N extends _node> List<_constructor> list( N _n, String... pattern ){
+        return $constructor.of(pattern).listIn(_n);
+    }
     
-    /** stencil for the signature of the constructor */
-    public Stencil signaturePattern;
+    /**
+     * 
+     * @param <N>
+     * @param _n
+     * @param _proto
+     * @return 
+     */
+    public static final <N extends _node> List<_constructor> list( N _n, _constructor _proto ){
+        return $constructor.of(_proto).listIn(_n);
+    }
     
-    /** stencil for the body of the constructor */
-    public $snip $body;
+    /**
+     * 
+     * @param <N>
+     * @param _n
+     * @param pattern
+     * @param constraint
+     * @return 
+     */
+    public static final <N extends _node> List<_constructor> list( N _n, String pattern, Predicate<_constructor> constraint){
+        return $constructor.of(pattern, constraint).listIn(_n);
+    }
+    
+    /**
+     * 
+     * @param <N>
+     * @param _n
+     * @param _proto
+     * @param constraint
+     * @return 
+     */
+    public static final <N extends _node> List<_constructor> list( N _n, _constructor _proto, Predicate<_constructor> constraint){
+        return $constructor.of(_proto, constraint).listIn(_n);
+    }
+    
+    /**
+     * 
+     * @param clazz
+     * @param pattern
+     * @return 
+     */
+    public static final List<_constructor> list( Class clazz, String... pattern ){
+        return $constructor.of(pattern).listIn(_type.of(clazz));
+    }
+    
+    /**
+     * 
+     * @param clazz
+     * @param _proto
+     * @return 
+     */
+    public static final List<_constructor> list(Class clazz, _constructor _proto ){
+        return $constructor.of(_proto).listIn(_type.of(clazz));
+    }
+    
+    /**
+     * 
+     * @param clazz
+     * @param proto
+     * @param constraint
+     * @return 
+     */
+    public static final List<_constructor> list( Class clazz, String proto, Predicate<_constructor> constraint){
+        return $constructor.of(proto, constraint).listIn(_type.of(clazz) );
+    }
+    
+    /**
+     *
+     * @param clazz
+     * @param _proto
+     * @param constraint
+     * @return 
+     */
+    public static final List<_constructor> list( Class clazz, _constructor _proto, Predicate<_constructor> constraint){
+        return $constructor.of(_proto, constraint).listIn(_type.of(clazz) );
+    }
 
     /**
      * 
-     * @param _c
+     * @param clazz
+     * @param pattern
      * @return 
      */
-    public static $constructor of(_constructor _c ){
-        return new $constructor( _c, t->true);
+    public static final _constructor first(Class clazz, String... pattern){
+        return $constructor.of(pattern).firstIn(_type.of(clazz) );
     }
     
-    public static $constructor of(_constructor _c, Predicate<_constructor> constraint ){
-        return new $constructor( _c, constraint);
-    }
-
-    public static $constructor of(String...pattern ){
-        return new $constructor(_constructor.of(pattern), t-> true);
-    }
-
-    public static $constructor of( String pattern ){
-        return of(new String[]{pattern});
-    }
-
-    public static $constructor of( String pattern, Predicate<_constructor> constraint ){
-        return new $constructor( _constructor.of(pattern), constraint );
+    /**
+     * 
+     * @param clazz
+     * @param _proto
+     * @return 
+     */
+    public static final _constructor first(Class clazz, _constructor _proto){
+        return $constructor.of(_proto).firstIn(_type.of(clazz) );
     }
     
-    public static $constructor of( Predicate<_constructor> constraint ){
-        return new $constructor( _constructor.of("c(){}"), constraint )
-                .$(_constructor.of("c(){}").toString(), "any");
+    /**
+     * 
+     * @param clazz
+     * @param pattern
+     * @param constraint
+     * @return 
+     */
+    public static final _constructor first(Class clazz, String pattern, Predicate<_constructor> constraint){
+        return $constructor.of(pattern, constraint).firstIn(_type.of(clazz) );
+    }
+    
+    /**
+     * 
+     * @param clazz
+     * @param _proto
+     * @param constraint
+     * @return 
+     */
+    public static final _constructor first(Class clazz, _constructor _proto, Predicate<_constructor> constraint){
+        return $constructor.of(_proto, constraint).firstIn(_type.of(clazz) );
+    }
+    
+    /**
+     * 
+     * @param <N>
+     * @param _n
+     * @param pattern
+     * @return 
+     */
+    public static final <N extends _node> _constructor first(N _n, String... pattern){
+        return $constructor.of(pattern).firstIn(_n );
+    }
+    
+    /**
+     * 
+     * @param <N>
+     * @param _n
+     * @param _proto
+     * @return 
+     */
+    public static final<N extends _node> _constructor first(N _n, _constructor _proto){
+        return $constructor.of(_proto).firstIn(_n );
+    }
+    
+    /**
+     * 
+     * @param <N>
+     * @param _n
+     * @param pattern
+     * @param constraint
+     * @return 
+     */
+    public static final <N extends _node> _constructor first(N _n, String pattern, Predicate<_constructor> constraint){
+        return $constructor.of(pattern, constraint).firstIn(_n );
+    }
+    
+    /**
+     * 
+     * @param <N>
+     * @param _n
+     * @param _proto
+     * @param constraint
+     * @return 
+     */
+    public static final <N extends _node> _constructor first(N _n, _constructor _proto, Predicate<_constructor> constraint){
+        return $constructor.of(_proto, constraint).firstIn(_n );
+    }
+    
+    /**
+     * 
+     * @param clazz
+     * @param pattern
+     * @return 
+     */
+    public static final Select selectFirst(Class clazz, String... pattern){
+        return $constructor.of(pattern).selectFirstIn(_type.of(clazz) );
+    }
+    
+    /**
+     * 
+     * @param clazz
+     * @param _proto
+     * @return 
+     */
+    public static final Select selectFirst(Class clazz, _constructor _proto){
+        return $constructor.of(_proto).selectFirstIn(_type.of(clazz) );
+    }
+    
+    /**
+     * 
+     * @param clazz
+     * @param pattern
+     * @param selectConstraint
+     * @return 
+     */
+    public static final Select selectFirst(Class clazz, String pattern, Predicate<Select> selectConstraint){
+        return $constructor.of(pattern).selectFirstIn(_type.of(clazz), selectConstraint );
+    }
+    
+    /**
+     * 
+     * @param clazz
+     * @param _proto
+     * @param selectConstraint
+     * @return 
+     */
+    public static final Select selectFirst(Class clazz, _constructor _proto, Predicate<Select> selectConstraint){
+        return $constructor.of(_proto ).selectFirstIn(_type.of(clazz), selectConstraint);
+    }
+    
+    /**
+     * 
+     * @param <N>
+     * @param _n
+     * @param pattern
+     * @return 
+     */
+    public static final <N extends _node> Select selectFirst(N _n, String... pattern){
+        return $constructor.of(pattern).selectFirstIn(_n);
+    }
+    
+    /**
+     * 
+     * @param <N>
+     * @param _n
+     * @param _proto
+     * @return 
+     */
+    public static final <N extends _node> Select selectFirst(N _n, _constructor _proto){
+        return $constructor.of(_proto).selectFirstIn(_n );
+    }
+    
+    /**
+     * 
+     * @param <N>
+     * @param _n
+     * @param pattern
+     * @param selectConstraint
+     * @return 
+     */
+    public static final <N extends _node> Select selectFirst(N _n, String pattern, Predicate<Select> selectConstraint){
+        return $constructor.of(pattern).selectFirstIn(_n, selectConstraint );
+    }
+    
+    /**
+     * 
+     * @param <N>
+     * @param _n
+     * @param _proto
+     * @param selectConstraint
+     * @return 
+     */   
+    public static final <N extends _node> Select selectFirst(N _n, _constructor _proto, Predicate<Select> selectConstraint){
+        return $constructor.of(_proto ).selectFirstIn(_n, selectConstraint);
+    }
+    
+    /**
+     * Removes all occurrences of the prototype method in the rootNode (recursively)
+     * @param <N>
+     * @param _n
+     * @param _proto
+     * @return the modified N
+     */
+    public static final <N extends _node> N remove( N _n, _constructor _proto ){
+        return $constructor.of(_proto).removeIn(_n);
+    }
+    
+    /**
+     * 
+     * @param <N>
+     * @param _n
+     * @param proto
+     * @return 
+     */
+    public static final <N extends _node> N remove( N _n, String... proto ){
+        return $constructor.of(proto).removeIn(_n);
+    }
+    
+    /**
+     * Removes all occurrences of the source anno in the rootNode (recursively)
+     * @param clazz
+     * @param _proto
+     * @return the modified N
+     */
+    public static final _type remove( Class clazz, _constructor _proto ){
+        return $constructor.of(_proto).removeIn(_type.of(clazz));
+    }
+    
+    /**
+     * @param clazz
+     * @param proto
+     * @return 
+     */
+    public static final _type remove( Class clazz, String... proto ){
+        return $constructor.of(proto).removeIn(_type.of(clazz));
+    }
+    
+    /**
+     * 
+     * @param <N>
+     * @param _n
+     * @param _protoSource
+     * @param _protoReplacement
+     * @return 
+     */
+    public static final <N extends _node> N replace( N _n, _constructor _protoSource, _constructor _protoReplacement ){
+        return $constructor.of(_protoSource).replaceIn(_n, _protoReplacement);
+    }
+    
+    /**
+     * 
+     * @param <N>
+     * @param _n
+     * @param targetCtor
+     * @param replacementCtor
+     * @return 
+     */
+    public static final <N extends _node> N replace( N _n, String[] targetCtor, String[] replacementCtor ){
+        return $constructor.of(targetCtor).replaceIn(_n, replacementCtor);
+    }
+    
+    /**
+     * 
+     * @param clazz
+     * @param _protoTarget
+     * @param _protoReplacement
+     * @return 
+     */
+    public static final _type replace( Class clazz, _constructor _protoTarget, _constructor _protoReplacement ){
+        return $constructor.of(_protoTarget).replaceIn(_type.of(clazz), _protoReplacement);
+    }
+    
+    /**
+     * 
+     * @param clazz
+     * @param protoTarget
+     * @param replacementProto
+     * @return 
+     */
+    public static final _type replace( Class clazz, String[] protoTarget, String[] replacementProto ){
+        return $constructor.of(protoTarget).replaceIn(_type.of(clazz), replacementProto);
+    }
+    
+    /**
+     * 
+     * @param ctorPattern
+     * @return 
+     */
+    public static $constructor of( String ctorPattern ){
+        return of(new String[]{ctorPattern});
     }
     
     /**
@@ -72,61 +388,120 @@ public final class $constructor
      * NOTE: if the anonymous Object contains more than one method, ENSURE only one method
      * DOES NOT have the @_remove annotation, (mark all trivial METHODS with @_remove)
      *
-     * @param anonymousObjectContainingCtor
+     * @param anonymousObjectContainingMethod
      * @return
      */
-    public static $constructor of( Object anonymousObjectContainingCtor ){
+    public static $constructor of( Object anonymousObjectContainingMethod ){
         StackTraceElement ste = Thread.currentThread().getStackTrace()[2];
+        
         ObjectCreationExpr oce = Expr.anonymousObject( ste );
         MethodDeclaration theMethod = (MethodDeclaration)
             oce.getAnonymousClassBody().get().stream().filter(m -> m instanceof MethodDeclaration &&
-                !m.isAnnotationPresent(_remove.class) ).findFirst().get();
-
-        _constructor _ct = _constructor.of(theMethod.getNameAsString());
-        //_ct.annotate( theMethod.getAnnotations() );
-        if( theMethod.hasJavaDocComment() ){
-            _ct.ast().setJavadocComment( theMethod.getJavadocComment().get() );
-        }
-
-        theMethod.getParameters().forEach( p -> _ct.addParameter(p)); //params
-        _ct.ast().setModifiers( Ast.merge( _ct.ast().getModifiers(), theMethod.getModifiers() ) );
-        //_ct.ast().getModifiers().addAll( theMethod.getModifiers() ); //MODIFIERS
-        //if( theMethod.hasJavaDocComment() ){
-        //    _ct.javadoc(theMethod.getJavadocComment().get());
-        //}
-        _ct.annotate( theMethod.getAnnotations()); //add annos        
-        _ct.ast().setBody( theMethod.getBody().get()); //BODY
-        _ct.removeAnnos(_ctor.class);
-        return of( _ct );
+            !m.isAnnotationPresent(_remove.class) ).findFirst().get();
+        return of( _macro.to(anonymousObjectContainingMethod.getClass(), _constructor.of( theMethod ) ));
     }
 
-    private $constructor(_constructor _protoCtor, Predicate<_constructor> constraint){
-        if( _protoCtor.hasBody() ) {
-            this.$body = $snip.of(_protoCtor.getBody());
-            _constructor _cp = _protoCtor.copy();
-            if(_cp.ast().getJavadocComment().isPresent() ){
-                this.javadocPattern = Stencil.of(Ast.getContent( _cp.ast().getJavadocComment().get() ));
-            }
-            this.signaturePattern = Stencil.of( _cp.setBody("").toString(Ast.PRINT_NO_COMMENTS) );
-        } else {
-            this.signaturePattern = Stencil.of(_protoCtor.toString() );
-            this.$body = null; //no BODY
-        }
-        if(constraint != null ){
-            this.constraint = constraint;
-        }
+    public static $constructor any(){
+        return new $constructor(_constructor.of("$type$ $name$();") );
     }
     
     /**
      * 
+     * @param _ct
+     * @return 
+     */
+    public static $constructor of( _constructor _ct ){
+        return new $constructor( _ct);
+    }
+
+    /**
+     * 
+     * @param _ct
      * @param constraint
      * @return 
      */
-    public $constructor constraint( Predicate<_constructor> constraint ){
-        this.constraint = constraint;
-        return this;
+    public static $constructor of( _constructor _ct, Predicate<_constructor> constraint){
+        return new $constructor( _ct).constraint(constraint);
+    }
+        
+    /**
+     * 
+     * @param proto
+     * @return 
+     */
+    public static $constructor of( String...proto ){
+        return new $constructor(_constructor.of(proto));
     }
     
+    /**
+     * 
+     * @param proto
+     * @param constraint
+     * @return 
+     */
+    public static $constructor of( String proto, Predicate<_constructor> constraint ){
+        return new $constructor(_constructor.of(proto) ).constraint(constraint);
+    }
+
+    public Predicate<_constructor> constraint = t -> true;
+    
+    public $component<_javadoc> javadoc = new $component( "$javadoc$", t->true);    
+    public $annos annos = new $annos();
+    public $component<_modifiers> modifiers = new $component( "$modifiers$", t->true);
+    
+    //public $component<_typeDecl> type = new $component( "$type$", t->true);
+    
+    public $component<_typeParameters> typeParameters = new $component( "$typeParameters$", t->true);
+    public $component<String> name = new $component( "$name$", t->true);
+    public $parameters parameters = $parameters.of();
+    public $component<_throws> thrown = new $component( "$throws$", t-> true);
+    public $component<_body> body = new $component("$body$", t->true);
+    
+    private $constructor( _constructor _ct ){
+        this(_ct, t-> true );
+    }
+    
+    /**
+     * 
+     * @param _proto 
+     */
+    private $constructor( _constructor _ct, Predicate<_constructor> constraint){
+        
+        if( _ct.hasJavadoc() ){
+            javadoc.stencil(_ct.getJavadoc().toString() );
+        }        
+        if( _ct.hasAnnos() ){
+            annos = $annos.of(_ct.getAnnos() );
+        }
+        if( !_ct.getModifiers().isEmpty() ){
+            final _modifiers ms = _ct.getModifiers();
+            modifiers = new $component(
+                ms.toString(), 
+                (m)-> ms.equals(m));
+        }
+        //type = new $component<>(_m.getType().toString());
+        if( !_ct.hasTypeParameters() ){
+            final _typeParameters etps = _ct.getTypeParameters();
+            //HMMMMM matvhing orfer shouldnt matter
+            typeParameters = new $component(
+                "$typeParameters$", 
+                (tps)-> tps.equals(etps) );
+        }
+        name = new $component(_ct.getName());
+        if( _ct.hasParameters() ){
+            parameters = $parameters.of(_ct.getParameters());
+        }        
+        if( _ct.hasThrows() ){
+            final _throws ths = _ct.getThrows();
+            thrown = new $component( "$throws$", (t)-> t.equals(ths) );
+        }
+        if( _ct.hasBody() ){            
+            String bdy = _ct.getBody().toString(new PrettyPrinterConfiguration()
+                .setPrintComments(false).setPrintJavadoc(false) );
+            body = new $component(bdy.trim());            
+        }
+        this.constraint = constraint;
+    }
     
     /**
      * ADDS an additional matching constraint to the prototype
@@ -138,35 +513,209 @@ public final class $constructor
         return this;
     }
     
+    /**
+     * SETS/ OVERRIDES the matching constraint
+     * @param constraint
+     * @return 
+     */
+    public $constructor constraint( Predicate<_constructor> constraint){
+        this.constraint = constraint;
+        return this;
+    }
+    
     @Override
     public List<String> list$Normalized(){
         List<String>normalized$ = new ArrayList<>();
-        if( this.javadocPattern != null ){
-            normalized$.addAll(Stencil.of(this.javadocPattern, this.signaturePattern).list$Normalized());
-        } else {
-            normalized$.addAll(this.signaturePattern.list$Normalized());
-        }
-        if( this.$body != null){
-            this.$body.list$Normalized().forEach( l-> {
-                if (!normalized$.contains(l)) {
-                    normalized$.add(l);
-                }
-            });
-        }
-        return normalized$;
+        normalized$.addAll( javadoc.pattern.list$Normalized() );
+        normalized$.addAll( annos.list$Normalized() );
+        normalized$.addAll( modifiers.pattern.list$Normalized() );
+        normalized$.addAll( typeParameters.pattern.list$Normalized() );
+        //normalized$.addAll( type.pattern.list$Normalized() );        
+        normalized$.addAll( name.pattern.list$Normalized() );
+        normalized$.addAll( parameters.list$Normalized() );
+        normalized$.addAll( thrown.pattern.list$Normalized() );
+        normalized$.addAll( body.pattern.list$Normalized() );
+        return normalized$.stream().distinct().collect(Collectors.toList());        
     }
 
     @Override
     public List<String> list$(){
-        List<String>normalized$ = new ArrayList<>();
-        if( this.javadocPattern != null) {
-            normalized$.addAll(this.javadocPattern.list$Normalized());
-        }
-        normalized$.addAll(this.signaturePattern.list$Normalized() );
-        normalized$.addAll( this.$body.list$Normalized() );
-        return normalized$;
+        List<String>all$ = new ArrayList<>();
+        all$.addAll( javadoc.pattern.list$() );
+        all$.addAll( annos.list$() );
+        all$.addAll( modifiers.pattern.list$() );
+        all$.addAll( typeParameters.pattern.list$() );
+        //all$.addAll( type.pattern.list$() );        
+        all$.addAll( name.pattern.list$() );
+        all$.addAll( parameters.list$() );
+        all$.addAll( thrown.pattern.list$() );
+        all$.addAll( body.pattern.list$() );        
+        return all$;
+    }
+    
+    public $constructor $annos(String...annoPatterns ){
+        this.annos.add(annoPatterns);
+        return this;
+    }
+    
+    public $constructor $name(){
+        this.name.stencil("$name$");
+        return this;
+    }
+    
+    public $constructor $typeParameters(){
+        this.typeParameters.stencil("$typeParameters$");
+        return this;
     }
 
+    public $constructor $modifiers(){
+        this.modifiers.stencil("$modifiers$");
+        return this;
+    }    
+    
+    public $constructor $javadoc(){
+        this.javadoc.stencil("$javadoc$");
+        return this;
+    }
+    
+    public $constructor $javadoc( String... form ){
+        this.javadoc.stencil(form);
+        return this;
+    }
+    
+    public $constructor emptyBody(){
+        body.pattern = Stencil.of( "{}" );
+        return this;
+    }
+    
+    @Override
+    public _constructor fill(Translator translator, Object... values) {
+        List<String> nom = this.list$Normalized();
+        nom.remove( "javadoc");
+        nom.remove( "annos");
+        nom.remove( "modifiers");
+        nom.remove( "typeParameters");
+        nom.remove( "parameters");
+        nom.remove( "throws");
+        nom.remove("body");
+        if( nom.size() != values.length ){
+            throw new DraftException ("Fill expected ("+nom.size()+") values "+ nom+" got ("+values.length+")");
+        }
+        Tokens ts = new Tokens();
+        for(int i=0;i<nom.size();i++){
+            ts.put( nom.get(i), values[i]);
+        }
+        return construct(translator, ts);        
+    }
+    
+    @Override
+    public _constructor construct(Translator translator, Map<String, Object> keyValues) {
+        
+        //the base values (so we dont get Nulls for base values
+        Tokens base = Tokens.of(
+                "javadoc", "", 
+                "annos", "", 
+                "modifiers", "", 
+                "typeParameters", "", 
+                "parameters", "()", 
+                "throws", "", 
+                "body", "");
+        
+        //System.out.println( "KEYVALUES "+ keyValues );
+        base.putAll(keyValues);
+        
+        StringBuilder sb = new StringBuilder();   
+        //System.out.println( "&&&& JD "+ javadoc.$form +"<<" );
+        sb.append( javadoc.compose(translator, base ));        
+        sb.append(System.lineSeparator());
+        //System.out.println( "JAVADOC \""+ sb.toString()+"\"");
+        sb.append( annos.compose(translator, base));
+        sb.append(System.lineSeparator());
+        //System.out.println( "JAVADOC ANNOS \""+ sb.toString()+"\"");
+        sb.append( modifiers.compose(translator, base));
+        sb.append(" ");
+        sb.append( typeParameters.compose(translator, base));
+        sb.append(" ");
+        //sb.append( type.compose(translator, base));
+        //sb.append(" ");
+        sb.append( name.compose(translator, base));
+        sb.append(" ");
+        sb.append( parameters.construct(translator, base));
+        sb.append(" ");
+        sb.append( thrown.compose(translator, base));
+        sb.append(System.lineSeparator());
+        /** 
+         * with the body, I need to fo some more processing
+         * I need to process the labeled Statements like snips
+         */
+        String str = body.compose(translator, base); 
+        try{
+            //I might need another specialization
+            //BlockStmt astBs = Ast.blockStmt(str);
+            $snip $s = $snip.of(str);
+            List<Statement> sts = $s.construct(translator, base );
+            //System.out.println( specialBody );
+            //BlockStmt resolved = new BlockStmt();
+            _constructor _mb  = _constructor.of(sb.toString()+"{}");
+            
+            sts.forEach(s -> {
+                if(! (s instanceof EmptyStmt)){ 
+                    _mb.add(s);
+                } 
+            });            
+            //it's possible we have empty statements, lets remove all of them
+            Walk.in(_mb, EmptyStmt.class, es-> es.remove() );            
+            return _mb;            
+        } catch(Exception e){
+            sb.append( str );
+            return _constructor.of(sb.toString());     
+        }        
+    }
+    
+    /**
+     * 
+     * @param _n
+     * @return 
+     */
+    public _constructor construct(_node _n ){
+        return construct(_n.deconstruct() );
+    }
+
+    public static final BlockStmt EMPTY = Stmt.block("{}");
+
+    /**
+     * 
+     * @param _m
+     * @return 
+     */
+    public Select select( _constructor _m){
+        if( !this.constraint.test(_m)){
+            return null;
+        }
+        Tokens all = new Tokens();
+        all = javadoc.decomposeTo(_m.getJavadoc(), all);
+        all = annos.decomposeTo(_m.getAnnos(), all);
+        all = modifiers.decomposeTo(_m.getModifiers(), all);
+        all = typeParameters.decomposeTo(_m.getTypeParameters(), all);
+        all = name.decomposeTo(_m.getName(), all);
+        all = parameters.decomposeTo(_m.getParameters(), all);
+        all = thrown.decomposeTo(_m.getThrows(), all);
+        all = body.decomposeTo(_m.getBody(), all);
+        if( all != null ){
+            return new Select( _m, $args.of(all));
+        }
+        return null;        
+    }
+
+    /**
+     * 
+     * @param astCtor
+     * @return 
+     */
+    public Select select( ConstructorDeclaration astCtor){
+        return select(_constructor.of(astCtor));
+    }
+    
     /**
      * Hardcode parameterized values
      * (i.e. what was once a parameter, now is static text)
@@ -208,37 +757,29 @@ public final class $constructor
      * @return 
      */
     public $constructor hardcode$( Translator translator, Tokens kvs ) {
-        if(this.javadocPattern != null ){
-            this.javadocPattern = this.javadocPattern.hardcode$(translator,kvs);
-        }
-        this.signaturePattern = this.signaturePattern.hardcode$(translator,kvs);
-        this.$body = this.$body.hardcode$(translator, kvs);
+        javadoc.pattern = javadoc.pattern.hardcode$(translator, kvs);
+        annos = annos.hardcode$(translator, kvs);
+        modifiers.pattern = modifiers.pattern.hardcode$(translator, kvs);
+        typeParameters.pattern = typeParameters.pattern.hardcode$(translator, kvs);
+        name.pattern = name.pattern.hardcode$(translator, kvs);
+        parameters = parameters.hardcode$(translator, kvs);
+        thrown.pattern = thrown.pattern.hardcode$(translator, kvs);
+        body.pattern = body.pattern.hardcode$(translator, kvs);
+        
         return this;
     }
 
-    @Override
-    public _constructor construct(Translator translator, Map<String, Object> keyValues) {
-        //_1_build the signature
-        _constructor _c = _constructor.of(this.signaturePattern.construct(translator, keyValues ));
-
-        if( this.$body != null) {
-            //_1_build the BODY
-            List<Statement> sts = $body.construct(translator, keyValues);
-            sts.forEach( s -> _c.add( s ) );
-        }
-        if( this.javadocPattern != null ){
-            _c.javadoc(this.javadocPattern.construct(translator, keyValues));
-        }
-        return _c;
-    }
-
+    /** Post - parameterize, create a parameter from the target string named $Name#$*/
     @Override
     public $constructor $(String target, String $Name) {
-        if( this.javadocPattern != null ){
-            this.javadocPattern = javadocPattern.$(target, $Name);
-        }
-        this.$body = this.$body.$(target, $Name);
-        this.signaturePattern = this.signaturePattern.$(target, $Name);
+        javadoc.pattern = javadoc.pattern.$(target, $Name);
+        annos = annos.$(target, $Name);
+        modifiers.pattern = modifiers.pattern.$(target, $Name);
+        typeParameters.pattern = typeParameters.pattern.$(target, $Name);
+        name.pattern = name.pattern.$(target, $Name);
+        parameters = parameters.$(target, $Name);
+        thrown.pattern = thrown.pattern.$(target, $Name);
+        body.pattern = body.pattern.$(target, $Name);        
         return this;
     }
 
@@ -255,22 +796,11 @@ public final class $constructor
 
     /**
      * 
-     * @param astStmt
-     * @param $name
+     * @param _ct
      * @return 
      */
-    public $constructor $(Statement astStmt, String $name ){
-        String exprString = astStmt.toString();
-        return $(exprString, $name);
-    }
-
-    /**
-     * 
-     * @param _ctor
-     * @return 
-     */
-    public boolean matches( _constructor _ctor ){
-        return select(_ctor.ast() ) != null;
+    public boolean matches( _constructor _ct ){
+        return select( _ct ) != null;
     }
 
     /**
@@ -278,17 +808,27 @@ public final class $constructor
      * @param astCtor
      * @return 
      */
-    public boolean matches(ConstructorDeclaration astCtor ){
+    public boolean matches( ConstructorDeclaration astCtor ){
         return select(astCtor ) != null;
     }
 
+    /**
+     * returns the first matching method from the source of the _class (or null)
+     * @param clazz
+     * @return 
+     */
+    public _constructor firstIn( Class clazz){
+        return firstIn(_type.of(clazz));
+    }
+    
     /**
      * Returns the first _constructor that matches the pattern and constraint
      * @param _n the _java node
      * @return  the first _constructor that matches (or null if none found)
      */
     public _constructor firstIn( _node _n ){
-        Optional<ConstructorDeclaration> f = _n.ast().findFirst(ConstructorDeclaration.class, s -> this.matches(s) );         
+        Optional<ConstructorDeclaration> f = _n.ast().findFirst(
+            ConstructorDeclaration.class, s -> this.matches(s) );         
         if( f.isPresent()){
             return _constructor.of(f.get());
         }
@@ -301,11 +841,31 @@ public final class $constructor
      * @return  the first _constructor that matches (or null if none found)
      */
     public _constructor firstIn( Node astNode ){
-        Optional<ConstructorDeclaration> f = astNode.findFirst(ConstructorDeclaration.class, s -> this.matches(s) );         
+        Optional<ConstructorDeclaration> f = astNode.findFirst(
+            ConstructorDeclaration.class, s -> this.matches(s) );         
         if( f.isPresent()){
             return _constructor.of(f.get());
         }
         return null;
+    }
+
+    /**
+     * Returns the first _constructor that matches the pattern and constraint
+     * @param clazz the runtime class (WITH source available in classpath)
+     * @return  the first _constructor that matches (or null if none found)
+     */
+    public Select selectFirstIn( Class clazz){
+        return selectFirstIn( _type.of(clazz));
+    }
+    
+    /**
+     * Returns the first _constructor that matches the pattern and constraint
+     * @param clazz the runtime class (WITH source available in classpath)
+     * @param selectConstraint
+     * @return  the first _constructor that matches (or null if none found)
+     */
+    public Select selectFirstIn( Class clazz, Predicate<Select> selectConstraint){
+        return selectFirstIn( _type.of(clazz), selectConstraint);
     }
     
     /**
@@ -334,7 +894,6 @@ public final class $constructor
         return null;
     }
     
-    
     /**
      * Returns the first _constructor that matches the pattern and constraint
      * @param _n the _java node
@@ -343,9 +902,9 @@ public final class $constructor
      */
     public Select selectFirstIn( _node _n, Predicate<Select> selectConstraint){
         Optional<ConstructorDeclaration> f = _n.ast().findFirst(ConstructorDeclaration.class, s -> {
-            Select sel = select(s);
+            Select sel = this.select(s);
             return sel != null && selectConstraint.test(sel);
-                });         
+            });               
         if( f.isPresent()){
             return select(f.get());
         }
@@ -360,9 +919,9 @@ public final class $constructor
      */
     public Select selectFirstIn( Node astNode, Predicate<Select> selectConstraint){
         Optional<ConstructorDeclaration> f = astNode.findFirst(ConstructorDeclaration.class, s -> {
-            Select sel = select(s);
+            Select sel = this.select(s);
             return sel != null && selectConstraint.test(sel);
-                });            
+            });         
         if( f.isPresent()){
             return select(f.get());
         }
@@ -370,92 +929,10 @@ public final class $constructor
     }
     
     @Override
-    public String toString(){
-        if( this.javadocPattern != null ){
-            return this.javadocPattern.toString() +System.lineSeparator() 
-                + this.signaturePattern.toString()+System.lineSeparator() 
-                + this.$body.toString();
-        }
-        return this.signaturePattern.toString()+System.lineSeparator()+ this.$body.toString();
-    }
-    
-    /**
-     * 
-     * @param _c
-     * @return 
-     */
-    public Select select( _constructor _c){
-        if( !this.constraint.test( _c )){
-            return null;
-        }
-        Tokens ts = null;
-        if( !_c.hasBody() || _c.listStatements().isEmpty() ){
-            ts = new Tokens();
-        } else {
-            $snip.Select ss = this.$body.select( _c.ast().getBody().getStatement(0) );
-            if( ss != null ){
-                ts = new Tokens();
-                ts.putAll(ss.args);
-            }
-            //ts = this.$body.deconstruct(_c.ast().getBody().getStatement(0));
-        }
-        if( ts != null ){
-            //final Tokens tdd = ts;
-            String signature = _c.ast().clone()
-                    .setBody(EMPTY) //make the clones' BODY empty
-                    .setAnnotations(new NodeList<>()) //remove all ANNOTATIONS
-                    .removeComment() //removeIn any comments/JAVADOC from the clone
-                    .toString();
-
-            Tokens tss = this.signaturePattern.deconstruct( signature );
-            if( tss == null ){
-                return null;
-            }
-            AtomicBoolean isConsistent = new AtomicBoolean(true);
-            tss.forEach( (String k, Object v)->{
-                Object val = tss.get(k);
-                if( val != null && !val.equals(v) ){
-                    isConsistent.set(false);
-                }
-            });
-            if( isConsistent.get() ){
-                ts.putAll(tss);
-                return new Select(_c, ts);                
-            }
-        }
-        return null; //the BODY or signature isnt the same or BODY / signature tokens were inconsistent
-    }
-
-    /**
-     * 
-     * @param astCtor
-     * @return 
-     */
-    public Select select( ConstructorDeclaration astCtor){
-        return select(_constructor.of(astCtor));        
-    }
-    
-    @Override
-    public List<_constructor> listIn(_node _n ){
-        return listIn(_n.ast() );
-    }
-
-    @Override
-    public List<_constructor> listIn(Node astNode){
-        List<_constructor> typesList = new ArrayList<>();
-        astNode.walk(ConstructorDeclaration.class, t->{
-            if( this.matches(t) ){
-                typesList.add(_constructor.of(t));
-            }
-        } );
-        return typesList;
-    }
-
-    @Override
     public List<Select> listSelectedIn(Node astNode){
         List<Select>sts = new ArrayList<>();
-        astNode.walk(ConstructorDeclaration.class, c-> {
-            Select sel = select( c );
+        astNode.walk(ConstructorDeclaration.class, m-> {
+            Select sel = select( m );
             if( sel != null ){
                 sts.add(sel);
             }
@@ -466,26 +943,45 @@ public final class $constructor
     @Override
     public List<Select> listSelectedIn(_node _n){
         List<Select>sts = new ArrayList<>();
-        Walk.in(_n, ConstructorDeclaration.class, c-> {
-            Select sel = select( c );
+        Walk.in(_n, ConstructorDeclaration.class, m -> {
+            Select sel = select( m );
             if( sel != null ){
                 sts.add(sel);
             }
         });
         return sts;
     }
-
+    
+    /**
+     * 
+     * @param clazz
+     * @return 
+     */
+    public List<Select> selectListIn(Class clazz){
+        return listSelectedIn( _type.of(clazz));        
+    }
+    
+    /**
+     * 
+     * @param clazz
+     * @param selectConstraint
+     * @return 
+     */
+    public List<Select> selectListIn(Class clazz, Predicate<Select> selectConstraint){
+        return selectListIn( _type.of(clazz), selectConstraint);        
+    }
+    
     /**
      * 
      * @param astNode
      * @param selectConstraint
      * @return 
      */
-    public List<Select> listSelectedIn(Node astNode, Predicate<Select> selectConstraint){
+    public List<Select> selectListIn(Node astNode, Predicate<Select> selectConstraint){
         List<Select>sts = new ArrayList<>();
         astNode.walk(ConstructorDeclaration.class, c-> {
-            Select sel = select( c );
-            if( sel != null && selectConstraint.test(sel) ){
+            Select sel = select(c );
+            if( sel != null && selectConstraint.test(sel)){
                 sts.add(sel);
             }
         });
@@ -498,49 +994,15 @@ public final class $constructor
      * @param selectConstraint
      * @return 
      */
-    public List<Select> listSelectedIn(_node _n, Predicate<Select> selectConstraint){
+    public List<Select> selectListIn(_node _n, Predicate<Select> selectConstraint){
         List<Select>sts = new ArrayList<>();
-        Walk.in(_n, ConstructorDeclaration.class, c-> {
-            Select sel = select( c );
-            if( sel != null && selectConstraint.test(sel) ){
+        Walk.in(_n, ConstructorDeclaration.class, c -> {
+            Select sel = select(c );
+            if( sel != null && selectConstraint.test(sel)){
                 sts.add(sel);
             }
         });
         return sts;
-    }
-    
-    @Override
-    public <N extends Node> N forEachIn(N astNode, Consumer<_constructor> _constructorActionFn ){
-        astNode.walk( ConstructorDeclaration.class, c-> {
-            Select s = select( c );
-            if( s != null ){
-                _constructorActionFn.accept( s._ct );
-            }
-        });
-        return astNode;
-    }
-
-    @Override
-    public <N extends _node> N forEachIn(N _n, Consumer<_constructor> _constructorActionFn ){
-        Walk.in(_n, _constructor.class, c-> {
-            Select s = select( c );
-            if( s != null ){
-                _constructorActionFn.accept( s._ct );
-            }
-        });
-        return _n;
-    }
-
-    @Override
-    public <N extends _node> N removeIn(N _n ){
-        $constructor.this.listSelectedIn(_n).forEach(s -> s._ct.ast().remove() );
-        return _n;
-    }
-
-    @Override
-    public <N extends Node> N removeIn(N astNode ){
-        $constructor.this.listSelectedIn(astNode).forEach(s -> s._ct.ast().remove() );
-        return astNode;
     }
 
     /**
@@ -550,16 +1012,16 @@ public final class $constructor
      * @param selectedActionFn
      * @return 
      */
-    public <N extends Node> N forSelectedIn(N astNode, Consumer<Select> selectedActionFn ){        
+    public <N extends Node> N forSelectedIn(N astNode, Consumer<Select> selectedActionFn ){
         astNode.walk( ConstructorDeclaration.class, c-> {
-            Select s = select( c );
+            Select s = select(c );
             if( s != null ){
                 selectedActionFn.accept( s );
             }
         });
         return astNode;
     }
-
+    
     /**
      * 
      * @param <N>
@@ -568,8 +1030,8 @@ public final class $constructor
      * @return 
      */
     public <N extends _node> N forSelectedIn(N _n, Consumer<Select> selectedActionFn ){
-        Walk.in(_n, _constructor.class, c-> {
-            Select s = select( c );
+        Walk.in(_n, _constructor.class, c ->{
+            Select s = select(c );
             if( s != null ){
                 selectedActionFn.accept( s );
             }
@@ -585,16 +1047,18 @@ public final class $constructor
      * @param selectedActionFn
      * @return 
      */
-    public <N extends Node> N forSelectedIn(N astNode, Predicate<Select> selectConstraint, Consumer<Select> selectedActionFn ){        
+    public <N extends Node> N forSelectedIn(
+        N astNode, Predicate<Select> selectConstraint, Consumer<Select> selectedActionFn ){
+        
         astNode.walk( ConstructorDeclaration.class, c-> {
-            Select s = select( c );
+            Select s = select(c );
             if( s != null && selectConstraint.test(s)){
                 selectedActionFn.accept( s );
             }
         });
         return astNode;
     }
-
+    
     /**
      * 
      * @param <N>
@@ -604,22 +1068,186 @@ public final class $constructor
      * @return 
      */
     public <N extends _node> N forSelectedIn(N _n, Predicate<Select> selectConstraint, Consumer<Select> selectedActionFn ){
-        Walk.in(_n, _constructor.class, c-> {
-            Select s = select( c );
-            if( s != null && selectConstraint.test(s )){
+        Walk.in(_n, _constructor.class, c ->{
+            Select s = select(c );
+            if( s != null && selectConstraint.test(s)){
                 selectedActionFn.accept( s );
             }
         });
         return _n;
     }
     
-
-    private static final BlockStmt EMPTY = Stmt.block("{}");
-   
     /**
-     * A Matched Selection result returned from matching a prototype $constructor
+     * 
+     * @param clazz
+     * @param $replace
+     * @return 
+     */
+    public _type replaceIn(Class clazz,  $constructor $replace ){
+        return forSelectedIn(_type.of(clazz), s -> {
+            _constructor repl = $replace.construct(Translator.DEFAULT_TRANSLATOR, s.args);
+            s._ct.ast().replace(repl.ast());
+        });
+    }
+
+    /**
+     * 
+     * @param clazz
+     * @param replacementProto
+     * @return 
+     */
+    public _type replaceIn(Class clazz,  String... replacementProto ){
+        return replaceIn(_type.of(clazz), $constructor.of(replacementProto));        
+    }
+    
+    /**
+     * 
+     * @param clazz
+     * @param _ct
+     * @return 
+     */
+    public _type replaceIn(Class clazz,  _constructor _ct ){
+        return replaceIn(_type.of(clazz), $constructor.of(_ct));        
+    }
+    
+    /**
+     * 
+     * @param clazz
+     * @param astCtor
+     * @return 
+     */
+    public _type replaceIn(Class clazz, ConstructorDeclaration astCtor ){
+        return replaceIn(_type.of(clazz), $constructor.of(astCtor));        
+    }
+    
+    /**
+     * 
+     * @param <N>
+     * @param _n
+     * @param $replace
+     * @return 
+     */
+    public <N extends _node> N replaceIn( N _n, $constructor $replace ){
+        return forSelectedIn(_n, s -> {
+            _constructor repl = $replace.construct(Translator.DEFAULT_TRANSLATOR, s.args.asTokens());
+            s._ct.ast().replace(repl.ast());
+        });
+    }
+
+    /**
+     * 
+     * @param <N>
+     * @param _n
+     * @param replacementProto
+     * @return 
+     */
+    public <N extends _node> N replaceIn( N _n, String... replacementProto ){
+        return replaceIn(_n, $constructor.of(replacementProto));        
+    }
+    
+    /**
+     * 
+     * @param <N>
+     * @param _n
+     * @param _ct
+     * @return 
+     */
+    public <N extends _node> N replaceIn( N _n, _constructor _ct ){
+        return replaceIn(_n, $constructor.of(_ct));        
+    }
+    
+    /**
+     * 
+     * @param <N>
+     * @param _n
+     * @param astCtor
+     * @return 
+     */
+    public <N extends _node> N replaceIn( N _n, ConstructorDeclaration astCtor ){
+        return replaceIn(_n, $constructor.of(astCtor));        
+    }
+    
+    /**
+     * removes the matching prototype methods from the source of the class
+     * and returns the modified _type
+     * @param clazz
+     * @return 
+     */
+    @Override
+    public _type removeIn(Class clazz){
+        return removeIn(_type.of(clazz));
+    }
+    
+    @Override
+    public <N extends _node> N removeIn(N _n ){
+        Walk.in(_n, ConstructorDeclaration.class, e-> {
+            //$args tokens = this.deconstruct( e );
+            
+            if( select(e) != null ){
+                e.removeForced();
+            }
+        });
+        return _n;
+    }
+
+    @Override
+    public <N extends Node> N removeIn(N astNode){
+        astNode.walk(ConstructorDeclaration.class, e-> {
+            //$args tokens = this.deconstruct( e );
+            if( select(e) != null ){
+                e.removeForced();
+            }
+        });
+        return astNode;
+    }
+    
+    @Override
+    public <N extends Node> N forEachIn(N astNode, Consumer<_constructor> _constructorActionFn){
+        astNode.walk(ConstructorDeclaration.class, e-> {
+            //$args tokens = this.deconstruct( e );
+            if( select(e) != null ){
+                _constructorActionFn.accept( _constructor.of(e) );
+            }
+        });
+        return astNode;
+    }
+
+    @Override
+    public <N extends _node> N forEachIn(N _n, Consumer<_constructor> _constructorActionFn){
+        Walk.in(_n, ConstructorDeclaration.class, e -> {
+            //$args tokens = this.deconstruct( e );
+            if( select(e) != null ){
+                _constructorActionFn.accept( _constructor.of(e) );
+            }
+        });
+        return _n;
+    }
+
+    @Override
+    public List<_constructor> listIn( Class clazz){
+        return listIn(_type.of(clazz));
+    }
+    
+    @Override
+    public List<_constructor> listIn(_node _n ){
+        return listIn(_n.ast() );
+    }
+
+    @Override
+    public List<_constructor> listIn(Node astNode ){
+        List<_constructor> typesList = new ArrayList<>();
+        astNode.walk(ConstructorDeclaration.class, m->{
+            if( this.matches(m) ){
+                typesList.add( _constructor.of(m));
+            }
+        } );
+        return typesList;
+    }
+
+    /**
+     * A Matched Selection result returned from matching a prototype $ctor
      * inside of some Node or _node
-     */    
+     */
     public static class Select implements $proto.selected, 
             $proto.selectedAstNode<ConstructorDeclaration>, 
             $proto.selected_model<_constructor> {
@@ -627,16 +1255,16 @@ public final class $constructor
         public final _constructor _ct;
         public final $args args;
 
-        public Select(_constructor _c, Tokens tokens ){
-            this._ct = _c;
-            this.args = $args.of(tokens);
-        }
-        
-        public Select( ConstructorDeclaration astCtor, $args tokens ){
-            this._ct = _constructor.of(astCtor);
+        public Select( _constructor _m, $args tokens ){
+            this._ct = _m;
             this.args = tokens;
         }
-        
+                
+        public Select( ConstructorDeclaration astMethod, $args tokens ){
+            this._ct = _constructor.of(astMethod);
+            this.args = tokens;
+        }
+
         @Override
         public $args getArgs(){
             return args;
@@ -644,10 +1272,20 @@ public final class $constructor
         
         @Override
         public String toString(){
-            return "$constructor.Select{"+ System.lineSeparator()+
-                    Text.indent(_ct.toString() )+ System.lineSeparator()+
-                    Text.indent("$args : " + args) + System.lineSeparator()+
-                    "}";
+            return "$ctor.Select{"+ System.lineSeparator()+
+                Text.indent(_ct.toString() )+ System.lineSeparator()+
+                Text.indent("$args : " + args) + System.lineSeparator()+
+                "}";
+        }
+
+        @Override
+        public ConstructorDeclaration ast() {
+            return _ct.ast();
+        }
+
+        @Override
+        public _constructor model() {
+            return _ct;
         }
         
         public boolean isVarArg(){
@@ -670,22 +1308,12 @@ public final class $constructor
             return _ct.hasParameters();
         }
         
-        public boolean is(String...ctorDeclaration){
-            return _ct.is(ctorDeclaration);
+        public boolean is(String...methodDeclaration){
+            return _ct.is(methodDeclaration);
         }
         
         public boolean hasTypeParameters(){            
             return _ct.hasTypeParameters();
-        }
-        
-        @Override
-        public ConstructorDeclaration ast(){
-            return _ct.ast();
-        } 
-        
-        @Override
-        public _constructor model() {
-            return _ct;
         }
     }
 }
