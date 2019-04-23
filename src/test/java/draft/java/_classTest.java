@@ -578,13 +578,17 @@ public class _classTest extends TestCase {
 
     }
     public void testConstructorLambda(){
-        _class _c = _class.of("aaaa.bbbb.C").constructor(()->System.out.println("in constructor"));
+        //_class _c = _class.of("aaaa.bbbb.C").constructor(()->System.out.println("in constructor"));
+        _class _c = _class.of("aaaa.bbbb.C").constructor(new Object(){ public void m(){ System.out.println("in constructor");} });
         System.out.println( _c );
 
-        _c = _class.of("D").constructor((String s)->System.out.println("in constructor with "+s));
+        //_c = _class.of("D").constructor((String s)->System.out.println("in constructor with "+s));
+        _c = _class.of("D").constructor(new Object(){ public void c(String s){System.out.println("in constructor with "+s);} } );
         System.out.println( _c );
 
-        _c = _class.of("D").constructor((final @_annotat String s)->System.out.println("in constructor with "+s));
+        //_c = _class.of("D").constructor((final @_annotat String s)->System.out.println("in constructor with "+s));
+        //_c = _class.of("D").constructor(new Object(final @_annotat String s)->System.out.println("in constructor with "+s));
+        _c = _class.of("D").constructor(new Object(){ public void c(String s){System.out.println("in constructor with "+s);} } );
         System.out.println( _c );
     }
 

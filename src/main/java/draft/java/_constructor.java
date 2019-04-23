@@ -9,6 +9,7 @@ import com.github.javaparser.ast.expr.ObjectCreationExpr;
 import com.github.javaparser.ast.nodeTypes.NodeWithConstructors;
 import com.github.javaparser.ast.stmt.BlockStmt;
 import com.github.javaparser.ast.stmt.Statement;
+import com.github.javaparser.ast.type.TypeParameter;
 
 import draft.Text;
 import draft.java._model.*;
@@ -66,11 +67,12 @@ public final class _constructor implements _anno._hasAnnos<_constructor>,
         if( theMethod.hasJavaDocComment() ){
             _ct.javadoc(theMethod.getJavadocComment().get());
         }
-        System.out.println( "Setting throws");
+        //System.out.println( "Setting throws");
         _ct.setThrows( theMethod.getThrownExceptions() );
         _ct.annotate( theMethod.getAnnotations()); //add annos
         _ct.removeAnnos(_ctor.class); //remove the _ctor anno if it exists
         _ct.setBody( theMethod.getBody().get() ); //BODY
+        
         return _ct;
     }
 
@@ -187,15 +189,15 @@ public final class _constructor implements _anno._hasAnnos<_constructor>,
     public int hashCode() {
         int hash = 7;
         hash = 79 * hash + Objects.hash(
-                Ast.annotationsHash( astCtor ), 
-                this.getBody(), 
-                this.getJavadoc(),
-                this.getEffectiveModifiers(),
-                this.getName(), 
-                this.getParameters(),
-                Ast.typesHashCode( astCtor.getThrownExceptions()), 
-                this.getTypeParameters(), 
-                this.getReceiverParameter() );
+            Ast.annotationsHash( astCtor ), 
+            this.getBody(), 
+            this.getJavadoc(),
+            this.getEffectiveModifiers(),
+            this.getName(), 
+            this.getParameters(),
+            Ast.typesHashCode( astCtor.getThrownExceptions()), 
+            this.getTypeParameters(), 
+            this.getReceiverParameter() );
         return hash;
     }
 
@@ -230,8 +232,12 @@ public final class _constructor implements _anno._hasAnnos<_constructor>,
         return this.astCtor.getTypeParameters().isNonEmpty();
     }
 
-    public boolean hasParametersOf( java.lang.reflect.Constructor ctor ){
-        
+    /**
+     * 
+     * @param ctor
+     * @return 
+     */
+    public boolean hasParametersOf( java.lang.reflect.Constructor ctor ){        
         java.lang.reflect.Type[] genericParameterTypes = ctor.getGenericParameterTypes();
         List<_parameter> pl = this.listParameters();
         int delta = 0;
@@ -258,6 +264,7 @@ public final class _constructor implements _anno._hasAnnos<_constructor>,
         return true;        
     }
     
+    @Override
     public boolean is( String...constructorDeclaration ){
         try {
             _constructor _ct = of(constructorDeclaration);
@@ -271,6 +278,7 @@ public final class _constructor implements _anno._hasAnnos<_constructor>,
         }
     }
 
+    @Override
     public boolean is( ConstructorDeclaration astCd ){
         _constructor _ct = of( astCd );
         return equals( _ct );
@@ -395,13 +403,30 @@ public final class _constructor implements _anno._hasAnnos<_constructor>,
     public interface _hasConstructors<T extends _hasConstructors & _type, N extends Node & NodeWithConstructors>
             extends _model {
 
-        /** Gets the node that is the nodeWithConstructors (i.e. _class, _enum) */
+        /** 
+         * Gets the node that is the nodeWithConstructors (i.e._class, _enum)
+         * @return  
+         */
         N ast();
         
+        /**
+         * list all of the (explicit) constructors
+         * @return 
+         */
         List<_constructor> listConstructors();
 
+        /**
+         * 
+         * @param index
+         * @return 
+         */
         _constructor getConstructor( int index );
 
+        /**
+         * 
+         * @param _ctorMatchFn
+         * @return 
+         */
         default _constructor getConstructor( Predicate<_constructor> _ctorMatchFn){
             List<_constructor> ctors = listConstructors(_ctorMatchFn);
             if( ctors.isEmpty() ){
@@ -485,6 +510,11 @@ public final class _constructor implements _anno._hasAnnos<_constructor>,
             }
             if(theMethod.isPrivate()){
                 _ct.setPrivate();
+            }
+            if( !theMethod.getTypeParameters().isEmpty()){
+                theMethod.getTypeParameters().forEach(tp -> _ct.getTypeParameters().add(tp) );
+                //_ct.setTypeParameters(typeParameters)
+                //_ct.setTypeParameters(theMethod.getTypeParameters()); //type parameters
             }
             _ct.setThrows( theMethod.getThrownExceptions() ); 
             _ct.setBody( theMethod.getBody().get() ); //BODY
@@ -572,7 +602,7 @@ public final class _constructor implements _anno._hasAnnos<_constructor>,
          * @param <B>
          * @param command
          * @return
-         */
+        
         default <A extends Object, B extends Object>T constructor( BiConsumer<A,B> command ){
             LambdaExpr le = Expr.lambda(Thread.currentThread().getStackTrace()[2]);
             T t = (T)this;
@@ -597,13 +627,13 @@ public final class _constructor implements _anno._hasAnnos<_constructor>,
             }
             return constructor( _ct);
         }
-
+        */ 
         /**
          * constructor ( ()-> System.out.println("in constructor") );
          * @param <A>
          * @param command
          * @return
-         */
+         
         default <A extends Object> T constructor( Consumer<A> command ){
             LambdaExpr le = Expr.lambda(Thread.currentThread().getStackTrace()[2]);
             T t = (T)this;
@@ -628,12 +658,13 @@ public final class _constructor implements _anno._hasAnnos<_constructor>,
             }
             return constructor( _ct);
         }
+        */ 
 
         /**
          * constructor ( ()-> System.out.println("in constructor") );
          * @param command
          * @return
-         */
+         
         default T constructor( Expr.Command command ){
             LambdaExpr le = Expr.lambda(Thread.currentThread().getStackTrace()[2]);
             T t = (T)this;
@@ -658,7 +689,8 @@ public final class _constructor implements _anno._hasAnnos<_constructor>,
             }
             return constructor( _ct);
         }
-
+        */
+        
         default T constructor( _constructor _c ) {
             return constructor( _c.ast() );
         }

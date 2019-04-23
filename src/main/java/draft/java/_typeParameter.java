@@ -123,7 +123,7 @@ public final class _typeParameter
      * @author Eric
      */
     public static final class _typeParameters
-            implements _model {
+        implements _model {
 
         public static _typeParameters of( String...tps){
             ClassOrInterfaceDeclaration coid = Ast.classDeclaration("class Dummy"+ Text.combine(tps) +"{}");
