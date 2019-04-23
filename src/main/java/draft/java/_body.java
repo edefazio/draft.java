@@ -2,14 +2,18 @@ package draft.java;
 
 import com.github.javaparser.ast.Node;
 import com.github.javaparser.ast.NodeList;
+import com.github.javaparser.ast.body.BodyDeclaration;
+import com.github.javaparser.ast.body.MethodDeclaration;
 import com.github.javaparser.ast.comments.Comment;
 import com.github.javaparser.ast.expr.LambdaExpr;
+import com.github.javaparser.ast.expr.ObjectCreationExpr;
 import com.github.javaparser.ast.nodeTypes.NodeWithBlockStmt;
 import com.github.javaparser.ast.nodeTypes.NodeWithOptionalBlockStmt;
 import com.github.javaparser.ast.nodeTypes.NodeWithStatements;
 import com.github.javaparser.ast.stmt.*;
 import com.github.javaparser.printer.PrettyPrinterConfiguration;
 import draft.DraftException;
+import draft.java.macro._remove;
 
 import java.util.*;
 import java.util.function.Function;
@@ -30,6 +34,56 @@ public final class _body implements _model {
      */
     private final Object parentNode;
 
+    /**
+     * Here, we create a "body" by passing in an Anonymous class containing
+     * a method with a code body... Note we look for the FIRST method declaration 
+     * in  the code that has a code body and is NOT annotated with @_remove 
+     * and the name, parameters, modifiers, annotations, javadoc of the _method
+     * are IGNORED... Likewise other fields, methods, or other members within 
+     * the body of the anonymous class are IGNORED (this is useful if the body
+     * calls out to a member method that has to be stubbed/implemented...)
+     * <PRE>
+     * for example:
+     * _body _b = _body.of( new Object(){
+     * 
+     *     void theBody(String aPropertyName){
+     *         String m = calledFromBodyRequiredToCompile();
+     *         System.setProperty(aPropertyName, m);
+     *     }
+     * 
+     *     //this method exists to allow the body code above to compile
+     *     // but it is NOT used
+     *     @_remove String calledFromBodyRequiredToCompile(){
+     *         return "Doesn't matter";
+     *     }
+     * });
+     * 
+     * Where the "body" is these (2) statements:
+     * {
+     *     String m = calledFromBodyRequiredToCompile();
+     *     System.setProperty(aPropertyName, m); 
+     * }
+     * </PRE>  
+     * 
+     * @param anonymousClassWithMethodContainingBody
+     * @return 
+     */
+    public static _body of(Object anonymousClassWithMethodContainingBody){
+        StackTraceElement ste = Thread.currentThread().getStackTrace()[2];
+        ObjectCreationExpr oce = Expr.anonymousObject(ste);
+        Optional<BodyDeclaration<?>> on = oce.getAnonymousClassBody().get().stream().filter(m -> 
+                m instanceof MethodDeclaration 
+                && !((MethodDeclaration)m)
+                        .getAnnotationByClass(_remove.class).isPresent() )
+                        .findFirst();
+        if(!on.isPresent()){
+            throw new DraftException("Could not locate the method containing the body in "+ oce);
+        }
+        MethodDeclaration md = (MethodDeclaration)on.get();
+        md.getParentNode().get().remove(md); //decouple it from the "old" 
+        return of( md );
+    }
+    
     public static _body of(NodeWithBlockStmt nwbs) {
         return new _body(nwbs);
     }

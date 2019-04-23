@@ -12,7 +12,6 @@ import draft.java.runtime._javac;
 import junit.framework.TestCase;
 
 public class SmethodTest extends TestCase {
-            
     
     public void testSetTest(){
         $method SET = $method.of("public void set$Name$( $type$ $name$ ) {this.$name$ = $name$;}");

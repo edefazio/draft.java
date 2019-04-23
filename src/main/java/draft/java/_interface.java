@@ -105,6 +105,15 @@ public final class _interface implements _type<ClassOrInterfaceDeclaration, _int
         for(int i=0;i<typeMacros.length;i++){
             typeMacros[i].apply(_i);
         }
+        
+        //look at the anonymous body (runtime class) which can infer all the imports
+        Set<Class> importClasses = _type.inferImportsFrom(anonymousBody);
+        _i.imports(importClasses.toArray(new Class[0]));
+        
+        //actually, all methods that are NOT static or default need to have their
+        //bodies removed with ; (since it's an interface)
+        _i.forMethods(m-> !m.isDefault() && !m.isStatic(), 
+                m -> m.clearBody() );
         return _i;
     }
 

@@ -98,8 +98,11 @@ public @interface _ctor {
                 throw new DraftException("Unable to remove "+_m+" from parent TYPE");
             }
             // set the name of the constructor to the name of 
-            // the parent type (since it's no longer a method 
-            _ct.name(astParentType.getNameAsString());
+            // the parent type (since it's no longer a method
+            //System.out.println( astParentType.getNameAsString() + " " +astParentType.getClass() + " "+ astParentType.getParentNode().get().getClass() );
+            if( !astParentType.getNameAsString().equals("temp") ){
+                _ct.name(astParentType.getNameAsString());
+            }
             //note this is dangerous, seeing as _m is removed... but we'll return it
             return _m;
         }

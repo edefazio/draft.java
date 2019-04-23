@@ -1,16 +1,16 @@
 package test;
 
-import draft.java._class;
-import draft.java._constructor;
-import draft.java._field;
-import draft.java._method;
+import com.github.javaparser.ast.expr.LambdaExpr;
+import draft.java.*;
 import draft.java.macro._ctor;
+import draft.java.macro._default;
 import draft.java.macro._final;
 import draft.java.macro._remove;
 import draft.java.macro._static;
 import draft.java.proto.$constructor;
 import draft.java.proto.$field;
 import draft.java.proto.$method;
+import draft.java.runtime._javac;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.Map;
@@ -161,5 +161,68 @@ public class AnonymousShortcuts extends TestCase {
         assertTrue( _c.getMethod("implementedThisMethod").hasAnno(Override.class) );
         assertTrue( _c.getMethod("anotherIncludedMethod").isStatic());
         assertNull( _c.getField("someValueIDontWant")); 
+    }
+    
+    public void testEnum(){
+        _enum _e = _enum.of("E", new Object(){});        
+        System.out.println( _e );
+        _e = _enum.of("E", new Object(){
+            public @_static final Map m = null; 
+            public int a;
+            @_ctor void m(int v){
+                this.a = v;
+            }
+        }).constants("A(1)", "B(2)");    
+        
+        assertTrue( _e.hasImport(Map.class));
+        //System.out.println( _e );
+        //_javac.of(_e );
+    }
+    
+    public void testInterface(){
+        _interface _i = _interface.of("I", new Object(){
+            public int aField = 100;
+            
+            public @_static void aStaticMethod(){
+                System.out.println("Static Interface method");
+            }
+            
+            public @_default int aDefaultMethod(){
+                return 103;
+            }
+            
+            /**
+             * Since this method is NEITHER static
+             * @param a
+             * @param b
+             * @return 
+             */
+            public Map aMethodWhosBodyWillBeRemoved(int a, int b){
+                return null;
+            }            
+        });
+        assertTrue( _i.hasImport(Map.class));//since map is on the API of, we auto import it  
+        assertTrue( _i.getMethod("aStaticMethod").isStatic() );
+        assertTrue( _i.getMethod("aDefaultMethod").isDefault() );
+        assertFalse( _i.getMethod("aMethodWhosBodyWillBeRemoved").hasBody());
+        _javac.of(_i);
+        System.out.println( _i );
+    }
+    
+    public void testBody(){
+        _body _b = _body.of(new Object(){
+            void b(){
+                System.out.println(1);
+                assert(1==1);                
+            }
+        });
+        
+        assertEquals( 2, _b.getStatements().size() );
+        assertEquals( _b.getStatement(0), Stmt.of("System.out.println(1);") );
+        assertEquals( _b.getStatement(1), Stmt.of("assert(1==1);") );
+    }
+    
+    public void testLambda(){
+        LambdaExpr l = Expr.lambda(()-> System.out.println("hey") );
     }
 }

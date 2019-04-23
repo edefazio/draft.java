@@ -403,6 +403,7 @@ public class $method
     public static $method any(){
         return new $method(_method.of("$type$ $name$();") );
     }
+    
     /**
      * 
      * @param _m
