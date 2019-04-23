@@ -1,6 +1,8 @@
 package draft.java.proto;
 
 import com.github.javaparser.ast.Node;
+import com.github.javaparser.ast.NodeList;
+import com.github.javaparser.ast.body.BodyDeclaration;
 import com.github.javaparser.ast.body.ConstructorDeclaration;
 import com.github.javaparser.ast.body.MethodDeclaration;
 import com.github.javaparser.ast.expr.*;
@@ -10,6 +12,7 @@ import draft.*;
 import draft.java.*;
 import draft.java._model._node;
 import draft.java._typeParameter._typeParameters;
+import draft.java.macro._ctor;
 import draft.java.macro._macro;
 import draft.java.macro._remove;
 
@@ -393,12 +396,44 @@ public class $constructor
      */
     public static $constructor of( Object anonymousObjectContainingMethod ){
         StackTraceElement ste = Thread.currentThread().getStackTrace()[2];
+        ObjectCreationExpr oce = Expr.anonymousObject( ste );        
         
-        ObjectCreationExpr oce = Expr.anonymousObject( ste );
+        _class _c = _class.of("C");
+        if( oce.getAnonymousClassBody().isPresent() ){
+            NodeList<BodyDeclaration<?>> bs = oce.getAnonymousClassBody().get();
+            bs.forEach( b -> _c.ast().addMember(b));
+        }
+        
+        //run macros on the things
+        _macro.to( anonymousObjectContainingMethod.getClass(), _c);
+        
         MethodDeclaration theMethod = (MethodDeclaration)
             oce.getAnonymousClassBody().get().stream().filter(m -> m instanceof MethodDeclaration &&
-            !m.isAnnotationPresent(_remove.class) ).findFirst().get();
-        return of( _macro.to(anonymousObjectContainingMethod.getClass(), _constructor.of( theMethod ) ));
+                !m.isAnnotationPresent(_remove.class) ).findFirst().get();
+        
+        //build the base method first
+        _constructor _ct = _constructor.of( theMethod.getNameAsString() + " " +_parameter._parameters.of( theMethod )+"{}" );
+        
+        //MODIFIERS
+        if( theMethod.isPublic() ){
+            _ct.setPublic();
+        }
+        if(theMethod.isProtected()){
+            _ct.setProtected();
+        }
+        if(theMethod.isPrivate()){
+            _ct.setPrivate();
+        }
+        if( theMethod.hasJavaDocComment() ){
+            _ct.javadoc(theMethod.getJavadocComment().get());
+        }
+        //System.out.println( "Setting throws");
+        _ct.setThrows( theMethod.getThrownExceptions() );
+        _ct.annotate( theMethod.getAnnotations()); //add annos
+        _ct.removeAnnos(_ctor.class); //remove the _ctor anno if it exists
+        _ct.setBody( theMethod.getBody().get() ); //BODY
+        
+        return of(_ct);        
     }
 
     public static $constructor any(){

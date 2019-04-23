@@ -79,10 +79,10 @@ public class SctorTest1 extends TestCase {
         
         
         assertTrue(
-                $ct.construct().is("public ct(int a, String name){",
-                "this.a = a;",
-                "this.name = name;",
-                "}"));
+            $ct.construct().is("public ct(int a, String name){",
+            "this.a = a;",
+            "this.name = name;",
+            "}"));
 
         $ct = $constructor.of( new Object(){
             String s;
