@@ -4,12 +4,10 @@ import com.github.javaparser.ast.Modifier;
 import com.github.javaparser.ast.Node;
 import com.github.javaparser.ast.NodeList;
 import com.github.javaparser.ast.body.*;
-import com.github.javaparser.ast.expr.LambdaExpr;
 import com.github.javaparser.ast.expr.ObjectCreationExpr;
 import com.github.javaparser.ast.nodeTypes.NodeWithConstructors;
 import com.github.javaparser.ast.stmt.BlockStmt;
 import com.github.javaparser.ast.stmt.Statement;
-import com.github.javaparser.ast.type.TypeParameter;
 
 import draft.Text;
 import draft.java._model.*;
@@ -17,6 +15,7 @@ import draft.java._anno.*;
 import draft.java._parameter.*;
 import draft.java._typeParameter.*;
 import draft.java.macro._ctor;
+import draft.java.macro._macro;
 import draft.java.macro._remove;
 
 import java.util.*;
@@ -49,11 +48,23 @@ public final class _constructor implements _anno._hasAnnos<_constructor>,
     public static _constructor of(Object anonymousObjectBody ){
         StackTraceElement ste = Thread.currentThread().getStackTrace()[2];
         ObjectCreationExpr oce = Expr.anonymousObject( ste );        
+        
+        _class _c = _class.of("C");
+        if( oce.getAnonymousClassBody().isPresent() ){
+            NodeList<BodyDeclaration<?>> bs = oce.getAnonymousClassBody().get();
+            bs.forEach( b -> _c.ast().addMember(b));
+        }
+        
+        //run macros on the things
+        _macro.to( anonymousObjectBody.getClass(), _c);
+        
         MethodDeclaration theMethod = (MethodDeclaration)
             oce.getAnonymousClassBody().get().stream().filter(m -> m instanceof MethodDeclaration &&
                 !m.isAnnotationPresent(_remove.class) ).findFirst().get();
+        
         //build the base method first
         _constructor _ct = _constructor.of( theMethod.getNameAsString() + " " +_parameters.of( theMethod )+"{}" );
+        
         //MODIFIERS
         if( theMethod.isPublic() ){
             _ct.setPublic();
@@ -401,7 +412,7 @@ public final class _constructor implements _anno._hasAnnos<_constructor>,
      * @param <N> the AST node type (must implement NodeWithConstructors)
      */
     public interface _hasConstructors<T extends _hasConstructors & _type, N extends Node & NodeWithConstructors>
-            extends _model {
+        extends _model {
 
         /** 
          * Gets the node that is the nodeWithConstructors (i.e._class, _enum)
@@ -423,7 +434,7 @@ public final class _constructor implements _anno._hasAnnos<_constructor>,
         _constructor getConstructor( int index );
 
         /**
-         * 
+         * gets the FIRST constructor that matches the _ctorMatchFn (or returns null)
          * @param _ctorMatchFn
          * @return 
          */
@@ -435,22 +446,42 @@ public final class _constructor implements _anno._hasAnnos<_constructor>,
             return ctors.get(0); //just get the first one
         }
         
+        /**
+         * Does this entity have any (explicit) constructors
+         * @return 
+         */
         default boolean hasConstructors() {
             return listConstructors().size() > 0;
         }
 
+        /**
+         * does this entity have any explicit constructors that match the lambda?
+         * @param _ctorMatchFn the lambda matching function
+         * @return true if a 
+         */
         default List<_constructor> listConstructors(
                 Predicate<_constructor> _ctorMatchFn ) {
             return listConstructors().stream().filter( _ctorMatchFn ).collect( Collectors.toList() );
         }
 
+        /**
+         * 
+         * @param constructorConsumer
+         * @return 
+         */
         default T forConstructors(Consumer<_constructor> constructorConsumer ) {
             return forConstructors( m -> true, constructorConsumer );
         }
 
+        /**
+         * 
+         * @param constructorMatchFn
+         * @param constructorConsumer
+         * @return 
+         */
         default T forConstructors(
-                Predicate<_constructor> constructorMatchFn,
-                Consumer<_constructor> constructorConsumer ) {
+            Predicate<_constructor> constructorMatchFn,
+            Consumer<_constructor> constructorConsumer ) {
             listConstructors( constructorMatchFn ).forEach( constructorConsumer );
             return (T)this;
         }
@@ -513,8 +544,6 @@ public final class _constructor implements _anno._hasAnnos<_constructor>,
             }
             if( !theMethod.getTypeParameters().isEmpty()){
                 theMethod.getTypeParameters().forEach(tp -> _ct.getTypeParameters().add(tp) );
-                //_ct.setTypeParameters(typeParameters)
-                //_ct.setTypeParameters(theMethod.getTypeParameters()); //type parameters
             }
             _ct.setThrows( theMethod.getThrownExceptions() ); 
             _ct.setBody( theMethod.getBody().get() ); //BODY
@@ -593,104 +622,12 @@ public final class _constructor implements _anno._hasAnnos<_constructor>,
 
             return constructor( Ast.ctor( constructor ) );
         }
-
-        /**
-         * 
-         * constructor ( ()-> System.out.println("in constructor") );
-         * 
-         * @param <A>
-         * @param <B>
-         * @param command
-         * @return
         
-        default <A extends Object, B extends Object>T constructor( BiConsumer<A,B> command ){
-            LambdaExpr le = Expr.lambda(Thread.currentThread().getStackTrace()[2]);
-            T t = (T)this;
-            _constructor _ct = of(t.getName()+"(){}");
-            if( t instanceof _enum ) {
-                _ct.setPrivate();
-            } else{
-                _ct.setPublic();
-            }
-            //set the PARAMETERS
-            _parameters _ps = _parameters.of(le);
-            _ps.forEach(p->{
-                if( p.getType().toString().isEmpty() ){
-                    p.type("Object");
-                }
-                _ct.addParameter(p);
-            });
-            if( le.getBody().isBlockStmt() ){
-                _ct.setBody(le.getBody().asBlockStmt());
-            } else{
-                _ct.add(le.getBody());
-            }
-            return constructor( _ct);
-        }
-        */ 
         /**
-         * constructor ( ()-> System.out.println("in constructor") );
-         * @param <A>
-         * @param command
-         * @return
-         
-        default <A extends Object> T constructor( Consumer<A> command ){
-            LambdaExpr le = Expr.lambda(Thread.currentThread().getStackTrace()[2]);
-            T t = (T)this;
-            _constructor _ct = of(t.getName()+"(){}");
-            if( t instanceof _enum ) {
-                _ct.setPrivate();
-            } else{
-                _ct.setPublic();
-            }
-            //set the PARAMETERS
-            _parameters _ps = _parameters.of(le);
-            _ps.forEach(p->{
-                if( p.getType().toString().isEmpty() ){
-                    p.type("Object");
-                }
-                _ct.addParameter(p);
-            });
-            if( le.getBody().isBlockStmt() ){
-                _ct.setBody(le.getBody().asBlockStmt());
-            } else{
-                _ct.add(le.getBody());
-            }
-            return constructor( _ct);
-        }
-        */ 
-
-        /**
-         * constructor ( ()-> System.out.println("in constructor") );
-         * @param command
-         * @return
-         
-        default T constructor( Expr.Command command ){
-            LambdaExpr le = Expr.lambda(Thread.currentThread().getStackTrace()[2]);
-            T t = (T)this;
-            _constructor _ct = of(t.getName()+"(){}");
-            if( t instanceof _enum ) {
-                _ct.setPrivate();
-            } else{
-                _ct.setPublic();
-            }
-            //set the PARAMETERS
-            _parameters _ps = _parameters.of(le);
-            _ps.forEach(p->{
-                if( p.getType().toString().isEmpty() ){
-                    p.type("Object");
-                }
-                _ct.addParameter(p);
-            });
-            if( le.getBody().isBlockStmt() ){
-                _ct.setBody(le.getBody().asBlockStmt());
-            } else{
-                _ct.add(le.getBody());
-            }
-            return constructor( _ct);
-        }
-        */
-        
+         * Add the constructor
+         * @param _c
+         * @return 
+         */
         default T constructor( _constructor _c ) {
             return constructor( _c.ast() );
         }
