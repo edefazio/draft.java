@@ -564,9 +564,17 @@ public class _classTest extends TestCase {
     }
 
     public void testMethodLambda(){
-        _class _c = _class.of("aaaa.V").method("myMethod", ()-> System.out.println("Message"));
-        _c = _class.of("aaaa.V").method("myMethod", (String a)-> System.out.println("a : "+a));
-        _c = _class.of("aaaa.V").method("myMethod", (String a, Map<Integer,String>mi)-> System.out.println("a : "+a+" "+ mi));
+        //_class _c = _class.of("aaaa.V").method("myMethod", ()-> System.out.println("Message"));
+        _class _c = _class.of("aaaa.V").method(new Object(){ void myMethod(String a){ System.out.println("a : "+a); } } );
+        
+        //_c = _class.of("aaaa.V").method("myMethod", (String a)-> System.out.println("a : "+a));
+        _c = _class.of("aaaa.V").method(new Object(){ 
+            void myMethod(String a, Map<Integer,String>mi){ 
+                System.out.println("a : "+a+" "+mi);  
+            } 
+        } );
+        assertTrue( _c.hasImport(Map.class) );
+        //_c = _class.of("aaaa.V").method("myMethod", (String a, Map<Integer,String>mi)-> System.out.println("a : "+a+" "+ mi));
 
     }
     public void testConstructorLambda(){

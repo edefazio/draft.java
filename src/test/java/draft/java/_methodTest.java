@@ -11,6 +11,7 @@ import com.github.javaparser.ast.expr.MethodCallExpr;
 import com.github.javaparser.ast.expr.StringLiteralExpr;
 import com.github.javaparser.ast.stmt.ExpressionStmt;
 import draft.java.macro._abstract;
+import draft.java.macro._static;
 import junit.framework.TestCase;
 
 /**
@@ -130,9 +131,14 @@ public class _methodTest extends TestCase {
     //ctor
     //STATIC_BLOCK via lambda
 
-    public void testMethodLambdaVoidMethodsShortcut() {
-        _method _m = _method.of("print",
-                () -> System.out.println("Hello World!"));
+    public void testMethodAnonymousObjectShortcut() {
+        //_method _m = _method.of("print",
+        //        () -> System.out.println("Hello World!"));
+        _method _m = _method.of( new Object(){
+            public void print(){
+                System.out.println("Hello World!");
+            } 
+        });
         _m.findFirst(Node.class);
         _m.findFirst(Node.class, n-> n.getComment().isPresent()); //find first commented node
         //assertTrue(_m.hasParametersOfType());
@@ -149,26 +155,50 @@ public class _methodTest extends TestCase {
         assertEquals(_m.getBody().getStatement(0), Stmt.of( ()-> System.out.println("Hello World!")));
         System.out.println(_m);
 
-
-        _m = _method.of("print", (String msg) -> System.out.println("message : " + msg));
+        _m = _method.of( new Object(){ 
+            void print(String msg){ System.out.println("message : "+ msg ); } } 
+        );
+        //_m = _method.of("print", (String msg) -> System.out.println("message : " + msg));
         System.out.println(_m);
 
-        _m = _method.of("print", (@annot final String msg)
-                -> System.out.println("message : " + msg));
+        _m = _method.of( new Object(){
+            public void print( @annot final String msg ){
+                System.out.println( "message : " + msg );
+            }
+        });
+        
+        //_m = _method.of("print", (@annot final String msg)
+        //        -> System.out.println("message : " + msg));
         System.out.println(_m);
 
-        _m = _method.of("print", (@annot final String msg)
-                -> System.out.println("message : " + msg));
+        //_m = _method.of("print", (@annot final String msg)
+        //        -> System.out.println("message : " + msg));
+        System.out.println(_m);
+        
+        _m = _method.of( new Object(){ public @_static void main(String[] args){
+            System.out.println("main method");
+        }});
+        assertTrue( _m.isStatic() );
+        //_m = _method.of("public static void main", (String[] args) -> System.out.println("main method"));
         System.out.println(_m);
 
-        _m = _method.of("public static void main", (String[] args) -> System.out.println("main method"));
-        System.out.println(_m);
-
-        _m = _method.of("/** Javadoc */ @annot public static void main",
-                (String[] args) -> System.out.println("main method"));
+        _m = _method.of(new Object(){
+           /** Javadoc */
+            @annot
+            public @_static void main(String[] args){
+                System.out.println("main method");
+            }
+        });
+        assertTrue( _m.isStatic() );
+        assertTrue( _m.hasAnno(annot.class));
+        assertTrue( _m.hasJavadoc( ));
+        
+        //_m = _method.of("/** Javadoc */ @annot public static void main",
+        //        (String[] args) -> System.out.println("main method"));
         System.out.println(_m);
     }
 
+    /*
     public void testLambdaMethod(){
         _method _m = _method.of("public String compose", ()-> {return "message";} );
         System.out.println(_m);
@@ -179,6 +209,7 @@ public class _methodTest extends TestCase {
         _m = _method.of("public String compose", (@annot final String msg, @annot final Integer i)-> {return "message : "+msg+" "+i;} );
         System.out.println(_m);
     }
+    */
 
     Supplier<String> s = ()-> {return "message";};
 

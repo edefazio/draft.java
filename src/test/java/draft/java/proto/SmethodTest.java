@@ -182,10 +182,17 @@ public class SmethodTest extends TestCase {
         $method $set = $method.of("public void set$Name$( $type$ $name$){ this.$name$ = $name$; }");
 
         _method composed = $get.construct("type", int.class, "name", "x" );
-        System.out.println( composed );
-        _method _ma = _method.of("public int getX()", (Integer x)->{
-            return x;
+        //System.out.println( composed );
+        _method _ma = _method.of(new Object(){
+            public int getX(){
+                return x;
+            }
+            int x;
         });
+        
+        //_method _ma = _method.of("public int getX()", (Integer x)->{
+        //    return x;
+        //});
 
         assertTrue( $get.matches( _ma) );
 

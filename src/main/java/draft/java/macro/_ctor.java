@@ -1,7 +1,5 @@
 package draft.java.macro;
 
-//import com.github.javaparser.ast.Node;
-import com.github.javaparser.ast.Node;
 import com.github.javaparser.ast.body.ConstructorDeclaration;
 import com.github.javaparser.ast.body.MethodDeclaration;
 import com.github.javaparser.ast.body.TypeDeclaration;

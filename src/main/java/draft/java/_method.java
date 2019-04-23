@@ -79,10 +79,10 @@ public final class _method
      * </PRE> NOTE: the method should be the only method declared in the BODY
      * -or- the only method that does NOT contain the @_remove annotation
      *
-     * @param anonymousObjectBody
+     * @param anonymousObjectContainingMethod
      * @return
      */
-    public static _method of(Object anonymousObjectBody) {
+    public static _method of(Object anonymousObjectContainingMethod) {
         StackTraceElement ste = Thread.currentThread().getStackTrace()[2];
         ObjectCreationExpr oce = Expr.anonymousObject(ste);
         NodeList<BodyDeclaration<?>> bds = oce.getAnonymousClassBody().get();
@@ -90,9 +90,11 @@ public final class _method
         bds.removeIf(b -> b.isAnnotationPresent(_remove.class) || (!(b instanceof MethodDeclaration)));
         //there should be only (1) method left, if > 1 take the first method
         MethodDeclaration md = (MethodDeclaration) bds.get(0);
-        return _macro.to(anonymousObjectBody.getClass(), of(md));
+        
+        return _macro.to(anonymousObjectContainingMethod.getClass(), of(md));
     }
 
+    /*
     public static <T extends Object> _method of(String signature, Supplier<T> body) {
         LambdaExpr le = Expr.lambda(Thread.currentThread().getStackTrace()[2]);
         _method _m = fromSignature(signature);
@@ -110,13 +112,14 @@ public final class _method
         _method _m = fromSignature(signature);
         return updateBody(_m, le);
     }
+    */
 
     /**
      * _method.of( "public static final void print", ()->{
      * System.out.println(1); });
      *
      * @return
-     */
+     
     public static <T extends Object, U extends Object> _method of(String signature, Function<T, U> parametersAndBody) {
         LambdaExpr le = Expr.lambda(Thread.currentThread().getStackTrace()[2]);
         _method _m = fromSignature(signature);
@@ -128,7 +131,7 @@ public final class _method
      * System.out.println(1); });
      *
      * @return
-     */
+     
     public static <T extends Object, U extends Object, V extends Object> _method of(String signature, BiFunction<T, U, V> parametersAndBody) {
         LambdaExpr le = Expr.lambda(Thread.currentThread().getStackTrace()[2]);
         _method _m = fromSignature(signature);
@@ -146,7 +149,7 @@ public final class _method
         _method _m = fromSignature(signature);
         return updateBody(_m, le);
     }
-
+    */ 
     public static _method updateBody(_method _m, LambdaExpr le) {
         //set the BODY of the method
         if (le.getBody().isBlockStmt()) {
@@ -156,6 +159,7 @@ public final class _method
         }
         return _m;
     }
+    
 
     public static _method fromSignature(String signature) {
         String[] toks = signature.split(" ");
@@ -333,8 +337,6 @@ public final class _method
     public boolean hasParametersOf(java.lang.reflect.Method m) {
         java.lang.reflect.Type[] genericParameterTypes = m.getGenericParameterTypes();
         if( m.getParameterCount() > 0 ) {
-            //System.out.println( "HEEEEEEEYYYYY " + m.getParameters()[0] );
-            //System.out.println( "HEEEEEEEYYYYY " + m.getDeclaringClass() );
         }
         List<_parameter> pl = this.listParameters();
         if (genericParameterTypes.length != pl.size()) {
@@ -345,10 +347,9 @@ public final class _method
             _typeDecl _t = _typeDecl.of(genericParameterTypes[i]);
             if (!pl.get(i).isType(_t)) {
                 if (m.isVarArgs()
-                        && //if last parameter and varargs
-                        Ast.typesEqual(pl.get(i).getType().getElementType(),
-                                _t.getElementType())) {
-
+                    && //if last parameter and varargs
+                    Ast.typesEqual(pl.get(i).getType().getElementType(),
+                        _t.getElementType())) {
                 } else {
                     //System.out.println("Failed at " + _t + " =/= " + pl.get(i).getType());
                     return false;
@@ -399,6 +400,7 @@ public final class _method
         return _parameters.of(astMethod);
     }
     
+    @Override
     public boolean is(MethodDeclaration methodDeclaration) {
         try {
             return of(methodDeclaration).equals(this);
@@ -522,7 +524,7 @@ public final class _method
      * @param <V>
      * @param parametersAndBody
      * @return
-     */
+     
     public <T extends Object, U extends Object, V extends Object> _method setBody(BiFunction<T, U, V> parametersAndBody) {
         return setBody(Stmt.block(Thread.currentThread().getStackTrace()[2]));
     }
@@ -534,6 +536,7 @@ public final class _method
     public <A extends Object, B extends Object, C extends Object, D extends Object, E extends Object> _method setBody(Expr.QuadFunction<A, B, C, D, E> parametersAndBody) {
         return setBody(Stmt.block(Thread.currentThread().getStackTrace()[2]));
     }
+    */ 
 
     @Override
     public _method clearBody() {
@@ -630,12 +633,14 @@ public final class _method
             return method(_m.ast());
         }
 
+        /*
         default T method(String signature, Expr.Command parametersAndBody) {
             LambdaExpr le = Expr.lambda(Thread.currentThread().getStackTrace()[2]);
             _method _m = fromSignature(signature);
             _m = updateBody(_m, le);
             return method(_m);
         }
+        */
 
         default T methods(_method... ms) {
             Arrays.stream(ms).forEach(m -> method(m));
@@ -694,10 +699,23 @@ public final class _method
             return method(_m);
         }
 
+        /**
+         * 
+         * @param methodDef
+         * @return 
+         */
         default T method(String methodDef) {
             return method(new String[]{methodDef});
         }
 
+        /**
+         * Adds a method (with source declared in an anonymous class) to the 
+         * type and returns the modified type
+         * NOTE: ALSO adds any imports that exist on the public API to the type
+         * 
+         * @param anonymousObjectContainingMethod
+         * @return 
+         */
         default T method(Object anonymousObjectContainingMethod) {
             StackTraceElement ste = Thread.currentThread().getStackTrace()[2];
             ObjectCreationExpr oce = Expr.anonymousObject(ste);
@@ -711,6 +729,22 @@ public final class _method
                 throw new DraftException("Could not find Method in anonymous object body");
             }
             MethodDeclaration md = (MethodDeclaration) obd.get();
+            
+            Optional<CompilationUnit> oc = ((_node)this).ast().findCompilationUnit();
+            if( oc.isPresent() ){
+                CompilationUnit cu = oc.get();
+                Set<Class> clazzes = _type.inferImportsFrom(anonymousObjectContainingMethod.getClass());    
+                
+                
+                clazzes.forEach(c -> {
+                    if( !c.isArray()){
+                        cu.addImport(c);
+                    } else{ //cant add import to array class, use component type instead 
+                        cu.addImport(c.getComponentType());
+                    }
+                });
+            }
+            
             return method(md);
         }
 
@@ -718,26 +752,28 @@ public final class _method
          * Builds a method with the signature and
          *
          * @return
-         */
+         
         default <A extends Object> T method(String signature, Consumer<A> parametersAndBody) {
             LambdaExpr le = Expr.lambda(Thread.currentThread().getStackTrace()[2]);
             _method _m = fromSignature(signature);
             _m = updateBody(_m, le);
             return method(_m);
         }
+        */ 
 
         /**
          * _method.of( "public static final void print", ()->{
          * System.out.println(1); });
          *
          * @return
-         */
+         
         default <A extends Object, B extends Object> T method(String signature, BiConsumer<A, B> parametersAndBody) {
             LambdaExpr le = Expr.lambda(Thread.currentThread().getStackTrace()[2]);
             _method _m = fromSignature(signature);
             _m = updateBody(_m, le);
             return method(_m);
         }
+        */ 
 
         /**
          *
@@ -749,12 +785,13 @@ public final class _method
          * @param signature
          * @param parametersAndBody
          * @return
-         */
+         
         default <A extends Object, B extends Object> T method(String signature, Function<A, B> parametersAndBody) {
             LambdaExpr le = Expr.lambda(Thread.currentThread().getStackTrace()[2]);
             _method _m = fromSignature(signature);
             return method(updateBody(_m, le));
         }
+        */ 
 
         /**
          * ( "public static final void print", ()->{ System.out.println(1); });
@@ -765,7 +802,7 @@ public final class _method
          * @param signature
          * @param parametersAndBody
          * @return
-         */
+         
         default <A extends Object, B extends Object, C extends Object> T method(String signature, BiFunction<A, B, C> parametersAndBody) {
             LambdaExpr le = Expr.lambda(Thread.currentThread().getStackTrace()[2]);
             _method _m = fromSignature(signature);
@@ -783,6 +820,7 @@ public final class _method
             _method _m = fromSignature(signature);
             return method(updateBody(_m, le));
         }
+        */ 
     }
 
     public static String describeMethodSignature(_method _m) {
