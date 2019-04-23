@@ -9,7 +9,6 @@ import com.github.javaparser.printer.PrettyPrinterConfiguration;
 import draft.*;
 import draft.java.*;
 import draft.java._model._node;
-import draft.java._parameter._parameters;
 import draft.java._typeParameter._typeParameters;
 import draft.java.macro._macro;
 import draft.java.macro._remove;
@@ -184,7 +183,7 @@ public class $method
      * @param constraint
      * @return 
      */
-    public static final <N extends _node> _method first(N _n,  String pattern, Predicate<_method> constraint){
+    public static final <N extends _node> _method first(N _n, String pattern, Predicate<_method> constraint){
         return $method.of(pattern, constraint).firstIn(_n );
     }
     
@@ -401,140 +400,6 @@ public class $method
         return of( _macro.to(anonymousObjectContainingMethod.getClass(), _method.of( theMethod ) ));
     }
 
-    /**
-     * 
-     * @param signature
-     * @param body
-     * @return 
-     */
-    public static $method of(String signature, Expr.Command body ){
-        LambdaExpr le = Expr.lambda(Thread.currentThread().getStackTrace()[2]);
-        _method _m = _method.fromSignature( signature );
-        return of( _method.updateBody(_m, le) );
-    }
-
-    /**
-     * 
-     * @param <A>
-     * @param signature
-     * @param body
-     * @return 
-     */
-    public static <A extends Object> $method of(String signature, Consumer<A> body ){
-        LambdaExpr le = Expr.lambda(Thread.currentThread().getStackTrace()[2]);
-        _method _m = _method.fromSignature( signature );
-        return of( _method.updateBody(_m, le) );
-    }
-
-    /**
-     * 
-     * @param <A>
-     * @param <B>
-     * @param signature
-     * @param body
-     * @return 
-     */
-    public static <A extends Object, B extends Object> $method of(String signature, BiConsumer<A, B> body ){
-        LambdaExpr le = Expr.lambda(Thread.currentThread().getStackTrace()[2]);
-        _method _m = _method.fromSignature( signature );
-        return of( _method.updateBody(_m, le) );
-    }
-
-    /**
-     * 
-     * @param <A>
-     * @param <B>
-     * @param <C>
-     * @param signature
-     * @param body
-     * @return 
-     */
-    public static <A extends Object, B extends Object, C extends Object> $method of(String signature, Expr.TriConsumer<A, B, C> body ){
-        LambdaExpr le = Expr.lambda(Thread.currentThread().getStackTrace()[2]);
-        _method _m = _method.fromSignature( signature );
-        return of( _method.updateBody(_m, le) );
-    }
-
-    /**
-     * 
-     * @param <A>
-     * @param <B>
-     * @param <C>
-     * @param <D>
-     * @param signature
-     * @param body
-     * @return 
-     */
-    public static <A extends Object, B extends Object, C extends Object, D extends Object> $method of(String signature, Expr.QuadConsumer<A, B, C, D> body ){
-        LambdaExpr le = Expr.lambda(Thread.currentThread().getStackTrace()[2]);
-        _method _m = _method.fromSignature( signature );
-        return of( _method.updateBody(_m, le) );
-    }
-
-    /**
-     * $method.of( "public static final void print", ()->{ System.out.println(1); });
-     *
-     * @param <T>
-     * @param <U>
-     * @param signature
-     * @param parametersAndBody
-     * @return
-     */
-    public static <T extends Object, U extends Object> $method  of( String signature, Function<T,U> parametersAndBody){
-        LambdaExpr le = Expr.lambda(Thread.currentThread().getStackTrace()[2]);
-        _method _m = _method.fromSignature( signature );
-        return of(_method.updateBody(_m, le));
-    }
-
-    /**
-     * $method.of( "public static final void print", ()->{ System.out.println(1); });
-     *
-     * @param <T>
-     * @param <U>
-     * @param <V>
-     * @param signature
-     * @param parametersAndBody
-     * @return
-     */
-    public static <T extends Object, U extends Object, V extends Object> $method of( String signature, BiFunction<T,U,V> parametersAndBody){
-        LambdaExpr le = Expr.lambda(Thread.currentThread().getStackTrace()[2]);
-        _method _m = _method.fromSignature( signature );
-        return of(_method.updateBody(_m, le));
-    }
-
-    /**
-     * 
-     * @param <A>
-     * @param <B>
-     * @param <C>
-     * @param <D>
-     * @param signature
-     * @param parametersAndBody
-     * @return 
-     */
-    public static <A extends Object, B extends Object, C extends Object, D extends Object> $method of( String signature, Expr.TriFunction<A,B,C,D> parametersAndBody){
-        LambdaExpr le = Expr.lambda(Thread.currentThread().getStackTrace()[2]);
-        _method _m = _method.fromSignature( signature );
-        return of(_method.updateBody(_m, le));
-    }
-
-    /**
-     * 
-     * @param <A>
-     * @param <B>
-     * @param <C>
-     * @param <D>
-     * @param <E>
-     * @param signature
-     * @param parametersAndBody
-     * @return 
-     */
-    public static <A extends Object, B extends Object, C extends Object, D extends Object, E extends Object> $method of( String signature, Expr.QuadFunction<A,B,C,D,E> parametersAndBody){
-        LambdaExpr le = Expr.lambda(Thread.currentThread().getStackTrace()[2]);
-        _method _m = _method.fromSignature( signature );
-        return of(_method.updateBody(_m, le));
-    }
-
     public static $method any(){
         return new $method(_method.of("$type$ $name$();") );
     }
@@ -594,8 +459,7 @@ public class $method
     public $component<_modifiers> modifiers = new $component( "$modifiers$", t->true);
     public $component<_typeDecl> type = new $component( "$type$", t->true);
     public $component<_typeParameters> typeParameters = new $component( "$typeParameters$", t->true);
-    public $component<String> name = new $component( "$name$", t->true);    
-    //public $component<_parameters> parameters = new $component( "$parameters$", t-> true);
+    public $component<String> name = new $component( "$name$", t->true);
     public $parameters parameters = $parameters.of();
     public $component<_throws> thrown = new $component( "$throws$", t-> true);
     public $component<_body> body = new $component("$body$", t->true);
@@ -633,7 +497,6 @@ public class $method
         name = new $component(_m.getName());
         if( _m.hasParameters() ){
             parameters = $parameters.of(_m.getParameters());
-            //parameters = new $component( _m.getParameters().toString() );
         }        
         if( _m.hasThrows() ){
             final _throws ths = _m.getThrows();
