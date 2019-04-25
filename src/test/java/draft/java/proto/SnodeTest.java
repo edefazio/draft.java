@@ -50,9 +50,9 @@ public class SnodeTest extends TestCase {
     
     public void test$Node(){
         AnnotationExpr ae = StaticJavaParser.parseAnnotation("@$Ann");
-        System.out.println( "ANNOTATIONEPR " + ae );
+        //System.out.println( "ANNOTATIONEPR " + ae );
         ae = StaticJavaParser.parseAnnotation("@$nodeTest.Ann");
-        System.out.println( "ANNOTATIONEPR " + ae );
+        //System.out.println( "ANNOTATIONEPR " + ae );
         CompilationUnit cu = StaticJavaParser.parse(
             "class C{" + System.lineSeparator()+
             "    @draft.java.proto.$nodeTest.Ann" + System.lineSeparator() +

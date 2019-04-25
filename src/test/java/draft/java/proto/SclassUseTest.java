@@ -1,5 +1,6 @@
 package draft.java.proto;
 
+import draft.java.Ast;
 import draft.java.Expr;
 import draft.java._class;
 import java.util.HashMap;
@@ -12,6 +13,7 @@ import junit.framework.TestCase;
  *
  * @author Eric
  */
+//@Ast.cache
 public class SclassUseTest extends TestCase {
 
     public interface Inter {
@@ -106,6 +108,17 @@ public class SclassUseTest extends TestCase {
         
     }
     
+    public void testClassApi(){
+        class C{ int i= 100; }
+        //will select C and int
+        assertEquals( 2, $classUse.any().listSelectedIn(C.class).size());
+        
+        @Deprecated
+        class D{ }
+        assertEquals( 2, $classUse.any().listSelectedIn(D.class).size());
+    }
+    
+    
     public void testN() {
         _class _c = _class.of("C", new Object() {
             @Ann
@@ -170,9 +183,18 @@ public class SclassUseTest extends TestCase {
         }).implement(Inter.class)
                 .extend(Base.class);
         
+        //System.out.println( $classUse.any().listSelectedIn(_c).size() );
+        //System.out.println( _c );
+        
+        //$classUse.any().listSelectedIn(_c).forEach(s-> System.out.println( s.node.getClass() + " : " + s.node.toString()+ s.node.getBegin().get().toString() ));
+        
         $classUse.replace(_c, Base.class, Replace.class);
         $classUse.replace(_c, Inter.class, Outer.class);
         $classUse.replace(_c, Ann.class, Stan.class);
+        
+        
+        
+        
         
         /*
         $node $n = new $node($nodeTest.Ann.class.getCanonicalName());

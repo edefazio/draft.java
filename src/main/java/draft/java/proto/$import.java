@@ -1231,7 +1231,7 @@ public final class $import
      * @return 
      */
     public <N extends _node> N replaceIn(N _n, String importDecl){
-        return replaceIn(_n, _import.of(importDecl));
+        return replaceIn(_n, $import.of(importDecl));
     }
     
     /**

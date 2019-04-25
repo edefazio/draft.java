@@ -2817,7 +2817,12 @@ public enum Ast {
         @Override
         public int compare(Node o1, Node o2) {
             if (o1.getBegin().isPresent() && o2.getBegin().isPresent()) {
-                return o1.getBegin().get().compareTo(o2.getBegin().get());
+                int comp = o1.getBegin().get().compareTo(o2.getBegin().get());
+                if( comp != 0 ){
+                    return comp;
+                }
+                int comp2 = o1.getEnd().get().compareTo(o2.getEnd().get());
+                return comp2;                
             }
             //if one or the other doesnt have a begin
             // put the one WITHOUT a being BEFORE the other

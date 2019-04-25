@@ -5,6 +5,7 @@ import com.github.javaparser.ast.expr.Name;
 import com.github.javaparser.ast.expr.SimpleName;
 import com.github.javaparser.ast.type.ClassOrInterfaceType;
 import draft.java._model;
+import draft.java._model._node;
 import draft.java._type;
 import draft.java.proto.$node.Select;
 import java.util.ArrayList;
@@ -36,6 +37,7 @@ import java.util.stream.Collectors;
  * @author Eric
  */
 public class $classUse {
+    
     
     /**
      * Find all situations where we use the target class and replace it with 
@@ -84,7 +86,7 @@ public class $classUse {
     }
     
     public final String packageName;
-    public final Class type;
+    //public final Class type;
     
     /** 
      * Whenever the fully qualified name (i.e. java.util.Map)
@@ -125,15 +127,44 @@ public class $classUse {
     private static final Predicate<Node> IS_EXPECTED_NODE_TYPE = 
         n-> n instanceof Name || 
         n instanceof SimpleName || 
-        n instanceof ClassOrInterfaceType;
+        n instanceof ClassOrInterfaceType && 
+        (n.getParentNode().isPresent() && 
+            !(n.getParentNode().get() instanceof Name ||
+              n.getParentNode().get() instanceof SimpleName ||      
+              n.getParentNode().get() instanceof ClassOrInterfaceType) );
     
+    /**
+     * Matches any 
+     * @return the classUse
+     */
+    public static final $classUse any(){
+        
+        return new $classUse("", $node.of("$classUse$").addConstraint(n -> n.toString().contains(".")), 
+            Collections.EMPTY_LIST, 
+            $node.of("$classUse$").addConstraint(n -> !n.toString().contains(".") ) ).addConstraint(IS_EXPECTED_NODE_TYPE);
+    }
+    
+    /**
+     * This is for any()
+     */
+    private $classUse(String packageName, $node fullName, List<$node>memberNames, $node simpleName ){
+        this.packageName = packageName;
+        this.$fullName = fullName; //$node.of("$classUse$");
+        this.$memberNames = memberNames; //new ArrayList<>();
+        this.$simpleName = simpleName; //$node.of("$classUse$");
+    }
+    
+    /**
+     * 
+     * @param type 
+     */
     public $classUse( Class type ){
         if( type.getPackage() != null ) {
             this.packageName = type.getPackage().getName();
         } else{
             this.packageName ="";
         }
-        this.type = type;
+        //this.type = type;
         this.$fullName = new $node(type.getCanonicalName())
             .constraint( IS_EXPECTED_NODE_TYPE );
         //Note: there can be (0, 1, or more OTHER nodes that represent
@@ -150,7 +181,15 @@ public class $classUse {
         return this;
     }
     
+    public $classUse addConstraint(Predicate<Node> constraint){
+        $fullName.addConstraint(constraint);
+        $memberNames.forEach(m -> m.addConstraint(constraint));
+        $simpleName.addConstraint(constraint);        
+        return this;
+    }
+    
     public $node.Select select( Node n ){
+        
         Select sel = $fullName.select(n);
         if( sel != null ){
             return sel;
@@ -267,9 +306,6 @@ public class $classUse {
         return astRootNode;
     }
     
-    //TODO add a predicate<>
-    //ForSelectedIn
-
     public <N extends Node> N forEachIn(N astRootNode, Consumer<Node> nodeActionFn ) {
         $fullName.forEachIn(astRootNode, nodeActionFn);
         $memberNames.forEach(n -> n.forEachIn(astRootNode, nodeActionFn ) );
@@ -283,7 +319,14 @@ public class $classUse {
         $simpleName.forSelectedIn(astRootNode, selectActionFn);
         return astRootNode;
     }
-        
+     
+    public <N extends Node> N forSelectedIn(N astRootNode, Predicate<$node.Select> selectConstraint, Consumer<$node.Select> selectActionFn ) {
+        $fullName.forSelectedIn(astRootNode, selectConstraint, selectActionFn);
+        $memberNames.forEach( e-> e.forSelectedIn(astRootNode, selectConstraint, selectActionFn) );
+        $simpleName.forSelectedIn(astRootNode, selectConstraint, selectActionFn);
+        return astRootNode;
+    }
+    
     public <N extends Node> List<$node.Select> listSelectedIn( N astRootNode ){
         List<$node.Select> sels = new ArrayList<>();
         sels.addAll( $fullName.listSelectedIn(astRootNode) );
@@ -294,20 +337,12 @@ public class $classUse {
         List<$node.Select>uniqueSels = sels.stream().distinct().collect(Collectors.toList());
         
         //the selections are interleaved, so lets organize them in positional 
-        //order (in the file)
-        Collections.sort(sels, $node.SELECT_START_POSITION_COMPARATOR);
+        //order (in the file) as to not surprise the caller
+        Collections.sort(uniqueSels, $node.SELECT_START_POSITION_COMPARATOR);
         
-        return sels;        
+        return uniqueSels;        
     }
     
-    
-    public <N extends Node> N forSelectedIn(N astRootNode, Predicate<$node.Select> selectConstraint, Consumer<$node.Select> selectActionFn ) {
-        $fullName.forSelectedIn(astRootNode, selectConstraint, selectActionFn);
-        $memberNames.forEach( e-> e.forSelectedIn(astRootNode, selectConstraint, selectActionFn) );
-        $simpleName.forSelectedIn(astRootNode, selectConstraint, selectActionFn);
-        return astRootNode;
-    }
-        
     public <N extends Node> List<$node.Select> listSelectedIn( N astRootNode, Predicate<$node.Select> selectConstraint){
         List<$node.Select> sels = new ArrayList<>();
         sels.addAll( $fullName.selectListIn(astRootNode, selectConstraint) );
@@ -319,8 +354,86 @@ public class $classUse {
         
         //the selections are interleaved, so lets organize them in positional 
         //order (in the file)
-        Collections.sort(sels, $node.SELECT_START_POSITION_COMPARATOR);
+        Collections.sort(uniqueSels, $node.SELECT_START_POSITION_COMPARATOR);
         
-        return sels;        
+        return uniqueSels;        
     }
+    
+    public <N extends _node> N forEachIn(N _n, Consumer<Node> nodeActionFn ) {
+        $fullName.forEachIn(_n, nodeActionFn);
+        $memberNames.forEach(n -> n.forEachIn(_n, nodeActionFn ) );
+        $simpleName.forEachIn(_n, nodeActionFn);        
+        return _n;
+    }
+    
+    public <N extends _node> N forSelectedIn(N _n, Consumer<$node.Select> selectActionFn ) {
+        $fullName.forSelectedIn(_n, selectActionFn);
+        $memberNames.forEach( e-> e.forSelectedIn(_n, selectActionFn) );
+        $simpleName.forSelectedIn(_n, selectActionFn);
+        return _n;
+    }
+     
+    public <N extends _node> N forSelectedIn(N _n, Predicate<$node.Select> selectConstraint, Consumer<$node.Select> selectActionFn ) {
+        $fullName.forSelectedIn(_n, selectConstraint, selectActionFn);
+        $memberNames.forEach( e-> e.forSelectedIn(_n, selectConstraint, selectActionFn) );
+        $simpleName.forSelectedIn(_n, selectConstraint, selectActionFn);
+        return _n;
+    }
+    
+    public <N extends _node> List<$node.Select> listSelectedIn( N _n ){
+        List<$node.Select> sels = new ArrayList<>();
+        sels.addAll( $fullName.listSelectedIn(_n) );
+        $memberNames.forEach( e-> sels.addAll( e.listSelectedIn(_n) ) );
+        sels.addAll( $simpleName.listSelectedIn(_n) );
+        
+        List<$node.Select>res = sels.stream().distinct().collect(Collectors.toList());
+        Collections.sort(res, $node.SELECT_START_POSITION_COMPARATOR);
+        return res;
+        //dedupe
+        //List<$node.Select>uniqueSels = sels.stream().distinct().collect(Collectors.toList());
+        
+        //the selections are interleaved, so lets organize them in positional 
+        //order (in the file) as to not surprise the caller
+        //Collections.sort(uniqueSels, $node.SELECT_START_POSITION_COMPARATOR);
+        
+        //return uniqueSels;        
+    }
+    
+    public <N extends _node> List<$node.Select> listSelectedIn( N _n, Predicate<$node.Select> selectConstraint){
+        List<$node.Select> sels = new ArrayList<>();
+        sels.addAll( $fullName.selectListIn(_n, selectConstraint) );
+        $memberNames.forEach( e-> sels.addAll( e.listSelectedIn(_n) ) );
+        sels.addAll( $simpleName.listSelectedIn(_n) );
+        
+        //dedupe
+        List<$node.Select>uniqueSels = sels.stream().distinct().collect(Collectors.toList());
+        
+        //the selections are interleaved, so lets organize them in positional 
+        //order (in the file)
+        Collections.sort(uniqueSels, $node.SELECT_START_POSITION_COMPARATOR);
+        
+        return uniqueSels;        
+    }
+    
+    public _type forEachIn(Class clazz, Consumer<Node> nodeActionFn ) {
+        return forEachIn( _type.of(clazz), nodeActionFn);
+    }
+    
+    public _type forSelectedIn(Class clazz, Consumer<$node.Select> selectActionFn ) {
+        return forSelectedIn( _type.of(clazz), selectActionFn);
+    }
+     
+    public _type forSelectedIn(Class clazz, Predicate<$node.Select> selectConstraint, Consumer<$node.Select> selectActionFn ) {
+        return forSelectedIn(_type.of(clazz), selectConstraint, selectActionFn);
+    }
+    
+    public List<$node.Select> listSelectedIn( Class clazz ){        
+        return listSelectedIn( _type.of(clazz));
+    }
+    
+    public List<$node.Select> listSelectedIn( Class clazz, Predicate<$node.Select> selectConstraint){
+        return listSelectedIn( _type.of(clazz));        
+    }
+    
+    
 }

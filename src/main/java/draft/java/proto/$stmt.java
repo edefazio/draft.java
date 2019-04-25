@@ -664,6 +664,11 @@ public final class $stmt<T extends Statement>
         return fromStackTrace( ste );
     }
 
+    /** Will match ANY statement, or empty statement*/
+    public static $stmt any(){
+        return new $stmt( Statement.class, t-> true );
+    }
+    
     /**
      * 
      * @param pattern
@@ -1244,6 +1249,12 @@ public final class $stmt<T extends Statement>
     /** the class of the statement */
     public Class<T> statementClass;
 
+    private $stmt( Class<T> statementClass, Predicate<T> constraint ){
+        this.statementClass = statementClass;
+        this.stmtPattern = Stencil.of("$any$");
+        this.constraint = constraint;        
+    }
+    
     public $stmt( T st ){
         this.statementClass = (Class<T>)st.getClass();
         if( st.getComment().isPresent() ){
@@ -1369,8 +1380,10 @@ public final class $stmt<T extends Statement>
      * @param astStmt
      * @return 
      */
-    public boolean matches( Statement astStmt ){
-        return select(astStmt) != null;
+    public boolean matches( Statement astStmt ){        
+        Select sel = select(astStmt);
+        //System.out.println( "SEL "+sel);
+        return sel != null;
     }
 
     @Override
@@ -1458,7 +1471,10 @@ public final class $stmt<T extends Statement>
      * @return 
      */
     public Select<T> select( Statement astStmt ){
-         if( statementClass.isAssignableFrom(astStmt.getClass())){
+        if( astStmt == null ){
+            return null;
+        }
+        if( statementClass.isAssignableFrom(astStmt.getClass())){
             if( ! constraint.test((T) astStmt)){
                 return null;
             }

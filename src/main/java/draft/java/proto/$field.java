@@ -8,7 +8,6 @@ import com.github.javaparser.ast.expr.ObjectCreationExpr;
 import com.github.javaparser.ast.type.Type;
 import draft.*;
 import draft.java.Expr;
-import draft.java._anno._annos;
 import draft.java.*;
 import draft.java._model._node;
 import draft.java.macro._macro;
@@ -484,7 +483,7 @@ public class $field implements Template<_field>, $proto<_field> {
                     ms.toString(), 
                     (m)-> ms.equals(m));
         }
-        $inst.type = new $component<>(_f.getType().toString());
+        $inst.type = $typeDecl.of(_f.getType());
         $inst.name = new $component(_f.getName());
         if( _f.hasInit() ){
             $inst.init = new $component(_f.getInit().toString());
@@ -496,7 +495,7 @@ public class $field implements Template<_field>, $proto<_field> {
     public $component<_javadoc> javadoc = new $component( "$javadoc$", t->true);
     public $annos annos = new $annos(); 
     public $component<_modifiers> modifiers = new $component( "$modifiers$", t->true);
-    public $component<_typeDecl> type = new $component( "$type$", t->true);
+    public $typeDecl type = $typeDecl.of("$type$");
     public $component<String> name = new $component( "$name$", t->true);    
     public $component<Expression> init = new $component( "$init$", t->true);
     
@@ -536,12 +535,13 @@ public class $field implements Template<_field>, $proto<_field> {
     }
     
     public $field $type(){
-        this.type.pattern = Stencil.of("$type$");
+        this.type.typePattern = Stencil.of("$type$");
+        //this.type.pattern = Stencil.of("$type$");
         return this;
     }
     
     public $field $type( String pattern ){
-        this.type.pattern = Stencil.of(_typeDecl.of(pattern).toString());
+        this.type.typePattern = Stencil.of(_typeDecl.of(pattern).toString());
         //this.type.$component.this.pattern = Stencil.of(_typeDecl.of(pattern).toString());
         return this;
     }
@@ -1011,7 +1011,7 @@ public class $field implements Template<_field>, $proto<_field> {
         sb.append(System.lineSeparator());
         sb.append(modifiers.pattern.construct(translator, baseMap) );
         sb.append(" ");
-        sb.append(type.pattern.construct(translator, baseMap) );
+        sb.append(type.construct(translator, baseMap) );
         sb.append(" ");
         sb.append(name.pattern.construct(translator, baseMap) );
         
@@ -1042,7 +1042,7 @@ public class $field implements Template<_field>, $proto<_field> {
         javadoc.pattern.$(target, $Name);
         annos.$(target, $Name);
         modifiers.pattern.$(target, $Name);
-        type.pattern.$(target, $Name);
+        type.$(target, $Name);
         name.pattern.$(target, $Name);
         init.pattern.$(target, $Name);
         return this;
@@ -1054,7 +1054,7 @@ public class $field implements Template<_field>, $proto<_field> {
         vars.addAll( javadoc.pattern.list$() );
         vars.addAll( annos.list$() );
         vars.addAll( modifiers.pattern.list$() );
-        vars.addAll( type.pattern.list$() );
+        vars.addAll( type.list$() );
         vars.addAll( name.pattern.list$() );
         vars.addAll( init.pattern.list$() );
         
@@ -1067,7 +1067,7 @@ public class $field implements Template<_field>, $proto<_field> {
         vars.addAll( javadoc.pattern.list$Normalized() );
         vars.addAll( annos.list$Normalized() );
         vars.addAll( modifiers.pattern.list$Normalized() );
-        vars.addAll( type.pattern.list$Normalized() );
+        vars.addAll( type.list$Normalized() );
         vars.addAll( name.pattern.list$Normalized() );
         vars.addAll( init.pattern.list$Normalized() );
         return vars.stream().distinct().collect(Collectors.toList());
@@ -1082,7 +1082,7 @@ public class $field implements Template<_field>, $proto<_field> {
         sb.append(System.lineSeparator());
         sb.append(modifiers.pattern );
         sb.append(" ");
-        sb.append(type.pattern );
+        sb.append(type.typePattern );
         sb.append(" ");
         sb.append(name.pattern );
         sb.append(" = ");

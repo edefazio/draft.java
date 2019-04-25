@@ -454,6 +454,11 @@ public interface $proto<Q> {
             return this;
         }
         
+        public $component addConstraint( Predicate<T> constraint ){
+            this.constraint.and(constraint);
+            return this;
+        }
+        
         public $component stencil(_model _javaModel ){
             
             if( _javaModel != null ){
@@ -500,16 +505,6 @@ public interface $proto<Q> {
             this.pattern = this.pattern.hardcode$(keyValues);
             return this;
         }
-                
-        /**
-         * 
-         * @param constraint
-         * @return 
-         */
-        public $component addConstraint( Predicate<T> constraint ){
-            this.constraint = this.constraint.and(constraint);
-            return this;
-        }
         
         public boolean isMatchAny(){
             if( this.pattern.isMatchAny() ){
@@ -540,6 +535,15 @@ public interface $proto<Q> {
                     return pattern.deconstruct( ((_node)t).toString(Ast.PRINT_NO_COMMENTS).trim() );
                 }
                 if( t instanceof _body ){
+                    //System.out.println( "IN BODY "+ pattern + t );
+                    _body _b = (_body)t;
+                    if( _b.isEmpty() ){
+                        
+                    }
+                    if( pattern.isMatchAny() && _b.isEmpty()){
+                        System.out.println( " " );
+                        return Tokens.of( pattern.list$().get(0), _b.toString() );
+                    }
                     return pattern.deconstruct( ((_body)t).toString(Ast.PRINT_NO_COMMENTS).trim() );
                 }
                 return pattern.deconstruct( t.toString() );

@@ -435,6 +435,10 @@ public final class $typeDecl
         this.typePattern = Stencil.of(_proto.toString() );
     }
     
+    private $typeDecl(String pattern){
+        this.typePattern = Stencil.of(pattern);
+    } 
+    
     /**
      * Will this typeDecl match ALL typeDecl's 
      * @return 
@@ -530,6 +534,28 @@ public final class $typeDecl
     public $typeDecl hardcode$( Translator translator, Tokens kvs ) {
         this.typePattern = this.typePattern.hardcode$(translator,kvs);
         return this;
+    }
+    
+    public Tokens decomposeTo( _typeDecl _t, Tokens allTokens ){
+        if(allTokens == null){
+            return allTokens;
+        }
+        Select sel = select(_t);
+        if( sel != null ){
+            if( allTokens.isConsistent(sel.args.asTokens()) ){
+                allTokens.putAll(sel.args.asTokens());
+                return allTokens;
+            }
+        }
+        return null;
+    }
+    
+    /**
+     * 
+     * @return 
+     */
+    public static $typeDecl any() {
+        return new $typeDecl("$typeDecl$");
     }
     
     /**

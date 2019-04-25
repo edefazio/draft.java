@@ -287,11 +287,13 @@ public final class _class implements _type<ClassOrInterfaceDeclaration, _class>,
     public static _class of( String signature, Object anonymousClassBody, Function<_type, _type>...typeFn){
         StackTraceElement ste = Thread.currentThread().getStackTrace()[2];
         _class _c = _class.of(signature);
+        System.out.println("Set Package"+_c.getPackage());
         Class theClass = anonymousClassBody.getClass();
 
         //interfaces to implement
         if(theClass.getInterfaces().length > 0){
             for(int i=0; i< theClass.getInterfaces().length; i++){
+                
                 _c.imports(theClass.getInterfaces()[i]);
                 _c.implement(theClass.getInterfaces()[i]);
             }
@@ -324,7 +326,7 @@ public final class _class implements _type<ClassOrInterfaceDeclaration, _class>,
                 }
             }
         }
-        //add imports from methods return types parametder types
+        //add imports from methods return types parameter types
         Set<Class>toImport = _type.inferImportsFrom(anonymousClassBody);
 
         _c.imports(toImport.toArray(new Class[0]));
@@ -334,6 +336,7 @@ public final class _class implements _type<ClassOrInterfaceDeclaration, _class>,
         for(int i=0;i<typeFn.length; i++){
             _c = (_class)typeFn[i].apply( _c);
         }
+        System.out.println("End Package"+_c.getPackage());
         return _c;
     }
 

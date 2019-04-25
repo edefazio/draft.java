@@ -7,10 +7,11 @@ import draft.java.macro._ctor;
 import junit.framework.TestCase;
 
 
-public class SctorTest1 extends TestCase {
+public class SOLDconstructorTest extends TestCase {
 
+    
     public void testNoArgConstructor(){
-        $constructor $c = $constructor.of( "public $name$(){ assert(1==1); }" ).$(Stmt.of("assert(1==1);").toString(), "body");
+        $OLDconstructor $c = $OLDconstructor.of( "public $name$(){ assert(1==1); }" ).$(Stmt.of("assert(1==1);"), "body");
         assertTrue($c.matches(_constructor.of("public C(){}")));
     }
     
@@ -18,7 +19,7 @@ public class SctorTest1 extends TestCase {
      * Verify
      */
     public void testCompareWithJavadocAndAnnotationsAndComments(){
-        $constructor $c = $constructor.of( "public $name$(int x){ this.x = x; }" );
+        $OLDconstructor $c = $OLDconstructor.of( "public $name$(int x){ this.x = x; }" );
 
         assertTrue($c.matches(_constructor.of("public C(int x){ this.x = x;}")));
         assertTrue($c.matches(_constructor.of("/** Javadoc */ public C(int x){ this.x = x;}")));
@@ -26,7 +27,7 @@ public class SctorTest1 extends TestCase {
         assertTrue($c.matches(_constructor.of("public C(int x){ /* block comment*/ this.x = x;}")));
         assertTrue($c.matches(_constructor.of("/** Javadoc */ @Deprecated public C(int x){ /** jd comment */ this.x = x;}")));
 
-        $c = $constructor.of( "/** JAVADOC $name$ */ public $name$(int x){ this.x = x; }" );
+        $c = $OLDconstructor.of( "/** JAVADOC $name$ */ public $name$(int x){ this.x = x; }" );
         assertTrue($c.matches(_constructor.of("public C(int x){ this.x = x;}")));
         assertTrue($c.matches(_constructor.of("/** Javadoc */ public C(int x){ this.x = x;}")));
         assertTrue($c.matches(_constructor.of("/** Javadoc */ @Deprecated public C(int x){ this.x = x;}")));
@@ -55,14 +56,15 @@ public class SctorTest1 extends TestCase {
     */
 
     public void testBuildViaAnonymousClass(){
-        $constructor $ct = $constructor.of( new Object() {
-            int a; String name;
+        $OLDconstructor $ct = $OLDconstructor.of( new Object() {
+                 int a; String name;
 
-            @_ctor public void ct(int a, String name ){
-                this.a = a;
-                this.name = name;
+                 @_ctor public void ct(int a, String name ){
+                     this.a = a;
+                     this.name = name;
+                 }
             }
-        });
+        );
 
         //System.out.println( $ct.signatureStencil );
         //System.out.println( $ct.construct() );
@@ -79,12 +81,12 @@ public class SctorTest1 extends TestCase {
         
         
         assertTrue(
-            $ct.construct().is("public ct(int a, String name){",
-            "this.a = a;",
-            "this.name = name;",
-            "}"));
+                $ct.construct().is("public ct(int a, String name){",
+                "this.a = a;",
+                "this.name = name;",
+                "}"));
 
-        $ct = $constructor.of( new Object(){
+        $ct = $OLDconstructor.of( new Object(){
             String s;
             /**
              * Some Javadoc
@@ -101,7 +103,7 @@ public class SctorTest1 extends TestCase {
     }
 
     public void testCtorLabels() {
-        $constructor $c = $constructor.of(new Object() {
+        $OLDconstructor $c = $OLDconstructor.of(new Object() {
             public void C() {
                 label:
                 System.out.println(12);
@@ -113,7 +115,7 @@ public class SctorTest1 extends TestCase {
                 Stmt.of("System.out.println(12);"));
     }
     public void testCtorLabelForAddingCode(){
-        $constructor $c = $constructor.of( new Object(){
+        $OLDconstructor $c = $OLDconstructor.of( new Object(){
             public void C(){
                 label:{}
             }
@@ -121,15 +123,15 @@ public class SctorTest1 extends TestCase {
 
         assertTrue($c.construct().getBody().isEmpty());
         assertEquals( Stmt.of("System.out.println(1);"),
-            $c.construct("label", "System.out.println(1);").getBody().getStatement(0));
+                $c.construct("label", "System.out.println(1);").getBody().getStatement(0));
 
         //
         assertEquals( Stmt.of("System.out.println(1);"),
-            $c.construct("label", Stmt.of("System.out.println(1);")).getBody().getStatement(0));
+                $c.construct("label", Stmt.of("System.out.println(1);")).getBody().getStatement(0));
 
         //block Statement
         assertEquals( Stmt.of("System.out.println(1);"),
-            $c.construct("label", Stmt.block("{ System.out.println(1); }")).getBody().getStatement(0));
+                $c.construct("label", Stmt.block("{ System.out.println(1); }")).getBody().getStatement(0));
 
 
 
@@ -146,7 +148,7 @@ public class SctorTest1 extends TestCase {
 
     public void testC(){
         //match any no arg CONSTRUCTORS
-        $constructor $noArgNoBody = $constructor.of("$name$(){}");
+        $OLDconstructor $noArgNoBody = $OLDconstructor.of("$name$(){}");
 
         assertTrue( $noArgNoBody.matches(_constructor.of("name(){}") ));
 
@@ -170,9 +172,9 @@ public class SctorTest1 extends TestCase {
     }
 
     public void testAnyParams(){
-        $constructor $oneArgInit = $constructor.of("$ctorName$ ($type$ $name$){",
-            "this.$name$ = $name$;",
-            "}");
+        $OLDconstructor $oneArgInit = $OLDconstructor.of("$ctorName$ ($type$ $name$){",
+                "this.$name$ = $name$;",
+                "}");
 
         assertTrue( $oneArgInit.matches(_constructor.of("A(String s){ this.s = s;}") ));
 

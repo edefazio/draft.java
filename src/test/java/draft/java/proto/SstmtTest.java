@@ -4,16 +4,46 @@ import com.github.javaparser.ast.stmt.Statement;
 import draft.Tokens;
 import draft.java.Expr;
 import draft.java.Stmt;
+import draft.java._body;
 import draft.java._class;
+import draft.java._method;
 import draft.java.proto.$proto.$args;
 import draft.java.proto.$stmt.Select;
 import junit.framework.TestCase;
 
 import java.util.List;
 import java.util.function.Consumer;
+import static junit.framework.TestCase.assertTrue;
 
 public class SstmtTest extends TestCase {
 
+    public void testStmtAnyMatchesEmptyOrLongBlocks(){
+        //assertTrue( $snip.any().matches( _method.of("void m();").getBody().ast() ));
+        assertTrue( $stmt.any().matches( _method.of("void m(){}").getBody().ast() ));
+        assertTrue( $stmt.any().matches(Stmt.assertStmt("assert(1==1)")));
+        assertTrue( $stmt.any().matches(Stmt.breakStmt("break;")));
+        assertTrue( $stmt.any().matches(Stmt.assertStmt("assert(1==1)")));
+        
+        assertTrue( $stmt.any().matches( _body.of( new Object(){
+            void m(){
+                int i=0;
+                int j=1;
+                assertTrue(1==1);
+                label: assertTrue(2==2);
+                System.out.println("Hello");
+            }
+        }).ast() ) );
+        
+    }
+    public void testStmtMatchesEmptyBlockEmptyStmt(){
+        assertTrue($stmt.any().matches("{}"));
+        assertTrue($stmt.any().matches(";"));
+        
+        assertTrue($stmt.any().matches( Stmt.of("a(1);") ) );
+        assertTrue($stmt.any().matches( Stmt.block("{ a=1; assert(a != 0); }") ) );        
+        
+        assertFalse($stmt.any().matches( (Statement)null));        
+    }
     
     public void test$protoQueryTutorial(){
         _class _c = _class.of("C", new Object(){

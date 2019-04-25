@@ -311,6 +311,12 @@ public interface _macro<M extends _anno._hasAnnos>
         return applyAllAnnotationMacros(_t, clazz);
     }
 
+    /**
+     * 
+     * @param clazz
+     * @param _c
+     * @return 
+     */
     static _constructor to(Class clazz, _constructor _c ) {
         if( !_c.hasAnnos() ){
             return _c;
@@ -319,8 +325,6 @@ public interface _macro<M extends _anno._hasAnnos>
         if (clazz.isEnum()) {
             
             // enums have (2) implied params NAME and ordinal that are not explicit in the signature
-            //System.out.println( "LOOKING FOR " + _c );
-            //System.out.println( "*****ENUM CTOR ");
             for (int i = 0; i < cs.size(); i++) {    
                 
                 Constructor ct = cs.get(i);
@@ -390,7 +394,8 @@ public interface _macro<M extends _anno._hasAnnos>
         
         //TODO REMOVE THIS AFTER FIX
         if( clazz.isAnonymousClass() ){
-            throw new DraftException("Could not find constructor for ANONYMOUS class" + _c);
+            return _c;
+            //throw new DraftException("Could not find constructor for ANONYMOUS class" + _c);
         }
         if( clazz.isLocalClass() ){
             throw new DraftException("Could not find constructor for LOCAL class" + _c);

@@ -4,6 +4,7 @@ import com.github.javaparser.ast.Node;
 import com.github.javaparser.ast.body.MethodDeclaration;
 import com.github.javaparser.ast.expr.LambdaExpr;
 import com.github.javaparser.ast.expr.ObjectCreationExpr;
+import com.github.javaparser.ast.nodeTypes.NodeWithBody;
 import com.github.javaparser.ast.nodeTypes.NodeWithStatements;
 import com.github.javaparser.ast.stmt.*;
 import draft.*;
@@ -23,6 +24,10 @@ import java.util.function.*;
  */
 public final class $snip implements Template<List<Statement>>, $proto<List<Statement>> {
 
+    public static $snip any(){
+        return new $snip( $stmt.any() );
+    }
+    
     /**
      * 
      * @param <N>
@@ -399,7 +404,7 @@ public final class $snip implements Template<List<Statement>>, $proto<List<State
         });       
         return sts;
     }
-
+    
     /**
      * 
      * @param astStmt
@@ -447,15 +452,6 @@ public final class $snip implements Template<List<Statement>>, $proto<List<State
             all.putAll(sel.args);
         }
         return new Select( ss, all);
-    }
-
-    /**
-     * 
-     * @param _b
-     * @return 
-     */
-    public boolean matches( _body _b ){
-        return matches(_b.getStatement(0));
     }
 
     /**

@@ -25,8 +25,26 @@ import java.util.concurrent.atomic.AtomicBoolean;
  */
 public class _classTest extends TestCase {
     
+    public class Inner{
+        
+    }
     
-    interface MemberI{ }
+    /** verify that is I set the  */
+    public void setPackageToInner(){
+        
+        _class _c = _class.of(Inner.class).setPackage("aaaa.bbbb.dddd");
+        assertTrue( _c.isTopClass() );
+        assertEquals( _c.getPackage(), "aaaa.bbbb.dddd" );
+    }
+    
+   public void testNotImport(){
+       _class _c = _class.of("C");
+       //System.out.println( _c.imports(String.class) );
+       _c.imports(String[].class);
+       assertFalse( _c.hasImports(String.class));
+   }
+            
+   interface MemberI{ }
     
     interface $Member{        
         interface MemberMember{}
@@ -49,7 +67,7 @@ public class _classTest extends TestCase {
                 .implement(MemberI.class).implement($Member.class).implement($Member.MemberMember.class);
         _c = _class.of("C").extend($Base.class);
         _c = _class.of("C").extend($Base.Mem.class);
-        System.out.println( _c );
+        //System.out.println( _c );
     }
     
     public void testToString(){
@@ -161,7 +179,7 @@ public class _classTest extends TestCase {
             }
             
         });
-        System.out.println( _c );
+        //System.out.println( _c );
         
         assertTrue( _c.hasImport(BBC.class));
         assertTrue( _c.hasImport(AtomicBoolean.class));
@@ -261,7 +279,7 @@ public class _classTest extends TestCase {
         }).importStatic(Collections.class.getCanonicalName()+".*",
                 "com.mattel.Hoverboard.Boards.*",
                 "com.mattel.Hoverboard.createNimbus.*");
-        System.out.println( _c);
+        //System.out.println( _c);
     }
 
     public void testMethodParameterTypes(){
@@ -290,7 +308,7 @@ public class _classTest extends TestCase {
         }).importStatic(Collections.class)
           .imports(Comparator.class, List.class);
 
-        System.out.println(_c);
+        //System.out.println(_c);
         _javac.of( _c );
     }
 
@@ -314,7 +332,7 @@ public class _classTest extends TestCase {
             }
         });
         
-        System.out.println( _c);
+        //System.out.println( _c);
         assertTrue( _c.hasImport(Serializable.class)); //interface implemented
         assertTrue( _c.hasImport(Map.class)); //field type
         assertTrue( _c.hasImport(List.class));
@@ -348,7 +366,7 @@ public class _classTest extends TestCase {
                 return 123;
             }
         });
-        System.out.println( _c );
+        //System.out.println( _c );
     }
 
 
@@ -371,13 +389,12 @@ public class _classTest extends TestCase {
 
         assertEquals( a, b);
         assertEquals( a.hashCode(), b.hashCode());
-
     }
 
     public void testTypeHashCode(){
         assertEquals(
-                Ast.typeHash( Ast.typeDecl("String")),
-                Ast.typeHash( Ast.typeDecl("java.lang.String" )) );
+            Ast.typeHash( Ast.typeDecl("String")),
+            Ast.typeHash( Ast.typeDecl("java.lang.String" )) );
     }
 
     /**
@@ -457,16 +474,16 @@ public class _classTest extends TestCase {
     /** Create (2) dynamic Implementations of an interface in the same _classLoader */
     public void testDynamicImplsSameClassLoader(){
         _project _p = _project.of(
-                _class.of("D", new One(){
-                    public String id() {
-                        return "ID";
-                    }
-                }),
-                _class.of("E", new One(){
-                    public String id(){
-                        return "DI";
-                    }
-                })
+            _class.of("D", new One(){
+                public String id() {
+                    return "ID";
+                }
+            }),
+            _class.of("E", new One(){
+                public String id(){
+                    return "DI";
+                }
+            })
         );
 
         One o = (One)_p._new("D");
@@ -549,14 +566,14 @@ public class _classTest extends TestCase {
      *
      */
     public static final _class _c = //_autoDto.Macro.to(
-            _class.of( "aaaa.bbbb.Local",
-                    new Object(){
-                        public int a,b,c;
-                        @_final String name;
-                        @_static public void main(String[] args){
-                            System.out.println("Some Print Statement");
-                        }
-                }, _autoDto.$);
+        _class.of( "aaaa.bbbb.Local",
+            new Object(){
+                public int a,b,c;
+                @_final String name;
+                @_static public void main(String[] args){
+                    System.out.println("Some Print Statement");
+                }
+            }, _autoDto.$);
 
     @interface _annotat{
 
@@ -584,17 +601,17 @@ public class _classTest extends TestCase {
     public void testConstructorLambda(){
         //_class _c = _class.of("aaaa.bbbb.C").constructor(()->System.out.println("in constructor"));
         _class _c = _class.of("aaaa.bbbb.C").constructor(new Object(){ public void m(){ System.out.println("in constructor");} });
-        System.out.println( _c );
+        //System.out.println( _c );
 
         //_c = _class.of("D").constructor((String s)->System.out.println("in constructor with "+s));
         _c = _class.of("D").constructor(new Object(){ public void c(String s){System.out.println("in constructor with "+s);} } );
-        System.out.println( _c );
+        //System.out.println( _c );
 
         //_c = _class.of("D").constructor((final @_annotat String s)->System.out.println("in constructor with "+s));
         //_c = _class.of("D").constructor(new Object(final @_annotat String s)->System.out.println("in constructor with "+s));
         _c = _class.of("D").constructor(new Object(){ public void c(final @annotat String s){System.out.println("in constructor with "+s);} } );
         assertTrue( _c.getConstructor(0).getParameter("s").hasAnno(annotat.class));
-        System.out.println( _c );
+        //System.out.println( _c );
     }
 
     public void testStaticClassLambdaAuto(){
@@ -630,7 +647,7 @@ public class _classTest extends TestCase {
     public void testAnonymousClassWithMacroAnnotations(){
         //_class _c = _class.of( ()-> { class F{} });
         _class _c = _class.of( "F", new Object(){} );
-        System.out.println( _c );
+        //System.out.println( _c );
         assertEquals( "F", _c.getName());
 
         assertTrue( _c.isPublic() ); //we ensure the class is public
@@ -677,7 +694,7 @@ public class _classTest extends TestCase {
         assertTrue( _c.hasStaticBlock() );
         assertTrue( _c.getStaticBlock(0).is( " System.loadLibrary(\"getpid\");"));
         _method _m = _c.getMethod(0);
-        System.out.println( _m );
+        //System.out.println( _m );
         
         assertTrue( _c.getMethod( "getpid").isNative());
         assertTrue( _c.getMethod( "getpid").isType( int.class));
@@ -688,7 +705,7 @@ public class _classTest extends TestCase {
     public void testImportFromClass(){
         //read in the class from the Class file
         _class _c = _class.of( ComplexClass.class );
-        System.out.println( _c ); 
+        //System.out.println( _c ); 
     }
     
     public void testC(){
@@ -750,7 +767,7 @@ public class _classTest extends TestCase {
             "    System.out.println(15);",
             "}" );
         
-        System.out.println( _c );
+        //System.out.println( _c );
     }
     
     /**
@@ -869,7 +886,7 @@ public class _classTest extends TestCase {
         assertTrue( _f.isType( "List<String>"));
         assertTrue( _f.getName().equals( "l"));
         assertTrue( _f.isInit(Expr.of("new ArrayList<>()")));
-        System.out.println( _c.listFields());
+        //System.out.println( _c.listFields());
         
         assertTrue(_c.hasJavadoc());
         assertTrue(_c.getJavadoc().getContent().contains( "class JAVADOC") );

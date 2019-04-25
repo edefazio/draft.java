@@ -1,6 +1,9 @@
 package test;
 
+import com.github.javaparser.ast.expr.DoubleLiteralExpr;
+import com.github.javaparser.ast.expr.IntegerLiteralExpr;
 import com.github.javaparser.ast.expr.LambdaExpr;
+import com.github.javaparser.ast.stmt.Statement;
 import draft.java.*;
 import draft.java.macro._ctor;
 import draft.java.macro._default;
@@ -25,7 +28,7 @@ public class AnonymousShortcuts extends TestCase {
     /**
      * 
      */
-    public void testAnonymousMethod(){
+    public void testMethod(){
         
         //create a method via an anonymous class
         _method _m = _method.of( new Object(){
@@ -37,7 +40,9 @@ public class AnonymousShortcuts extends TestCase {
         });
         
         System.out.println( _m );
-        
+    }
+     
+    public void test$Method(){
         //create a method prototype via Anonymous class
         $method $m = $method.of( new Object(){
             /** Javadoc */
@@ -51,7 +56,7 @@ public class AnonymousShortcuts extends TestCase {
         System.out.println( $m.construct() );        
     }
     
-    public void testAnonymousField(){
+    public void testField(){
         _field _f = _field.of( new Object(){
             /** Javadoc */
             @Deprecated
@@ -59,7 +64,9 @@ public class AnonymousShortcuts extends TestCase {
         });
         //ensure the field has the anno, the javadoc and the init expression
         assertEquals( _f, _field.of("/** Javadoc */ @Deprecated public static final int a = 100 + 20;" ) );
-        
+    }
+    
+    public void test$Field(){
         $field $f = $field.of( new Object(){
             /** Javadoc */
             @Deprecated
@@ -69,7 +76,7 @@ public class AnonymousShortcuts extends TestCase {
         assertEquals( $f.construct(), _field.of("/** Javadoc */ @Deprecated public static final int a = 100 + 20;" ) );
     }
     
-    public void testAnonymousConstructor(){
+    public void testConstructor(){
         _constructor _c = _constructor.of( new Object(){
             private int a, b;
             
@@ -85,23 +92,9 @@ public class AnonymousShortcuts extends TestCase {
             }
         });        
         System.out.println( _c );
-        /*
-        $constructor $c = $constructor.of( new Object(){
-            private int a, b;
-            
-            /**
-             * Some Javadoc 
-             * @param a
-             * @param b
-          
-            @Deprecated
-            public void C(int a, final int b){
-                this.a = a;
-                this.b = b;
-            }
-        });        
-        System.out.println( $c.construct() );  
-        */
+    }
+    
+    public void test$constructor(){
         
         $constructor $c = $constructor.of( new Object(){
             private int a, b;
@@ -158,7 +151,7 @@ public class AnonymousShortcuts extends TestCase {
         public boolean implementedThisMethod();
     }
     
-    public void testAnonymousImplementer(){
+    public void testImplementer(){
         _class _c = _class.of("AnonymousImplementer", new ToImplement(){
             public static final boolean implemented = true;
             
@@ -229,7 +222,7 @@ public class AnonymousShortcuts extends TestCase {
     }
     
     public void testBody(){
-        _body _b = _body.of(new Object(){
+        _body _b = _body.of( new Object(){
             void b(){
                 System.out.println(1);
                 assert(1==1);                
@@ -241,7 +234,18 @@ public class AnonymousShortcuts extends TestCase {
         assertEquals( _b.getStatement(1), Stmt.of("assert(1==1);") );
     }
     
-    public void testLambda(){
-        LambdaExpr l = Expr.lambda(()-> System.out.println("hey") );
+    public void testStmt(){
+        Statement st = Stmt.of( ()->System.out.println("Hello") );
     }
+    
+    public void testLambda(){
+        LambdaExpr l = Expr.of(()-> System.out.println("hey") );
+    }
+    
+    public void testExpressions(){
+        IntegerLiteralExpr ile = Expr.of(1);
+        DoubleLiteralExpr dle = Expr.of(3.14f);        
+    }
+    
+    
 }

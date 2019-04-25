@@ -60,9 +60,7 @@ public class ManualTest extends TestCase {
         
         /* Alternatively; to iterate over the methods on _class _c
            (i.e. NOT INNER CLASS METHODS of class _c) : */
-        _c.forMethods( m -> System.out.println( m ) );
-        
-        
+        _c.forMethods( m -> System.out.println( m ) );        
     }
     
     /*

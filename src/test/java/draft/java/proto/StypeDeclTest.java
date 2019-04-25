@@ -12,7 +12,7 @@ import junit.framework.TestCase;
 
 import java.util.*;
 
-public class StypeRefTest extends TestCase {
+public class StypeDeclTest extends TestCase {
 
     public static class OldT{
         public static final int F = 1;
@@ -30,6 +30,14 @@ public class StypeRefTest extends TestCase {
         }
     }
     
+    public void testTypeDecl(){
+        class C{
+            int a;
+        }
+        assertEquals( 1, $typeDecl.any().listIn(C.class).size() );
+        assertTrue($typeDecl.any().listSelectedIn(C.class).get(0).is("typeDecl", int.class) );
+    }
+    
     public void testFindAllTypeReferences(){
         
         _class _c = _class.of("AA", new Object(){
@@ -37,20 +45,20 @@ public class StypeRefTest extends TestCase {
             
             public OldT method( OldT one ){
                 /** WORKING */                
-                draft.java.proto.StypeRefTest.OldT fv = new draft.java.proto.StypeRefTest.OldT();
+                draft.java.proto.StypeDeclTest.OldT fv = new draft.java.proto.StypeDeclTest.OldT();
                 
                 //annotation ?
-                draft.java.proto.StypeRefTest.OldT[] arr = new draft.java.proto.StypeRefTest.OldT[2];
+                draft.java.proto.StypeDeclTest.OldT[] arr = new draft.java.proto.StypeDeclTest.OldT[2];
                 
-                draft.java.proto.StypeRefTest.OldT rr = (draft.java.proto.StypeRefTest.OldT)one; //cast
+                draft.java.proto.StypeDeclTest.OldT rr = (draft.java.proto.StypeDeclTest.OldT)one; //cast
                 
                 /* NOT WORKING  */
                 OldT var = new OldT();
                 
                 System.out.println( OldT.F ); //field access
                 OldT.m();
-                System.out.println(draft.java.proto.StypeRefTest.OldT.F ); //field access
-                draft.java.proto.StypeRefTest.OldT.m();
+                System.out.println(draft.java.proto.StypeDeclTest.OldT.F ); //field access
+                draft.java.proto.StypeDeclTest.OldT.m();
                 return var;
             }            
         });

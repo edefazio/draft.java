@@ -22,6 +22,8 @@ import java.util.function.*;
 import java.util.stream.Collectors;
 
 /**
+ * The Definition of a Java type (one of : class, enum, interface, @interface)
+ * 
  * <PRE>
  * <H2>Traditional Programming Workflow</H2>:
  * 1) write code as text within an editor to create .java files
@@ -384,7 +386,14 @@ public interface _type<AST extends TypeDeclaration & NodeWithJavadoc & NodeWithM
      * @param packageName
      * @return the modified TYPE
      */
-    default T setPackage( String packageName ){        
+    default T setPackage( String packageName ){
+        if( !this.isTopClass() ){ //this "means" that the class is an inner class
+            // and we should move it OUT into it's own class at this package
+            CompilationUnit cu = new CompilationUnit();    
+            cu.setPackageDeclaration(packageName);
+            cu.addType( (TypeDeclaration) this.ast() );            
+            return (T) this;
+        }
         CompilationUnit cu = findCompilationUnit();
         cu.setPackageDeclaration( packageName );        
         return (T)this;
@@ -658,6 +667,7 @@ public interface _type<AST extends TypeDeclaration & NodeWithJavadoc & NodeWithM
         return (T)this;
     }
 
+    
     /**
      * Regularly import a class
      * @param classesToImport
@@ -667,29 +677,25 @@ public interface _type<AST extends TypeDeclaration & NodeWithJavadoc & NodeWithM
         CompilationUnit cu = findCompilationUnit();
         if( cu != null ){
             for(int i=0;i<classesToImport.length; i++){
-                //dont import primitives or primitive arrays
-                if( classesToImport[i] == null 
-                    || classesToImport[i].isPrimitive() 
-                    || classesToImport[i].isArray() && classesToImport[i].getComponentType().isPrimitive()){
-                    break;
-                }
-                String cn = classesToImport[i].getCanonicalName();
-                //fix a minor bug in JavaParser API where anything in "java.lang.**.*" is not imported
-                // so java.lang.annotation.* classes are not imported when they should be
-                if( classesToImport[i].getPackage() != Integer.class.getPackage()
+                if( classesToImport[i].isArray() ){
+                    //System.out.println("CT " + classesToImport[i].getComponentType() );
+                    imports(classesToImport[i].getComponentType());
+                }else{
+                    //dont import primitives or primitive arrays
+                    if( classesToImport[i] == null 
+                        || classesToImport[i].isPrimitive() 
+                        || classesToImport[i].isArray() && classesToImport[i].getComponentType().isPrimitive() 
+                        || classesToImport[i].getPackageName().equals("java.lang") ) {
+                        break;
+                    }
+                    String cn = classesToImport[i].getCanonicalName();
+                    //fix a minor bug in JavaParser API where anything in "java.lang.**.*" is not imported
+                    // so java.lang.annotation.* classes are not imported when they should be
+                    if( classesToImport[i].getPackage() != Integer.class.getPackage()
                         && classesToImport[i].getCanonicalName().startsWith("java.lang") ) {
-                    if( classesToImport[i].isArray() ){
-                        String s = classesToImport[i].getCanonicalName();
-                        cu.addImport(s.substring(0, s.indexOf('[')));
-                    } else {
+                        //System.out.println( "manually adding "+ classesToImport[i].getCanonicalName());
                         cu.addImport(classesToImport[i].getCanonicalName());
-                    }
-                } else {
-                    if( classesToImport[i].isArray() ) {
-                        String s = classesToImport[i].getCanonicalName();
-                        cu.addImport(s.substring(0, s.indexOf('[')));
-                    }
-                    else {
+                    } else {
                         cu.addImport(cn);
                     }
                 }
@@ -719,7 +725,6 @@ public interface _type<AST extends TypeDeclaration & NodeWithJavadoc & NodeWithM
         throw new DraftException("No AST CompilationUnit of "+ getName()+" to add imports");
     }
 
-    
     @Override
     default T javadoc( String...content ){
         ast().setJavadocComment( Text.combine(content));
@@ -1065,11 +1070,21 @@ public interface _type<AST extends TypeDeclaration & NodeWithJavadoc & NodeWithM
         return null;
     }
 
+    /**
+     * 
+     * @param nestToRemove
+     * @return 
+     */
     default T removeNest( _type nestToRemove ){
         listNests( t-> t.equals(nestToRemove) ).forEach( n -> n.ast().removeForced() );
         return (T) this; 
     }
     
+    /**
+     * 
+     * @param nestToRemove
+     * @return 
+     */
     default T removeNest( TypeDeclaration nestToRemove ){
         return removeNest( _type.of(nestToRemove ) );        
     }
@@ -1227,6 +1242,11 @@ public interface _type<AST extends TypeDeclaration & NodeWithJavadoc & NodeWithM
         return inferImportsFrom(anonymousObjectBody.getClass());
     }
 
+    /**
+     * 
+     * @param anonymousClass
+     * @return 
+     */
     public static Set<Class>inferImportsFrom(Class anonymousClass){
         Set<Class>classes = new HashSet<>();
         //implemented interfaces
@@ -1353,7 +1373,8 @@ public interface _type<AST extends TypeDeclaration & NodeWithJavadoc & NodeWithM
             Arrays.stream( toImplement )
                 .forEach(i -> {
                         ClassOrInterfaceType coit = (ClassOrInterfaceType)Ast.typeDecl(i);                    
-                        nwi.addImplementedType( coit );                    
+                        nwi.addImplementedType( coit );   
+                        ((_type)this).imports(i);
                     });
             return (T)this;
         }
