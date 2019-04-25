@@ -2,6 +2,8 @@ package draft.java;
 
 import com.github.javaparser.ast.Node;
 import com.github.javaparser.ast.body.MethodDeclaration;
+import com.github.javaparser.ast.expr.BinaryExpr;
+import com.github.javaparser.ast.expr.CastExpr;
 import java.io.IOException;
 import java.util.*;
 import java.util.function.Predicate;
@@ -20,6 +22,37 @@ import junit.framework.TestCase;
  */
 public class _methodTest extends TestCase {
 
+    public void testNewBodyMethodsFirstForEach(){
+        _method _m = _method.of( new Object(){
+            public void m(String name){
+                System.out.println(name);
+                assert 1==x;
+                if( name.startsWith("mr")){
+                    System.out.println( "Mr.");                    
+                }                
+            }            
+            int x, y, z;
+        });
+        
+        //verify that I 
+        assertEquals( _m.firstExpr(Expr.STRING_LITERAL), Expr.stringLiteral("mr") );
+        
+        //for All exprs and statements
+        _m.forExprs(e-> System.out.println( e + " | " + e.getClass() ) );
+        _m.forStmts(s-> System.out.println( s + " | " + s.getClass()) );
+        
+        assertNotNull( _m.firstExpr(BinaryExpr.class) );
+        assertNotNull( _m.firstExpr(BinaryExpr.class, b-> b.getLeft().isIntegerLiteralExpr()));
+        assertNotNull( _m.firstExpr(BinaryExpr.class, b-> b.getRight().isNameExpr()));
+        assertNull( _m.firstExpr(CastExpr.class) );
+        
+        assertNotNull( _m.firstStmt(Stmt.ASSERT));
+        assertNotNull( _m.firstStmt(Stmt.ASSERT, a-> a.getCheck().isBinaryExpr()));
+        
+        assertNull( _m.firstStmt(Stmt.RETURN));
+        
+    }
+    
     /**
      * Verify that if I have macro annotations on an Anonymous Object that
      * I pass into a 
@@ -139,11 +172,16 @@ public class _methodTest extends TestCase {
                 System.out.println("Hello World!");
             } 
         });
-        _m.findFirst(Node.class);
-        _m.findFirst(Node.class, n-> n.getComment().isPresent()); //find first commented node
+        
+        //find the first Return statement with a comment
+        //_m.firstStmt(Stmt.RETURN, s-> s.getComment().isPresent());
+        
+        //_m.findFirst(Node.class);
+        //_m.findFirst(Node.class, n-> n.getComment().isPresent()); //find first commented node
         //assertTrue(_m.hasParametersOfType());
 
-        assertNotNull( _m.findFirst(StringLiteralExpr.class) );
+        assertNotNull( _m.firstExpr(StringLiteralExpr.class) );
+        assertNotNull( _m.firstExpr(Expr.STRING_LITERAL) );
         //assertNotNull( _m.findFirst(_anno.class) );
 
         //_m.ast().accept( VoidVisitor );

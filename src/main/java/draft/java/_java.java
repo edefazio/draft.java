@@ -328,7 +328,16 @@ public enum _java {
             return _field.of(fd.getVariable(0));
         }
         if (node instanceof BlockStmt) {
-            return _body.of((BlockStmt) node);
+            if( node.getParentNode().isPresent() ){
+                if( node.getParentNode().get() instanceof NodeWithBlockStmt ){
+                    return _body.of( (NodeWithBlockStmt) node.getParentNode().get() );
+                }
+                if( node.getParentNode().get() instanceof NodeWithOptionalBlockStmt ){
+                    return _body.of( (NodeWithOptionalBlockStmt) node.getParentNode().get() );
+                }
+            }
+            throw new DraftException("Unable to return draft _java node for BlockStmt without NodeWithBlockStmt parent");
+            //return _body.of((BlockStmt) node);
         }
         if (node instanceof JavadocComment) {
             JavadocComment jdc = (JavadocComment) node;

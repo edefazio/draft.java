@@ -115,12 +115,12 @@ public class _bodyTest extends TestCase {
 
         assertNotNull(_m.getBody());
         assertFalse( _m.hasBody() );
-        assertFalse(_m.getBody().isPresent());
+        assertFalse(_m.getBody().isImplemented());
         assertTrue(_m.getBody().isEmpty());
         //assertTrue(_m.getBody().is( null )); //you can ask
         
         assertNotNull(_sm.getBody());
-        assertTrue(_sm.getBody().isPresent());
+        assertTrue(_sm.getBody().isImplemented());
         assertFalse(_sm.getBody().isEmpty());
         //note the code "style" is different, BUT thjey are still equal
         assertTrue( _sm.getBody().is( "System.out.println(\"The Body\");") );

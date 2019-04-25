@@ -126,7 +126,7 @@ public class _enumTest extends TestCase {
         assertTrue(_ct.isPrivate());
         
         assertTrue( _ct.getModifiers().is( "private"));
-        assertTrue(_ct.getBody().isPresent());
+        assertTrue(_ct.getBody().isImplemented());
         assertTrue(_ct.getBody().isEmpty() );
         
         _ct = _e.getConstructor( 1 );

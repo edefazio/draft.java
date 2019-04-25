@@ -61,7 +61,7 @@ import java.util.stream.Collectors;
  *
  * //draft / compile/ load a new {@link Class} into a new {@link ClassLoader}
  * //& create a new instance:
- * Object o = _new.of( _class.of("C").FIELDS("String firstName, lastName;"));
+ * Object o = _new.of( _class.of("C").fields("String firstName, lastName;"));
  * 
  * //draft / compile & load a new Class then create a new proxied instance and 
  * // call the getNum instance method
