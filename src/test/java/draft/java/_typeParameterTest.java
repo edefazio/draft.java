@@ -107,7 +107,7 @@ public class _typeParameterTest extends TestCase {
         //        ut-> uut.add( (UnionType)ut) );
         // System.out.println( uut.get(0)+" "+uut.get(0).getClass() );
         //AST.typeRef( "IllegalArgumentException|IOException" );
-        _typeDecl _ttr = _typeDecl.of( "IllegalArgumentException|IOException");
+        _typeRef _ttr = _typeRef.of( "IllegalArgumentException|IOException");
         //_typeRef _utr = _typeRef.of( uut.get(0) );
         //System.out.println( "UTR " + _utr );
         //List<Parameter> pp = new ArrayList<Parameter>();

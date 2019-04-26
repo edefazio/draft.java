@@ -61,7 +61,7 @@ public interface _model {
      * <LI>{@link _receiverParameter} {@link com.github.javaparser.ast.body.ReceiverParameter}</LI>
      * <LI>{@link _staticBlock} {@link com.github.javaparser.ast.body.InitializerDeclaration}</LI>
      * <LI>{@link _typeParameter} {@link com.github.javaparser.ast.type.TypeParameter}</LI>
-     * <LI>{@link _typeDecl} {@link Type}</LI>
+     * <LI>{@link _typeRef} {@link Type}</LI>
      * </UL>
      * @see _java for mappings
      * 
@@ -199,7 +199,7 @@ public interface _model {
      * {@link _anno}
      * {@link _enum._constant}
      * {@link _annotation._element}
-     * {@link _typeDecl}
+     * {@link _typeRef}
      * {@link _typeParameter}
      * 
      * @author Eric
@@ -256,10 +256,10 @@ public interface _model {
         /**
          * @return they TYPE
          */
-        _typeDecl getType();
+        _typeRef getType();
 
-        default _typeDecl getElementType(){
-            return _typeDecl.of(getType().ast().getElementType());
+        default _typeRef getElementType(){
+            return _typeRef.of(getType().ast().getElementType());
         }
 
         /**
@@ -274,7 +274,7 @@ public interface _model {
          * @param t
          * @return
          */
-        default T type( _typeDecl t ){
+        default T type( _typeRef t ){
             return type( t.ast() );
         }
 
@@ -347,7 +347,7 @@ public interface _model {
          * @param type the _typeRef representation of the TYPE
          * @return true if the TYPE is the same
          */
-        default boolean isType( _typeDecl type ) {
+        default boolean isType( _typeRef type ) {
             return getType().equals( type );
         }
 
@@ -369,7 +369,7 @@ public interface _model {
          * @param typeMatchFn lambda matcher function
          * @return true if the type
          */
-        default boolean isType( Predicate<_typeDecl> typeMatchFn){
+        default boolean isType( Predicate<_typeRef> typeMatchFn){
             return typeMatchFn.test( getType() );
         }
         

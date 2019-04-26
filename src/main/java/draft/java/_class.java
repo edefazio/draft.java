@@ -152,7 +152,7 @@ public final class _class implements _type<ClassOrInterfaceDeclaration, _class>,
                     .filter( c -> {
                     //NOTE: the name is a mess with $1$ nonsense for Anonymous Local class
                     // so convert it to a typeRef for simplicity
-                    return _typeDecl.of( coid.getNameAsString() ).is(c.getName());
+                    return _typeRef.of( coid.getNameAsString() ).is(c.getName());
                     }).findFirst().get();
 
             coid.remove(); //remove it from the old AST (the Anonymous class)

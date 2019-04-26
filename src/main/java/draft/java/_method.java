@@ -257,8 +257,8 @@ public final class _method
     }
 
     @Override
-    public _typeDecl getType() {
-        return _typeDecl.of(this.astMethod.getType());
+    public _typeRef getType() {
+        return _typeRef.of(this.astMethod.getType());
     }
 
     @Override
@@ -288,7 +288,7 @@ public final class _method
             return false;
         }
         for (int i = 0; i < genericParameterTypes.length; i++) {
-            _typeDecl _t = _typeDecl.of(genericParameterTypes[i]);
+            _typeRef _t = _typeRef.of(genericParameterTypes[i]);
             if (!pl.get(i).isType(_t)) {
                 if (m.isVarArgs()
                     && //if last parameter and varargs

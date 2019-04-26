@@ -13,9 +13,61 @@ import junit.framework.TestCase;
 
 public class SmethodTest extends TestCase {
     
+    /**
+     * Verify that I can find a $method by a body pattern
+     */
+    public void testSpecificBody(){
+        $method $m = $method.any().body(new Object(){ void m(Object $any$) { 
+            System.out.println($any$); 
+        }});
+        
+        class C {
+            public void g(){
+                System.out.println(1);
+            }    
+            public void t(){
+                // A comment is ignored when matching
+                System.out.println( "Some text ");                
+            }            
+        }        
+        assertNotNull($m.firstIn(C.class));
+        assertNotNull($m.selectFirstIn(C.class).is("any", 1));
+        assertEquals(2, $m.listIn(C.class).size());        
+    }
+    
+    
     public void testSetTest(){
-        $method SET = $method.of("public void set$Name$( $type$ $name$ ) {this.$name$ = $name$;}");
-        System.out.println( SET.construct("type",int.class, "name", "x") );
+        $method $set = $method.of("public void set$Name$( $type$ $name$ ) {this.$name$ = $name$;}");
+        //System.out.println( SET.construct("type",int.class, "name", "x") );
+        
+        //verify a "round trip" construct a _method by populating $parameters, 
+        //then select it and verify we can pull the parameters out...
+        assertTrue($set.select($set.construct("type",int.class, "name", "x"))
+                .is("type", int.class, "name", "x") );
+        
+        //make sure I can select from an existing class
+        class C{
+            public void setX( int x ){
+                this.x = x;
+            }
+            
+            /**
+             * prototype $set without javadoc or annotations
+             * will match a method WITH javadoc and annotations
+             * ALSO with an extra (final) modifier
+             */
+            @Deprecated
+            public final void setY(int y){
+                this.y = y;
+            }
+            
+            int x, y;
+        }
+        
+        assertTrue($set.selectFirstIn(C.class).is("type",int.class,"name","x"));
+        
+        assertEquals(2, $set.selectListIn(C.class).size());
+        
     }
     
     interface I{

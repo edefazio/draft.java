@@ -12,32 +12,32 @@ import java.util.*;
  *
  * @param <T> the Type implementation (i.e. ReferenceType)
  */
-public final class _typeDecl<T extends Type>
+public final class _typeRef<T extends Type>
         implements _node<Type> {
 
-    public static _typeDecl of( java.lang.reflect.AnnotatedType t){
-        return new _typeDecl( Ast.typeRef( t ) );
+    public static _typeRef of( java.lang.reflect.AnnotatedType t){
+        return new _typeRef( Ast.typeRef( t ) );
     }
 
-    public static _typeDecl of( java.lang.reflect.Type t){
-        return new _typeDecl( Ast.typeDecl( t ) );
+    public static _typeRef of( java.lang.reflect.Type t){
+        return new _typeRef( Ast.typeDecl( t ) );
     }
 
-    public static _typeDecl of( Class clazz ) {
-        return new _typeDecl( Ast.typeDecl( clazz ) );
+    public static _typeRef of( Class clazz ) {
+        return new _typeRef( Ast.typeDecl( clazz ) );
     }
 
-    public static _typeDecl of( String string ) {
-        return new _typeDecl( Ast.typeDecl( string ) );
+    public static _typeRef of( String string ) {
+        return new _typeRef( Ast.typeDecl( string ) );
     }
 
-    public static _typeDecl of( Type t ) {
-        return new _typeDecl( t );
+    public static _typeRef of( Type t ) {
+        return new _typeRef( t );
     }
 
     private final T astType;
 
-    public _typeDecl( T t ) {
+    public _typeRef( T t ) {
         this.astType = t;
     }
 
@@ -84,7 +84,7 @@ public final class _typeDecl<T extends Type>
         return Deconstructed.of(this.astType.toString() ).normalize().hashCode();
     }
 
-    public _typeDecl copy(){
+    public _typeRef copy(){
         return of(this.astType.clone());
     }
     
@@ -137,7 +137,7 @@ public final class _typeDecl<T extends Type>
         if( getClass() != obj.getClass() ) {
             return false;
         }
-        final _typeDecl<?> other = (_typeDecl<?>)obj;
+        final _typeRef<?> other = (_typeRef<?>)obj;
         if( this.astType == other.astType){
             return true; // two _typeRef s pointing to the same ast Type
         }

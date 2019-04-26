@@ -588,8 +588,8 @@ public final class _annotation
         }
 
         @Override
-        public _typeDecl getType(){
-            return _typeDecl.of(this.astAnnMember.getType());
+        public _typeRef getType(){
+            return _typeRef.of(this.astAnnMember.getType());
         }
 
         public boolean hasDefaultValue(){

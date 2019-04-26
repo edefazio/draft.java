@@ -200,7 +200,7 @@ public class $parameter implements Template<_parameter>, $proto<_parameter> {
     public $component<String> name = new $component("$name$", t->true);
     
     /** the underlying type of the parameter */
-    public $typeDecl type;
+    public $typeRef type;
     
     /** annos prototype */
     public $annos annos = new $annos();
@@ -236,7 +236,7 @@ public class $parameter implements Template<_parameter>, $proto<_parameter> {
             this.isVarArg = true;
         }
         this.name.pattern = Stencil.of(_p.getName() );
-        this.type = $typeDecl.of(_p.getType());     
+        this.type = $typeRef.of(_p.getType());     
         this.annos = $annos.of( _p.getAnnos() );        
     }
     
@@ -384,7 +384,7 @@ public class $parameter implements Template<_parameter>, $proto<_parameter> {
         }
         Tokens all = ans.args.asTokens();
         
-        $typeDecl.Select sel = type.select(_p.getType());
+        $typeRef.Select sel = type.select(_p.getType());
         
         if( sel != null ){            
             if( !all.isConsistent( sel.args.asTokens() ) ){

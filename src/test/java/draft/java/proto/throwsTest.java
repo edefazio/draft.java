@@ -26,7 +26,7 @@ public class throwsTest extends TestCase {
         _class _c = _class.of(C.class);
         Walk.in(_c, n-> System.out.println(n.getClass()+ " "+ n ) );
         
-        $typeDecl.of(IOException.class).removeIn(_c);
+        $typeRef.of(IOException.class).removeIn(_c);
         System.out.println( _c );
         
         $classUse.replace(_c, IOException.class, java.net.BindException.class);

@@ -482,7 +482,8 @@ public class $constructor
     
     public $component<_javadoc> javadoc = new $component( "$javadoc$", t->true);    
     public $annos annos = new $annos();
-    public $component<_modifiers> modifiers = new $component( "$modifiers$", t->true);
+    //public $component<_modifiers> modifiers = new $component( "$modifiers$", t->true);
+    public $modifiers modifiers = $modifiers.any();
     
     //public $component<_typeDecl> type = new $component( "$type$", t->true);
     
@@ -508,12 +509,15 @@ public class $constructor
         if( _ct.hasAnnos() ){
             annos = $annos.of(_ct.getAnnos() );
         }
+        modifiers = $modifiers.all(_ct );
+        /*
         if( !_ct.getModifiers().isEmpty() ){
             final _modifiers ms = _ct.getModifiers();
             modifiers = new $component(
                 ms.toString(), 
                 (m)-> ms.equals(m));
         }
+        */
         //type = new $component<>(_m.getType().toString());
         if( !_ct.hasTypeParameters() ){
             final _typeParameters etps = _ct.getTypeParameters();
@@ -563,7 +567,7 @@ public class $constructor
         List<String>normalized$ = new ArrayList<>();
         normalized$.addAll( javadoc.pattern.list$Normalized() );
         normalized$.addAll( annos.list$Normalized() );
-        normalized$.addAll( modifiers.pattern.list$Normalized() );
+        //normalized$.addAll( modifiers.pattern.list$Normalized() );
         normalized$.addAll( typeParameters.pattern.list$Normalized() );
         //normalized$.addAll( type.pattern.list$Normalized() );        
         normalized$.addAll( name.pattern.list$Normalized() );
@@ -578,7 +582,7 @@ public class $constructor
         List<String>all$ = new ArrayList<>();
         all$.addAll( javadoc.pattern.list$() );
         all$.addAll( annos.list$() );
-        all$.addAll( modifiers.pattern.list$() );
+        //all$.addAll( modifiers.pattern.list$() );
         all$.addAll( typeParameters.pattern.list$() );
         //all$.addAll( type.pattern.list$() );        
         all$.addAll( name.pattern.list$() );
@@ -604,7 +608,8 @@ public class $constructor
     }
 
     public $constructor $modifiers(){
-        this.modifiers.stencil("$modifiers$");
+        this.modifiers = $modifiers.any();
+        //this.modifiers.stencil("$modifiers$");
         return this;
     }    
     
@@ -727,10 +732,14 @@ public class $constructor
         if( !this.constraint.test(_m)){
             return null;
         }
+        if( modifiers.select(_m) == null ){
+            return null;
+        }
         Tokens all = new Tokens();
         all = javadoc.decomposeTo(_m.getJavadoc(), all);
         all = annos.decomposeTo(_m.getAnnos(), all);
-        all = modifiers.decomposeTo(_m.getModifiers(), all);
+        
+        //all = modifiers.decomposeTo(_m.getModifiers(), all);
         all = typeParameters.decomposeTo(_m.getTypeParameters(), all);
         all = name.decomposeTo(_m.getName(), all);
         all = parameters.decomposeTo(_m.getParameters(), all);
@@ -794,7 +803,7 @@ public class $constructor
     public $constructor hardcode$( Translator translator, Tokens kvs ) {
         javadoc.pattern = javadoc.pattern.hardcode$(translator, kvs);
         annos = annos.hardcode$(translator, kvs);
-        modifiers.pattern = modifiers.pattern.hardcode$(translator, kvs);
+        //modifiers.pattern = modifiers.pattern.hardcode$(translator, kvs);
         typeParameters.pattern = typeParameters.pattern.hardcode$(translator, kvs);
         name.pattern = name.pattern.hardcode$(translator, kvs);
         parameters = parameters.hardcode$(translator, kvs);
@@ -809,7 +818,7 @@ public class $constructor
     public $constructor $(String target, String $Name) {
         javadoc.pattern = javadoc.pattern.$(target, $Name);
         annos = annos.$(target, $Name);
-        modifiers.pattern = modifiers.pattern.$(target, $Name);
+        //modifiers.pattern = modifiers.pattern.$(target, $Name);
         typeParameters.pattern = typeParameters.pattern.$(target, $Name);
         name.pattern = name.pattern.$(target, $Name);
         parameters = parameters.$(target, $Name);

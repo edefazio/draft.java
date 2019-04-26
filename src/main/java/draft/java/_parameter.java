@@ -57,8 +57,8 @@ public final class _parameter
     }
 
     @Override
-    public _typeDecl getType() {
-        return _typeDecl.of( this.astParameter.getType() );
+    public _typeRef getType() {
+        return _typeRef.of( this.astParameter.getType() );
     }
 
     @Override
@@ -241,7 +241,7 @@ public final class _parameter
             return null;
         }
 
-        default _parameter getParameter(_typeDecl _type) {
+        default _parameter getParameter(_typeRef _type) {
             Optional<Parameter> op = ast().getParameterByType(_type.toString());
             if (op.isPresent()) {
                 return _parameter.of(op.get());
@@ -286,7 +286,7 @@ public final class _parameter
             return (T)this;
         }
 
-        default T addParameter( _typeDecl type, String name ) {
+        default T addParameter( _typeRef type, String name ) {
             return addParameter( new Parameter( type.ast(), name ) );
         }
 
@@ -435,10 +435,10 @@ public final class _parameter
             return -1;
         }
         
-        public _typeDecl[] types(){
-            _typeDecl[] ts = new _typeDecl[size()];
+        public _typeRef[] types(){
+            _typeRef[] ts = new _typeRef[size()];
             for(int i=0;i<this.size();i++){
-                ts[i] = _typeDecl.of( this.astNodeWithParams.getParameter(i).getType() );
+                ts[i] = _typeRef.of( this.astNodeWithParams.getParameter(i).getType() );
             }
             return ts;
         }
@@ -502,7 +502,7 @@ public final class _parameter
             return this;
         }
 
-        public boolean hasParametersOfType( _typeDecl... typeRefs ) {
+        public boolean hasParametersOfType( _typeRef... typeRefs ) {
             String[] pts = new String[typeRefs.length];
             for(int i=0;i<typeRefs.length;i++){
                 pts[i] = typeRefs[i].toString();

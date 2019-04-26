@@ -15,7 +15,7 @@ public class readAndUpdate extends TestCase {
                     && ((MethodCallExpr)m.asExpressionStmt().getExpression()).getScope().get().toString().equals("System.out");
 
     public void testF() {
-        _class _c = _class.of(_typeDecl.class);
+        _class _c = _class.of(_typeRef.class);
         Walk.in( _c, ExpressionStmt.class, MATCH_SYSTEM_OUT_ST_FN, es -> System.out.println(es));
         //_c.walk(ExpressionStmt.class, MATCH_SYSTEM_OUT_ST_FN, es -> System.out.println(es));
         Walk.in( _c, ExpressionStmt.class, MATCH_SYSTEM_OUT_ST_FN, es -> es.getParentNode().get().remove(es));

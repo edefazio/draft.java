@@ -12,8 +12,20 @@ import java.util.*;
  *
  * @author Eric
  */
-public final class _modifiers
-        implements _model {
+public final class _modifiers implements _model {
+
+    /** Making the internal AST modifiers more accessible */
+    public static final Modifier PUBLIC = Modifier.publicModifier();
+    public static final Modifier PRIVATE = Modifier.privateModifier();
+    public static final Modifier PROTECTED = Modifier.protectedModifier();
+    public static final Modifier STATIC = Modifier.staticModifier();
+    public static final Modifier FINAL = Modifier.finalModifier();
+    public static final Modifier ABSTRACT = Modifier.abstractModifier();
+    public static final Modifier SYNCHRONIZED = Modifier.synchronizedModifier();
+    public static final Modifier STRICT = Modifier.strictfpModifier();
+    public static final Modifier VOLATILE = Modifier.volatileModifier();
+    public static final Modifier TRANSIENT = Modifier.transientModifier();
+    public static final Modifier NATIVE = Modifier.nativeModifier();
 
     private final NodeWithModifiers node;
 
@@ -164,6 +176,11 @@ public final class _modifiers
         return this.node.hasModifier( Modifier.Keyword.PROTECTED );
     }
 
+    
+    public boolean isPackagePrivate(){
+        return !isPublic() && ! isProtected() && ! isPrivate();
+    }
+    
     /**
      * Is this entity a Java 8+ default method (i.e. on an interface)?
      * //HMMM SHOULD I ALSO CHECK IF ITS A METHOD ON AN INTERFACE / INFERRED
@@ -383,6 +400,29 @@ public final class _modifiers
         return sb.toString();
     }
 
+    /**
+     * does this _modifiers contain all of the modifiers
+     * @param mods the modifiers to check
+     * @return true IFF this _modifiers contains all of the mods in NodeList<Modifier>
+     */
+    public boolean containsAll( Collection<Modifier> mods ) {
+        return this.node.getModifiers().containsAll(mods);
+    }
+    
+    /**
+     * does this _modifiers contain ANY of the modifiers 
+     * @param mods the modifiers to check
+     * @return true IFF this _modifiers contains any of the modifiers in the list
+     */
+    public boolean containsAny( Collection<Modifier> mods ){
+        Optional<Modifier> om = 
+            mods.stream().filter( m-> this.node.hasModifier(m.getKeyword()) ).findFirst();
+        if( om.isPresent() ){
+            return true;
+        }
+        return false;
+    }
+    
     public static final Map<String, Integer> KEYWORD_TO_BIT_MAP = new HashMap<String, Integer>();
     public static final Map<Integer, String> BIT_TO_KEYWORD_MAP = new HashMap<Integer, String>();
     public static final Map<Integer, com.github.javaparser.ast.Modifier> BIT_TO_ENUM_MAP = new HashMap<>();

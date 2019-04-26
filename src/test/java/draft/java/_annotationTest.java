@@ -78,7 +78,7 @@ public class _annotationTest extends TestCase  {
         assertFalse( _p.hasJavadoc() );
         assertFalse( _p.hasAnnos() );
         assertTrue( _p.hasDefaultValue());
-        assertEquals( _p.getType(), _typeDecl.of(Ast.typeDecl("Class[]")));
+        assertEquals( _p.getType(), _typeRef.of(Ast.typeDecl("Class[]")));
 
         assertTrue( _p.isType(Class[].class) );
         assertEquals( Expr.arrayInitializer( "{}"),_p.getDefaultValue());

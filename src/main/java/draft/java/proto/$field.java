@@ -446,7 +446,7 @@ public class $field implements Template<_field>, $proto<_field> {
     }
     
     public static $field ofType( Class clazz ){
-        return ofType( _typeDecl.of(clazz) );
+        return ofType( _typeRef.of(clazz) );
     }
     
     /**
@@ -454,7 +454,7 @@ public class $field implements Template<_field>, $proto<_field> {
      * @param type
      * @return 
      */
-    public static $field ofType( _typeDecl type ){
+    public static $field ofType( _typeRef type ){
         _field _f = _field.of( type+ " $name$;" );
         return of( _f );
     }
@@ -463,7 +463,7 @@ public class $field implements Template<_field>, $proto<_field> {
         return of( _field.of( type+" $name$;") );
     }
     
-    public static $field ofType( Predicate<_typeDecl> _typeConstraint ){
+    public static $field ofType( Predicate<_typeRef> _typeConstraint ){
         return any().$type(_typeConstraint);
     }
     
@@ -477,13 +477,16 @@ public class $field implements Template<_field>, $proto<_field> {
             $inst.annos = $annos.of(_f.getAnnos());
             //$inst.annos = new $component<>(_f.getAnnos().toString());
         }
+        $inst.modifiers = $modifiers.all(_f);
+        /*
         if( !_f.getModifiers().isEmpty() ){
             final _modifiers ms = _f.getModifiers();
             $inst.modifiers = new $component(
                     ms.toString(), 
                     (m)-> ms.equals(m));
         }
-        $inst.type = $typeDecl.of(_f.getType());
+        */
+        $inst.type = $typeRef.of(_f.getType());
         $inst.name = new $component(_f.getName());
         if( _f.hasInit() ){
             $inst.init = new $component(_f.getInit().toString());
@@ -494,8 +497,9 @@ public class $field implements Template<_field>, $proto<_field> {
     public Predicate<_field> constraint = t->true;
     public $component<_javadoc> javadoc = new $component( "$javadoc$", t->true);
     public $annos annos = new $annos(); 
-    public $component<_modifiers> modifiers = new $component( "$modifiers$", t->true);
-    public $typeDecl type = $typeDecl.of("$type$");
+    //public $component<_modifiers> modifiers = new $component( "$modifiers$", t->true);
+    public $modifiers modifiers = $modifiers.any();
+    public $typeRef type = $typeRef.of("$type$");
     public $component<String> name = new $component( "$name$", t->true);    
     public $component<Expression> init = new $component( "$init$", t->true);
     
@@ -541,12 +545,12 @@ public class $field implements Template<_field>, $proto<_field> {
     }
     
     public $field $type( String pattern ){
-        this.type.typePattern = Stencil.of(_typeDecl.of(pattern).toString());
+        this.type.typePattern = Stencil.of(_typeRef.of(pattern).toString());
         //this.type.$component.this.pattern = Stencil.of(_typeDecl.of(pattern).toString());
         return this;
     }
     
-    public $field $type(Predicate<_typeDecl> typeConstraint ){
+    public $field $type(Predicate<_typeRef> typeConstraint ){
         this.type.constraint = this.type.constraint.and(typeConstraint);
         return this;
     }
@@ -947,11 +951,11 @@ public class $field implements Template<_field>, $proto<_field> {
      * @return 
      */
     public Select select(_field _f){
-        if( this.constraint.test(_f) ){
+        if( this.constraint.test(_f) && modifiers.select(_f) != null ){            
             Tokens all = new Tokens();
             all = javadoc.decomposeTo(_f.getJavadoc(), all);
             all = annos.decomposeTo(_f.getAnnos(), all);
-            all = modifiers.decomposeTo(_f.getModifiers(), all);
+            //all = modifiers.decomposeTo(_f.getModifiers(), all);
             all = type.decomposeTo(_f.getType(), all);
             all = name.decomposeTo(_f.getName(), all);
             all = init.decomposeTo(_f.getInit(), all);
@@ -1009,7 +1013,7 @@ public class $field implements Template<_field>, $proto<_field> {
         sb.append(System.lineSeparator());
         sb.append(annos.construct(translator, baseMap) );
         sb.append(System.lineSeparator());
-        sb.append(modifiers.pattern.construct(translator, baseMap) );
+        sb.append(modifiers.construct(translator, baseMap) );
         sb.append(" ");
         sb.append(type.construct(translator, baseMap) );
         sb.append(" ");
@@ -1041,7 +1045,7 @@ public class $field implements Template<_field>, $proto<_field> {
     public $field $(String target, String $Name) {
         javadoc.pattern.$(target, $Name);
         annos.$(target, $Name);
-        modifiers.pattern.$(target, $Name);
+        //modifiers.pattern.$(target, $Name);
         type.$(target, $Name);
         name.pattern.$(target, $Name);
         init.pattern.$(target, $Name);
@@ -1053,7 +1057,7 @@ public class $field implements Template<_field>, $proto<_field> {
         List<String> vars = new ArrayList<>();
         vars.addAll( javadoc.pattern.list$() );
         vars.addAll( annos.list$() );
-        vars.addAll( modifiers.pattern.list$() );
+        //vars.addAll( modifiers.pattern.list$() );
         vars.addAll( type.list$() );
         vars.addAll( name.pattern.list$() );
         vars.addAll( init.pattern.list$() );
@@ -1066,7 +1070,7 @@ public class $field implements Template<_field>, $proto<_field> {
         List<String> vars = new ArrayList<>();
         vars.addAll( javadoc.pattern.list$Normalized() );
         vars.addAll( annos.list$Normalized() );
-        vars.addAll( modifiers.pattern.list$Normalized() );
+        //vars.addAll( modifiers.pattern.list$Normalized() );
         vars.addAll( type.list$Normalized() );
         vars.addAll( name.pattern.list$Normalized() );
         vars.addAll( init.pattern.list$Normalized() );
@@ -1080,7 +1084,8 @@ public class $field implements Template<_field>, $proto<_field> {
         sb.append(System.lineSeparator());
         sb.append(annos );
         sb.append(System.lineSeparator());
-        sb.append(modifiers.pattern );
+        //sb.append( modifiers.compose(translator, base));
+        sb.append(modifiers.toString()); //construct(Translator.TypeTranslate, new HashMap<String,Object>() ) );
         sb.append(" ");
         sb.append(type.typePattern );
         sb.append(" ");
@@ -1202,7 +1207,7 @@ public class $field implements Template<_field>, $proto<_field> {
             return _f.isType(expectedType);
         }
         
-        public boolean isType( _typeDecl expectedType){
+        public boolean isType( _typeRef expectedType){
             return _f.isType(expectedType);
         }
         

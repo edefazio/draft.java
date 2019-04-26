@@ -6,7 +6,7 @@
 package draft.java.proto;
 
 import draft.java._parameter;
-import draft.java._typeDecl;
+import draft.java._typeRef;
 import junit.framework.TestCase;
 
 /**

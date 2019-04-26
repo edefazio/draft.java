@@ -95,22 +95,22 @@ public final class _throws
         return false;
     }
 
-    public void forEach( Consumer<? super _typeDecl<ReferenceType>> elementAction ) {
+    public void forEach( Consumer<? super _typeRef<ReferenceType>> elementAction ) {
         this.astNodeWithThrows.getThrownExceptions().forEach( elementAction );
     }
 
-    public void forEach( Predicate<? super _typeDecl<ReferenceType>> matchFn,
-                         Consumer<? super _typeDecl<ReferenceType>> elementAction ) {
+    public void forEach( Predicate<? super _typeRef<ReferenceType>> matchFn,
+                         Consumer<? super _typeRef<ReferenceType>> elementAction ) {
         this.astNodeWithThrows.getThrownExceptions().stream().filter( matchFn ).forEach( elementAction );
     }
 
-    public List<_typeDecl<ReferenceType>> list() {
+    public List<_typeRef<ReferenceType>> list() {
         return this.astNodeWithThrows.getThrownExceptions();
     }
 
-    public List<_typeDecl<ReferenceType>> list(
-            Predicate<? super _typeDecl<ReferenceType>> matchFn ) {
-        return (List<_typeDecl<ReferenceType>>)this.astNodeWithThrows.getThrownExceptions().stream().filter( matchFn ).collect( Collectors.toList() );
+    public List<_typeRef<ReferenceType>> list(
+            Predicate<? super _typeRef<ReferenceType>> matchFn ) {
+        return (List<_typeRef<ReferenceType>>)this.astNodeWithThrows.getThrownExceptions().stream().filter( matchFn ).collect( Collectors.toList() );
     }
 
     public _throws add( Class<? extends Throwable>... throwsClasses ) {
@@ -133,7 +133,7 @@ public final class _throws
         return this;
     }
 
-    public _throws remove( Predicate<? super _typeDecl<ReferenceType>> matchFn ) {
+    public _throws remove( Predicate<? super _typeRef<ReferenceType>> matchFn ) {
         list( matchFn ).forEach( t -> this.astNodeWithThrows.getThrownExceptions().remove( t ) );
         return this;
     }
@@ -205,17 +205,17 @@ public final class _throws
         return this.astNodeWithThrows.getThrownException(index);       
     }
     
-    public _throws add( _typeDecl<ReferenceType>... elements ) {
+    public _throws add( _typeRef<ReferenceType>... elements ) {
         Arrays.stream( elements ).forEach( t -> this.astNodeWithThrows.addThrownException( (ReferenceType)t.ast() ) );
         return this;
     }
 
-    public _throws remove( _typeDecl<ReferenceType>... elements ) {
+    public _throws remove( _typeRef<ReferenceType>... elements ) {
         Arrays.stream( elements ).forEach( t -> this.astNodeWithThrows.getThrownExceptions().remove( (ReferenceType)t.ast() ) );
         return this;
     }
 
-    public int indexOf( _typeDecl<ReferenceType> element ) {
+    public int indexOf( _typeRef<ReferenceType> element ) {
         return this.astNodeWithThrows.getThrownExceptions().indexOf( (ReferenceType)element.ast() );
     }
     

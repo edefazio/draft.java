@@ -69,8 +69,8 @@ public final class _receiverParameter
     }
 
     @Override
-    public _typeDecl getType() {
-        return _typeDecl.of( this.astReceiverParam.getType() );
+    public _typeRef getType() {
+        return _typeRef.of( this.astReceiverParam.getType() );
     }
 
     @Override

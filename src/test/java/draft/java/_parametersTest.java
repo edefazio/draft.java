@@ -151,7 +151,7 @@ public class _parametersTest extends TestCase {
         assertTrue( _ps.get( 0 ).isFinal() );
         assertEquals(
                 _ps.get(0).getType(),
-                _typeDecl.of("Map<? extends Integer, String>" ) );
+                _typeRef.of("Map<? extends Integer, String>" ) );
         assertFalse( _ps.get(0).isVarArg() );
         assertTrue( _ps.get(1).isVarArg() );
 

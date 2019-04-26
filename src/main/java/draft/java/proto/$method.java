@@ -1,6 +1,7 @@
 package draft.java.proto;
 
 import com.github.javaparser.ast.Node;
+import com.github.javaparser.ast.body.BodyDeclaration;
 import com.github.javaparser.ast.body.MethodDeclaration;
 import com.github.javaparser.ast.expr.*;
 import com.github.javaparser.ast.stmt.*;
@@ -457,8 +458,9 @@ public class $method
     
     public $component<_javadoc> javadoc = new $component( "$javadoc$", t->true);    
     public $annos annos = new $annos();
-    public $component<_modifiers> modifiers = new $component( "$modifiers$", t->true);
-    public $component<_typeDecl> type = new $component( "$type$", t->true);
+    //public $component<_modifiers> modifiers = new $component( "$modifiers$", t->true);
+    public $modifiers modifiers = $modifiers.any();
+    public $component<_typeRef> type = new $component( "$type$", t->true);
     public $component<_typeParameters> typeParameters = new $component( "$typeParameters$", t->true);
     public $component<String> name = new $component( "$name$", t->true);
     public $parameters parameters = $parameters.of();
@@ -481,12 +483,15 @@ public class $method
         if( _m.hasAnnos() ){
             annos = $annos.of(_m.getAnnos() );
         }
+        modifiers = $modifiers.all(_m);
+        /*
         if( !_m.getModifiers().isEmpty() ){
             final _modifiers ms = _m.getModifiers();
             modifiers = new $component(
                 ms.toString(), 
                 (m)-> ms.equals(m));
         }
+        */
         type = new $component<>(_m.getType().toString());
         if( !_m.hasTypeParameters() ){
             final _typeParameters etps = _m.getTypeParameters();
@@ -536,7 +541,7 @@ public class $method
         List<String>normalized$ = new ArrayList<>();
         normalized$.addAll( javadoc.pattern.list$Normalized() );
         normalized$.addAll( annos.list$Normalized() );
-        normalized$.addAll( modifiers.pattern.list$Normalized() );
+        //normalized$.addAll( modifiers.pattern.list$Normalized() );
         normalized$.addAll( typeParameters.pattern.list$Normalized() );
         normalized$.addAll( type.pattern.list$Normalized() );        
         normalized$.addAll( name.pattern.list$Normalized() );
@@ -551,7 +556,7 @@ public class $method
         List<String>all$ = new ArrayList<>();
         all$.addAll( javadoc.pattern.list$() );
         all$.addAll( annos.list$() );
-        all$.addAll( modifiers.pattern.list$() );
+        //all$.addAll( modifiers.pattern.list$() );
         all$.addAll( typeParameters.pattern.list$() );
         all$.addAll( type.pattern.list$() );        
         all$.addAll( name.pattern.list$() );
@@ -582,7 +587,7 @@ public class $method
     }
 
     public $method $modifiers(){
-        this.modifiers.stencil("$modifiers$");
+        this.modifiers = $modifiers.any();
         return this;
     }    
     
@@ -593,6 +598,28 @@ public class $method
     
     public $method $javadoc( String... form ){
         this.javadoc.stencil(form);
+        return this;
+    }
+    
+    public $method body( Object anonymousClassWithMethodContainingBody ){
+        StackTraceElement ste = Thread.currentThread().getStackTrace()[2];
+        ObjectCreationExpr oce = Expr.anonymousObject(ste);
+        Optional<BodyDeclaration<?>> on = oce.getAnonymousClassBody().get().stream().filter(m -> 
+                m instanceof MethodDeclaration 
+                && !((MethodDeclaration)m)
+                    .getAnnotationByClass(_remove.class).isPresent() )
+                    .findFirst();
+        if(!on.isPresent()){
+            throw new DraftException("Could not locate the method containing the body in "+ oce);
+        }
+        MethodDeclaration md = (MethodDeclaration)on.get();
+        md.getParentNode().get().remove(md); //decouple it from the "old" 
+        _body _bd = _body.of( md );
+        return body( _bd );
+    }
+    
+    public $method body(_body _bd ){
+        this.body.pattern = Stencil.of( _bd.toString() );
         return this;
     }
     
@@ -717,10 +744,13 @@ public class $method
         if( !this.constraint.test(_m)){
             return null;
         }
+        if( modifiers.select(_m) == null){
+            return null;
+        }
         Tokens all = new Tokens();
         all = javadoc.decomposeTo(_m.getJavadoc(), all);
         all = annos.decomposeTo(_m.getAnnos(), all);
-        all = modifiers.decomposeTo(_m.getModifiers(), all);
+        //all = modifiers.decomposeTo(_m.getModifiers(), all);
         all = typeParameters.decomposeTo(_m.getTypeParameters(), all);
         all = type.decomposeTo(_m.getType(), all);
         all = name.decomposeTo(_m.getName(), all);
@@ -785,7 +815,7 @@ public class $method
     public $method hardcode$( Translator translator, Tokens kvs ) {
         javadoc.pattern = javadoc.pattern.hardcode$(translator, kvs);
         annos = annos.hardcode$(translator, kvs);
-        modifiers.pattern = modifiers.pattern.hardcode$(translator, kvs);
+        //modifiers.pattern = modifiers.pattern.hardcode$(translator, kvs);
         typeParameters.pattern = typeParameters.pattern.hardcode$(translator, kvs);
         type.pattern = type.pattern.hardcode$(translator, kvs);
         name.pattern = name.pattern.hardcode$(translator, kvs);
@@ -801,7 +831,7 @@ public class $method
     public $method $(String target, String $Name) {
         javadoc.pattern = javadoc.pattern.$(target, $Name);
         annos = annos.$(target, $Name);
-        modifiers.pattern = modifiers.pattern.$(target, $Name);
+        //modifiers.pattern = modifiers.pattern.$(target, $Name);
         typeParameters.pattern = typeParameters.pattern.$(target, $Name);
         type.pattern = type.pattern.$(target, $Name);
         name.pattern = name.pattern.$(target, $Name);
@@ -1322,7 +1352,7 @@ public class $method
             return _m.isType(type);
         }
         
-        public boolean isType( _typeDecl _tr ){
+        public boolean isType( _typeRef _tr ){
             return _m.isType(_tr);
         }
         

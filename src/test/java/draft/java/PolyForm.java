@@ -61,7 +61,7 @@ public class PolyForm {
         _JAVA_TO_AST_NODE_CLASSES.put( _receiverParameter.class, ReceiverParameter.class );
         _JAVA_TO_AST_NODE_CLASSES.put( _staticBlock.class, InitializerDeclaration.class );
         _JAVA_TO_AST_NODE_CLASSES.put( _typeParameter.class, TypeParameter.class );
-        _JAVA_TO_AST_NODE_CLASSES.put( _typeDecl.class, Type.class );
+        _JAVA_TO_AST_NODE_CLASSES.put( _typeRef.class, Type.class );
 
         _JAVA_TO_AST_NODE_CLASSES.put( _type.class, TypeDeclaration.class );
         _JAVA_TO_AST_NODE_CLASSES.put( _annotation.class, AnnotationDeclaration.class );
@@ -84,7 +84,7 @@ public class PolyForm {
     //public static final Class<VoidType> VOID_TYPE = VoidType.class;
     //public static final Class<WildcardType> WILDCARD_TYPE = WildcardType.class;
     
-    static MappedForm TYPE_REF = new MappedForm( "typeRef", _typeDecl.class, Type.class)
+    static MappedForm TYPE_REF = new MappedForm( "typeRef", _typeRef.class, Type.class)
             .altNodeClasses(WildcardType.class, PrimitiveType.class, UnionType.class, IntersectionType.class, ArrayType.class, ClassOrInterfaceType.class, ReferenceType.class, VarType.class, VoidType.class);
     
     

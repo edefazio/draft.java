@@ -86,7 +86,6 @@ public class $classUse {
     }
     
     public final String packageName;
-    //public final Class type;
     
     /** 
      * Whenever the fully qualified name (i.e. java.util.Map)

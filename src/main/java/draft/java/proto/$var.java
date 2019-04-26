@@ -576,7 +576,7 @@ public class $var
      * @return 
      */
     public static $var ofType( Class varType ){
-        final _typeDecl e = _typeDecl.of(varType );
+        final _typeRef e = _typeRef.of(varType );
         return any().constraint( v-> e.is(v.getType()) );
     }
     
@@ -586,7 +586,7 @@ public class $var
      * @return 
      */
     public static $var ofType( Type varType ){
-        final _typeDecl e = _typeDecl.of(varType );
+        final _typeRef e = _typeRef.of(varType );
         return any().constraint( v-> e.is(v) );
     }
 
@@ -595,7 +595,7 @@ public class $var
      * @param varType
      * @return 
      */
-    public static $var ofType( _typeDecl varType ){        
+    public static $var ofType( _typeRef varType ){        
         return any().constraint( v-> varType.is(v) );
     }    
     
@@ -1311,19 +1311,19 @@ public class $var
         }
         
         public boolean isType( Class expectedType){
-            return _typeDecl.of(astVar.getType()).is( expectedType );
+            return _typeRef.of(astVar.getType()).is( expectedType );
         }
         
         public boolean isType( String expectedType){
-            return _typeDecl.of(astVar.getType()).is( expectedType );
+            return _typeRef.of(astVar.getType()).is( expectedType );
         }
         
-        public boolean isType( _typeDecl expectedType){
-            return _typeDecl.of(astVar.getType()).equals( expectedType );
+        public boolean isType( _typeRef expectedType){
+            return _typeRef.of(astVar.getType()).equals( expectedType );
         }
         
         public boolean isType( Type expectedType){
-            return _typeDecl.of(astVar.getType()).is( expectedType );
+            return _typeRef.of(astVar.getType()).is( expectedType );
         }
         
         @Override

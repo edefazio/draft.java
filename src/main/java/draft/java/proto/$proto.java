@@ -8,7 +8,7 @@ import com.github.javaparser.ast.type.Type;
 import draft.*;
 import draft.java.*;
 import draft.java._model._node;
-import draft.java._typeDecl;
+import draft.java._typeRef;
 import java.util.*;
 
 import java.util.function.Consumer;
@@ -188,12 +188,12 @@ public interface $proto<Q> {
             return Stmt.of(obj.toString());
         }
 
-        public _typeDecl type(String key) {
+        public _typeRef type(String key) {
             Object obj = get(key);
             if (obj == null || obj.toString().trim().length() == 0) {
                 return null;
             }
-            return _typeDecl.of(obj.toString());
+            return _typeRef.of(obj.toString());
         }
 
         public List<Statement> stmts(String key) {
@@ -219,10 +219,10 @@ public interface $proto<Q> {
          * @return true if
          */
         public boolean is(String key, Type astType) {
-            return is(key, _typeDecl.of(astType));
+            return is(key, _typeRef.of(astType));
         }
 
-        public boolean is(String key, _typeDecl _t) {
+        public boolean is(String key, _typeRef _t) {
             return type(key).equals(_t);
         }
 
@@ -261,7 +261,7 @@ public interface $proto<Q> {
         public boolean is(String key, Class clazz ){
             Object o = get(key);
             if( o != null ){
-                return _typeDecl.of( o.toString() ).equals(_typeDecl.of(clazz));
+                return _typeRef.of( o.toString() ).equals(_typeRef.of(clazz));
             }
             return false;            
         }
@@ -599,7 +599,7 @@ public interface $proto<Q> {
             return getArgs().stmt(key);
         }
 
-        default _typeDecl type(String key) {
+        default _typeRef type(String key) {
             return getArgs().type(key);
         }
 
