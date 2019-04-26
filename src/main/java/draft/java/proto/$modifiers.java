@@ -2,7 +2,6 @@ package draft.java.proto;
 
 import com.github.javaparser.ast.Modifier;
 import com.github.javaparser.ast.Node;
-import com.github.javaparser.ast.NodeList;
 import com.github.javaparser.ast.nodeTypes.NodeWithModifiers;
 import draft.Tokens;
 import draft.Translator;
@@ -29,8 +28,12 @@ public class $modifiers
         return new $modifiers();
     }
     
-    public static $modifiers all( _hasModifiers _hm ){
-        return all( _hm.getModifiers() );
+    public static $modifiers of( Predicate<_modifiers> constraint ){
+        return any().constraint(constraint);
+    }
+    
+    public static $modifiers of( _hasModifiers _hm ){
+        return $modifiers.of( _hm.getModifiers() );
     }
     
     /**
@@ -38,8 +41,8 @@ public class $modifiers
      * @param ms
      * @return 
      */
-    public static $modifiers all( Modifier...ms  ){
-        return all( _modifiers.of(ms) );
+    public static $modifiers of( Modifier...ms  ){
+        return $modifiers.of( _modifiers.of(ms) );
     }
     
     /**
@@ -47,8 +50,8 @@ public class $modifiers
      * @param _ms
      * @return 
      */
-    public static $modifiers all( _modifiers _ms ){
-        return all( _ms.ast() );
+    public static $modifiers of( _modifiers _ms ){
+        return of( _ms.ast() );
     }
     
     /**
@@ -56,8 +59,8 @@ public class $modifiers
      * @param astNwm
      * @return 
      */
-    public static $modifiers all( NodeWithModifiers astNwm ){
-        return all( astNwm.getModifiers() );
+    public static $modifiers of( NodeWithModifiers astNwm ){
+        return of( astNwm.getModifiers() );
     }
     
     /**
@@ -65,7 +68,7 @@ public class $modifiers
      * @param mods
      * @return 
      */
-    public static $modifiers all( Collection<Modifier> mods ){
+    public static $modifiers of( Collection<Modifier> mods ){
         $modifiers $mods = new $modifiers();
         $mods.mustInclude.addAll(mods);
         return $mods;
@@ -76,7 +79,7 @@ public class $modifiers
      * @param mods
      * @return 
      */
-    public static $modifiers none( Collection<Modifier> mods ){
+    public static $modifiers noneOf( Collection<Modifier> mods ){
         $modifiers $mods = new $modifiers();
         $mods.mustExclude.addAll(mods);
         return $mods;
@@ -87,12 +90,15 @@ public class $modifiers
      * @param mods
      * @return 
      */
-    public static $modifiers none( Modifier... mods ){
+    public static $modifiers noneOf( Modifier... mods ){
         $modifiers $mods = new $modifiers();
         Arrays.stream(mods).forEach( m -> $mods.mustExclude.add(m) );        
         return $mods;
     }
    
+    /** A matching lambda constraint */
+    public Predicate<_modifiers> constraint = t-> true;
+    
     /** The modifiers that MUST be present*/
     public Set<Modifier>mustInclude = new HashSet<>();    
     
@@ -100,6 +106,16 @@ public class $modifiers
     public Set<Modifier>mustExclude = new HashSet<>();
 
     public $modifiers(){        
+    }
+    
+    public $modifiers constraint( Predicate<_modifiers> constraint ){
+        this.constraint = constraint;
+        return this;
+    }
+    
+    public $modifiers addConstraint( Predicate<_modifiers> constraint ){
+        this.constraint = this.constraint.and(constraint);
+        return this;
     }
     
     public _modifiers compose(Translator translator, Map<String,Object> keyValues){
@@ -208,25 +224,16 @@ public class $modifiers
     }
     
     public Select select(_modifiers _ms){
-        if( _ms.containsAll(this.mustInclude) &&  
+        if( this.constraint.test(_ms) && 
+            _ms.containsAll(this.mustInclude) &&  
             !_ms.containsAny(this.mustExclude) ){
             return new Select( _ms );
         }
         return null;
     }
     
-    /*
-    public NodeList<Modifier> construct(Translator translator, Map<String, Object> keyValues) {
-        NodeList<Modifier> mods = new NodeList<>();
-        mods.addAll(this.mustInclude);
-        return mods;
-    } 
-    */
-    
     public _modifiers construct(Translator translator, Map<String, Object> keyValues) {
         return _modifiers.of(this.mustInclude.toArray(new Modifier[0]));
-        //mods.addAll(this.mustInclude);
-        //return mods;
     }    
     
     public static class Select implements selected<_modifiers>, selected_model<_modifiers>{

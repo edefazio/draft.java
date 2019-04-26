@@ -20,10 +20,10 @@ public class SmodifiersTest extends TestCase {
         
     }
     public void testAll(){
-        assertNull( $modifiers.all(_m).select(_modifiers.of()) );
-        assertNotNull( $modifiers.all(_m).select(_modifiers.of(_modifiers.PUBLIC)) );
-        assertNull( $modifiers.all(_m.ast()).select(_modifiers.of()) );
-        assertNotNull( $modifiers.all(_m.ast()).select(_modifiers.of().setPublic()) );
+        assertNull( $modifiers.of(_m).select(_modifiers.of()) );
+        assertNotNull( $modifiers.of(_m).select(_modifiers.of(_modifiers.PUBLIC)) );
+        assertNull( $modifiers.of(_m.ast()).select(_modifiers.of()) );
+        assertNotNull( $modifiers.of(_m.ast()).select(_modifiers.of().setPublic()) );
     }
     
 }

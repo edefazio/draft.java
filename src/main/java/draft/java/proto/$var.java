@@ -707,7 +707,7 @@ public class $var
                 }                
             }
             Tokens matchedName = 
-                    this.varPattern.deconstruct( astVar.getType()+ " " +astVar.toString(Ast.PRINT_NO_ANNOTATIONS_OR_COMMENTS) );
+                this.varPattern.deconstruct( astVar.getType()+ " " +astVar.toString(Ast.PRINT_NO_ANNOTATIONS_OR_COMMENTS) );
             if( matchedName != null ){
                 all.putAll(matchedName);
                 return new Select( astVar, $args.of(all));

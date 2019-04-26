@@ -197,7 +197,8 @@ public class $parameter implements Template<_parameter>, $proto<_parameter> {
     public Boolean isVarArg = false;
     
     /** Name of the parameter */
-    public $component<String> name = new $component("$name$", t->true);
+    //public $component<String> name = new $component("$name$", t->true);
+    public $id name = $id.any();
     
     /** the underlying type of the parameter */
     public $typeRef type;
@@ -287,9 +288,9 @@ public class $parameter implements Template<_parameter>, $proto<_parameter> {
     }
     
     public $parameter hardcode$(Object...keyValues){
-        this.name.hardcode$(keyValues);
+        this.name.hardcode$(Translator.DEFAULT_TRANSLATOR, keyValues);
         this.annos.hardcode$(Translator.DEFAULT_TRANSLATOR, keyValues);
-        this.type.hardcode$(keyValues);
+        this.type.hardcode$(Translator.DEFAULT_TRANSLATOR, keyValues);
         return this;
     }
     

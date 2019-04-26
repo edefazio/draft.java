@@ -477,7 +477,7 @@ public class $field implements Template<_field>, $proto<_field> {
             $inst.annos = $annos.of(_f.getAnnos());
             //$inst.annos = new $component<>(_f.getAnnos().toString());
         }
-        $inst.modifiers = $modifiers.all(_f);
+        $inst.modifiers = $modifiers.of(_f);
         /*
         if( !_f.getModifiers().isEmpty() ){
             final _modifiers ms = _f.getModifiers();
@@ -487,7 +487,8 @@ public class $field implements Template<_field>, $proto<_field> {
         }
         */
         $inst.type = $typeRef.of(_f.getType());
-        $inst.name = new $component(_f.getName());
+        $inst.name = $id.of( _f.getName() );
+        //$inst.name = new $component(_f.getName());
         if( _f.hasInit() ){
             $inst.init = new $component(_f.getInit().toString());
         }
@@ -500,7 +501,8 @@ public class $field implements Template<_field>, $proto<_field> {
     //public $component<_modifiers> modifiers = new $component( "$modifiers$", t->true);
     public $modifiers modifiers = $modifiers.any();
     public $typeRef type = $typeRef.of("$type$");
-    public $component<String> name = new $component( "$name$", t->true);    
+    public $id name = $id.any();
+    //public $component<String> name = new $component( "$name$", t->true);    
     public $component<Expression> init = new $component( "$init$", t->true);
     
     private $field(){        

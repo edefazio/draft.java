@@ -488,7 +488,8 @@ public class $constructor
     //public $component<_typeDecl> type = new $component( "$type$", t->true);
     
     public $component<_typeParameters> typeParameters = new $component( "$typeParameters$", t->true);
-    public $component<String> name = new $component( "$name$", t->true);
+    //public $component<String> name = new $component( "$name$", t->true);
+    public $id name = $id.any();
     public $parameters parameters = $parameters.of();
     public $component<_throws> thrown = new $component( "$throws$", t-> true);
     public $component<_body> body = new $component("$body$", t->true);
@@ -509,7 +510,7 @@ public class $constructor
         if( _ct.hasAnnos() ){
             annos = $annos.of(_ct.getAnnos() );
         }
-        modifiers = $modifiers.all(_ct );
+        modifiers = $modifiers.of(_ct );
         /*
         if( !_ct.getModifiers().isEmpty() ){
             final _modifiers ms = _ct.getModifiers();
@@ -526,7 +527,8 @@ public class $constructor
                 "$typeParameters$", 
                 (tps)-> tps.equals(etps) );
         }
-        name = new $component(_ct.getName());
+        //name = new $component(_ct.getName());
+        name = $id.of(_ct.getName() );
         if( _ct.hasParameters() ){
             parameters = $parameters.of(_ct.getParameters());
         }        
@@ -598,7 +600,8 @@ public class $constructor
     }
     
     public $constructor $name(){
-        this.name.stencil("$name$");
+        this.name = $id.any();
+        //this.name.stencil("$name$");
         return this;
     }
     

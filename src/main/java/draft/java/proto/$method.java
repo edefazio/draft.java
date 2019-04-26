@@ -462,7 +462,10 @@ public class $method
     public $modifiers modifiers = $modifiers.any();
     public $component<_typeRef> type = new $component( "$type$", t->true);
     public $component<_typeParameters> typeParameters = new $component( "$typeParameters$", t->true);
-    public $component<String> name = new $component( "$name$", t->true);
+    
+    public $id name = $id.any();
+    //public $component<String> name = new $component( "$name$", t->true);
+    
     public $parameters parameters = $parameters.of();
     public $component<_throws> thrown = new $component( "$throws$", t-> true);
     public $component<_body> body = new $component("$body$", t->true);
@@ -483,7 +486,7 @@ public class $method
         if( _m.hasAnnos() ){
             annos = $annos.of(_m.getAnnos() );
         }
-        modifiers = $modifiers.all(_m);
+        modifiers = $modifiers.of(_m);
         /*
         if( !_m.getModifiers().isEmpty() ){
             final _modifiers ms = _m.getModifiers();
@@ -500,7 +503,8 @@ public class $method
                 "$typeParameters$", 
                 (tps)-> tps.equals(etps) );
         }
-        name = new $component(_m.getName());
+        //name = new $component(_m.getName());
+        name = $id.of(_m.getName());
         if( _m.hasParameters() ){
             parameters = $parameters.of(_m.getParameters());
         }        
@@ -572,7 +576,8 @@ public class $method
     }
     
     public $method $name(){
-        this.name.stencil("$name$");
+        this.name = $id.any();
+        //this.name.stencil("$name$");
         return this;
     }
     

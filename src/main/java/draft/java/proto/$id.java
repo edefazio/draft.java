@@ -13,7 +13,7 @@ import java.util.function.Predicate;
 public class $id {
 
     public static $id any(){
-        return of("$any$");
+        return of("$id$");
     }
     
     public static $id of(Predicate<String> constraint){
