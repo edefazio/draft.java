@@ -428,9 +428,17 @@ public interface $proto<Q> {
      */
     public static class $component<T> {
 
+        public static $component of( _model prototype ){
+            return new $component( prototype.toString());
+        }
+        
+        public static $component of( Node node ){
+            return new $component( node.toString(Ast.PRINT_NO_ANNOTATIONS_OR_COMMENTS));
+        }
+        
         public Stencil pattern;
         public Predicate<T> constraint = t -> true;
-
+        
         /**
          * 
          * @param pattern 

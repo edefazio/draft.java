@@ -437,7 +437,7 @@ public class $constructor
     }
 
     public static $constructor any(){
-        return new $constructor(_constructor.of("$type$ $name$();") );
+        return new $constructor(_constructor.of("$name$(){}") );
     }
     
     /**
@@ -461,21 +461,21 @@ public class $constructor
         
     /**
      * 
-     * @param proto
+     * @param pattern
      * @return 
      */
-    public static $constructor of( String...proto ){
-        return new $constructor(_constructor.of(proto));
+    public static $constructor of( String...pattern ){
+        return new $constructor(_constructor.of(pattern));
     }
     
     /**
      * 
-     * @param proto
+     * @param pattern
      * @param constraint
      * @return 
      */
-    public static $constructor of( String proto, Predicate<_constructor> constraint ){
-        return new $constructor(_constructor.of(proto) ).constraint(constraint);
+    public static $constructor of( String pattern, Predicate<_constructor> constraint ){
+        return new $constructor(_constructor.of(pattern) ).constraint(constraint);
     }
 
     public Predicate<_constructor> constraint = t -> true;
@@ -601,9 +601,9 @@ public class $constructor
     
     public $constructor $name(){
         this.name = $id.any();
-        //this.name.stencil("$name$");
         return this;
     }
+    
     
     public $constructor $typeParameters(){
         this.typeParameters.stencil("$typeParameters$");
@@ -1335,12 +1335,24 @@ public class $constructor
             return _ct;
         }
         
+        public boolean isNamed(String name){
+            return _ct.isNamed(name);
+        }
+        
+        public boolean isParameters(String...params ){
+            return _ct.getParameters().is(params);
+        }
+        
         public boolean isVarArg(){
             return _ct.isVarArg();
         }
         
         public boolean hasBody(){
             return _ct.hasBody();
+        }
+        
+        public boolean isThrows(String...throwDecl){
+            return _ct.getThrows().is(throwDecl);
         }
         
         public boolean hasThrows(){

@@ -529,7 +529,7 @@ public enum Expr {
             }
         }
         throw new _ioException("unable to find in anonymous object at (" + ste.getFileName() + ":"
-                + ste.getLineNumber() + ")" + System.lineSeparator() + resolver.describe());
+            + ste.getLineNumber() + ")" + System.lineSeparator() + resolver.describe());
 
     }
 

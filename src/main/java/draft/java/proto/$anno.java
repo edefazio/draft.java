@@ -23,14 +23,24 @@ import java.util.stream.Collectors;
 public class $anno
     implements Template<_anno>, $proto<_anno> {
 
-     /**
+    /**
+     * 
+     * @param clazz
+     * @param pattern
+     * @return 
+     */
+    public static final _anno first( Class clazz, String pattern ){
+        return $anno.of(pattern).firstIn(_type.of(clazz));
+    }
+    
+    /**
      * 
      * @param <N>
      * @param _n
      * @param pattern
      * @return 
      */
-    public static final <N extends _model._node> _anno first( N _n, String pattern ){
+    public static final <N extends _node> _anno first( N _n, String pattern ){
         return $anno.of(pattern).firstIn(_n);
     }
     
@@ -41,8 +51,19 @@ public class $anno
      * @param pattern
      * @return 
      */
-    public static final <N extends _model._node> _anno first( Node astNode, String pattern ){
+    public static final <N extends _node> _anno first( Node astNode, String pattern ){
         return $anno.of(pattern).firstIn(astNode);
+    }
+    
+    /**
+     * 
+     * @param clazz
+     * @param pattern
+     * @param constraint
+     * @return 
+     */
+    public static final _anno first( Class clazz, String pattern, Predicate<_anno> constraint){
+        return $anno.of(pattern, constraint).firstIn(_type.of(clazz));
     }
     
     /**
@@ -53,7 +74,7 @@ public class $anno
      * @param constraint
      * @return 
      */
-    public static final <N extends _model._node> _anno first( N _n, String pattern, Predicate<_anno> constraint){
+    public static final <N extends _node> _anno first( N _n, String pattern, Predicate<_anno> constraint){
         return $anno.of(pattern, constraint).firstIn(_n);
     }
     
@@ -65,10 +86,10 @@ public class $anno
      * @param constraint
      * @return 
      */
-    public static final <N extends _model._node> _anno first( Node astNode, String pattern,Predicate<_anno>constraint){
+    public static final <N extends _node> _anno first( Node astNode, String pattern,Predicate<_anno>constraint){
         return $anno.of(pattern, constraint).firstIn(astNode);
     }
-         
+    
     /**
      * 
      * @param <N>
@@ -76,7 +97,7 @@ public class $anno
      * @param pattern
      * @return 
      */
-    public static final <N extends _model._node> $anno.Select selectFirst( N _n, String pattern ){
+    public static final <N extends _node> $anno.Select selectFirst( N _n, String pattern ){
         return $anno.of(pattern).selectFirstIn(_n);
     }
     
@@ -88,7 +109,7 @@ public class $anno
      * @param selectConstraint
      * @return 
      */
-    public static final <N extends _model._node> $anno.Select selectFirst( N _n, String pattern, Predicate<$anno.Select>selectConstraint){
+    public static final <N extends _node> $anno.Select selectFirst( N _n, String pattern, Predicate<$anno.Select>selectConstraint){
         return $anno.of(pattern).selectFirstIn(_n, selectConstraint);
     }
     
@@ -109,8 +130,17 @@ public class $anno
      * @param selectConstraint
      * @return 
      */
-    public static final $anno.Select selectFirst( Class clazz, String pattern, Predicate<$anno.Select>selectConstraint){
+    public static final Select selectFirst( Class clazz, String pattern, Predicate<Select>selectConstraint){
         return $anno.of(pattern).selectFirstIn(_type.of(clazz), selectConstraint);
+    }
+    
+    /**
+     * lists all annos within the clazz
+     * @param clazz the runtime class (with source on classpath)
+     * @return 
+     */
+    public static final List<_anno> list( Class clazz ){
+        return any().listIn(_type.of(clazz));
     }
     
     /**
@@ -119,18 +149,28 @@ public class $anno
      * @param _n
      * @return 
      */
-    public static final <N extends _model._node> List<_anno> list( N _n ){
+    public static final <N extends _node> List<_anno> list( N _n ){
         return any().listIn(_n);
     }
     
     /**
-     * lists all annos within the node
+     * lists all annos within the clazz
+     * @param clazz
+     * @param constraint
+     * @return 
+     */
+    public static final List<_anno> list( Class clazz, Predicate<_anno> constraint){
+        return any().constraint(constraint).listIn(clazz);
+    }
+    
+    /**
+     * lists all annos within the clazz
      * @param <N>
      * @param _n
      * @param constraint
      * @return 
      */
-    public static final <N extends _model._node> List<_anno> list( N _n, Predicate<_anno> constraint){
+    public static final <N extends _node> List<_anno> list( N _n, Predicate<_anno> constraint){
         return any().constraint(constraint).listIn(_n);
     }
     
@@ -141,8 +181,19 @@ public class $anno
      * @param pattern
      * @return 
      */
-    public static final <N extends _model._node> List<_anno> list( N _n, String pattern ){
+    public static final <N extends _node> List<_anno> list( N _n, String pattern ){
         return $anno.of(pattern).listIn(_n);
+    }
+    
+    /**
+     * lists all occurrences of annos that match the 
+     * @param <N>
+     * @param clazz
+     * @param pattern
+     * @return 
+     */
+    public static final <N extends _node> List<_anno> list( Class clazz, String pattern ){
+        return $anno.of(pattern).listIn(clazz);
     }
     
     /**
@@ -153,8 +204,19 @@ public class $anno
      * @param constraint
      * @return 
      */
-    public static final <N extends _model._node> List<_anno> list( N _n, String pattern, Predicate<_anno> constraint){
+    public static final <N extends _node> List<_anno> list( N _n, String pattern, Predicate<_anno> constraint){
         return $anno.of(pattern, constraint).listIn(_n);
+    }
+    
+    /**
+     * lists all occurrences of annos that match the 
+     * @param clazz
+     * @param pattern
+     * @param constraint
+     * @return 
+     */
+    public static final List<_anno> list(Class clazz, String pattern, Predicate<_anno> constraint){
+        return $anno.of(pattern, constraint).listIn(clazz);
     }
     
     /**
@@ -164,7 +226,7 @@ public class $anno
      * @param _proto
      * @return 
      */
-    public static final <N extends _model._node> List<_anno> list( N _n, _anno _proto ){
+    public static final <N extends _node> List<_anno> list( N _n, _anno _proto ){
         return $anno.of(_proto).listIn(_n);
     }
     
@@ -176,10 +238,20 @@ public class $anno
      * @param constraint
      * @return 
      */
-    public static final <N extends _model._node> List<_anno> list( N _n, _anno _proto, Predicate<_anno> constraint){
+    public static final <N extends _node> List<_anno> list( N _n, _anno _proto, Predicate<_anno> constraint){
         return $anno.of(_proto, constraint).listIn(_n);
     }
-        
+    
+    /**
+     * perform an action on all annos within the clazz
+     * @param clazz
+     * @param _annoConsumer
+     * @return 
+     */
+    public static final _type forEach( Class clazz, Consumer<_anno> _annoConsumer){
+        return any().forEachIn(clazz, _annoConsumer);
+    }
+    
     /**
      * lists all annos within the node
      * @param <N>
@@ -187,11 +259,22 @@ public class $anno
      * @param _annoConsumer
      * @return 
      */
-    public static final <N extends _model._node> N forEach( N _n, Consumer<_anno> _annoConsumer){
+    public static final <N extends _node> N forEach( N _n, Consumer<_anno> _annoConsumer){
         return any().forEachIn(_n, _annoConsumer);
     }
     
     /**
+     * 
+     * @param clazz
+     * @param constraint
+     * @param _annoConsumer
+     * @return 
+     */
+    public static final _type forEach( Class clazz, Predicate<_anno> constraint, Consumer<_anno> _annoConsumer){
+        return of(constraint).forEachIn(clazz, _annoConsumer);
+    }
+    
+    /**
      * lists all annos within the node
      * @param <N>
      * @param _n
@@ -199,9 +282,20 @@ public class $anno
      * @param _annoConsumer
      * @return 
      */
-    public static final <N extends _model._node> N forEach( N _n, Predicate<_anno> constraint, Consumer<_anno> _annoConsumer){
+    public static final <N extends _node> N forEach( N _n, Predicate<_anno> constraint, Consumer<_anno> _annoConsumer){
         return any().constraint(constraint).forEachIn(_n, _annoConsumer);
     }
+
+    /**
+     * lists all occurrences of annos that match the 
+     * @param clazz
+     * @param pattern
+     * @param _annoConsumer
+     * @return 
+     */
+    public static final _type forEach( Class clazz, String pattern, Consumer<_anno> _annoConsumer){
+        return of(pattern).forEachIn(clazz, _annoConsumer);
+    }   
     
     /**
      * lists all occurrences of annos that match the 
@@ -211,8 +305,20 @@ public class $anno
      * @param _annoConsumer
      * @return 
      */
-    public static final <N extends _model._node> N forEach( N _n, String pattern, Consumer<_anno> _annoConsumer){
+    public static final <N extends _node> N forEach( N _n, String pattern, Consumer<_anno> _annoConsumer){
         return $anno.of(pattern).forEachIn(_n, _annoConsumer);
+    }
+
+    /**
+     * lists all occurrences of annos that match the 
+     * @param clazz
+     * @param pattern
+     * @param constraint
+     * @param _annoConsumer
+     * @return 
+     */
+    public static final _type forEach(Class clazz, String pattern, Predicate<_anno> constraint, Consumer<_anno> _annoConsumer){
+        return $anno.of(pattern, constraint).forEachIn(clazz, _annoConsumer);
     }
     
     /**
@@ -224,7 +330,7 @@ public class $anno
      * @param _annoConsumer
      * @return 
      */
-    public static final <N extends _model._node> N forEach( N _n, String pattern, Predicate<_anno> constraint, Consumer<_anno> _annoConsumer){
+    public static final <N extends _node> N forEach( N _n, String pattern, Predicate<_anno> constraint, Consumer<_anno> _annoConsumer){
         return $anno.of(pattern, constraint).forEachIn(_n, _annoConsumer);
     }
     
@@ -236,7 +342,7 @@ public class $anno
      * @param _annoConsumer
      * @return 
      */
-    public static final <N extends _model._node> N forEach( N _n, _anno _proto, Consumer<_anno> _annoConsumer){
+    public static final <N extends _node> N forEach( N _n, _anno _proto, Consumer<_anno> _annoConsumer){
         return $anno.of(_proto).forEachIn(_n, _annoConsumer);
     }
     
@@ -249,31 +355,32 @@ public class $anno
      * @param _annoConsumer
      * @return 
      */
-    public static final <N extends _model._node> N forEach( N _n, _anno _proto, Predicate<_anno> constraint, Consumer<_anno> _annoConsumer){
+    public static final <N extends _node> N forEach( N _n, _anno _proto, Predicate<_anno> constraint, Consumer<_anno> _annoConsumer){
         return $anno.of(_proto, constraint).forEachIn(_n, _annoConsumer);
     }
     
+    
     /**
      * lists all annos within the node
      * @param <N>
      * @param _n
-     * @param _annoConsumer
+     * @param selectConsumer
      * @return 
      */
-    public static final <N extends _model._node> N forSelected( N _n, Consumer<$anno.Select> _annoConsumer){
-        return any().forSelectedIn(_n, _annoConsumer);
+    public static final <N extends _node> N forSelected( N _n, Consumer<Select> selectConsumer){
+        return any().forSelectedIn(_n, selectConsumer);
     }
     
     /**
      * lists all annos within the node
      * @param <N>
      * @param _n
-     * @param constraint
-     * @param _annoConsumer
+     * @param selectConstraint
+     * @param selectConsumer
      * @return 
      */
-    public static final <N extends _model._node> N forSelected( N _n, Predicate<_anno> constraint, Consumer<$anno.Select> _annoConsumer){
-        return any().constraint(constraint).forSelectedIn(_n, _annoConsumer);
+    public static final <N extends _node> N forSelected( N _n, Predicate<Select> selectConstraint, Consumer<Select> selectConsumer){
+        return any().forSelectedIn(_n, selectConstraint, selectConsumer);
     }
     
     /**
@@ -281,11 +388,11 @@ public class $anno
      * @param <N>
      * @param _n
      * @param pattern
-     * @param _annoConsumer
+     * @param selectConsumer
      * @return 
      */
-    public static final <N extends _model._node> N forSelected( N _n, String pattern, Consumer<$anno.Select> _annoConsumer){
-        return $anno.of(pattern).forSelectedIn(_n, _annoConsumer);
+    public static final <N extends _node> N forSelected( N _n, String pattern, Consumer<Select> selectConsumer){
+        return $anno.of(pattern).forSelectedIn(_n, selectConsumer);
     }
     
     /**
@@ -293,12 +400,12 @@ public class $anno
      * @param <N>
      * @param _n
      * @param pattern
-     * @param constraint
-     * @param _annoConsumer
+     * @param selectConstraint
+     * @param selectConsumer
      * @return 
      */
-    public static final <N extends _model._node> N forSelected( N _n, String pattern, Predicate<_anno> constraint, Consumer<$anno.Select> _annoConsumer){
-        return $anno.of(pattern, constraint).forSelectedIn(_n, _annoConsumer);
+    public static final <N extends _node> N forSelected( N _n, String pattern, Predicate<Select> selectConstraint, Consumer<Select> selectConsumer){
+        return $anno.of(pattern).forSelectedIn(_n, selectConstraint, selectConsumer);
     }
     
     /**
@@ -309,7 +416,7 @@ public class $anno
      * @param _annoConsumer
      * @return 
      */
-    public static final <N extends _model._node> N forSelected( N _n, _anno _proto , Consumer<$anno.Select> _annoConsumer){
+    public static final <N extends _node> N forSelected( N _n, _anno _proto , Consumer<Select> _annoConsumer){
         return $anno.of(_proto).forSelectedIn(_n, _annoConsumer);
     }
     
@@ -319,11 +426,33 @@ public class $anno
      * @param _n
      * @param _proto
      * @param constraint
-     * @param _annoConsumer
+     * @param selectConsumer
      * @return 
      */
-    public static final <N extends _model._node> N forSelected( N _n, _anno _proto, Predicate<_anno> constraint, Consumer<$anno.Select> _annoConsumer){
-        return $anno.of(_proto, constraint).forSelectedIn(_n, _annoConsumer);
+    public static final <N extends _node> N forSelected( N _n, _anno _proto, Predicate<Select> selectConstraint, Consumer<Select> selectConsumer){
+        return $anno.of(_proto).forSelectedIn(_n, selectConstraint, selectConsumer);
+    }
+    
+    /**
+     * 
+     * @param clazz
+     * @param _proto
+     * @param selectConstraint
+     * @param selectConsumer
+     * @return 
+     */
+    public static final _type forSelected(Class clazz, _anno _proto, Predicate<Select> selectConstraint, Consumer<Select> selectConsumer){
+        return $anno.of(_proto).forSelectedIn(clazz, selectConstraint, selectConsumer);
+    }
+
+    /**
+     * lists all occurrences of annos that match the 
+     * @param clazz
+     * @param pattern
+     * @return 
+     */
+    public static final List<Select> listSelected( Class clazz, String pattern ){
+        return $anno.of(pattern).listSelectedIn(_type.of(clazz));
     }
     
     /**
@@ -333,8 +462,18 @@ public class $anno
      * @param pattern
      * @return 
      */
-    public static final <N extends _model._node> List<$anno.Select> listSelected( N _n, String pattern ){
+    public static final <N extends _node> List<Select> listSelected( N _n, String pattern ){
         return $anno.of(pattern).listSelectedIn(_n);
+    }
+
+    /**
+     * lists all occurrences of annos that match the 
+     * @param clazz
+     * @param selectConstraint
+     * @return 
+     */
+    public static final List<Select> listSelected( Class clazz, Predicate<Select> selectConstraint ){
+        return any().listSelectedIn(_type.of(clazz), selectConstraint);
     }
     
     /**
@@ -344,19 +483,30 @@ public class $anno
      * @param selectConstraint
      * @return 
      */
-    public static final <N extends _model._node> List<$anno.Select> listSelected( N _n, Predicate<Select> selectConstraint ){
+    public static final <N extends _node> List<Select> listSelected( N _n, Predicate<Select> selectConstraint ){
         return any().listSelectedIn(_n, selectConstraint);
     }
     
     /**
      * lists all occurrences of annos that match the 
+     * @param clazz
+     * @param pattern
+     * @param selectConstraint
+     * @return 
+     */
+    public static final List<Select> listSelected(Class clazz, String pattern, Predicate<Select> selectConstraint){
+        return $anno.of(pattern).listSelectedIn(_type.of(clazz), selectConstraint);
+    }
+    
+    /**
+     * lists all occurrences of annos that match the 
      * @param <N>
      * @param _n
      * @param pattern
      * @param selectConstraint
      * @return 
      */
-    public static final <N extends _model._node> List<$anno.Select> listSelected( N _n, String pattern, Predicate<Select> selectConstraint){
+    public static final <N extends _node> List<Select> listSelected( N _n, String pattern, Predicate<Select> selectConstraint){
         return $anno.of(pattern).listSelectedIn(_n, selectConstraint);
     }
     
@@ -367,7 +517,7 @@ public class $anno
      * @param _proto
      * @return 
      */
-    public static final <N extends _model._node> List<$anno.Select> listSelected( N _n, _anno _proto ){
+    public static final <N extends _node> List<Select> listSelected( N _n, _anno _proto ){
         return $anno.of(_proto).listSelectedIn(_n);
     }
     
@@ -379,8 +529,17 @@ public class $anno
      * @param selectConstraint
      * @return 
      */
-    public static final <N extends _model._node> List<$anno.Select> listSelected( N _n, _anno _proto, Predicate<Select> selectConstraint){
+    public static final <N extends _node> List<Select> listSelected( N _n, _anno _proto, Predicate<Select> selectConstraint){
         return $anno.of(_proto).listSelectedIn(_n, selectConstraint);
+    }
+    
+    /**
+     * Removes ALL annotations within the clazz
+     * @param clazz
+     * @return the modified N
+     */
+    public static final _type remove( Class clazz ){
+        return any().removeIn(clazz);
     }
     
     /**
@@ -389,7 +548,7 @@ public class $anno
      * @param _n
      * @return the modified N
      */
-    public static final <N extends _model._node> N remove( N _n ){
+    public static final <N extends _node> N remove( N _n ){
         return any().removeIn(_n);
     }
     
@@ -400,8 +559,18 @@ public class $anno
      * @param _proto
      * @return the modified N
      */
-    public static final <N extends _model._node> N remove( N _n, _anno _proto ){
+    public static final <N extends _node> N remove( N _n, _anno _proto ){
         return $anno.of(_proto).removeIn(_n);
+    }
+    
+    /**
+     * Removes all occurrences of the source anno in the rootNode (recursively)
+     * @param clazz
+     * @param constraint
+     * @return the modified N
+     */
+    public static final _type remove( Class clazz, Predicate<_anno> constraint ){
+        return $anno.any().constraint(constraint).removeIn(clazz);
     }
     
     /**
@@ -411,8 +580,8 @@ public class $anno
      * @param constraint
      * @return the modified N
      */
-    public static final <N extends _model._node> N remove( N _n, Predicate<_anno> constraint ){
-        return $anno.of( "@a" ).$("@a", "any").constraint(constraint).removeIn(_n);
+    public static final <N extends _node> N remove( N _n, Predicate<_anno> constraint ){
+        return $anno.any().constraint(constraint).removeIn(_n);
     }
     
     /**
@@ -423,7 +592,7 @@ public class $anno
      * @param constraint
      * @return the modified N
      */
-    public static final <N extends _model._node> N remove( N _n, _anno _proto, Predicate<_anno> constraint){
+    public static final <N extends _node> N remove( N _n, _anno _proto, Predicate<_anno> constraint){
         return $anno.of(_proto, constraint).removeIn(_n);
     }
     
@@ -434,7 +603,7 @@ public class $anno
      * @param pattern
      * @return 
      */
-    public static final <N extends _model._node> N remove( N _n, String pattern ){
+    public static final <N extends _node> N remove( N _n, String pattern ){
         return $anno.of(pattern).removeIn(_n);
     }
     
@@ -446,8 +615,31 @@ public class $anno
      * @param constraint
      * @return 
      */
-    public static final <N extends _model._node> N remove( N _n, String pattern, Predicate<_anno> constraint){
+    public static final <N extends _node> N remove( N _n, String pattern, Predicate<_anno> constraint){
         return $anno.of(pattern, constraint).removeIn(_n);
+    }
+    
+    /**
+     * 
+     * @param clazz
+     * @param pattern
+     * @param constraint
+     * @return 
+     */
+    public static final _type remove(Class clazz, String pattern, Predicate<_anno> constraint){
+        return $anno.of(pattern, constraint).removeIn(clazz);
+    }
+    
+    /**
+     * 
+     * @param clazz
+     * @param sourceProto
+     * @param targetProto
+     * @return 
+     */
+    public static final _type replace(Class clazz, _anno sourceProto, _anno targetProto){
+        return $anno.of(sourceProto)
+            .replaceIn(clazz, $anno.of(targetProto));
     }
     
     /**
@@ -458,9 +650,21 @@ public class $anno
      * @param targetProto
      * @return 
      */
-    public static final <N extends _model._node> N replace(N _n, _anno sourceProto, _anno targetProto){
+    public static final <N extends _node> N replace(N _n, _anno sourceProto, _anno targetProto){
         return $anno.of(sourceProto)
             .replaceIn(_n, $anno.of(targetProto));
+    }
+
+    /**
+     * 
+     * @param clazz
+     * @param sourcePattern
+     * @param targetPattern
+     * @return 
+     */
+    public static final _type replace(Class clazz, String sourcePattern, String targetPattern){
+        return $anno.of(sourcePattern)
+            .replaceIn(clazz, $anno.of(targetPattern));
     }
     
     /**
@@ -487,6 +691,18 @@ public class $anno
     public static final <N extends _model._node> N replace(N _n, AnnotationDeclaration astSourceProto, AnnotationDeclaration astTargetProto){
         return $anno.of(_anno.of(astSourceProto))
             .replaceIn(_n, $anno.of(_anno.of(astTargetProto)));
+    }
+
+    /**
+     * 
+     * @param clazz
+     * @param targetAnno
+     * @param replacementAnno
+     * @return 
+     */
+    public static final _type replace( Class clazz, Class<? extends Annotation>targetAnno, Class<? extends Annotation>replacementAnno){        
+        return $anno.of(targetAnno)
+            .replaceIn(clazz, $anno.of(replacementAnno));
     }
     
     /**
@@ -558,9 +774,10 @@ public class $anno
     /** Default Matching constraint (by default ALWAYS Match)*/
     public Predicate<_anno> constraint = a -> true;
 
-    /** */
+    /** the id of the annotation */
     public $id name;
 
+    /** the member values of the annotation */
     public List<$memberValue> $mvs = new ArrayList<>();
 
     public $anno(_anno proto) {
@@ -580,7 +797,7 @@ public class $anno
      * @return 
      */
     public boolean isMatchAny(){
-        return name.isMatchAny() && ( this.$mvs.size() == 0 || (this.$mvs.size() ==1 && this.$mvs.get(0).isMatchAll() ));
+        return name.isMatchAny() && ( this.$mvs.isEmpty() || (this.$mvs.size() ==1 && this.$mvs.get(0).isMatchAll() ));
     }
     
     /**
@@ -754,6 +971,11 @@ public class $anno
     }
 
     @Override
+    public List<_anno> listIn(Class clazz) {
+        return listIn( _type.of(clazz));
+    }
+    
+    @Override    
     public List<_anno> listIn(_model._node _n) {
         List<_anno> found = new ArrayList<>();
         Walk.in(_n, _anno.class, a-> {
@@ -775,6 +997,18 @@ public class $anno
             }
         });
         return found;
+    }
+    
+    /**
+     * Replace all occurrences of the template in the code with the replacement
+     * (composing the replacement from the constructed tokens in the source)
+     *
+     * @param clazz 
+     * @param a the template to be constructed as the replacement
+     * @return
+     */
+    public _type replaceIn(Class clazz, $anno a ){
+        return replaceIn(_type.of(clazz), a);
     }
     
     /**
@@ -813,6 +1047,10 @@ public class $anno
         return astNode;
     }
     
+    public _anno firstIn(Class clazz){
+        return firstIn(_type.of(clazz));
+    }
+    
     public _anno firstIn(Node astRootNode) {
         Optional<Node>on = 
             astRootNode.stream().filter(
@@ -829,7 +1067,11 @@ public class $anno
         return firstIn( _n.ast() );        
     }
     
-    
+    /**
+     * 
+     * @param astRootNode
+     * @return 
+     */
     public Select selectFirstIn(Node astRootNode) {
         Optional<Node>on = 
             astRootNode.stream().filter(
@@ -842,9 +1084,23 @@ public class $anno
         return null;        
     }
 
+    /**
+     * 
+     * @param _n
+     * @return 
+     */
     public Select selectFirstIn( _node _n) {
         return selectFirstIn( _n.ast() );        
     }
+    
+    /**
+     * 
+     * @param clazz
+     * @return 
+     */
+    public Select seelctFirstIn( Class clazz){
+        return selectFirstIn( _type.of(clazz));
+    } 
     
     /**
      * 
@@ -875,7 +1131,7 @@ public class $anno
      * @param selectConstraint
      * @return 
      */
-    public Select selectFirstIn(_model._node _n, Predicate<Select>selectConstraint) {
+    public Select selectFirstIn(_node _n, Predicate<Select>selectConstraint) {
         return selectFirstIn( _n.ast(), selectConstraint);        
     }
     
@@ -892,7 +1148,7 @@ public class $anno
     }
 
     @Override
-    public List<Select> listSelectedIn(_model._node _n) {
+    public List<Select> listSelectedIn(_node _n) {
         List<Select> found = new ArrayList<>();
         Walk.in(_n, _anno.class, a-> {
             Select sel = select(a); 
@@ -920,6 +1176,16 @@ public class $anno
         return found;
     }
 
+    /**
+     * 
+     * @param clazz
+     * @param selectConstraint
+     * @return 
+     */
+    public List<Select> listSelectedIn(Class clazz, Predicate<Select> selectConstraint) {
+        return listSelectedIn(_type.of(clazz), selectConstraint);
+    }
+    
     /**
      * 
      * @param _n
@@ -984,6 +1250,25 @@ public class $anno
         });
         return astRootNode;
     }
+    
+    /**
+     * 
+     * @param <N>
+     * @param astRootNode
+     * @param selectConstraint
+     * @param selectActionFn
+     * @return 
+     */
+    public <N extends Node> N forSelectedIn(N astRootNode, Predicate<Select> selectConstraint, Consumer<Select> selectActionFn) {
+        astRootNode.walk(AnnotationExpr.class, a-> {
+            Select sel = select(_anno.of(a));
+            if( sel != null && selectConstraint.test(sel)){
+                selectActionFn.accept(sel);
+            }
+        });
+        return astRootNode;
+    }
+    
 
     /**
      * 
@@ -1000,7 +1285,45 @@ public class $anno
             }
         }); 
     }
+    
+    /**
+     * 
+     * @param <N>
+     * @param _n
+     * @param selectConstraint
+     * @param selectActionFn
+     * @return 
+     */
+    public <N extends _model._node> N forSelectedIn(N _n, Predicate<Select> selectConstraint, Consumer<Select> selectActionFn) {
+        return Walk.in(_n, _anno.class, a-> {
+            Select sel = select(a); 
+            if( sel != null && selectConstraint.test(sel)){
+                selectActionFn.accept( sel );
+            }
+        }); 
+    }
+    
+    /**
+     * 
+     * @param clazz
+     * @param selectActionFn
+     * @return 
+     */
+    public _type forSelectedIn(Class clazz, Consumer<Select> selectActionFn) {
+        return forSelectedIn(_type.of(clazz), selectActionFn);         
+    }
 
+    /**
+     * 
+     * @param clazz
+     * @param selectConstraint
+     * @param selectActionFn
+     * @return 
+     */
+    public _type forSelectedIn(Class clazz, Predicate<Select> selectConstraint, Consumer<Select> selectActionFn) {
+        return forSelectedIn(_type.of(clazz), selectConstraint, selectActionFn);         
+    }
+    
     /**
      * 
      * @return 

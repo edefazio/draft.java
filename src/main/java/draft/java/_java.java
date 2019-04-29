@@ -315,6 +315,9 @@ public enum _java {
         if (node instanceof EnumConstantDeclaration) {
             return _enum._constant.of((EnumConstantDeclaration) node);
         }
+        if (node instanceof LambdaExpr){
+            return _lambda.of((LambdaExpr)node);
+        }
         if (node instanceof VariableDeclarator) {
             VariableDeclarator vd = (VariableDeclarator) node;
             //FieldDeclaration fd = (FieldDeclaration)vd.getParentNode().get();

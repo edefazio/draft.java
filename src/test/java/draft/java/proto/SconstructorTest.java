@@ -9,6 +9,18 @@ import junit.framework.TestCase;
 
 public class SconstructorTest extends TestCase {
 
+    public void testAny(){
+        class c{
+            c(){
+                
+            }
+        }
+        assertEquals(1, $constructor.any().listIn(c.class).size());
+        assertTrue(! $constructor.any().selectFirstIn(c.class).hasParameters());
+        assertTrue($constructor.any().selectFirstIn(c.class).isParameters("()"));
+        assertTrue($constructor.any().selectFirstIn(c.class).isNamed("c"));
+    }
+    
     public class A extends RuntimeException {}
     public class B extends RuntimeException {}
     

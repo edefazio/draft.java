@@ -6,6 +6,7 @@ import draft.*;
 import draft.java.Walk;
 import draft.java._model._node;
 import draft.java._parameter;
+import draft.java._type;
 import java.lang.annotation.Annotation;
 import java.util.*;
 import java.util.function.Consumer;
@@ -17,6 +18,7 @@ import java.util.stream.Collectors;
  */
 public class $parameter implements Template<_parameter>, $proto<_parameter> {
 
+    
     /**
      * 
      * @param <N>
@@ -192,8 +194,10 @@ public class $parameter implements Template<_parameter>, $proto<_parameter> {
      */
     public Boolean isFinal = false;
     
-    /** in this context, false will match varARg or non varArg, 
-     * will compose w/o varArg */
+    /** 
+     * in this context, false will match varARg or non varArg, 
+     * will compose w/o varArg 
+     */
     public Boolean isVarArg = false;
     
     /** Name of the parameter */
@@ -205,6 +209,15 @@ public class $parameter implements Template<_parameter>, $proto<_parameter> {
     
     /** annos prototype */
     public $annos annos = new $annos();
+    
+    /**
+     * 
+     * @return 
+     */
+    public static $parameter any(){
+        return new $parameter( $typeRef.any( ), $id.any() );
+    }
+    
     
     /**
      * Build and return a parameter
@@ -222,6 +235,17 @@ public class $parameter implements Template<_parameter>, $proto<_parameter> {
      */
     public static $parameter of( String parameter ){
         return new $parameter( _parameter.of(parameter), p->true );
+    }
+    
+    public $parameter( $typeRef type, $id name ){
+        this( $annos.any(), type, name );
+    }
+    
+    
+    public $parameter( $annos annos, $typeRef type, $id name ){
+        this.annos = annos;
+        this.type = type;
+        this.name = name;        
     }
     
     /**
@@ -591,7 +615,121 @@ public class $parameter implements Template<_parameter>, $proto<_parameter> {
         });
     }
     
+    /**
+     * 
+     * @param clazz
+     * @return 
+     */
+    public _parameter firstIn( Class clazz ){
+        return firstIn(_type.of(clazz));
+    }
     
+    /**
+     * Returns the first _field that matches the pattern and constraint
+     * @param _n the _java node
+     * @return  the first _field that matches (or null if none found)
+     */
+    public _parameter firstIn( _node _n ){
+        Optional<Parameter> p = _n.ast().findFirst(Parameter.class, s -> this.matches(s) );         
+        if( p.isPresent()){
+            return _parameter.of(p.get());
+        }
+        return null;
+    }
+    
+    /**
+     * Returns the first _field that matches the pattern and constraint
+     * @param astNode the AST Node
+     * @return  the first _field that matches (or null if none found)
+     */
+    public _parameter firstIn( Node astNode ){
+        Optional<Parameter> p = astNode.findFirst(Parameter.class, s -> this.matches(s) );         
+        if( p.isPresent()){
+            return _parameter.of(p.get());
+        }
+        return null;
+    }
+    
+    /**
+     * 
+     * @param clazz
+     * @return 
+     */
+    public Select selectFirstIn( Class clazz ){
+        return selectFirstIn( _type.of(clazz));
+    }
+    
+    /**
+     * Returns the first _field that matches the pattern and constraint
+     * @param _n the _java node
+     * @return  the first _field that matches (or null if none found)
+     */
+    public Select selectFirstIn( _node _n ){
+        Optional<Parameter> p = _n.ast().findFirst(Parameter.class, s -> this.matches(s) );         
+        if( p.isPresent()){
+            return select(p.get());
+        }
+        return null;
+    }
+    
+    /**
+     * Returns the first _field that matches the pattern and constraint
+     * @param astNode the AST Node
+     * @return  the first _field that matches (or null if none found)
+     */
+    public Select selectFirstIn( Node astNode ){
+        Optional<Parameter> p = astNode.findFirst(Parameter.class, s -> this.matches(s) );         
+        if( p.isPresent()){
+            return select( p.get() );
+        }
+        return null;
+    }
+    
+    /**
+     * Returns the first _field that matches the pattern and constraint
+     * @param clazz class
+     * @param selectConstraint
+     * @return  the first _field that matches (or null if none found)
+     */
+    public Select selectFirstIn( Class clazz, Predicate<Select>selectConstraint ){
+        return selectFirstIn(_type.of(clazz), selectConstraint);
+    }
+    
+    /**
+     * Returns the first _field that matches the pattern and constraint
+     * @param _n the _java node
+     * @param selectConstraint
+     * @return  the first _field that matches (or null if none found)
+     */
+    public Select selectFirstIn( _node _n, Predicate<Select>selectConstraint ){
+        Optional<Parameter> p = _n.ast().findFirst(Parameter.class, 
+            pa -> {
+                Select s = this.select(pa); 
+                return s != null && selectConstraint.test(s);
+            });         
+        if( p.isPresent()){
+            return select(p.get());
+        }
+        return null;
+    }
+    
+    /**
+     * Returns the first _field that matches the pattern and constraint
+     * @param astNode the AST Node
+     * @param selectConstraint
+     * @return  the first _field that matches (or null if none found)
+     */
+    public Select selectFirstIn( Node astNode, Predicate<Select>selectConstraint ){
+        Optional<Parameter> p = astNode.findFirst(Parameter.class, 
+            pa -> {
+                Select s = this.select(pa); 
+                return s != null && selectConstraint.test(s);
+            });         
+        if( p.isPresent()){
+            return select(p.get());
+        }
+        return null;        
+    }
     
     /**
      * A Matched Selection result returned from matching a prototype $anno

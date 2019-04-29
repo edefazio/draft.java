@@ -182,28 +182,7 @@ public class $annos
     
     
     public Select select( _hasAnnos _annotated ){
-        return select( _annotated.getAnnos() );
-        /*
-        List<_anno> annosLeft = new ArrayList<>();
-        annosLeft.addAll( _annotated.getAnnos().list() );
-        Tokens tokens = new Tokens();
-        //_annos _as = _annotated.getAnnos();
-        for(int i=0;i<this.$annosList.size();i++){
-            $anno $a = $annosList.get(i);
-            Optional<_anno> oa = annosLeft.stream().filter(a-> $a.matches(a)).findFirst();
-            if( !oa.isPresent() ){
-                return null; //didnf find a matching anno
-            }
-            annosLeft.remove(oa.get());
-            $anno.Select $as = $a.select(oa.get());
-            if( tokens.isConsistent($as.args.asTokens())){ //args arent consistent
-                tokens.putAll($as.args.asTokens());
-            } else{
-                return null;
-            }
-        }
-        return new Select(_annotated.getAnnos(), tokens);
-        */
+        return select( _annotated.getAnnos() );        
     }
     
     public Tokens decomposeTo( _annos _as, Tokens allTokens ){

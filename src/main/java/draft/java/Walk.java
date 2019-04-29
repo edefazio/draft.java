@@ -1088,6 +1088,7 @@ public enum Walk {
                     Node.class,
                     n-> n instanceof NodeWithParameters,
                     n-> {
+                        //need a lambda...
                         _parameter._hasParameters hp = (_parameter._hasParameters)_java.of( n );
                             
                         if( ((Predicate<_parameter._parameters>)_modelMatchFn).test( hp.getParameters() ) ){

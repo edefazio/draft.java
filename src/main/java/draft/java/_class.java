@@ -287,7 +287,7 @@ public final class _class implements _type<ClassOrInterfaceDeclaration, _class>,
     public static _class of( String signature, Object anonymousClassBody, Function<_type, _type>...typeFn){
         StackTraceElement ste = Thread.currentThread().getStackTrace()[2];
         _class _c = _class.of(signature);
-        System.out.println("Set Package"+_c.getPackage());
+        //System.out.println("Set Package"+_c.getPackage());
         Class theClass = anonymousClassBody.getClass();
 
         //interfaces to implement
@@ -336,7 +336,7 @@ public final class _class implements _type<ClassOrInterfaceDeclaration, _class>,
         for(int i=0;i<typeFn.length; i++){
             _c = (_class)typeFn[i].apply( _c);
         }
-        System.out.println("End Package"+_c.getPackage());
+        //System.out.println("End Package"+_c.getPackage());
         return _c;
     }
 
