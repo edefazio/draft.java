@@ -975,6 +975,33 @@ public class $constructor
         return null;
     }
     
+    /**
+     * 
+     * @param clazz
+     * @param selectConstraint
+     * @return 
+     */
+    public List<Select> listSelectedIn(Class clazz, Predicate<Select> selectConstraint){
+        return listSelectedIn(_type.of(clazz), selectConstraint);
+    }
+    
+    /**
+     * 
+     * @param astNode
+     * @param selectConstraint
+     * @return 
+     */
+    public List<Select> listSelectedIn(Node astNode, Predicate<Select> selectConstraint){
+        List<Select>sts = new ArrayList<>();
+        astNode.walk(ConstructorDeclaration.class, m-> {
+            Select sel = select( m );
+            if( sel != null && selectConstraint.test(sel)) {
+                sts.add(sel);
+            }
+        });
+        return sts;
+    }
+    
     @Override
     public List<Select> listSelectedIn(Node astNode){
         List<Select>sts = new ArrayList<>();
@@ -987,6 +1014,23 @@ public class $constructor
         return sts;
     }
 
+    /**
+     * 
+     * @param _n
+     * @param selectConstraint
+     * @return 
+     */
+    public List<Select> listSelectedIn(_node _n, Predicate<Select> selectConstraint){
+        List<Select>sts = new ArrayList<>();
+        Walk.in(_n, ConstructorDeclaration.class, m -> {
+            Select sel = select( m );
+            if( sel != null && selectConstraint.test(sel)){
+                sts.add(sel);
+            }
+        });
+        return sts;
+    }
+    
     @Override
     public List<Select> listSelectedIn(_node _n){
         List<Select>sts = new ArrayList<>();
@@ -1052,6 +1096,27 @@ public class $constructor
         return sts;
     }
 
+    /**
+     * 
+     * @param clazz
+     * @param selectActionFn
+     * @return 
+     */
+    public _type forSelectedIn(Class clazz, Consumer<Select> selectActionFn ){
+        return forSelectedIn(_type.of(clazz), selectActionFn );
+    }
+    
+    /**
+     * 
+     * @param clazz
+     * @param selectConstraint
+     * @param selectActionFn
+     * @return 
+     */
+    public _type forSelectedIn(Class clazz, Predicate<Select>selectConstraint, Consumer<Select> selectActionFn ){
+        return forSelectedIn(_type.of(clazz), selectConstraint, selectActionFn );
+    }
+    
     /**
      * 
      * @param <N>
@@ -1130,7 +1195,7 @@ public class $constructor
      * @param $replace
      * @return 
      */
-    public _type replaceIn(Class clazz,  $constructor $replace ){
+    public _type replaceIn(Class clazz, $constructor $replace ){
         return forSelectedIn(_type.of(clazz), s -> {
             _constructor repl = $replace.construct(Translator.DEFAULT_TRANSLATOR, s.args);
             s._ct.ast().replace(repl.ast());

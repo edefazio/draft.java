@@ -114,28 +114,17 @@ public class $id {
             if (pattern.isMatchAny()) {
                 return Tokens.of(pattern.list$().get(0), "");
             }
-            //System.out.println( "EXPECTED NOT NULL ");
             return null;
         }
         if( constraint.test( t ) ) {       
-            //System.out.println( "PASED NAME CONSTRAINT");
             int idx = t.lastIndexOf(".");
             if( idx > 0 ){ //input is fully qualified id
                 //if the pattern is NOT fully qualified
                 if( !this.pattern.getTextBlanks().getFixedText().contains(".") ){ 
                     String oldPattern = this.pattern.toString();
                     String newPattern = oldPattern.substring(oldPattern.lastIndexOf(".")+1);
-                    //System.out.println( "NEW PATTERN "+ newPattern);
-                    //System.out.println( "NORMALIZED "+ normalize(t));
                     Tokens ts = Stencil.of(newPattern).deconstruct(normalize(t));
-                    //System.out.println( "TOKENS "+ ts );
                     return ts;
-                    //need to create a non-fully qualified Stencil
-                    //TextBlanks tb = this.pattern.getTextBlanks();
-                    //String ft = tb.getFixedText();
-                    //this.pattern.toString()
-                    //String normal = normalize(t);
-                    //return pattern.deconstruct(normal);
                 }
             }            
             //if neither or both are 

@@ -18,6 +18,17 @@ import java.util.function.Predicate;
  */
 public final class $expr <T extends Expression>
     implements Template<T>, $proto<T> {
+
+    /**
+     * find the first occurring instance of a matching expression within the clazz
+     * @param <E>
+     * @param clazz
+     * @param pattern
+     * @return the first matching expression or null if none found
+     */
+    public static final <E extends Expression> E first( Class clazz, String pattern ){
+        return (E) $expr.of(pattern).firstIn(clazz);
+    }  
     
     /**
      * find the first occurring instance of a matching expression within the rootNode
@@ -33,6 +44,17 @@ public final class $expr <T extends Expression>
     
     /**
      * find the first occurring instance of a matching expression within the rootNode
+     * @param <E>
+     * @param clazz
+     * @param exprClass the specific Expression Class (i.e. Expr.ASSERT, Ast.RETURN_EXPR)
+     * @return the first matching expression or null if none found
+     */
+    public static final <E extends Expression> E first( Class clazz, Class<E> exprClass ){
+        return (E) new $expr(exprClass, "$any$").firstIn(clazz);
+    }
+    
+    /**
+     * find the first occurring instance of a matching expression within the rootNode
      * @param <N>
      * @param <E>
      * @param _n
@@ -45,6 +67,17 @@ public final class $expr <T extends Expression>
     
     /**
      * 
+     * @param <E>
+     * @param clazz
+     * @param astProtoExpr
+     * @return 
+     */
+    public static final <E extends Expression> E first( Class clazz, E astProtoExpr ){
+        return (E)$expr.of(astProtoExpr).firstIn(clazz);
+    }  
+    
+    /**
+     * 
      * @param <N>
      * @param <E>
      * @param _n
@@ -54,6 +87,18 @@ public final class $expr <T extends Expression>
     public static final <N extends _node, E extends Expression> E first( N _n, E astProtoExpr ){
         return (E)$expr.of(astProtoExpr).firstIn(_n);
     }  
+
+    /**
+     * find the first occurring instance of a matching expression within the rootNode
+     * @param <E>
+     * @param clazz
+     * @param pattern
+     * @param constraint
+     * @return the first matching expression or null if none found
+     */
+    public static final <E extends Expression> E first( Class clazz, String pattern, Predicate<E> constraint){
+        return (E) $expr.of(pattern, constraint).firstIn(clazz);
+    }
     
     /**
      * find the first occurring instance of a matching expression within the rootNode
@@ -67,6 +112,18 @@ public final class $expr <T extends Expression>
     public static final <N extends _node, E extends Expression> E first( N _n, String pattern, Predicate<E> constraint){
         return (E) $expr.of(pattern, constraint).firstIn(_n);
     }
+
+    /**
+     * 
+     * @param <E>
+     * @param clazz
+     * @param astProtoExpr
+     * @param constraint
+     * @return 
+     */
+    public static final <E extends Expression> E first( Class clazz, E astProtoExpr, Predicate<E> constraint){
+        return (E)$expr.of(astProtoExpr, constraint).firstIn(clazz);
+    }  
     
     /**
      * 
@@ -83,6 +140,17 @@ public final class $expr <T extends Expression>
    
     /**
      * find the first occurring instance of a matching expression within the rootNode
+     * @param <E>
+     * @param clazz
+     * @param pattern
+     * @return the first matching expression or null if none found
+     */
+    public static final <E extends Expression> Select<E> selectFirst( Class clazz, String pattern ){
+        return (Select<E>)$expr.of(pattern).selectFirstIn(clazz);
+    }
+    
+    /**
+     * find the first occurring instance of a matching expression within the rootNode
      * @param <N>
      * @param <E>
      * @param _n
@@ -92,6 +160,17 @@ public final class $expr <T extends Expression>
     public static final <N extends _node, E extends Expression> Select<E> selectFirst( N _n, String pattern ){
         return (Select<E>)$expr.of(pattern).selectFirstIn(_n);
     }
+
+    /**
+     * 
+     * @param <E>
+     * @param clazz
+     * @param astProtoExpr
+     * @return 
+     */
+    public static final <E extends Expression> Select<E> selectFirst( Class clazz, E astProtoExpr ){
+        return $expr.of(astProtoExpr).selectFirstIn(clazz);
+    }  
     
     /**
      * 
@@ -104,6 +183,19 @@ public final class $expr <T extends Expression>
     public static final <N extends _node, E extends Expression> Select<E> selectFirst( N _n, E astProtoExpr ){
         return $expr.of(astProtoExpr).selectFirstIn(_n);
     }  
+
+    /**
+     * find the first occurring instance of a matching expression within the rootNode     
+     * @param <E>
+     * @param clazz
+     * @param pattern
+     * @param selectConstraint
+     * @return the first matching expression or null if none found
+     */
+    public static final <E extends Expression> Select<E> selectFirst(Class clazz, String pattern, Predicate<Select<E>> selectConstraint){
+        $expr<E> ee = $expr.of(pattern);
+        return ee.selectFirstIn(clazz, selectConstraint);
+    }
     
     /**
      * find the first occurring instance of a matching expression within the rootNode
@@ -111,11 +203,12 @@ public final class $expr <T extends Expression>
      * @param <E>
      * @param _n
      * @param pattern
-     * @param constraint
+     * @param selectConstraint
      * @return the first matching expression or null if none found
      */
-    public static final <N extends _node, E extends Expression> Select<E> selectFirst( N _n, String pattern, Predicate<E> constraint){
-        return $expr.of(pattern, constraint).selectFirstIn(_n);
+    public static final <N extends _node, E extends Expression> Select<E> selectFirst( N _n, String pattern, Predicate<Select<E>> selectConstraint){
+        $expr<E> ee = $expr.of(pattern);
+        return ee.selectFirstIn(_n, selectConstraint);
     }
     
     /**
@@ -124,13 +217,26 @@ public final class $expr <T extends Expression>
      * @param <E>
      * @param _n
      * @param astProtoExpr
-     * @param constraint
+     * @param selectConstraint
      * @return 
      */
-    public static final <N extends _node, E extends Expression> Select<E> selectFirst( N _n, E astProtoExpr, Predicate<E> constraint){
-        return $expr.of(astProtoExpr, constraint).selectFirstIn(_n);
+    public static final <N extends _node, E extends Expression> Select<E> selectFirst( N _n, E astProtoExpr, Predicate<Select<E>> selectConstraint){
+        return $expr.of(astProtoExpr).selectFirstIn(_n, selectConstraint);
     }
 
+    /**
+     *      
+     * @param <E>
+     * @param clazz
+     * @param exprClass
+     * @param expressionActionFn
+     * @return 
+     */
+    public <E extends Expression> _type forEach(Class clazz, Class<E> exprClass, Consumer<E> expressionActionFn){
+        
+        return new $expr(exprClass, "$any$").forEachIn(clazz, expressionActionFn);
+    }
+    
     /**
      * 
      * @param <N>
@@ -143,6 +249,19 @@ public final class $expr <T extends Expression>
     public <N extends _node, E extends Expression> N forEach(N _n, Class<E> exprClass, Consumer<E> expressionActionFn){
         
         return (N) new $expr(exprClass, "$any$").forEachIn(_n, expressionActionFn);
+    }
+    
+    
+    /**
+     * 
+     * @param <E>
+     * @param clazz
+     * @param exprProto
+     * @param expressionActionFn
+     * @return 
+     */
+    public <E extends Expression> _type forEach(Class clazz, E exprProto, Consumer<E> expressionActionFn){
+        return $expr.of(exprProto).forEachIn(clazz, expressionActionFn);
     }
     
     /**
@@ -174,6 +293,17 @@ public final class $expr <T extends Expression>
     
     /**
      * 
+     * @param <E>
+     * @param clazz
+     * @param exprClass
+     * @return 
+     */
+    public static final <E extends Expression> List<E> list( Class clazz, Class<E> exprClass ){
+        return (List<E>)new $expr(exprClass, "$any$").listIn(clazz);
+    }
+    
+    /**
+     * 
      * @param <N>
      * @param <E>
      * @param _n
@@ -182,6 +312,17 @@ public final class $expr <T extends Expression>
      */
     public static final <N extends _node, E extends Expression> List<E> list( N _n, Class<E> exprClass ){
         return (List<E>)new $expr(exprClass, "$any$").listIn(_n);
+    }
+    
+    /**
+     * 
+     * @param <E>
+     * @param clazz
+     * @param pattern
+     * @return 
+     */
+    public static final <E extends Expression> List<E> list( Class clazz, String pattern ){
+        return list(_type.of(clazz), pattern);
     }
     
     /**
@@ -200,13 +341,36 @@ public final class $expr <T extends Expression>
      * 
      * @param <N>
      * @param <E>
-     * @param _n
-     * @param protoExpr
+     * @param clazz
+     * @param pattern
      * @param constraint
      * @return 
      */
-    public static final <N extends _node, E extends Expression> List<E> list( N _n, String protoExpr, Predicate<E> constraint){
-        return (List<E>)$expr.of(protoExpr, constraint).listIn(_n);
+    public static final <N extends _node, E extends Expression> List<E> list( Class clazz, String pattern, Predicate<E> constraint){
+        return list(_type.of(clazz), pattern, constraint);
+    }
+    /**
+     * 
+     * @param <N>
+     * @param <E>
+     * @param _n
+     * @param pattern
+     * @param constraint
+     * @return 
+     */
+    public static final <N extends _node, E extends Expression> List<E> list( N _n, String pattern, Predicate<E> constraint){
+        return (List<E>)$expr.of(pattern, constraint).listIn(_n);
+    }
+    
+    /**
+     * 
+     * @param <E>
+     * @param clazz
+     * @param astProtoExpr
+     * @return 
+     */
+    public static final <E extends Expression> List<E> list( Class clazz, E astProtoExpr ){
+        return list(_type.of(clazz), astProtoExpr);
     }
     
     /**
@@ -220,6 +384,18 @@ public final class $expr <T extends Expression>
     public static final <N extends _node, E extends Expression> List<E> list( N _n, E astProtoExpr ){
         return $expr.of(astProtoExpr).listIn(_n);
     }    
+    
+    /**
+     * 
+     * @param <E>
+     * @param clazz
+     * @param astProtoExpr
+     * @param constraint
+     * @return 
+     */
+    public static final <E extends Expression> List<E> list( Class clazz, E astProtoExpr, Predicate<E> constraint){
+        return list(_type.of(clazz), astProtoExpr, constraint);
+    }
     
     /**
      * 
@@ -245,6 +421,18 @@ public final class $expr <T extends Expression>
     public static final <N extends _node, E extends Expression> List<E> list( N _n, $expr<E> astProtoExpr ){
         return (List<E>)astProtoExpr.listIn(_n);
     }
+
+    /**
+     * 
+     * @param <E>
+     * @param clazz
+     * @param pattern
+     * @return 
+     */
+    public static final <E extends Expression> List<Select<E>> listSelected( Class clazz, String pattern ){
+        $expr<E> ee  = $expr.of(pattern);
+        return ee.listSelectedIn(clazz);
+    }
     
     /**
      * 
@@ -256,6 +444,19 @@ public final class $expr <T extends Expression>
      */
     public static final <N extends _node, E extends Expression> List<Select<Expression>> listSelected( N _n, String pattern ){
         return $expr.of(pattern).listSelectedIn(_n);
+    }
+    
+    /**
+     * 
+     * @param <E>
+     * @param clazz
+     * @param pattern
+     * @param constraint
+     * @return 
+     */
+    public static final <E extends Expression> List<Select<E>> listSelected( Class clazz, String pattern, Predicate<E> constraint){
+        $expr<E> ee  = $expr.of(pattern, constraint);
+        return ee.listSelectedIn(clazz);
     }
     
     /**
@@ -273,6 +474,17 @@ public final class $expr <T extends Expression>
     
     /**
      * 
+     * @param <E>
+     * @param clazz
+     * @param astProtoExpr
+     * @return 
+     */
+    public static final <E extends Expression> List<Select<E>> listSelected( Class clazz, E astProtoExpr ){
+        return $expr.of(astProtoExpr).listSelectedIn(clazz);
+    }
+    
+    /**
+     * 
      * @param <N>
      * @param <E>
      * @param _n
@@ -282,6 +494,19 @@ public final class $expr <T extends Expression>
     public static final <N extends _node, E extends Expression> List<Select<E>> listSelected( N _n, E astProtoExpr ){
         return $expr.of(astProtoExpr).listSelectedIn(_n);
     }    
+    
+    /**
+     * 
+     * @param <N>
+     * @param <E>
+     * @param clazz
+     * @param astProtoExpr
+     * @param constraint
+     * @return 
+     */
+    public static final <N extends _node, E extends Expression> List<Select<E>> listSelected(Class clazz, E astProtoExpr, Predicate<E> constraint){
+        return $expr.of(astProtoExpr, constraint).listSelectedIn(clazz);
+    }
     
     /**
      * 
@@ -307,6 +532,18 @@ public final class $expr <T extends Expression>
     public static final <N extends _node, E extends Expression> List<Select<E>> listSelected( N _n, $expr<E> astProtoExpr ){
         return astProtoExpr.listSelectedIn(_n);
     }
+
+    /**
+     * 
+     * @param clazz
+     * @param protoSource
+     * @param protoTarget
+     * @return 
+     */
+    public static final _type replace(Class clazz, Expression protoSource, Expression protoTarget){
+        return $expr.of(protoSource)
+            .replaceIn(clazz, protoTarget);
+    }
     
     /**
      * 
@@ -319,6 +556,18 @@ public final class $expr <T extends Expression>
     public static final <N extends _node> N replace(N _n, Expression protoSource, Expression protoTarget){
         return (N)$expr.of(protoSource)
             .replaceIn(_n, $expr.of(protoTarget));
+    }
+    
+    /**
+     * 
+     * @param clazz
+     * @param srcPattern
+     * @param targetPattern
+     * @return 
+     */
+    public static final _type replace(Class clazz, String srcPattern, String targetPattern){
+        return $expr.of(srcPattern)
+            .replaceIn(clazz, $expr.of(targetPattern));
     }
     
     /**
@@ -341,7 +590,7 @@ public final class $expr <T extends Expression>
      * @param sourcePattern
      * @param targetPattern
      * @return 
-     */
+     
     public static final Expression replace( Expression astExpr, String sourcePattern, String targetPattern){
         //$args ts = $expr.of(sourcePattern).deconstruct(astExpr);
         Select s = $expr.of(sourcePattern).select(astExpr);
@@ -352,6 +601,7 @@ public final class $expr <T extends Expression>
         }
         return null;
     }
+    */ 
     
     /**
      * 
@@ -2054,6 +2304,15 @@ public final class $expr <T extends Expression>
     }
 
     /**
+     * 
+     * @param clazz
+     * @return 
+     */
+    public T firstIn(Class clazz){
+        return firstIn( _type.of(clazz));
+    }
+    
+    /**
      * Returns the first Expression that matches the pattern and constraint
      * @param _n the _java node
      * @return  the first Expression that matches (or null if none found)
@@ -2077,6 +2336,15 @@ public final class $expr <T extends Expression>
             return f.get();
         }
         return null;
+    }
+    
+    /**
+     * 
+     * @param clazz
+     * @return 
+     */
+    public Select<T> selectFirstIn( Class clazz ){
+        return selectFirstIn(_type.of(clazz));
     }
     
     /**
@@ -2106,12 +2374,22 @@ public final class $expr <T extends Expression>
     }
     
     /**
+     * 
+     * @param clazz
+     * @param selectConstraint
+     * @return 
+     */
+    public Select<T> selectFirstIn( Class clazz, Predicate<Select<T>> selectConstraint ){
+        return selectFirstIn(_type.of(clazz), selectConstraint);
+    }
+    
+    /**
      * Returns the first Expression that matches the pattern and constraint
      * @param _n the _java node
      * @param selectConstraint
      * @return  the first Expression that matches (or null if none found)
      */
-    public Select<T> selectFirstIn( _node _n,Predicate<Select<T>> selectConstraint){
+    public Select<T> selectFirstIn( _node _n, Predicate<Select<T>> selectConstraint){
         Optional<T> f = _n.ast().findFirst(this.expressionClass, s -> {
             Select<T> sel = select(s);
             return sel != null && selectConstraint.test(sel);
@@ -2203,6 +2481,19 @@ public final class $expr <T extends Expression>
         return sts;
     }
     
+    @Override
+    public List<Select<T>> listSelectedIn(Class clazz){
+        List<Select<T>>sts = new ArrayList<>();
+        Walk.in(_type.of(clazz), this.expressionClass, e -> {
+            Select s = select( e );
+            if( s != null ){
+                sts.add( s);
+            }
+        });
+        return sts;
+    }
+    
+    
     /**
      * 
      * @param astNode
@@ -2261,6 +2552,16 @@ public final class $expr <T extends Expression>
 
     /**
      * 
+     * @param clazz
+     * @param astExprReplace
+     * @return 
+     */
+    public _type replaceIn( Class clazz, Node astExprReplace ){
+        return replaceIn(_type.of(clazz), astExprReplace);
+    }
+    
+    /**
+     * 
      * @param <N>
      * @param _n
      * @param astExprReplace
@@ -2285,6 +2586,16 @@ public final class $expr <T extends Expression>
      */
     public <N extends _node> N replaceIn(N _n, String protoReplaceExpr ){
         return replaceIn(_n, $expr.of(protoReplaceExpr) );
+    }
+    
+    /**
+     * 
+     * @param clazz
+     * @param $repl
+     * @return 
+     */
+    public _type replaceIn(Class clazz, $expr $repl ){
+        return replaceIn(_type.of(clazz), $repl );
     }
     
     /**

@@ -38,6 +38,17 @@ import java.util.stream.Collectors;
  */
 public class $classUse {
     
+    /**
+     * find all references the the target class in the clazz and replace it with 
+     * the replacement class
+     * @param clazz
+     * @param target
+     * @param replacement
+     * @return 
+     */
+    public static _type replace( Class clazz, Class target, Class replacement ){
+        return $classUse.of(target).replaceIn(_type.of(clazz), replacement);
+    }
     
     /**
      * Find all situations where we use the target class and replace it with 
@@ -48,7 +59,7 @@ public class $classUse {
      * @param replacement
      * @return 
      */
-    public static <N extends _model._node> N replace(N _n, Class target, Class replacement) {
+    public static <N extends _node> N replace(N _n, Class target, Class replacement) {
         return $classUse.of(target).replaceIn(_n, replacement);
     }
     
@@ -387,15 +398,7 @@ public class $classUse {
         
         List<$node.Select>res = sels.stream().distinct().collect(Collectors.toList());
         Collections.sort(res, $node.SELECT_START_POSITION_COMPARATOR);
-        return res;
-        //dedupe
-        //List<$node.Select>uniqueSels = sels.stream().distinct().collect(Collectors.toList());
-        
-        //the selections are interleaved, so lets organize them in positional 
-        //order (in the file) as to not surprise the caller
-        //Collections.sort(uniqueSels, $node.SELECT_START_POSITION_COMPARATOR);
-        
-        //return uniqueSels;        
+        return res;               
     }
     
     public <N extends _node> List<$node.Select> listSelectedIn( N _n, Predicate<$node.Select> selectConstraint){
@@ -432,7 +435,5 @@ public class $classUse {
     
     public List<$node.Select> listSelectedIn( Class clazz, Predicate<$node.Select> selectConstraint){
         return listSelectedIn( _type.of(clazz));        
-    }
-    
-    
+    }    
 }

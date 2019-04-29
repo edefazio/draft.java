@@ -9,9 +9,64 @@ import draft.java._method;
 import draft.java.macro._remove;
 import draft.java.macro._static;
 import draft.java.runtime._javac;
+import draft.java.runtime._proxy;
 import junit.framework.TestCase;
 
 public class SmethodTest extends TestCase {
+    
+    public void testAnonymousObjectInit(){
+        $method $set = $method.of( new Object(){
+            public void set$Name$($type$ $name$){
+                this.$name$ = $name$;
+            }
+            private $type$ $name$;
+            class $type${}
+        });
+        
+        class Point{
+            int x, y, z;
+            
+            public void setX(int x){
+                this.x = x;
+            }
+        }
+        assertTrue( $set.selectFirstIn(Point.class)
+            .is("name", "x", "type", int.class));
+        
+        _class _c = _class.of(Point.class);
+        
+        //use the $set method prototype to create/add methods to a _class 
+        _c.add($set.construct("name", "y", "type", int.class), 
+               $set.construct("name", "z", "type", int.class));
+        
+        //lets create a getter prototype
+        $method $get = $method.of( new Object(){
+            public $type$ get$Name$(){
+                return this.$name$;
+            }            
+            $type$ $name$;
+            class $type${}            
+        });
+        //lets add getter methods for x,y, and z
+        _c.add( $get.construct("name", "x", "type", int.class),
+                $get.construct("name", "y", "type", int.class),
+                $get.construct("name", "z", "type", int.class) );
+        
+        //use the prototypes AGAIN to query into the _class
+        assertEquals(3, $set.listIn(_c).size()); //verify we have (3) set methods
+        assertEquals(3, $get.listIn(_c).size()); //verify we have (3) get methods
+        
+        //Lets make a working class and use it to verify it works
+        //compile and create a new instance of Point
+        _proxy _p = _proxy.of(_c);
+        //lets call the set methods        
+        _p.set("x", 100).set("y", 200).set("z",300);
+        
+        //verify the values are set & the getter methods work
+        assertEquals( _p.get("x"), 100);
+        assertEquals( _p.get("y"), 200);
+        assertEquals( _p.get("z"), 300);        
+    }
     
     /**
      * Verify that I can find a $method by a body pattern

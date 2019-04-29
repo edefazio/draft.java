@@ -614,6 +614,15 @@ public class $field implements Template<_field>, $proto<_field> {
     }
     
     /**
+     * 
+     * @param clazz
+     * @return 
+     */
+    public _field firstIn( Class clazz){
+        return firstIn(_type.of(clazz));
+    }
+    
+    /**
      * Returns the first _field that matches the pattern and constraint
      * @param _n the _java node
      * @return  the first _field that matches (or null if none found)
@@ -637,6 +646,15 @@ public class $field implements Template<_field>, $proto<_field> {
             return _field.of(f.get());
         }
         return null;
+    }
+    
+    /**
+     * 
+     * @param clazz
+     * @return 
+     */
+    public Select selectFirstIn(Class clazz){
+        return selectFirstIn(_type.of(clazz));
     }
     
     /**
@@ -669,6 +687,16 @@ public class $field implements Template<_field>, $proto<_field> {
     }
     
     /**
+     * 
+     * @param clazz
+     * @param selectConstraint
+     * @return 
+     */
+    public Select seelctFirstIn( Class clazz, Predicate<Select>selectConstraint ){
+       return selectFirstIn(_type.of(clazz), selectConstraint); 
+    }
+    
+    /**
      * Returns the first _field that matches the pattern and constraint
      * @param _n the _java node
      * @param selectConstraint
@@ -694,6 +722,15 @@ public class $field implements Template<_field>, $proto<_field> {
             return select(f.get());
         }
         return null;
+    }
+    
+    /**
+     * 
+     * @param clazz
+     * @return 
+     */
+    public List<_field> listIn( Class clazz ){
+        return listIn(_type.of(clazz));
     }
     
     @Override
@@ -735,7 +772,7 @@ public class $field implements Template<_field>, $proto<_field> {
      * @param selectConstraint
      * @return 
      */
-    public List<Select> selectListIn(Node astNode, Predicate<Select> selectConstraint){
+    public List<Select> listSelectedIn(Node astNode, Predicate<Select> selectConstraint){
         List<Select>sts = new ArrayList<>();
         astNode.walk(VariableDeclarator.class, e-> {
             Select s = select( e );
@@ -748,12 +785,22 @@ public class $field implements Template<_field>, $proto<_field> {
 
     /**
      * 
+     * @param clazz
+     * @param selectConstraint
+     * @return 
+     */
+    public List<Select> listSelectedIn(Class clazz, Predicate<Select> selectConstraint){
+        return listSelectedIn(_type.of(clazz), selectConstraint);    
+    }
+    
+    /**
+     * 
      * @param _n
      * @param selectConstraint
      * @return 
      */
-    public List<Select> selectListIn(_node _n, Predicate<Select> selectConstraint){
-        return selectListIn(_n.ast(), selectConstraint);        
+    public List<Select> listSelectedIn(_node _n, Predicate<Select> selectConstraint){
+        return listSelectedIn(_n.ast(), selectConstraint);        
     }
     
     @Override
@@ -778,6 +825,16 @@ public class $field implements Template<_field>, $proto<_field> {
         return _n;
     }
 
+    /**
+     * 
+     * @param clazz
+     * @param $replaceProto
+     * @return 
+     */
+    public _type replaceIn(Class clazz, $field $replaceProto ){
+        return replaceIn( _type.of(clazz), $replaceProto);
+    }
+    
     /**
      * 
      * @param <N>
@@ -814,6 +871,16 @@ public class $field implements Template<_field>, $proto<_field> {
 
     /**
      * 
+     * @param clazz
+     * @param selectConsumer
+     * @return 
+     */
+    public _type forSelectedIn(Class clazz, Consumer<Select> selectConsumer ){
+       return forSelectedIn( _type.of(clazz), selectConsumer ); 
+    }
+    
+    /**
+     * 
      * @param <N>
      * @param _n
      * @param selectConsumer
@@ -844,6 +911,17 @@ public class $field implements Template<_field>, $proto<_field> {
             }
         });
         return astNode;
+    }
+    
+    /**
+     * 
+     * @param clazz
+     * @param selectConstraint
+     * @param selectConsumer
+     * @return 
+     */
+    public _type forSelectedIn(Class clazz, Predicate<Select> selectConstraint, Consumer<Select> selectConsumer ){
+        return forSelectedIn(_type.of(clazz), selectConstraint, selectConsumer);
     }
     
     /**
@@ -906,7 +984,10 @@ public class $field implements Template<_field>, $proto<_field> {
         return _n;
     }
     
-    /** @return true is the field declaration  matches the prototype*/
+    /**
+     * @param field 
+     * @return true is the field declaration  matches the prototype
+     */
     public boolean matches( String...field ){
         try{
             return matches(_field.of(field));
@@ -917,11 +998,11 @@ public class $field implements Template<_field>, $proto<_field> {
     
     /**
      * does this variable match the prototype
-     * @param vd
+     * @param astVar
      * @return 
      */
-    public boolean matches( VariableDeclarator vd ){
-        return select(vd) != null;        
+    public boolean matches( VariableDeclarator astVar ){
+        return select(astVar) != null;        
     }
     
     /**
@@ -957,7 +1038,6 @@ public class $field implements Template<_field>, $proto<_field> {
             Tokens all = new Tokens();
             all = javadoc.decomposeTo(_f.getJavadoc(), all);
             all = annos.decomposeTo(_f.getAnnos(), all);
-            //all = modifiers.decomposeTo(_f.getModifiers(), all);
             all = type.decomposeTo(_f.getType(), all);
             all = name.decomposeTo(_f.getName(), all);
             all = init.decomposeTo(_f.getInit(), all);
@@ -996,7 +1076,6 @@ public class $field implements Template<_field>, $proto<_field> {
         return null;
     } 
     
-
     @Override
     public _field construct(Translator translator, Map<String, Object> keyValues) {
         Map<String,Object> baseMap = new HashMap<>();
@@ -1047,7 +1126,6 @@ public class $field implements Template<_field>, $proto<_field> {
     public $field $(String target, String $Name) {
         javadoc.pattern.$(target, $Name);
         annos.$(target, $Name);
-        //modifiers.pattern.$(target, $Name);
         type.$(target, $Name);
         name.pattern.$(target, $Name);
         init.pattern.$(target, $Name);
@@ -1059,7 +1137,6 @@ public class $field implements Template<_field>, $proto<_field> {
         List<String> vars = new ArrayList<>();
         vars.addAll( javadoc.pattern.list$() );
         vars.addAll( annos.list$() );
-        //vars.addAll( modifiers.pattern.list$() );
         vars.addAll( type.list$() );
         vars.addAll( name.pattern.list$() );
         vars.addAll( init.pattern.list$() );
@@ -1072,7 +1149,6 @@ public class $field implements Template<_field>, $proto<_field> {
         List<String> vars = new ArrayList<>();
         vars.addAll( javadoc.pattern.list$Normalized() );
         vars.addAll( annos.list$Normalized() );
-        //vars.addAll( modifiers.pattern.list$Normalized() );
         vars.addAll( type.list$Normalized() );
         vars.addAll( name.pattern.list$Normalized() );
         vars.addAll( init.pattern.list$Normalized() );
@@ -1086,7 +1162,6 @@ public class $field implements Template<_field>, $proto<_field> {
         sb.append(System.lineSeparator());
         sb.append(annos );
         sb.append(System.lineSeparator());
-        //sb.append( modifiers.compose(translator, base));
         sb.append(modifiers.toString()); //construct(Translator.TypeTranslate, new HashMap<String,Object>() ) );
         sb.append(" ");
         sb.append(type.typePattern );

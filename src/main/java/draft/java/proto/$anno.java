@@ -16,7 +16,7 @@ import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 /**
- * This will be the NEW $a
+ * prototype for an annotation
  *
  * @author Eric
  */
@@ -97,7 +97,7 @@ public class $anno
      * @param pattern
      * @return 
      */
-    public static final <N extends _node> $anno.Select selectFirst( N _n, String pattern ){
+    public static final <N extends _node> Select selectFirst( N _n, String pattern ){
         return $anno.of(pattern).selectFirstIn(_n);
     }
     
@@ -109,7 +109,7 @@ public class $anno
      * @param selectConstraint
      * @return 
      */
-    public static final <N extends _node> $anno.Select selectFirst( N _n, String pattern, Predicate<$anno.Select>selectConstraint){
+    public static final <N extends _node> Select selectFirst( N _n, String pattern, Predicate<$anno.Select>selectConstraint){
         return $anno.of(pattern).selectFirstIn(_n, selectConstraint);
     }
     
@@ -119,7 +119,7 @@ public class $anno
      * @param pattern
      * @return 
      */
-    public static final $anno.Select selectFirst( Class clazz, String pattern ){
+    public static final Select selectFirst( Class clazz, String pattern ){
         return $anno.of(pattern).selectFirstIn(_type.of(clazz));
     }
     
@@ -675,7 +675,7 @@ public class $anno
      * @param targetPattern
      * @return 
      */
-    public static final <N extends _model._node> N replace(N _n, String sourcePattern, String targetPattern){
+    public static final <N extends _node> N replace(N _n, String sourcePattern, String targetPattern){
         return $anno.of(sourcePattern)
             .replaceIn(_n, $anno.of(targetPattern));
     }
@@ -688,7 +688,7 @@ public class $anno
      * @param astTargetProto
      * @return 
      */
-    public static final <N extends _model._node> N replace(N _n, AnnotationDeclaration astSourceProto, AnnotationDeclaration astTargetProto){
+    public static final <N extends _node> N replace(N _n, AnnotationDeclaration astSourceProto, AnnotationDeclaration astTargetProto){
         return $anno.of(_anno.of(astSourceProto))
             .replaceIn(_n, $anno.of(_anno.of(astTargetProto)));
     }
@@ -713,7 +713,7 @@ public class $anno
      * @param replacementAnno
      * @return 
      */
-    public static final <N extends _model._node> N replace( N _n, Class<? extends Annotation>targetAnno, Class<? extends Annotation>replacementAnno){        
+    public static final <N extends _node> N replace( N _n, Class<? extends Annotation>targetAnno, Class<? extends Annotation>replacementAnno){        
         return $anno.of(targetAnno)
             .replaceIn(_n, $anno.of(replacementAnno));
     }
@@ -976,7 +976,7 @@ public class $anno
     }
     
     @Override    
-    public List<_anno> listIn(_model._node _n) {
+    public List<_anno> listIn(_node _n) {
         List<_anno> found = new ArrayList<>();
         Walk.in(_n, _anno.class, a-> {
             Select sel = select(a); 
@@ -1063,7 +1063,7 @@ public class $anno
         return null;        
     }
 
-    public _anno firstIn(_model._node _n) {
+    public _anno firstIn(_node _n) {
         return firstIn( _n.ast() );        
     }
     
@@ -1209,7 +1209,7 @@ public class $anno
     }
 
     @Override
-    public <N extends _model._node> N removeIn(N _n) {
+    public <N extends _node> N removeIn(N _n) {
         return forEachIn(_n, n -> n.ast().remove() );   
     }
 
@@ -1225,7 +1225,7 @@ public class $anno
     }
 
     @Override
-    public <N extends _model._node> N forEachIn(N _n, Consumer<_anno> _nodeActionFn) {
+    public <N extends _node> N forEachIn(N _n, Consumer<_anno> _nodeActionFn) {
         return Walk.in(_n, _anno.class, a-> {
             Select sel = select(a); 
             if( sel != null ){
@@ -1277,7 +1277,7 @@ public class $anno
      * @param selectActionFn
      * @return 
      */
-    public <N extends _model._node> N forSelectedIn(N _n, Consumer<Select> selectActionFn) {
+    public <N extends _node> N forSelectedIn(N _n, Consumer<Select> selectActionFn) {
         return Walk.in(_n, _anno.class, a-> {
             Select sel = select(a); 
             if( sel != null ){
@@ -1294,7 +1294,7 @@ public class $anno
      * @param selectActionFn
      * @return 
      */
-    public <N extends _model._node> N forSelectedIn(N _n, Predicate<Select> selectConstraint, Consumer<Select> selectActionFn) {
+    public <N extends _node> N forSelectedIn(N _n, Predicate<Select> selectConstraint, Consumer<Select> selectActionFn) {
         return Walk.in(_n, _anno.class, a-> {
             Select sel = select(a); 
             if( sel != null && selectConstraint.test(sel)){
@@ -1494,7 +1494,7 @@ public class $anno
 
             @Override
             public String toString() {
-                return "$memberValue.Select {" + System.lineSeparator()
+                return "$anno.$memberValue.Select {" + System.lineSeparator()
                         + Text.indent(astMvp.toString()) + System.lineSeparator()
                         + Text.indent("$args : " + args) + System.lineSeparator()
                         + "}";
