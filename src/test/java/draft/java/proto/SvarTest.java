@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package draft.java.proto;
 
 import com.github.javaparser.ast.body.VariableDeclarator;
@@ -10,7 +5,7 @@ import draft.java.Ast;
 import draft.java._class;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
+import java.util.function.Consumer;
 import junit.framework.TestCase;
 
 /**
@@ -18,6 +13,25 @@ import junit.framework.TestCase;
  * @author Eric
  */
 public class SvarTest extends TestCase {
+    
+    public void test$VParam(){
+        class F{
+            Consumer<Object> po = (o) -> System.out.println(o);
+            /*
+            void d(){
+                po = (o) ->System.out.println(o);
+            }
+            */
+        }
+        System.out.println( $var.list(F.class) );
+        $parameter.any().firstIn(F.class).getType();
+        System.out.println( $parameter.any().listIn(F.class));
+    }
+    
+    public void testWithInit(){
+        assertTrue($var.of("int i").matches("int i"));
+        assertTrue($var.of("int i").matches("int i=100"));        
+    }
     
     public void testVarOrField(){
         class Holder{

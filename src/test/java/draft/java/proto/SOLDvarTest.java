@@ -1,3 +1,8 @@
+/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
 package draft.java.proto;
 
 import com.github.javaparser.ast.body.VariableDeclarator;
@@ -5,8 +10,6 @@ import draft.java.Ast;
 import draft.java._class;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.function.Consumer;
-import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import junit.framework.TestCase;
 
@@ -14,26 +17,7 @@ import junit.framework.TestCase;
  *
  * @author Eric
  */
-public class SvTest extends TestCase {
-    
-    public void test$VParam(){
-        class F{
-            Consumer<Object> po = (o) -> System.out.println(o);
-            /*
-            void d(){
-                po = (o) ->System.out.println(o);
-            }
-            */
-        }
-        System.out.println( $v.list(F.class) );
-        $parameter.any().firstIn(F.class).getType();
-        System.out.println( $parameter.any().listIn(F.class));
-    }
-    
-    public void testWithInit(){
-        assertTrue($v.of("int i").matches("int i"));
-        assertTrue($v.of("int i").matches("int i=100"));        
-    }
+public class SOLDvarTest extends TestCase {
     
     public void testVarOrField(){
         class Holder{
@@ -44,16 +28,16 @@ public class SvTest extends TestCase {
                 System.out.println(u + 3);
             }
         }
-        assertEquals( 4, $v.list(Holder.class).size() );
+        assertEquals( 4, $OLDvar.list(Holder.class).size() );
         
         //
-        assertEquals( 1, $v.list(Holder.class, (v)-> v.getInitializer().isPresent()).size() );
-        assertEquals( 1, $v.any().selectListIn(Holder.class, s-> s.hasInit()).size() );        
-        assertEquals( 4, $v.list(Holder.class, "int $name$").size() );
+        assertEquals( 1, $OLDvar.list(Holder.class, (v)-> v.getInitializer().isPresent()).size() );
+        assertEquals( 1, $OLDvar.any().selectListIn(Holder.class, s-> s.hasInit()).size() );        
+        assertEquals( 4, $OLDvar.list(Holder.class, "int $name$").size() );
         
-        assertEquals( 4, $v.ofType(int.class).listIn(Holder.class).size() );
+        assertEquals( 4, $OLDvar.ofType(int.class).listIn(Holder.class).size() );
         
-        assertEquals( 3, $v.ofType(int.class).selectListIn(Holder.class, s-> s.isFieldVar()).size() );
+        assertEquals( 3, $OLDvar.ofType(int.class).selectListIn(Holder.class, s-> s.isFieldVar()).size() );
                 //.stream().filter( s-> s.isFieldVar() ).collect(Collectors.toList()).size() );
         //assertEquals( 4, $var.se(int.class).forSelected(Holder.class).size() );
         
@@ -61,9 +45,9 @@ public class SvTest extends TestCase {
     }
     
     public void testVar(){
-        $v $anyInt = $v.of("int $name$");
-        $v $anyString = $v.of("String $name$");
-        $v $anyInit = $v.of("$type$ $name$ = $init$");
+        $OLDvar $anyInt = $OLDvar.of("int $name$");
+        $OLDvar $anyString = $OLDvar.of("String $name$");
+        $OLDvar $anyInit = $OLDvar.of("$type$ $name$ = $init$");
         
         VariableDeclarator v = Ast.variable("int count");
         assertEquals( $anyInt.fill("count"), v );
@@ -81,11 +65,11 @@ public class SvTest extends TestCase {
         //I want to list all var names
         
         List<String> varNames = new ArrayList<>();
-        $v.forEach(_c, vv -> varNames.add(vv.getNameAsString()));        
+        $OLDvar.forEach(_c, vv -> varNames.add(vv.getNameAsString()));        
         System.out.println( varNames );
         
         List<String> typeNames = new ArrayList<>();
-        $v.forEach(_c, vv -> typeNames.add(vv.getTypeAsString()));
+        $OLDvar.forEach(_c, vv -> typeNames.add(vv.getTypeAsString()));
         System.out.println( typeNames );
         
     }

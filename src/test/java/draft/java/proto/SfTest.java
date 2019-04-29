@@ -11,6 +11,15 @@ import junit.framework.TestCase;
  */
 public class SfTest extends TestCase {
     
+    public void testFieldAsAnonymousObject(){
+        $field $f = $field.of( new Object(){
+            @Deprecated
+            public static final int ID = 100; 
+        });
+        
+        assertTrue( $f.matches( "@Deprecated public static final int ID=100;" ) );
+    }
+    
      public void testSimple$field(){
         //the field prototype specifies the type and name (only)
         $field $simpleField = $field.of( _field.of("int i") );

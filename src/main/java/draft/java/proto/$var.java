@@ -9,10 +9,12 @@ import com.github.javaparser.printer.PrettyPrinterConfiguration;
 import draft.*;
 import draft.java.*;
 import draft.java._model._node;
+import static draft.java.proto.$var.NO_COMMENTS;
 
 import java.util.*;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
+import java.util.stream.Collectors;
 
 /**
  * Template for a {@link VariableDeclarator}
@@ -81,7 +83,7 @@ public class $var
      * @return 
      */
     public static final <N extends _node> List<VariableDeclarator> list( N _n, String pattern ){
-        return $var.of(pattern).listIn(_n);
+        return of(pattern).listIn(_n);
     }
     
     /**
@@ -92,7 +94,7 @@ public class $var
      * @return 
      */
     public static final <N extends _node> List<VariableDeclarator> list( Class clazz, String pattern ){
-        return $var.of(pattern).listIn(_type.of(clazz));
+        return of(pattern).listIn(_type.of(clazz));
     }
     
     /**
@@ -104,7 +106,7 @@ public class $var
      * @return 
      */
     public static final <N extends _node> List<VariableDeclarator> list( N _n, String pattern, Predicate<VariableDeclarator> constraint){
-        return $var.of(pattern, constraint).listIn(_n);
+        return of(pattern, constraint).listIn(_n);
     }
     
     /**
@@ -116,7 +118,7 @@ public class $var
      * @return 
      */
     public static final <N extends _node> List<VariableDeclarator> list( Class clazz, String pattern, Predicate<VariableDeclarator> constraint){
-        return $var.of(pattern, constraint).listIn(_type.of(clazz));
+        return of(pattern, constraint).listIn(_type.of(clazz));
     }
     
     /**
@@ -127,7 +129,7 @@ public class $var
      * @return 
      */
     public static final <N extends _node> List<VariableDeclarator> list( N _n, VariableDeclarator proto ){
-        return $var.of(proto).listIn(_n);
+        return of(proto).listIn(_n);
     }
     
     /**
@@ -139,7 +141,7 @@ public class $var
      * @return 
      */
     public static final <N extends _node> List<VariableDeclarator> list( N _n, VariableDeclarator proto, Predicate<VariableDeclarator> constraint){
-        return $var.of(proto, constraint).listIn(_n);
+        return of(proto, constraint).listIn(_n);
     }
 
     /**
@@ -359,7 +361,7 @@ public class $var
      * @return 
      */
     public static final <N extends _node> VariableDeclarator first( N _n, String pattern ){
-        return $var.of(pattern).firstIn(_n);
+        return of(pattern).firstIn(_n);
     }
     
     /**
@@ -370,7 +372,7 @@ public class $var
      * @return 
      */
     public static final <N extends _node> VariableDeclarator first( Class clazz, String pattern ){
-        return $var.of(pattern).firstIn( _type.of(clazz) );
+        return of(pattern).firstIn( _type.of(clazz) );
     }
     
     /**
@@ -382,7 +384,7 @@ public class $var
      * @return 
      */
     public static final <N extends _node> VariableDeclarator first( N _n, String pattern, Predicate<VariableDeclarator> constraint){
-        return $var.of(pattern, constraint).firstIn(_n);
+        return of(pattern, constraint).firstIn(_n);
     }
     
     /**
@@ -393,7 +395,7 @@ public class $var
      * @return 
      */
     public static final <N extends _node> VariableDeclarator first( N _n, VariableDeclarator proto ){
-        return $var.of(proto).firstIn(_n);
+        return of(proto).firstIn(_n);
     }
     
     /**
@@ -405,7 +407,7 @@ public class $var
      * @return 
      */
     public static final <N extends _node> VariableDeclarator first( N _n, VariableDeclarator proto, Predicate<VariableDeclarator> constraint){
-        return $var.of(proto, constraint)
+        return of(proto, constraint)
                 .firstIn(_n);
     }
     
@@ -417,7 +419,7 @@ public class $var
      * @return 
      */
     public static final <N extends _node> Select selectFirst( N _n, String pattern ){
-        return $var.of(pattern).selectFirstIn(_n);
+        return of(pattern).selectFirstIn(_n);
     }
     
     /**
@@ -429,7 +431,7 @@ public class $var
      * @return 
      */
     public static final <N extends _node> Select selectFirst( N _n, String pattern, Predicate<Select> selectConstraint ){
-        return $var.of(pattern).selectFirstIn(_n, selectConstraint);
+        return of(pattern).selectFirstIn(_n, selectConstraint);
     }
     
     /**
@@ -440,7 +442,7 @@ public class $var
      * @return 
      */
     public static final <N extends _node> Select selectFirst( N _n, VariableDeclarator proto ){
-        return $var.of(proto).selectFirstIn(_n);
+        return of(proto).selectFirstIn(_n);
     }
     
     /**
@@ -452,7 +454,7 @@ public class $var
      * @return 
      */
     public static final <N extends _node> Select selectFirst( N _n, VariableDeclarator proto, Predicate<Select> selectConstraint){
-        return $var.of(proto).selectFirstIn(_n, selectConstraint);
+        return of(proto).selectFirstIn(_n, selectConstraint);
     }
     
     /**
@@ -463,7 +465,7 @@ public class $var
      * @return 
      */
     public static final <N extends _node> List<Select> selectList( N _n, String pattern ){
-        return $var.of(pattern).listSelectedIn(_n);
+        return of(pattern).listSelectedIn(_n);
     }
     
     /**
@@ -475,7 +477,7 @@ public class $var
      * @return 
      */
     public static final <N extends _node> List<Select> selectList( N _n, String pattern, Predicate<Select> selectConstraint){
-        return $var.of(pattern)
+        return of(pattern)
                 .selectListIn(_n, selectConstraint);
     }
     
@@ -487,7 +489,7 @@ public class $var
      * @return 
      */
     public static final <N extends _node> List<Select> selectList( N _n, VariableDeclarator proto ){
-        return $var.of(proto).listSelectedIn(_n);
+        return of(proto).listSelectedIn(_n);
     }
     
     /**
@@ -499,7 +501,7 @@ public class $var
      * @return 
      */
     public static final <N extends _node> List<Select> selectList( N _n, VariableDeclarator proto, Predicate<VariableDeclarator> constraint){
-        return $var.of(proto, constraint).listSelectedIn(_n);
+        return of(proto, constraint).listSelectedIn(_n);
     }
     
     /**
@@ -510,7 +512,7 @@ public class $var
      * @return the modified N
      */
     public static final <N extends _node> N remove( N _n, VariableDeclarator proto ){
-        return $var.of(proto).removeIn(_n);
+        return of(proto).removeIn(_n);
     }
     
     /**
@@ -522,7 +524,7 @@ public class $var
      * @return the modified N
      */
     public static final <N extends _node> N remove( N _n, VariableDeclarator proto, Predicate<VariableDeclarator> constraint){
-        return $var.of(proto, constraint).removeIn(_n);
+        return of(proto, constraint).removeIn(_n);
     }
     
     /**
@@ -533,7 +535,7 @@ public class $var
      * @return 
      */
     public static final <N extends _node> N remove( N _n, String pattern ){
-        return $var.of(pattern).removeIn(_n);
+        return of(pattern).removeIn(_n);
     }
     
     /**
@@ -545,7 +547,7 @@ public class $var
      * @return 
      */
     public static final <N extends _node> N replace(N rootNode, VariableDeclarator sourceProto, VariableDeclarator targetProto){
-        return $var.of(sourceProto)
+        return of(sourceProto)
             .replaceIn(rootNode, $var.of(targetProto));
     }
     
@@ -558,7 +560,7 @@ public class $var
      * @return 
      */
     public static final <N extends _node> N replace(N rootNode, String sourcePattern, String targetPattern){
-        return $var.of(Ast.variable(sourcePattern))
+        return of(Ast.variable(sourcePattern))
             .replaceIn(rootNode, $var.of(targetPattern));
     }
     
@@ -643,21 +645,21 @@ public class $var
     /** Matching constraint */
     public Predicate<VariableDeclarator> constraint = t -> true;
     
-    /** Var code pattern */
-    public Stencil varPattern;
     
-    public Stencil initPattern = null;
+    public $typeRef type = $typeRef.of("$type$");
+    public $id name = $id.any();
+    public $component<Expression> init = new $component( "$init$", t->true);
 
     public static final PrettyPrinterConfiguration NO_COMMENTS = new PrettyPrinterConfiguration()
         .setPrintComments(false).setPrintJavadoc(false);
   
     private $var( VariableDeclarator astProtoVar ){
-        String str = astProtoVar.getTypeAsString() + " " + astProtoVar.toString(Ast.PRINT_NO_COMMENTS);                 
-        varPattern = Stencil.of( str );
+        this.name = $id.of(astProtoVar.getNameAsString());
+        this.type = $typeRef.of(astProtoVar.getTypeAsString());
         if( astProtoVar.getInitializer().isPresent() ){
-            //System.out.println( "Creating init ");
-            initPattern = Stencil.of( astProtoVar.getInitializer().get() );
-        }
+            this.init = $component.of(astProtoVar.getInitializer().get());
+            this.constraint = v -> v.getInitializer().isPresent();
+        }           
     }
     
     public $var constraint( Predicate<VariableDeclarator> constraint){
@@ -665,10 +667,23 @@ public class $var
         return this;
     }
     
-    public $var init( Stencil initPattern ){
-        this.initPattern = initPattern;
+    public $var addConstraint(Predicate<VariableDeclarator> constraint){
+        this.constraint = this.constraint.and(constraint);
         return this;
     }
+    
+    /*
+    public $v init( Stencil initPattern ){
+        this.init.pattern = initPattern;
+        return this;
+    }
+    */
+    
+    public $var init( Expression initExprProto ){
+        init.stencil( initExprProto.toString(NO_COMMENTS) );
+        return this;
+    }
+    
       
     /**
      * 
@@ -696,34 +711,44 @@ public class $var
     public Select select(VariableDeclarator astVar){       
         Tokens all = new Tokens();
         if(this.constraint.test(astVar)) {            
-            if( this.initPattern != null ){
-                if( astVar.getInitializer().isPresent()){
-                    all = this.initPattern.deconstruct( astVar.getInitializer().get().toString(NO_COMMENTS) );
-                    if( all == null ){
-                        return null;
-                    }
-                } else{
+            if( astVar.getInitializer().isPresent()){
+                //System.out.println("INIT" + astVar.getInitializer().get() );
+                //System.out.println(this.init.pattern);
+                all = this.init.decomposeTo(astVar.getInitializer().get(), all );
+                if( all == null ){
                     return null;
-                }                
+                }                             
             }
-            Tokens matchedName = 
-                this.varPattern.deconstruct( astVar.getType()+ " " +astVar.toString(Ast.PRINT_NO_ANNOTATIONS_OR_COMMENTS) );
-            if( matchedName != null ){
-                all.putAll(matchedName);
-                return new Select( astVar, $args.of(all));
-            }
+            all = this.name.decomposeTo(astVar.getNameAsString(), all);
+            all = this.type.decomposeTo(_typeRef.of(astVar.getType()), all);
+            
+            if( all != null ){
+                return new Select(astVar, $args.of(all));
+            }            
         }
         return null;                
     }
     
     @Override
     public String toString() {
-        return "($var) : \"" + this.varPattern + "\"";
+        if( this.init.isMatchAny()){
+            return "($var) : \"" + this.type + " "+this.name+ ";\"";
+        }
+        return "($var) : \"" + this.type + " "+this.name+ " = "+this.init+";\"";
     }
 
     @Override
-    public VariableDeclarator construct(Translator translator, Map<String, Object> keyValues) {        
-        return Ast.variable(varPattern.construct(translator, keyValues));
+    public VariableDeclarator construct(Translator translator, Map<String, Object> keyValues) {
+        Tokens base = new Tokens();
+        base.put("init", "");
+        base.putAll(keyValues);
+        
+        String in = init.compose(translator, base);
+        if( in != null ){
+            return Ast.variable(this.type.construct(translator, base)+ " "+ this.name.compose(translator, base)+" = "+in+";");
+        }        
+        return Ast.variable(this.type.construct(translator, base)+ " "+ this.name.compose(translator, base)+";");
+            //varPattern.construct(translator, keyValues));
     }
    
     @Override
@@ -747,20 +772,51 @@ public class $var
     }
 
     @Override
+    public $var $(String target, String $Name) {
+        this.name.$(target, $Name);
+        this.type.$(target, $Name);
+        this.init.$(target, $Name);
+        return this;
+    }
+    
+    @Override
     public VariableDeclarator fill(Translator translator, Object... values) {
+        List<String> vars = this.type.list$Normalized();
+        vars.addAll(this.name.list$Normalized());
+        vars =  vars.stream().distinct().collect(Collectors.toList());
         
+        List<String> allVars = new ArrayList<String>();
+        allVars.addAll( vars );
+        allVars.addAll( this.init.list$Normalized() );
+        allVars = allVars.stream().distinct().collect(Collectors.toList());
+        
+        if( values.length == allVars.size() ){
+            Map<String,Object> toCompose = new HashMap<>();
+            for(int i=0;i<vars.size();i++){
+                toCompose.put(allVars.get(i), values[i]);
+            }
+            return construct(translator, toCompose);
+        }
+        if( values.length == vars.size() ){ //no init
+            Map<String,Object> toCompose = new HashMap<>();
+            for(int i=0;i<vars.size();i++){
+                toCompose.put(allVars.get(i), values[i]);
+            }
+            return Ast.variable( type.construct(translator, toCompose) + " "+ name.compose(translator, toCompose) );
+        }
+        throw new DraftException("Expected fill fields of size ("+allVars.size()+") or ("+vars.size()+") got ("+values.length+")");
+        /*
+        if( values.length > vars.size() ){
+            //they must want an init
+            List<String> initVars = this.init.list$Normalized();
+            
+        }
         if( this.initPattern != null ){
             Stencil combined = Stencil.of(varPattern, Stencil.of(" = "), initPattern );
             return Ast.variable(combined.fill(translator, values));
         }
         return Ast.variable(varPattern.fill(translator, values));
-    }
-
-    @Override
-    public $var $(String target, String $Name) {
-        this.varPattern = this.varPattern.$(target, $Name);
-        this.initPattern = this.initPattern.$(target, $Name);
-        return this;
+        */
     }
 
     /**
@@ -804,27 +860,28 @@ public class $var
      * @return 
      */
     public $var hardcode$( Translator translator, Tokens kvs ) {
-        this.varPattern = this.varPattern.hardcode$(translator,kvs);
-        if( this.initPattern != null ){
-            this.initPattern = this.initPattern.hardcode$(translator,kvs);
-        }
+        this.name = this.name.hardcode$(translator, kvs);
+        this.type = this.type.hardcode$(translator, kvs);
+        this.init = this.init.hardcode$(translator, kvs);        
         return this;
     }
 
     @Override
     public List<String> list$() {
-        if( this.initPattern == null){
-            return this.varPattern.list$();
-        }
-        return Stencil.of(varPattern, initPattern).list$();
+        //List<String> $names = new ArrayList<>();
+        List<String> $names = this.type.list$();
+        $names.addAll( this.name.list$());
+        $names.addAll( this.init.list$());
+        return $names;        
     }
 
     @Override
     public List<String> list$Normalized() {
-        if( this.initPattern == null){
-            return this.varPattern.list$Normalized();
-        }
-        return Stencil.of(varPattern, initPattern).list$Normalized();        
+        List<String> $names = this.type.list$Normalized();
+        $names.addAll( this.name.list$Normalized());
+        $names.addAll( this.init.list$Normalized());
+        
+        return $names.stream().distinct().collect(Collectors.toList());        
     }
  
     /**
