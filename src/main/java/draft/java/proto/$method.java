@@ -490,7 +490,7 @@ public class $method
     private $method( _method _m , Predicate<_method> constraint){
         
         if( _m.hasJavadoc() ){
-            javadoc.stencil(_m.getJavadoc().toString() );
+            javadoc.pattern(_m.getJavadoc().toString() );
         }        
         if( _m.hasAnnos() ){
             annos = $annos.of(_m.getAnnos() );
@@ -591,12 +591,12 @@ public class $method
     }
     
     public $method $type(){
-        this.type.stencil("$type$");
+        this.type.pattern("$type$");
         return this;
     }
     
     public $method $typeParameters(){
-        this.typeParameters.stencil("$typeParameters$");
+        this.typeParameters.pattern("$typeParameters$");
         return this;
     }
 
@@ -606,12 +606,12 @@ public class $method
     }    
     
     public $method $javadoc(){
-        this.javadoc.stencil("$javadoc$");
+        this.javadoc.pattern("$javadoc$");
         return this;
     }
     
     public $method $javadoc( String... form ){
-        this.javadoc.stencil(form);
+        this.javadoc.pattern(form);
         return this;
     }
     

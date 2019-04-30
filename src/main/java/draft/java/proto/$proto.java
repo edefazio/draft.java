@@ -22,10 +22,56 @@ import java.util.function.Predicate;
  */
 public interface $proto<Q> {
 
+    /**
+     * 
+     * @param clazz
+     * @return 
+     */
+    default Q firstIn(Class clazz){
+        return firstIn( _type.of(clazz) );
+    }
     
+    /**
+     * Find the first instance matching the prototype instance within the node
+     * @param _n the "top" draft node
+     * @return  the first matching instance or null if none is found
+     */
     Q firstIn(_node _n);
     
+    /**
+     * 
+     * @param astRootNode
+     * @return the first matching instance or null
+     */
     Q firstIn(Node astRootNode);
+    
+    /**
+     * 
+     * @param <S>
+     * @param clazz
+     * @return 
+     */
+    default <S extends selected> S selectFirstIn( Class clazz ){
+        return selectFirstIn(_type.of(clazz));
+    }
+    
+    /**
+     * 
+     * @param <S>
+     * @param _n
+     * @return 
+     */
+    default <S extends selected> S selectFirstIn( _node _n ){
+        return selectFirstIn( _n.ast() );    
+    }
+    
+    /**
+     * Selects the first instance
+     * @param <S>
+     * @param n
+     * @return 
+     */
+    <S extends selected> S selectFirstIn( Node n );
     
     /**
      * Find and return a List of all matching node types within _n
@@ -426,6 +472,9 @@ public interface $proto<Q> {
     }
 
     /**
+     * Specifies an "optional" component
+     * (i.e. a component (like an initializer for a field) 
+     * or the lack of an initializer for a field
      * Additive constraints?
      * 
      * @param <T> 
@@ -440,7 +489,9 @@ public interface $proto<Q> {
             return new $component( node.toString(Ast.PRINT_NO_ANNOTATIONS_OR_COMMENTS));
         }
         
+        /** The pattern representation of the component */
         public Stencil pattern;
+        
         public Predicate<T> constraint = t -> true;
         
         /**
@@ -471,26 +522,26 @@ public interface $proto<Q> {
             return this;
         }
         
-        public $component stencil(_model _javaModel ){
+        public $component pattern(_model _javaModel ){
             
             if( _javaModel != null ){
-                return stencil( Stencil.of( _javaModel.toString() ) );
+                return pattern( Stencil.of( _javaModel.toString() ) );
             }
             return this;
         }
         
-        public $component stencil(_node _javaModel ){            
+        public $component pattern(_node _javaModel ){            
             if( _javaModel != null ){
-                return stencil( Stencil.of( _javaModel.toString(Ast.PRINT_NO_COMMENTS) ) );
+                return pattern( Stencil.of( _javaModel.toString(Ast.PRINT_NO_COMMENTS) ) );
             }
             return this;
         }
         
-        public $component stencil( String... pattern ){
-            return stencil(Stencil.of(Text.combine(pattern) ) );
+        public $component pattern( String... pattern ){
+            return pattern(Stencil.of(Text.combine(pattern) ) );
         }
         
-        public $component stencil(  Stencil pattern ){
+        public $component pattern(  Stencil pattern ){
             this.pattern = pattern;
             return this;
         } 

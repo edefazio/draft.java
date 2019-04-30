@@ -45,6 +45,7 @@ public final class _typeRef<T extends Type>
     public Type ast() {
         return astType;
     }
+    
     /**
      * Unknown type is used for lambdas where the type may not be directly defined
      * <PRE>

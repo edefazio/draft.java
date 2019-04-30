@@ -35,6 +35,16 @@ public class $anno
     
     /**
      * 
+     * @param clazz
+     * @param constraint
+     * @return 
+     */
+    public static final _anno first( Class clazz, Predicate<_anno> constraint ){
+       return any().constraint(constraint).firstIn(clazz);
+    }
+    
+    /**
+     * 
      * @param <N>
      * @param _n
      * @param pattern
@@ -42,6 +52,17 @@ public class $anno
      */
     public static final <N extends _node> _anno first( N _n, String pattern ){
         return $anno.of(pattern).firstIn(_n);
+    }
+    
+    /**
+     * 
+     * @param <N>
+     * @param _n
+     * @param constraint
+     * @return 
+     */
+    public static final <N extends _node> _anno first( N _n, Predicate<_anno> constraint ){
+        return any().constraint(constraint).firstIn(_n);
     }
     
     /**
@@ -109,7 +130,7 @@ public class $anno
      * @param selectConstraint
      * @return 
      */
-    public static final <N extends _node> Select selectFirst( N _n, String pattern, Predicate<$anno.Select>selectConstraint){
+    public static final <N extends _node> Select selectFirst( N _n, String pattern, Predicate<Select>selectConstraint){
         return $anno.of(pattern).selectFirstIn(_n, selectConstraint);
     }
     
@@ -133,6 +154,8 @@ public class $anno
     public static final Select selectFirst( Class clazz, String pattern, Predicate<Select>selectConstraint){
         return $anno.of(pattern).selectFirstIn(_type.of(clazz), selectConstraint);
     }
+    
+   
     
     /**
      * lists all annos within the clazz
@@ -1090,7 +1113,7 @@ public class $anno
      * @return 
      */
     public Select selectFirstIn( _node _n) {
-        return selectFirstIn( _n.ast() );        
+        return $anno.this.selectFirstIn( _n.ast() );        
     }
     
     /**
@@ -1098,8 +1121,8 @@ public class $anno
      * @param clazz
      * @return 
      */
-    public Select seelctFirstIn( Class clazz){
-        return selectFirstIn( _type.of(clazz));
+    public Select selectFirstIn( Class clazz){
+        return $anno.this.selectFirstIn( _type.of(clazz));
     } 
     
     /**
@@ -1132,7 +1155,7 @@ public class $anno
      * @return 
      */
     public Select selectFirstIn(_node _n, Predicate<Select>selectConstraint) {
-        return selectFirstIn( _n.ast(), selectConstraint);        
+        return $anno.this.selectFirstIn( _n.ast(), selectConstraint);        
     }
     
     @Override

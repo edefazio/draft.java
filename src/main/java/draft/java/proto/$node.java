@@ -3,13 +3,11 @@ package draft.java.proto;
 import com.github.javaparser.ast.Node;
 import com.github.javaparser.ast.expr.Name;
 import com.github.javaparser.ast.expr.SimpleName;
-import com.github.javaparser.ast.nodeTypes.NodeWithAnnotations;
 import com.github.javaparser.ast.type.ClassOrInterfaceType;
 import draft.Stencil;
 import draft.Text;
 import draft.Tokens;
 import draft.java.Ast;
-import draft.java._anno;
 import draft.java._model._node;
 import draft.java._type;
 import java.util.ArrayList;
@@ -20,7 +18,13 @@ import java.util.function.Consumer;
 import java.util.function.Predicate;
 
 /**
- * Any Ast Node that can be matched, extracted
+ * Any Ast Node that can be matched, extracted, Selected, Removed, Replaced
+ * 
+ * usually a simple String pattern (or Node-based lambda) will suffice 
+ * 
+ * sometimes we need this because the "type" of the thing that we are looking for 
+ * is not always important
+ * 
  * @author Eric
  */
 public class $node implements $proto<Node> {
@@ -308,6 +312,24 @@ public class $node implements $proto<Node> {
         }
         return null;
     }    
+    
+    /**
+     * Selects the first instance
+     * @param astNode
+     * @return 
+     */
+    @Override
+    public Select selectFirstIn( Node astNode ){
+        Optional<Node> f = 
+                
+            astNode.findFirst( Node.class, 
+                n -> select(n) != null );         
+        
+        if( f.isPresent()){
+            return select(f.get());
+        }
+        return null;
+    }
     
     @Override
     public Node firstIn( _node _n ){
@@ -676,7 +698,7 @@ public class $node implements $proto<Node> {
         
         @Override
         public String toString(){
-            return "$node.Selected{"+ System.lineSeparator()+
+            return "$node.Select{"+ System.lineSeparator()+
                 Text.indent( node.toString() )+ System.lineSeparator()+
                 Text.indent("$args : " + args) + System.lineSeparator()+
                 "}";

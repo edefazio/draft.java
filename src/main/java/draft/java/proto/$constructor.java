@@ -524,7 +524,7 @@ public class $constructor
     private $constructor( _constructor _ct, Predicate<_constructor> constraint){
         
         if( _ct.hasJavadoc() ){
-            javadoc.stencil(_ct.getJavadoc().toString() );
+            javadoc.pattern(_ct.getJavadoc().toString() );
         }        
         if( _ct.hasAnnos() ){
             annos = $annos.of(_ct.getAnnos() );
@@ -625,7 +625,7 @@ public class $constructor
     
     
     public $constructor $typeParameters(){
-        this.typeParameters.stencil("$typeParameters$");
+        this.typeParameters.pattern("$typeParameters$");
         return this;
     }
 
@@ -636,12 +636,12 @@ public class $constructor
     }    
     
     public $constructor $javadoc(){
-        this.javadoc.stencil("$javadoc$");
+        this.javadoc.pattern("$javadoc$");
         return this;
     }
     
     public $constructor $javadoc( String... form ){
-        this.javadoc.stencil(form);
+        this.javadoc.pattern(form);
         return this;
     }
     

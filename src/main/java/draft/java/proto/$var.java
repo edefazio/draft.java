@@ -760,7 +760,7 @@ public class $var
     */
     
     public $var init( Expression initExprProto ){
-        init.stencil( initExprProto.toString(NO_COMMENTS) );
+        init.pattern( initExprProto.toString(NO_COMMENTS) );
         return this;
     }
     

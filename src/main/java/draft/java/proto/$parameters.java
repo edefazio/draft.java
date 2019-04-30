@@ -97,6 +97,10 @@ public class $parameters implements Template<_parameters>, $proto<_parameters> {
         return select(_ps) != null;
     }
     
+    public Select select(NodeWithParameters astNodeWithParams ){
+        return select( _parameters.of(astNodeWithParams) );
+    }
+    
     public Select select( String... parameters ){
         return select(_parameters.of( parameters));
     }
@@ -202,6 +206,21 @@ public class $parameters implements Template<_parameters>, $proto<_parameters> {
     @Override
     public _parameters firstIn( _node _n ){
         return firstIn( _n.ast() );
+    }
+    
+    
+    @Override
+    public Select selectFirstIn( Node astNode ){
+        Optional<Node> f =                 
+            astNode.findFirst( Node.class, 
+                n -> (n instanceof NodeWithParameters) 
+                && matches((NodeWithParameters)n) 
+            );         
+        
+        if( f.isPresent()){
+            return select( (NodeWithParameters)f.get());
+        }
+        return null;
     }
     
     @Override

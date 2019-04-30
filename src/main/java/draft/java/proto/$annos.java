@@ -219,6 +219,30 @@ public class $annos
         return null;
     }    
     
+    /**
+     * 
+     * @param astNode
+     * @return 
+     */
+    public Select selectFirstIn( Node astNode ){
+        Optional<Node> f = 
+                
+            astNode.findFirst( Node.class, 
+                    n -> (n instanceof NodeWithAnnotations) 
+                    && matches((NodeWithAnnotations)n) 
+            );         
+        
+        if( f.isPresent()){
+            return select( (NodeWithAnnotations)f.get());
+        }
+        return null;
+    }
+    
+    @Override
+    public Select selectFirstIn( _node _n ){
+        return selectFirstIn( _n.ast() );
+    }
+    
     @Override
     public _annos firstIn( _node _n ){
         return firstIn( _n.ast() );

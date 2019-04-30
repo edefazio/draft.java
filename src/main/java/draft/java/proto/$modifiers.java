@@ -133,8 +133,8 @@ public class $modifiers
     public _modifiers firstIn( Node astNode ){
         Optional<Node> f =                 
             astNode.findFirst( Node.class, 
-                    n -> (n instanceof NodeWithModifiers) 
-                    && select((NodeWithModifiers)n) != null 
+                n -> (n instanceof NodeWithModifiers) 
+                && select((NodeWithModifiers)n) != null 
             );         
         
         if( f.isPresent()){
@@ -142,6 +142,34 @@ public class $modifiers
         }
         return null;
     }    
+    
+    /**
+     * Selects the first instance
+     * @param astNode
+     * @return 
+     */
+    public Select selectFirstIn( Node astNode ){
+        Optional<Node> f =                 
+            astNode.findFirst( Node.class, 
+                n -> (n instanceof NodeWithModifiers) 
+                && select((NodeWithModifiers)n) != null 
+            );         
+        
+        if( f.isPresent()){
+            return select( (NodeWithModifiers)f.get());
+        }
+        return null;
+    }
+    
+    /**
+     * 
+     * @param _n
+     * @return 
+     */
+    @Override
+    public Select selectFirstIn( _node _n ){
+        return selectFirstIn( _n.ast() );
+    }
     
     @Override
     public _modifiers firstIn( _node _n ){
