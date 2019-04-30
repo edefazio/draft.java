@@ -199,6 +199,31 @@ public class $annos
         return null;
     }
     
+    /**
+     * Returns the first Statement that matches the 
+     * @param astNode the 
+     * @return 
+     */
+    @Override
+    public _annos firstIn( Node astNode ){
+        Optional<Node> f = 
+                
+            astNode.findFirst( Node.class, 
+                    n -> (n instanceof NodeWithAnnotations) 
+                    && matches((NodeWithAnnotations)n) 
+            );         
+        
+        if( f.isPresent()){
+            return _annos.of( (NodeWithAnnotations)f.get());
+        }
+        return null;
+    }    
+    
+    @Override
+    public _annos firstIn( _node _n ){
+        return firstIn( _n.ast() );
+    }
+    
     @Override
     public List<_annos> listIn(_model._node _n) {
         List<_annos> found = new ArrayList<>();

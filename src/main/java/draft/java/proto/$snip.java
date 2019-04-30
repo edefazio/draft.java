@@ -4,7 +4,6 @@ import com.github.javaparser.ast.Node;
 import com.github.javaparser.ast.body.MethodDeclaration;
 import com.github.javaparser.ast.expr.LambdaExpr;
 import com.github.javaparser.ast.expr.ObjectCreationExpr;
-import com.github.javaparser.ast.nodeTypes.NodeWithBody;
 import com.github.javaparser.ast.nodeTypes.NodeWithStatements;
 import com.github.javaparser.ast.stmt.*;
 import draft.*;
@@ -23,21 +22,17 @@ import java.util.function.*;
  * it follows the same naming conventions
  */
 public final class $snip implements Template<List<Statement>>, $proto<List<Statement>> {
-
-    public static $snip any(){
-        return new $snip( $stmt.any() );
-    }
-    
+ 
     /**
      * 
      * @param <N>
      * @param _n
-     * @param sourceProto
-     * @param targetProto
+     * @param sourcePattern
+     * @param targetPattern
      * @return 
      */
-    public static final <N extends _node> N replace( N _n, String[] sourceProto, String[] targetProto){
-        $snip.of(sourceProto).replaceIn(_n, $snip.of(targetProto));
+    public static final <N extends _node> N replace( N _n, String[] sourcePattern, String[] targetPattern){
+        $snip.of(sourcePattern).replaceIn(_n, $snip.of(targetPattern));
         return _n;
     } 
     
@@ -90,6 +85,17 @@ public final class $snip implements Template<List<Statement>>, $proto<List<State
         $snip.of(proto).removeIn(_n);
         return _n;
     }
+
+    /**
+     * 
+     * @param <N>
+     * @param _n
+     * @param proto
+     * @return 
+     */
+    public static final List<Statement> first( Class clazz, String... proto){
+        return $snip.of(proto).firstIn(clazz);
+    }
     
     /**
      * 
@@ -126,12 +132,22 @@ public final class $snip implements Template<List<Statement>>, $proto<List<State
     
     /**
      * 
+     * @param clazz
+     * @param proto
+     * @return 
+     */
+    public static final List<Select> listSelected( Class clazz, String... proto){
+        return listSelected(_type.of(clazz), proto);
+    }
+    
+    /**
+     * 
      * @param <N>
      * @param _n
      * @param proto
      * @return 
      */
-    public static final <N extends _node> List<Select> selectList( N _n, String... proto){
+    public static final <N extends _node> List<Select> listSelected( N _n, String... proto){
         return $snip.of(proto).listSelectedIn(_n);
     }
         
@@ -223,6 +239,10 @@ public final class $snip implements Template<List<Statement>>, $proto<List<State
         return $s;
     }
 
+    public static $snip any(){
+        return new $snip( $stmt.any() );
+    }
+     
     /**
      * 
      * @param protoSnippet
@@ -464,6 +484,15 @@ public final class $snip implements Template<List<Statement>>, $proto<List<State
     }
 
     /**
+     * 
+     * @param clazz
+     * @return 
+     */
+    public List<Statement> firstIn(Class clazz){
+        return firstIn(_type.of(clazz));
+    }
+    
+    /**
      * Returns the first List<Statement>  that matches the pattern and constraint
      * @param _n the _java node
      * @return  the first List<Statement>  that matches (or null if none found)
@@ -485,6 +514,8 @@ public final class $snip implements Template<List<Statement>>, $proto<List<State
         return ss.get(0);        
     }
     
+  
+    
     @Override
     public List<List<Statement>> listIn(Node astNode ){
         List<List<Statement>>sts = new ArrayList<>();
@@ -497,6 +528,9 @@ public final class $snip implements Template<List<Statement>>, $proto<List<State
         return sts;
     }
     
+    public Select selectFirstIn( Class clazz){
+        return selectFirstIn(_type.of(clazz));
+    }
     /**
      * 
      * @param _n
@@ -522,6 +556,15 @@ public final class $snip implements Template<List<Statement>>, $proto<List<State
         return null;
     }
 
+    /**
+     * 
+     * @param clazz
+     * @return 
+     */
+    public List<List<Statement>> listIn(Class clazz){
+        return listIn(_type.of(clazz));
+    }
+    
     @Override
     public List<List<Statement>> listIn(_node _n ){
         List<List<Statement>>sts = new ArrayList<>();
@@ -534,6 +577,17 @@ public final class $snip implements Template<List<Statement>>, $proto<List<State
         return sts;
     }
 
+    /**
+     * 
+     * @param clazz
+     * @param statementsConsumer
+     * @return 
+     */
+    @Override
+    public _type forEachIn( Class clazz, Consumer<List<Statement>> statementsConsumer ){
+        return forEachIn(_type.of(clazz), statementsConsumer);
+    }
+    
     @Override
     public <N extends _node> N forEachIn(N _n, Consumer<List<Statement>> statementsConsumer ){
         Walk.in(_n, this.$sts.get(0).statementClass, st -> {
@@ -556,6 +610,16 @@ public final class $snip implements Template<List<Statement>>, $proto<List<State
         return astNode;
     }
 
+    /**
+     * 
+     * @param clazz
+     * @return 
+     */
+    @Override
+    public List<Select> listSelectedIn(Class clazz){
+        return listSelectedIn(_type.of(clazz));
+    }
+    
     @Override
     public List<Select> listSelectedIn(_node _n ){
         List<Select>sts = new ArrayList<>();
@@ -594,6 +658,16 @@ public final class $snip implements Template<List<Statement>>, $proto<List<State
 
     /**
      * 
+     * @param clazz
+     * @param $repl
+     * @return 
+     */
+    public _type replaceIn( Class clazz, $stmt $repl ){
+        return replaceIn(_type.of(clazz), $repl);
+    }
+    
+    /**
+     * 
      * @param <N>
      * @param astNode
      * @param $repl
@@ -604,6 +678,16 @@ public final class $snip implements Template<List<Statement>>, $proto<List<State
         return $snip.this.replaceIn(astNode, $sn);
     }
 
+    /**
+     * 
+     * @param clazz
+     * @param $repl
+     * @return 
+     */
+    public _type replaceIn( Class clazz, $snip $repl ){
+        return replaceIn(_type.of(clazz), $repl);
+    }
+    
     /**
      * 
      * @param <N>
@@ -721,6 +805,16 @@ public final class $snip implements Template<List<Statement>>, $proto<List<State
         return _n;
     }
 
+    /**
+     * 
+     * @param clazz
+     * @param selectedAction
+     * @return 
+     */
+    public _type forSelectedIn( Class clazz, Consumer<Select>selectedAction ){
+        return forSelectedIn(_type.of(clazz), selectedAction ); 
+    }
+    
     /**
      * 
      * @param <N>

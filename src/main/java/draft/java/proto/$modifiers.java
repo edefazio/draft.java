@@ -124,6 +124,30 @@ public class $modifiers
         return _ms;
     }
     
+     /**
+     * Returns the first Statement that matches the 
+     * @param astNode the 
+     * @return 
+     */
+    @Override
+    public _modifiers firstIn( Node astNode ){
+        Optional<Node> f =                 
+            astNode.findFirst( Node.class, 
+                    n -> (n instanceof NodeWithModifiers) 
+                    && select((NodeWithModifiers)n) != null 
+            );         
+        
+        if( f.isPresent()){
+            return _modifiers.of( (NodeWithModifiers)f.get());
+        }
+        return null;
+    }    
+    
+    @Override
+    public _modifiers firstIn( _node _n ){
+        return firstIn( _n.ast() );
+    }
+    
     @Override
     public List<_modifiers> listIn(_node _n) {
         List<_modifiers> found = new ArrayList<>();

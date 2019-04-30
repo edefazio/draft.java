@@ -2493,6 +2493,15 @@ public final class $expr <T extends Expression>
         return sts;
     }
     
+    /**
+     * 
+     * @param clazz
+     * @param selectConstraint
+     * @return 
+     */
+    public List<Select<T>> listSelectedIn(Class clazz, Predicate<Select<T>> selectConstraint ){
+        return listSelectedIn(_type.of(clazz), selectConstraint);
+    }
     
     /**
      * 
@@ -2500,7 +2509,7 @@ public final class $expr <T extends Expression>
      * @param selectConstraint
      * @return 
      */
-    public List<Select<T>> selectListIn(Node astNode , Predicate<Select<T>> selectConstraint){
+    public List<Select<T>> listSelectedIn(Node astNode , Predicate<Select<T>> selectConstraint){
         List<Select<T>>sts = new ArrayList<>();
         astNode.walk(this.expressionClass, e-> {
             Select s = select( e );
@@ -2517,7 +2526,7 @@ public final class $expr <T extends Expression>
      * @param selectConstraint
      * @return 
      */
-    public List<Select<T>> selectListIn(_node _n, Predicate<Select<T>> selectConstraint){
+    public List<Select<T>> listSelectedIn(_node _n, Predicate<Select<T>> selectConstraint){
         List<Select<T>>sts = new ArrayList<>();
         Walk.in(_n, this.expressionClass, e -> {
             Select s = select( e );

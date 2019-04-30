@@ -23,6 +23,10 @@ import java.util.function.Predicate;
 public interface $proto<Q> {
 
     
+    Q firstIn(_node _n);
+    
+    Q firstIn(Node astRootNode);
+    
     /**
      * Find and return a List of all matching node types within _n
      *

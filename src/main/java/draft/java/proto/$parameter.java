@@ -18,6 +18,16 @@ import java.util.stream.Collectors;
  */
 public class $parameter implements Template<_parameter>, $proto<_parameter> {
 
+    /**
+     * 
+     * @param clazz
+     * @param pattern
+     * @param parameterActionFn
+     * @return 
+     */
+    public static _type forEach(Class clazz, String pattern, Consumer<_parameter> parameterActionFn ){
+        return forEach(_type.of(clazz), pattern, parameterActionFn);
+    }
     
     /**
      * 
@@ -45,6 +55,17 @@ public class $parameter implements Template<_parameter>, $proto<_parameter> {
 
     /**
      * 
+     * @param clazz
+     * @param pattern
+     * @param selectActionFn
+     * @return 
+     */
+    public static _type forSelected(Class clazz, String pattern, Consumer<Select> selectActionFn ){
+        return forSelected(_type.of(clazz), pattern, selectActionFn);
+    }
+    
+    /**
+     * 
      * @param <N>
      * @param _n
      * @param pattern
@@ -67,6 +88,18 @@ public class $parameter implements Template<_parameter>, $proto<_parameter> {
         return $parameter.of(pattern).forSelectedIn(_n, selectActionFn);        
     } 
 
+    /**
+     * 
+     * @param clazz
+     * @param pattern
+     * @param selectConstraint
+     * @param selectActionFn
+     * @return 
+     */
+    public static _type forSelected(Class clazz, String pattern, Predicate<Select> selectConstraint, Consumer<Select> selectActionFn ){
+        return forSelected(_type.of(clazz), pattern,selectConstraint, selectActionFn);
+    }
+    
     /**
      * 
      * @param <N>
@@ -92,6 +125,35 @@ public class $parameter implements Template<_parameter>, $proto<_parameter> {
     public static <N extends Node> N forSelected(N _n, String pattern, Predicate<Select> selectConstraint, Consumer<Select> selectActionFn ){
         return $parameter.of(pattern).forSelectedIn(_n, selectConstraint, selectActionFn);        
     } 
+    
+    /**
+     * 
+     * @param clazz
+     * @return 
+     */
+    public static List<_parameter> list(Class clazz){
+        return any().listIn(clazz);
+    }
+    
+    /**
+     * 
+     * @param <N>
+     * @param _n
+     * @return 
+     */
+    public static <N extends _node> List<_parameter> list(N _n){
+        return any().listIn(_n);
+    }
+    
+    /**
+     * 
+     * @param clazz
+     * @param pattern
+     * @return 
+     */
+    public static List<_parameter> list(Class clazz, String pattern ){
+        return list(_type.of(clazz), pattern);
+    }
     
     /**
      * 
@@ -170,7 +232,7 @@ public class $parameter implements Template<_parameter>, $proto<_parameter> {
      * @return 
      */
     public static <N extends _node> List<Select> listSelected(N _n, String pattern, Predicate<Select> selectConstraint){
-        return $parameter.of(pattern).selectListIn( _n, selectConstraint);        
+        return $parameter.of(pattern).listSelectedIn( _n, selectConstraint);        
     }
 
     /**
@@ -182,7 +244,7 @@ public class $parameter implements Template<_parameter>, $proto<_parameter> {
      * @return 
      */
     public static <N extends Node> List<Select> listSelected(N _n, String pattern, Predicate<Select> selectConstraint){
-        return $parameter.of(pattern).selectListIn(_n, selectConstraint );        
+        return $parameter.of(pattern).listSelectedIn(_n, selectConstraint );        
     }
     
     /** a constraint to be applied for matching*/
@@ -468,6 +530,15 @@ public class $parameter implements Template<_parameter>, $proto<_parameter> {
         return found;
     }
 
+    /**
+     * 
+     * @param clazz
+     * @return 
+     */
+    public List<Select>listSelectedIn( Class clazz){
+        return listSelectedIn(_type.of(clazz));
+    }
+    
     @Override
     public List<Select> listSelectedIn(Node astRootNode) {
         List<Select> found = new ArrayList<>();
@@ -491,8 +562,24 @@ public class $parameter implements Template<_parameter>, $proto<_parameter> {
         });
         return found;
     }
-        
-    public List<Select> selectListIn(Node astRootNode, Predicate<Select> selectConstraint) {
+    
+    /**
+     * 
+     * @param clazz
+     * @param selectConstraint
+     * @return 
+     */
+    public List<Select> listSelectedIn(Class clazz, Predicate<Select> selectConstraint) {
+        return listSelectedIn(_type.of(clazz), selectConstraint);
+    }
+    
+    /**
+     * 
+     * @param astRootNode
+     * @param selectConstraint
+     * @return 
+     */
+    public List<Select> listSelectedIn(Node astRootNode, Predicate<Select> selectConstraint) {
         List<Select> found = new ArrayList<>();
         astRootNode.walk(Parameter.class, p-> {
             Select sel = select(p);
@@ -503,7 +590,13 @@ public class $parameter implements Template<_parameter>, $proto<_parameter> {
         return found;
     }
 
-    public List<Select> selectListIn(_node _n, Predicate<Select> selectConstraint) {
+    /**
+     * 
+     * @param _n
+     * @param selectConstraint
+     * @return 
+     */
+    public List<Select> listSelectedIn(_node _n, Predicate<Select> selectConstraint) {
         List<Select> found = new ArrayList<>();
         Walk.in(_n, _parameter.class, p-> {
             Select sel = select(p);
@@ -512,6 +605,16 @@ public class $parameter implements Template<_parameter>, $proto<_parameter> {
             }
         });
         return found;
+    }
+    
+    /**
+     * 
+     * @param clazz
+     * @return 
+     */
+    @Override
+    public _type removeIn(Class clazz){
+        return removeIn(_type.of(clazz));
     }
     
     @Override
@@ -528,6 +631,7 @@ public class $parameter implements Template<_parameter>, $proto<_parameter> {
         });
     }
 
+    
     @Override
     public <N extends Node> N forEachIn(N astRootNode, Consumer<_parameter> _parameterActionFn) {        
         astRootNode.walk(Parameter.class, p-> {
@@ -545,6 +649,16 @@ public class $parameter implements Template<_parameter>, $proto<_parameter> {
                 _parameterActionFn.accept(p);
             }
         });
+    }
+    
+    /**
+     * 
+     * @param clazz
+     * @param selectActionFn
+     * @return 
+     */
+    public _type forSelectedIn(Class clazz, Consumer<Select> selectActionFn) {
+        return forSelectedIn(_type.of(clazz), selectActionFn);
     }
     
     /**
@@ -578,6 +692,17 @@ public class $parameter implements Template<_parameter>, $proto<_parameter> {
                 selectActionFn.accept(sel);
             }
         });
+    }
+    
+    /**
+     * 
+     * @param clazz
+     * @param selectConstraint
+     * @param selectActionFn
+     * @return 
+     */
+    public _type forSelectedIn(Class clazz, Predicate<Select> selectConstraint, Consumer<Select> selectActionFn) {
+        return forSelectedIn(_type.of(clazz), selectConstraint, selectActionFn);
     }
     
     /**
@@ -777,6 +902,19 @@ public class $parameter implements Template<_parameter>, $proto<_parameter> {
         
         public boolean isNamed(String name){
             return _param.isNamed(name);
+        }
+        
+        /**
+         * <PRE>
+         * Unknown type is used for Lambda expressions, where you can define it like:
+         * (u) -> System.out.println(u);
+         * 
+         * </PRE>
+         * 
+         * @return 
+         */
+        public boolean isUnknownType(){
+            return this._param.getType().isUnknownType();
         }
         
         @Override

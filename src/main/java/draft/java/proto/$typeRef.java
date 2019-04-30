@@ -935,6 +935,19 @@ public final class $typeRef
             return this.type.isArray();
         }
         
+        /**
+         * Unknown Type is used in lambda like:
+         * <PRE>
+         * (o)-> System.out.println(o);
+         * 
+         * ...where o is a parameter with unspecified type
+         * </PRE>
+         * @return 
+         */
+        public boolean isUnknownType(){
+            return this.type.isUnknownType();
+        }
+        
         public boolean isPrimitive(){            
             return this.type.isPrimitive();
         }

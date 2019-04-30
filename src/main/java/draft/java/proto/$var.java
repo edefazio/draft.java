@@ -9,7 +9,7 @@ import com.github.javaparser.printer.PrettyPrinterConfiguration;
 import draft.*;
 import draft.java.*;
 import draft.java._model._node;
-import static draft.java.proto.$var.NO_COMMENTS;
+//import static draft.java.proto.$var.NO_COMMENTS;
 
 import java.util.*;
 import java.util.function.Consumer;
@@ -34,6 +34,16 @@ public class $var
     implements Template<VariableDeclarator>, $proto<VariableDeclarator> {
     
     /**
+     * list all variables in the clazz
+     * 
+     * @param clazz
+     * @return 
+     */
+    public static final List<VariableDeclarator> list(Class clazz){
+       return any().listIn(clazz);
+    }
+    
+    /**
      * List ALL variables within the Node
      * @param <N>
      * @param _n
@@ -41,17 +51,7 @@ public class $var
      */
     public static final <N extends _node> List<VariableDeclarator> list( N _n ){
         return any().listIn(_n);
-    }
-    
-    /**
-     * List ALL variables within the clazz
-     * @param <N>
-     * @param clazz
-     * @return 
-     */
-    public static final <N extends _node> List<VariableDeclarator> list( Class clazz ){
-        return any().listIn( _type.of(clazz) );
-    }
+    }    
     
     /**
      * List ALL variables that pass the predicate within the Node
@@ -130,6 +130,28 @@ public class $var
      */
     public static final <N extends _node> List<VariableDeclarator> list( N _n, VariableDeclarator proto ){
         return of(proto).listIn(_n);
+    }
+    
+    /**
+     * 
+     * @param <N>
+     * @param clazz
+     * @param proto
+     * @return 
+     */
+    public static final <N extends _node> List<VariableDeclarator> list( Class clazz, VariableDeclarator proto ){
+        return of( proto).listIn(clazz);
+    }
+    
+    /**
+     * 
+     * @param clazz
+     * @param proto
+     * @param constraint
+     * @return 
+     */
+    public static final List<VariableDeclarator> list(Class clazz, VariableDeclarator proto, Predicate<VariableDeclarator> constraint){
+        return of(proto, constraint).listIn(clazz);
     }
     
     /**
@@ -218,7 +240,17 @@ public class $var
         of(pattern).forEachIn(astNode, varActionFn);
         return  astNode;
     }
-    
+
+    /**
+     * 
+     * @param clazz
+     * @param proto
+     * @param varActionFn
+     * @return 
+     */
+    public static _type forEach(Class clazz, VariableDeclarator proto, Consumer<VariableDeclarator> varActionFn){
+        return forEach( _type.of(clazz), proto, varActionFn);
+    }    
     /**
      * 
      * @param <N>
@@ -247,14 +279,25 @@ public class $var
         
     /**
      * 
+     * @param clazz
+     * @param pattern
+     * @param selectedActionFn
+     * @return 
+     */
+    public static _type forSelected(Class clazz, String pattern, Consumer<Select> selectedActionFn){
+        return of(pattern).forSelectedIn(clazz, selectedActionFn);
+    }
+    
+    /**
+     * 
      * @param <N>
      * @param _n
      * @param pattern
-     * @param varActionFn
+     * @param selectedActionFn
      * @return 
      */
-    public static <N extends _node> N forSelected(N _n, String pattern, Consumer<Select> varActionFn){
-        of(pattern).forSelectedIn(_n.ast(), varActionFn);
+    public static <N extends _node> N forSelected(N _n, String pattern, Consumer<Select> selectedActionFn){
+        of(pattern).forSelectedIn(_n.ast(), selectedActionFn);
         return _n;
     }
     
@@ -263,38 +306,59 @@ public class $var
      * @param <N>
      * @param astNode
      * @param pattern
-     * @param varActionFn
+     * @param selectedActionFn
      * @return 
      */
-    public static <N extends Node> N forSelected(N astNode, String pattern, Consumer<Select> varActionFn){
-        of(pattern).forSelectedIn(astNode, varActionFn);
+    public static <N extends Node> N forSelected(N astNode, String pattern, Consumer<Select> selectedActionFn){
+        of(pattern).forSelectedIn(astNode, selectedActionFn);
+        return  astNode;
+    }
+    /**
+     * 
+     * @param clazz
+     * @param astProtoVar
+     * @param selectedActionFn
+     * @return 
+     */
+    public static _type forSelected(Class clazz, VariableDeclarator astProtoVar, Consumer<Select> selectedActionFn){
+        return of(astProtoVar).forSelectedIn(clazz, selectedActionFn);
+    }
+    /**
+     * 
+     * @param <N>
+     * @param _n
+     * @param astProtoVar
+     * @param selectedActionFn
+     * @return 
+     */
+    public static <N extends _node> N forSelected(N _n, VariableDeclarator astProtoVar, Consumer<Select> selectedActionFn){
+        of(astProtoVar).forSelectedIn(_n.ast(), selectedActionFn);
+        return _n;
+    }
+    
+    /**
+     * 
+     * @param <N>
+     * @param astNode
+     * @param astProtoVar
+     * @param selectedActionFn
+     * @return 
+     */
+    public static <N extends Node> N forSelected(N astNode, VariableDeclarator astProtoVar, Consumer<Select> selectedActionFn){
+        of(astProtoVar).forSelectedIn(astNode, selectedActionFn);
         return  astNode;
     }
     
     /**
      * 
-     * @param <N>
-     * @param _n
-     * @param proto
-     * @param varActionFn
+     * @param clazz
+     * @param pattern
+     * @param selectConstraint
+     * @param selectedActionFn
      * @return 
      */
-    public static <N extends _node> N forSelected(N _n, VariableDeclarator proto, Consumer<Select> varActionFn){
-        of(proto).forSelectedIn(_n.ast(), varActionFn);
-        return _n;
-    }
-    
-    /**
-     * 
-     * @param <N>
-     * @param astNode
-     * @param proto
-     * @param varActionFn
-     * @return 
-     */
-    public static <N extends Node> N forSelected(N astNode, VariableDeclarator proto, Consumer<Select> varActionFn){
-        of(proto).forSelectedIn(astNode, varActionFn);
-        return  astNode;
+    public static _type forSelected(Class clazz, String pattern, Predicate<Select> selectConstraint, Consumer<Select> selectedActionFn){
+        return forSelected(_type.of(clazz), pattern, selectConstraint, selectedActionFn);
     }
     
     /**
@@ -303,11 +367,11 @@ public class $var
      * @param _n
      * @param pattern
      * @param selectConstraint
-     * @param varActionFn
+     * @param selectActionFn
      * @return 
      */
-    public static <N extends _node> N forSelected(N _n, String pattern, Predicate<Select> selectConstraint, Consumer<Select> varActionFn){
-        of(pattern).forSelectedIn(_n.ast(), varActionFn);
+    public static <N extends _node> N forSelected(N _n, String pattern, Predicate<Select> selectConstraint, Consumer<Select> selectActionFn){
+        of(pattern).forSelectedIn(_n.ast(), selectActionFn);
         return _n;
     }
     
@@ -317,25 +381,37 @@ public class $var
      * @param astNode
      * @param pattern
      * @param selectConstraint
-     * @param varActionFn
+     * @param selectActionFn
      * @return 
      */
-    public static <N extends Node> N forSelected(N astNode, String pattern, Predicate<Select> selectConstraint,Consumer<Select> varActionFn){
-        of(pattern).forSelectedIn(astNode, varActionFn);
+    public static <N extends Node> N forSelected(N astNode, String pattern, Predicate<Select> selectConstraint,Consumer<Select> selectActionFn){
+        of(pattern).forSelectedIn(astNode, selectActionFn);
         return  astNode;
+    }
+    
+    /**
+     * 
+     * @param clazz
+     * @param astProtoVar
+     * @param selectConstraint
+     * @param selectActionFn
+     * @return 
+     */
+    public static _type forSelected(Class clazz, VariableDeclarator astProtoVar, Predicate<Select> selectConstraint, Consumer<Select> selectActionFn){
+        return forSelected(_type.of(clazz), astProtoVar, selectConstraint, selectActionFn);
     }
     
     /**
      * 
      * @param <N>
      * @param _n
-     * @param proto
+     * @param astProtoVar
      * @param selectConstraint
-     * @param varActionFn
+     * @param selectActionFn
      * @return 
      */
-    public static <N extends _node> N forSelected(N _n, VariableDeclarator proto, Predicate<Select> selectConstraint, Consumer<Select> varActionFn){
-        of(proto).forSelectedIn(_n.ast(), selectConstraint, varActionFn);
+    public static <N extends _node> N forSelected(N _n, VariableDeclarator astProtoVar, Predicate<Select> selectConstraint, Consumer<Select> selectActionFn){
+        of(astProtoVar).forSelectedIn(_n.ast(), selectConstraint, selectActionFn);
         return _n;
     }
     
@@ -343,13 +419,13 @@ public class $var
      * 
      * @param <N>
      * @param astNode
-     * @param proto
+     * @param astProtoVar
      * @param selectConstraint
-     * @param varActionFn
+     * @param selectActionFn
      * @return 
      */
-    public static <N extends Node> N forSelected(N astNode, VariableDeclarator proto, Predicate<Select> selectConstraint, Consumer<Select> varActionFn){
-        of(proto).forSelectedIn(astNode, selectConstraint, varActionFn);
+    public static <N extends Node> N forSelected(N astNode, VariableDeclarator astProtoVar, Predicate<Select> selectConstraint, Consumer<Select> selectActionFn){
+        of(astProtoVar).forSelectedIn(astNode, selectConstraint, selectActionFn);
         return  astNode;
     }
    
@@ -387,28 +463,32 @@ public class $var
         return of(pattern, constraint).firstIn(_n);
     }
     
-    /**
-     * 
-     * @param <N>
-     * @param _n
-     * @param proto
-     * @return 
-     */
-    public static final <N extends _node> VariableDeclarator first( N _n, VariableDeclarator proto ){
-        return of(proto).firstIn(_n);
+    public static final VariableDeclarator first(Class clazz, VariableDeclarator astProtoVar ){
+        return of(astProtoVar).firstIn(clazz);
     }
     
     /**
      * 
      * @param <N>
      * @param _n
-     * @param proto
+     * @param astProtoVar
+     * @return 
+     */
+    public static final <N extends _node> VariableDeclarator first( N _n, VariableDeclarator astProtoVar ){
+        return of(astProtoVar).firstIn(_n);
+    }
+    
+    /**
+     * 
+     * @param <N>
+     * @param _n
+     * @param astProtoVar
      * @param constraint
      * @return 
      */
-    public static final <N extends _node> VariableDeclarator first( N _n, VariableDeclarator proto, Predicate<VariableDeclarator> constraint){
-        return of(proto, constraint)
-                .firstIn(_n);
+    public static final <N extends _node> VariableDeclarator first( N _n, VariableDeclarator astProtoVar, Predicate<VariableDeclarator> constraint){
+        return of(astProtoVar, constraint)
+            .firstIn(_n);
     }
     
     /**
@@ -478,7 +558,7 @@ public class $var
      */
     public static final <N extends _node> List<Select> selectList( N _n, String pattern, Predicate<Select> selectConstraint){
         return of(pattern)
-                .selectListIn(_n, selectConstraint);
+                .listSelectedIn(_n, selectConstraint);
     }
     
     /**
@@ -885,6 +965,15 @@ public class $var
     }
  
     /**
+     * 
+     * @param clazz
+     * @return 
+     */
+    public VariableDeclarator firstIn( Class clazz){
+        return firstIn( _type.of(clazz));
+    }
+    
+    /**
      * Returns the first VaribleDeclarator that matches the pattern and constraint
      * @param _n the _java node
      * @return  the first VaribleDeclarator that matches (or null if none found)
@@ -911,6 +1000,15 @@ public class $var
     }
     
     /**
+     * 
+     * @param clazz
+     * @return 
+     */
+    public Select selectFirstIn( Class clazz){
+        return selectFirstIn(_type.of(clazz));
+    }
+    
+    /**
      * Returns the first VaribleDeclarator that matches the pattern and constraint
      * @param _n the _java node
      * @return  the first VaribleDeclarator that matches (or null if none found)
@@ -934,6 +1032,16 @@ public class $var
             return select(f.get());
         }
         return null;
+    }
+    
+    /**
+     * 
+     * @param clazz
+     * @param selectConstraint
+     * @return 
+     */
+    public Select selectFirstIn( Class clazz, Predicate<Select> selectConstraint){
+       return selectFirstIn(_type.of(clazz), selectConstraint); 
     }
     
     /**
@@ -991,8 +1099,9 @@ public class $var
         return varList;
     }
 
-    public List<Select> selectListIn(Class clazz){
-        return listSelectedIn(_type.of(clazz));
+    @Override
+    public List<Select> listSelectedIn(Class clazz){
+        return $var.this.listSelectedIn(_type.of(clazz));
     }
     
     @Override
@@ -1025,8 +1134,8 @@ public class $var
      * @param selectConstraint
      * @return 
      */
-    public List<Select> selectListIn(Class clazz, Predicate<Select> selectConstraint){
-        return selectListIn(_type.of(clazz), selectConstraint);
+    public List<Select> listSelectedIn(Class clazz, Predicate<Select> selectConstraint){
+        return listSelectedIn(_type.of(clazz), selectConstraint);
     }
     
     /**
@@ -1035,7 +1144,7 @@ public class $var
      * @param selectConstraint
      * @return 
      */
-    public List<Select> selectListIn(Node astNode, Predicate<Select> selectConstraint){
+    public List<Select> listSelectedIn(Node astNode, Predicate<Select> selectConstraint){
         List<Select>sts = new ArrayList<>();
         astNode.walk(VariableDeclarator.class, e-> {
             Select s = select( e );
@@ -1052,7 +1161,7 @@ public class $var
      * @param selectConstraint
      * @return 
      */
-    public List<Select> selectListIn(_node _n, Predicate<Select> selectConstraint){
+    public List<Select> listSelectedIn(_node _n, Predicate<Select> selectConstraint){
         List<Select>sts = new ArrayList<>();
         Walk.in(_n, VariableDeclarator.class, e -> {
             Select s = select( e );

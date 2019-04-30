@@ -1674,6 +1674,16 @@ public final class $stmt<T extends Statement>
 
     /**
      * 
+     * @param clazz
+     * @param selectedActionFn
+     * @return 
+     */
+    public _type forSelectedIn(Class clazz, Consumer<Select<T>> selectedActionFn){
+        return forSelectedIn(_type.of(clazz), selectedActionFn);
+    }
+    
+    /**
+     * 
      * @param <N>
      * @param _n
      * @param selectedActionFn
@@ -1709,6 +1719,17 @@ public final class $stmt<T extends Statement>
 
     /**
      * 
+     * @param clazz
+     * @param selectConstraint
+     * @param selectedActionFn
+     * @return 
+     */
+    public _type forSelectedIn(Class clazz, Predicate<Select<T>> selectConstraint, Consumer<Select<T>> selectedActionFn){
+        return forSelectedIn(_type.of(clazz), selectConstraint, selectedActionFn);
+    }
+    
+    /**
+     * 
      * @param <N>
      * @param _n
      * @param selectConstraint
@@ -1730,6 +1751,16 @@ public final class $stmt<T extends Statement>
         new PrettyPrinterConfiguration()
             .setPrintComments(false).setPrintJavadoc(false);
 
+    /**
+     * 
+     * @param clazz
+     * @return 
+     */
+    @Override
+    public List<Select<T>> listSelectedIn(Class clazz){
+        return listSelectedIn(_type.of(clazz));
+    }
+    
     @Override
     public List<Select<T>> listSelectedIn(Node astNode ){
         List<Select<T>>sts = new ArrayList<>();
@@ -1756,7 +1787,23 @@ public final class $stmt<T extends Statement>
         return sts;
     }
 
-    public List<Select<T>> selectListIn(Node astNode, Predicate<Select<T>> selectConstraint ){
+    /**
+     * 
+     * @param clazz
+     * @param selectConstraint
+     * @return 
+     */
+    public List<Select<T>> listSelectedIn(Class clazz, Predicate<Select<T>> selectConstraint ){
+        return listSelectedIn(_type.of(clazz), selectConstraint);
+    }
+    
+    /**
+     * 
+     * @param astNode
+     * @param selectConstraint
+     * @return 
+     */
+    public List<Select<T>> listSelectedIn(Node astNode, Predicate<Select<T>> selectConstraint ){
         List<Select<T>>sts = new ArrayList<>();
         astNode.walk(this.statementClass, st-> {
             //$args tokens = deconstruct( st );
@@ -1768,7 +1815,13 @@ public final class $stmt<T extends Statement>
         return sts;
     }
     
-    public List<Select<T>> selectListIn(_node _n, Predicate<Select<T>> selectConstraint ){
+    /**
+     * 
+     * @param _n
+     * @param selectConstraint
+     * @return 
+     */
+    public List<Select<T>> listSelectedIn(_node _n, Predicate<Select<T>> selectConstraint ){
         List<Select<T>>sts = new ArrayList<>();
         Walk.in(_n, this.statementClass, st->{
             //$args tokens = deconstruct(st);
@@ -1778,6 +1831,16 @@ public final class $stmt<T extends Statement>
             }
         });
         return sts;
+    }
+    
+    /**
+     * 
+     * @param clazz
+     * @return 
+     */
+    @Override
+    public _type removeIn(Class clazz){
+        return removeIn(_type.of(clazz) );
     }
     
     @Override
@@ -1792,6 +1855,26 @@ public final class $stmt<T extends Statement>
         return astNode;
     }
 
+    /**
+     * 
+     * @param clazz
+     * @param $repl
+     * @return 
+     */
+    public _type replaceIn( Class clazz, $stmt $repl){
+        return replaceIn(_type.of(clazz), $repl);
+    }
+    
+    /**
+     * 
+     * @param clazz
+     * @param replacement
+     * @return 
+     */
+    public _type replaceIn( Class clazz, String...replacement){
+        return replaceIn(_type.of(clazz), replacement);
+    }
+    
     /**
      * 
      * @param <N>

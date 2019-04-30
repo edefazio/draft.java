@@ -121,7 +121,7 @@ public class SmethodTest extends TestCase {
         
         assertTrue($set.selectFirstIn(C.class).is("type",int.class,"name","x"));
         
-        assertEquals(2, $set.selectListIn(C.class).size());
+        assertEquals(2, $set.listSelectedIn(C.class).size());
         
     }
     

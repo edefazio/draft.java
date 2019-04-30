@@ -25,7 +25,26 @@ import java.util.stream.Collectors;
  */
 public class $constructor
     implements Template<_constructor>, $proto<_constructor> {
-       
+    
+    /**
+     * list all constructors in the clazz
+     * @param clazz
+     * @return 
+     */
+    public static final List<_constructor> list(Class clazz){
+        return any().listIn(clazz);
+    }
+    
+    /**
+     * 
+     * @param <N>
+     * @param _n
+     * @return 
+     */
+    public static final <N extends _node> List<_constructor> list( N _n ){
+        return any().listIn(_n);
+    }
+    
     /**
      * 
      * @param <N>
@@ -982,7 +1001,7 @@ public class $constructor
      * @return 
      */
     public List<Select> listSelectedIn(Class clazz, Predicate<Select> selectConstraint){
-        return listSelectedIn(_type.of(clazz), selectConstraint);
+        return $constructor.this.listSelectedIn(_type.of(clazz), selectConstraint);
     }
     
     /**
@@ -1048,54 +1067,11 @@ public class $constructor
      * @param clazz
      * @return 
      */
-    public List<Select> selectListIn(Class clazz){
+    @Override
+    public List<Select> listSelectedIn(Class clazz){
         return listSelectedIn( _type.of(clazz));        
     }
     
-    /**
-     * 
-     * @param clazz
-     * @param selectConstraint
-     * @return 
-     */
-    public List<Select> selectListIn(Class clazz, Predicate<Select> selectConstraint){
-        return selectListIn( _type.of(clazz), selectConstraint);        
-    }
-    
-    /**
-     * 
-     * @param astNode
-     * @param selectConstraint
-     * @return 
-     */
-    public List<Select> selectListIn(Node astNode, Predicate<Select> selectConstraint){
-        List<Select>sts = new ArrayList<>();
-        astNode.walk(ConstructorDeclaration.class, c-> {
-            Select sel = select(c );
-            if( sel != null && selectConstraint.test(sel)){
-                sts.add(sel);
-            }
-        });
-        return sts;
-    }
-
-    /**
-     * 
-     * @param _n
-     * @param selectConstraint
-     * @return 
-     */
-    public List<Select> selectListIn(_node _n, Predicate<Select> selectConstraint){
-        List<Select>sts = new ArrayList<>();
-        Walk.in(_n, ConstructorDeclaration.class, c -> {
-            Select sel = select(c );
-            if( sel != null && selectConstraint.test(sel)){
-                sts.add(sel);
-            }
-        });
-        return sts;
-    }
-
     /**
      * 
      * @param clazz

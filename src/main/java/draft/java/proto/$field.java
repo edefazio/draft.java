@@ -28,6 +28,15 @@ public class $field implements Template<_field>, $proto<_field> {
     /**
      * 
      * @param clazz
+     * @return 
+     */
+    public static final List<_field> list( Class clazz){
+        return any().listIn(clazz);
+    }
+    
+    /**
+     * 
+     * @param clazz
      * @param proto
      * @return 
      */
@@ -233,7 +242,7 @@ public class $field implements Template<_field>, $proto<_field> {
      * @param proto
      * @return 
      */
-    public static final <N extends _node> List<Select> selectList( N _n, String proto ){
+    public static final <N extends _node> List<Select> listSelected( N _n, String proto ){
         return of(proto).listSelectedIn(_n);
     }
     
@@ -243,7 +252,7 @@ public class $field implements Template<_field>, $proto<_field> {
      * @param proto
      * @return 
      */
-    public static final List<Select> selectList( Class clazz, String proto ){
+    public static final List<Select> listSelected( Class clazz, String proto ){
         return of(proto).listSelectedIn(_type.of(clazz) );
     }
     
@@ -252,22 +261,22 @@ public class $field implements Template<_field>, $proto<_field> {
      * @param <N>
      * @param _n
      * @param proto
-     * @param constraint
+     * @param selectConstraint
      * @return 
      */
-    public static final <N extends _node> List<Select> selectList( N _n, String proto, Predicate<_field> constraint){
-        return of(proto, constraint).listSelectedIn(_n);
+    public static final <N extends _node> List<Select> listSelected( N _n, String proto, Predicate<Select> selectConstraint){
+        return of(proto).listSelectedIn(_n, selectConstraint);
     }
     
     /**
      *     
      * @param clazz
      * @param proto
-     * @param constraint
+     * @param selectConstraint proto
      * @return 
      */
-    public static final List<Select> selectList( Class clazz, String proto, Predicate<_field>constraint){
-        return of(proto, constraint).listSelectedIn(_type.of(clazz) );
+    public static final List<Select> listSelected( Class clazz, String proto, Predicate<Select>selectConstraint){
+        return of(proto).listSelectedIn(_type.of(clazz), selectConstraint );
     }
     
     /**
@@ -277,7 +286,7 @@ public class $field implements Template<_field>, $proto<_field> {
      * @param proto
      * @return 
      */
-    public static final <N extends _node> List<Select> selectList( N _n, _field proto ){
+    public static final <N extends _node> List<Select> listSelected( N _n, _field proto ){
         return of(proto).listSelectedIn(_n);
     }
     
@@ -286,11 +295,11 @@ public class $field implements Template<_field>, $proto<_field> {
      * @param <N>
      * @param _n
      * @param proto
-     * @param constraint
+     * @param selectConstraint
      * @return 
      */
-    public static final <N extends _node> List<Select> selectList( N _n, _field proto, Predicate<_field> constraint){
-        return of(proto, constraint).listSelectedIn(_n);
+    public static final <N extends _node> List<Select> listSelectedIn( N _n, _field proto, Predicate<Select> selectConstraint){
+        return of(proto).listSelectedIn(_n, selectConstraint);
     }
     
     /**
@@ -654,7 +663,7 @@ public class $field implements Template<_field>, $proto<_field> {
      * @return 
      */
     public Select selectFirstIn(Class clazz){
-        return selectFirstIn(_type.of(clazz));
+        return $field.this.selectFirstIn(_type.of(clazz));
     }
     
     /**
@@ -692,8 +701,8 @@ public class $field implements Template<_field>, $proto<_field> {
      * @param selectConstraint
      * @return 
      */
-    public Select seelctFirstIn( Class clazz, Predicate<Select>selectConstraint ){
-       return selectFirstIn(_type.of(clazz), selectConstraint); 
+    public Select selectFirstIn( Class clazz, Predicate<Select>selectConstraint ){
+       return $field.this.selectFirstIn(_type.of(clazz), selectConstraint); 
     }
     
     /**
@@ -703,7 +712,7 @@ public class $field implements Template<_field>, $proto<_field> {
      * @return  the first _field that matches (or null if none found)
      */
     public Select selectFirstIn( _node _n, Predicate<Select> selectConstraint){
-        return selectFirstIn(_n.ast(), selectConstraint );        
+        return $field.this.selectFirstIn(_n.ast(), selectConstraint );        
     }
 
     /**

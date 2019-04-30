@@ -25,6 +25,15 @@ public class $method
     implements Template<_method>, $proto<_method> {
        
     /**
+     * List all methods in the clazz
+     * @param clazz
+     * @return 
+     */
+    public static final List<_method> list(Class clazz){
+        return any().listIn(clazz);
+    }
+    
+    /**
      * 
      * @param <N>
      * @param _n
@@ -1018,8 +1027,8 @@ public class $method
      * @param clazz
      * @return 
      */
-    public List<Select> selectListIn(Class clazz){
-        return listSelectedIn( _type.of(clazz));        
+    public List<Select> listSelectedIn(Class clazz){
+        return $method.this.listSelectedIn( _type.of(clazz));        
     }
     
     /**
@@ -1028,8 +1037,8 @@ public class $method
      * @param selectConstraint
      * @return 
      */
-    public List<Select> selectListIn(Class clazz, Predicate<Select> selectConstraint){
-        return selectListIn( _type.of(clazz), selectConstraint);        
+    public List<Select> listSelectedIn(Class clazz, Predicate<Select> selectConstraint){
+        return listSelectedIn( _type.of(clazz), selectConstraint);        
     }
     
     /**
@@ -1038,7 +1047,7 @@ public class $method
      * @param selectConstraint
      * @return 
      */
-    public List<Select> selectListIn(Node astNode, Predicate<Select> selectConstraint){
+    public List<Select> listSelectedIn(Node astNode, Predicate<Select> selectConstraint){
         List<Select>sts = new ArrayList<>();
         astNode.walk(MethodDeclaration.class, m-> {
             Select sel = select( m );
@@ -1055,7 +1064,7 @@ public class $method
      * @param selectConstraint
      * @return 
      */
-    public List<Select> selectListIn(_node _n, Predicate<Select> selectConstraint){
+    public List<Select> listSelectedIn(_node _n, Predicate<Select> selectConstraint){
         List<Select>sts = new ArrayList<>();
         Walk.in(_n, MethodDeclaration.class, m -> {
             Select sel = select( m );

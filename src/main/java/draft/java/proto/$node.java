@@ -3,16 +3,19 @@ package draft.java.proto;
 import com.github.javaparser.ast.Node;
 import com.github.javaparser.ast.expr.Name;
 import com.github.javaparser.ast.expr.SimpleName;
+import com.github.javaparser.ast.nodeTypes.NodeWithAnnotations;
 import com.github.javaparser.ast.type.ClassOrInterfaceType;
 import draft.Stencil;
 import draft.Text;
 import draft.Tokens;
 import draft.java.Ast;
+import draft.java._anno;
 import draft.java._model._node;
 import draft.java._type;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Optional;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
 
@@ -286,6 +289,29 @@ public class $node implements $proto<Node> {
             }
         }
         return null;
+    }
+    
+    /**
+     * Returns the first Statement that matches the 
+     * @param astNode the 
+     * @return 
+     */
+    @Override
+    public Node firstIn( Node astNode ){
+        Optional<Node> f = 
+                
+            astNode.findFirst( Node.class, 
+                n -> select(n) != null );         
+        
+        if( f.isPresent()){
+            return f.get();
+        }
+        return null;
+    }    
+    
+    @Override
+    public Node firstIn( _node _n ){
+        return firstIn( _n.ast() );
     }
     
     @Override

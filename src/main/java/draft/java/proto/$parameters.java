@@ -13,6 +13,7 @@ import draft.java._parameter._parameters;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
@@ -84,6 +85,10 @@ public class $parameters implements Template<_parameters>, $proto<_parameters> {
         return this;
     }
 
+    public boolean matches( NodeWithParameters astNodeWithParams ){
+        return select(_parameters.of(astNodeWithParams)) == null;
+    }
+    
     public boolean matches( String parameters ){
         return select(parameters) != null;
     }
@@ -175,6 +180,30 @@ public class $parameters implements Template<_parameters>, $proto<_parameters> {
         return $s.stream().distinct().collect(Collectors.toList());
     }
 
+    /**
+     * Returns the first Statement that matches the 
+     * @param astNode the 
+     * @return 
+     */
+    @Override
+    public _parameters firstIn( Node astNode ){
+        Optional<Node> f =                 
+            astNode.findFirst( Node.class, 
+                    n -> (n instanceof NodeWithParameters) 
+                    && matches((NodeWithParameters)n) 
+            );         
+        
+        if( f.isPresent()){
+            return _parameters.of( (NodeWithParameters)f.get());
+        }
+        return null;
+    }    
+    
+    @Override
+    public _parameters firstIn( _node _n ){
+        return firstIn( _n.ast() );
+    }
+    
     @Override
     public List<_parameters> listIn( _node _n) {
         List<_parameters> found = new ArrayList<>();

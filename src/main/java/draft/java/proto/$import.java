@@ -20,6 +20,15 @@ public final class $import
     /**
      * 
      * @param clazz
+     * @return 
+     */
+    public static final List<_import> list(Class clazz){
+        return any().listIn(clazz);
+    }
+    
+    /**
+     * 
+     * @param clazz
      * @param protoTarget
      * @return 
      */
@@ -178,7 +187,7 @@ public final class $import
      * @param _protoTarget
      * @return 
      */
-    public static final List<Select> selectList(Class clazz, _import _protoTarget){
+    public static final List<Select> listSelected(Class clazz, _import _protoTarget){
         return (List<Select>)$import.of(_protoTarget).listSelectedIn(clazz);
     }
     
@@ -189,7 +198,7 @@ public final class $import
      * @param _protoTarget
      * @return 
      */
-    public static final <T extends _type> List<Select> selectList( T _type, _import _protoTarget){
+    public static final <T extends _type> List<Select> listSelected( T _type, _import _protoTarget){
         return $import.of(_protoTarget).listSelectedIn(_type);
     }
     
@@ -199,8 +208,8 @@ public final class $import
      * @param pattern
      * @return 
      */
-    public static final List<Select> selectList( Class clazz, String pattern ){
-       return selectList(_type.of(clazz), pattern);
+    public static final List<Select> listSelected( Class clazz, String pattern ){
+       return $import.listSelected(_type.of(clazz), pattern);
     }
     
     /**
@@ -210,7 +219,7 @@ public final class $import
      * @param pattern
      * @return 
      */
-    public static final <T extends _type> List<Select> selectList( T _type, String pattern ){
+    public static final <T extends _type> List<Select> listSelected( T _type, String pattern ){
         return $import.of(pattern).listSelectedIn(_type);
     }
     
@@ -221,7 +230,7 @@ public final class $import
      * @param astProtoTarget
      * @return 
      */
-    public static final <T extends _type> List<Select> selectList( T _type, ImportDeclaration astProtoTarget ){
+    public static final <T extends _type> List<Select> listSelected( T _type, ImportDeclaration astProtoTarget ){
         return $import.of(_import.of(astProtoTarget)).listSelectedIn(_type);
     }
     
@@ -232,7 +241,7 @@ public final class $import
      * @param target
      * @return 
      */
-    public static final <T extends _type> List<Select> selectList( T _type, Class target ){
+    public static final <T extends _type> List<Select> listSelected( T _type, Class target ){
         return $import.of(target).listSelectedIn(_type);
     }
     
@@ -244,7 +253,7 @@ public final class $import
      * @param constraint
      * @return 
      */
-    public static final <T extends _type> List<Select> selectList( T _type, _import _protoTarget, Predicate<Select> constraint){
+    public static final <T extends _type> List<Select> listSelected( T _type, _import _protoTarget, Predicate<Select> constraint){
         return $import.of(_protoTarget).listSelectedIn(_type, constraint);
     }
     
@@ -256,7 +265,7 @@ public final class $import
      * @param constraint
      * @return 
      */
-    public static final <T extends _type> List<Select> selectList( T _type, String pattern, Predicate<_import> constraint){
+    public static final <T extends _type> List<Select> listSelected( T _type, String pattern, Predicate<_import> constraint){
         return $import.of(pattern).constraint(constraint).listSelectedIn(_type);
     }
     
@@ -268,7 +277,7 @@ public final class $import
      * @param constraint
      * @return 
      */
-    public static final <T extends _type> List<Select> selectList( T _type, ImportDeclaration astProtoTarget, Predicate<_import> constraint){
+    public static final <T extends _type> List<Select> listSelected( T _type, ImportDeclaration astProtoTarget, Predicate<_import> constraint){
         return $import.of(_import.of(astProtoTarget)).constraint(constraint).listSelectedIn(_type);
     }
     
@@ -280,7 +289,7 @@ public final class $import
      * @param constraint
      * @return 
      */
-    public static final <T extends _type> List<Select> selectList( T _type, Class target, Predicate<_import> constraint){
+    public static final <T extends _type> List<Select> listSelected( T _type, Class target, Predicate<_import> constraint){
         return $import.of(target).constraint(constraint).listSelectedIn(_type);
     }
    
@@ -1222,6 +1231,15 @@ public final class $import
         return sts;
     }
 
+    /**
+     * 
+     * @param clazz
+     * @return 
+     */
+    public List<Select> listSelectedIn(Class clazz){
+        return listSelectedIn(_type.of(clazz));
+    }
+    
     @Override
     public List<Select> listSelectedIn( _node _n ){
         return $import.this.listSelectedIn( _n.ast() );        
