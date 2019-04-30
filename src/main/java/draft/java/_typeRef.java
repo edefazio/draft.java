@@ -45,7 +45,21 @@ public final class _typeRef<T extends Type>
     public Type ast() {
         return astType;
     }
-       
+    /**
+     * Unknown type is used for lambdas where the type may not be directly defined
+     * <PRE>
+     * for example:
+     * (o)-> System.out.println(o);
+     * 
+     * ...as apposed to explicitly defined parameter type
+     * (OutputStream o) -> System.out.println( o );
+     * </PRE>
+     * @return 
+     */ 
+    public boolean isUnknownType(){
+        return astType.isUnknownType();
+    }
+    
     public boolean isPrimitive() {
         return astType.isPrimitiveType();
     }
