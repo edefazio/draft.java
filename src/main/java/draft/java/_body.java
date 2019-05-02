@@ -65,6 +65,11 @@ public final class _body implements _model {
         return of( _method.of("void __BODYHOLDER();").add(body).ast() );
     }
     
+    /**
+     * 
+     * @param statement
+     * @return 
+     */
     public static final _body of( Statement statement ){
         if( statement instanceof BlockStmt ){
             return of( _method.of("void __BODYHOLDER();").setBody((BlockStmt)statement).ast());
@@ -234,6 +239,19 @@ public final class _body implements _model {
         return Objects.equals(this.ast(), bs);
     }
 
+    /**
+     * 
+     * @return 
+     */
+    public _body clear(){
+        if( this.astParentNode instanceof NodeWithOptionalBlockStmt){
+            ((NodeWithOptionalBlockStmt)this.astParentNode).setBody(Ast.blockStmt("{}"));
+            return this;
+        }
+        ((NodeWithBlockStmt)this.astParentNode).setBody(Ast.blockStmt("{}"));
+        return this;        
+    }
+    
     /**
      * Does a comparison WITHOUT COMMENTS to determine if the
      * statements of the two 

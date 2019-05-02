@@ -1,35 +1,29 @@
 package draft.java.proto;
 
+import com.github.javaparser.ast.Node;
 import com.github.javaparser.ast.expr.LambdaExpr;
 import com.github.javaparser.ast.nodeTypes.NodeWithBlockStmt;
-import com.github.javaparser.ast.nodeTypes.NodeWithBody;
 import com.github.javaparser.ast.nodeTypes.NodeWithOptionalBlockStmt;
-import com.github.javaparser.ast.stmt.BlockStmt;
 import com.github.javaparser.ast.stmt.Statement;
-import draft.Template;
-import draft.Tokens;
-import draft.Translator;
-import draft.java.Ast;
-import draft.java.Expr;
-import draft.java._body;
-import draft.java._constructor;
+import draft.*;
+import draft.java.*;
+import draft.java._model._node;
 import draft.java.proto.$proto.$args;
 import draft.java.proto.$proto.selected;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
-import java.util.function.BiConsumer;
-import java.util.function.BiFunction;
-import java.util.function.Consumer;
-import java.util.function.Function;
-import java.util.function.Predicate;
+import java.util.*;
+import java.util.function.*;
 
 /**
  * Prototype of a body
  * @author Eric
  */
-public class $body implements Template<_body> {
+public class $body implements Template<_body>, $proto<_body> {
     
+    /**
+     * ANY body (or lack of body)... so 
+     * 
+     * @return 
+     */
     public static $body any(){
         return new $body(); 
     }
@@ -104,9 +98,10 @@ public class $body implements Template<_body> {
     }
     
     public Predicate<_body> constraint = t->true;
-    public Boolean isImplemented = true;    
-    public $stmt bodyStmts = null;
     
+    public Boolean isImplemented = true;    
+    
+    public $stmt bodyStmts = null;
     
     /**
      * This represents a "non implemented body"
@@ -116,6 +111,10 @@ public class $body implements Template<_body> {
         this.isImplemented = false;        
     }
     
+    /**
+     * 
+     * @param body 
+     */
     private $body( _body body ){
         if( body.isImplemented() ){
             this.bodyStmts = $stmt.of(body.ast());
@@ -124,6 +123,11 @@ public class $body implements Template<_body> {
         }        
     }
     
+    /**
+     * 
+     * @param body
+     * @return 
+     */
     public $body $bodyStmts(_body body ){
         if( body == null ){
             this.isImplemented = false;
@@ -152,10 +156,38 @@ public class $body implements Template<_body> {
         return Collections.EMPTY_LIST;
     }
     
+    /**
+     * 
+     * @param astNwb
+     * @return 
+     */
+    public boolean matches( NodeWithBlockStmt astNwb ){
+        return select(astNwb) != null;
+    }
+    
+    /**
+     *
+     * @param astNwob
+     * @return 
+     */
+    public boolean matches( NodeWithOptionalBlockStmt astNwob ){
+        return select(astNwob) != null;
+    }
+    
+    /**
+     * 
+     * @param body
+     * @return 
+     */
     public boolean matches(String...body){
         return select(body) != null;
     }
     
+    /**
+     * 
+     * @param body
+     * @return 
+     */
     public boolean matches( _body body){
         return select(body) != null;
     }
@@ -185,7 +217,6 @@ public class $body implements Template<_body> {
         return select( le.getBody().toString(Ast.PRINT_NO_COMMENTS ) );
     }
     
-    
     public <A extends Object, B extends Object> Select select(Function<A,B> commandLambda ){
         LambdaExpr le = Expr.lambda(Thread.currentThread().getStackTrace()[2]);
         return select( le.getBody().toString(Ast.PRINT_NO_COMMENTS ) );
@@ -206,10 +237,20 @@ public class $body implements Template<_body> {
         return select( le.getBody().toString(Ast.PRINT_NO_COMMENTS ) );
     }
     
+    /**
+     * 
+     * @param body
+     * @return 
+     */
     public Select select (String body ){
         return select(_body.of(body));
     }
     
+    /**
+     * 
+     * @param body
+     * @return 
+     */
     public Select select (String...body ){
         return select(_body.of(body));
     }
@@ -226,18 +267,20 @@ public class $body implements Template<_body> {
         }
     }
     
+    /**
+     * 
+     * @param body
+     * @return 
+     */
     public Select select( _body body ){
         if( isMatchAny() ){
             return new Select( body, $args.of());
         }
-        //System.out.println( "Not is match any");
         if( !this.constraint.test(body)){
-            //System.out.println( "failed Constraint");
             return null;
         }        
         if( !body.isImplemented() ){
             if( this.isImplemented ){
-                //System.out.println( "Expected Implemented");
                 return null;
             } 
             return new Select(body, $args.of());                
@@ -247,46 +290,27 @@ public class $body implements Template<_body> {
             if( ss != null ){
                 return new Select( body, ss.args);
             }
-        } //else{
-        return new Select( body, $args.of());
-        //}
-        //return null;    
-        
+            return null;
+        }
+        return new Select( body, $args.of());        
     }
     
+    /**
+     * 
+     * @param nwb
+     * @return 
+     */
     public Select select( NodeWithBlockStmt nwb ){
-        return select(_body.of(nwb));
-        /*
-        //if( this.constraint.test(t))
-        if( ! isImplemented ){
-            return null;
-        }
-        $stmt.Select ss = this.body.select((Statement)nwb.getBody());        
-        if( ss != null ){
-            return new Select( _body.of(nwb), ss.args);
-        }
-        return null;             
-        */
+        return select(_body.of(nwb));        
     }
     
+    /**
+     * 
+     * @param nwb
+     * @return 
+     */
     public Select select( NodeWithOptionalBlockStmt nwb ){
-        return select(_body.of(nwb ));
-        /*
-        if( !nwb.getBody().isPresent() ){
-            if(! isImplemented ){
-                return new Select(_body.of(nwb), $args.of() );
-            }
-            return null;
-        }
-        if( !isImplemented ){
-            return null;
-        }        
-        $stmt.Select ss = this.body.select((Statement)nwb.getBody().get());        
-        if( ss != null ){
-            return new Select( _body.of(nwb), ss.args);
-        }
-        return null;        
-        */
+        return select(_body.of(nwb ));        
     }
 
     @Override
@@ -297,6 +321,12 @@ public class $body implements Template<_body> {
         return _body.of( (Statement)this.bodyStmts.construct(translator, keyValues) );        
     }
 
+    /**
+     * 
+     * @param body
+     * @param all
+     * @return 
+     */
     public Tokens decomposeTo(_body body, Tokens all) {
         if (all == null) { /* Skip decompose if the tokens already null*/
             return null;
@@ -314,20 +344,188 @@ public class $body implements Template<_body> {
     
     @Override
     public $body $(String target, String $Name) {
-        if( this.isImplemented ){
+        if( this.isImplemented ){            
             this.bodyStmts.$(target, $Name);
         }
         return this;
     }
     
+    public $body $( Statement st, String name){
+        if( this.isImplemented ){
+            this.bodyStmts.$(st, name);
+        }
+        return this;
+    }
+    
+    /**
+     * 
+     * @param translator
+     * @param kvs
+     * @return 
+     */
     public $body hardcode$(Translator translator, Tokens kvs ) {
         if( this.isImplemented ){
             this.bodyStmts.hardcode$(translator, kvs);
         }
         return this;
     }
+
+    @Override
+    public _body firstIn( _node _n) {
+        return firstIn(_n.ast());
+    }
+
+    @Override
+    public _body firstIn(Node astRootNode) {
+        Optional<Node> on = astRootNode.findFirst(Node.class, n-> { 
+            if(n instanceof NodeWithBlockStmt){
+                Select sel = select( (NodeWithBlockStmt)n );
+                return sel != null;
+            }
+            if(n instanceof NodeWithOptionalBlockStmt){
+                Select sel = select( (NodeWithOptionalBlockStmt)n );
+                return sel != null;
+            }
+            return false;
+            });
+        if( on.isPresent() ){
+            Node node = on.get();
+            if( node instanceof NodeWithBlockStmt ){
+                return _body.of( (NodeWithBlockStmt)node );
+            }
+            return _body.of( (NodeWithOptionalBlockStmt)node );            
+        }
+        return null;
+    }
+
+    @Override
+    public Select selectFirstIn(Node astRootNode) {
+        Optional<Node> on = astRootNode.findFirst(Node.class, n-> { 
+            if(n instanceof NodeWithBlockStmt){
+                Select sel = select( (NodeWithBlockStmt)n );
+                return sel != null;
+            }
+            if(n instanceof NodeWithOptionalBlockStmt){
+                Select sel = select( (NodeWithOptionalBlockStmt)n );
+                return sel != null;
+            }
+            return false;
+            });
+        if( on.isPresent() ){
+            Node node = on.get();
+            if( node instanceof NodeWithBlockStmt ){
+                return select( (NodeWithBlockStmt)node );
+            }
+            return select( (NodeWithOptionalBlockStmt)node );            
+        }
+        return null;
+    }
+
+    @Override
+    public List<_body> listIn(Node astRootNode) {
+        List<_body> found = new ArrayList<>();
+        forEachIn(astRootNode, b-> found.add(b));
+        return found;
+    }
+
+    @Override
+    public List<Select> listSelectedIn(Node astRootNode) {
+        List<Select> found = new ArrayList<>();
+        forSelectedIn( astRootNode, s-> found.add(s) );
+        return found;
+    }
+
+    /**
+     * 
+     * @param <N>
+     * @param astRootNode
+     * @param selectActionFn
+     * @return 
+     */
+    public <N extends Node> N forSelectedIn(N astRootNode, Consumer<Select> selectActionFn) {
+        astRootNode.walk(Node.class, n->{
+            if(n instanceof NodeWithBlockStmt){
+                Select sel = select( (NodeWithBlockStmt)n );
+                if( sel != null ){
+                    selectActionFn.accept( sel );
+                }
+            }
+            if(n instanceof NodeWithOptionalBlockStmt){
+                Select sel = select( (NodeWithOptionalBlockStmt)n );
+                if( sel != null ){
+                    selectActionFn.accept( sel);
+                }
+            }            
+        });
+        return astRootNode;
+    }
     
-    public static class Select implements selected<_body>{
+    /**
+     * 
+     * @param <N>
+     * @param _n
+     * @param selectConstraint
+     * @param selectActionFn
+     * @return 
+     */
+    public <N extends _node> N forSelectedIn(N _n, Predicate<Select>selectConstraint, Consumer<Select> selectActionFn) {
+        forSelectedIn(_n.ast(), selectConstraint, selectActionFn);
+        return _n;
+    }
+    
+    /**
+     * 
+     * @param <N>
+     * @param astRootNode
+     * @param selectConstraint
+     * @param selectActionFn
+     * @return 
+     */
+    public <N extends Node> N forSelectedIn(N astRootNode, Predicate<Select>selectConstraint, Consumer<Select> selectActionFn) {
+        astRootNode.walk(Node.class, n->{
+            if(n instanceof NodeWithBlockStmt){
+                Select sel = select( (NodeWithBlockStmt)n );
+                if( sel != null && selectConstraint.test(sel)){
+                    selectActionFn.accept( sel );
+                }
+            }
+            if(n instanceof NodeWithOptionalBlockStmt){
+                Select sel = select( (NodeWithOptionalBlockStmt)n );
+                if( sel != null && selectConstraint.test(sel)){
+                    selectActionFn.accept( sel);
+                }
+            }            
+        });
+        return astRootNode;
+    }
+    
+    @Override
+    public <N extends Node> N forEachIn(N astRootNode, Consumer<_body> _bodyActionFn) {
+        astRootNode.walk(Node.class, n->{
+            if(n instanceof NodeWithBlockStmt){
+                Select sel = select( (NodeWithBlockStmt)n );
+                _bodyActionFn.accept( sel.body );
+            }
+            if(n instanceof NodeWithOptionalBlockStmt){
+                Select sel = select( (NodeWithOptionalBlockStmt)n );
+                _bodyActionFn.accept( sel.body );
+            }            
+        });
+        return astRootNode;
+    }
+
+    @Override
+    public <N extends Node> N removeIn(N astRootNode) {
+        forEachIn(astRootNode, _b->{
+            _b.clear(); 
+        });
+        return astRootNode;
+    }
+    
+    /**
+     * 
+     */
+    public static class Select implements selected<_body>, selected_model<_body>{
 
         public _body body;
         public $args args;
@@ -340,7 +538,23 @@ public class $body implements Template<_body> {
         @Override
         public $args getArgs() {
             return args;
+        }        
+        
+        public boolean isImplemented(){
+            return body.isImplemented();
         }
         
+        public boolean isEmpty(){            
+            return body.isEmpty();
+        }
+        
+        public Statement getStatement( int index ){            
+            return body.getStatement(index);
+        }
+
+        @Override
+        public _body model() {
+            return this.body;
+        }        
     }
 }

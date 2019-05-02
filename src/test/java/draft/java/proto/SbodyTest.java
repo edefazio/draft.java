@@ -1,5 +1,6 @@
 package draft.java.proto;
 
+import draft.java.Stmt;
 import draft.java._body;
 import draft.java._method;
 import junit.framework.TestCase;
@@ -59,7 +60,35 @@ public class SbodyTest extends TestCase {
     }
     
     public void testMultiStatement(){
+        $body $multi = $body.of(($any$)->{
+            System.out.println($any$);
+            System.out.println(12);
+        });
         
+        //assertTrue( $multi.matches()
     }
+    
+    public void testAnyMeatSandwich(){
+        //so I need $statement("assert true;")
+        $body $b = $body.of((a)-> {
+            System.out.println(1);
+            assert true;
+            System.out.println(2);        
+        } ).$(Stmt.of("assert true;"), "meat");
+        
+        System.out.println( $b.bodyStmts.stmtPattern );
+        
+        //test 1 meat
+        assertTrue( $b.matches("System.out.println(1);", "meat();", "System.out.println(2);")); 
+        //test 2 meat
+        assertTrue( $b.matches("System.out.println(1);", "meat();","meat();","System.out.println(2);")); 
+        
+        System.out.println( $b.select("System.out.println(1);", "meat();","meat();","System.out.println(2);").args);
+        //test no meat
+        assertTrue( $b.matches("System.out.println(1);", "System.out.println(2);"));                 
+    }
+    
+    
+    
     
 }

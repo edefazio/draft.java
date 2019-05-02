@@ -37,7 +37,9 @@ public interface $proto<Q> {
      * @param _n the "top" draft node
      * @return  the first matching instance or null if none is found
      */
-    Q firstIn(_node _n);
+    default Q firstIn(_node _n){
+        return firstIn(_n.ast());
+    }
     
     /**
      * 
@@ -91,8 +93,10 @@ public interface $proto<Q> {
      * _method, _
      * @return a List of Q that match the query
      */
-    List<Q> listIn(_node _n);
-
+    default List<Q> listIn(_node _n) {
+        return listIn(_n.ast());
+    }
+    
     /**
      *
      * @param astRootNode the root AST node to start the search
@@ -113,6 +117,18 @@ public interface $proto<Q> {
     
     /**
      * return the selections (containing the node and deconstructed parts) of
+     * all matching entities within the _j
+     *
+     * @param _n the java entity (_type, _method, etc.) where to start the
+     * search
+     * @return a list of the selected
+     */
+    default List<? extends selected> listSelectedIn(_node _n){
+        return listSelectedIn(_n.ast());
+    }
+    
+    /**
+     * return the selections (containing the node and deconstructed parts) of
      * all matching entities within the astRootNode
      *
      * @param astRootNode the node to start the search (TypeDeclaration,
@@ -120,18 +136,8 @@ public interface $proto<Q> {
      * @return the selected
      */
     List<? extends selected> listSelectedIn(Node astRootNode);
-
-    /**
-     * return the selections (containing the node and deconstructed parts) of
-     * all matching entities within the _j
-     *
-     * @param _n the java entity (_type, _method, etc.) where to start the
-     * search
-     * @return a list of the selected
-     */
-    List<? extends selected> listSelectedIn(_node _n);
     
-     /**
+    /**
      * 
      * @param clazz the runtime Class (.java source must be on the classpath)
      * @param _nodeActionFn what to do with each entity matching the prototype
@@ -139,6 +145,20 @@ public interface $proto<Q> {
      */
     default _type forEachIn(Class clazz, Consumer<Q>_nodeActionFn ){
         return forEachIn(_type.of(clazz), _nodeActionFn);
+    }
+    
+    /**
+     * Find and execute a function on all of the matching occurrences within
+     * astRootNode
+     *
+     * @param <N>
+     * @param _n the java node to start the walk
+     * @param _nodeActionFn the function to run on all matching entities
+     * @return the modified _java node
+     */
+    default <N extends _node> N forEachIn(N _n, Consumer<Q> _nodeActionFn){
+        forEachIn(_n.ast(), _nodeActionFn);
+        return _n;
     }
     
     /**
@@ -154,17 +174,6 @@ public interface $proto<Q> {
      */
     <N extends Node> N forEachIn(N astRootNode, Consumer<Q> _nodeActionFn);
 
-    /**
-     * Find and execute a function on all of the matching occurrences within
-     * astRootNode
-     *
-     * @param <N>
-     * @param _n the java node to start the walk
-     * @param _nodeActionFn the function to run on all matching entities
-     * @return the modified _java node
-     */
-    <N extends _node> N forEachIn(N _n, Consumer<Q> _nodeActionFn);
-    
     /**
      * 
      * @param <N>
@@ -208,7 +217,18 @@ public interface $proto<Q> {
         return removeIn(_type.of(clazz));
     } 
     
-   /**
+    /**
+     *
+     * @param _n the root java node to start from (_type, _method, etc.)
+     * @param <N> the TYPE of model node
+     * @return the modified model node
+     */
+    default <N extends _node> N removeIn(N _n){
+        removeIn(_n.ast());
+        return _n;
+    }
+    
+    /**
      * Remove all matching occurrences of the template in the node and return
      * the modified node
      *
@@ -217,16 +237,6 @@ public interface $proto<Q> {
      * @return the modified node
      */
     <N extends Node> N removeIn(N astRootNode);
-
-    /**
-     *
-     * @param _n the root java node to start from (_type, _method, etc.)
-     * @param <N> the TYPE of model node
-     * @return the modified model node
-     */
-    <N extends _node> N removeIn(N _n);
-
-   
 
     /**
      * An extra layer on top of a Tokens that is specifically
@@ -298,6 +308,11 @@ public interface $proto<Q> {
             return Stmt.block(obj.toString()).getStatements();
         }
 
+        /**
+         * 
+         * @param tokens
+         * @return 
+         */
         public boolean isConsistent(Tokens tokens ){
             return this.tokens.isConsistent(tokens);
         }

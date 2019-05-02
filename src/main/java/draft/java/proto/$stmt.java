@@ -1303,15 +1303,74 @@ public final class $stmt<T extends Statement>
         return $(exprString, $name);
     }
     
+
+    
+    
+    
+    
     /**
+     * WE need to have custom logic to find the statements WITHIN statements...
+     * for example if we have a if statement with a body: <PRE>
+     * if( a ){
+     *     doSomething();
+     * }</PRE>
+     * //and we want to parameterize the "doSomething();" method,
+     * we need to handle all of the whitespace/indents, line feeds so that our 
+     * Template looks like this:<PRE>
+     * if(a){$name$}
+     * </PRE>
      * 
-     * @param stmt
-     * @param $name
-     * @return 
+     * ... Note that this will match ALL of the following :<PRE>
+     * if(a){}
+     * if(a){
+     *     singleStatement();
+     * }
+     * if(a){
+     *     multi(); 
+     *     statement();
+     * }
+     * </PRE>
+     * 
+     * IF we DID NOT first treat the whitespace around the statement as a part
+     * of the parameter, then our template Would look like this:<PRE>
+     * 
+     * if(a){
+     *     $name$
+     * }
+     * </PRE>
+     * and it would only match:<PRE>
+     * if(a) {
+     *     singleStatement();
+     * }
+     * </PRE>
+     * 
+     * @param stmt the statement to parameterize
+     * @param $name the name used for the statement parameter
+     * @return the modified $stmt
      */
     public $stmt $(Statement stmt, String $name ){
         String stmtString = stmt.toString( Ast.PRINT_NO_COMMENTS );
-        return $(stmtString, $name);
+        
+        List<String> stringsToReplace = new ArrayList<>();
+        String fixedText  = this.stmtPattern.getTextBlanks().getFixedText();
+        int nextInd = fixedText.indexOf(stmtString);        
+        while( nextInd >= 0 ){
+            String padded = Text.matchNextPaddedTarget(fixedText, stmtString, nextInd );
+            //System.out.println( "FOUND "+ padded );
+            //String prefix = Text.getLeadingSpaces( fixedText, nextInd );
+            //String postfix = Text.getTrailingSpaces(fixedText, stmtString.length() + nextInd);
+            //System.out.println( "FOUND \""+ (prefix+stmtString+postfix) +"\"");
+            stringsToReplace.add( padded );
+            nextInd = fixedText.indexOf(stmtString, nextInd + stmtString.length() );
+        }
+        for(int i=0;i<stringsToReplace.size();i++){
+            int indexOfAssert = this.stmtPattern.getTextBlanks().getFixedText().indexOf( stringsToReplace.get(i) );
+            System.out.println( indexOfAssert );
+            //System.out.println( "PATTERN " + this.stmtPattern );
+            this.stmtPattern = this.stmtPattern.$( stringsToReplace.get(i), $name);
+            //System.out.println( "PATTERN " + this.stmtPattern );
+        }
+        return this;
     }
 
     @Override
@@ -1468,7 +1527,7 @@ public final class $stmt<T extends Statement>
     public boolean isMatchAny(){
         try{
             return this.constraint.test(null) 
-                //&& this.statementClass == Statement.class 
+                && this.statementClass == Statement.class 
                 && this.stmtPattern.isMatchAny();
         }catch(Exception e){
             return false;

@@ -210,8 +210,8 @@ public final class Stencil implements Template<String>{
     }
 
     private static void parse(
-            TextBlanks.Builder builder, List<String> $names, String text,
-            String target, String $name ) {
+        TextBlanks.Builder builder, List<String> $names, String text,
+        String target, String $name ) {
 
         int previous = 0;
         int cursor = text.indexOf( target );
@@ -226,6 +226,10 @@ public final class Stencil implements Template<String>{
         builder.text( text.substring( previous ) );
     }
 
+    /**
+     * 
+     * @return 
+     */
     public TextBlanks getTextBlanks() {
         return this.textBlanks;
     }

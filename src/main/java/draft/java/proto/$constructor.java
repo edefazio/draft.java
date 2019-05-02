@@ -7,7 +7,6 @@ import com.github.javaparser.ast.body.ConstructorDeclaration;
 import com.github.javaparser.ast.body.MethodDeclaration;
 import com.github.javaparser.ast.expr.*;
 import com.github.javaparser.ast.stmt.*;
-import com.github.javaparser.printer.PrettyPrinterConfiguration;
 import draft.*;
 import draft.java.*;
 import draft.java._model._node;
