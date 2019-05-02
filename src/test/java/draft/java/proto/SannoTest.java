@@ -3,16 +3,30 @@ package draft.java.proto;
 import draft.java.Expr;
 import draft.java._anno;
 import draft.java._class;
+import draft.java._type;
 import java.util.regex.Pattern;
 import junit.framework.TestCase;
 
 public class SannoTest extends TestCase {
  
-    /* COMMENTED OUT UNTIL WE REFACTOR THIS
-    //current implementation of $anno: CRAP
-    // doesnt support these things and should
-   
-    */
+    public void testFullQualified(){
+        
+        class CL {
+            @java.lang.Deprecated int a;
+            @Deprecated int b;
+        }
+        
+        //verify we can list fully and unqualified annotations 
+        assertEquals( 2, $anno.list(CL.class, Deprecated.class).size());
+        
+        //verify I can remove the annotations
+        _type _t = $anno.remove(CL.class, Deprecated.class );
+        
+        assertEquals( 0, $anno.of(Deprecated.class).count(_t));
+        assertEquals( 0, $anno.list(_t, Deprecated.class).size());
+        
+        System.out.println( _t );
+    }
     
     public void testAny(){
         _class _c = _class.of("C");

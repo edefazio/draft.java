@@ -10,6 +10,7 @@ import draft.java.*;
 import draft.java._model._node;
 import draft.java._typeRef;
 import java.util.*;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import java.util.function.Consumer;
 import java.util.function.Predicate;
@@ -130,34 +131,7 @@ public interface $proto<Q> {
      */
     List<? extends selected> listSelectedIn(_node _n);
     
-    /**
-     * 
-     * @param clazz the runtime _type (MUST have .java SOURCE in the classpath) 
-     * @return the _type with all entities matching the prototype (& constraint) removed
-     */
-    default _type removeIn(Class clazz){
-        return removeIn(_type.of(clazz));
-    } 
-    
-   /**
-     * Remove all matching occurrences of the template in the node and return
-     * the modified node
-     *
-     * @param astRootNode the root node to start search
-     * @param <N> the input node TYPE
-     * @return the modified node
-     */
-    <N extends Node> N removeIn(N astRootNode);
-
-    /**
-     *
-     * @param _n the root java node to start from (_type, _method, etc.)
-     * @param <N> the TYPE of model node
-     * @return the modified model node
-     */
-    <N extends _node> N removeIn(N _n);
-
-    /**
+     /**
      * 
      * @param clazz the runtime Class (.java source must be on the classpath)
      * @param _nodeActionFn what to do with each entity matching the prototype
@@ -190,6 +164,69 @@ public interface $proto<Q> {
      * @return the modified _java node
      */
     <N extends _node> N forEachIn(N _n, Consumer<Q> _nodeActionFn);
+    
+    /**
+     * 
+     * @param <N>
+     * @param clazz
+     * @return 
+     */
+    default <N extends Node> int count( Class clazz ){
+        return count( _type.of(clazz));
+    }
+    
+    /**
+     * 
+     * @param <N>
+     * @param astNode
+     * @return 
+     */
+    default <N extends Node> int count( N astNode ){
+        AtomicInteger ai = new AtomicInteger(0);
+        forEachIn( astNode, e -> ai.incrementAndGet() );
+        return ai.get();
+    }
+    
+    /**
+     * 
+     * @param <N>
+     * @param _n
+     * @return 
+     */
+    default <N extends _node> int count(N _n ){
+        AtomicInteger ai = new AtomicInteger(0);
+        forEachIn( _n, e -> ai.incrementAndGet() );
+        return ai.get();
+    }
+    
+    /**
+     * 
+     * @param clazz the runtime _type (MUST have .java SOURCE in the classpath) 
+     * @return the _type with all entities matching the prototype (& constraint) removed
+     */
+    default _type removeIn(Class clazz){
+        return removeIn(_type.of(clazz));
+    } 
+    
+   /**
+     * Remove all matching occurrences of the template in the node and return
+     * the modified node
+     *
+     * @param astRootNode the root node to start search
+     * @param <N> the input node TYPE
+     * @return the modified node
+     */
+    <N extends Node> N removeIn(N astRootNode);
+
+    /**
+     *
+     * @param _n the root java node to start from (_type, _method, etc.)
+     * @param <N> the TYPE of model node
+     * @return the modified model node
+     */
+    <N extends _node> N removeIn(N _n);
+
+   
 
     /**
      * An extra layer on top of a Tokens that is specifically
@@ -203,6 +240,10 @@ public interface $proto<Q> {
          */
         private Tokens tokens;
 
+        public static $args of(){
+            return new $args( Tokens.of() ); 
+        }
+        
         public static $args of(Tokens ts) {
             if (ts == null) {
                 return null;

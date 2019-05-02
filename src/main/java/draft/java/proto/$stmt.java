@@ -1235,7 +1235,7 @@ public final class $stmt<T extends Statement>
      * IF the statement has a comment, it is stored separately, because,
      * in situations where we are composing the statement, we want to construct the
      */
-    public Stencil commentPattern;
+    //public Stencil commentPattern;
 
     /**
      * Optional matching predicate applied to matches to ensure 
@@ -1257,10 +1257,10 @@ public final class $stmt<T extends Statement>
     
     public $stmt( T st ){
         this.statementClass = (Class<T>)st.getClass();
-        if( st.getComment().isPresent() ){
-            Comment c = st.getComment().get();
-            this.commentPattern = Stencil.of( c.toString() );
-        }
+        //if( st.getComment().isPresent() ){
+        //    Comment c = st.getComment().get();
+        //    this.commentPattern = Stencil.of( c.toString() );
+        //}
         this.stmtPattern = Stencil.of( st.toString(NO_COMMENTS) );
     }
 
@@ -1276,18 +1276,18 @@ public final class $stmt<T extends Statement>
     
     @Override
     public T fill(Object...values){
-        if( this.commentPattern != null ){
-            return (T)Stmt.of(Stencil.of(commentPattern, this.stmtPattern ).fill(Translator.DEFAULT_TRANSLATOR, values) );
-        }
+        //if( this.commentPattern != null ){
+        //    return (T)Stmt.of(Stencil.of(commentPattern, this.stmtPattern ).fill(Translator.DEFAULT_TRANSLATOR, values) );
+        //}
         String str = stmtPattern.fill(Translator.DEFAULT_TRANSLATOR, values);
         return (T)Stmt.of( str);
     }
 
     @Override
     public $stmt $(String target, String $name ) {
-        if( this.commentPattern != null ) {
-            this.commentPattern = this.commentPattern.$(target, $name);
-        }
+        //if( this.commentPattern != null ) {
+        //    this.commentPattern = this.commentPattern.$(target, $name);
+        //}
         this.stmtPattern = this.stmtPattern.$(target, $name);
         return this;
     }
@@ -1316,33 +1316,33 @@ public final class $stmt<T extends Statement>
 
     @Override
     public T fill(Translator t, Object...values){
-        if( this.commentPattern != null ){
-            return (T)Stmt.of(Stencil.of(commentPattern, stmtPattern).fill(t, values) );
-        }
+        //if( this.commentPattern != null ){
+        //    return (T)Stmt.of(Stencil.of(commentPattern, stmtPattern).fill(t, values) );
+        //}
         return (T)Stmt.of(stmtPattern.fill(t, values));
     }
 
     @Override
     public T construct( Object...keyValues ){
-        if( this.commentPattern != null ){
-            return (T)Stmt.of(Stencil.of(commentPattern, stmtPattern).construct( keyValues) );
-        }
+        //if( this.commentPattern != null ){
+        //   return (T)Stmt.of(Stencil.of(commentPattern, stmtPattern).construct( keyValues) );
+        //}
         return (T)Stmt.of(stmtPattern.construct( Tokens.of(keyValues)));
     }
     
     @Override
     public T construct( Translator t, Object...keyValues ){
-        if( this.commentPattern != null ){
-            return (T)Stmt.of(Stencil.of(commentPattern, stmtPattern).construct(t, Tokens.of(keyValues) ) );
-        }
+        //if( this.commentPattern != null ){
+        //    return (T)Stmt.of(Stencil.of(commentPattern, stmtPattern).construct(t, Tokens.of(keyValues) ) );
+        //}
         return (T)Stmt.of(stmtPattern.construct( t, Tokens.of(keyValues) ));
     }
 
     @Override
     public T construct( Map<String,Object> tokens ){
-        if( this.commentPattern != null ){
-            return (T)Stmt.of(Stencil.of(commentPattern, stmtPattern).construct( Translator.DEFAULT_TRANSLATOR, tokens ));
-        }
+        //if( this.commentPattern != null ){
+        //    return (T)Stmt.of(Stencil.of(commentPattern, stmtPattern).construct( Translator.DEFAULT_TRANSLATOR, tokens ));
+        //}
         return (T)Stmt.of(stmtPattern.construct( Translator.DEFAULT_TRANSLATOR, tokens ));
     }
     
@@ -1352,17 +1352,17 @@ public final class $stmt<T extends Statement>
      * @return 
      */
     public T construct( _node _n ){
-        if( this.commentPattern != null ){
-            return (T)Stmt.of(Stencil.of(commentPattern, stmtPattern).construct(_n.deconstruct()) );
-        }
+        //if( this.commentPattern != null ){
+        // //   return (T)Stmt.of(Stencil.of(commentPattern, stmtPattern).construct(_n.deconstruct()) );
+        //}
         return (T)$stmt.this.construct(_n.deconstruct());
     }
 
     @Override
     public T construct( Translator t, Map<String,Object> tokens ){
-        if( this.commentPattern != null ){
-            return (T)Stmt.of(Stencil.of(commentPattern, stmtPattern).construct( t, tokens ));
-        }
+        //if( this.commentPattern != null ){
+        //    return (T)Stmt.of(Stencil.of(commentPattern, stmtPattern).construct( t, tokens ));
+        //}
         return (T)Stmt.of(stmtPattern.construct( t, tokens ));
     }
 
@@ -1388,17 +1388,17 @@ public final class $stmt<T extends Statement>
 
     @Override
     public List<String> list$(){
-        if( this.commentPattern != null ){
-            return Stencil.of(commentPattern, stmtPattern).list$();
-        }
+        //if( this.commentPattern != null ){
+        //    return Stencil.of(commentPattern, stmtPattern).list$();
+        //}
         return this.stmtPattern.list$();
     }
 
     @Override
     public List<String> list$Normalized(){
-        if( this.commentPattern != null ){
-            return Stencil.of(commentPattern, stmtPattern).list$Normalized();
-        }
+        //if( this.commentPattern != null ){
+         //   return Stencil.of(commentPattern, stmtPattern).list$Normalized();
+        //}
         return this.stmtPattern.list$Normalized();
     }
 
@@ -1443,12 +1443,12 @@ public final class $stmt<T extends Statement>
      * @return 
      */
     public $stmt hardcode$( Translator translator, Tokens kvs ) {
-        if( this.commentPattern != null ){
-            this.commentPattern = this.commentPattern.hardcode$(translator, kvs);
-            this.stmtPattern = this.stmtPattern.hardcode$(translator,kvs);
-        } else {
-            this.stmtPattern = this.stmtPattern.hardcode$(translator, kvs);
-        }
+        //if( this.commentPattern != null ){
+        //    this.commentPattern = this.commentPattern.hardcode$(translator, kvs);
+        //    this.stmtPattern = this.stmtPattern.hardcode$(translator,kvs);
+        //} else {
+        this.stmtPattern = this.stmtPattern.hardcode$(translator, kvs);
+        //}
         return this;
     }
 
@@ -1465,6 +1465,16 @@ public final class $stmt<T extends Statement>
         }
     }
     
+    public boolean isMatchAny(){
+        try{
+            return this.constraint.test(null) 
+                //&& this.statementClass == Statement.class 
+                && this.stmtPattern.isMatchAny();
+        }catch(Exception e){
+            return false;
+        }
+    }
+    
     /**
      * 
      * @param astStmt
@@ -1474,6 +1484,33 @@ public final class $stmt<T extends Statement>
         if( astStmt == null ){
             return null;
         }
+        if( !statementClass.isAssignableFrom(astStmt.getClass())){
+            return null;
+        }
+        T t = (T)astStmt;
+        if( ! constraint.test(t)){
+            return null;
+        }
+        //Tokens ts = new Tokens();
+        //On the fence with this comment madness
+        //if( this.commentPattern != null && t.getComment().isPresent()){
+        //    Tokens ct = this.commentPattern.deconstruct(t.getComment().toString());
+        //    if( ct == null ){
+        //        return null;
+        //    }
+         //   ts.putAll(ct);            
+        //}
+        //String withoutComment = ;
+        Tokens st = this.stmtPattern.deconstruct(astStmt.toString(NO_COMMENTS));
+        if( st == null ){
+            return null;
+        }      
+        return new Select( astStmt, $args.of(st) );
+        //if( ts.isConsistent(st)){
+        //    ts.putAll(st);           
+        //}
+        
+        /*
         if( statementClass.isAssignableFrom(astStmt.getClass())){
             if( ! constraint.test((T) astStmt)){
                 return null;
@@ -1518,7 +1555,8 @@ public final class $stmt<T extends Statement>
                 }
             }
         }
-        return null;        
+        */
+        //return null;        
     }
 
     @Override
@@ -1539,6 +1577,7 @@ public final class $stmt<T extends Statement>
      * @param _n
      * @return 
      */
+    @Override
     public Select<T> selectFirstIn( _node _n ){
         Optional<T> f = _n.ast().findFirst(this.statementClass, s -> this.matches(s) );         
         if( f.isPresent()){
@@ -1552,6 +1591,7 @@ public final class $stmt<T extends Statement>
      * @param astNode the 
      * @return a Select containing the Statement and the key value pairs from the prototype
      */
+    @Override
     public Select<T> selectFirstIn( Node astNode ){
         Optional<T> f = astNode.findFirst(this.statementClass, s -> this.matches(s) );         
         if( f.isPresent()){
@@ -1601,6 +1641,7 @@ public final class $stmt<T extends Statement>
      * @param _n
      * @return 
      */
+    @Override
     public T firstIn( _node _n ){
         Optional<T> f = _n.ast().findFirst(this.statementClass, s -> this.matches(s) );         
         if( f.isPresent()){
@@ -1614,6 +1655,7 @@ public final class $stmt<T extends Statement>
      * @param astNode the 
      * @return 
      */
+    @Override
     public T firstIn( Node astNode ){
         Optional<T> f = astNode.findFirst(this.statementClass, s -> this.matches(s) );         
         if( f.isPresent()){

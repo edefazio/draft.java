@@ -12,6 +12,7 @@ import draft.java._model;
 import draft.java._model._node;
 import java.util.*;
 import java.util.function.Consumer;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 /**
@@ -28,6 +29,11 @@ public class $annos
     List<$anno> $annosList = new ArrayList<>();
     
     /**
+     * A Matching predicate for _annos
+     */
+    Predicate<_annos> constraint = t-> true;
+    
+    /**
      * prototype that matches any grouping of annos
      * @return 
      */
@@ -35,6 +41,20 @@ public class $annos
         return new $annos();
     }
     
+    /**
+     * 
+     * @param constraint
+     * @return 
+     */
+    public static $annos of( Predicate<_annos> constraint ){
+       return any().constraint(constraint);
+    }
+    
+    /**
+     * 
+     * @param $anns
+     * @return 
+     */
     public static $annos of( $anno...$anns ){
         $annos $as = new $annos();
         Arrays.stream($anns).forEach(a -> $as.$annosList.add(a));
@@ -62,10 +82,35 @@ public class $annos
         }        
     }
     
+    /**
+     * 
+     * @param constraint
+     * @return 
+     */
+    public $annos constraint( Predicate<_annos> constraint ){
+        this.constraint = constraint;
+        return this;
+    }
+    
+    /**
+     * 
+     * @param constraint
+     * @return 
+     */
+    public $annos addConstraint( Predicate<_annos> constraint ){
+        this.constraint = this.constraint.and(constraint);
+        return this;
+    }
     
     public boolean isMatchAny(){
-        return this.$annosList.isEmpty() || 
-            this.$annosList.size() == 1 && this.$annosList.get(0).isMatchAny();
+        try{
+            return( this.constraint.test(null) && 
+                this.$annosList.isEmpty() || 
+                this.$annosList.size() == 1 
+                && this.$annosList.get(0).isMatchAny());
+        } catch(Exception e){
+            return false;
+        }
     }
     /**
      * 
@@ -159,7 +204,10 @@ public class $annos
     }
     
     public Select select( _annos _anns ){
-         List<_anno> annosLeft = new ArrayList<>();
+        if( ! this.constraint.test(_anns)){
+            return null;
+        }
+        List<_anno> annosLeft = new ArrayList<>();
         annosLeft.addAll( _anns.list() );
         Tokens tokens = new Tokens();
         //_annos _as = _annotated.getAnnos();
@@ -209,8 +257,8 @@ public class $annos
         Optional<Node> f = 
                 
             astNode.findFirst( Node.class, 
-                    n -> (n instanceof NodeWithAnnotations) 
-                    && matches((NodeWithAnnotations)n) 
+                n -> (n instanceof NodeWithAnnotations) 
+                && matches((NodeWithAnnotations)n) 
             );         
         
         if( f.isPresent()){
@@ -224,12 +272,13 @@ public class $annos
      * @param astNode
      * @return 
      */
+    @Override
     public Select selectFirstIn( Node astNode ){
         Optional<Node> f = 
                 
             astNode.findFirst( Node.class, 
-                    n -> (n instanceof NodeWithAnnotations) 
-                    && matches((NodeWithAnnotations)n) 
+                n -> (n instanceof NodeWithAnnotations) 
+                && matches((NodeWithAnnotations)n) 
             );         
         
         if( f.isPresent()){
@@ -316,8 +365,8 @@ public class $annos
     
     @Override
     public String toString(){
-        if( this.$annosList.isEmpty()){
-            return "$annos(ALL MATCH)";
+        if( this.isMatchAny()){
+            return "$annos(MATCH ANY)";
         }
         StringBuilder sb = new StringBuilder();
         this.$annosList.forEach(a -> sb.append("    ").append(a));

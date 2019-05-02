@@ -142,7 +142,7 @@ public class $parameters implements Template<_parameters>, $proto<_parameters> {
         Select sel = select(p);
         if( sel != null ){
             if( all.isConsistent(sel.args.asTokens())){
-                System.out.println("adding "+sel.args.asTokens() );
+                //System.out.println("adding "+sel.args.asTokens() );
                 all.putAll(sel.args.asTokens());
                 return all;
             }

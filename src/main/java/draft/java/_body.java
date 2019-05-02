@@ -6,7 +6,6 @@ import com.github.javaparser.ast.body.BodyDeclaration;
 import com.github.javaparser.ast.body.MethodDeclaration;
 import com.github.javaparser.ast.comments.Comment;
 import com.github.javaparser.ast.expr.Expression;
-import com.github.javaparser.ast.expr.LambdaExpr;
 import com.github.javaparser.ast.expr.ObjectCreationExpr;
 import com.github.javaparser.ast.nodeTypes.NodeWithBlockStmt;
 import com.github.javaparser.ast.nodeTypes.NodeWithOptionalBlockStmt;
@@ -14,11 +13,11 @@ import com.github.javaparser.ast.nodeTypes.NodeWithStatements;
 import com.github.javaparser.ast.stmt.*;
 import com.github.javaparser.printer.PrettyPrinterConfiguration;
 import draft.DraftException;
+import draft.Text;
 import draft.java.macro._remove;
 
 import java.util.*;
 import java.util.function.Consumer;
-import java.util.function.Function;
 import java.util.function.Predicate;
 
 /**
@@ -38,6 +37,41 @@ public final class _body implements _model {
      */
     private final Object astParentNode;
 
+    /**
+     * 
+     * @param body
+     * @return 
+     */
+    public static final _body of( String body ){
+        if( body.trim().equals(";")){
+            return of( 
+                _method.of("void __BODYHOLDER();").ast());
+        }
+        // "we" need to put the body inside a parent... lets make it a 
+        // method
+        return of( _method.of("void __BODYHOLDER();").add(body).ast() );
+    }
+    
+    /**
+     * 
+     * @param body
+     * @return 
+     */
+    public static final _body of( String...body ){
+        String bd = Text.combine(body).trim();
+        if( bd.equals(";")){
+            return of( _method.of("void __BODYHOLDER();").ast());
+        }
+        return of( _method.of("void __BODYHOLDER();").add(body).ast() );
+    }
+    
+    public static final _body of( Statement statement ){
+        if( statement instanceof BlockStmt ){
+            return of( _method.of("void __BODYHOLDER();").setBody((BlockStmt)statement).ast());
+        }
+        return of( _method.of("void __BODYHOLDER();").add(statement).ast());
+    }
+    
     /**
      * Here, we create a "body" by passing in an Anonymous class containing
      * a method with a code body... Note we look for the FIRST method declaration 
@@ -134,6 +168,16 @@ public final class _body implements _model {
         return true;
     }
 
+    /**
+     * Gets the AST parent node... which is either
+     * a NodeWithBlockStmt
+     * or NodeWithOptionalBlockStmt
+     * @return 
+     */
+    public Object astParentNode(){
+        return this.astParentNode;
+    }
+    
     /**
      * NOTE this could be null
      *
@@ -439,6 +483,7 @@ public final class _body implements _model {
          * @return the modified T (_method, _constructor, _staticBlock)
          */
         default T add(String... statements) {
+            
             BlockStmt bs = Ast.blockStmt(statements);
             //organize orphan comments
             List<Comment> coms = bs.getOrphanComments();
@@ -459,7 +504,15 @@ public final class _body implements _model {
                         c = null;
                     }
                 }
-                getBody().ast().addStatement(st);
+                if( getBody().astParentNode() instanceof NodeWithOptionalBlockStmt){
+                    NodeWithOptionalBlockStmt nobs = (NodeWithOptionalBlockStmt)getBody().astParentNode;
+                    if( !nobs.getBody().isPresent()){
+                        BlockStmt bss = nobs.createBody();
+                        bs.getStatements().forEach(s -> bss.addStatement(s));
+                    }
+                } else{
+                    getBody().ast().addStatement(st);
+                }
                 //add( bs.getStatements().toArray( new Statement[ 0 ] ) );
             }
             coms.forEach(co -> getBody().ast().addOrphanComment(co));
@@ -863,47 +916,6 @@ public final class _body implements _model {
                 return of.get();
             }
             return null;
-        }
-        
-        /**
-         * Finds and returns the first Searches through the entity (in Preorder order) to find the first
-         * instance of a nodeClass
-         *
-         * @param nodeClass
-         * @param <N>
-         * @return the first instance found or null
-         
-        default <N extends Node> N findFirst(Class<N> nodeClass) {
-            if( !isImplemented() ){
-                return null;
-            }
-            Optional<N> of = getBody().ast().findFirst(nodeClass);
-            if (of.isPresent()) {
-                return of.get();
-            }
-            return null;
-        }
-        */ 
-
-        /**
-         * Searches through the entity (in Preorder order) to find the first
-         * instance of a nodeClass that matches the nodeMatchFn
-         *
-         * @param nodeClass
-         * @param nodeMatchFn
-         * @param <N>
-         * @return the first instance found or null
-         
-        default <N extends Node> N findFirst(Class<N> nodeClass, Predicate<N> nodeMatchFn) {
-            if( !isImplemented() ){
-                return null;
-            }
-            Optional<N> of = getBody().ast().findFirst(nodeClass, nodeMatchFn);
-            if (of.isPresent()) {
-                return of.get();
-            }
-            return null;
-        }
-        */ 
+        }        
     }    
 }

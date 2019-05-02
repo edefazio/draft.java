@@ -14,6 +14,15 @@ import junit.framework.TestCase;
  */
 public class SannosTest extends TestCase {
     
+    public void testLambda(){
+        class C{
+            int x;
+            public void m(){}
+        }
+        
+        assertEquals(3, $annos.of( ans-> ans.isEmpty() ).count(C.class));
+        
+    }
     public void testT(){
         $annos $as = new $annos();
         _class _c = _class.of("C");

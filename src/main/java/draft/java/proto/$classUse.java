@@ -39,6 +39,73 @@ import java.util.stream.Collectors;
 public class $classUse {
     
     /**
+     * 
+     * @param clazz
+     * @param targetClass
+     * @return 
+     */
+    public static List<Select> listSelected(Class clazz, Class targetClass){
+        return of(targetClass).listSelectedIn(clazz);
+    }
+    
+    /**
+     * 
+     * @param clazz
+     * @param targetClass
+     * @param selectConstraint
+     * @return 
+     */
+    public static List<Select> listSelected(Class clazz, Class targetClass, Predicate<Select> selectConstraint ){
+        return of(targetClass).listSelectedIn(clazz, selectConstraint);
+    }
+    
+    /**
+     * 
+     * @param <N>
+     * @param _n
+     * @param targetClass
+     * @return 
+     */
+    public static <N extends _node> List<Select> listSelected( N _n, Class targetClass ){
+        return of(targetClass).listSelectedIn(_n);
+    }
+    
+    /**
+     * 
+     * @param <N>
+     * @param _n
+     * @param targetClass
+     * @param selectConstraint
+     * @return 
+     */
+    public static <N extends _node> List<Select> listSelected( N _n, Class targetClass, Predicate<Select> selectConstraint ){
+        return of(targetClass).listSelectedIn(_n, selectConstraint);
+    }
+    
+    /**
+     * 
+     * @param <N>
+     * @param astNode
+     * @param targetClass
+     * @return 
+     */
+    public static <N extends Node> List<Select> listSelected( N astNode, Class targetClass ){
+        return of(targetClass).listSelectedIn(astNode);
+    }
+    
+    /**
+     * 
+     * @param <N>
+     * @param astNode
+     * @param targetClass
+     * @param selectConstraint
+     * @return 
+     */
+    public static <N extends Node> List<Select> listSelected( N astNode, Class targetClass, Predicate<Select> selectConstraint ){
+        return of(targetClass).listSelectedIn(astNode);
+    }
+    
+    /**
      * find all references the the target class in the clazz and replace it with 
      * the replacement class
      * @param clazz
@@ -77,6 +144,29 @@ public class $classUse {
     
     /**
      * 
+     * @param clazz
+     * @param target
+     * @param nodeAction
+     * @return 
+     */
+    public static _type forEach(Class clazz, Class target, Consumer<Node> nodeAction) {
+        return $classUse.of(target).forEachIn(clazz, nodeAction);
+    }
+
+    /**
+     * 
+     * @param <N>
+     * @param _n
+     * @param target
+     * @param nodeAction
+     * @return 
+     */
+    public static <N extends _node> N forEach(N _n, Class target, Consumer<Node> nodeAction) {
+        return $classUse.of(target).forEachIn(_n, nodeAction);
+    }
+    
+    /**
+     * 
      * @param <N>
      * @param astNode
      * @param target
@@ -85,6 +175,78 @@ public class $classUse {
      */
     public static <N extends Node> N forEach(N astNode, Class target, Consumer<Node> nodeAction) {
         return $classUse.of(target).forEachIn(astNode, nodeAction);
+    }
+    
+    /**
+     * 
+     * @param clazz
+     * @param target
+     * @param selectAction
+     * @return 
+     */
+    public static _type forSelected(Class clazz, Class target, Consumer<Select> selectAction) {
+        return $classUse.of(target).forSelectedIn(clazz, selectAction);
+    }
+    
+    /**
+     * 
+     * @param <N>
+     * @param _n
+     * @param target
+     * @param selectAction
+     * @return 
+     */
+    public static <N extends _node> N forSelected(N _n, Class target, Consumer<Select> selectAction) {
+        return $classUse.of(target).forSelectedIn(_n, selectAction);
+    }
+    
+    /**
+     * 
+     * @param <N>
+     * @param astNode
+     * @param target
+     * @param selectAction
+     * @return 
+     */
+    public static <N extends Node> N forSelected(N astNode, Class target, Consumer<Select> selectAction) {
+        return $classUse.of(target).forSelectedIn(astNode, selectAction);
+    }
+    
+    /**
+     * 
+     * @param clazz
+     * @param target
+     * @param selectConstraint
+     * @param selectAction
+     * @return 
+     */
+    public static _type forSelected(Class clazz, Class target, Predicate<Select> selectConstraint, Consumer<Select> selectAction) {
+        return $classUse.of(target).forSelectedIn(clazz, selectConstraint, selectAction);
+    }
+    
+    /**
+     * 
+     * @param <N>
+     * @param _n
+     * @param target
+     * @param selectConstraint
+     * @param selectAction
+     * @return 
+     */
+    public static <N extends _node> N forSelected(N _n, Class target, Predicate<Select> selectConstraint,  Consumer<Select> selectAction) {
+        return $classUse.of(target).forSelectedIn(_n, selectConstraint, selectAction);
+    }
+    /**
+     * 
+     * @param <N>
+     * @param astNode
+     * @param target
+     * @param selectConstraint
+     * @param selectAction
+     * @return 
+     */
+    public static <N extends Node> N forSelected(N astNode, Class target, Predicate<Select> selectConstraint, Consumer<Select> selectAction) {
+        return $classUse.of(target).forSelectedIn(astNode, selectConstraint, selectAction);
     }
     
     /**
@@ -147,8 +309,7 @@ public class $classUse {
      * Matches any 
      * @return the classUse
      */
-    public static final $classUse any(){
-        
+    public static final $classUse any(){        
         return new $classUse("", $node.of("$classUse$").addConstraint(n -> n.toString().contains(".")), 
             Collections.EMPTY_LIST, 
             $node.of("$classUse$").addConstraint(n -> !n.toString().contains(".") ) ).addConstraint(IS_EXPECTED_NODE_TYPE);
@@ -184,6 +345,11 @@ public class $classUse {
         $memberNames = $classUse.buildMemberClassNames( type );
     }
     
+    /**
+     * 
+     * @param constraint
+     * @return 
+     */
     public $classUse constraint(Predicate<Node> constraint){
         $fullName.constraint(constraint);
         $memberNames.forEach(m -> constraint(constraint));
@@ -191,6 +357,11 @@ public class $classUse {
         return this;
     }
     
+    /**
+     * 
+     * @param constraint
+     * @return 
+     */
     public $classUse addConstraint(Predicate<Node> constraint){
         $fullName.addConstraint(constraint);
         $memberNames.forEach(m -> m.addConstraint(constraint));

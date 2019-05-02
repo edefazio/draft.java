@@ -511,8 +511,8 @@ public class $constructor
     public $id name = $id.any();
     public $parameters parameters = $parameters.of();
     public $component<_throws> thrown = new $component( "$throws$", t-> true);
-    public $component<_body> body = new $component("$body$", t->true);
-    
+    //public $component<_body> body = new $component("$body$", t->true);
+    public $body body = $body.any();
     private $constructor( _constructor _ct ){
         this(_ct, t-> true );
     }
@@ -529,16 +529,7 @@ public class $constructor
         if( _ct.hasAnnos() ){
             annos = $annos.of(_ct.getAnnos() );
         }
-        modifiers = $modifiers.of(_ct );
-        /*
-        if( !_ct.getModifiers().isEmpty() ){
-            final _modifiers ms = _ct.getModifiers();
-            modifiers = new $component(
-                ms.toString(), 
-                (m)-> ms.equals(m));
-        }
-        */
-        //type = new $component<>(_m.getType().toString());
+        modifiers = $modifiers.of(_ct );        
         if( !_ct.hasTypeParameters() ){
             final _typeParameters etps = _ct.getTypeParameters();
             //HMMMMM matvhing orfer shouldnt matter
@@ -556,9 +547,10 @@ public class $constructor
             thrown = new $component( "$throws$", (t)-> t.equals(ths) );
         }
         if( _ct.hasBody() ){            
-            String bdy = _ct.getBody().toString(new PrettyPrinterConfiguration()
-                .setPrintComments(false).setPrintJavadoc(false) );
-            body = new $component(bdy.trim());            
+            body = $body.of(_ct.ast());
+            //String bdy = _ct.getBody().toString(new PrettyPrinterConfiguration()
+            //    .setPrintComments(false).setPrintJavadoc(false) );
+            //body = new $component(bdy.trim());            
         }
         this.constraint = constraint;
     }
@@ -594,7 +586,8 @@ public class $constructor
         normalized$.addAll( name.pattern.list$Normalized() );
         normalized$.addAll( parameters.list$Normalized() );
         normalized$.addAll( thrown.pattern.list$Normalized() );
-        normalized$.addAll( body.pattern.list$Normalized() );
+        normalized$.addAll(body.list$Normalized());
+        //normalized$.addAll( body.pattern.list$Normalized() );
         return normalized$.stream().distinct().collect(Collectors.toList());        
     }
 
@@ -609,7 +602,8 @@ public class $constructor
         all$.addAll( name.pattern.list$() );
         all$.addAll( parameters.list$() );
         all$.addAll( thrown.pattern.list$() );
-        all$.addAll( body.pattern.list$() );        
+        all$.addAll( body.list$() );        
+        //all$.addAll( body.pattern.list$() );        
         return all$;
     }
     
@@ -623,6 +617,11 @@ public class $constructor
         return this;
     }
     
+    public $constructor $name ($id name ){
+        this.name = name;
+        return this;
+    }
+    
     
     public $constructor $typeParameters(){
         this.typeParameters.pattern("$typeParameters$");
@@ -631,7 +630,6 @@ public class $constructor
 
     public $constructor $modifiers(){
         this.modifiers = $modifiers.any();
-        //this.modifiers.stencil("$modifiers$");
         return this;
     }    
     
@@ -646,9 +644,12 @@ public class $constructor
     }
     
     public $constructor emptyBody(){
-        body.pattern = Stencil.of( "{}" );
+        body = $body.of("{}");
+        //body.pattern = Stencil.of( "{}" );
         return this;
     }
+    
+    
     
     @Override
     public _constructor fill(Translator translator, Object... values) {
@@ -706,11 +707,13 @@ public class $constructor
         sb.append(" ");
         sb.append( thrown.compose(translator, base));
         sb.append(System.lineSeparator());
+        
         /** 
          * with the body, I need to fo some more processing
          * I need to process the labeled Statements like snips
          */
-        String str = body.compose(translator, base); 
+        //String str = body.compose(translator, base); 
+        String str = body.construct(translator, base).toString(); 
         try{
             //I might need another specialization
             //BlockStmt astBs = Ast.blockStmt(str);
@@ -830,7 +833,8 @@ public class $constructor
         name.pattern = name.pattern.hardcode$(translator, kvs);
         parameters = parameters.hardcode$(translator, kvs);
         thrown.pattern = thrown.pattern.hardcode$(translator, kvs);
-        body.pattern = body.pattern.hardcode$(translator, kvs);
+        body = body.hardcode$(translator, kvs );
+        //body.pattern = body.pattern.hardcode$(translator, kvs);
         
         return this;
     }
@@ -845,7 +849,8 @@ public class $constructor
         name.pattern = name.pattern.$(target, $Name);
         parameters = parameters.$(target, $Name);
         thrown.pattern = thrown.pattern.$(target, $Name);
-        body.pattern = body.pattern.$(target, $Name);        
+        body = body.$(target, $Name);
+        //body.pattern = body.pattern.$(target, $Name);        
         return this;
     }
 

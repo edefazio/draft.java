@@ -122,6 +122,10 @@ public class $anno
         return $anno.of(pattern).selectFirstIn(_n);
     }
     
+    public static final Select selectFirst( Class clazz, String pattern, Predicate<Select>selectConstraint){
+        return $anno.of(pattern).selectFirstIn(clazz, selectConstraint);
+    }
+    
     /**
      * 
      * @param <N>
@@ -145,19 +149,6 @@ public class $anno
     }
     
     /**
-     * 
-     * @param clazz
-     * @param pattern
-     * @param selectConstraint
-     * @return 
-     */
-    public static final Select selectFirst( Class clazz, String pattern, Predicate<Select>selectConstraint){
-        return $anno.of(pattern).selectFirstIn(_type.of(clazz), selectConstraint);
-    }
-    
-   
-    
-    /**
      * lists all annos within the clazz
      * @param clazz the runtime class (with source on classpath)
      * @return 
@@ -174,6 +165,27 @@ public class $anno
      */
     public static final <N extends _node> List<_anno> list( N _n ){
         return any().listIn(_n);
+    }
+    
+    /**
+     * 
+     * @param <N>
+     * @param _n
+     * @param annoClass
+     * @return 
+     */
+    public static final <N extends _node> List<_anno> list(N _n, Class<? extends Annotation> annoClass ){
+       return $anno.of(annoClass).listIn(_n);
+    }
+    
+    /**
+     * 
+     * @param clazz
+     * @param annoClass
+     * @return 
+     */
+    public static final List<_anno> list(Class clazz, Class<? extends Annotation> annoClass ){
+        return $anno.of(annoClass).listIn(clazz);
     }
     
     /**
@@ -584,6 +596,26 @@ public class $anno
      */
     public static final <N extends _node> N remove( N _n, _anno _proto ){
         return $anno.of(_proto).removeIn(_n);
+    }
+    
+    /**
+     * 
+     * @param clazz
+     * @param annoClass
+     * @return 
+     */
+    public static final _type remove(Class clazz, Class<? extends Annotation> annoClass){
+        return $anno.of(annoClass).removeIn(clazz);
+    }
+    
+    /**
+     * 
+     * @param clazz
+     * @param pattern
+     * @return 
+     */
+    public static final _type remove( Class clazz, String... pattern ){
+        return $anno.of(pattern).removeIn(clazz);
     }
     
     /**
@@ -1122,8 +1154,18 @@ public class $anno
      * @return 
      */
     public Select selectFirstIn( Class clazz){
-        return $anno.this.selectFirstIn( _type.of(clazz));
+        return selectFirstIn( _type.of(clazz));
     } 
+    
+    /**
+     * 
+     * @param clazz
+     * @param selectConstraint
+     * @return 
+     */
+    public Select selectFirstIn( Class clazz, Predicate<Select> selectConstraint ){
+        return selectFirstIn(_type.of(clazz), selectConstraint );
+    }
     
     /**
      * 

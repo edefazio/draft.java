@@ -135,7 +135,10 @@ public class SmethodTest extends TestCase {
         /** Javadoc */ @Deprecated void f();
     }
     public void testAnyPrototype(){
+        assertTrue( $method.any().matches("void noBody();") );
+        assertTrue( $method.any().matches(" public static int someBody(){ return 103;}") );
         //verify that the any() prototype will list methods with or without body
+        System.out.println( $method.any().listIn(I.class) );
         assertEquals( 3, $method.any().listIn(I.class).size() );
     }
     

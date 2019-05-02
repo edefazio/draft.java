@@ -411,7 +411,9 @@ public class $method
     }
 
     public static $method any(){
-        return new $method(_method.of("$type$ $name$();") );
+        return new $method(_method.of("$type$ $name$();") ).anyBody();
+        //$method $m = new $method(_method.of("$type$ $name$();") );
+        //$m.anyBody();
     }
     
     /**
@@ -443,7 +445,7 @@ public class $method
         _method._hasMethods  _hm = (_method._hasMethods)_type.of(clazz);
         return of( _hm.getMethod(name) );
     }       
-
+    
     /**
      * 
      * @param proto
@@ -477,7 +479,8 @@ public class $method
     
     public $parameters parameters = $parameters.of();
     public $component<_throws> thrown = new $component( "$throws$", t-> true);
-    public $component<_body> body = new $component("$body$", t->true);
+    //public $component<_body> body = new $component("$body$", t->true);
+    public $body body = $body.any();
     
     private $method( _method _p ){
         this( _p, t-> true );
@@ -521,12 +524,20 @@ public class $method
             final _throws ths = _m.getThrows();
             thrown = new $component( "$throws$", (t)-> t.equals(ths) );
         }
+        body = $body.of( _m.ast() );
+        /*
         if( _m.hasBody() ){            
             String bdy = _m.getBody().toString(new PrettyPrinterConfiguration()
                 .setPrintComments(false).setPrintJavadoc(false) );
             body = new $component(bdy.trim());            
         }
+        */
         this.constraint = constraint;
+    }
+    
+    public $method anyBody(){
+        this.body = $body.any();
+        return this;
     }
     
     /**
@@ -560,7 +571,8 @@ public class $method
         normalized$.addAll( name.pattern.list$Normalized() );
         normalized$.addAll( parameters.list$Normalized() );
         normalized$.addAll( thrown.pattern.list$Normalized() );
-        normalized$.addAll( body.pattern.list$Normalized() );
+        normalized$.addAll( body.list$Normalized() );
+        //normalized$.addAll( body.pattern.list$Normalized() );
         return normalized$.stream().distinct().collect(Collectors.toList());        
     }
 
@@ -575,7 +587,8 @@ public class $method
         all$.addAll( name.pattern.list$() );
         all$.addAll( parameters.list$() );
         all$.addAll( thrown.pattern.list$() );
-        all$.addAll( body.pattern.list$() );        
+        all$.addAll( body.list$() );        
+        //all$.addAll( body.pattern.list$() );        
         return all$;
     }
     
@@ -633,17 +646,20 @@ public class $method
     }
     
     public $method body(_body _bd ){
-        this.body.pattern = Stencil.of( _bd.toString() );
+       this.body.$bodyStmts( _bd ); 
+       //this.body.pattern = Stencil.of( _bd.toString() );
         return this;
     }
     
     public $method noBody(){
-        body.pattern = Stencil.of( ";" );
+        this.body = $body.of(";");
+        //body.pattern = Stencil.of( ";" );
         return this;
     }
     
     public $method emptyBody(){
-        body.pattern = Stencil.of( "{}" );
+        this.body = $body.of("{}");
+        //body.pattern = Stencil.of( "{}" );
         return this;
     }
     
@@ -714,7 +730,7 @@ public class $method
          * with the body, I need to fo some more processing
          * I need to process the labeled Statements like snips
          */
-        String str = body.compose(translator, base); 
+        String str = body.construct(translator, base).toString(); 
         try{
             //I might need another specialization
             //BlockStmt astBs = Ast.blockStmt(str);
@@ -835,7 +851,8 @@ public class $method
         name.pattern = name.pattern.hardcode$(translator, kvs);
         parameters = parameters.hardcode$(translator, kvs);
         thrown.pattern = thrown.pattern.hardcode$(translator, kvs);
-        body.pattern = body.pattern.hardcode$(translator, kvs);
+        body = body.hardcode$(translator, kvs);
+        //body.pattern = body.pattern.hardcode$(translator, kvs);
         
         return this;
     }
@@ -851,7 +868,8 @@ public class $method
         name.pattern = name.pattern.$(target, $Name);
         parameters = parameters.$(target, $Name);
         thrown.pattern = thrown.pattern.$(target, $Name);
-        body.pattern = body.pattern.$(target, $Name);        
+        body = body.$(target, $Name);
+        //body.pattern = body.pattern.$(target, $Name);        
         return this;
     }
 
@@ -866,6 +884,14 @@ public class $method
         return $(exprString, $name);
     }
 
+    public boolean matches( String method ){
+        return select(_method.of(method)) != null;
+    }
+    
+    public boolean matches( String... method ){
+        return select(_method.of(method)) != null;
+    }
+    
     /**
      * 
      * @param _m

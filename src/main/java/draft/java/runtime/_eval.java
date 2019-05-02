@@ -27,10 +27,18 @@ public class _eval {
      * the prototype method used to inject an expression into so that it can be 
      * evaluated and returned
      */ 
-    private static $method $evalExpr = $method.of("public static Object EVAL(){",
+    private static $method $evalExpr = $method.of(
+        "public static Object EVAL(){",
         "return $eval$;",
         "}");
     
+    public static Object expr( String expression ){
+        try{
+            return of(Expr.of(expression));
+        } catch( Exception e){
+            return null;
+        }
+    }
     /**
      * Convert the String into an Expression and evaluate the expression 
      * then return the result
@@ -57,8 +65,12 @@ public class _eval {
      * @return 
      */
     public static Object of( Expression expr ){
-        _class _c = _class.of("draft.adhoc.ExprEval")
-            .method( $evalExpr.fill(expr) );            
+        //System.out.println("************************* >>>> EVALUATION OF "+expr);
+        _method gen = $evalExpr.construct("eval", expr);
+        //System.out.println("************************* >>>> EVALUATION OF "+gen);
+        _class _c = _class.of("draft.adhoc.ExprEval").method(gen);
+            //.method( $evalExpr.fill(expr) );   
+        //System.out.println("************************* >>>> EVALUATION OF " +  _c );
         return _project.of(_c).call(_c);
     }
     

@@ -17,6 +17,50 @@ import static junit.framework.TestCase.assertTrue;
 
 public class SstmtTest extends TestCase {
 
+    public void test$stmtOfBlockInternalsWithComment(){
+        //match empty block
+        $stmt s = $stmt.of("{}");        
+        assertTrue( s.matches("{}") );
+        
+        //match single line block
+        s = $stmt.of("{ assert true; }");
+        assertTrue(s.matches("{ assert true; }"));
+        assertTrue(s.matches("{ /* comment */ assert true; }"));
+        
+        //match multi nest block
+        s = $stmt.of("{ if(1==1){ doIt(); } else{ System.out.println(1); } }");
+        assertTrue(s.matches("{ if(1==1){ doIt(); } else{ System.out.println(1); } }"));
+        assertTrue( s.matches("{ /* comment*/ if(1==1){ /*comment*/ doIt(); } else{ /*comment */ System.out.println(1); } }"));
+        
+        //multi statement block
+        s = $stmt.of("{ doIt(); doNext(); } ");
+        
+        
+    }
+    
+    public void test$stmtWithMultiLineBlock(){
+        $stmt s = $stmt.of( (String $a$, Integer $b$)->{
+            System.out.println($a$);
+            if( $b$ > 2 ){
+                System.out.println( "$b$ > 2");                
+                assertTrue( $a$ == "eric");                
+            }
+        });
+        
+        class C{
+            public void f( String a, int b){
+                System.out.println(a);
+                if( b > 2){
+                    System.out.println( "b > 2" );
+                    assertTrue( a == "eric" );
+                }                
+            }
+        }
+        assertEquals(1, s.count(C.class));
+        
+        
+    }
+    
     public void testStmtAnyMatchesEmptyOrLongBlocks(){
         //assertTrue( $snip.any().matches( _method.of("void m();").getBody().ast() ));
         assertTrue( $stmt.any().matches( _method.of("void m(){}").getBody().ast() ));
@@ -238,7 +282,7 @@ public class SstmtTest extends TestCase {
     public void testReplace$stmtWith$snip(){
         $stmt $s = $stmt.of( ($any$)-> System.out.println($any$) );
         $snip $r = $snip.of( (Integer $any$)-> {
-            /* comment */
+
             assert $any$ != null;
             System.out.print($any$);
         });
