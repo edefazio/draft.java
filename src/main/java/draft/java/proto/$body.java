@@ -4,6 +4,8 @@ import com.github.javaparser.ast.Node;
 import com.github.javaparser.ast.expr.LambdaExpr;
 import com.github.javaparser.ast.nodeTypes.NodeWithBlockStmt;
 import com.github.javaparser.ast.nodeTypes.NodeWithOptionalBlockStmt;
+import com.github.javaparser.ast.stmt.BlockStmt;
+import com.github.javaparser.ast.stmt.LabeledStmt;
 import com.github.javaparser.ast.stmt.Statement;
 import draft.*;
 import draft.java.*;
@@ -320,7 +322,7 @@ public class $body implements Template<_body>, $proto<_body> {
         }
         return _body.of( (Statement)this.bodyStmts.construct(translator, keyValues) );        
     }
-
+    
     /**
      * 
      * @param body

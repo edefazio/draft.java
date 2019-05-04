@@ -1,5 +1,6 @@
 package draft.java.proto;
 
+import com.github.javaparser.ast.stmt.BlockStmt;
 import com.github.javaparser.ast.stmt.Statement;
 import draft.Tokens;
 import draft.java.Expr;
@@ -9,14 +10,124 @@ import draft.java._class;
 import draft.java._method;
 import draft.java.proto.$proto.$args;
 import draft.java.proto.$stmt.Select;
+import java.util.ArrayList;
 import junit.framework.TestCase;
 
 import java.util.List;
 import java.util.function.Consumer;
 import static junit.framework.TestCase.assertTrue;
 
+/**
+ * Passing in templates as parameters to other templates
+ * 
+ * @author Eric
+ */
 public class SstmtTest extends TestCase {
 
+    /**
+     * $labels are easy ways to optional injecting removing or overrideing 
+     * code parameterized statements within a code body
+     * 
+     * to explain: we introduce a labeled statement with the $ prefix somewhere 
+     * within code:
+     * 
+     * $label : assert(1==1);
+     * 
+     * when we "construct" the statement, we treat labeled statements with the 
+     * $ prefix specially...
+     * 
+     * we can
+     * SHOW
+     * HIDE
+     * or
+     * OVERRIDE
+     * 
+     */
+    public void testExplain$label(){
+        // with $block:
+        $stmt $s = $stmt.of("if(a) { $label: doIt(); }");  
+        // we can :
+    
+        Statement st = null;
+        // SHOW                   we passed in a Boolean true, this means show
+        //                        the content at the $label (& remove the $label)
+        st = $s.construct("label",true);        
+        assertTrue($stmt.of("if(a){ doIt();}").matches(st) );
+        
+        // HIDE                    by passing in false, we hide the code at the
+        //                         $label (and the label itself)
+        st = $s.construct("label",false);        
+        assertTrue($stmt.of("if(a){ }").matches(st) );
+        //                         null (or not found) also hides the code   
+        st = $s.construct("label",null);        
+        assertTrue($stmt.of("if(a){ }").matches(st) );
+        
+        // OVERRIDE                pass in a statement here b(); and Override
+        //                         what is at the $label
+        st = $s.construct("label",Stmt.of("b();"));        
+        assertTrue($stmt.of("if(a){b();}").matches(st) );
+        
+        // OVERRIDE               pass in another $stmt that will be constructed
+        st = $s.construct("label",$stmt.of("assert($cond$);"), "cond", "1==1" ); 
+        assertTrue( $stmt.of("if(a){assert(1==1);}").matches(st));
+        
+        //can replace with a block statement
+         st = $s.construct("label",$stmt.of("{assert($cond$); System.out.println(1);}"), "cond", "1==1" ); 
+        assertTrue( $stmt.of("if(a){ {assert(1==1); System.out.println(1); } }").matches(st));
+        
+    }
+    
+    
+    public void testExplainOptionalStatementsAndBlocks(){
+        //sometimes we want to define optional blocks/statements blocks that
+        //can appear within prototype code... for example, if we have simple 
+        //value object Base:        
+        class Base{
+            int id;
+            public String toString(){
+                return " id: "+id;
+            }
+        }        
+        // and we want to create a
+        //toString
+    }
+    
+    //optional statements
+    //
+    public void testConstruct$LabeledStatements(){
+        //test no labeled statements
+        Statement st = 
+            $stmt.construct$LabelStmt(Stmt.of("{}"), new Tokens() );
+        assertTrue( $stmt.of("{}").matches(st) );
+        
+        //if it's null or false.... remove it        
+        st = $stmt.construct$LabelStmt(Stmt.of("{$l: assert true;}"), new Tokens() );
+        assertTrue( st instanceof BlockStmt);
+        assertTrue( st.asBlockStmt().isEmpty() );        
+        st = $stmt.construct$LabelStmt(Stmt.of("{$l: assert true;}"), Tokens.of("l", false) );
+        assertTrue( st instanceof BlockStmt);
+        assertTrue( st.asBlockStmt().isEmpty() );        
+        
+        //if (the value of the $param "l" is true, leave the code in (without the label)
+        st = $stmt.construct$LabelStmt(Stmt.of("{$l: assert true;}"), Tokens.of("l", true) );
+        assertTrue( st instanceof BlockStmt);
+        assertTrue( !st.asBlockStmt().isEmpty() );        
+        assertTrue( $stmt.of("{assert true;}").matches( st ) );        
+        assertTrue( $stmt.of("assert true;").matches( st.asBlockStmt().getStatement(0)) );        
+        
+        
+        //Override at Labeled Statement
+        //if (the value of the $param "l" is a statement), replace the code with the statement
+        st = $stmt.construct$LabelStmt(Stmt.of("{$l: assert true;}"), Tokens.of("l", Stmt.of("assert(1==1);")) );
+        assertTrue( st instanceof BlockStmt);
+        assertTrue( !st.asBlockStmt().isEmpty() );        
+        assertTrue( $stmt.of("{assert (1==1);}").matches( st ) );        
+        
+        
+        
+        
+    }
+    
     public void test$stmtOfBlockInternalsWithComment(){
         //match empty block
         $stmt s = $stmt.of("{}");        

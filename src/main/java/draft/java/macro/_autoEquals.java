@@ -92,7 +92,8 @@ public @interface _autoEquals {
                 Tokens ts = new Tokens();
                 ts.put("className", _c.getName());
                 if( _c.hasExtends() ){
-                    ts.put("$callSuperEquals", true);
+                    //ts.put("$callSuperEquals", true);
+                    ts.put("callSuperEquals", true);
                 }
                 //_1_build the BODY of statements for checking the FIELDS
                 // then update the $typesEqual method template with the code
@@ -121,7 +122,8 @@ public @interface _autoEquals {
                     }
                 });
                 //System.out.println(">>>>> THE BODY IS " + body );
-                ts.put("$BODY", body);
+                //ts.put("$BODY", body);
+                ts.put("BODY", body);
                 _c.method( $equals.construct(ts) );
             }
             return _t;

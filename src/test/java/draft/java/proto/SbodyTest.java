@@ -11,6 +11,14 @@ import junit.framework.TestCase;
  */
 public class SbodyTest extends TestCase {
     
+    public void testBodyLabeledStmt(){
+        $body b = $body.of(()->{
+           $label: System.out.println( "Hey"); 
+        });
+        _body _b = b.construct("label", true);
+        System.out.println( _b );
+    }
+    
     public void testNotImplemented(){
         $body $noImpl = $body.of(";"); //an "unimplemented" body        
         assertNotNull( $noImpl.select(_method.of("m();").getBody()) );

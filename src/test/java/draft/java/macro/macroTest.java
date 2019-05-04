@@ -143,6 +143,7 @@ public class macroTest extends TestCase {
         }
         _class _c = _class.of(E.class);
         assertNotNull( _c.getMethod("toString") );
+        System.out.println( _c );
         assertEquals(1, _autoToString.Macro.$simple.listSelectedIn(_c).size());  //String s;
         assertEquals(1, _autoToString.Macro.$arrayOfObjects.listSelectedIn(_c).size());      //uuids f
         assertEquals(1, _autoToString.Macro.$arrayOfPrimitives.listSelectedIn(_c).size());   //boolean[] ba

@@ -1378,7 +1378,19 @@ public final class $stmt<T extends Statement>
         //if( this.commentPattern != null ){
         //    return (T)Stmt.of(Stencil.of(commentPattern, stmtPattern).fill(t, values) );
         //}
-        return (T)Stmt.of(stmtPattern.fill(t, values));
+        List<String> keys = list$Normalized();
+        if( values.length < keys.size() ){
+            throw new DraftException("not enough values("+values.length+") to fill ("+keys.size()+") variables "+ keys);
+        }
+        Map<String,Object> kvs = new HashMap<>();
+        for(int i=0;i<values.length;i++){
+            kvs.put( keys.get(i), values[i]);
+        }
+        return construct( t, kvs );
+        
+        //stmtPattern.fill(values)
+        //return (T)Stmt.of(stmtPattern.fill(t, values));
+        
     }
 
     @Override
@@ -1386,7 +1398,9 @@ public final class $stmt<T extends Statement>
         //if( this.commentPattern != null ){
         //   return (T)Stmt.of(Stencil.of(commentPattern, stmtPattern).construct( keyValues) );
         //}
-        return (T)Stmt.of(stmtPattern.construct( Tokens.of(keyValues)));
+//        return (T)Stmt.of(stmtPattern.construct( Tokens.of(keyValues)));
+        Tokens tokens = Tokens.of(keyValues);
+        return (T)walkCompose$LabeledStmt( Stmt.of(stmtPattern.construct( tokens )), tokens );
     }
     
     @Override
@@ -1394,7 +1408,9 @@ public final class $stmt<T extends Statement>
         //if( this.commentPattern != null ){
         //    return (T)Stmt.of(Stencil.of(commentPattern, stmtPattern).construct(t, Tokens.of(keyValues) ) );
         //}
-        return (T)Stmt.of(stmtPattern.construct( t, Tokens.of(keyValues) ));
+        //return (T)Stmt.of(stmtPattern.construct( t, Tokens.of(keyValues) ));
+        Tokens tokens = Tokens.of(keyValues);
+        return (T)walkCompose$LabeledStmt( Stmt.of(stmtPattern.construct( t, tokens )), tokens );
     }
 
     @Override
@@ -1402,7 +1418,8 @@ public final class $stmt<T extends Statement>
         //if( this.commentPattern != null ){
         //    return (T)Stmt.of(Stencil.of(commentPattern, stmtPattern).construct( Translator.DEFAULT_TRANSLATOR, tokens ));
         //}
-        return (T)Stmt.of(stmtPattern.construct( Translator.DEFAULT_TRANSLATOR, tokens ));
+        //return (T) Stmt.of(stmtPattern.construct( Translator.DEFAULT_TRANSLATOR, tokens ));
+        return (T)walkCompose$LabeledStmt( Stmt.of(stmtPattern.construct( tokens )), tokens );
     }
     
     /**
@@ -1414,7 +1431,9 @@ public final class $stmt<T extends Statement>
         //if( this.commentPattern != null ){
         // //   return (T)Stmt.of(Stencil.of(commentPattern, stmtPattern).construct(_n.deconstruct()) );
         //}
-        return (T)$stmt.this.construct(_n.deconstruct());
+        Map<String,Object> decons = _n.deconstruct();
+        return (T)construct( decons );
+        //return (T)$stmt.this.construct(_n.deconstruct());
     }
 
     @Override
@@ -1422,7 +1441,7 @@ public final class $stmt<T extends Statement>
         //if( this.commentPattern != null ){
         //    return (T)Stmt.of(Stencil.of(commentPattern, stmtPattern).construct( t, tokens ));
         //}
-        return (T)Stmt.of(stmtPattern.construct( t, tokens ));
+        return (T)walkCompose$LabeledStmt( Stmt.of(stmtPattern.construct( t, tokens )), tokens );
     }
 
     /**
@@ -2054,6 +2073,90 @@ public final class $stmt<T extends Statement>
         return "("+this.statementClass.getSimpleName()+") : \""+ this.stmtPattern+"\"";
     }
 
+    
+    /**
+     * After we've constructed the body from the String based Stencil...
+     * 
+     * we look for Labeled Statements with label starts with $, i.e.<PRE>
+     * 
+     * $callSuperEquals: eq = super.typesEqual(proxy) && eq;
+     * </PRE>
+     * 
+     * when we encounter the first type (a labeled statement with code...)
+     * <PRE>$callSuperEquals: eq = super.typesEqual($b$) && eq;</PRE>
+     * we look know to look for the parameter "callSuperEquals" when we are 
+     * constructing the _body...
+     * 
+     * IF the value for "callSuperEquals" is null, or FALSE
+     * then there is no trace of it in the output
+     * 
+     * IF the value "callSuperEquals" is a Statement or List<Statement> we replace
+     * the contents of the labelStatement "callSuperEquals" with the statement/(s)
+     * 
+     * IF the value of "callSuperEquals" is anything else, we add the statment(s)
+     * 
+     * <PRE>super.typesEqual(proxy) && eq;</PRE>
+     * 
+     * and we remove/flatten the label where only the statement remains in the body
+     * 
+     * @param stmt
+     * @param tokens
+     * @return the (potentially modified) statement
+     */
+    public static Statement construct$LabelStmt( Statement stmt, Map<String,Object> tokens ){
+        if( stmt instanceof LabeledStmt && stmt.asLabeledStmt().getLabel().asString().startsWith("$") ){
+            return labelStmtReplacement(stmt.asLabeledStmt(), tokens);
+        }
+        return walkCompose$LabeledStmt( stmt, tokens);
+    } 
+    
+    /**
+     * Walks AST nodes looking for a $labeledStmt, if found will compose and replace
+     * the labeled stmt
+     * @param <N>
+     * @param node
+     * @param tokens
+     * @return 
+     */
+    public static <N extends Node> N walkCompose$LabeledStmt(N  node, Map<String,Object> tokens ){
+        Walk.in(node, 
+            LabeledStmt.class, 
+            ls-> ls.getLabel().asString().startsWith("$"),
+            ls -> {
+                Statement st = labelStmtReplacement(ls, tokens);
+                if( st.isEmptyStmt() ){
+                    boolean rem = ls.remove();
+                    if( !rem ){
+                        ls.replace( st );
+                    }
+                } else {
+                    ls.replace( st );
+                }                
+            });        
+        return node;        
+    }
+    
+    private static Statement labelStmtReplacement(LabeledStmt ls, Map<String,Object> tokens){
+        //System.out.println("Found labeled Statenm " +ls.getLabel() );
+        String name = ls.getLabel().asString().substring(1);
+        Object value = tokens.get(name);
+        
+        //HIDE:
+        if( value == null || value == Boolean.FALSE ){
+            return new EmptyStmt();
+        }
+        //OVERRIDE: with a static Statement 
+        else if( value instanceof Statement) {
+            return (Statement) value;
+        }        
+        //OVERRIDE: with a proto Statement
+        else if( value instanceof $stmt ){ 
+            return (($stmt)value).construct(tokens);
+        }
+        //SHOW (just remove the $label:)
+        return ls.getStatement();        
+    }
+    
     /**
      * 
      * @param <T> 
