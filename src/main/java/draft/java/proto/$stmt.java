@@ -2124,12 +2124,12 @@ public final class $stmt<T extends Statement>
             ls-> ls.getLabel().asString().startsWith("$"),
             ls -> {
                 Statement st = labelStmtReplacement(ls, tokens);
-                if( st.isEmptyStmt() ){
+                if( st.isEmptyStmt() || (st.isBlockStmt() && st.asBlockStmt().isEmpty()) ){
                     boolean rem = ls.remove();
                     if( !rem ){
                         ls.replace( st );
                     }
-                } else {
+                } else{
                     ls.replace( st );
                 }                
             });        
@@ -2148,7 +2148,11 @@ public final class $stmt<T extends Statement>
         //OVERRIDE: with a static Statement 
         else if( value instanceof Statement) {
             return (Statement) value;
-        }        
+        }
+        //OVERRIDE with a String Statement
+        else if( value instanceof String ){
+            return Stmt.of( (String)value);
+        }
         //OVERRIDE: with a proto Statement
         else if( value instanceof $stmt ){ 
             return (($stmt)value).construct(tokens);

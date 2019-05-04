@@ -210,6 +210,7 @@ public class _1_SimpleTest extends TestCase {
         //for simplicity, lets add a new initilizing constructor
         _c.constructor("public Point(int x, int y){ this.x = x; this.y = y; }");
         
+        System.out.println( _c );
         //compile & load the class in a _project
         _project _p = _project.of(_c);
         
@@ -222,8 +223,9 @@ public class _1_SimpleTest extends TestCase {
         assertEquals(_pt1.toString(), _pt2.toString());
         assertEquals(_pt1.instance, _pt2.instance); //verify that equals works
         assertEquals(_pt1, _pt2); //verify that equals works (on proxies)
-        assertEquals(_pt1.call("hashCode"), _pt2.call("hashCode")); //check hashcode
+        
         assertEquals(_pt1.hashCode(), _pt2.hashCode()); //verify hashcode works
+        assertEquals(_pt1.call("hashCode"), _pt2.call("hashCode")); //check hashcode
         
         //now change & verify equals and hashcode not equal
         _pt2.set("x", 100);

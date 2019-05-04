@@ -140,7 +140,7 @@ public class SconstructorTest extends TestCase {
     public void testCtorLabels() {
         $constructor $c = $constructor.of(new Object() {
             public void C() {
-                label:
+                $label:
                 System.out.println(12);
             }
         });
@@ -152,7 +152,7 @@ public class SconstructorTest extends TestCase {
     public void testCtorLabelForAddingCode(){
         $constructor $c = $constructor.of( new Object(){
             public void C(){
-                label:{}
+                $label:{}
             }
         });
 
@@ -165,7 +165,7 @@ public class SconstructorTest extends TestCase {
             $c.construct("label", Stmt.of("System.out.println(1);")).getBody().getStatement(0));
 
         //block Statement
-        assertEquals( Stmt.of("System.out.println(1);"),
+        assertEquals( Stmt.of("{ System.out.println(1); }"),
             $c.construct("label", Stmt.block("{ System.out.println(1); }")).getBody().getStatement(0));
 
 

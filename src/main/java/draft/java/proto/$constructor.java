@@ -706,11 +706,12 @@ public class $constructor
         sb.append(" ");
         sb.append( thrown.compose(translator, base));
         sb.append(System.lineSeparator());
-        
+        sb.append( body.construct(translator, keyValues));
+        return _constructor.of(sb.toString() );
         /** 
          * with the body, I need to fo some more processing
          * I need to process the labeled Statements like snips
-         */
+        
         //String str = body.compose(translator, base); 
         String str = body.construct(translator, base).toString(); 
         try{
@@ -734,6 +735,7 @@ public class $constructor
             sb.append( str );
             return _constructor.of(sb.toString());     
         }        
+        */ 
     }
     
     /**

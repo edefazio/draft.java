@@ -11,6 +11,48 @@ import junit.framework.TestCase;
  */
 public class SbodyTest extends TestCase {
     
+    public void testComposeWith$Label(){        
+        $body $b = $body.of( ()->{
+            $label: System.out.println(2);
+        });
+        
+        //SHOW
+        _body _bd = $b.construct( "label", true );
+        assertTrue( $stmt.of("System.out.println(2);").matches( _bd.getStatement(0)) );
+        
+        //HIDE
+        _bd = $b.construct();
+        assertTrue( _bd.isEmpty());
+        
+        //OVERRIDE
+        _bd = $b.construct( "label", Stmt.of("assert true;") );
+        assertTrue( $stmt.of("assert true;").matches( _bd.getStatement(0)) );                
+    }
+    
+    public void testCompose$LabelBlock(){
+        $body $b = $body.of(()->{
+           $block: {} 
+        });
+        
+        //SHOW
+        _body _bd = $b.construct( "block", true );
+        assertTrue( _bd.isEmpty() ) ; //$stmt.of("{}").matches( _bd.getStatement(0)) );
+        
+        //HIDE
+        _bd = $b.construct();
+        assertTrue( _bd.isEmpty());
+        
+        //OVERRIDE (with single statement)
+        _bd = $b.construct( "block", Stmt.of("assert true;") );
+        assertTrue( $stmt.of("assert true;").matches( _bd.getStatement(0)) );                
+        
+        //OVERRIDE (with block statement)
+        _bd = $b.construct( "block", Stmt.of("{ a(); b(); }") );
+        assertTrue( $stmt.of("a();").matches( _bd.getStatement(0).asBlockStmt().getStatement(0)) );
+        assertTrue( $stmt.of("b();").matches( _bd.getStatement(0).asBlockStmt().getStatement(1)) );
+        
+    }
+    
     public void testBodyLabeledStmt(){
         $body b = $body.of(()->{
            $label: System.out.println( "Hey"); 

@@ -726,11 +726,19 @@ public class $method
         sb.append(" ");
         sb.append( thrown.compose(translator, base));
         sb.append(System.lineSeparator());
+        
+        sb.append( body.construct(translator, base).toString() );
+        return _method.of(sb.toString());
         /** 
          * with the body, I need to fo some more processing
          * I need to process the labeled Statements like snips
          */
-        String str = body.construct(translator, base).toString(); 
+        //String str = body.construct(translator, base).toString(); 
+        
+        /***
+         * turning this "off" since it is done more elegantly
+         * in the $body.construct()
+         * 
         try{
             //I might need another specialization
             //BlockStmt astBs = Ast.blockStmt(str);
@@ -751,7 +759,9 @@ public class $method
         } catch(Exception e){
             sb.append( str );
             return _method.of(sb.toString());     
-        }        
+        } 
+        * 
+        */ 
     }
     
     /**

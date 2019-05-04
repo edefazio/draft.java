@@ -238,6 +238,17 @@ public class $body implements Template<_body>, $proto<_body> {
         LambdaExpr le = Expr.lambda(Thread.currentThread().getStackTrace()[2]);
         return select( le.getBody().toString(Ast.PRINT_NO_COMMENTS ) );
     }
+     /**
+     * 
+     * @return 
+     */
+    public boolean isMatchAny(){
+        try{
+            return this.constraint.test(null) && this.bodyStmts.isMatchAny();
+        }catch(Exception e){
+            return false;
+        }
+    }
     
     /**
      * 
@@ -255,18 +266,6 @@ public class $body implements Template<_body>, $proto<_body> {
      */
     public Select select (String...body ){
         return select(_body.of(body));
-    }
-    
-    /**
-     * 
-     * @return 
-     */
-    public boolean isMatchAny(){
-        try{
-            return this.constraint.test(null) && this.bodyStmts.isMatchAny();
-        }catch(Exception e){
-            return false;
-        }
     }
     
     /**
@@ -320,7 +319,7 @@ public class $body implements Template<_body>, $proto<_body> {
         if( !this.isImplemented ){
             return _body.of(";");
         }
-        return _body.of( (Statement)this.bodyStmts.construct(translator, keyValues) );        
+        return _body.of( $stmt.walkCompose$LabeledStmt((Statement)this.bodyStmts.construct(translator, keyValues),keyValues) );        
     }
     
     /**

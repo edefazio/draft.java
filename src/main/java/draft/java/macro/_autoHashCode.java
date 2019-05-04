@@ -54,8 +54,8 @@ public @interface _autoHashCode {
          "public int hashCode( ){",
          "    int hash = $seed$;",
          "    int prime = $prime$;",
-         "    callSuperHashCode: hash = hash * prime + super.hashCode();",
-         "    body:{}",
+         "    $callSuperHashCode: hash = hash * prime + super.hashCode();",
+         "    $body:{}",
          "    return hash;",
          "}");
 
@@ -91,9 +91,9 @@ public @interface _autoHashCode {
       * Building the {@link Statement} to make up the BODY of the hashCode
       * for all {@link _field}s depending on the {@link _field}s TYPE
       */
-     @Ast.cache
+     //@Ast.cache
      class _fieldToStatement {
-         private static Integer prime, hash;
+        //private static Integer prime, hash;
 
          public static $stmt $default = $stmt.of( "hash = hash * prime + java.util.Objects.hashCode($name$);");
          public static $stmt $arrayOfPrimitives = $stmt.of( "hash = hash * prime + java.util.Arrays.hashCode($name$);");
