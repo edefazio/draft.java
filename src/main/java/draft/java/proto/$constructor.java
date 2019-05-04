@@ -445,7 +445,6 @@ public class $constructor
         if( theMethod.hasJavaDocComment() ){
             _ct.javadoc(theMethod.getJavadocComment().get());
         }
-        //System.out.println( "Setting throws");
         _ct.setThrows( theMethod.getThrownExceptions() );
         _ct.annotate( theMethod.getAnnotations()); //add annos
         _ct.removeAnnos(_ctor.class); //remove the _ctor anno if it exists
@@ -500,17 +499,12 @@ public class $constructor
     
     public $component<_javadoc> javadoc = new $component( "$javadoc$", t->true);    
     public $annos annos = new $annos();
-    //public $component<_modifiers> modifiers = new $component( "$modifiers$", t->true);
     public $modifiers modifiers = $modifiers.any();
     
-    //public $component<_typeDecl> type = new $component( "$type$", t->true);
-    
     public $component<_typeParameters> typeParameters = new $component( "$typeParameters$", t->true);
-    //public $component<String> name = new $component( "$name$", t->true);
     public $id name = $id.any();
     public $parameters parameters = $parameters.of();
     public $component<_throws> thrown = new $component( "$throws$", t-> true);
-    //public $component<_body> body = new $component("$body$", t->true);
     public $body body = $body.any();
     private $constructor( _constructor _ct ){
         this(_ct, t-> true );
@@ -531,12 +525,10 @@ public class $constructor
         modifiers = $modifiers.of(_ct );        
         if( !_ct.hasTypeParameters() ){
             final _typeParameters etps = _ct.getTypeParameters();
-            //HMMMMM matvhing orfer shouldnt matter
             typeParameters = new $component(
                 "$typeParameters$", 
                 (tps)-> tps.equals(etps) );
         }
-        //name = new $component(_ct.getName());
         name = $id.of(_ct.getName() );
         if( _ct.hasParameters() ){
             parameters = $parameters.of(_ct.getParameters());
@@ -546,10 +538,7 @@ public class $constructor
             thrown = new $component( "$throws$", (t)-> t.equals(ths) );
         }
         if( _ct.hasBody() ){            
-            body = $body.of(_ct.ast());
-            //String bdy = _ct.getBody().toString(new PrettyPrinterConfiguration()
-            //    .setPrintComments(false).setPrintJavadoc(false) );
-            //body = new $component(bdy.trim());            
+            body = $body.of(_ct.ast());    
         }
         this.constraint = constraint;
     }
@@ -579,14 +568,11 @@ public class $constructor
         List<String>normalized$ = new ArrayList<>();
         normalized$.addAll( javadoc.pattern.list$Normalized() );
         normalized$.addAll( annos.list$Normalized() );
-        //normalized$.addAll( modifiers.pattern.list$Normalized() );
         normalized$.addAll( typeParameters.pattern.list$Normalized() );
-        //normalized$.addAll( type.pattern.list$Normalized() );        
         normalized$.addAll( name.pattern.list$Normalized() );
         normalized$.addAll( parameters.list$Normalized() );
         normalized$.addAll( thrown.pattern.list$Normalized() );
         normalized$.addAll(body.list$Normalized());
-        //normalized$.addAll( body.pattern.list$Normalized() );
         return normalized$.stream().distinct().collect(Collectors.toList());        
     }
 
@@ -595,14 +581,11 @@ public class $constructor
         List<String>all$ = new ArrayList<>();
         all$.addAll( javadoc.pattern.list$() );
         all$.addAll( annos.list$() );
-        //all$.addAll( modifiers.pattern.list$() );
         all$.addAll( typeParameters.pattern.list$() );
-        //all$.addAll( type.pattern.list$() );        
         all$.addAll( name.pattern.list$() );
         all$.addAll( parameters.list$() );
         all$.addAll( thrown.pattern.list$() );
         all$.addAll( body.list$() );        
-        //all$.addAll( body.pattern.list$() );        
         return all$;
     }
     
@@ -644,7 +627,6 @@ public class $constructor
     
     public $constructor emptyBody(){
         body = $body.of("{}");
-        //body.pattern = Stencil.of( "{}" );
         return this;
     }
     
@@ -683,23 +665,18 @@ public class $constructor
                 "throws", "", 
                 "body", "");
         
-        //System.out.println( "KEYVALUES "+ keyValues );
+        
         base.putAll(keyValues);
         
         StringBuilder sb = new StringBuilder();   
-        //System.out.println( "&&&& JD "+ javadoc.$form +"<<" );
         sb.append( javadoc.compose(translator, base ));        
         sb.append(System.lineSeparator());
-        //System.out.println( "JAVADOC \""+ sb.toString()+"\"");
         sb.append( annos.compose(translator, base));
         sb.append(System.lineSeparator());
-        //System.out.println( "JAVADOC ANNOS \""+ sb.toString()+"\"");
         sb.append( modifiers.compose(translator, base));
         sb.append(" ");
         sb.append( typeParameters.compose(translator, base));
         sb.append(" ");
-        //sb.append( type.compose(translator, base));
-        //sb.append(" ");
         sb.append( name.compose(translator, base));
         sb.append(" ");
         sb.append( parameters.construct(translator, base));
@@ -707,35 +684,7 @@ public class $constructor
         sb.append( thrown.compose(translator, base));
         sb.append(System.lineSeparator());
         sb.append( body.construct(translator, keyValues));
-        return _constructor.of(sb.toString() );
-        /** 
-         * with the body, I need to fo some more processing
-         * I need to process the labeled Statements like snips
-        
-        //String str = body.compose(translator, base); 
-        String str = body.construct(translator, base).toString(); 
-        try{
-            //I might need another specialization
-            //BlockStmt astBs = Ast.blockStmt(str);
-            $snip $s = $snip.of(str);
-            List<Statement> sts = $s.construct(translator, base );
-            //System.out.println( specialBody );
-            //BlockStmt resolved = new BlockStmt();
-            _constructor _mb  = _constructor.of(sb.toString()+"{}");
-            
-            sts.forEach(s -> {
-                if(! (s instanceof EmptyStmt)){ 
-                    _mb.add(s);
-                } 
-            });            
-            //it's possible we have empty statements, lets remove all of them
-            Walk.in(_mb, EmptyStmt.class, es-> es.remove() );            
-            return _mb;            
-        } catch(Exception e){
-            sb.append( str );
-            return _constructor.of(sb.toString());     
-        }        
-        */ 
+        return _constructor.of(sb.toString() );        
     }
     
     /**
@@ -829,13 +778,11 @@ public class $constructor
     public $constructor hardcode$( Translator translator, Tokens kvs ) {
         javadoc.pattern = javadoc.pattern.hardcode$(translator, kvs);
         annos = annos.hardcode$(translator, kvs);
-        //modifiers.pattern = modifiers.pattern.hardcode$(translator, kvs);
         typeParameters.pattern = typeParameters.pattern.hardcode$(translator, kvs);
         name.pattern = name.pattern.hardcode$(translator, kvs);
         parameters = parameters.hardcode$(translator, kvs);
         thrown.pattern = thrown.pattern.hardcode$(translator, kvs);
         body = body.hardcode$(translator, kvs );
-        //body.pattern = body.pattern.hardcode$(translator, kvs);
         
         return this;
     }
@@ -845,13 +792,11 @@ public class $constructor
     public $constructor $(String target, String $Name) {
         javadoc.pattern = javadoc.pattern.$(target, $Name);
         annos = annos.$(target, $Name);
-        //modifiers.pattern = modifiers.pattern.$(target, $Name);
         typeParameters.pattern = typeParameters.pattern.$(target, $Name);
         name.pattern = name.pattern.$(target, $Name);
         parameters = parameters.$(target, $Name);
         thrown.pattern = thrown.pattern.$(target, $Name);
         body = body.$(target, $Name);
-        //body.pattern = body.pattern.$(target, $Name);        
         return this;
     }
 

@@ -6,7 +6,6 @@ import com.github.javaparser.ast.body.MethodDeclaration;
 import com.github.javaparser.ast.expr.*;
 import com.github.javaparser.ast.stmt.*;
 import com.github.javaparser.ast.type.Type;
-import com.github.javaparser.printer.PrettyPrinterConfiguration;
 import draft.*;
 import draft.java.*;
 import draft.java._model._node;
@@ -412,8 +411,6 @@ public class $method
 
     public static $method any(){
         return new $method(_method.of("$type$ $name$();") ).anyBody();
-        //$method $m = new $method(_method.of("$type$ $name$();") );
-        //$m.anyBody();
     }
     
     /**
@@ -469,17 +466,14 @@ public class $method
     
     public $component<_javadoc> javadoc = new $component( "$javadoc$", t->true);    
     public $annos annos = new $annos();
-    //public $component<_modifiers> modifiers = new $component( "$modifiers$", t->true);
     public $modifiers modifiers = $modifiers.any();
     public $component<_typeRef> type = new $component( "$type$", t->true);
     public $component<_typeParameters> typeParameters = new $component( "$typeParameters$", t->true);
     
     public $id name = $id.any();
-    //public $component<String> name = new $component( "$name$", t->true);
     
     public $parameters parameters = $parameters.of();
     public $component<_throws> thrown = new $component( "$throws$", t-> true);
-    //public $component<_body> body = new $component("$body$", t->true);
     public $body body = $body.any();
     
     private $method( _method _p ){
@@ -499,23 +493,13 @@ public class $method
             annos = $annos.of(_m.getAnnos() );
         }
         modifiers = $modifiers.of(_m);
-        /*
-        if( !_m.getModifiers().isEmpty() ){
-            final _modifiers ms = _m.getModifiers();
-            modifiers = new $component(
-                ms.toString(), 
-                (m)-> ms.equals(m));
-        }
-        */
         type = new $component<>(_m.getType().toString());
         if( !_m.hasTypeParameters() ){
             final _typeParameters etps = _m.getTypeParameters();
-            //HMMMMM matvhing orfer shouldnt matter
             typeParameters = new $component(
                 "$typeParameters$", 
                 (tps)-> tps.equals(etps) );
         }
-        //name = new $component(_m.getName());
         name = $id.of(_m.getName());
         if( _m.hasParameters() ){
             parameters = $parameters.of(_m.getParameters());
@@ -525,16 +509,15 @@ public class $method
             thrown = new $component( "$throws$", (t)-> t.equals(ths) );
         }
         body = $body.of( _m.ast() );
-        /*
-        if( _m.hasBody() ){            
-            String bdy = _m.getBody().toString(new PrettyPrinterConfiguration()
-                .setPrintComments(false).setPrintJavadoc(false) );
-            body = new $component(bdy.trim());            
-        }
-        */
         this.constraint = constraint;
     }
     
+    /**
+     * matches a body that is implemented i.e. "m(){ ... }" 
+     * -or- not implemented
+     * "m();"
+     * @return the $method prototype
+     */
     public $method anyBody(){
         this.body = $body.any();
         return this;
@@ -565,14 +548,12 @@ public class $method
         List<String>normalized$ = new ArrayList<>();
         normalized$.addAll( javadoc.pattern.list$Normalized() );
         normalized$.addAll( annos.list$Normalized() );
-        //normalized$.addAll( modifiers.pattern.list$Normalized() );
         normalized$.addAll( typeParameters.pattern.list$Normalized() );
         normalized$.addAll( type.pattern.list$Normalized() );        
         normalized$.addAll( name.pattern.list$Normalized() );
         normalized$.addAll( parameters.list$Normalized() );
         normalized$.addAll( thrown.pattern.list$Normalized() );
         normalized$.addAll( body.list$Normalized() );
-        //normalized$.addAll( body.pattern.list$Normalized() );
         return normalized$.stream().distinct().collect(Collectors.toList());        
     }
 
@@ -581,14 +562,12 @@ public class $method
         List<String>all$ = new ArrayList<>();
         all$.addAll( javadoc.pattern.list$() );
         all$.addAll( annos.list$() );
-        //all$.addAll( modifiers.pattern.list$() );
         all$.addAll( typeParameters.pattern.list$() );
         all$.addAll( type.pattern.list$() );        
         all$.addAll( name.pattern.list$() );
         all$.addAll( parameters.list$() );
         all$.addAll( thrown.pattern.list$() );
-        all$.addAll( body.list$() );        
-        //all$.addAll( body.pattern.list$() );        
+        all$.addAll( body.list$() );           
         return all$;
     }
     
@@ -599,7 +578,6 @@ public class $method
     
     public $method $name(){
         this.name = $id.any();
-        //this.name.stencil("$name$");
         return this;
     }
     
@@ -632,10 +610,10 @@ public class $method
         StackTraceElement ste = Thread.currentThread().getStackTrace()[2];
         ObjectCreationExpr oce = Expr.anonymousObject(ste);
         Optional<BodyDeclaration<?>> on = oce.getAnonymousClassBody().get().stream().filter(m -> 
-                m instanceof MethodDeclaration 
-                && !((MethodDeclaration)m)
-                    .getAnnotationByClass(_remove.class).isPresent() )
-                    .findFirst();
+            m instanceof MethodDeclaration 
+            && !((MethodDeclaration)m)
+                .getAnnotationByClass(_remove.class).isPresent() )
+                .findFirst();
         if(!on.isPresent()){
             throw new DraftException("Could not locate the method containing the body in "+ oce);
         }
@@ -647,19 +625,16 @@ public class $method
     
     public $method body(_body _bd ){
        this.body.$bodyStmts( _bd ); 
-       //this.body.pattern = Stencil.of( _bd.toString() );
         return this;
     }
     
-    public $method noBody(){
+    public $method notImplemented(){
         this.body = $body.of(";");
-        //body.pattern = Stencil.of( ";" );
         return this;
     }
     
     public $method emptyBody(){
         this.body = $body.of("{}");
-        //body.pattern = Stencil.of( "{}" );
         return this;
     }
     
@@ -680,14 +655,7 @@ public class $method
         for(int i=0;i<nom.size();i++){
             ts.put( nom.get(i), values[i]);
         }
-        return construct(translator, ts);
-        
-        /*
-        if( values.length != 2 ){
-            throw new DraftException("expected type and name");
-        }
-        return construct( translator, Tokens.of("type", values[0], "name", values[1] ) );        
-        */
+        return construct(translator, ts);        
     }
     
     @Override
@@ -703,17 +671,13 @@ public class $method
                 "throws", "", 
                 "body", "");
         
-        //System.out.println( "KEYVALUES "+ keyValues );
         base.putAll(keyValues);
         
         StringBuilder sb = new StringBuilder();   
-        //System.out.println( "&&&& JD "+ javadoc.$form +"<<" );
         sb.append( javadoc.compose(translator, base ));        
         sb.append(System.lineSeparator());
-        //System.out.println( "JAVADOC \""+ sb.toString()+"\"");
         sb.append( annos.compose(translator, base));
         sb.append(System.lineSeparator());
-        //System.out.println( "JAVADOC ANNOS \""+ sb.toString()+"\"");
         sb.append( modifiers.compose(translator, base));
         sb.append(" ");
         sb.append( typeParameters.compose(translator, base));
@@ -727,41 +691,14 @@ public class $method
         sb.append( thrown.compose(translator, base));
         sb.append(System.lineSeparator());
         
-        sb.append( body.construct(translator, base).toString() );
-        return _method.of(sb.toString());
-        /** 
-         * with the body, I need to fo some more processing
-         * I need to process the labeled Statements like snips
-         */
-        //String str = body.construct(translator, base).toString(); 
-        
-        /***
-         * turning this "off" since it is done more elegantly
-         * in the $body.construct()
-         * 
-        try{
-            //I might need another specialization
-            //BlockStmt astBs = Ast.blockStmt(str);
-            $snip $s = $snip.of(str);
-            List<Statement> sts = $s.construct(translator, base );
-            //System.out.println( specialBody );
-            //BlockStmt resolved = new BlockStmt();
-            _method _mb  = _method.of(sb.toString()+"{}");
-            
-            sts.forEach(s -> {
-                if(! (s instanceof EmptyStmt)){ 
-                    _mb.add(s);
-                } 
-            });            
-            //it's possible we have empty statements, lets remove all of them
-            Walk.in(_mb, EmptyStmt.class, es-> es.remove() );            
-            return _mb;            
-        } catch(Exception e){
-            sb.append( str );
-            return _method.of(sb.toString());     
-        } 
-        * 
-        */ 
+        String bd = body.construct(translator, base).toString();
+        if( bd.length() ==0 ){
+            //it's an "anyBody", so I default it to an empty implementation
+            sb.append("{}");
+        } else{
+            sb.append( bd );
+        }
+        return _method.of(sb.toString());        
     }
     
     /**
@@ -790,7 +727,6 @@ public class $method
         Tokens all = new Tokens();
         all = javadoc.decomposeTo(_m.getJavadoc(), all);
         all = annos.decomposeTo(_m.getAnnos(), all);
-        //all = modifiers.decomposeTo(_m.getModifiers(), all);
         all = typeParameters.decomposeTo(_m.getTypeParameters(), all);
         all = type.decomposeTo(_m.getType(), all);
         all = name.decomposeTo(_m.getName(), all);
@@ -855,14 +791,12 @@ public class $method
     public $method hardcode$( Translator translator, Tokens kvs ) {
         javadoc.pattern = javadoc.pattern.hardcode$(translator, kvs);
         annos = annos.hardcode$(translator, kvs);
-        //modifiers.pattern = modifiers.pattern.hardcode$(translator, kvs);
         typeParameters.pattern = typeParameters.pattern.hardcode$(translator, kvs);
         type.pattern = type.pattern.hardcode$(translator, kvs);
         name.pattern = name.pattern.hardcode$(translator, kvs);
         parameters = parameters.hardcode$(translator, kvs);
         thrown.pattern = thrown.pattern.hardcode$(translator, kvs);
         body = body.hardcode$(translator, kvs);
-        //body.pattern = body.pattern.hardcode$(translator, kvs);
         
         return this;
     }
@@ -872,14 +806,12 @@ public class $method
     public $method $(String target, String $Name) {
         javadoc.pattern = javadoc.pattern.$(target, $Name);
         annos = annos.$(target, $Name);
-        //modifiers.pattern = modifiers.pattern.$(target, $Name);
         typeParameters.pattern = typeParameters.pattern.$(target, $Name);
         type.pattern = type.pattern.$(target, $Name);
         name.pattern = name.pattern.$(target, $Name);
         parameters = parameters.$(target, $Name);
         thrown.pattern = thrown.pattern.$(target, $Name);
-        body = body.$(target, $Name);
-        //body.pattern = body.pattern.$(target, $Name);        
+        body = body.$(target, $Name);  
         return this;
     }
 
@@ -1283,9 +1215,7 @@ public class $method
     
     @Override
     public <N extends _node> N removeIn(N _n ){
-        Walk.in(_n, MethodDeclaration.class, e-> {
-            //$args tokens = this.deconstruct( e );
-            
+        Walk.in(_n, MethodDeclaration.class, e-> {            
             if( select(e) != null ){
                 e.removeForced();
             }
@@ -1296,7 +1226,6 @@ public class $method
     @Override
     public <N extends Node> N removeIn(N astNode){
         astNode.walk(MethodDeclaration.class, e-> {
-            //$args tokens = this.deconstruct( e );
             if( select(e) != null ){
                 e.removeForced();
             }
@@ -1307,7 +1236,6 @@ public class $method
     @Override
     public <N extends Node> N forEachIn(N astNode, Consumer<_method> _methodActionFn){
         astNode.walk(MethodDeclaration.class, e-> {
-            //$args tokens = this.deconstruct( e );
             if( select(e) != null ){
                 _methodActionFn.accept( _method.of(e) );
             }
@@ -1326,6 +1254,7 @@ public class $method
         return _n;
     }
 
+    @Override
     public List<_method> listIn( Class clazz){
         return listIn(_type.of(clazz));
     }

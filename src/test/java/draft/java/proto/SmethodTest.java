@@ -14,6 +14,25 @@ import junit.framework.TestCase;
 
 public class SmethodTest extends TestCase {
     
+    /**
+     * We need to make sure we can compose when we have a method 
+     * that has anyBody() 
+     * it will match implemented "m(){}" -OR- not implemented "m();"
+     *  
+     * 
+     * to do so, we have to make a decision when composing the method to 
+     * default to notImplemented "m();"
+     */
+    public void testComposeAnyBody(){
+        $method $m = $method.of(new Object(){
+           void m(){}
+        }).anyBody(); 
+       
+        //verify that when I 
+        assertTrue( 
+            $body.of("{}").matches( $m.construct().getBody() ));
+    }
+    
     public void testAnonymousObjectInit(){
         $method $set = $method.of( new Object(){
             public void set$Name$($type$ $name$){

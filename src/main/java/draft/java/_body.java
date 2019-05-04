@@ -583,9 +583,10 @@ public final class _body implements _model {
         }
 
         /**
-         * Is there an implementation body (i.e. Statements OR an empty block)
-         * within the body (or is the entity "abstract")
-         * @return true if the entity is NOT abstract false if the entity is abstract
+         * Is there an implementation (even an empty one like "m(){}")
+         * as apposed to an abstract implementation like "m();"
+         * @return true if the body is NOT abstract (there is an implementation block) 
+         * false otherwise
          */
         default boolean isImplemented(){
             return getBody().isImplemented();

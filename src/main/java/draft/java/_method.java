@@ -93,18 +93,6 @@ public final class _method
         
         return _macro.to(anonymousObjectContainingMethod.getClass(), of(md));
     }
-
-    /*
-    public static _method updateBody(_method _m, LambdaExpr le) {
-        //set the BODY of the method
-        if (le.getBody().isBlockStmt()) {
-            _m.setBody(le.getBody().asBlockStmt());
-        } else {
-            _m.add(le.getBody());
-        }
-        return _m;
-    }
-    */
     
     public static _method fromSignature(String signature) {
         String[] toks = signature.split(" ");
@@ -266,7 +254,7 @@ public final class _method
         this.astMethod.setName(name);
         return this;
     }
-
+   
     @Override
     public _throws getThrows() {
         return _throws.of(astMethod);
