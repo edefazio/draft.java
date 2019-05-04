@@ -749,6 +749,10 @@ public interface $proto<Q> {
         default boolean is(String key, Type value) {
             return getArgs().is(key, value);
         }
+        
+        default Object get(String key ){
+            return getArgs().get(key);
+        }
     }
 
     /**

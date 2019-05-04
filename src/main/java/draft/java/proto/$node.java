@@ -1,6 +1,7 @@
 package draft.java.proto;
 
 import com.github.javaparser.ast.Node;
+import com.github.javaparser.ast.body.VariableDeclarator;
 import com.github.javaparser.ast.expr.Name;
 import com.github.javaparser.ast.expr.SimpleName;
 import com.github.javaparser.ast.type.ClassOrInterfaceType;
@@ -433,10 +434,15 @@ public class $node implements $proto<Node> {
         if( target.getClass() != replacement.getClass() ){            
             if( target instanceof ClassOrInterfaceType ){
                 isRep = target.replace( Ast.typeDecl( replacement.toString() ) );                
-            }else if( target instanceof Name) {
+            } else if( target instanceof Name) {
                 isRep = target.replace( new Name( replacement.toString()) );                
             } else if( target instanceof SimpleName) {
                 isRep = target.replace( new SimpleName( replacement.toString()) );
+            } else if( target instanceof VariableDeclarator ){
+                System.out.println( "replacing Variable "+ target);
+                VariableDeclarator vd = (VariableDeclarator)target;
+                vd.setName(replacement.toString());
+                isRep = true;
             }
         }
         //
@@ -447,8 +453,13 @@ public class $node implements $proto<Node> {
     }
     
     private static boolean replaceNode( Node target, String replacement ){
+        if( target instanceof VariableDeclarator ){
+            //since a Variable Declarator CAN match
+            ((VariableDeclarator)target).setName(replacement);
+            return true;
+        }  
         Node n = Ast.of(target.getClass(), replacement);        
-        return replaceNode( target, n); 
+        return replaceNode( target, n);                        
     }
      
     /**
@@ -517,7 +528,8 @@ public class $node implements $proto<Node> {
             if( this.constraint.test(n)) {
                 String st = n.toString(Ast.PRINT_NO_COMMENTS);
                 Tokens ts = this.pattern.deconstruct( st );
-                if( ts != null ){                    
+                if( ts != null ){
+                    System.out.println( "replacing "+ n +" of "+n.getClass()+" with "+ replacement );
                     boolean isRep = replaceNode( n, replacement );                    
                     if( !isRep ){
                     }

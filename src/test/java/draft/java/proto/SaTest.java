@@ -10,6 +10,7 @@ import draft.java.Expr;
 import draft.java._anno;
 import draft.java._class;
 import java.util.regex.Pattern;
+import javax.annotation.Generated;
 import junit.framework.TestCase;
 import static junit.framework.TestCase.assertEquals;
 import static junit.framework.TestCase.assertFalse;
@@ -29,6 +30,16 @@ public class SaTest extends TestCase {
         // $method.of( $a.of("@A(count=1)"), $typeDecl.of(String.class) );
     }
     
+    public void testAnyMatch(){
+        class T{
+            @Deprecated int a;
+            
+            @Generated("a")
+            void m(){}
+        }
+        
+        assertEquals( 2, $anno.any().count(T.class));
+    }
     
     public void testOutOfOrderKeyValues(){
         $anno a = $anno.of("@A(a=1,b=2)");
