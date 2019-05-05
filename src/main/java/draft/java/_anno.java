@@ -93,6 +93,53 @@ public final class _anno
         return this;
     }
 
+    /**
+     * Is this _anno a "marker" annotation (i.e. with know value / or keyValues)
+     * i.e. <PRE>
+     * @Deprecated //a "Marker" annotation type
+     * 
+     * ...as apposed to: 
+     * @Generated("2/15/2018") //a singleMember annotation type
+     * 
+     * @KeyValues(key=1,value=2) //a keyValue Annotation Type
+     * </PRE>
+     * @return 
+     */
+    public boolean isMarker(){
+        return this.astAnno.isMarkerAnnotationExpr();
+    }
+    
+    /**
+     * i.e. <PRE>
+     * @Deprecated //a "Marker" annotation type
+     * 
+     * ...as apposed to: 
+     * @Generated("2/15/2018") //a singleMember annotation type
+     * 
+     * @KeyValues(key=1,value=2) //a keyValue Annotation Type
+     * </PRE>
+     * 
+     * @return 
+     */
+    public boolean isSingleMember(){
+        return this.astAnno.isSingleMemberAnnotationExpr();
+    }
+    
+    /**
+     * i.e. <PRE>
+     * @Deprecated //a "Marker" annotation type
+     * 
+     * ...as apposed to: 
+     * @Generated("2/15/2018") //a singleMember annotation type
+     * 
+     * @KeyValues(key=1,value=2) //a keyValue Annotation Type
+     * </PRE>
+     * @return 
+     */
+    public boolean isKeyValueAnnotation(){
+        return this.astAnno.isNormalAnnotationExpr();
+    }
+    
     @Override
     public boolean isNamed( String name ) {
         return this.astAnno.getName().asString().equals( name );
@@ -947,6 +994,11 @@ public final class _anno
             for( AnnotationExpr ann : astAnnos ) {
                 this.astAnnNode.addAnnotation( ann );
             }
+            return this;
+        }
+        
+        public _annos addAll( Collection<_anno> _as ){
+            _as.forEach(a -> add(a));
             return this;
         }
 
