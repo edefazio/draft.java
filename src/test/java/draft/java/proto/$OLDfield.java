@@ -403,7 +403,7 @@ public class $OLDfield
      * @param _f
      * @return Tokens from the stencil, or null if the expression doesnt match
      */
-    public $args deconstruct(_field _f){
+    public $nameValues deconstruct(_field _f){
         return deconstruct( _f.ast() );
     }
 
@@ -413,13 +413,13 @@ public class $OLDfield
      * @param astFieldDeclaration 
      * @return Tokens from the stencil, or null if the expression doesnt match
      */
-    public $args deconstruct(FieldDeclaration astFieldDeclaration ){
+    public $nameValues deconstruct(FieldDeclaration astFieldDeclaration ){
         
         if( astFieldDeclaration.getVariables().size() == 1 ){
             
             Tokens ts = 
                     fieldStencil.deconstruct( astFieldDeclaration.toString(Ast.PRINT_NO_ANNOTATIONS_OR_COMMENTS ) );
-            return $args.of(ts);
+            return $nameValues.of(ts);
         }
 
         /** this is painful, but hopefully not too common */
@@ -427,7 +427,7 @@ public class $OLDfield
             //I need to build separate FieldDeclarations
             _field _f = _field.of( astFieldDeclaration.getModifiers()+" "+astFieldDeclaration.getVariable( i ) +";");
             if( this.constraint.test(_f)) {
-                $args tks = deconstruct( _f.getFieldDeclaration() );
+                $nameValues tks = deconstruct( _f.getFieldDeclaration() );
                 if( tks != null ){
                     return tks;
                 }
@@ -441,7 +441,7 @@ public class $OLDfield
      * @param astVar
      * @return 
      */
-    public $args deconstruct(VariableDeclarator astVar ){
+    public $nameValues deconstruct(VariableDeclarator astVar ){
         if( !astVar.getParentNode().isPresent()){
             throw new DraftException("cannot check Field Variable "+astVar+" :: no parent FieldDeclaration");
         }
@@ -450,7 +450,7 @@ public class $OLDfield
         if( this.constraint.test( _f) ){
             Tokens ts = this.fieldStencil.deconstruct(_f.toString(Ast.PRINT_NO_ANNOTATIONS_OR_COMMENTS));
             if( ts != null ){
-                return $args.of(ts);
+                return $nameValues.of(ts);
             }
         }
         return null;
@@ -592,7 +592,7 @@ public class $OLDfield
      * @return 
      */
     public Select select(_field _f){
-        $args ts = deconstruct(_f.ast() );
+        $nameValues ts = deconstruct(_f.ast() );
         if( ts != null ){
             return new Select(_f, ts);
         }
@@ -621,7 +621,7 @@ public class $OLDfield
      * @return 
      */
     public Select select(VariableDeclarator astVar){
-        $args ts = this.deconstruct(astVar);
+        $nameValues ts = this.deconstruct(astVar);
         if( ts != null){
             return new Select( _field.of(astVar), ts );
         }
@@ -825,7 +825,7 @@ public class $OLDfield
     @Override
     public <N extends _node> N forEachIn(N _n, Consumer<_field> _fieldActionFn){
         Walk.in(_n, VariableDeclarator.class, e-> {
-            $args tokens = deconstruct( e );
+            $nameValues tokens = deconstruct( e );
             if( tokens != null ){
                 _fieldActionFn.accept( _field.of(e) );
             }
@@ -842,15 +842,15 @@ public class $OLDfield
             $proto.selected_model<_field> {
         
         public final _field _f;
-        public final $args args;
+        public final $nameValues args;
 
-        public Select( _field _f, $args tokens){
+        public Select( _field _f, $nameValues tokens){
             this._f = _f;
             this.args = tokens;
         }
         
         @Override
-        public $args getArgs(){
+        public $nameValues args(){
             return args;
         }
         

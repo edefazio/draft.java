@@ -7,6 +7,11 @@ import junit.framework.TestCase;
  * @author Eric
  */
 public class SfieldTest extends TestCase {
+    
+    public void testF(){
+        $field $f = $field.of($anno.of(Deprecated.class));
+    }
+    
     public void testSimple(){
         $field $fi = $field.of("public int z=100;");
         assertTrue( $fi.matches("public int z = 100;") );

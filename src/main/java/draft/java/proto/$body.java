@@ -4,13 +4,11 @@ import com.github.javaparser.ast.Node;
 import com.github.javaparser.ast.expr.LambdaExpr;
 import com.github.javaparser.ast.nodeTypes.NodeWithBlockStmt;
 import com.github.javaparser.ast.nodeTypes.NodeWithOptionalBlockStmt;
-import com.github.javaparser.ast.stmt.BlockStmt;
-import com.github.javaparser.ast.stmt.LabeledStmt;
 import com.github.javaparser.ast.stmt.Statement;
 import draft.*;
 import draft.java.*;
 import draft.java._model._node;
-import draft.java.proto.$proto.$args;
+import draft.java.proto.$proto.$nameValues;
 import draft.java.proto.$proto.selected;
 import java.util.*;
 import java.util.function.*;
@@ -19,7 +17,7 @@ import java.util.function.*;
  * Prototype of a body
  * @author Eric
  */
-public class $body implements Template<_body>, $proto<_body> {
+public class $body implements Template<_body>, $proto<_body>, $constructor.$part, $method.$part{
     
     /**
      * ANY body (or lack of body)... so 
@@ -120,6 +118,7 @@ public class $body implements Template<_body>, $proto<_body> {
     private $body( _body body ){
         if( body.isImplemented() ){
             this.bodyStmts = $stmt.of(body.ast());
+            this.isImplemented = true;
         } else{
             this.isImplemented = false;
         }        
@@ -275,7 +274,7 @@ public class $body implements Template<_body>, $proto<_body> {
      */
     public Select select( _body body ){
         if( isMatchAny() ){
-            return new Select( body, $args.of());
+            return new Select( body, $nameValues.of());
         }
         if( !this.constraint.test(body)){
             return null;
@@ -284,16 +283,18 @@ public class $body implements Template<_body>, $proto<_body> {
             if( this.isImplemented ){
                 return null;
             } 
-            return new Select(body, $args.of());                
+            return new Select(body, $nameValues.of());                
         }       
         if( this.isImplemented ){
+            System.out.println( "SELECTING " + this.bodyStmts);
             $stmt.Select ss = this.bodyStmts.select((Statement)body.ast());
             if( ss != null ){
                 return new Select( body, ss.args);
             }
             return null;
         }
-        return new Select( body, $args.of());        
+        System.out.println( "NOT IMPLEMENTD");
+        return new Select( body, $nameValues.of());        
     }
     
     /**
@@ -316,10 +317,20 @@ public class $body implements Template<_body>, $proto<_body> {
 
     @Override
     public _body construct(Translator translator, Map<String, Object> keyValues) {
+        //they can OVERRIDE the body construction if they pass in a "$body" parameter
+        if( keyValues.get("$body")!= null ){
+            //this means I want to override the body
+            $body $bd = $body.of( keyValues.get("$body").toString() );
+            Map<String,Object>tks = new HashMap<>();
+            tks.putAll(keyValues);
+            tks.remove("$body");
+            return $bd.construct(translator, tks);
+        }
         if( !this.isImplemented ){
             return _body.of(";");
         }
-        return _body.of( $stmt.walkCompose$LabeledStmt((Statement)this.bodyStmts.construct(translator, keyValues),keyValues) );        
+        return _body.of( $stmt.walkCompose$LabeledStmt(
+            (Statement)this.bodyStmts.construct(translator, keyValues),keyValues) );        
     }
     
     /**
@@ -529,15 +540,15 @@ public class $body implements Template<_body>, $proto<_body> {
     public static class Select implements selected<_body>, selected_model<_body>{
 
         public _body body;
-        public $args args;
+        public $nameValues args;
         
-        public Select( _body body, $args args){
+        public Select( _body body, $nameValues args){
             this.body = body;
             this.args = args;
         }
         
         @Override
-        public $args getArgs() {
+        public $nameValues args() {
             return args;
         }        
         
@@ -549,7 +560,7 @@ public class $body implements Template<_body>, $proto<_body> {
             return body.isEmpty();
         }
         
-        public Statement getStatement( int index ){            
+        public Statement getStatement( int index ){                  
             return body.getStatement(index);
         }
 

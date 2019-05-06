@@ -23,6 +23,10 @@ import java.util.function.Predicate;
  */
 public interface $proto<Q> {
 
+    public interface $member{
+        
+    }
+    
     /**
      * 
      * @param clazz
@@ -243,62 +247,68 @@ public interface $proto<Q> {
      * for holding value data that COULD be Expressions, Statements and the 
      * like
      */
-    public static class $args implements Map<String, Object> {
+    public static class $nameValues implements Map<String, Object> {
 
         /**
          *
          */
         private Tokens tokens;
 
-        public static $args of(){
-            return new $args( Tokens.of() ); 
+        public static $nameValues of(){
+            return new $nameValues( Tokens.of() ); 
         }
         
-        public static $args of(Tokens ts) {
+        public static $nameValues of(Tokens ts) {
             if (ts == null) {
                 return null;
             }
-            return new $args(ts);
+            return new $nameValues(ts);
         }
 
-        public $args(Tokens ts) {
+        public $nameValues(Tokens ts) {
             this.tokens = ts;
         }
 
-        public Object get(String name) {
-            return tokens.get(name);
+        public Object get(String $name) {
+            return tokens.get($name);
         }
 
         public Tokens asTokens() {
             return tokens;
         }
 
-        public Expression expr(String key) {
-            Object obj = get(key);
+        public Expression expr(String $name) {
+            Object obj = get($name);
             if (obj == null || obj.toString().trim().length() == 0) {
                 return null;
             }
             return Expr.of(obj.toString());
         }
 
-        public Statement stmt(String key) {
-            Object obj = get(key);
+        public Statement stmt(String $name) {
+            Object obj = get($name);
             if (obj == null || obj.toString().trim().length() == 0) {
                 return null;
             }
             return Stmt.of(obj.toString());
         }
 
-        public _typeRef type(String key) {
-            Object obj = get(key);
+        public _typeRef type(String $name) {
+            Object obj = get($name);
             if (obj == null || obj.toString().trim().length() == 0) {
                 return null;
             }
             return _typeRef.of(obj.toString());
         }
 
-        public List<Statement> stmts(String key) {
-            Object obj = get(key);
+        /**
+         * Reads the data from the $nameValues and parse & return the data as
+         * a List of Statements
+         * @param $name
+         * @return 
+         */
+        public List<Statement> stmts(String $name) {
+            Object obj = get($name);
             if (obj == null) {
                 return null;
             }
@@ -320,52 +330,58 @@ public interface $proto<Q> {
         /**
          * is the clause with the key equal to the Type?
          *
-         * @param key
+         * @param $name
          * @param astType
          * @return true if
          */
-        public boolean is(String key, Type astType) {
-            return is(key, _typeRef.of(astType));
+        public boolean is(String $name, Type astType) {
+            return is($name, _typeRef.of(astType));
         }
 
-        public boolean is(String key, _typeRef _t) {
-            return type(key).equals(_t);
+        /**
+         * 
+         * @param $name
+         * @param _t
+         * @return 
+         */
+        public boolean is(String $name, _typeRef _t) {
+            return type($name).equals(_t);
         }
 
         /**
          * is the clause with the key equal to the expression?
          *
-         * @param key
+         * @param $name
          * @param exp
          * @return true if
          */
-        public boolean is(String key, Expression exp) {
-            Expression ex = expr(key);
+        public boolean is(String $name, Expression exp) {
+            Expression ex = expr($name);
             return exp.equals(ex);
         }
 
         /**
          * is the clause with the key equal to the expression?
          *
-         * @param key
+         * @param $name
          * @param st
          * @return true if
          */
-        public boolean is(String key, Statement st) {
-            Statement stmt = stmt(key);
+        public boolean is(String $name, Statement st) {
+            Statement stmt = stmt($name);
             return stmt.toString(Ast.PRINT_NO_COMMENTS).equals(st.toString(Ast.PRINT_NO_COMMENTS));
         }
 
-        public boolean is($args cs) {
-            return this.equals(cs);
+        public boolean is($nameValues $nvs) {
+            return this.equals($nvs);
         }
 
         public boolean is(Tokens tks) {
-            return this.equals($args.of(tks));
+            return this.equals($nameValues.of(tks));
         }
 
-        public boolean is(String key, Class clazz ){
-            Object o = get(key);
+        public boolean is(String $name, Class clazz ){
+            Object o = get($name);
             if( o != null ){
                 return _typeRef.of( o.toString() ).equals(_typeRef.of(clazz));
             }
@@ -376,7 +392,7 @@ public interface $proto<Q> {
          * Is there a argument called "type" that 
          * @param clazz
          * @return 
-         */
+         
         public boolean isType( Class clazz ){
             return is("type", clazz);
         }
@@ -384,11 +400,18 @@ public interface $proto<Q> {
         public boolean isName( String name ){
             return is("name", name);
         }
+        */ 
         
         
-        public boolean is(String key, Object expectedValue) {
+        /**
+         * 
+         * @param $name
+         * @param expectedValue
+         * @return 
+         */
+        public boolean is(String $name, Object expectedValue) {
             //this matches nullExpr or simply not there
-            Object o = get(key);
+            Object o = get($name);
 
             if (expectedValue == null || expectedValue instanceof NullLiteralExpr) {
                 if (!(o == null || o instanceof NullLiteralExpr || o.equals("null"))) {
@@ -414,14 +437,14 @@ public interface $proto<Q> {
             }
             if (expectedValue instanceof Expression) {
                 //System.out.println( "Value is Expression");
-                return Expr.equatesTo((Expression) expectedValue, get(key));
+                return Expr.equatesTo((Expression) expectedValue, get($name));
             } else if (expectedValue instanceof String) {
                 try {
                     return Expr.equatesTo(Expr.of((String) expectedValue), o);
                 } catch (Exception e) {
 
                 }
-                return Objects.equals(expectedValue, get(key));
+                return Objects.equals(expectedValue, get($name));
             } else if (o.getClass().equals(expectedValue.getClass())) {
                 return o.equals(expectedValue);
             }
@@ -430,15 +453,15 @@ public interface $proto<Q> {
 
         /**
          *
-         * @param keyValues
+         * @param $nvs the name values
          * @return
          */
-        public boolean is(Object... keyValues) {
-            if (keyValues.length % 2 == 1) {
-                throw new DraftException("Expected an even number of key values, got (" + keyValues.length + ")");
+        public boolean is(Object... $nvs) {
+            if ($nvs.length % 2 == 1) {
+                throw new DraftException("Expected an even number of key values, got (" + $nvs.length + ")");
             }
-            for (int i = 0; i < keyValues.length; i += 2) {
-                String key = keyValues[i].toString();
+            for (int i = 0; i < $nvs.length; i += 2) {
+                String key = $nvs[i].toString();
                 if (!is(key, get(key))) {
                     //System.out.println( "NOT "+key+" "+get(key));
                     return false;
@@ -449,10 +472,10 @@ public interface $proto<Q> {
 
         @Override
         public boolean equals(Object o) {
-            if (o == null || !o.getClass().equals($args.class)) {
+            if (o == null || !o.getClass().equals($nameValues.class)) {
                 return false;
             }
-            $args co = ($args) o;
+            $nameValues co = ($nameValues) o;
             return Objects.equals(co.tokens, tokens);
         }
 
@@ -477,8 +500,8 @@ public interface $proto<Q> {
         }
 
         @Override
-        public boolean containsKey(Object key) {
-            return tokens.containsKey(key);
+        public boolean containsKey(Object $name) {
+            return tokens.containsKey($name);
         }
 
         @Override
@@ -487,23 +510,23 @@ public interface $proto<Q> {
         }
 
         @Override
-        public Object get(Object key) {
-            return tokens.get(key);
+        public Object get(Object $name) {
+            return tokens.get($name);
         }
 
         @Override
-        public Object put(String key, Object value) {
-            return tokens.put(key, value);
+        public Object put(String $name, Object value) {
+            return tokens.put($name, value);
         }
 
         @Override
-        public Object remove(Object key) {
-            return tokens.remove(key);
+        public Object remove(Object $name) {
+            return tokens.remove($name);
         }
 
         @Override
-        public void putAll(Map<? extends String, ? extends Object> m) {
-            tokens.putAll(m);
+        public void putAll(Map<? extends String, ? extends Object> $nvs) {
+            tokens.putAll($nvs);
         }
 
         @Override
@@ -670,7 +693,7 @@ public interface $proto<Q> {
             return null;
         }
 
-        public $args decomposeTo(T t, $args args ){
+        public $nameValues decomposeTo(T t, $nameValues args ){
             if( args == null) {
                 return null;                
             }
@@ -708,51 +731,52 @@ public interface $proto<Q> {
      */
     interface selected<T> {
 
-        $args getArgs();
+        $nameValues args();
 
-        default Expression expr(String key) {
-            return getArgs().expr(key);
+        /** Get the value of this $param$ via the name */
+        default Object get(String $name ){
+            return args().get($name);
+        }
+        
+        default Expression expr(String $name) {
+            return args().expr($name);
         }
 
-        default Statement stmt(String key) {
-            return getArgs().stmt(key);
+        default Statement stmt(String $name) {
+            return args().stmt($name);
         }
 
-        default _typeRef type(String key) {
-            return getArgs().type(key);
+        default _typeRef type(String $name) {
+            return args().type($name);
         }
 
-        default boolean isExpr(String key, String expressionValue) {
+        default boolean isExpr(String $name, String expressionValue) {
             try {
-                return getArgs().is(key, Expr.of(expressionValue));
+                return args().is($name, Expr.of(expressionValue));
             } catch (Exception e) {
                 return false;
             }
         }
 
-        default boolean is(Object... keyValues) {
-            return getArgs().is(keyValues);
+        default boolean is(Object... $nameValues) {
+            return args().is($nameValues);
         }
 
-        default boolean is(String key, String value) {
-            return getArgs().is(key, value);
+        default boolean is(String $name, String value) {
+            return args().is($name, value);
         }
 
-        default boolean is(String key, Expression value) {
-            return getArgs().is(key, value);
+        default boolean is(String $name, Expression value) {
+            return args().is($name, value);
         }
 
-        default boolean is(String key, Statement value) {
-            return getArgs().is(key, value);
+        default boolean is(String $name, Statement value) {
+            return args().is($name, value);
         }
 
-        default boolean is(String key, Type value) {
-            return getArgs().is(key, value);
-        }
-        
-        default Object get(String key ){
-            return getArgs().get(key);
-        }
+        default boolean is(String $name, Type value) {
+            return args().is($name, value);
+        }        
     }
 
     /**

@@ -9,6 +9,62 @@ import junit.framework.TestCase;
 
 public class SconstructorTest extends TestCase {
 
+    public void testConstruct(){
+        $constructor $ct = $constructor.of( $body.of("{}") );
+        class c{
+            c(){}
+            c(int i){} //count this one
+            c(String s){ assert(true); } //dont count
+        }
+        assertEquals(2, $ct.count(c.class));
+        
+        
+        $ct = $constructor.of( $anno.of(Deprecated.class) );
+        class d{
+            @Deprecated
+            d(){}
+            
+            @Deprecated
+            d(int i){ }
+            
+            @Deprecated
+            void m(){
+                //this shouldnt count, because it's a method not a constructor
+            }
+        }
+        assertEquals(2, $ct.count(d.class));
+        
+        $ct = $constructor.of( $anno.of(Deprecated.class), $body.of("{}") );
+        class e{
+            @Deprecated
+            e(){}
+            
+            @Deprecated
+            e(int i){ }
+            
+            @Deprecated
+            void e(){
+                //this shouldnt count, because it's a method not a constructor
+            }
+        }
+        assertEquals( 2, $ct.count(e.class));        
+    }
+    
+    public void testCT(){
+        $constructor $c = $constructor.of( 
+            $anno.of(Deprecated.class), 
+            $body.of("{}"), 
+            $id.of(s -> s.startsWith("a")) );
+        
+        class aaaa{
+            @Deprecated
+            aaaa(){}
+        }
+        
+        assertEquals(1, $c.count(aaaa.class));
+        
+    }
+    
     public void testAny(){
         class c{
             c(){

@@ -803,7 +803,7 @@ public class $var
             all = this.type.decomposeTo(_typeRef.of(astVar.getType()), all);
             
             if( all != null ){
-                return new Select(astVar, $args.of(all));
+                return new Select(astVar, $nameValues.of(all));
             }            
         }
         return null;                
@@ -1371,15 +1371,15 @@ public class $var
             $proto.selectedAstNode<VariableDeclarator> {
         
         public final VariableDeclarator astVar;
-        public final $args args;
+        public final $nameValues args;
 
-        public Select( VariableDeclarator v, $args tokens){
+        public Select( VariableDeclarator v, $nameValues tokens){
             this.astVar = v;
             this.args = tokens;
         }
         
         @Override
-        public $args getArgs(){
+        public $nameValues args(){
             return args;
         }
         

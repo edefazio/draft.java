@@ -25,6 +25,10 @@ import java.util.stream.Collectors;
  */
 public class $field implements Template<_field>, $proto<_field> {
   
+    public interface $part{
+        
+    } 
+    
     /**
      * 
      * @param clazz
@@ -482,37 +486,61 @@ public class $field implements Template<_field>, $proto<_field> {
             $inst.javadoc = new $component<>(_f.getJavadoc().toString() );
         }
         if( _f.hasAnnos() ){
-            //ugg
             $inst.annos = $annos.of(_f.getAnnos());
-            //$inst.annos = new $component<>(_f.getAnnos().toString());
         }
-        $inst.modifiers = $modifiers.of(_f);
-        /*
-        if( !_f.getModifiers().isEmpty() ){
-            final _modifiers ms = _f.getModifiers();
-            $inst.modifiers = new $component(
-                    ms.toString(), 
-                    (m)-> ms.equals(m));
-        }
-        */
+        $inst.modifiers = $modifiers.of(_f);        
         $inst.type = $typeRef.of(_f.getType());
         $inst.name = $id.of( _f.getName() );
-        //$inst.name = new $component(_f.getName());
         if( _f.hasInit() ){
-            $inst.init = new $component(_f.getInit().toString());
+            $inst.init = $expr.of(_f.getInit() );
         }
         return $inst;
+    }
+    
+    public static $field of($part part ){
+        $part[] parts = new $part[]{part};
+        return of(parts);
+    }
+    
+    /**
+     * 
+     * @param parts
+     * @return 
+     */
+    public static $field of($part...parts ){
+        return new $field(parts);
     }
     
     public Predicate<_field> constraint = t->true;
     public $component<_javadoc> javadoc = new $component( "$javadoc$", t->true);
     public $annos annos = new $annos(); 
-    //public $component<_modifiers> modifiers = new $component( "$modifiers$", t->true);
     public $modifiers modifiers = $modifiers.any();
-    public $typeRef type = $typeRef.of("$type$");
+    public $typeRef type = $typeRef.any();
     public $id name = $id.any();
-    //public $component<String> name = new $component( "$name$", t->true);    
-    public $component<Expression> init = new $component( "$init$", t->true);
+    public $expr init = null; //$expr.any();
+    
+    private $field( $part...parts ){
+        for(int i=0;i<parts.length;i++){
+            if(parts[i] instanceof $annos){
+                this.annos = ($annos)parts[i];
+            }
+            else if( parts[i] instanceof $anno ){
+                this.annos.$annosList.add( ($anno)parts[i]);
+            }
+            else if( parts[i] instanceof $modifiers ){
+                this.modifiers = ($modifiers)parts[i]; 
+            }
+            else if( parts[i] instanceof $typeRef){
+                this.type = ($typeRef)parts[i];
+            }
+            else if( parts[i] instanceof $id){
+                this.name = ($id)parts[i];
+            }
+            else if( parts[i] instanceof $expr ){
+                this.init = ($expr)parts[i];
+            }
+        }
+    }
     
     private $field(){        
     }
@@ -535,7 +563,6 @@ public class $field implements Template<_field>, $proto<_field> {
      */
     public $field $javadoc(String... pattern){
         this.javadoc.pattern = Stencil.of(Text.combine(pattern) );
-        //this.javadoc.$component.this.pattern = Stencil.of(Text.combine(pattern) );
         return this;
     }
     
@@ -556,6 +583,7 @@ public class $field implements Template<_field>, $proto<_field> {
     }
     
     public $field $type( String pattern ){
+        //this.type = $typeRef.of(pattern);
         this.type.typePattern = Stencil.of(_typeRef.of(pattern).toString());
         //this.type.$component.this.pattern = Stencil.of(_typeDecl.of(pattern).toString());
         return this;
@@ -583,17 +611,18 @@ public class $field implements Template<_field>, $proto<_field> {
     }
     
     public $field $init(){
-        this.init.pattern = Stencil.of( "$init$" );
+        this.init = $expr.any();        
+        this.init.exprPattern = Stencil.of( "$init$" );
         return this;
     }
     
     public $field $init( String initPattern ){
-        this.init.pattern = Stencil.of(Expr.of(initPattern).toString() );
+        this.init.exprPattern = Stencil.of(Expr.of(initPattern).toString() );
         return this;
     }
     
     public $field $init( Expression initProto ){
-        this.init.pattern = Stencil.of(initProto.toString() );
+        this.init.exprPattern = Stencil.of(initProto.toString() );
         return this;
     }
     
@@ -1049,9 +1078,22 @@ public class $field implements Template<_field>, $proto<_field> {
             all = annos.decomposeTo(_f.getAnnos(), all);
             all = type.decomposeTo(_f.getType(), all);
             all = name.decomposeTo(_f.getName(), all);
-            all = init.decomposeTo(_f.getInit(), all);
+            if( init == null ){
+                //if we dont care what the init is or is not
+            }else{
+                if( !_f.hasInit() ){
+                    return null;
+                }
+                $expr.Select sel = init.select(_f.getInit());
+                if( all.isConsistent(sel.args.asTokens()) ){
+                    all.putAll( sel.args().asTokens() );
+                } else{
+                    return null;
+                }
+                //all = init.decomposeTo(_f.getInit(), all);
+            }
             if(all != null){
-                return new Select( _f, $args.of(all));
+                return new Select( _f, $nameValues.of(all));
             }
         }
         return null;
@@ -1108,11 +1150,16 @@ public class $field implements Template<_field>, $proto<_field> {
         sb.append(type.construct(translator, baseMap) );
         sb.append(" ");
         sb.append(name.pattern.construct(translator, baseMap) );
-        
-        String str = init.pattern.construct(translator, baseMap);
-        if( str.length() > 0 ){
-            sb.append(" = ");
-            sb.append(str);
+        if( init != null ){
+            Expression expr = init.construct(translator, baseMap);
+            if( expr != null ){
+                sb.append( " = ");
+                sb.append( expr );
+            }
+            //if( str.length() > 0 ){
+            //    sb.append(" = ");
+            //    sb.append(str);
+            //}
         }
         sb.append(";");
         String s = sb.toString();
@@ -1136,8 +1183,10 @@ public class $field implements Template<_field>, $proto<_field> {
         javadoc.pattern.$(target, $Name);
         annos.$(target, $Name);
         type.$(target, $Name);
-        name.pattern.$(target, $Name);
-        init.pattern.$(target, $Name);
+        name.$(target, $Name);
+        if( init != null ){
+            init.$(target, $Name);
+        }
         return this;
     }
 
@@ -1147,9 +1196,10 @@ public class $field implements Template<_field>, $proto<_field> {
         vars.addAll( javadoc.pattern.list$() );
         vars.addAll( annos.list$() );
         vars.addAll( type.list$() );
-        vars.addAll( name.pattern.list$() );
-        vars.addAll( init.pattern.list$() );
-        
+        vars.addAll( name.list$() );
+        if( init != null ){
+            vars.addAll( init.list$() );
+        }        
         return vars;
     }
 
@@ -1159,8 +1209,10 @@ public class $field implements Template<_field>, $proto<_field> {
         vars.addAll( javadoc.pattern.list$Normalized() );
         vars.addAll( annos.list$Normalized() );
         vars.addAll( type.list$Normalized() );
-        vars.addAll( name.pattern.list$Normalized() );
-        vars.addAll( init.pattern.list$Normalized() );
+        vars.addAll( name.list$Normalized() );
+        if( init != null ){
+            vars.addAll( init.list$Normalized() );
+        }
         return vars.stream().distinct().collect(Collectors.toList());
     }    
     
@@ -1176,8 +1228,10 @@ public class $field implements Template<_field>, $proto<_field> {
         sb.append(type.typePattern );
         sb.append(" ");
         sb.append(name.pattern );
-        sb.append(" = ");
-        sb.append(init.pattern );
+        if( init != null ){
+            sb.append(" = ");
+            sb.append(init.toString());
+        }
         sb.append(";");
         
         return "($field): "+ System.lineSeparator()+ Text.indent( sb.toString() );
@@ -1192,15 +1246,15 @@ public class $field implements Template<_field>, $proto<_field> {
             $proto.selected_model<_field> {
         
         public final _field _f;
-        public final $args args;
+        public final $nameValues args;
 
-        public Select( _field _f, $args tokens){
+        public Select( _field _f, $nameValues tokens){
             this._f = _f;
             this.args = tokens;
         }
         
         @Override
-        public $args getArgs(){
+        public $nameValues args(){
             return args;
         }
         

@@ -21,7 +21,8 @@ import java.util.stream.Collectors;
  * @author Eric
  */
 public class $anno
-    implements Template<_anno>, $proto<_anno> {
+    implements Template<_anno>, $proto<_anno>, $constructor.$part, $method.$part, 
+        $field.$part {
 
     /**
      * 
@@ -778,8 +779,12 @@ public class $anno
      * @return 
      */
     public static $anno any(){
-        return of("@A").$("A", "any");
+        return of("@A").$("A", "name");
     } 
+    
+    public static $anno of( $id name, $memberValue...memberValues ){
+        return new $anno(name, memberValues);
+    }
     
     public static $anno of(String pattern) {
         return new $anno(_anno.of(pattern));
@@ -787,6 +792,10 @@ public class $anno
     
     public static $anno of(String... pattern) {
         return new $anno(_anno.of(pattern));
+    }
+    
+    public static $anno of( Predicate<_anno> constraint ){
+        return any().constraint(constraint);
     }
     
     public static $anno of(String pattern, Predicate<_anno>constraint) {
@@ -835,6 +844,16 @@ public class $anno
     /** the member values of the annotation */
     public List<$memberValue> $mvs = new ArrayList<>();
 
+    /**
+     * 
+     * @param name
+     * @param $mvs 
+     */
+    private $anno( $id name, $memberValue...mvs ){
+       this.name = name;
+       Arrays.stream(mvs).forEach( mv -> this.$mvs.add(mv));       
+    }
+    
     public $anno(_anno proto) {
         this.name = $id.of(proto.getName());
         AnnotationExpr astAnn = proto.ast();
@@ -951,8 +970,21 @@ public class $anno
         return select(_a) != null;
     }
 
+    public String compose( Object...values ){
+        return compose( Translator.DEFAULT_TRANSLATOR, Tokens.of(values ));
+    }
+    
     public String compose(Translator translator, Map<String, Object> keyValues) {
+        if( keyValues.get("$anno") != null ){
+            //override parameter passed in
+            $anno $a = $anno.of( keyValues.get("$anno").toString() );
+            Map<String,Object> kvs = new HashMap<>();
+            kvs.putAll(keyValues);
+            kvs.remove("$anno"); //remove to avoid stackOverflow
+            return $a.compose(translator, kvs);
+        }
         StringBuilder sb = new StringBuilder();
+        sb.append("@");
         sb.append(name.compose(translator, keyValues));
         String properties = "";
         for (int i = 0; i < $mvs.size(); i++) {
@@ -969,6 +1001,14 @@ public class $anno
     
     @Override
     public _anno construct(Translator translator, Map<String, Object> keyValues) {
+        if( keyValues.get("$anno") != null ){
+            //override parameter passed in
+            $anno $a = $anno.of( keyValues.get("$anno").toString() );
+            Map<String,Object> kvs = new HashMap<>();
+            kvs.putAll(keyValues);
+            kvs.remove("$anno"); //remove to avoid stackOverflow
+            return $a.construct(translator, kvs);
+        }
         return _anno.of(compose(translator, keyValues));      
     }
 
@@ -1545,15 +1585,15 @@ public class $anno
             implements $proto.selected, selectedAstNode<MemberValuePair> {
 
             public final MemberValuePair astMvp;
-            public final $args args;
+            public final $nameValues args;
 
             public Select(MemberValuePair astMvp, Tokens tokens) {
                 this.astMvp = astMvp;
-                this.args = $args.of(tokens);
+                this.args = $nameValues.of(tokens);
             }
 
             @Override
-            public $args getArgs() {
+            public $nameValues args() {
                 return args;
             }
 
@@ -1602,24 +1642,24 @@ public class $anno
         implements $proto.selected, selected_model<_anno>, selectedAstNode<AnnotationExpr> {
 
         public final _anno _ann;
-        public final $args args;
+        public final $nameValues args;
 
         public Select(_anno _a, Tokens tokens) {
-            this(_a, $args.of(tokens));
+            this(_a, $nameValues.of(tokens));
         }
 
-        public Select(_anno _a, $args tokens) {
+        public Select(_anno _a, $nameValues tokens) {
             this._ann = _a;
             args = tokens;
         }
 
-        public Select(AnnotationExpr astAnno, $args tokens) {
+        public Select(AnnotationExpr astAnno, $nameValues tokens) {
             this._ann = _anno.of( astAnno );
             this.args = tokens;
         }
 
         @Override
-        public $args getArgs() {
+        public $nameValues args() {
             return args;
         }
 
@@ -1631,6 +1671,11 @@ public class $anno
                 + "}";
         }
 
+        /**
+         * Is the name of the selected _anno the name provided
+         * @param name
+         * @return 
+         */
         public boolean isNamed(String name) {
             return _ann.isNamed(name);
         }

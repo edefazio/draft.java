@@ -627,20 +627,20 @@ public final class $OLDconstructor
             $proto.selected_model<_constructor> {
         
         public final _constructor _ct;
-        public final $args args;
+        public final $nameValues args;
 
         public Select(_constructor _c, Tokens tokens ){
             this._ct = _c;
-            this.args = $args.of(tokens);
+            this.args = $nameValues.of(tokens);
         }
         
-        public Select( ConstructorDeclaration astCtor, $args tokens ){
+        public Select( ConstructorDeclaration astCtor, $nameValues tokens ){
             this._ct = _constructor.of(astCtor);
             this.args = tokens;
         }
         
         @Override
-        public $args getArgs(){
+        public $nameValues args(){
             return args;
         }
         

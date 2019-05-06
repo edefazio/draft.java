@@ -39,11 +39,11 @@ import java.util.function.*;
  *     .forSelected/forSelectedIn(_node, Consumer<Select>) 
  *</PRE> 
  */
-public final class Sanno
+public final class SOLDanno
     implements Template<_anno>, $proto<_anno> {
 
     /** represents ANY annotation*/
-    public static final Sanno ANY = Sanno.of("@A").$("A", "any");
+    public static final SOLDanno ANY = SOLDanno.of("@A").$("A", "any");
     
     /**
      * 
@@ -53,7 +53,7 @@ public final class Sanno
      * @return 
      */
     public static final <N extends _node> _anno first( N _n, String proto ){
-        return Sanno.of(proto).firstIn(_n);
+        return SOLDanno.of(proto).firstIn(_n);
     }
     
     /**
@@ -64,7 +64,7 @@ public final class Sanno
      * @return 
      */
     public static final <N extends _node> _anno first( Node astNode, String proto ){
-        return Sanno.of(proto).firstIn(astNode);
+        return SOLDanno.of(proto).firstIn(astNode);
     }
     
     /**
@@ -76,7 +76,7 @@ public final class Sanno
      * @return 
      */
     public static final <N extends _node> _anno first( N _n, String proto, Predicate<_anno> constraint){
-        return Sanno.of(proto, constraint).firstIn(_n);
+        return SOLDanno.of(proto, constraint).firstIn(_n);
     }
     
     /**
@@ -88,7 +88,7 @@ public final class Sanno
      * @return 
      */
     public static final <N extends _node> _anno first( Node astNode, String proto,Predicate<_anno>constraint){
-        return Sanno.of(proto, constraint).firstIn(astNode);
+        return SOLDanno.of(proto, constraint).firstIn(astNode);
     }
          
     /**
@@ -99,7 +99,7 @@ public final class Sanno
      * @return 
      */
     public static final <N extends _node> Select selectFirst( N _n, String proto ){
-        return Sanno.of(proto).selectFirstIn(_n);
+        return SOLDanno.of(proto).selectFirstIn(_n);
     }
     
     /**
@@ -110,7 +110,7 @@ public final class Sanno
      * @return 
      */
     public static final <N extends _node> Select selectFirst( Node astNode, String proto ){
-        return Sanno.of(proto).selectFirstIn(astNode);
+        return SOLDanno.of(proto).selectFirstIn(astNode);
     }
     
     /**
@@ -122,7 +122,7 @@ public final class Sanno
      * @return 
      */
     public static final <N extends _node> Select selectFirst( N _n, String proto, Predicate<_anno> constraint){
-        return Sanno.of(proto, constraint).selectFirstIn(_n);
+        return SOLDanno.of(proto, constraint).selectFirstIn(_n);
     }
     
     /**
@@ -134,7 +134,7 @@ public final class Sanno
      * @return 
      */
     public static final <N extends _node> Select selectFirst( Node astNode, String proto,Predicate<_anno>constraint){
-        return Sanno.of(proto, constraint).selectFirstIn(astNode);
+        return SOLDanno.of(proto, constraint).selectFirstIn(astNode);
     }
     
     /**
@@ -155,7 +155,7 @@ public final class Sanno
      * @return 
      */
     public static final <N extends _node> List<_anno> list( N _n, Predicate<_anno> constraint){
-        return new Sanno( "@a" ).$("@a", "any").constraint(constraint).listIn(_n);
+        return new SOLDanno( "@a" ).$("@a", "any").constraint(constraint).listIn(_n);
     }
     
     /**
@@ -166,7 +166,7 @@ public final class Sanno
      * @return 
      */
     public static final <N extends _node> List<_anno> list( N _n, String proto ){
-        return Sanno.of(proto).listIn(_n);
+        return SOLDanno.of(proto).listIn(_n);
     }
     
     /**
@@ -178,7 +178,7 @@ public final class Sanno
      * @return 
      */
     public static final <N extends _node> List<_anno> list( N _n, String proto, Predicate<_anno> constraint){
-        return Sanno.of(proto, constraint).listIn(_n);
+        return SOLDanno.of(proto, constraint).listIn(_n);
     }
     
     /**
@@ -189,7 +189,7 @@ public final class Sanno
      * @return 
      */
     public static final <N extends _node> List<_anno> list( N _n, _anno _proto ){
-        return Sanno.of(_proto).listIn(_n);
+        return SOLDanno.of(_proto).listIn(_n);
     }
     
     /**
@@ -201,7 +201,7 @@ public final class Sanno
      * @return 
      */
     public static final <N extends _node> List<_anno> list( N _n, _anno _proto, Predicate<_anno> constraint){
-        return Sanno.of(_proto, constraint).listIn(_n);
+        return SOLDanno.of(_proto, constraint).listIn(_n);
     }
         
     /**
@@ -224,7 +224,7 @@ public final class Sanno
      * @return 
      */
     public static final <N extends _node> N forEach( N _n, Predicate<_anno> constraint, Consumer<_anno> _annoConsumer){
-        return new Sanno( "@a" ).$("@a", "any").constraint(constraint).forEachIn(_n, _annoConsumer);
+        return new SOLDanno( "@a" ).$("@a", "any").constraint(constraint).forEachIn(_n, _annoConsumer);
     }
     
     /**
@@ -236,7 +236,7 @@ public final class Sanno
      * @return 
      */
     public static final <N extends _node> N forEach( N _n, String proto, Consumer<_anno> _annoConsumer){
-        return Sanno.of(proto).forEachIn(_n, _annoConsumer);
+        return SOLDanno.of(proto).forEachIn(_n, _annoConsumer);
     }
     
     /**
@@ -249,7 +249,7 @@ public final class Sanno
      * @return 
      */
     public static final <N extends _node> N forEach( N _n, String proto, Predicate<_anno> constraint, Consumer<_anno> _annoConsumer){
-        return Sanno.of(proto, constraint).forEachIn(_n, _annoConsumer);
+        return SOLDanno.of(proto, constraint).forEachIn(_n, _annoConsumer);
     }
     
     /**
@@ -261,7 +261,7 @@ public final class Sanno
      * @return 
      */
     public static final <N extends _node> N forEach( N _n, _anno _proto , Consumer<_anno> _annoConsumer){
-        return Sanno.of(_proto).forEachIn(_n, _annoConsumer);
+        return SOLDanno.of(_proto).forEachIn(_n, _annoConsumer);
     }
     
     /**
@@ -274,7 +274,7 @@ public final class Sanno
      * @return 
      */
     public static final <N extends _node> N forEach( N _n, _anno _proto, Predicate<_anno> constraint, Consumer<_anno> _annoConsumer){
-        return Sanno.of(_proto, constraint).forEachIn(_n, _annoConsumer);
+        return SOLDanno.of(_proto, constraint).forEachIn(_n, _annoConsumer);
     }
     
     /**
@@ -297,7 +297,7 @@ public final class Sanno
      * @return 
      */
     public static final <N extends _node> N forSelected( N _n, Predicate<_anno> constraint, Consumer<Select> _annoConsumer){
-        return new Sanno( "@a" ).$("@a", "any").constraint(constraint).forSelectedIn(_n, _annoConsumer);
+        return new SOLDanno( "@a" ).$("@a", "any").constraint(constraint).forSelectedIn(_n, _annoConsumer);
     }
     
     /**
@@ -309,7 +309,7 @@ public final class Sanno
      * @return 
      */
     public static final <N extends _node> N forSelected( N _n, String proto, Consumer<Select> _annoConsumer){
-        return Sanno.of(proto).forSelectedIn(_n, _annoConsumer);
+        return SOLDanno.of(proto).forSelectedIn(_n, _annoConsumer);
     }
     
     /**
@@ -322,7 +322,7 @@ public final class Sanno
      * @return 
      */
     public static final <N extends _node> N forSelected( N _n, String proto, Predicate<_anno> constraint, Consumer<Select> _annoConsumer){
-        return Sanno.of(proto, constraint).forSelectedIn(_n, _annoConsumer);
+        return SOLDanno.of(proto, constraint).forSelectedIn(_n, _annoConsumer);
     }
     
     /**
@@ -334,7 +334,7 @@ public final class Sanno
      * @return 
      */
     public static final <N extends _node> N forSelected( N _n, _anno _proto , Consumer<Select> _annoConsumer){
-        return Sanno.of(_proto).forSelectedIn(_n, _annoConsumer);
+        return SOLDanno.of(_proto).forSelectedIn(_n, _annoConsumer);
     }
     
     /**
@@ -347,7 +347,7 @@ public final class Sanno
      * @return 
      */
     public static final <N extends _node> N forSelected( N _n, _anno _proto, Predicate<_anno> constraint, Consumer<Select> _annoConsumer){
-        return Sanno.of(_proto, constraint).forSelectedIn(_n, _annoConsumer);
+        return SOLDanno.of(_proto, constraint).forSelectedIn(_n, _annoConsumer);
     }
     
     /**
@@ -358,7 +358,7 @@ public final class Sanno
      * @return 
      */
     public static final <N extends _node> List<Select> selectList( N _n, String proto ){
-        return Sanno.of(proto).listSelectedIn(_n);
+        return SOLDanno.of(proto).listSelectedIn(_n);
     }
     
     /**
@@ -369,7 +369,7 @@ public final class Sanno
      * @return 
      */
     public static final <N extends _node> List<Select> selectList( N _n, Predicate<_anno> constraint ){
-        return new Sanno( "@a" ).$("@a", "any").constraint(constraint).listSelectedIn(_n);
+        return new SOLDanno( "@a" ).$("@a", "any").constraint(constraint).listSelectedIn(_n);
     }
     
     /**
@@ -381,7 +381,7 @@ public final class Sanno
      * @return 
      */
     public static final <N extends _node> List<Select> selectList( N _n, String proto, Predicate<_anno> constraint){
-        return Sanno.of(proto, constraint).listSelectedIn(_n);
+        return SOLDanno.of(proto, constraint).listSelectedIn(_n);
     }
     
     /**
@@ -392,7 +392,7 @@ public final class Sanno
      * @return 
      */
     public static final <N extends _node> List<Select> selectList( N _n, _anno _proto ){
-        return Sanno.of(_proto).listSelectedIn(_n);
+        return SOLDanno.of(_proto).listSelectedIn(_n);
     }
     
     /**
@@ -404,7 +404,7 @@ public final class Sanno
      * @return 
      */
     public static final <N extends _node> List<Select> selectList( N _n, _anno _proto, Predicate<_anno> constraint){
-        return Sanno.of(_proto, constraint).listSelectedIn(_n);
+        return SOLDanno.of(_proto, constraint).listSelectedIn(_n);
     }
     
     /**
@@ -425,7 +425,7 @@ public final class Sanno
      * @return the modified N
      */
     public static final <N extends _node> N remove( N _n, _anno _proto ){
-        return Sanno.of(_proto).removeIn(_n);
+        return SOLDanno.of(_proto).removeIn(_n);
     }
     
     /**
@@ -436,7 +436,7 @@ public final class Sanno
      * @return the modified N
      */
     public static final <N extends _node> N remove( N _n, Predicate<_anno> constraint ){
-        return new Sanno( "@a" ).$("@a", "any").constraint(constraint).removeIn(_n);
+        return new SOLDanno( "@a" ).$("@a", "any").constraint(constraint).removeIn(_n);
     }
     
     /**
@@ -448,7 +448,7 @@ public final class Sanno
      * @return the modified N
      */
     public static final <N extends _node> N remove( N _n, _anno _proto, Predicate<_anno> constraint){
-        return Sanno.of(_proto, constraint).removeIn(_n);
+        return SOLDanno.of(_proto, constraint).removeIn(_n);
     }
     
     /**
@@ -459,7 +459,7 @@ public final class Sanno
      * @return 
      */
     public static final <N extends _node> N remove( N _n, String proto ){
-        return Sanno.of(proto).removeIn(_n);
+        return SOLDanno.of(proto).removeIn(_n);
     }
     
     /**
@@ -471,7 +471,7 @@ public final class Sanno
      * @return 
      */
     public static final <N extends _node> N remove( N _n, String proto, Predicate<_anno> constraint){
-        return Sanno.of(proto, constraint).removeIn(_n);
+        return SOLDanno.of(proto, constraint).removeIn(_n);
     }
     
     /**
@@ -483,8 +483,8 @@ public final class Sanno
      * @return 
      */
     public static final <N extends _node> N replace(N _n, _anno sourceProto, _anno targetProto){
-        return Sanno.of(sourceProto)
-            .replaceIn(_n, Sanno.of(targetProto));
+        return SOLDanno.of(sourceProto)
+            .replaceIn(_n, SOLDanno.of(targetProto));
     }
     
     /**
@@ -496,8 +496,8 @@ public final class Sanno
      * @return 
      */
     public static final <N extends _node> N replace(N _n, String sourceProto, String targetProto){
-        return Sanno.of(sourceProto)
-            .replaceIn(_n, Sanno.of(targetProto));
+        return SOLDanno.of(sourceProto)
+            .replaceIn(_n, SOLDanno.of(targetProto));
     }
     
     /**
@@ -509,8 +509,8 @@ public final class Sanno
      * @return 
      */
     public static final <N extends _node> N replace(N _n, AnnotationDeclaration astSourceProto, AnnotationDeclaration astTargetProto){
-        return Sanno.of(_anno.of(astSourceProto))
-            .replaceIn(_n, Sanno.of(_anno.of(astTargetProto)));
+        return SOLDanno.of(_anno.of(astSourceProto))
+            .replaceIn(_n, SOLDanno.of(_anno.of(astTargetProto)));
     }
     
     /**
@@ -523,33 +523,33 @@ public final class Sanno
      */
     public static final <N extends _node> N replace( N _n, Class<? extends Annotation>sourceProto, Class<? extends Annotation>targetProto){
         
-        return Sanno.of(sourceProto)
-            .replaceIn(_n, Sanno.of(targetProto));
+        return SOLDanno.of(sourceProto)
+            .replaceIn(_n, SOLDanno.of(targetProto));
     }
     
-    public static Sanno of( String code){
+    public static SOLDanno of( String code){
         return of( new String[]{code} );
     }
     
-    public static Sanno of( String code, Predicate<_anno> constraint){
+    public static SOLDanno of( String code, Predicate<_anno> constraint){
         return of( new String[]{code} ).constraint(constraint);
     }
     
-    public static Sanno of( String...code){
+    public static SOLDanno of( String...code){
         _anno _a = _anno.of( code );
-        return new Sanno( _a.toString().trim() );
+        return new SOLDanno( _a.toString().trim() );
     }
 
-    public static Sanno of( _anno _a ){
-        return new Sanno( _a.toString().trim() ); 
+    public static SOLDanno of( _anno _a ){
+        return new SOLDanno( _a.toString().trim() ); 
     }
     
-    public static Sanno of( _anno _a, Predicate<_anno> constraint ){
-        return new Sanno( _a.toString().trim() ).constraint(constraint);
+    public static SOLDanno of( _anno _a, Predicate<_anno> constraint ){
+        return new SOLDanno( _a.toString().trim() ).constraint(constraint);
     }
     
-    public static Sanno of( Predicate<_anno> constraint ){
-        return new Sanno( "@a" ).$("@a", "any").constraint(constraint);
+    public static SOLDanno of( Predicate<_anno> constraint ){
+        return new SOLDanno( "@a" ).$("@a", "any").constraint(constraint);
     }
     
     /**
@@ -557,7 +557,7 @@ public final class Sanno
      * @param anonymousObjectWithAnnotation
      * @return 
      */
-    public static Sanno of( Object anonymousObjectWithAnnotation ){
+    public static SOLDanno of( Object anonymousObjectWithAnnotation ){
         StackTraceElement ste = Thread.currentThread().getStackTrace()[2];
         ObjectCreationExpr oce = Expr.anonymousObject( ste );
         NodeList<BodyDeclaration<?>> bds = oce.getAnonymousClassBody().get();
@@ -565,23 +565,23 @@ public final class Sanno
         return of( _anno.of(bd.getAnnotation(0) ) );        
     }
     
-    public static Sanno of( Class<? extends Annotation> clazz){
-        return Sanno.of( a -> a.isInstance(clazz) );         
+    public static SOLDanno of( Class<? extends Annotation> clazz){
+        return SOLDanno.of( a -> a.isInstance(clazz) );         
     }
     
-    public static Sanno of( Class<? extends Annotation> clazz, String argumentStencil ){
+    public static SOLDanno of( Class<? extends Annotation> clazz, String argumentStencil ){
         if( !argumentStencil.trim().startsWith("(") ){
             argumentStencil = "("+ argumentStencil + ")";
         }
-        Sanno $a = Sanno.of("@$annotationName$"+argumentStencil).constraint(a -> a.isInstance(clazz));
+        SOLDanno $a = SOLDanno.of("@$annotationName$"+argumentStencil).constraint(a -> a.isInstance(clazz));
         return $a;
     }
     
-    public static Sanno of( Class<? extends Annotation> clazz, String argumentStencil, Predicate<_anno> constraint){
+    public static SOLDanno of( Class<? extends Annotation> clazz, String argumentStencil, Predicate<_anno> constraint){
         if( !argumentStencil.trim().startsWith("(") ){
             argumentStencil = "("+ argumentStencil + ")";
         }
-        Sanno $a = Sanno.of("@$annotationName$"+argumentStencil).constraint(a -> a.isInstance(clazz) && constraint.test(a));
+        SOLDanno $a = SOLDanno.of("@$annotationName$"+argumentStencil).constraint(a -> a.isInstance(clazz) && constraint.test(a));
         return $a;
     }
     
@@ -592,7 +592,7 @@ public final class Sanno
     
     
     
-    private Sanno( String stencil) {
+    private SOLDanno( String stencil) {
         this.pattern = Stencil.of(stencil );
     }
 
@@ -601,7 +601,7 @@ public final class Sanno
      * @param constraint
      * @return 
      */
-    public Sanno constraint( Predicate<_anno> constraint ){
+    public SOLDanno constraint( Predicate<_anno> constraint ){
         this.constraint = constraint;
         return this;
     }
@@ -612,7 +612,7 @@ public final class Sanno
      * @param constraint a constraint to be added
      * @return the modified prototype
      */
-    public Sanno addConstraint( Predicate<_anno>constraint ){
+    public SOLDanno addConstraint( Predicate<_anno>constraint ){
         this.constraint = this.constraint.and(constraint);
         return this;
     }
@@ -721,7 +721,7 @@ public final class Sanno
     }
 
     @Override
-    public Sanno $(String target, String $Name) {
+    public SOLDanno $(String target, String $Name) {
         this.pattern = this.pattern.$(target, $Name);        
         return this;
     }
@@ -733,7 +733,7 @@ public final class Sanno
      * @param kvs the key parameter NAME and String VALUE to assign to the
      * @return the modified Stencil
      */
-    public Sanno hardcode$( Tokens kvs ) {
+    public SOLDanno hardcode$( Tokens kvs ) {
         return hardcode$( Translator.DEFAULT_TRANSLATOR, kvs );
     }
 
@@ -744,7 +744,7 @@ public final class Sanno
      * @param keyValues the key parameter NAME and String VALUE to assign to the
      * @return the modified Stencil
      */
-    public Sanno hardcode$( Object... keyValues ) {
+    public SOLDanno hardcode$( Object... keyValues ) {
         return hardcode$( Translator.DEFAULT_TRANSLATOR, Tokens.of( keyValues ) );
     }
 
@@ -756,7 +756,7 @@ public final class Sanno
      * @param keyValues the key parameter NAME and String VALUE to assign to the
      * @return the modified Stencil
      */
-    public Sanno hardcode$( Translator translator, Object... keyValues ) {
+    public SOLDanno hardcode$( Translator translator, Object... keyValues ) {
         return hardcode$( translator, Tokens.of( keyValues ) );
     }
 
@@ -766,7 +766,7 @@ public final class Sanno
      * @param kvs
      * @return 
      */
-    public Sanno hardcode$( Translator translator, Tokens kvs ) {
+    public SOLDanno hardcode$( Translator translator, Tokens kvs ) {
         this.pattern = this.pattern.hardcode$(translator,kvs);          
         return this;
     }
@@ -921,7 +921,7 @@ public final class Sanno
      * @param <N> the TYPE of model
      * @return
      */
-    public <N extends _node> N replaceIn(N _n, Sanno $a ){
+    public <N extends _node> N replaceIn(N _n, SOLDanno $a ){
         Walk.in(_n, AnnotationExpr.class, e-> {
             Select sel = select( e );
             if( sel != null ){
@@ -938,7 +938,7 @@ public final class Sanno
      * @param $a
      * @return 
      */
-    public <N extends Node> N replaceIn(N astNode, Sanno $a ){
+    public <N extends Node> N replaceIn(N astNode, SOLDanno $a ){
         astNode.walk(AnnotationExpr.class, e-> {
             Select sel = select( e );
             if( sel != null ){
@@ -1014,24 +1014,24 @@ public final class Sanno
         implements $proto.selected, selected_model<_anno>, selectedAstNode<AnnotationExpr> {
         
         public final AnnotationExpr astAnno;
-        public final $args args;
+        public final $nameValues args;
 
         public Select ( _anno _a, Tokens tokens){
-            this( _a, $args.of(tokens));
+            this( _a, $nameValues.of(tokens));
         }
         
-        public Select ( _anno _a, $args tokens){
+        public Select ( _anno _a, $nameValues tokens){
             this.astAnno = _a.ast();
             args = tokens;
         }
         
-        public Select( AnnotationExpr expression, $args tokens){
+        public Select( AnnotationExpr expression, $nameValues tokens){
             this.astAnno = expression;
             this.args = tokens; //$args.of( tokens);
         }
         
         @Override
-        public $args getArgs(){
+        public $nameValues args(){
             return args;
         }
         

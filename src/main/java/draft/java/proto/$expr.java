@@ -17,7 +17,7 @@ import java.util.function.Predicate;
  * @param <T> the underlying Expression TYPE
  */
 public final class $expr <T extends Expression>
-    implements Template<T>, $proto<T> {
+    implements Template<T>, $proto<T>, $field.$part {
 
     /**
      * find the first occurring instance of a matching expression within the clazz
@@ -2710,20 +2710,20 @@ public final class $expr <T extends Expression>
             $proto.selectedAstNode<T> {
         
         public final T astExpression;
-        public final $args args;
+        public final $nameValues args;
 
         public Select( T astExpr, Tokens tokens){
             this.astExpression = astExpr;
-            this.args = $args.of(tokens);
+            this.args = $nameValues.of(tokens);
         }
                 
-        public Select( T astExpr, $args tokens){
+        public Select( T astExpr, $nameValues tokens){
             this.astExpression = astExpr;
             this.args = tokens;
         }
         
         @Override
-        public $args getArgs(){
+        public $nameValues args(){
             return args;
         }
         

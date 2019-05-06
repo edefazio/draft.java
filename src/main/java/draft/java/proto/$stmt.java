@@ -1437,10 +1437,7 @@ public final class $stmt<T extends Statement>
     }
 
     @Override
-    public T construct( Translator t, Map<String,Object> tokens ){
-        //if( this.commentPattern != null ){
-        //    return (T)Stmt.of(Stencil.of(commentPattern, stmtPattern).construct( t, tokens ));
-        //}
+    public T construct( Translator t, Map<String,Object> tokens ){                
         return (T)walkCompose$LabeledStmt( Stmt.of(stmtPattern.construct( t, tokens )), tokens );
     }
 
@@ -1583,7 +1580,7 @@ public final class $stmt<T extends Statement>
         if( st == null ){
             return null;
         }      
-        return new Select( astStmt, $args.of(st) );
+        return new Select( astStmt, $nameValues.of(st) );
         //if( ts.isConsistent(st)){
         //    ts.putAll(st);           
         //}
@@ -2169,15 +2166,15 @@ public final class $stmt<T extends Statement>
             $proto.selectedAstNode<T> {
         
         public T astStatement;
-        public $args args;
+        public $nameValues args;
         
-        public Select( T astStatement, $args tokens){
+        public Select( T astStatement, $nameValues tokens){
             this.astStatement = astStatement;
             this.args = tokens;
         }
         
         @Override
-        public $args getArgs(){
+        public $nameValues args(){
             return args;
         }
         

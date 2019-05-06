@@ -711,7 +711,7 @@ public class $OLDvar
                 this.varPattern.deconstruct( astVar.getType()+ " " +astVar.toString(Ast.PRINT_NO_ANNOTATIONS_OR_COMMENTS) );
             if( matchedName != null ){
                 all.putAll(matchedName);
-                return new Select( astVar, $args.of(all));
+                return new Select( astVar, $nameValues.of(all));
             }
         }
         return null;                
@@ -1206,15 +1206,15 @@ public class $OLDvar
             $proto.selectedAstNode<VariableDeclarator> {
         
         public final VariableDeclarator astVar;
-        public final $args args;
+        public final $nameValues args;
 
-        public Select( VariableDeclarator v, $args tokens){
+        public Select( VariableDeclarator v, $nameValues tokens){
             this.astVar = v;
             this.args = tokens;
         }
         
         @Override
-        public $args getArgs(){
+        public $nameValues args(){
             return args;
         }
         

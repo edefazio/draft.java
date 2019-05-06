@@ -24,6 +24,13 @@ public class $method
     implements Template<_method>, $proto<_method> {
        
     /**
+     * Marker interface for categorizing/identifying parts that make up the
+     * $method
+     */
+    public interface $part{
+        
+    }
+    /**
      * List all methods in the clazz
      * @param clazz
      * @return 
@@ -461,13 +468,32 @@ public class $method
     public static $method of( String proto, Predicate<_method> constraint ){
         return new $method(_method.of(proto) ).constraint(constraint);
     }
+    
+    /**
+     * 
+     * @param part
+     * @return 
+     */
+    public static $method of( $part part ){
+        $part[] parts = new $part[]{part};
+        return of(parts);
+    }
+    
+    /**
+     * Build a method from the constituent parts
+     * @param parts the parts of the $method
+     * @return the $method
+     */
+    public static $method of( $part...parts ){
+        return new $method( parts ); 
+    }
 
     public Predicate<_method> constraint = t -> true;
     
     public $component<_javadoc> javadoc = new $component( "$javadoc$", t->true);    
     public $annos annos = new $annos();
     public $modifiers modifiers = $modifiers.any();
-    public $component<_typeRef> type = new $component( "$type$", t->true);
+    public $typeRef type = $typeRef.any();
     public $component<_typeParameters> typeParameters = new $component( "$typeParameters$", t->true);
     
     public $id name = $id.any();
@@ -478,6 +504,36 @@ public class $method
     
     private $method( _method _p ){
         this( _p, t-> true );
+    }
+    
+    /**
+     * Build a $method from component parts
+     * @param parts 
+     */
+    private $method($part ...parts ){
+        for(int i=0;i<parts.length;i++){
+            if( parts[i] instanceof $annos ){
+                this.annos = ($annos)parts[i];
+            }
+            else if(parts[i] instanceof $anno){
+                this.annos.$annosList.add( ($anno)parts[i]);
+            }
+            else if(parts[i] instanceof $modifiers){
+                this.modifiers = ($modifiers)parts[i];
+            }
+            else if(parts[i] instanceof $typeRef){
+                this.modifiers = ($modifiers)parts[i];
+            }
+            else if(parts[i] instanceof $id){
+                this.name = ($id)parts[i];
+            }
+            else if(parts[i] instanceof $parameters){
+                this.parameters = ($parameters)parts[i];
+            }
+            else if(parts[i] instanceof $body){
+                this.body = ($body)parts[i];
+            }
+        }
     }
     
     /**
@@ -493,7 +549,8 @@ public class $method
             annos = $annos.of(_m.getAnnos() );
         }
         modifiers = $modifiers.of(_m);
-        type = new $component<>(_m.getType().toString());
+        //type = new $component<>(_m.getType().toString());
+        type = $typeRef.of(_m.getType() );
         if( !_m.hasTypeParameters() ){
             final _typeParameters etps = _m.getTypeParameters();
             typeParameters = new $component(
@@ -549,7 +606,7 @@ public class $method
         normalized$.addAll( javadoc.pattern.list$Normalized() );
         normalized$.addAll( annos.list$Normalized() );
         normalized$.addAll( typeParameters.pattern.list$Normalized() );
-        normalized$.addAll( type.pattern.list$Normalized() );        
+        normalized$.addAll( type.list$Normalized() );        
         normalized$.addAll( name.pattern.list$Normalized() );
         normalized$.addAll( parameters.list$Normalized() );
         normalized$.addAll( thrown.pattern.list$Normalized() );
@@ -563,7 +620,7 @@ public class $method
         all$.addAll( javadoc.pattern.list$() );
         all$.addAll( annos.list$() );
         all$.addAll( typeParameters.pattern.list$() );
-        all$.addAll( type.pattern.list$() );        
+        all$.addAll( type.list$() );        
         all$.addAll( name.pattern.list$() );
         all$.addAll( parameters.list$() );
         all$.addAll( thrown.pattern.list$() );
@@ -582,7 +639,7 @@ public class $method
     }
     
     public $method $type(){
-        this.type.pattern("$type$");
+        this.type = $typeRef.any();
         return this;
     }
     
@@ -682,7 +739,7 @@ public class $method
         sb.append(" ");
         sb.append( typeParameters.compose(translator, base));
         sb.append(" ");
-        sb.append( type.compose(translator, base));
+        sb.append( type.construct(translator, base));
         sb.append(" ");
         sb.append( name.compose(translator, base));
         sb.append(" ");
@@ -734,7 +791,7 @@ public class $method
         all = thrown.decomposeTo(_m.getThrows(), all);
         all = body.decomposeTo(_m.getBody(), all);
         if( all != null ){
-            return new Select( _m, $args.of(all));
+            return new Select( _m, $nameValues.of(all));
         }
         return null;        
     }
@@ -792,7 +849,7 @@ public class $method
         javadoc.pattern = javadoc.pattern.hardcode$(translator, kvs);
         annos = annos.hardcode$(translator, kvs);
         typeParameters.pattern = typeParameters.pattern.hardcode$(translator, kvs);
-        type.pattern = type.pattern.hardcode$(translator, kvs);
+        type = type.hardcode$(translator, kvs);
         name.pattern = name.pattern.hardcode$(translator, kvs);
         parameters = parameters.hardcode$(translator, kvs);
         thrown.pattern = thrown.pattern.hardcode$(translator, kvs);
@@ -807,7 +864,7 @@ public class $method
         javadoc.pattern = javadoc.pattern.$(target, $Name);
         annos = annos.$(target, $Name);
         typeParameters.pattern = typeParameters.pattern.$(target, $Name);
-        type.pattern = type.pattern.$(target, $Name);
+        type = type.$(target, $Name);
         name.pattern = name.pattern.$(target, $Name);
         parameters = parameters.$(target, $Name);
         thrown.pattern = thrown.pattern.$(target, $Name);
@@ -1284,20 +1341,20 @@ public class $method
             $proto.selected_model<_method> {
         
         public final _method _m;
-        public final $args args;
+        public final $nameValues args;
 
-        public Select( _method _m, $args tokens ){
+        public Select( _method _m, $nameValues tokens ){
             this._m = _m;
             this.args = tokens;
         }
                 
-        public Select( MethodDeclaration astMethod, $args tokens ){
+        public Select( MethodDeclaration astMethod, $nameValues tokens ){
             this._m = _method.of(astMethod);
             this.args = tokens;
         }
 
         @Override
-        public $args getArgs(){
+        public $nameValues args(){
             return args;
         }
         

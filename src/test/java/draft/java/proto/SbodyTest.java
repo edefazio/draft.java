@@ -11,6 +11,24 @@ import junit.framework.TestCase;
  */
 public class SbodyTest extends TestCase {
     
+    public void testMatchEmptyBody(){
+        
+        assertTrue( $body.of("{}").isImplemented);
+        
+        assertTrue( $body.of(";").matches(";") );
+        assertTrue( $body.of("{}").matches("{}"));
+        assertFalse( $stmt.of("{}").matches("{ assert true; }"));        
+        
+        assertFalse( $body.of("{}").matches("{ assert(true); }"));
+    }
+    
+    public void testAnyConstruct(){
+        _body _b = $body.any().construct();
+        assertTrue( _b.isEmpty() );
+        
+        _b = $body.any().construct("$body", "{System.out.println(1);}");
+    }
+    
     public void testComposeWith$Label(){        
         $body $b = $body.of( ()->{
             $label: System.out.println(2);

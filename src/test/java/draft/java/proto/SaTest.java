@@ -6,6 +6,7 @@
 package draft.java.proto;
 
 import com.github.javaparser.ast.expr.MemberValuePair;
+import draft.Translator;
 import draft.java.Expr;
 import draft.java._anno;
 import draft.java._class;
@@ -28,6 +29,31 @@ public class SaTest extends TestCase {
         //have a matching annotation @A(count=1)
         
         // $method.of( $a.of("@A(count=1)"), $typeDecl.of(String.class) );
+    }
+    
+    public void testConstructWith$Components(){
+        $anno $a = $anno.of( $id.of("A"), $anno.$memberValue.of(Expr.of(1)));
+        assertTrue( $a.matches("@A(1)") );        
+    }
+    
+    public void testOverrideParameter(){
+        
+        System.out.println( $anno.of("B").compose() );
+        
+        assertEquals(_anno.of("B"), $anno.any().construct("$anno", "@B"));
+        assertEquals(_anno.of("B").toString(), $anno.any()
+                .compose("$anno", "@B"));        
+    }
+    
+    public void testAnyCompose(){
+        try{
+            $anno.any().construct();
+            fail("expected exception for no name");
+        }catch(Exception e){
+            
+        }        
+        assertEquals(_anno.of("E"), $anno.any().construct("name", "E"));
+        
     }
     
     public void testAnyMatch(){

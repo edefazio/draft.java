@@ -22,7 +22,8 @@ import java.util.stream.Collectors;
  *
  * @author Eric
  */
-public class $parameters implements Template<_parameters>, $proto<_parameters> {
+public class $parameters implements Template<_parameters>, $proto<_parameters>, 
+        $constructor.$part, $method.$part {
 
     List<$parameter> $params = new ArrayList<>();
     
@@ -396,14 +397,14 @@ public class $parameters implements Template<_parameters>, $proto<_parameters> {
         implements $proto.selected, selected_model<_parameters> {
         
         public final _parameters _params;
-        public final $args args;
+        public final $nameValues args;
 
         public Select ( _parameters _p, Tokens tokens){
             this._params = _p;
-            args = $args.of(tokens);
+            args = $nameValues.of(tokens);
         }
         
-        public Select ( _parameters _p, $args $a){
+        public Select ( _parameters _p, $nameValues $a){
             this._params = _p;
             args = $a;
         }
@@ -418,7 +419,7 @@ public class $parameters implements Template<_parameters>, $proto<_parameters> {
         
         
         @Override
-        public $args getArgs(){
+        public $nameValues args(){
             return args;
         }
         

@@ -691,10 +691,10 @@ public class $node implements $proto<Node> {
      */     
     public static class Select<T extends Node> implements $proto.selected, $proto.selectedAstNode<T> {
         public T node;
-        public $args args;
+        public $nameValues args;
 
         @Override
-        public $args getArgs(){
+        public $nameValues args(){
             return args;
         }
         

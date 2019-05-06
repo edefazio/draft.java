@@ -26,6 +26,16 @@ public class $constructor
     implements Template<_constructor>, $proto<_constructor> {
     
     /**
+     * Marker interface for designating prototypes that are "part" of
+     * the $constructor
+     * (i.e. all of the components $annos, $annos, $id, $body,... )
+     * that make up the $constructor
+     */
+    interface $part{
+        
+    }
+    
+    /**
      * list all constructors in the clazz
      * @param clazz
      * @return 
@@ -475,7 +485,9 @@ public class $constructor
     public static $constructor of( _constructor _ct, Predicate<_constructor> constraint){
         return new $constructor( _ct).constraint(constraint);
     }
-        
+    
+    
+    
     /**
      * 
      * @param pattern
@@ -495,6 +507,25 @@ public class $constructor
         return new $constructor(_constructor.of(pattern) ).constraint(constraint);
     }
 
+    /**
+     * 
+     * @param component
+     * @return 
+     */
+    public static $constructor of( $part component ){       
+        $part[] pr = new $part[]{component};
+        return of(pr);
+    }
+    
+    /**
+     * 
+     * @param components
+     * @return 
+     */
+    public static $constructor of( $part...components ){       
+        return new $constructor( components );
+    }
+    
     public Predicate<_constructor> constraint = t -> true;
     
     public $component<_javadoc> javadoc = new $component( "$javadoc$", t->true);    
@@ -506,8 +537,45 @@ public class $constructor
     public $parameters parameters = $parameters.of();
     public $component<_throws> thrown = new $component( "$throws$", t-> true);
     public $body body = $body.any();
+    
     private $constructor( _constructor _ct ){
         this(_ct, t-> true );
+    }
+    
+    private $constructor(){        
+    }
+    
+    /**
+     * i.e. 
+     * 
+     * //look for all constructors with a matching annotation to A
+     * $constructor $ct = $constructor.of( $anno.of("A") );
+     * 
+     * @param components 
+     */
+    private $constructor( $part...components ){        
+        for(int i=0;i<components.length; i++){
+            if( components[i] instanceof $annos ){
+                this.annos = ($annos)components[i];
+            }
+            else if( components[i] instanceof $anno ){
+                this.annos.$annosList.add( ($anno)components[i] );
+            }
+            else if( components[i] instanceof $modifiers ){
+                this.modifiers = ($modifiers)components[i];
+            }
+            else if( components[i] instanceof $id ){
+                this.name = ($id)components[i];
+            }
+            else if( components[i] instanceof $parameters ){
+                this.parameters = ($parameters)components[i];
+            }
+            else if( components[i] instanceof $body ){
+                this.body = ($body)components[i];
+            } else{
+                throw new DraftException("Unable to use $proto component " +components[i]+" for $constructor" );
+            }            
+        }
     }
     
     /**
@@ -721,7 +789,7 @@ public class $constructor
         all = thrown.decomposeTo(_m.getThrows(), all);
         all = body.decomposeTo(_m.getBody(), all);
         if( all != null ){
-            return new Select( _m, $args.of(all));
+            return new Select( _m, $nameValues.of(all));
         }
         return null;        
     }
@@ -1292,20 +1360,20 @@ public class $constructor
             $proto.selected_model<_constructor> {
         
         public final _constructor _ct;
-        public final $args args;
+        public final $nameValues args;
 
-        public Select( _constructor _m, $args tokens ){
+        public Select( _constructor _m, $nameValues tokens ){
             this._ct = _m;
             this.args = tokens;
         }
                 
-        public Select( ConstructorDeclaration astMethod, $args tokens ){
+        public Select( ConstructorDeclaration astMethod, $nameValues tokens ){
             this._ct = _constructor.of(astMethod);
             this.args = tokens;
         }
 
         @Override
-        public $args getArgs(){
+        public $nameValues args(){
             return args;
         }
         

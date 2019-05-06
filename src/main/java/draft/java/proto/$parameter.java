@@ -864,19 +864,19 @@ public class $parameter implements Template<_parameter>, $proto<_parameter> {
         implements $proto.selected, selected_model<_parameter>, selectedAstNode<Parameter> {
         
         public final _parameter _param;
-        public final $args args;
+        public final $nameValues args;
 
         public Select ( _parameter _p, Tokens tokens){
             this._param = _p;
-            args = $args.of(tokens);
+            args = $nameValues.of(tokens);
         }
         
-        public Select ( _parameter _p, $args $a){
+        public Select ( _parameter _p, $nameValues $a){
             this._param = _p;
             args = $a;
         }
         
-        public Select ( Parameter astParam, $args tokens){
+        public Select ( Parameter astParam, $nameValues tokens){
             this( _parameter.of(astParam), tokens);
         }
         
@@ -918,7 +918,7 @@ public class $parameter implements Template<_parameter>, $proto<_parameter> {
         }
         
         @Override
-        public $args getArgs(){
+        public $nameValues args(){
             return args;
         }
         

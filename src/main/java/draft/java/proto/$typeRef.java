@@ -18,7 +18,7 @@ import java.util.function.Predicate;
  * Template for a Java Type Reference
  */
 public final class $typeRef
-    implements Template<_typeRef>, $proto<_typeRef>{
+    implements Template<_typeRef>, $proto<_typeRef>, $method.$part, $field.$part {
 
     /**
      * 
@@ -638,7 +638,7 @@ public final class $typeRef
      * @return 
      */
     public static $typeRef any() {
-        return new $typeRef("$typeDecl$");
+        return new $typeRef("$type$");
     }
     
     /**
@@ -1021,20 +1021,20 @@ public final class $typeRef
         public _typeRef type;
         
         /** the arguments selected*/
-        public $args args;
+        public $nameValues args;
 
         public Select(_typeRef _tr, Tokens tokens ){
             this.type = _tr;
-            this.args = $args.of(tokens);
+            this.args = $nameValues.of(tokens);
         }
         
-        public Select( Type type, $args tokens){
+        public Select( Type type, $nameValues tokens){
             this.type = _typeRef.of(type);
             this.args = tokens;
         }
         
         @Override
-        public $args getArgs(){
+        public $nameValues args(){
             return args;
         } 
         

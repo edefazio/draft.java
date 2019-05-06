@@ -22,7 +22,7 @@ import java.util.function.Predicate;
  * @author Eric
  */
 public class $modifiers 
-    implements $proto<_modifiers> {
+    implements $proto<_modifiers>, $constructor.$part, $method.$part, $field.$part{
     
     public static $modifiers any(){
         return new $modifiers();
@@ -291,7 +291,7 @@ public class $modifiers
     public static class Select implements selected<_modifiers>, selected_model<_modifiers>{
 
         public _modifiers _mods;
-        public $args args = new $args(new Tokens());
+        public $nameValues args = new $nameValues(new Tokens());
         
         public Select(_modifiers _mods ) {
             this._mods = _mods;            
@@ -362,7 +362,7 @@ public class $modifiers
         }
         
         @Override
-        public $args getArgs() {
+        public $nameValues args() {
             return args;
         }
 

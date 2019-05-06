@@ -20,7 +20,8 @@ import java.util.stream.Collectors;
  * @author Eric
  */
 public class $annos 
-    implements Template<_annos>, $proto<_annos> {
+    implements Template<_annos>, $proto<_annos>, $constructor.$part, $method.$part, 
+        $field.$part {
 
     /** 
      * List of anno prototypes, note: an empty list means it matches ANY list 
@@ -145,6 +146,10 @@ public class $annos
             // annos dont bleed into other code
             sb.append( separator );
         }
+        if( keyValues.get("$annos") != null){ //they can supply the annos            
+            $annos $as = $annos.of( keyValues.get("$annos").toString() );
+            sb.append($as.compose(translator, keyValues, separator));                
+        }
         return sb.toString();
     }
     
@@ -153,6 +158,16 @@ public class $annos
         _annos _as = _annos.of();
         for(int i=0;i<$annosList.size();i++){            
             _as.add( $annosList.get(i).construct(translator, keyValues) );
+        }
+        //handle $name OVERLOAD i.e. if they pass in a $annos
+        if( keyValues.get("$annos") != null){ //they can supply the annos            
+            $annos $as = $annos.of( keyValues.get("$annos").toString() );
+            //must extract the $annos to avoid a stack overflow
+            Map<String,Object> kvs = new HashMap<>();
+            kvs.putAll(keyValues);
+            kvs.remove("$annos");
+            _as.addAll( $as.construct(translator, kvs).list() );
+            //sb.append($as.compose(translator, keyValues, separator));                
         }
         return _as;
     }
@@ -381,19 +396,19 @@ public class $annos
         implements $proto.selected, selected_model<_annos> {
 
         public final _annos _anns;
-        public final $args args;
+        public final $nameValues args;
 
         public Select(_annos _a, Tokens tokens) {
-            this(_a, $args.of(tokens));
+            this(_a, $nameValues.of(tokens));
         }
 
-        public Select(_annos _as, $args tokens) {
+        public Select(_annos _as, $nameValues tokens) {
             this._anns = _as;
             args = tokens;
         }
 
         @Override
-        public $args getArgs() {
+        public $nameValues args() {
             return args;
         }
 

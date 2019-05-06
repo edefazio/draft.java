@@ -7,10 +7,10 @@ import java.util.function.Predicate;
 
 /**
  * Identifier that can be "simple" i.e. "Map"
- * or fully qualified "java.util.Map"
+ * or fully qualified "java.util.Map" 
  * 
  */
-public class $id {
+public class $id implements $constructor.$part, $method.$part, $field.$part{
 
     public static $id any(){
         return of("$id$");
@@ -141,7 +141,7 @@ public class $id {
         return str;
     }
     
-    public $proto.$args decomposeTo(String t, $proto.$args args) {
+    public $proto.$nameValues decomposeTo(String t, $proto.$nameValues args) {
         if (args == null) {
             return null;
         }

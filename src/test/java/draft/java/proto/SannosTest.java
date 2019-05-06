@@ -5,6 +5,9 @@
  */
 package draft.java.proto;
 
+import draft.Translator;
+import draft.java._anno;
+import draft.java._anno._annos;
 import draft.java._class;
 import junit.framework.TestCase;
 
@@ -13,6 +16,18 @@ import junit.framework.TestCase;
  * @author Eric
  */
 public class SannosTest extends TestCase {
+    
+    public void testComposeAny(){
+        $annos $as = $annos.any();
+        _annos _as = $as.construct(); //should work fine... empty annos
+        assertTrue( _as.isEmpty() );
+        
+        //here you can OVERRIDE
+        _as = $as.construct("$annos", "@A" );
+        
+        assertTrue( _as.contains(_anno.of("@A")));
+        
+    }
     
     public void testLambda(){
         class C{

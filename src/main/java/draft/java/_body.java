@@ -49,6 +49,7 @@ public final class _body implements _model {
         }
         // "we" need to put the body inside a parent... lets make it a 
         // method
+        
         return of( _method.of("void __BODYHOLDER();").add(body).ast() );
     }
     
@@ -500,9 +501,12 @@ public final class _body implements _model {
          * @param statements the statements as an Array of Strings
          * @return the modified T (_method, _constructor, _staticBlock)
          */
-        default T add(String... statements) {
-            
+        default T add(String... statements) {            
             BlockStmt bs = Ast.blockStmt(statements);
+            
+            if( !this.getBody().isImplemented() && bs.getStatements().size() == 0 ){ //empty body
+                this.setBody("{}");
+            }
             //organize orphan comments
             List<Comment> coms = bs.getOrphanComments();
             Comment c = null;
