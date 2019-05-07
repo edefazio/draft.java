@@ -556,6 +556,11 @@ public class $field implements Template<_field>, $proto<_field> {
         return this;
     }
     
+    public $field $javadoc( String javadoc ){
+        this.javadoc.pattern = Stencil.of(javadoc);
+        return this;
+    }
+    
     /**
      * Post parameterize the javadoc (expecting a specific form)
      * @param pattern

@@ -393,8 +393,8 @@ public class _classTest extends TestCase {
 
     public void testTypeHashCode(){
         assertEquals(
-            Ast.typeHash( Ast.typeDecl("String")),
-            Ast.typeHash( Ast.typeDecl("java.lang.String" )) );
+            Ast.typeHash( Ast.typeRef("String")),
+            Ast.typeHash( Ast.typeRef("java.lang.String" )) );
     }
 
     /**

@@ -232,7 +232,7 @@ public enum _java {
             return ctor(code);
         }
         if (_typeRef.class == nodeClass) {
-            return typeDecl(Text.combine(code).trim());
+            return typeRef(Text.combine(code).trim());
         }
         if (_staticBlock.class == nodeClass) {
             return staticBlock(code);

@@ -1328,7 +1328,7 @@ public interface _type<AST extends TypeDeclaration & NodeWithJavadoc & NodeWithM
         
         default boolean isImplementer( String str ){
             try{
-                return _hasImplements.this.isImplementer( (ClassOrInterfaceType)Ast.typeDecl( str ) );
+                return _hasImplements.this.isImplementer( (ClassOrInterfaceType)Ast.typeRef( str ) );
             }catch( Exception e){}
             return false;
         }
@@ -1342,7 +1342,7 @@ public interface _type<AST extends TypeDeclaration & NodeWithJavadoc & NodeWithM
             try{
                 _type t = ((_type)this);
                 
-                return _hasImplements.this.isImplementer( (ClassOrInterfaceType)Ast.typeDecl( clazz ) ) ||
+                return _hasImplements.this.isImplementer( (ClassOrInterfaceType)Ast.typeRef( clazz ) ) ||
                     t.hasImport( clazz ) && _hasImplements.this.isImplementer(clazz.getSimpleName() );
             } catch( Exception e){ }
             return false;
@@ -1372,7 +1372,7 @@ public interface _type<AST extends TypeDeclaration & NodeWithJavadoc & NodeWithM
             
             Arrays.stream( toImplement )
                 .forEach(i -> {
-                        ClassOrInterfaceType coit = (ClassOrInterfaceType)Ast.typeDecl(i);                    
+                        ClassOrInterfaceType coit = (ClassOrInterfaceType)Ast.typeRef(i);                    
                         nwi.addImplementedType( coit );   
                         ((_type)this).imports(i);
                     });

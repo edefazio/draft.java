@@ -436,7 +436,7 @@ public final class $typeRef
      * @return 
      */
     public static $typeRef of(String pattern ){
-        return new $typeRef(Ast.typeDecl(pattern));
+        return new $typeRef(Ast.typeRef(pattern));
     }
 
     /**
@@ -446,7 +446,7 @@ public final class $typeRef
      * @return 
      */
     public static $typeRef of(String pattern, Predicate<_typeRef> constraint){
-        return new $typeRef(Ast.typeDecl(pattern)).constraint(constraint);
+        return new $typeRef(Ast.typeRef(pattern)).constraint(constraint);
     }
     
     /**
@@ -455,7 +455,7 @@ public final class $typeRef
      * @return 
      */
     public static $typeRef of( Class typeClass ){
-        return of( Ast.typeDecl(typeClass) );
+        return of( Ast.typeRef(typeClass) );
     }
 
     /**
@@ -661,7 +661,7 @@ public final class $typeRef
      * @return 
      */
     public boolean matches( String type ){
-        return select( Ast.typeDecl(type)) != null;
+        return select( Ast.typeRef(type)) != null;
     }
 
     /**

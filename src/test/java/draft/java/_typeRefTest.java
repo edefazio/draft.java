@@ -21,7 +21,7 @@ public class _typeRefTest extends TestCase {
 
     public void testSimplify(){
         _typeRef _tr = _typeRef.of("java.util.List<java.util.Map>");
-        assertTrue( _tr.is(Ast.typeDecl("List<Map>")));
+        assertTrue( _tr.is(Ast.typeRef("List<Map>")));
         assertEquals( "List<Map>", _tr.normalized());
         
     }

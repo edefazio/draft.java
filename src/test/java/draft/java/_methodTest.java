@@ -126,25 +126,25 @@ public class _methodTest extends TestCase {
 
 
         assertEquals(
-                Ast.typeHash(Ast.typeDecl("Map")),
-                Ast.typeHash(Ast.typeDecl("java.util.Map")));
+                Ast.typeHash(Ast.typeRef("Map")),
+                Ast.typeHash(Ast.typeRef("java.util.Map")));
 
 
         assertTrue( Ast.typesEqual(
-                Ast.typeDecl("Map<B,C>"),
-                Ast.typeDecl("java.util.Map<B,C>")));
+                Ast.typeRef("Map<B,C>"),
+                Ast.typeRef("java.util.Map<B,C>")));
 
         assertEquals(
-                Ast.typeHash(Ast.typeDecl("Map<B,C>")),
-                Ast.typeHash(Ast.typeDecl("java.util.Map<B,C>")));
+                Ast.typeHash(Ast.typeRef("Map<B,C>")),
+                Ast.typeHash(Ast.typeRef("java.util.Map<B,C>")));
 
         assertEquals(
-                Ast.typeHash(Ast.typeDecl("Map<B,C>")),
-                Ast.typeHash(Ast.typeDecl("java.util.Map<aaaa.B,C>")));
+                Ast.typeHash(Ast.typeRef("Map<B,C>")),
+                Ast.typeHash(Ast.typeRef("java.util.Map<aaaa.B,C>")));
 
         assertEquals(
-                Ast.typeHash(Ast.typeDecl("Map<B,C>")),
-                Ast.typeHash(Ast.typeDecl("java.util.Map<aaaa.B,bbbb.C>")));
+                Ast.typeHash(Ast.typeRef("Map<B,C>")),
+                Ast.typeHash(Ast.typeRef("java.util.Map<aaaa.B,bbbb.C>")));
 
         assertEquals( _m1, _m2);
         assertEquals( _m1.hashCode(), _m2.hashCode());
@@ -541,7 +541,7 @@ public class _methodTest extends TestCase {
         assertEquals( _modifiers.of(), _m.getModifiers());
         assertEquals("m", _m.getName());
         assertTrue( _m.isType("void") );
-        assertTrue( _m.isType( Ast.typeDecl( "void")) );
+        assertTrue( _m.isType( Ast.typeRef( "void")) );
         assertEquals("void", _m.getType().toString());
         assertNull( _m.getBody().ast() );        
     }
@@ -585,7 +585,7 @@ public class _methodTest extends TestCase {
         assertEquals(1, _m.getTypeParameters().size());
         
         assertTrue( _m.isType( "List<String>"));
-        assertTrue( _m.isType( Ast.typeDecl( "List<String>")) );
+        assertTrue( _m.isType( Ast.typeRef( "List<String>")) );
         
         assertEquals("aMethod", _m.getName());
         assertTrue( _m.hasParameters() );

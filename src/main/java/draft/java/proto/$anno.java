@@ -867,6 +867,58 @@ public class $anno
     }
 
     /**
+     * updates the name of the prototype for matching and constructing
+     * @param name
+     * @return 
+     */
+    public $anno $name($id name){
+        this.name = name;
+        return this;
+    }
+    
+    /**
+     * Updates the name prototype for matching and constructing
+     * @param name
+     * @return 
+     */
+    public $anno $name(String name){
+        this.name = $id.of(name);
+        return this;
+    } 
+    
+    /**
+     * 
+     * @param mv
+     * @return 
+     */
+    public $anno $memberValue( $memberValue mv ){
+        this.$mvs.add(mv);
+        return this;
+    }
+    
+    /**
+     * 
+     * @param key
+     * @param value
+     * @return 
+     */
+    public $anno $memberValue(String key, Expression value){
+        this.$mvs.add( new $memberValue(key, value) );
+        return this;
+    }
+    
+    /**
+     * 
+     * @param key
+     * @param value
+     * @return 
+     */
+    public $anno $memberValue(String key, String value){
+        this.$mvs.add( new $memberValue(key, value) );
+        return this;
+    }
+    
+    /**
      * 
      * @return 
      */

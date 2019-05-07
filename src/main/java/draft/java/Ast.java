@@ -630,7 +630,7 @@ public enum Ast {
             return new Name( Text.combine(code));
         }
         if( Type.class.isAssignableFrom(nodeClass )){
-            return typeDecl( Text.combine(code));
+            return typeRef( Text.combine(code));
         }
         if( Modifier.class == nodeClass ){
             return _modifiers.KEYWORD_TO_ENUM_MAP.get(Text.combine(code) );
@@ -1226,7 +1226,7 @@ public enum Ast {
     }
 
     public static Type typeRef(AnnotatedType at) {
-        return typeDecl(at.getType().toString());
+        return typeRef(at.getType().toString());
     }
 
     /**
@@ -1242,20 +1242,20 @@ public enum Ast {
 
     public static final Pattern PATTERN_LOCAL_CLASS = Pattern.compile(LOCAL_CLASS_NAME_PACKAGE_PATTERN);
 
-    public static Type typeDecl(java.lang.reflect.Type t) {
+    public static Type typeRef(java.lang.reflect.Type t) {
         //System.out.println( "TYPE NAME " + t.getTypeName().replace('$', '.') );
         String str = t.getTypeName();
         if (PATTERN_LOCAL_CLASS.matcher(str).find()) {
             //lets remove all the local stuff... return a type without package
             str = str.replaceAll(LOCAL_CLASS_NAME_PACKAGE_PATTERN, ".");
             //System.out.println( "Str \"" + str +"\"");
-            return typeDecl(str.substring(str.lastIndexOf('.') + 1));
+            return typeRef(str.substring(str.lastIndexOf('.') + 1));
         }
         //String name = str.replace('$', '.');
-        return typeDecl(str);
+        return typeRef(str);
     }
 
-    public static Type typeDecl(Class clazz) {
+    public static Type typeRef(Class clazz) {
         if (clazz.isArray()) {
             Class<?> cl = clazz;
             int dimensions = 0;
@@ -1266,9 +1266,9 @@ public enum Ast {
                 cl = cl.getComponentType();
             }
             String tr = cl.getCanonicalName() + sb.toString();
-            return typeDecl(tr);
+            return typeRef(tr);
         }
-        return typeDecl(clazz.getCanonicalName());
+        return typeRef(clazz.getCanonicalName());
     }
 
     public static PrimitiveType BOOLEAN_TYPE = PrimitiveType.booleanType();
@@ -1280,7 +1280,7 @@ public enum Ast {
     public static PrimitiveType DOUBLE_TYPE = PrimitiveType.doubleType();
     public static PrimitiveType LONG_TYPE = PrimitiveType.longType();
 
-    public static Type typeDecl(String code) {
+    public static Type typeRef(String code) {
 
         if (code.contains("|")) { //Could only be a Union Type i.e. from a catch clause
             code = "catch(" + code + " e ) {}";
@@ -1292,7 +1292,7 @@ public enum Ast {
         if (PATTERN_LOCAL_CLASS.matcher(code).find()) {
             //lets remove all the local stuff... return a type without package
             code = code.replaceAll(LOCAL_CLASS_NAME_PACKAGE_PATTERN, ".");
-            return typeDecl(code.substring(code.lastIndexOf('.') + 1));
+            return typeRef(code.substring(code.lastIndexOf('.') + 1));
         }
         return StaticJavaParser.parseType(code);
     }

@@ -1,5 +1,6 @@
 package draft.java.proto;
 
+import com.github.javaparser.ast.Modifier;
 import com.github.javaparser.ast.Node;
 import com.github.javaparser.ast.NodeList;
 import com.github.javaparser.ast.body.BodyDeclaration;
@@ -486,8 +487,6 @@ public class $constructor
         return new $constructor( _ct).constraint(constraint);
     }
     
-    
-    
     /**
      * 
      * @param pattern
@@ -535,7 +534,8 @@ public class $constructor
     public $component<_typeParameters> typeParameters = new $component( "$typeParameters$", t->true);
     public $id name = $id.any();
     public $parameters parameters = $parameters.of();
-    public $component<_throws> thrown = new $component( "$throws$", t-> true);
+    //public $component<_throws> thrown = new $component( "$throws$", t-> true);
+    public $throws thrown = $throws.any();
     public $body body = $body.any();
     
     private $constructor( _constructor _ct ){
@@ -572,7 +572,11 @@ public class $constructor
             }
             else if( components[i] instanceof $body ){
                 this.body = ($body)components[i];
-            } else{
+            } 
+            else if( components[i] instanceof $throws ){
+                this.thrown = ($throws)components[i];
+            }
+            else{
                 throw new DraftException("Unable to use $proto component " +components[i]+" for $constructor" );
             }            
         }
@@ -601,10 +605,11 @@ public class $constructor
         if( _ct.hasParameters() ){
             parameters = $parameters.of(_ct.getParameters());
         }        
-        if( _ct.hasThrows() ){
-            final _throws ths = _ct.getThrows();
-            thrown = new $component( "$throws$", (t)-> t.equals(ths) );
-        }
+        thrown = $throws.of( _ct.getThrows() );
+        //if( _ct.hasThrows() ){
+        //    final _throws ths = _ct.getThrows();
+        //    thrown = new $component( "$throws$", (t)-> t.equals(ths) );
+        //}
         if( _ct.hasBody() ){            
             body = $body.of(_ct.ast());    
         }
@@ -639,8 +644,10 @@ public class $constructor
         normalized$.addAll( typeParameters.pattern.list$Normalized() );
         normalized$.addAll( name.pattern.list$Normalized() );
         normalized$.addAll( parameters.list$Normalized() );
-        normalized$.addAll( thrown.pattern.list$Normalized() );
-        normalized$.addAll(body.list$Normalized());
+        
+        //normalized$.addAll( thrown.pattern.list$Normalized() );
+        normalized$.addAll( thrown.list$Normalized() );
+        normalized$.addAll( body.list$Normalized());
         return normalized$.stream().distinct().collect(Collectors.toList());        
     }
 
@@ -652,13 +659,39 @@ public class $constructor
         all$.addAll( typeParameters.pattern.list$() );
         all$.addAll( name.pattern.list$() );
         all$.addAll( parameters.list$() );
-        all$.addAll( thrown.pattern.list$() );
+        all$.addAll( thrown.list$() );
+        //all$.addAll( thrown.pattern.list$() );
         all$.addAll( body.list$() );        
         return all$;
     }
     
+    public $constructor $parameters( ){
+        this.parameters = $parameters.any();
+        return this;
+    }
+    
+    public $constructor $parameters($parameters $ps ){
+        this.parameters = $ps;
+        return this;
+    }
+    
+    public $constructor $annos(){
+        this.annos = $annos.any();
+        return this;
+    }
+    
+    public $constructor $annos( $annos $as){
+        this.annos = $as;
+        return this;
+    }
+    
     public $constructor $annos(String...annoPatterns ){
         this.annos.add(annoPatterns);
+        return this;
+    }
+    
+    public $constructor $anno( $anno $a){
+        this.annos.$annosList.add($a);
         return this;
     }
     
@@ -667,24 +700,54 @@ public class $constructor
         return this;
     }
     
-    public $constructor $name ($id name ){
+    public $constructor $name(String name){
+        this.name.pattern = Stencil.of(name);
+        return this;
+    }
+    
+    public $constructor $name($id name ){
         this.name = name;
         return this;
     }
     
-    
     public $constructor $typeParameters(){
         this.typeParameters.pattern("$typeParameters$");
+        return this;
+    }
+    
+    public $constructor $typeParameters(String typeParameters){
+        this.typeParameters.pattern(typeParameters);
         return this;
     }
 
     public $constructor $modifiers(){
         this.modifiers = $modifiers.any();
         return this;
-    }    
+    }
+    
+    public $constructor $modifiers( Modifier...modifiers ){
+        this.modifiers = $modifiers.of(modifiers);
+        return this;
+    }
+    
+    public $constructor $modifiers( $modifiers $ms ){
+        this.modifiers = $ms;
+        return this;
+    }
+    
+    public $constructor $throws(){
+        this.thrown = $throws.any();
+        //this.thrown.pattern = Stencil.of("$throws$");
+        return this;
+    }
+    
+    public $constructor $throws( $throws $th ){
+        this.thrown = $th;
+        return this;
+    }
     
     public $constructor $javadoc(){
-        this.javadoc.pattern("$javadoc$");
+        this.javadoc.pattern = Stencil.of( "$javadoc$" ); 
         return this;
     }
     
@@ -693,12 +756,25 @@ public class $constructor
         return this;
     }
     
-    public $constructor emptyBody(){
-        body = $body.of("{}");
+    public $constructor $body (){
+        this.body = $body.any();
         return this;
     }
     
+    public $constructor $body( $body body ){
+        this.body = body;
+        return this;
+    }
     
+    public $constructor $body( String... body){
+        this.body = $body.of(body);
+        return this;
+    }
+    
+    public $constructor $emptyBody(){
+        body = $body.of("{}");
+        return this;
+    }
     
     @Override
     public _constructor fill(Translator translator, Object... values) {
@@ -749,7 +825,7 @@ public class $constructor
         sb.append(" ");
         sb.append( parameters.construct(translator, base));
         sb.append(" ");
-        sb.append( thrown.compose(translator, base));
+        sb.append( thrown.construct(translator, base));
         sb.append(System.lineSeparator());
         sb.append( body.construct(translator, keyValues));
         return _constructor.of(sb.toString() );        
@@ -849,7 +925,8 @@ public class $constructor
         typeParameters.pattern = typeParameters.pattern.hardcode$(translator, kvs);
         name.pattern = name.pattern.hardcode$(translator, kvs);
         parameters = parameters.hardcode$(translator, kvs);
-        thrown.pattern = thrown.pattern.hardcode$(translator, kvs);
+        thrown = thrown.hardcode$(translator, kvs);
+        //thrown.pattern = thrown.pattern.hardcode$(translator, kvs);
         body = body.hardcode$(translator, kvs );
         
         return this;
@@ -863,7 +940,8 @@ public class $constructor
         typeParameters.pattern = typeParameters.pattern.$(target, $Name);
         name.pattern = name.pattern.$(target, $Name);
         parameters = parameters.$(target, $Name);
-        thrown.pattern = thrown.pattern.$(target, $Name);
+        thrown = thrown.$(target, $Name);
+        //thrown.pattern = thrown.pattern.$(target, $Name);
         body = body.$(target, $Name);
         return this;
     }

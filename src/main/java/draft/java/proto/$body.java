@@ -286,14 +286,12 @@ public class $body implements Template<_body>, $proto<_body>, $constructor.$part
             return new Select(body, $nameValues.of());                
         }       
         if( this.isImplemented ){
-            System.out.println( "SELECTING " + this.bodyStmts);
             $stmt.Select ss = this.bodyStmts.select((Statement)body.ast());
             if( ss != null ){
                 return new Select( body, ss.args);
             }
             return null;
         }
-        System.out.println( "NOT IMPLEMENTD");
         return new Select( body, $nameValues.of());        
     }
     

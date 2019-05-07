@@ -20,15 +20,15 @@ public final class _typeRef<T extends Type>
     }
 
     public static _typeRef of( java.lang.reflect.Type t){
-        return new _typeRef( Ast.typeDecl( t ) );
+        return new _typeRef( Ast.typeRef( t ) );
     }
 
     public static _typeRef of( Class clazz ) {
-        return new _typeRef( Ast.typeDecl( clazz ) );
+        return new _typeRef( Ast.typeRef( clazz ) );
     }
 
     public static _typeRef of( String string ) {
-        return new _typeRef( Ast.typeDecl( string ) );
+        return new _typeRef( Ast.typeRef( string ) );
     }
 
     public static _typeRef of( Type t ) {

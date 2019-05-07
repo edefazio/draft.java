@@ -1543,7 +1543,6 @@ public final class $import
         $proto.selectedAstNode<ImportDeclaration>, 
         $proto.selected_model<_import> {
     
-        //public final ImportDeclaration astImport;
         public final _import _i;
         public final $nameValues args;
 

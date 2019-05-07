@@ -386,11 +386,9 @@ public class $classUse {
     
     public <N extends _model._node> N replaceIn(N _n, Class replacement) {
         if( _n instanceof _type && ((_type)_n).isTopClass()){
-            //System.out.println( "TOP CLASS ");
             replaceIn( ((_type)_n).findCompilationUnit(), replacement);
             return _n;
         }
-        //System.out.println( "AST CLASS ");
         replaceIn(_n.ast(), replacement);
         return _n;
     }

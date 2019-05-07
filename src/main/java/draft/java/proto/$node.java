@@ -433,7 +433,7 @@ public class $node implements $proto<Node> {
         
         if( target.getClass() != replacement.getClass() ){            
             if( target instanceof ClassOrInterfaceType ){
-                isRep = target.replace( Ast.typeDecl( replacement.toString() ) );                
+                isRep = target.replace( Ast.typeRef( replacement.toString() ) );                
             } else if( target instanceof Name) {
                 isRep = target.replace( new Name( replacement.toString()) );                
             } else if( target instanceof SimpleName) {

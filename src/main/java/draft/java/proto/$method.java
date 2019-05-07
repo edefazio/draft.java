@@ -499,7 +499,7 @@ public class $method
     public $id name = $id.any();
     
     public $parameters parameters = $parameters.of();
-    public $component<_throws> thrown = new $component( "$throws$", t-> true);
+    public $throws thrown = $throws.any();
     public $body body = $body.any();
     
     private $method( _method _p ){
@@ -533,6 +533,11 @@ public class $method
             else if(parts[i] instanceof $body){
                 this.body = ($body)parts[i];
             }
+            else if( parts[i] instanceof $throws ){
+                this.thrown = ($throws)parts[i];
+            } else{
+                throw new DraftException("Unable to add $part "+ parts[i]+" to $method" );
+            }
         }
     }
     
@@ -561,10 +566,13 @@ public class $method
         if( _m.hasParameters() ){
             parameters = $parameters.of(_m.getParameters());
         }        
+        thrown = $throws.of(_m.getThrows());
+        /*
         if( _m.hasThrows() ){
             final _throws ths = _m.getThrows();
             thrown = new $component( "$throws$", (t)-> t.equals(ths) );
         }
+        */
         body = $body.of( _m.ast() );
         this.constraint = constraint;
     }
@@ -609,7 +617,7 @@ public class $method
         normalized$.addAll( type.list$Normalized() );        
         normalized$.addAll( name.pattern.list$Normalized() );
         normalized$.addAll( parameters.list$Normalized() );
-        normalized$.addAll( thrown.pattern.list$Normalized() );
+        normalized$.addAll( thrown.list$Normalized() );
         normalized$.addAll( body.list$Normalized() );
         return normalized$.stream().distinct().collect(Collectors.toList());        
     }
@@ -623,7 +631,7 @@ public class $method
         all$.addAll( type.list$() );        
         all$.addAll( name.pattern.list$() );
         all$.addAll( parameters.list$() );
-        all$.addAll( thrown.pattern.list$() );
+        all$.addAll( thrown.list$() );
         all$.addAll( body.list$() );           
         return all$;
     }
@@ -745,7 +753,7 @@ public class $method
         sb.append(" ");
         sb.append( parameters.construct(translator, base));
         sb.append(" ");
-        sb.append( thrown.compose(translator, base));
+        sb.append( thrown.construct(translator, base));
         sb.append(System.lineSeparator());
         
         String bd = body.construct(translator, base).toString();
@@ -852,7 +860,7 @@ public class $method
         type = type.hardcode$(translator, kvs);
         name.pattern = name.pattern.hardcode$(translator, kvs);
         parameters = parameters.hardcode$(translator, kvs);
-        thrown.pattern = thrown.pattern.hardcode$(translator, kvs);
+        thrown = thrown.hardcode$(translator, kvs);
         body = body.hardcode$(translator, kvs);
         
         return this;
@@ -867,7 +875,7 @@ public class $method
         type = type.$(target, $Name);
         name.pattern = name.pattern.$(target, $Name);
         parameters = parameters.$(target, $Name);
-        thrown.pattern = thrown.pattern.$(target, $Name);
+        thrown = thrown.$(target, $Name);
         body = body.$(target, $Name);  
         return this;
     }

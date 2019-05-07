@@ -61,15 +61,35 @@ public final class _throws
         return astNodeWithThrows.getThrownExceptions();
     }
 
-    public boolean contains( ReferenceType rt ) {
-        return this.astNodeWithThrows.getThrownExceptions().stream().filter(r -> Ast.typesEqual(rt, (ReferenceType)r) ).findFirst().isPresent();
+    public boolean has( Class<? extends Throwable>... thrownType ){
+        Optional<Class<? extends Throwable>> oc = 
+            Arrays.stream(thrownType).filter( t -> !astNodeWithThrows.isThrown(t) ).findFirst();
+        return !oc.isPresent();
+    }
+    
+    public boolean has( String... thrownType ){
+        Optional<String> oc = 
+            Arrays.stream(thrownType).filter( t -> !astNodeWithThrows.isThrown(t) ).findFirst();
+        return !oc.isPresent();
+    }
+    
+    public boolean has( Class<? extends Throwable> throwType ){
+        return astNodeWithThrows.isThrown(throwType);
+    }
+    
+    public boolean has( String name ) {
+        return astNodeWithThrows.isThrown( name );
+    }
+    
+    public boolean has( ReferenceType rt ) {
+        return astNodeWithThrows.isThrown( rt.asString() );
     }
 
     /** verify this throws contains all of the ReferenceTypes in rt */
-    public boolean containsAll( List<ReferenceType> rt ){
+    public boolean hasAll( List<ReferenceType> rt ){
 
         for(int i=0;i<rt.size();i++){
-            if( !contains(rt.get(i) ) ){
+            if( !has(rt.get(i) ) ){
                 return false;
             }
         }
@@ -95,31 +115,35 @@ public final class _throws
         return false;
     }
 
-    public void forEach( Consumer<? super _typeRef<ReferenceType>> elementAction ) {
+    public void forEach( Consumer<ReferenceType> elementAction ) {
         this.astNodeWithThrows.getThrownExceptions().forEach( elementAction );
     }
 
-    public void forEach( Predicate<? super _typeRef<ReferenceType>> matchFn,
-                         Consumer<? super _typeRef<ReferenceType>> elementAction ) {
+    public void forEach( Predicate<ReferenceType> matchFn,
+                         Consumer<ReferenceType> elementAction ) {
         this.astNodeWithThrows.getThrownExceptions().stream().filter( matchFn ).forEach( elementAction );
     }
 
-    public List<_typeRef<ReferenceType>> list() {
+    public List<ReferenceType> list() {
         return this.astNodeWithThrows.getThrownExceptions();
     }
 
-    public List<_typeRef<ReferenceType>> list(
-            Predicate<? super _typeRef<ReferenceType>> matchFn ) {
-        return (List<_typeRef<ReferenceType>>)this.astNodeWithThrows.getThrownExceptions().stream().filter( matchFn ).collect( Collectors.toList() );
+    public List<ReferenceType> list(Predicate<ReferenceType> matchFn ) {
+        return (List<ReferenceType>)this.astNodeWithThrows.getThrownExceptions().stream().filter( matchFn ).collect( Collectors.toList() );
     }
 
+    public _throws addAll( Collection<ReferenceType> throwTypes ){
+        throwTypes.forEach( t ->this.astNodeWithThrows.addThrownException(t));
+        return this;
+    }
+    
     public _throws add( Class<? extends Throwable>... throwsClasses ) {
         Arrays.stream( throwsClasses ).forEach( t ->this.astNodeWithThrows.addThrownException(t));
         return this;
     }
 
     public _throws add( String... elements ) {
-        Arrays.stream( elements ).forEach( t -> this.astNodeWithThrows.getThrownExceptions().add( Ast.typeDecl( t)  ) );
+        Arrays.stream( elements ).forEach( t -> this.astNodeWithThrows.getThrownExceptions().add( Ast.typeRef( t)  ) );
         return this;
     }
 
@@ -133,7 +157,7 @@ public final class _throws
         return this;
     }
 
-    public _throws remove( Predicate<? super _typeRef<ReferenceType>> matchFn ) {
+    public _throws remove( Predicate<ReferenceType> matchFn ) {
         list( matchFn ).forEach( t -> this.astNodeWithThrows.getThrownExceptions().remove( t ) );
         return this;
     }
@@ -241,7 +265,7 @@ public final class _throws
         }
         
         default T addThrows(String throwException) {
-            getThrows().astNodeWithThrows.addThrownException((ReferenceType) Ast.typeDecl(throwException));
+            getThrows().astNodeWithThrows.addThrownException((ReferenceType) Ast.typeRef(throwException));
             return (T)this;
         }    
 
@@ -251,7 +275,7 @@ public final class _throws
         }
     
         default T addThrows(Class<? extends Throwable> throwException) {
-            getThrows().astNodeWithThrows.addThrownException((ReferenceType) Ast.typeDecl(throwException));
+            getThrows().astNodeWithThrows.addThrownException((ReferenceType) Ast.typeRef(throwException));
             return (T)this;
         }
         
@@ -270,11 +294,17 @@ public final class _throws
         }
 
         default boolean hasThrow(ReferenceType rt) {
-            return this.getThrows().contains(rt);
+            return this.getThrows().has(rt);
         }
         
         default T removeThrow( Class<? extends Throwable> thrownClass ){
-            getThrows().list( t -> t.is(thrownClass.getCanonicalName()) ).forEach( t -> t.ast().remove() );
+            getThrows().list( t -> t.asString().equals( thrownClass.getCanonicalName()) || 
+                    t.asString().equals( thrownClass.getSimpleName()) ).forEach( t -> t.remove() );
+            return (T)this;
+        }
+        
+        default T removeThrow( Predicate<ReferenceType> throwPredicate ){
+            getThrows().astNodeWithThrows.getThrownExceptions().removeIf(throwPredicate);
             return (T)this;
         }
     }
