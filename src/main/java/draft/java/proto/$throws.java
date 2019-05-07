@@ -642,7 +642,6 @@ public final class $throws
      * @return 
      */
     public static $throws of( String... pattern){
-        //_import _i = _import.of(pattern );
         return new $throws( _throws.of(pattern)  );
     }
 

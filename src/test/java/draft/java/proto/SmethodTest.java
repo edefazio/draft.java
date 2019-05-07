@@ -1,11 +1,7 @@
 package draft.java.proto;
 
 import com.github.javaparser.ast.body.BodyDeclaration;
-import draft.java.proto.$method;
-import draft.java.Ast;
-import draft.java._class;
-import draft.java._field;
-import draft.java._method;
+import draft.java.*;
 import draft.java.macro._remove;
 import draft.java.macro._static;
 import draft.java.runtime._javac;
@@ -13,6 +9,11 @@ import draft.java.runtime._proxy;
 import junit.framework.TestCase;
 
 public class SmethodTest extends TestCase {
+    
+    public void testMethodCtor(){
+        $method $m = $method.of( $anno.of(Deprecated.class) );
+        $m.$annos(t -> t.size() == 1);
+    }
     
     /**
      * We need to make sure we can compose when we have a method 
@@ -91,7 +92,7 @@ public class SmethodTest extends TestCase {
      * Verify that I can find a $method by a body pattern
      */
     public void testSpecificBody(){
-        $method $m = $method.any().body(new Object(){ void m(Object $any$) { 
+        $method $m = $method.any().$body(new Object(){ void m(Object $any$) { 
             System.out.println($any$); 
         }});
         
@@ -117,7 +118,7 @@ public class SmethodTest extends TestCase {
         //verify a "round trip" construct a _method by populating $parameters, 
         //then select it and verify we can pull the parameters out...
         assertTrue($set.select($set.construct("type",int.class, "name", "x"))
-                .is("type", int.class, "name", "x") );
+            .is("type", int.class, "name", "x") );
         
         //make sure I can select from an existing class
         class C{

@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package draft.java.proto;
 
 import draft.java._throws;
@@ -65,9 +60,7 @@ public class SthrowsTest extends TestCase {
             void g(){} //YES
             void y(){} //YES
         }
-        assertEquals( 2, $ts.count(E.class));
-        
-        
+        assertEquals( 2, $ts.count(E.class));        
     }
     
 }

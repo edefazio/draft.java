@@ -53,6 +53,11 @@ public class $parameters implements Template<_parameters>, $proto<_parameters>,
         this.constraint = constraint;
     }
     
+    public $parameters addConstraint( Predicate<_parameters> constraint ){
+        this.constraint = this.constraint.and(constraint);
+        return this;
+    }
+    
     public $parameters constraint(Predicate<_parameters> constraint){
         this.constraint = constraint;
         return this;

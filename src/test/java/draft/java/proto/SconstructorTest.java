@@ -3,12 +3,87 @@ package draft.java.proto;
 import draft.java.Stmt;
 import draft.java._class;
 import draft.java._constructor;
+import draft.java._modifiers;
 import draft.java.macro._ctor;
+import java.io.IOException;
+import java.net.URISyntaxException;
 import junit.framework.TestCase;
 
 
 public class SconstructorTest extends TestCase {
 
+    //what if I allowed the passing in of Classes
+    //if the class is an annotation add it to annotations
+    //if the class is a throwable, add it to ...
+    public void testConstructOf(){
+        $constructor $ct = $constructor.of($anno.of( Deprecated.class ), 
+            $modifiers.of( _modifiers.PRIVATE ),
+            $id.of("TT"),
+            $throws.of( IOException.class ), 
+            $body.of("{}"), 
+            $parameters.of("$type$ $name$")
+        );
+        
+        class TT{
+            @Deprecated
+            private TT(int name) throws IOException {}
+            
+            public TT(){}
+        }
+        
+        assertEquals( 1, $ct.count(TT.class));
+        
+        $ct = $constructor.of( new Object(){
+            @Deprecated
+            @_ctor private void TT(int name) throws IOException{}
+        });
+        
+        assertEquals( 1, $ct.count(TT.class));
+        
+        //here lets build peice by peice
+        $ct = $constructor.any();
+        assertEquals( 2, $ct.count(TT.class));
+        $ct.$anno(Deprecated.class);
+        assertEquals( 1, $ct.count(TT.class));
+        
+    }
+    
+    public void testConstructConsistentArg(){
+        $constructor $ct = $constructor.of( 
+            $parameters.of("int $name$"),
+            $body.of("this.$name$ = $name$;") );    
+                
+        class FF{
+            int i;
+            private FF(int i) throws IOException{ this.i = i; }                        
+        }
+        assertEquals( 1, $ct.count(FF.class));
+        
+        //verify that if it's inconsistent, doesnt match        
+        class GG{
+            int i;
+            private GG(int notMatch) throws IOException{ this.i = notMatch; }                        
+        }
+        assertEquals( 0, $ct.count(GG.class));
+    }
+    
+    public void testConsistentManyProto(){
+        
+        //a "consistent" arg $name$ that appears in the $parameters & $body 
+        $constructor $ct = $constructor.of( new Object(){            
+            @Deprecated
+            @_ctor private void RR(int $name$) throws IOException{ this.$name$ = $name$; }            
+            int $name$;
+        });
+        
+        class RR{
+            int i;
+            @Deprecated
+            private RR(int i) throws IOException{ this.i = i; }                        
+        }        
+        assertEquals( 1, $ct.count(RR.class));
+    }
+    
     public void testConstruct(){
         $constructor $ct = $constructor.of( $body.of("{}") );
         class c{
@@ -48,6 +123,15 @@ public class SconstructorTest extends TestCase {
             }
         }
         assertEquals( 2, $ct.count(e.class));        
+        
+        $ct = $constructor.of( $throws.of(IOException.class) );
+        class F{
+            F() throws IOException {} //Yes            
+            F(int i) throws URISyntaxException, IOException{} //Yes            
+            F( String s) throws URISyntaxException{} //NO            
+            void F(){} //NO
+        }
+        assertEquals( 2, $ct.count(F.class));        
     }
     
     public void testCT(){
@@ -93,13 +177,12 @@ public class SconstructorTest extends TestCase {
                   this.a = a;
               }
               int a;
-        })) );
-        
-        
+        })) );        
     }
     
     public void testNoArgConstructor(){
-        $constructor $c = $constructor.of( "public $name$(){ assert(1==1); }" ).$(Stmt.of("assert(1==1);").toString(), "body");
+        $constructor $c = $constructor.of( "public $name$(){ assert(1==1); }" )
+                .$(Stmt.of("assert(1==1);").toString(), "body");
         
         //TODO body doesnt match no body
         //assertTrue($c.matches(_constructor.of("public C(){}")));

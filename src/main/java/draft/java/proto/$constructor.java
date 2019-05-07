@@ -10,11 +10,14 @@ import com.github.javaparser.ast.expr.*;
 import com.github.javaparser.ast.stmt.*;
 import draft.*;
 import draft.java.*;
+import draft.java._anno._annos;
 import draft.java._model._node;
+import draft.java._parameter._parameters;
 import draft.java._typeParameter._typeParameters;
 import draft.java.macro._ctor;
 import draft.java.macro._macro;
 import draft.java.macro._remove;
+import java.lang.annotation.Annotation;
 
 import java.util.*;
 import java.util.function.*;
@@ -534,7 +537,6 @@ public class $constructor
     public $component<_typeParameters> typeParameters = new $component( "$typeParameters$", t->true);
     public $id name = $id.any();
     public $parameters parameters = $parameters.of();
-    //public $component<_throws> thrown = new $component( "$throws$", t-> true);
     public $throws thrown = $throws.any();
     public $body body = $body.any();
     
@@ -645,7 +647,6 @@ public class $constructor
         normalized$.addAll( name.pattern.list$Normalized() );
         normalized$.addAll( parameters.list$Normalized() );
         
-        //normalized$.addAll( thrown.pattern.list$Normalized() );
         normalized$.addAll( thrown.list$Normalized() );
         normalized$.addAll( body.list$Normalized());
         return normalized$.stream().distinct().collect(Collectors.toList());        
@@ -660,7 +661,6 @@ public class $constructor
         all$.addAll( name.pattern.list$() );
         all$.addAll( parameters.list$() );
         all$.addAll( thrown.list$() );
-        //all$.addAll( thrown.pattern.list$() );
         all$.addAll( body.list$() );        
         return all$;
     }
@@ -675,8 +675,23 @@ public class $constructor
         return this;
     }
     
+    public $constructor $parameters( _parameters _ps ){
+        this.parameters = $parameters.of(_ps);
+        return this;
+    }
+    
+    public $constructor $parameters(Predicate<_parameters> constraint){
+        this.parameters.addConstraint(constraint);
+        return this;
+    }
+    
     public $constructor $annos(){
         this.annos = $annos.any();
+        return this;
+    }
+    
+    public $constructor $annos( Predicate<_annos> constraint ){
+        this.annos.addConstraint(constraint);
         return this;
     }
     
@@ -690,6 +705,10 @@ public class $constructor
         return this;
     }
     
+    public $constructor $anno( Class<? extends Annotation> aClass ){
+        this.annos.$annosList.add($anno.of(aClass));
+        return this;
+    }
     public $constructor $anno( $anno $a){
         this.annos.$annosList.add($a);
         return this;
@@ -697,6 +716,11 @@ public class $constructor
     
     public $constructor $name(){
         this.name = $id.any();
+        return this;
+    }
+    
+    public $constructor $name( Predicate<String> constraint){
+        this.name.addConstraint(constraint);
         return this;
     }
     
@@ -710,6 +734,11 @@ public class $constructor
         return this;
     }
     
+    public $constructor $typeParameters(Predicate<_typeParameters> constraint){
+        this.typeParameters.addConstraint(constraint);
+        return this;
+    }
+    
     public $constructor $typeParameters(){
         this.typeParameters.pattern("$typeParameters$");
         return this;
@@ -720,6 +749,11 @@ public class $constructor
         return this;
     }
 
+    public $constructor $modifiers( Predicate<_modifiers> constraint ){
+        this.modifiers.addConstraint(constraint);
+        return this;
+    }
+    
     public $constructor $modifiers(){
         this.modifiers = $modifiers.any();
         return this;
@@ -737,7 +771,16 @@ public class $constructor
     
     public $constructor $throws(){
         this.thrown = $throws.any();
-        //this.thrown.pattern = Stencil.of("$throws$");
+        return this;
+    }
+    
+    public $constructor $throws( Predicate<_throws> constraint ){
+        this.thrown.addConstraint(constraint);
+        return this;
+    }
+    
+    public $constructor $throws( Class<? extends Throwable>... throwClasses){
+        this.thrown = $throws.of(throwClasses);
         return this;
     }
     
@@ -751,8 +794,18 @@ public class $constructor
         return this;
     }
     
+    public $constructor $javadoc( Predicate<_javadoc> constraint ){
+        this.javadoc.addConstraint(constraint);
+        return this;
+    }
+    
     public $constructor $javadoc( String... form ){
         this.javadoc.pattern(form);
+        return this;
+    }
+    
+    public $constructor $body( Predicate<_body> constraint){
+        this.body.addConstraint(constraint);
         return this;
     }
     
@@ -809,7 +862,6 @@ public class $constructor
                 "throws", "", 
                 "body", "");
         
-        
         base.putAll(keyValues);
         
         StringBuilder sb = new StringBuilder();   
@@ -856,9 +908,7 @@ public class $constructor
         }
         Tokens all = new Tokens();
         all = javadoc.decomposeTo(_m.getJavadoc(), all);
-        all = annos.decomposeTo(_m.getAnnos(), all);
-        
-        //all = modifiers.decomposeTo(_m.getModifiers(), all);
+        all = annos.decomposeTo(_m.getAnnos(), all);        
         all = typeParameters.decomposeTo(_m.getTypeParameters(), all);
         all = name.decomposeTo(_m.getName(), all);
         all = parameters.decomposeTo(_m.getParameters(), all);
@@ -926,7 +976,6 @@ public class $constructor
         name.pattern = name.pattern.hardcode$(translator, kvs);
         parameters = parameters.hardcode$(translator, kvs);
         thrown = thrown.hardcode$(translator, kvs);
-        //thrown.pattern = thrown.pattern.hardcode$(translator, kvs);
         body = body.hardcode$(translator, kvs );
         
         return this;
@@ -941,7 +990,6 @@ public class $constructor
         name.pattern = name.pattern.$(target, $Name);
         parameters = parameters.$(target, $Name);
         thrown = thrown.$(target, $Name);
-        //thrown.pattern = thrown.pattern.$(target, $Name);
         body = body.$(target, $Name);
         return this;
     }
@@ -1365,9 +1413,7 @@ public class $constructor
     
     @Override
     public <N extends _node> N removeIn(N _n ){
-        Walk.in(_n, ConstructorDeclaration.class, e-> {
-            //$args tokens = this.deconstruct( e );
-            
+        Walk.in(_n, ConstructorDeclaration.class, e-> {            
             if( select(e) != null ){
                 e.removeForced();
             }
@@ -1378,7 +1424,6 @@ public class $constructor
     @Override
     public <N extends Node> N removeIn(N astNode){
         astNode.walk(ConstructorDeclaration.class, e-> {
-            //$args tokens = this.deconstruct( e );
             if( select(e) != null ){
                 e.removeForced();
             }
@@ -1389,7 +1434,6 @@ public class $constructor
     @Override
     public <N extends Node> N forEachIn(N astNode, Consumer<_constructor> _constructorActionFn){
         astNode.walk(ConstructorDeclaration.class, e-> {
-            //$args tokens = this.deconstruct( e );
             if( select(e) != null ){
                 _constructorActionFn.accept( _constructor.of(e) );
             }

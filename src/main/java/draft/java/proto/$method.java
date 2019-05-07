@@ -8,7 +8,9 @@ import com.github.javaparser.ast.stmt.*;
 import com.github.javaparser.ast.type.Type;
 import draft.*;
 import draft.java.*;
+import draft.java._anno._annos;
 import draft.java._model._node;
+import draft.java._parameter._parameters;
 import draft.java._typeParameter._typeParameters;
 import draft.java.macro._macro;
 import draft.java.macro._remove;
@@ -27,9 +29,9 @@ public class $method
      * Marker interface for categorizing/identifying parts that make up the
      * $method
      */
-    public interface $part{
-        
+    public interface $part{        
     }
+    
     /**
      * List all methods in the clazz
      * @param clazz
@@ -494,10 +496,8 @@ public class $method
     public $annos annos = new $annos();
     public $modifiers modifiers = $modifiers.any();
     public $typeRef type = $typeRef.any();
-    public $component<_typeParameters> typeParameters = new $component( "$typeParameters$", t->true);
-    
-    public $id name = $id.any();
-    
+    public $component<_typeParameters> typeParameters = new $component( "$typeParameters$", t->true);    
+    public $id name = $id.any();    
     public $parameters parameters = $parameters.of();
     public $throws thrown = $throws.any();
     public $body body = $body.any();
@@ -554,7 +554,6 @@ public class $method
             annos = $annos.of(_m.getAnnos() );
         }
         modifiers = $modifiers.of(_m);
-        //type = new $component<>(_m.getType().toString());
         type = $typeRef.of(_m.getType() );
         if( !_m.hasTypeParameters() ){
             final _typeParameters etps = _m.getTypeParameters();
@@ -567,12 +566,6 @@ public class $method
             parameters = $parameters.of(_m.getParameters());
         }        
         thrown = $throws.of(_m.getThrows());
-        /*
-        if( _m.hasThrows() ){
-            final _throws ths = _m.getThrows();
-            thrown = new $component( "$throws$", (t)-> t.equals(ths) );
-        }
-        */
         body = $body.of( _m.ast() );
         this.constraint = constraint;
     }
@@ -636,8 +629,73 @@ public class $method
         return all$;
     }
     
+    public $method $parameters(){
+        this.parameters = $parameters.any();
+        return this;
+    }
+    
+    public $method $parameters( $parameters $ps ){
+        this.parameters = $ps;
+        return this;
+    }
+    
+    public $method $parameters( String...params ){
+        this.parameters = $parameters.of(params);
+        return this;
+    }
+    
+    public $method $parameters( Predicate<_parameters> constraint){
+        this.parameters.addConstraint( constraint);
+        return this;
+    }
+    
+    public $method $throws($throws $ts){
+        this.thrown = $ts;
+        return this;
+    }
+    
+    public $method $throws(Class<? extends Throwable>...thro ){
+        this.thrown = $throws.of(thro);
+        return this;
+    }
+    
+    public $method $throws( Predicate<_throws> constraint ){
+        this.thrown.addConstraint(constraint);
+        return this;
+    }
+    
+    public $method $throws(String...thro ){
+        this.thrown = $throws.of(thro);
+        return this;
+    }
+     
+    public $method $annos(){
+        this.annos = $annos.any();
+        return this;
+    }
+    
+    public $method $annos( Predicate<_annos> as ){
+        this.annos.addConstraint(as);
+        return this;
+    }
+    
     public $method $annos(String...annoPatterns ){
         this.annos.add(annoPatterns);
+        return this;
+    }
+    
+    public $method $annos($annos $as ){
+        this.annos = $as;
+        return this;
+    }
+    
+    public $method $anno( Class clazz){
+        this.annos.$annosList.add($anno.of(clazz) );
+        return this;
+    }
+    
+    public $method $anno( _anno _an){
+        this.annos.$annosList.add($anno.of(_an) );
         return this;
     }
     
@@ -646,8 +704,43 @@ public class $method
         return this;
     }
     
+    public $method $name( Predicate<String> str){
+        this.name.addConstraint(str);
+        return this;
+    }
+    
+    public $method $name($id id){
+        this.name = id;
+        return this;
+    }
+    
+    public $method $name(String name){
+        this.name = $id.of(name);
+        return this;
+    }
+    
     public $method $type(){
         this.type = $typeRef.any();
+        return this;
+    }
+    
+    public $method $type(Predicate<_typeRef> _tr){
+        this.type.addConstraint(_tr);
+        return this;
+    }
+    
+    public $method $type(Class typeClazz){
+        this.type = $typeRef.of(typeClazz);
+        return this;
+    }
+    
+    public $method $type( String typeRef){
+        this.type = $typeRef.of(typeRef);
+        return this;
+    }
+    
+    public $method $type( $typeRef $tr){
+        this.type = $tr;
         return this;
     }
     
@@ -655,11 +748,26 @@ public class $method
         this.typeParameters.pattern("$typeParameters$");
         return this;
     }
+    
+    public $method $typeParameters(String tps){
+        this.typeParameters.pattern(tps);
+        return this;
+    }
 
     public $method $modifiers(){
         this.modifiers = $modifiers.any();
         return this;
     }    
+    
+    public $method $modifiers(Predicate<_modifiers> constraint){
+        this.modifiers.addConstraint(constraint);
+        return this;
+    }
+    
+    public $method $modifiers( $modifiers $m){
+        this.modifiers = $m;
+        return this;
+    }
     
     public $method $javadoc(){
         this.javadoc.pattern("$javadoc$");
@@ -671,7 +779,17 @@ public class $method
         return this;
     }
     
-    public $method body( Object anonymousClassWithMethodContainingBody ){
+    public $method $body ($body $bd ){
+        this.body = $bd;
+        return this;
+    }
+    
+    public $method $body( Predicate<_body> constraint){
+        this.body.addConstraint(constraint);
+        return this;
+    }
+    
+    public $method $body( Object anonymousClassWithMethodContainingBody ){
         StackTraceElement ste = Thread.currentThread().getStackTrace()[2];
         ObjectCreationExpr oce = Expr.anonymousObject(ste);
         Optional<BodyDeclaration<?>> on = oce.getAnonymousClassBody().get().stream().filter(m -> 
@@ -685,10 +803,10 @@ public class $method
         MethodDeclaration md = (MethodDeclaration)on.get();
         md.getParentNode().get().remove(md); //decouple it from the "old" 
         _body _bd = _body.of( md );
-        return body( _bd );
+        return $body( _bd );
     }
     
-    public $method body(_body _bd ){
+    public $method $body(_body _bd ){
        this.body.$bodyStmts( _bd ); 
         return this;
     }
@@ -1311,7 +1429,6 @@ public class $method
     @Override
     public <N extends _node> N forEachIn(N _n, Consumer<_method> _methodActionFn){
         Walk.in(_n, MethodDeclaration.class, e -> {
-            //$args tokens = this.deconstruct( e );
             if( select(e) != null ){
                 _methodActionFn.accept( _method.of(e) );
             }

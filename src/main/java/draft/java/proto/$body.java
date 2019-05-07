@@ -126,6 +126,26 @@ public class $body implements Template<_body>, $proto<_body>, $constructor.$part
     
     /**
      * 
+     * @param constraint
+     * @return 
+     */
+    public $body constraint( Predicate<_body> constraint ){
+        this.constraint = constraint;
+        return this;
+    }
+    
+    /**
+     * 
+     * @param constraint
+     * @return 
+     */
+    public $body addConstraint( Predicate<_body> constraint ){
+        this.constraint = this.constraint.and(constraint);
+        return this;
+    }
+    
+    /**
+     * 
      * @param body
      * @return 
      */
