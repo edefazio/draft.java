@@ -1000,7 +1000,7 @@ public final class $expr <T extends Expression>
      * @return 
      */
     public static $expr<CastExpr> cast( Predicate<CastExpr> constraint ) {
-        return new $expr( Expr.cast("(String)o")).$(Expr.of("String(o)"),"any").constraint(constraint);
+        return new $expr( CastExpr.class, "($cast$)" ).constraint(constraint); //Expr.cast("(String)o")).$(Expr.of("(String)o"),"any").constraint(constraint);
     }
     
     /** 
@@ -1018,7 +1018,7 @@ public final class $expr <T extends Expression>
      * @return 
      */
     public static $expr<CastExpr> castAny( ) {
-        return new $expr( Expr.cast("(String)o")).$(Expr.of("String(o)"),"any");
+        return new $expr( CastExpr.class, "($cast$)"); //Expr.cast("(String)o")).$(Expr.of("(String)o"),"any");
     }
     
     /** 
