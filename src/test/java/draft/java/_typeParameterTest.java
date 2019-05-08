@@ -15,6 +15,8 @@ import junit.framework.TestCase;
 
 import java.io.File;
 import java.io.IOException;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Target;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
@@ -25,6 +27,12 @@ import java.util.List;
  */
 public class _typeParameterTest extends TestCase {
 
+   
+    
+    public void testTypeParameterWithAnno(){
+        
+    }
+    
     public void testTypeParameters(){
         _typeParameter._typeParameters _a = _typeParameter._typeParameters.of("<A,B,C,D,E>");
         _typeParameter._typeParameters _b = _typeParameter._typeParameters.of("<E,D,C,B,A>");

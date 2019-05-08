@@ -1,7 +1,24 @@
 package draft.java;
 
+import com.github.javaparser.StaticJavaParser;
+import com.github.javaparser.ast.CompilationUnit;
+import com.github.javaparser.ast.NodeList;
+import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
 import com.github.javaparser.ast.body.FieldDeclaration;
 import com.github.javaparser.ast.expr.AnnotationExpr;
+import com.github.javaparser.ast.expr.CastExpr;
+import com.github.javaparser.ast.expr.ObjectCreationExpr;
+import com.github.javaparser.ast.stmt.Statement;
+import com.github.javaparser.ast.type.ClassOrInterfaceType;
+import com.github.javaparser.ast.type.Type;
+import draft.Text;
+import draft.java.proto.$anno;
+import draft.java.proto.$expr;
+import java.io.Serializable;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Target;
+import java.util.ArrayList;
+import java.util.List;
 import junit.framework.TestCase;
 
 /**
@@ -10,6 +27,7 @@ import junit.framework.TestCase;
  */
 public class _annoTest extends TestCase {
 
+    
     @interface i {
         int value();
     }
@@ -28,13 +46,13 @@ public class _annoTest extends TestCase {
     public void testEqualsExplicitVsImpliedValueAttr(){
         
         @i(1)
-        class c{}
+        class XXXX{}
         
         @i(value=1)
-        class d{}
+        class YYYY{}
         
-        i ii = c.class.getDeclaredAnnotation(i.class);
-        i i2 = d.class.getDeclaredAnnotation(i.class);
+        i ii = XXXX.class.getDeclaredAnnotation(i.class);
+        i i2 = YYYY.class.getDeclaredAnnotation(i.class);
         
         //the runtime values of these annotations is equal
         assertEquals( ii, i2);
@@ -44,6 +62,92 @@ public class _annoTest extends TestCase {
         
         assertEquals(_a, _b);        
         assertEquals(_a.hashCode(), _b.hashCode());
+    }
+    
+    @Target({ElementType.TYPE_USE, ElementType.TYPE_PARAMETER})
+    public @interface Test {
+        
+    }
+    
+    
+    public void testSt(){
+        Statement st = StaticJavaParser.parseStatement("N n = new @Test N();");
+        System.out.println("ST " + st );
+        
+        CompilationUnit cu = StaticJavaParser.parse(
+            Text.combine( 
+                "public class c{ ",
+                "    void m(){",
+                "        N n = new @Test N();",
+                "    }",
+                "}") );
+        
+        ClassOrInterfaceDeclaration coid = (ClassOrInterfaceDeclaration) cu.getType(0);
+        st = coid.getMethodsByName("m").get(0).getBody().get().getStatement(0);
+        
+        System.out.println(st );    
+    }
+    
+    public void testTypeAnnotation(){
+        
+        //in an implements (YES)
+        class C implements @Test Serializable{
+            //in type argument (YES)
+            List<@Test String> emails = new ArrayList();
+            
+            void m() //on throws 
+                    throws @Test RuntimeException {
+                //in cast (YES)
+                String t = (@Test String)emails.get(0);
+                
+                //in instanceof 
+                boolean b = t instanceof @Test String;
+                
+                //in initializer (NO)
+                N n = new @Test N();
+                
+                
+            }
+            class N{
+                
+            }            
+        }
+        _class _c = _class.of(C.class);
+        
+        System.out.println( _c );
+        
+        assertEquals( 5, $anno.of("@Test").count(C.class));
+        
+        /*
+        System.out.println( "Impl Anno "+ _c.listImplements().get(0).getAnnotation(0));
+        
+        
+        System.out.println( $expr.objectCreation("new N()").listIn(C.class) );
+        
+        CastExpr cast = $expr.castAny().firstIn(C.class);
+        
+        System.out.println("CAST" + cast );
+        System.out.println( cast.getType() );
+        System.out.println( cast.getType().getAnnotation(0) );
+        
+        ObjectCreationExpr oce = $expr.objectCreation("new N()").listIn(C.class).get(0);
+        //System.out.println( "***** ANNO " + oce.getType().getAnnotation(0) );
+        */
+        
+        
+        /*
+        Type t = _c.getField("emails").getType().getElementType();
+        ClassOrInterfaceType coit = (ClassOrInterfaceType)t;
+        NodeList<Type> typeArgs = coit.getTypeArguments().get();
+        
+        System.out.println("TypeArgs" +  typeArgs );
+        System.out.println( typeArgs.get(0).getAnnotation(0) );
+        System.out.println("ANNOS" +  coit.getAnnotations() );
+        
+        
+        System.out.println( t+ " "+ t.getClass());
+        */
+        
     }
     
     public void testAnnoHasAttr(){

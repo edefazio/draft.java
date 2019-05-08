@@ -11,7 +11,7 @@ import com.github.javaparser.ast.expr.Name;
 import com.github.javaparser.ast.expr.ObjectCreationExpr;
 import com.github.javaparser.ast.expr.UnaryExpr;
 import com.github.javaparser.ast.type.UnknownType;
-import draft.java.proto.$classUse;
+import draft.java.proto.$typeUse;
 import junit.framework.TestCase;
 
 import java.util.*;

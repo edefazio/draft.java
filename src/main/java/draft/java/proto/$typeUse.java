@@ -36,7 +36,7 @@ import java.util.stream.Collectors;
  * </UL>
  * @author Eric
  */
-public class $classUse {
+public class $typeUse {
     
     /**
      * 
@@ -114,7 +114,7 @@ public class $classUse {
      * @return 
      */
     public static _type replace( Class clazz, Class target, Class replacement ){
-        return $classUse.of(target).replaceIn(_type.of(clazz), replacement);
+        return $typeUse.of(target).replaceIn(_type.of(clazz), replacement);
     }
     
     /**
@@ -127,7 +127,7 @@ public class $classUse {
      * @return 
      */
     public static <N extends _node> N replace(N _n, Class target, Class replacement) {
-        return $classUse.of(target).replaceIn(_n, replacement);
+        return $typeUse.of(target).replaceIn(_n, replacement);
     }
     
     /**
@@ -139,7 +139,7 @@ public class $classUse {
      * @return 
      */
     public static <N extends Node> N replace(N astNode, Class target, Class replacement) {
-        return $classUse.of(target).replaceIn(astNode, replacement);
+        return $typeUse.of(target).replaceIn(astNode, replacement);
     }
     
     /**
@@ -150,7 +150,7 @@ public class $classUse {
      * @return 
      */
     public static _type forEach(Class clazz, Class target, Consumer<Node> nodeAction) {
-        return $classUse.of(target).forEachIn(clazz, nodeAction);
+        return $typeUse.of(target).forEachIn(clazz, nodeAction);
     }
 
     /**
@@ -162,7 +162,7 @@ public class $classUse {
      * @return 
      */
     public static <N extends _node> N forEach(N _n, Class target, Consumer<Node> nodeAction) {
-        return $classUse.of(target).forEachIn(_n, nodeAction);
+        return $typeUse.of(target).forEachIn(_n, nodeAction);
     }
     
     /**
@@ -174,7 +174,7 @@ public class $classUse {
      * @return 
      */
     public static <N extends Node> N forEach(N astNode, Class target, Consumer<Node> nodeAction) {
-        return $classUse.of(target).forEachIn(astNode, nodeAction);
+        return $typeUse.of(target).forEachIn(astNode, nodeAction);
     }
     
     /**
@@ -185,7 +185,7 @@ public class $classUse {
      * @return 
      */
     public static _type forSelected(Class clazz, Class target, Consumer<Select> selectAction) {
-        return $classUse.of(target).forSelectedIn(clazz, selectAction);
+        return $typeUse.of(target).forSelectedIn(clazz, selectAction);
     }
     
     /**
@@ -197,7 +197,7 @@ public class $classUse {
      * @return 
      */
     public static <N extends _node> N forSelected(N _n, Class target, Consumer<Select> selectAction) {
-        return $classUse.of(target).forSelectedIn(_n, selectAction);
+        return $typeUse.of(target).forSelectedIn(_n, selectAction);
     }
     
     /**
@@ -209,7 +209,7 @@ public class $classUse {
      * @return 
      */
     public static <N extends Node> N forSelected(N astNode, Class target, Consumer<Select> selectAction) {
-        return $classUse.of(target).forSelectedIn(astNode, selectAction);
+        return $typeUse.of(target).forSelectedIn(astNode, selectAction);
     }
     
     /**
@@ -221,7 +221,7 @@ public class $classUse {
      * @return 
      */
     public static _type forSelected(Class clazz, Class target, Predicate<Select> selectConstraint, Consumer<Select> selectAction) {
-        return $classUse.of(target).forSelectedIn(clazz, selectConstraint, selectAction);
+        return $typeUse.of(target).forSelectedIn(clazz, selectConstraint, selectAction);
     }
     
     /**
@@ -234,7 +234,7 @@ public class $classUse {
      * @return 
      */
     public static <N extends _node> N forSelected(N _n, Class target, Predicate<Select> selectConstraint,  Consumer<Select> selectAction) {
-        return $classUse.of(target).forSelectedIn(_n, selectConstraint, selectAction);
+        return $typeUse.of(target).forSelectedIn(_n, selectConstraint, selectAction);
     }
     /**
      * 
@@ -246,7 +246,7 @@ public class $classUse {
      * @return 
      */
     public static <N extends Node> N forSelected(N astNode, Class target, Predicate<Select> selectConstraint, Consumer<Select> selectAction) {
-        return $classUse.of(target).forSelectedIn(astNode, selectConstraint, selectAction);
+        return $typeUse.of(target).forSelectedIn(astNode, selectConstraint, selectAction);
     }
     
     /**
@@ -254,8 +254,8 @@ public class $classUse {
      * @param clazz
      * @return 
      */
-    public static $classUse of( Class clazz ){
-        return new $classUse(clazz);
+    public static $typeUse of( Class clazz ){
+        return new $typeUse(clazz);
     }
     
     public final String packageName;
@@ -309,8 +309,8 @@ public class $classUse {
      * Matches any 
      * @return the classUse
      */
-    public static final $classUse any(){        
-        return new $classUse("", $node.of("$classUse$").addConstraint(n -> n.toString().contains(".")), 
+    public static final $typeUse any(){        
+        return new $typeUse("", $node.of("$classUse$").addConstraint(n -> n.toString().contains(".")), 
             Collections.EMPTY_LIST, 
             $node.of("$classUse$").addConstraint(n -> !n.toString().contains(".") ) ).addConstraint(IS_EXPECTED_NODE_TYPE);
     }
@@ -318,7 +318,7 @@ public class $classUse {
     /**
      * This is for any()
      */
-    private $classUse(String packageName, $node fullName, List<$node>memberNames, $node simpleName ){
+    private $typeUse(String packageName, $node fullName, List<$node>memberNames, $node simpleName ){
         this.packageName = packageName;
         this.$fullName = fullName; //$node.of("$classUse$");
         this.$memberNames = memberNames; //new ArrayList<>();
@@ -329,7 +329,7 @@ public class $classUse {
      * 
      * @param type 
      */
-    public $classUse( Class type ){
+    public $typeUse( Class type ){
         if( type.getPackage() != null ) {
             this.packageName = type.getPackage().getName();
         } else{
@@ -342,7 +342,7 @@ public class $classUse {
         //Inner member classes, i.e. not fully qualified 
         
         this.$simpleName = new $node(type.getSimpleName()).constraint(IS_EXPECTED_NODE_TYPE);        
-        $memberNames = $classUse.buildMemberClassNames( type );
+        $memberNames = $typeUse.buildMemberClassNames( type );
     }
     
     /**
@@ -350,7 +350,7 @@ public class $classUse {
      * @param constraint
      * @return 
      */
-    public $classUse constraint(Predicate<Node> constraint){
+    public $typeUse constraint(Predicate<Node> constraint){
         $fullName.constraint(constraint);
         $memberNames.forEach(m -> constraint(constraint));
         $simpleName.constraint(constraint);        
@@ -362,7 +362,7 @@ public class $classUse {
      * @param constraint
      * @return 
      */
-    public $classUse addConstraint(Predicate<Node> constraint){
+    public $typeUse addConstraint(Predicate<Node> constraint){
         $fullName.addConstraint(constraint);
         $memberNames.forEach(m -> m.addConstraint(constraint));
         $simpleName.addConstraint(constraint);        

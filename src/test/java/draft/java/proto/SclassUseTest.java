@@ -74,7 +74,7 @@ public class SclassUseTest extends TestCase {
                 Base.class, Ann.class, Inter.class
             };            
         });
-        $classUse.replace(_c, Ann.class, Stan.class);
+        $typeUse.replace(_c, Ann.class, Stan.class);
         //System.out.println( _c );
         assertTrue( _c.getField("a").hasAnno(Stan.class));
         assertFalse( _c.getField("a").hasAnno(Ann.class));
@@ -85,8 +85,8 @@ public class SclassUseTest extends TestCase {
         assertTrue( _c.getField("d").hasAnno(Stan.class));
         assertFalse( _c.getField("d").hasAnno(Ann.class));        
         
-        $classUse.replace(_c,Base.class, Replace.class);
-        $classUse.replace(_c,Inter.class, Outer.class);
+        $typeUse.replace(_c,Base.class, Replace.class);
+        $typeUse.replace(_c,Inter.class, Outer.class);
         
         //System.out.println( _pExpr.list(_c, Expr.ARRAY_INITIALIZER ) );
         //gets the  array Initializer
@@ -111,11 +111,11 @@ public class SclassUseTest extends TestCase {
     public void testClassApi(){
         class C{ int i= 100; }
         //will select C and int
-        assertEquals( 2, $classUse.any().listSelectedIn(C.class).size());
+        assertEquals( 2, $typeUse.any().listSelectedIn(C.class).size());
         
         @Deprecated
         class D{ }
-        assertEquals( 2, $classUse.any().listSelectedIn(D.class).size());
+        assertEquals( 2, $typeUse.any().listSelectedIn(D.class).size());
     }
     
     
@@ -188,9 +188,9 @@ public class SclassUseTest extends TestCase {
         
         //$classUse.any().listSelectedIn(_c).forEach(s-> System.out.println( s.node.getClass() + " : " + s.node.toString()+ s.node.getBegin().get().toString() ));
         
-        $classUse.replace(_c, Base.class, Replace.class);
-        $classUse.replace(_c, Inter.class, Outer.class);
-        $classUse.replace(_c, Ann.class, Stan.class);
+        $typeUse.replace(_c, Base.class, Replace.class);
+        $typeUse.replace(_c, Inter.class, Outer.class);
+        $typeUse.replace(_c, Ann.class, Stan.class);
         
         
         
