@@ -8,9 +8,11 @@ package draft.java;
 import com.github.javaparser.ast.NodeList;
 import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
 import com.github.javaparser.ast.body.MethodDeclaration;
+import com.github.javaparser.ast.expr.SimpleName;
 import com.github.javaparser.ast.type.IntersectionType;
 import com.github.javaparser.ast.type.TypeParameter;
 import com.github.javaparser.ast.type.UnionType;
+import draft.java._typeParameter._typeParameters;
 import junit.framework.TestCase;
 
 import java.io.File;
@@ -28,14 +30,38 @@ import java.util.List;
 public class _typeParameterTest extends TestCase {
 
    
+    public void testTypeParameterAnno(){
+        String s = "@R A extends @Test B";
+        _typeParameter _tp = _typeParameter.of(s);
+        TypeParameter astTp = _tp.ast();
+        System.out.println( _tp );
+        System.out.println( astTp );
+        
+        assertEquals( 1, _tp.listAnnos().size());
+        assertTrue( _tp.is(s) );
+        
+        
+        SimpleName sn = astTp.getName();
+        astTp.getTypeBound();
+        
+        _tp.getTypeBound().forEach(t->System.out.println( "TB "+ t));
+        
+        assertEquals( Ast.anno("@Test"), _tp.getTypeBound().get(0).getAnnotation(0) );
+        System.out.println( _tp );
+    }
     
-    public void testTypeParameterWithAnno(){
+    public void testTypeParametersWithAnno(){
+        _typeParameters _a = _typeParameters.of("<A extends @Test B>");
+        System.out.println( _a );
+        
+        _a = _typeParameters.of("<A extends @Test aaaa.B>");
+        System.out.println( _a );
         
     }
     
     public void testTypeParameters(){
-        _typeParameter._typeParameters _a = _typeParameter._typeParameters.of("<A,B,C,D,E>");
-        _typeParameter._typeParameters _b = _typeParameter._typeParameters.of("<E,D,C,B,A>");
+        _typeParameters _a = _typeParameters.of("<A,B,C,D,E>");
+        _typeParameters _b = _typeParameters.of("<E,D,C,B,A>");
         assertEquals( _a, _b);
         assertEquals( _a.hashCode(), _b.hashCode());
 

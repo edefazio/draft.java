@@ -12,8 +12,17 @@ import java.util.List;
  */
 public class _staticBlockTest extends TestCase {
 
+    
+    @interface T{
+        
+    }
+    
+    
+    
+    
     public void testSB(){
         _staticBlock _sb = _staticBlock.of("i = 100;");
+        
         //System.out.println( _sb );
     }
 

@@ -1257,10 +1257,6 @@ public final class $stmt<T extends Statement>
     
     public $stmt( T st ){
         this.statementClass = (Class<T>)st.getClass();
-        //if( st.getComment().isPresent() ){
-        //    Comment c = st.getComment().get();
-        //    this.commentPattern = Stencil.of( c.toString() );
-        //}
         this.stmtPattern = Stencil.of( st.toString(NO_COMMENTS) );
     }
 

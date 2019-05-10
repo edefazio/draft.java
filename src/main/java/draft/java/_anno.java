@@ -1,10 +1,13 @@
 package draft.java;
 
+import com.github.javaparser.ast.Node;
 import com.github.javaparser.ast.NodeList;
 import com.github.javaparser.ast.body.BodyDeclaration;
 import com.github.javaparser.ast.body.FieldDeclaration;
 import com.github.javaparser.ast.expr.*;
 import com.github.javaparser.ast.nodeTypes.NodeWithAnnotations;
+import com.github.javaparser.ast.type.Type;
+import com.github.javaparser.ast.type.TypeParameter;
 import draft.DraftException;
 import draft.Text;
 import draft.java._model.*;
@@ -939,6 +942,43 @@ public final class _anno
     }
     
     /**
+     * Patches the NodeWithAnnotations interface "IN" to Type.
+     * 
+     * There is a tension between what we want to represent in the class hierarchy
+     * and what Generics allow (in abstract base classes like Type and their 
+     * derived classes with Generics)
+     * 
+     * As far as how this effects the draft API
+     * 
+     * @param <T> 
+     */
+    public static class Type_annoPatch <T extends Type>
+        implements NodeWithAnnotations {
+
+        //this can be any type of Type
+        final T type;
+        
+        public Type_annoPatch(T type){
+            this.type = type;
+        }
+        
+        @Override
+        public NodeList getAnnotations() {
+            return type.getAnnotations();
+        }
+
+        @Override
+        public Node setAnnotations(NodeList annotations) {
+            return type.setAnnotations(annotations);
+        }
+
+        @Override
+        public void tryAddImportToParentCompilationUnit(Class clazz) {
+            type.tryAddImportToParentCompilationUnit(clazz);
+        }
+    }
+    
+    /**
      * Grouping of _anno (s) expressions ({@link AnnotationExpr})
      * annotating a Class, Field, Method, Enum Constant, etc.
      *
@@ -959,7 +999,15 @@ public final class _anno
             _annos _as = new _annos( fd );
             return _as;
         }
-
+        
+        public static _annos of( TypeParameter astTypeParam ){
+            return new _annos( astTypeParam );
+        }
+        
+        public static <T extends Type> _annos of( T t ){
+            return new _annos( new Type_annoPatch(t) );
+        }
+        
         public static _annos of( NodeWithAnnotations astAnns ) {
             return new _annos( astAnns );
         }

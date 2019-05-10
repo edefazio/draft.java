@@ -1,6 +1,7 @@
 package draft.java.macro;
 
 import draft.java._class;
+import java.io.IOException;
 import junit.framework.TestCase;
 
 public class _removeTest extends TestCase {
@@ -19,5 +20,15 @@ public class _removeTest extends TestCase {
         assertEquals(0, _c.listFields().size());
         assertEquals(0, _c.listConstructors().size());
         assertEquals(0, _c.listNests().size());
+    }
+    
+    public void testRemoveOnThrows(){
+        
+        class FFF{
+            void m() throws @_remove IOException{ }
+        }
+        
+        _class _c = _class.of(FFF.class);
+        System.out.println( _c );
     }
 }

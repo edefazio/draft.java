@@ -1,7 +1,9 @@
 package draft.java;
 
+import com.github.javaparser.ast.expr.AnnotationExpr;
 import com.github.javaparser.ast.type.Type;
 import draft.Text;
+import draft.java._anno._annos;
 import draft.java._model.*;
 
 import java.util.*;
@@ -13,7 +15,7 @@ import java.util.*;
  * @param <T> the Type implementation (i.e. ReferenceType)
  */
 public final class _typeRef<T extends Type>
-        implements _node<Type> {
+        implements _node<Type>, _anno._hasAnnos<_typeRef> {
 
     public static _typeRef of( java.lang.reflect.AnnotatedType t){
         return new _typeRef( Ast.typeRef( t ) );
@@ -35,6 +37,7 @@ public final class _typeRef<T extends Type>
         return new _typeRef( t );
     }
 
+    /** The underlying AST type */
     private final T astType;
 
     public _typeRef( T t ) {
@@ -178,6 +181,27 @@ public final class _typeRef<T extends Type>
      */
     public String normalized(){
         return Normalizer.of( this.astType.toString() );        
+    }
+
+    /**
+     * NOTE :  THIS IS ALLOWING US TO ENTER A WORLD OF PAIN, 
+     * since the _annos that we return is a COPY and if we MUTATE IT
+     * it will not have the changes reflected in the ubnderlying code
+     * 
+     * We did it because, well Type in the (JavaParser) AST has Annotations
+     * but does not implement NodeWithAnnotations
+     * 
+     * THANKFULLY type use annotations are exceedingly rare
+     * @return 
+     */
+    @Override
+    public _annos getAnnos() {
+        
+        _annos _as = _annos.of();
+        //System.out.println ("FOUND "+  this.astType.getAnnotations().size() );
+        //System.out.println ("FOUND "+  this.astType.getAnnotations() );
+        _as.add(this.astType.getAnnotations().toArray(new AnnotationExpr[0]));
+        return _as;        
     }
     
     private static class Normalizer{

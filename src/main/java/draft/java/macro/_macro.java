@@ -204,7 +204,9 @@ public interface _macro<M extends _anno._hasAnnos>
             //
             
             //I have a theory that this happens ALWAYS TO member classes
-            if( clazz.isAnonymousClass() ){
+            if( clazz.isAnonymousClass() ){ 
+                //there can be lots of issues with nested private anonymous member classes
+                //for now, lets not burp, capture and move along silently
                 return _mm;
                 //System.out.println( "<<<<<<<<<<<<<<<<<<<<<<<< Anon Class");
                 //throw new DraftException("Could not find method "+ _mm +" on ANONYMOUS class "+ clazz );

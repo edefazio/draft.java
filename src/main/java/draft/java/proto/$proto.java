@@ -388,20 +388,6 @@ public interface $proto<Q> {
             return false;            
         }
         
-        /**
-         * Is there a argument called "type" that 
-         * @param clazz
-         * @return 
-         
-        public boolean isType( Class clazz ){
-            return is("type", clazz);
-        }
-        
-        public boolean isName( String name ){
-            return is("name", name);
-        }
-        */ 
-        
         
         /**
          * 
@@ -420,23 +406,18 @@ public interface $proto<Q> {
                 return true;
             }
             if (expectedValue instanceof String && o instanceof String) {
-                //System.out.println("both equals String"+ expectedValue +" "+o );
                 String v = (String) expectedValue;
                 String s = (String) o;
 
                 if (s.startsWith("\"") && s.endsWith("\"")) {
                     s = s.substring(1, s.length() - 1);
-                    //return v.equals( s.substring(1, s.length() -1) );
                 }
                 if (v.startsWith("\"") && v.endsWith("\"")) {
                     v = v.substring(1, v.length() - 1);
-                    //return v.equals( s.substring(1, s.length() -1) );
                 }
                 return s.equals(v);
-                //return o.equals(expectedValue);
             }
             if (expectedValue instanceof Expression) {
-                //System.out.println( "Value is Expression");
                 return Expr.equatesTo((Expression) expectedValue, get($name));
             } else if (expectedValue instanceof String) {
                 try {
@@ -462,8 +443,7 @@ public interface $proto<Q> {
             }
             for (int i = 0; i < $nvs.length; i += 2) {
                 String key = $nvs[i].toString();
-                if (!is(key, get(key))) {
-                    //System.out.println( "NOT "+key+" "+get(key));
+                if ( !is(key, get(key) ) ) {
                     return false;
                 }
             }
@@ -677,7 +657,6 @@ public interface $proto<Q> {
                     return pattern.deconstruct( ((_node)t).toString(Ast.PRINT_NO_COMMENTS).trim() );
                 }
                 if( t instanceof _body ){
-                    //System.out.println( "IN BODY "+ pattern + t );
                     _body _b = (_body)t;
                     if( _b.isEmpty() ){
                         

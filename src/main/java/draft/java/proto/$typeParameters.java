@@ -1106,7 +1106,7 @@ public final class $typeParameters
         forEachIn( _n.ast(), _importActionFn);        
         return _n;
     }
-
+ 
     /**
      * A Matched Selection result returned from matching a prototype $import
      * inside of some CompilationUnit

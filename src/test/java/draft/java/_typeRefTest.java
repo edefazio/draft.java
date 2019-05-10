@@ -1,6 +1,7 @@
 package draft.java;
 
 import com.github.javaparser.ast.NodeList;
+import com.github.javaparser.ast.expr.AnnotationExpr;
 import com.github.javaparser.ast.type.ClassOrInterfaceType;
 import com.github.javaparser.ast.type.Type;
 import junit.framework.TestCase;
@@ -19,6 +20,36 @@ import static junit.framework.TestCase.assertEquals;
  */
 public class _typeRefTest extends TestCase {
 
+    public void testWorkingTypeWithAnnotation(){
+        _typeRef _tr = _typeRef.of("@Test List<A>");        
+        //      
+        System.out.println( _tr );
+        Type t = _tr.ast();
+        ClassOrInterfaceType coit = t.asClassOrInterfaceType();
+        
+        System.out.println( "CHILDREN " + coit.getChildNodes());
+        t.getChildNodes().forEach( c -> {
+            if( c instanceof AnnotationExpr ){ 
+                System.out.println( "Child node is an AnnotationExpr"+ c );
+            }
+        });
+        t.walk(AnnotationExpr.class, a-> System.out.println( "PARENT " + a.getParentNode().get().getClass() ));
+        assertTrue( t.getAnnotations().isNonEmpty() );
+        
+        assertNotNull( _tr.getAnnos().get(0) );
+    }
+    
+    /** This is failing for JP 3.14.0 
+    public void testSS(){
+        _typeRef _tr = _typeRef.of("@Test java.util.List<A>");                 
+        System.out.println( _tr );
+        Type t = _tr.ast();
+        ClassOrInterfaceType coit = t.asClassOrInterfaceType();
+        assertTrue( t.getAnnotations().isNonEmpty() );        
+        assertNotNull( _tr.getAnnos().get(0) );
+    }
+    */ 
+    
     public void testSimplify(){
         _typeRef _tr = _typeRef.of("java.util.List<java.util.Map>");
         assertTrue( _tr.is(Ast.typeRef("List<Map>")));

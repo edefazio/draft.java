@@ -6,6 +6,7 @@ import com.github.javaparser.ast.nodeTypes.NodeWithTypeParameters;
 import com.github.javaparser.ast.type.ClassOrInterfaceType;
 import com.github.javaparser.ast.type.TypeParameter;
 import draft.Text;
+import draft.java._anno._annos;
 import draft.java._model.*;
 
 import java.util.*;
@@ -19,7 +20,7 @@ import java.util.stream.Collectors;
  * @author Eric
  */
 public final class _typeParameter
-        implements _node<TypeParameter>, _named<_typeParameter> {
+        implements _node<TypeParameter>, _named<_typeParameter>, _anno._hasAnnos<_typeParameter> {
 
     public static _typeParameter of( String typeParam ) {
         return of( Ast.typeParameter( typeParam ) );
@@ -104,6 +105,7 @@ public final class _typeParameter
 
     @Override
     public String toString() {
+        //JavaParser already does a great job, no need to interfere
         return typeParameter.toString();
     }
 
@@ -116,6 +118,11 @@ public final class _typeParameter
     @Override
     public String getName() {
         return typeParameter.getNameAsString();
+    }
+
+    @Override
+    public _annos getAnnos() {
+        return _annos.of( this.typeParameter);
     }
 
     /**

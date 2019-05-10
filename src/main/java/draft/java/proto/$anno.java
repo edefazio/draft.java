@@ -123,6 +123,13 @@ public class $anno
         return $anno.of(pattern).selectFirstIn(_n);
     }
     
+    /**
+     * 
+     * @param clazz
+     * @param pattern
+     * @param selectConstraint
+     * @return 
+     */
     public static final Select selectFirst( Class clazz, String pattern, Predicate<Select>selectConstraint){
         return $anno.of(pattern).selectFirstIn(clazz, selectConstraint);
     }
@@ -461,7 +468,7 @@ public class $anno
      * @param <N>
      * @param _n
      * @param _proto
-     * @param constraint
+     * @param selectConstraint
      * @param selectConsumer
      * @return 
      */
@@ -1014,6 +1021,10 @@ public class $anno
         return null;
     }
 
+    public boolean matches( AnnotationExpr astAnno){
+        return select( astAnno ) != null;
+    }
+    
     public boolean matches(String... anno) {
         return matches(_anno.of(anno));
     }
@@ -1194,10 +1205,12 @@ public class $anno
         return astNode;
     }
     
+    @Override
     public _anno firstIn(Class clazz){
         return firstIn(_type.of(clazz));
     }
     
+    @Override
     public _anno firstIn(Node astRootNode) {
         Optional<Node>on = 
             astRootNode.stream().filter(
@@ -1210,6 +1223,7 @@ public class $anno
         return null;        
     }
 
+    @Override
     public _anno firstIn(_node _n) {
         return firstIn( _n.ast() );        
     }
@@ -1219,6 +1233,7 @@ public class $anno
      * @param astRootNode
      * @return 
      */
+    @Override
     public Select selectFirstIn(Node astRootNode) {
         Optional<Node>on = 
             astRootNode.stream().filter(
@@ -1236,6 +1251,7 @@ public class $anno
      * @param _n
      * @return 
      */
+    @Override
     public Select selectFirstIn( _node _n) {
         return $anno.this.selectFirstIn( _n.ast() );        
     }
@@ -1245,6 +1261,7 @@ public class $anno
      * @param clazz
      * @return 
      */
+    @Override
     public Select selectFirstIn( Class clazz){
         return selectFirstIn( _type.of(clazz));
     } 
