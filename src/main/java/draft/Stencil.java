@@ -81,6 +81,14 @@ public final class Stencil implements Template<String>{
     }
 
     /**
+     * If there are no blanks in the pattern (it's just fixed text)
+     * @return true if the pattern is fixed (no blanks to be filled)
+     */
+    public boolean isFixedText(){
+        return !this.textBlanks.hasBlanks();
+    }
+    
+    /**
      * Returns the Predicate<String> for matching the Stencil as a String
      * for instance :
      *
