@@ -40,19 +40,20 @@ public class SaTest extends TestCase {
         
         System.out.println( $anno.of("B").compose() );
         
-        assertEquals(_anno.of("B"), $anno.any().construct("$anno", "@B"));
-        assertEquals(_anno.of("B").toString(), $anno.any()
+        assertEquals(_anno.of("B"), $anno.of().construct("$anno", "@B"));
+        assertEquals(_anno.of("B").toString(), $anno.of()
                 .compose("$anno", "@B"));        
     }
     
     public void testAnyCompose(){
         try{
-            $anno.any().construct();
+            $anno.of().construct();
             fail("expected exception for no name");
         }catch(Exception e){
             
         }        
-        assertEquals(_anno.of("E"), $anno.any().construct("name", "E"));
+        //override parameter
+        assertEquals(_anno.of("E"), $anno.of().construct("$anno", "@E"));
         
     }
     
@@ -64,7 +65,7 @@ public class SaTest extends TestCase {
             void m(){}
         }
         
-        assertEquals( 2, $anno.any().count(T.class));
+        assertEquals( 2, $anno.of().count(T.class));
     }
     
     public void testOutOfOrderKeyValues(){

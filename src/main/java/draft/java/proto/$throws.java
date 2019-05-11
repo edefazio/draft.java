@@ -27,7 +27,7 @@ public final class $throws
      * @return 
      */
     public static final List<_throws> list(Class clazz){
-        return any().listIn(clazz);
+        return of().listIn(clazz);
     }
     
     /**
@@ -628,11 +628,15 @@ public final class $throws
         return $throws.of(_throws.of(target)).constraint(constraint).removeIn(_type);
     }
     
+    public static $throws any(){
+        return of();
+    }
+    
     /**
      * Match ANY import
      * @return 
      */
-    public static $throws any(){
+    public static $throws of(){
         return new $throws( t-> true );        
     }
     

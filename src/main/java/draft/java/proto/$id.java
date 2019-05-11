@@ -10,14 +10,18 @@ import java.util.function.Predicate;
  * or fully qualified "java.util.Map" 
  * 
  */
-public class $id implements $constructor.$part, $method.$part, $field.$part{
+public class $id implements $constructor.$part, $method.$part, $field.$part, $parameter.$part {
 
     public static $id any(){
-        return of("$id$");
+        return of();
+    }
+    
+    public static $id of(){
+        return $id.of("$id$");
     }
     
     public static $id of(Predicate<String> constraint){
-        return any().constraint(constraint);
+        return of().constraint(constraint);
     }
     
     public static $id of( String id ){

@@ -111,11 +111,11 @@ public class SclassUseTest extends TestCase {
     public void testClassApi(){
         class C{ int i= 100; }
         //will select C and int
-        assertEquals( 2, $typeUse.any().listSelectedIn(C.class).size());
+        assertEquals( 2, $typeUse.of().listSelectedIn(C.class).size());
         
         @Deprecated
         class D{ }
-        assertEquals( 2, $typeUse.any().listSelectedIn(D.class).size());
+        assertEquals( 2, $typeUse.of().listSelectedIn(D.class).size());
     }
     
     

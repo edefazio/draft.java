@@ -586,25 +586,6 @@ public final class $expr <T extends Expression>
     
     /**
      * 
-     * @param astExpr
-     * @param sourcePattern
-     * @param targetPattern
-     * @return 
-     
-    public static final Expression replace( Expression astExpr, String sourcePattern, String targetPattern){
-        //$args ts = $expr.of(sourcePattern).deconstruct(astExpr);
-        Select s = $expr.of(sourcePattern).select(astExpr);
-        if( s != null ){
-            Expression t = $expr.of(targetPattern).construct(s.args);
-            astExpr.replace(t);
-            return t;
-        }
-        return null;
-    }
-    */ 
-    
-    /**
-     * 
      * @param <T>
      * @param pattern
      * @return 
@@ -680,9 +661,8 @@ public final class $expr <T extends Expression>
      * i.e."arr[3]"
      * @return
      */
-    public static $expr<ArrayAccessExpr> arrayAccessAny( ) {
-        return new $expr<>( Expr.arrayAccess("a[0]") )
-                .$(Expr.of("a[0]"), "any");
+    public static $expr<ArrayAccessExpr> arrayAccess( ) {
+        return new $expr<>( ArrayAccessExpr.class, "$arrayAccessExpr$");
     }
     
     /**
@@ -717,8 +697,8 @@ public final class $expr <T extends Expression>
      * i.e."new Obj[]", "new int[][]"
      * @return 
      */
-    public static $expr<ArrayCreationExpr> arrayCreationAny( ) {
-        return new $expr<>( Expr.arrayCreation("new int[]")).$(Expr.of("new int[]"), "any");
+    public static $expr<ArrayCreationExpr> arrayCreation( ) {
+        return new $expr<>( ArrayCreationExpr.class, "$arrayCreationExpr$");
     }
     
     /**
@@ -840,11 +820,11 @@ public final class $expr <T extends Expression>
     }
     
     /**
-     * Any array initializer
+     * Any array initializer i.e. "{1,2,3,4,5}"
      * @return 
      */
-    public static $expr<ArrayInitializerExpr> arrayInitializerAny() {
-        return new $expr<>( Expr.arrayInitializer("{1}") ).$(Expr.of("{1}"), "any");
+    public static $expr<ArrayInitializerExpr> arrayInitializer() {
+        return new $expr( ArrayInitializerExpr.class, "$arrayInitializer$");
     }
     
     /** 
@@ -879,8 +859,8 @@ public final class $expr <T extends Expression>
      * i.e."a = 1", "a = 4" 
      * @return 
      */
-    public static $expr<AssignExpr> assignAny( ) {
-        return new $expr<>( Expr.assign("a=1") ).$(Expr.of("a=1"), "any");
+    public static $expr<AssignExpr> assign( ) {
+        return new $expr<>( AssignExpr.class, "$assignExpr$");
     }
     
 
@@ -916,8 +896,8 @@ public final class $expr <T extends Expression>
      * a || b    
      * @return 
      */
-    public static $expr<BinaryExpr> binaryAny( ) {
-        return new $expr<>( Expr.binary("a || b" ) ).$(Expr.binary("a || b"), "any");
+    public static $expr<BinaryExpr> binary( ) {
+        return new $expr<>( BinaryExpr.class, "$binaryExpr$");
     } 
     
     /** 
@@ -981,8 +961,8 @@ public final class $expr <T extends Expression>
      * "true" / "false" 
      * @return 
      */
-    public static $expr<BooleanLiteralExpr> booleanLiteralAny( ) {
-        return new $expr( Expr.booleanLiteral("true") ).$("true", "any");
+    public static $expr<BooleanLiteralExpr> booleanLiteral( ) {
+        return new $expr( BooleanLiteralExpr.class, "$booleanLiteral$");
     }
     
     /** 
@@ -1017,7 +997,7 @@ public final class $expr <T extends Expression>
      * (String)o 
      * @return 
      */
-    public static $expr<CastExpr> castAny( ) {
+    public static $expr<CastExpr> cast( ) {
         return new $expr( CastExpr.class, "($cast$)"); //Expr.cast("(String)o")).$(Expr.of("(String)o"),"any");
     }
     
@@ -1092,8 +1072,8 @@ public final class $expr <T extends Expression>
      * 'c' 
      * @return 
      */
-    public static $expr<CharLiteralExpr> charLiteralAny(  ) {
-        return new $expr( Expr.charLiteral('a') ).$("'a'", "any");
+    public static $expr<CharLiteralExpr> charLiteral(  ) {
+        return new $expr( CharLiteralExpr.class, "$charLiteral$");
     }
     
     /** 
@@ -1126,12 +1106,11 @@ public final class $expr <T extends Expression>
     }
 
     /**
-     * String.class
+     * Class expr (i.e. "String.class")
      * @return 
      */
-    public static $expr<ClassExpr> classExprAny() {
-        return new $expr( Expr.classExpr("a.class") )
-            .$("a.class", "any");
+    public static $expr<ClassExpr> classExpr() {
+        return new $expr( ClassExpr.class, "$classExpr$");
     }
     
     /** 
@@ -1154,7 +1133,7 @@ public final class $expr <T extends Expression>
     }
     
     /**
-     * 
+     * conditional, i.e. "(a==1) ? 1 : 2" 
      * @param constraint
      * @return 
      */
@@ -1165,12 +1144,11 @@ public final class $expr <T extends Expression>
     }    
     
     /**
-     * Any conditional 
+     * Any conditional i.e. "(a==1) ? 1 : 2" 
      * @return 
      */
-    public static $expr<ConditionalExpr> conditionalAny() {
-        return new $expr( Expr.conditional("(a==1) ? 1 : 2" ) )
-                .$(Expr.conditional("(a==1) ? 1 : 2"), "any");
+    public static $expr<ConditionalExpr> conditional() {
+        return new $expr( ConditionalExpr.class, "$conditionalExpr$");
     }    
     
     /** 
@@ -1261,8 +1239,8 @@ public final class $expr <T extends Expression>
      * 10.1d
      * @return 
      */
-    public static $expr<DoubleLiteralExpr> doubleLiteralAny( ) {
-        return new $expr( Expr.of( 1.0d ) ).$("1.0d", "any");
+    public static $expr<DoubleLiteralExpr> doubleLiteral( ) {
+        return new $expr( DoubleLiteralExpr.class, "$doubleLiteral$");
     }
     
     /** 
@@ -1297,8 +1275,8 @@ public final class $expr <T extends Expression>
      * 
      * @return 
      */
-    public static $expr<DoubleLiteralExpr> floatLiteralAny( ) {
-        return new $expr( Expr.of(1.0f) ).$(Expr.of(1.0f), "any");
+    public static $expr<DoubleLiteralExpr> floatLiteral( ) {
+        return new $expr( DoubleLiteralExpr.class, "$floatLiteral$");
     }
     
     /** 
@@ -1333,8 +1311,8 @@ public final class $expr <T extends Expression>
      * i.e.( 3 + 4 )    
      * @return 
      */
-    public static $expr<EnclosedExpr> enclosedExprAny( ) {
-        return new $expr( Expr.enclosedExpr("(a)" ) ).$("(a)", "any");
+    public static $expr<EnclosedExpr> enclosedExpr( ) {
+        return new $expr( EnclosedExpr.class, "$enclosedExpr$");
     }
     
     /** 
@@ -1371,9 +1349,8 @@ public final class $expr <T extends Expression>
      * 
      * @return 
      */
-    public static $expr<FieldAccessExpr> fieldAccessAny( ) {
-        return new $expr( Expr.fieldAccess("a.B") )
-                .$(Expr.fieldAccess("a.B"), "any");
+    public static $expr<FieldAccessExpr> fieldAccess( ) {
+        return new $expr( FieldAccessExpr.class, "$fieldAccessExpr$");
     }
     
     
@@ -1410,8 +1387,8 @@ public final class $expr <T extends Expression>
      * 
      * @return 
      */
-    public static $expr<InstanceOfExpr> instanceOfAny() {
-        return new $expr( Expr.instanceOf( "a instanceof b" ) ).$("a instanceof b", "any");
+    public static $expr<InstanceOfExpr> instanceOf() {
+        return new $expr( InstanceOfExpr.class, "$instanceOf$" );
     }
     
     /**
@@ -1442,8 +1419,8 @@ public final class $expr <T extends Expression>
         return new $expr( Expr.of( 1 ) ).$("1", "any").constraint(constraint);
     }
     
-    public static $expr<IntegerLiteralExpr> intLiteralAny( ) {
-        return new $expr( Expr.of( 1 ) ).$("1", "any");
+    public static $expr<IntegerLiteralExpr> intLiteral( ) {
+        return new $expr( IntegerLiteralExpr.class, "$intLiteralExpr$");
     }
     
     /**
@@ -1516,8 +1493,8 @@ public final class $expr <T extends Expression>
      * a-> System.out.println( a )  
      * @return 
      */
-    public static $expr<LambdaExpr> lambdaAny( ) {
-        return new $expr( Expr.lambda("a-> true" ) ).$(Expr.lambda("a->true"), "any");
+    public static $expr<LambdaExpr> lambda( ) {
+        return new $expr( LambdaExpr.class, "$lambdaExpr$" );
     }
     
     /**
@@ -1591,8 +1568,8 @@ public final class $expr <T extends Expression>
      * Any long literal
      * @return 
      */
-    public static $expr<LongLiteralExpr> longLiteralAny( ) {
-        return new $expr( Expr.longLiteral(1L)).$(Expr.longLiteral(1L), "any");
+    public static $expr<LongLiteralExpr> longLiteral( ) {
+        return new $expr( LongLiteralExpr.class, "$longLiteralExpr$");
     }
     
     /** 
@@ -1717,8 +1694,8 @@ public final class $expr <T extends Expression>
      * ANY method call
      * @return 
      */
-    public static $expr<MethodCallExpr> methodCallAny( ) {
-        return new $expr( Expr.methodCall("a()" )).$(Expr.of("a()"), "any");
+    public static $expr<MethodCallExpr> methodCall( ) {
+        return new $expr( MethodCallExpr.class, "$methodCall$");
     }
     
     /** 
@@ -1753,8 +1730,8 @@ public final class $expr <T extends Expression>
      * 
      * @return 
      */
-    public static $expr<MethodReferenceExpr> methodReferenceAny() {
-        return new $expr( Expr.methodReference("A:b")).$("A:b", "any");
+    public static $expr<MethodReferenceExpr> methodReference() {
+        return new $expr( MethodReferenceExpr.class, "$methodReference$");
     }
     
     /** 
@@ -1762,7 +1739,7 @@ public final class $expr <T extends Expression>
      * @return  
      */
     public static $expr<NullLiteralExpr> nullExpr(){
-        return new $expr( Expr.nullExpr() );
+        return new $expr( NullLiteralExpr.class, "$nullExpr$" );
     }
 
     /**
@@ -1797,8 +1774,8 @@ public final class $expr <T extends Expression>
      * 
      * @return 
      */
-    public static $expr<NameExpr> nameAny() {
-        return new $expr( Expr.name("name" ) ).$("name", "any");
+    public static $expr<NameExpr> name() {
+        return new $expr( NameExpr.class, "$nameExpr$");
     }
     
     /** 
@@ -1833,8 +1810,8 @@ public final class $expr <T extends Expression>
      * "new Date()"
      * @return 
      */
-    public static $expr<ObjectCreationExpr> objectCreationAny() {
-        return new $expr( Expr.objectCreation( "new a()" ) ).$("new a()", "any");
+    public static $expr<ObjectCreationExpr> objectCreation() {
+        return new $expr( ObjectCreationExpr.class, "$objectCreationExpr$");
     }
     
     /** 
@@ -1869,16 +1846,17 @@ public final class $expr <T extends Expression>
      * 
      * @return 
      */
-    public static $expr<StringLiteralExpr> stringLiteralAny( ) {
-        return new $expr( Expr.stringLiteral( "\"a\"" ) ).$("\"a\"", "any");
+    public static $expr<StringLiteralExpr> stringLiteral( ) {
+        return new $expr( StringLiteralExpr.class, "$stringLiteral$");
     }
     
-    /** 
-     * "super"
-     * @return  
+    /**
+     * ANY super expression 
+     * 
+     * @return 
      */
-    public static $expr<SuperExpr> superExpr(  ) {
-        return new $expr( Expr.superExpr( ) );
+    public static $expr<SuperExpr> superExpr(){
+        return new $expr(SuperExpr.class, "$superExpr$");
     }
 
     /**
@@ -1918,22 +1896,14 @@ public final class $expr <T extends Expression>
     public static $expr<SuperExpr> superExpr(SuperExpr superExpr, Predicate<SuperExpr> constraint ){
         return new $expr(superExpr).constraint(constraint);
     }
+
     
     /**
-     * ANY super expression 
-     * 
+     * ANY this expression
      * @return 
      */
-    public static $expr<SuperExpr> superExprAny(){
-        return new $expr(Expr.superExpr()).$("super", "any");
-    }
-    
-    /** 
-     * "this"
-     * @return  
-     */
-    public static $expr<ThisExpr> thisExpr(  ) {
-        return new $expr( Expr.thisExpr( ) );
+    public static $expr<ThisExpr> thisExpr( ){
+        return new $expr(ThisExpr.class, "$thisExpr$");
     }
 
     /**
@@ -1974,13 +1944,7 @@ public final class $expr <T extends Expression>
         return new $expr(protoThisExpr ).constraint(constraint);
     }
 
-    /**
-     * ANY this expression
-     * @return 
-     */
-    public static $expr<ThisExpr> thisExprAny( ){
-        return new $expr(Expr.thisExpr()).$("this", "any");
-    }
+
     
     /** 
      * i.e."World" in World::greet 
@@ -2014,8 +1978,8 @@ public final class $expr <T extends Expression>
      * i.e."World" in World::greet 
      * @return 
      */
-    public static $expr<TypeExpr> typeExprAny( ) {
-        return new $expr( Expr.typeExpr( "a" ) ).$("a", "any");
+    public static $expr<TypeExpr> typeExpr( ) {
+        return new $expr( TypeExpr.class, "$typeExpr$");
     }
     
     /** 
@@ -2050,8 +2014,8 @@ public final class $expr <T extends Expression>
      *  i.e."!true"
      * @return  
      */
-    public static $expr<UnaryExpr> unaryAny() {
-        return new $expr( Expr.unary( "!true" ) ).$("!true", "any");
+    public static $expr<UnaryExpr> unary() {
+        return new $expr( UnaryExpr.class, "$unaryExpr$");
     }
     
     /** 
@@ -2086,16 +2050,20 @@ public final class $expr <T extends Expression>
      * "int i = 1"
      * @return  
      */
-    public static $expr<VariableDeclarationExpr> varDeclAny( ) {
-        return new $expr( Expr.varDecl( "int i=1") ).$(Expr.of("int i=1"), "any");
+    public static $expr<VariableDeclarationExpr> varDecl( ) {
+        return new $expr( VariableDeclarationExpr.class, "$varDecl$");
+    }
+    
+    public static $expr<Expression> any(){
+        return of();
     }
     
     /**
      * Matches ANY expression
      * @return 
      */
-    public static $expr<Expression> any(){
-        return new $expr( Expression.class, "$any$");
+    public static $expr<Expression> of(){
+        return new $expr( Expression.class, "$expr$");
     }
     
     /**
@@ -2104,7 +2072,7 @@ public final class $expr <T extends Expression>
      * @return 
      */
     public static $expr<Expression> of( Predicate<Expression> constraint ){
-        return any().constraint(constraint);
+        return of().constraint(constraint);
     }
     
     /** Class of the Expression */

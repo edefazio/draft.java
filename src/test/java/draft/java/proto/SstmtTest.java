@@ -174,12 +174,12 @@ public class SstmtTest extends TestCase {
     
     public void testStmtAnyMatchesEmptyOrLongBlocks(){
         //assertTrue( $snip.any().matches( _method.of("void m();").getBody().ast() ));
-        assertTrue( $stmt.any().matches( _method.of("void m(){}").getBody().ast() ));
-        assertTrue( $stmt.any().matches(Stmt.assertStmt("assert(1==1)")));
-        assertTrue( $stmt.any().matches(Stmt.breakStmt("break;")));
-        assertTrue( $stmt.any().matches(Stmt.assertStmt("assert(1==1)")));
+        assertTrue( $stmt.of().matches( _method.of("void m(){}").getBody().ast() ));
+        assertTrue( $stmt.of().matches(Stmt.assertStmt("assert(1==1)")));
+        assertTrue( $stmt.of().matches(Stmt.breakStmt("break;")));
+        assertTrue( $stmt.of().matches(Stmt.assertStmt("assert(1==1)")));
         
-        assertTrue( $stmt.any().matches( _body.of( new Object(){
+        assertTrue( $stmt.of().matches( _body.of( new Object(){
             void m(){
                 int i=0;
                 int j=1;
@@ -191,13 +191,13 @@ public class SstmtTest extends TestCase {
         
     }
     public void testStmtMatchesEmptyBlockEmptyStmt(){
-        assertTrue($stmt.any().matches("{}"));
-        assertTrue($stmt.any().matches(";"));
+        assertTrue($stmt.of().matches("{}"));
+        assertTrue($stmt.of().matches(";"));
         
-        assertTrue($stmt.any().matches( Stmt.of("a(1);") ) );
-        assertTrue($stmt.any().matches( Stmt.block("{ a=1; assert(a != 0); }") ) );        
+        assertTrue($stmt.of().matches( Stmt.of("a(1);") ) );
+        assertTrue($stmt.of().matches( Stmt.block("{ a=1; assert(a != 0); }") ) );        
         
-        assertFalse($stmt.any().matches( (Statement)null));        
+        assertFalse($stmt.of().matches( (Statement)null));        
     }
     
     public void test$protoQueryTutorial(){

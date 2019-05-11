@@ -20,12 +20,12 @@ public class SsnipTest extends TestCase {
 
     public void testSnipAnyMatchesEmptyOrLongBlocks(){
         //assertTrue( $snip.any().matches( _method.of("void m();").getBody().ast() ));
-        assertTrue( $snip.any().matches( _method.of("void m(){}").getBody().ast() ));
-        assertTrue( $snip.any().matches(Stmt.assertStmt("assert(1==1)")));
-        assertTrue( $snip.any().matches(Stmt.breakStmt("break;")));
-        assertTrue( $snip.any().matches(Stmt.assertStmt("assert(1==1)")));
+        assertTrue( $snip.of().matches( _method.of("void m(){}").getBody().ast() ));
+        assertTrue( $snip.of().matches(Stmt.assertStmt("assert(1==1)")));
+        assertTrue( $snip.of().matches(Stmt.breakStmt("break;")));
+        assertTrue( $snip.of().matches(Stmt.assertStmt("assert(1==1)")));
         
-        assertTrue( $snip.any().matches( _body.of( new Object(){
+        assertTrue( $snip.of().matches( _body.of( new Object(){
             void m(){
                 int i=0;
                 int j=1;

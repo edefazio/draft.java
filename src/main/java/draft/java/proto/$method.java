@@ -38,7 +38,7 @@ public class $method
      * @return 
      */
     public static final List<_method> list(Class clazz){
-        return any().listIn(clazz);
+        return of().listIn(clazz);
     }
     
     /**
@@ -419,6 +419,10 @@ public class $method
     }
 
     public static $method any(){
+        return of();
+    }
+    
+    public static $method of(){
         return new $method(_method.of("$type$ $name$();") ).anyBody();
     }
     
@@ -494,13 +498,13 @@ public class $method
     
     public $component<_javadoc> javadoc = new $component( "$javadoc$", t->true);    
     public $annos annos = new $annos();
-    public $modifiers modifiers = $modifiers.any();
-    public $typeRef type = $typeRef.any();
+    public $modifiers modifiers = $modifiers.of();
+    public $typeRef type = $typeRef.of();
     public $component<_typeParameters> typeParameters = new $component( "$typeParameters$", t->true);    
-    public $id name = $id.any();    
+    public $id name = $id.of();    
     public $parameters parameters = $parameters.of();
-    public $throws thrown = $throws.any();
-    public $body body = $body.any();
+    public $throws thrown = $throws.of();
+    public $body body = $body.of();
     
     private $method( _method _p ){
         this( _p, t-> true );
@@ -577,7 +581,7 @@ public class $method
      * @return the $method prototype
      */
     public $method anyBody(){
-        this.body = $body.any();
+        this.body = $body.of();
         return this;
     }
     
@@ -630,7 +634,7 @@ public class $method
     }
     
     public $method $parameters(){
-        this.parameters = $parameters.any();
+        this.parameters = $parameters.of();
         return this;
     }
     
@@ -670,7 +674,7 @@ public class $method
     }
      
     public $method $annos(){
-        this.annos = $annos.any();
+        this.annos = $annos.of();
         return this;
     }
     
@@ -700,7 +704,7 @@ public class $method
     }
     
     public $method $name(){
-        this.name = $id.any();
+        this.name = $id.of();
         return this;
     }
     
@@ -720,7 +724,7 @@ public class $method
     }
     
     public $method $type(){
-        this.type = $typeRef.any();
+        this.type = $typeRef.of();
         return this;
     }
     
@@ -755,7 +759,7 @@ public class $method
     }
 
     public $method $modifiers(){
-        this.modifiers = $modifiers.any();
+        this.modifiers = $modifiers.of();
         return this;
     }    
     

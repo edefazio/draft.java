@@ -35,7 +35,7 @@ public class $field implements Template<_field>, $proto<_field> {
      * @return 
      */
     public static final List<_field> list( Class clazz){
-        return any().listIn(clazz);
+        return of().listIn(clazz);
     }
     
     /**
@@ -411,8 +411,16 @@ public class $field implements Template<_field>, $proto<_field> {
             .replaceIn(_type.of(clazz), $field.of(_protoTarget));
     }
     
-    /** @return BUILD AND RETURN prototype instances */    
+    /**
+     * 
+     * @return 
+     */
     public static $field any(){
+        return of();
+    }
+    
+    /** @return BUILD AND RETURN prototype instances */    
+    public static $field of(){
         return of (_field.of(" $type$ $name$;") );
     }
         
@@ -447,7 +455,7 @@ public class $field implements Template<_field>, $proto<_field> {
     }
     
     public static $field of( Predicate<_field> constraint ){
-        return any().constraint( constraint);
+        return of().constraint( constraint);
     }
     
     public static $field ofName( String str){
@@ -455,7 +463,7 @@ public class $field implements Template<_field>, $proto<_field> {
     }
     
     public static $field ofName( Predicate<String> nameConstraint){
-        return any().$name(nameConstraint);
+        return of().$name(nameConstraint);
     }
     
     public static $field ofType( Class clazz ){
@@ -477,7 +485,7 @@ public class $field implements Template<_field>, $proto<_field> {
     }
     
     public static $field ofType( Predicate<_typeRef> _typeConstraint ){
-        return any().$type(_typeConstraint);
+        return of().$type(_typeConstraint);
     }
     
     public static $field of( _field _f ){
@@ -514,9 +522,9 @@ public class $field implements Template<_field>, $proto<_field> {
     public Predicate<_field> constraint = t->true;
     public $component<_javadoc> javadoc = new $component( "$javadoc$", t->true);
     public $annos annos = new $annos(); 
-    public $modifiers modifiers = $modifiers.any();
-    public $typeRef type = $typeRef.any();
-    public $id name = $id.any();
+    public $modifiers modifiers = $modifiers.of();
+    public $typeRef type = $typeRef.of();
+    public $id name = $id.of();
     public $expr init = null; //$expr.any();
     
     private $field( $part...parts ){
@@ -616,7 +624,7 @@ public class $field implements Template<_field>, $proto<_field> {
     }
     
     public $field $init(){
-        this.init = $expr.any();        
+        this.init = $expr.of();        
         this.init.exprPattern = Stencil.of( "$init$" );
         return this;
     }

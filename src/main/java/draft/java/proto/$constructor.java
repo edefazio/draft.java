@@ -45,7 +45,7 @@ public class $constructor
      * @return 
      */
     public static final List<_constructor> list(Class clazz){
-        return any().listIn(clazz);
+        return of().listIn(clazz);
     }
     
     /**
@@ -55,7 +55,7 @@ public class $constructor
      * @return 
      */
     public static final <N extends _node> List<_constructor> list( N _n ){
-        return any().listIn(_n);
+        return of().listIn(_n);
     }
     
     /**
@@ -468,6 +468,10 @@ public class $constructor
     }
 
     public static $constructor any(){
+        return of();
+    }
+    
+    public static $constructor of(){
         return new $constructor(_constructor.of("$name$(){}") );
     }
     
@@ -532,13 +536,13 @@ public class $constructor
     
     public $component<_javadoc> javadoc = new $component( "$javadoc$", t->true);    
     public $annos annos = new $annos();
-    public $modifiers modifiers = $modifiers.any();
+    public $modifiers modifiers = $modifiers.of();
     
     public $component<_typeParameters> typeParameters = new $component( "$typeParameters$", t->true);
-    public $id name = $id.any();
+    public $id name = $id.of();
     public $parameters parameters = $parameters.of();
-    public $throws thrown = $throws.any();
-    public $body body = $body.any();
+    public $throws thrown = $throws.of();
+    public $body body = $body.of();
     
     private $constructor( _constructor _ct ){
         this(_ct, t-> true );
@@ -666,7 +670,7 @@ public class $constructor
     }
     
     public $constructor $parameters( ){
-        this.parameters = $parameters.any();
+        this.parameters = $parameters.of();
         return this;
     }
     
@@ -686,7 +690,7 @@ public class $constructor
     }
     
     public $constructor $annos(){
-        this.annos = $annos.any();
+        this.annos = $annos.of();
         return this;
     }
     
@@ -715,7 +719,7 @@ public class $constructor
     }
     
     public $constructor $name(){
-        this.name = $id.any();
+        this.name = $id.of();
         return this;
     }
     
@@ -755,7 +759,7 @@ public class $constructor
     }
     
     public $constructor $modifiers(){
-        this.modifiers = $modifiers.any();
+        this.modifiers = $modifiers.of();
         return this;
     }
     
@@ -770,7 +774,7 @@ public class $constructor
     }
     
     public $constructor $throws(){
-        this.thrown = $throws.any();
+        this.thrown = $throws.of();
         return this;
     }
     
@@ -810,7 +814,7 @@ public class $constructor
     }
     
     public $constructor $body (){
-        this.body = $body.any();
+        this.body = $body.of();
         return this;
     }
     

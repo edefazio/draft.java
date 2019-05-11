@@ -16,7 +16,7 @@ public class SmodifiersTest extends TestCase {
     });
     
     public void testAny(){
-        assertNotNull( $modifiers.any().select(_modifiers.of()) );
+        assertNotNull( $modifiers.of().select(_modifiers.of()) );
         
     }
     public void testAll(){

@@ -182,46 +182,46 @@ public final class $snip implements Template<List<Statement>>, $proto<List<State
             oce.getAnonymousClassBody().get().stream().filter(m -> m instanceof MethodDeclaration &&
                 !m.isAnnotationPresent(_remove.class) &&
                 ((MethodDeclaration) m).getBody().isPresent()).findFirst().get();
-        return of( theMethod.getBody().get());
+        return $snip.of( theMethod.getBody().get());
     }
 
     public static $snip of( String proto ){
-        return of(new String[] {proto});
+        return $snip.of(new String[] {proto});
     }
 
     public static $snip of( Expr.Command c ){
         StackTraceElement ste = Thread.currentThread().getStackTrace()[2];
-        return of( Expr.lambda(ste));
+        return $snip.of( Expr.lambda(ste));
     }
 
     public static <T extends Object>  $snip of( Consumer<T> c ){
         StackTraceElement ste = Thread.currentThread().getStackTrace()[2];
-        return of( Expr.lambda(ste));
+        return $snip.of( Expr.lambda(ste));
     }
 
     public static <T extends Object, U extends Object>  $snip of( Function<T,U> c ){
         StackTraceElement ste = Thread.currentThread().getStackTrace()[2];
-        return of( Expr.lambda(ste));
+        return $snip.of( Expr.lambda(ste));
     }
 
     public static <T extends Object, U extends Object, V extends Object>  $snip of( BiFunction<T,U, V> c ){
         StackTraceElement ste = Thread.currentThread().getStackTrace()[2];
-        return of( Expr.lambda(ste));
+        return $snip.of( Expr.lambda(ste));
     }
 
     public static <T extends Object, U extends Object>$snip of( BiConsumer<T,U> c ){
         StackTraceElement ste = Thread.currentThread().getStackTrace()[2];
-        return of( Expr.lambda(ste));
+        return $snip.of( Expr.lambda(ste));
     }
 
     public static <T extends Object, U extends Object, V extends Object>$snip of( Expr.TriConsumer<T,U,V> c ){
         StackTraceElement ste = Thread.currentThread().getStackTrace()[2];
-        return of( Expr.lambda(ste));
+        return $snip.of( Expr.lambda(ste));
     }
 
     public static <T extends Object, U extends Object, V extends Object, Z extends Object>$snip of( Expr.QuadConsumer<T,U,V,Z> c ){
         StackTraceElement ste = Thread.currentThread().getStackTrace()[2];
-        return of( Expr.lambda(ste));
+        return $snip.of( Expr.lambda(ste));
     }
 
     public static $snip of( LambdaExpr astLambda ){
@@ -230,7 +230,7 @@ public final class $snip implements Template<List<Statement>>, $proto<List<State
     }
 
     public static $snip of( _body _b ){
-        return of( _b.ast() );
+        return $snip.of( _b.ast() );
     }
 
     public static $snip of(BlockStmt astBlockStmt ){
@@ -240,7 +240,11 @@ public final class $snip implements Template<List<Statement>>, $proto<List<State
     }
 
     public static $snip any(){
-        return new $snip( $stmt.any() );
+        return of();
+    }
+    
+    public static $snip of(){
+        return new $snip( $stmt.of() );
     }
      
     /**

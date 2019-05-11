@@ -1,7 +1,11 @@
 package draft.java.proto;
 
 import com.github.javaparser.StaticJavaParser;
+import com.github.javaparser.ast.expr.Expression;
 import com.github.javaparser.ast.expr.IntegerLiteralExpr;
+import com.github.javaparser.ast.stmt.Statement;
+import com.github.javaparser.ast.stmt.SwitchEntry;
+import com.github.javaparser.ast.stmt.SwitchStmt;
 import draft.java.Expr;
 import draft.java._class;
 import junit.framework.TestCase;
@@ -13,6 +17,31 @@ import static junit.framework.TestCase.assertNotNull;
 
 public class SexprTest extends TestCase {
 
+    public void testCase(){
+        class DD{
+            String t = "101";
+        
+            public void tt(){
+                switch(t) {
+                    case "+":  //<===add hello world
+                        System.out.println("hello");
+                        break;
+                    case "/":   
+                        break;
+                }
+            }
+        }
+        _class _c = _class.of( DD.class);
+        
+        _c.ast().walk(Expression.class, e-> System.out.println(e+ " "+e.getClass() ) );
+        
+        _c.ast().walk(Statement.class, e-> System.out.println(e+ " "+e.getClass() ) );
+        
+        SwitchStmt ss = $stmt.switchStmt().firstIn(DD.class);
+        List<SwitchEntry> ses = ss.getEntries();
+        
+    }
+    
     static class Base{
         public static int V = 100;
         public int val() {
@@ -30,8 +59,8 @@ public class SexprTest extends TestCase {
     
     public void testSuperThis(){
         _class _c = _class.of(Derived.class);
-        $expr.thisExprAny().listIn(_c);
-        $expr.superExprAny().listIn(_c);
+        $expr.thisExpr().listIn(_c);
+        $expr.superExpr().listIn(_c);
     }
     
     public void testGenericExpr(){

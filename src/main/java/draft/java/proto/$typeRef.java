@@ -18,7 +18,7 @@ import java.util.function.Predicate;
  * Template for a Java Type Reference
  */
 public final class $typeRef
-    implements Template<_typeRef>, $proto<_typeRef>, $method.$part, $field.$part {
+    implements Template<_typeRef>, $proto<_typeRef>, $method.$part, $field.$part, $parameter.$part {
 
     /**
      * 
@@ -174,7 +174,7 @@ public final class $typeRef
      * @return 
      */
     public static final List<_typeRef> list( Class clazz ){
-        return any().listIn(clazz);
+        return of().listIn(clazz);
     }
     
     /**
@@ -455,7 +455,7 @@ public final class $typeRef
      * @return 
      */
     public static $typeRef of( Class typeClass ){
-        return of( Ast.typeRef(typeClass) );
+        return $typeRef.of( Ast.typeRef(typeClass) );
     }
 
     /**
@@ -633,11 +633,15 @@ public final class $typeRef
         return null;
     }
     
+    public static $typeRef any(){
+        return of();
+    }
+    
     /**
      * 
      * @return 
      */
-    public static $typeRef any() {
+    public static $typeRef of() {
         return new $typeRef("$type$");
     }
     

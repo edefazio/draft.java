@@ -12,18 +12,18 @@ import junit.framework.TestCase;
 public class SthrowsTest extends TestCase {
     
     public void testThrowCompose(){
-        _throws _th = $throws.any().construct();
+        _throws _th = $throws.of().construct();
         assertTrue( _th.isEmpty());
         
         
         //parameter override
-        _th = $throws.any().construct("$throws$", _throws.of(IOException.class) );
+        _th = $throws.of().construct("$throws$", _throws.of(IOException.class) );
         assertEquals( _throws.of(IOException.class), _th);
         System.out.println(_th ); 
     }
     
     public void testThroMatch(){
-        $throws $ts = $throws.any();
+        $throws $ts = $throws.of();
         class B{
             void m() throws IOException{}       //Yes     
             void r() throws java.io.IOException, URISyntaxException{} //YES

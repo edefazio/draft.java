@@ -41,7 +41,7 @@ public class SconstructorTest extends TestCase {
         assertEquals( 1, $ct.count(TT.class));
         
         //here lets build peice by peice
-        $ct = $constructor.any();
+        $ct = $constructor.of();
         assertEquals( 2, $ct.count(TT.class));
         $ct.$anno(Deprecated.class);
         assertEquals( 1, $ct.count(TT.class));
@@ -155,10 +155,10 @@ public class SconstructorTest extends TestCase {
                 
             }
         }
-        assertEquals(1, $constructor.any().listIn(c.class).size());
-        assertTrue(! $constructor.any().selectFirstIn(c.class).hasParameters());
-        assertTrue($constructor.any().selectFirstIn(c.class).isParameters("()"));
-        assertTrue($constructor.any().selectFirstIn(c.class).isNamed("c"));
+        assertEquals(1, $constructor.of().listIn(c.class).size());
+        assertTrue(! $constructor.of().selectFirstIn(c.class).hasParameters());
+        assertTrue($constructor.of().selectFirstIn(c.class).isParameters("()"));
+        assertTrue($constructor.of().selectFirstIn(c.class).isNamed("c"));
     }
     
     public class A extends RuntimeException {}

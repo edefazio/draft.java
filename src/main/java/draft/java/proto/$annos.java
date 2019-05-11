@@ -21,7 +21,7 @@ import java.util.stream.Collectors;
  */
 public class $annos 
     implements Template<_annos>, $proto<_annos>, $constructor.$part, $method.$part, 
-        $field.$part {
+        $field.$part, $parameter.$part {
 
     /** 
      * List of anno prototypes, note: an empty list means it matches ANY list 
@@ -35,10 +35,18 @@ public class $annos
     Predicate<_annos> constraint = t-> true;
     
     /**
-     * prototype that matches any grouping of annos
+     * 
      * @return 
      */
     public static $annos any(){
+        return of();
+    }
+    
+    /**
+     * prototype that matches any grouping of annos
+     * @return 
+     */
+    public static $annos of(){
         return new $annos();
     }
     
@@ -48,7 +56,16 @@ public class $annos
      * @return 
      */
     public static $annos of( Predicate<_annos> constraint ){
-       return any().constraint(constraint);
+       return of().constraint(constraint);
+    }
+    
+    /**
+     * 
+     * @param _ha
+     * @return 
+     */
+    public static $annos of( _anno._hasAnnos _ha){
+        return new $annos( _ha.getAnnos() ); 
     }
     
     /**

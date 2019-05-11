@@ -19,12 +19,16 @@ import java.util.function.*;
  */
 public class $body implements Template<_body>, $proto<_body>, $constructor.$part, $method.$part{
     
+    public static $body any(){
+        return of();
+    }
+    
     /**
      * ANY body (or lack of body)... so 
      * 
      * @return 
      */
-    public static $body any(){
+    public static $body of(){
         return new $body(); 
     }
     
@@ -50,47 +54,47 @@ public class $body implements Template<_body>, $proto<_body>, $constructor.$part
     
     public static $body of(Expr.Command commandLambda ){
         LambdaExpr le = Expr.lambda(Thread.currentThread().getStackTrace()[2]);
-        return of( le.getBody().toString(Ast.PRINT_NO_COMMENTS ) );
+        return $body.of( le.getBody().toString(Ast.PRINT_NO_COMMENTS ) );
     }
     
     public static $body of(Consumer commandLambda ){
         LambdaExpr le = Expr.lambda(Thread.currentThread().getStackTrace()[2]);
-        return of( le.getBody().toString(Ast.PRINT_NO_COMMENTS ) );
+        return $body.of( le.getBody().toString(Ast.PRINT_NO_COMMENTS ) );
     }
     
     public static $body of(BiConsumer commandLambda ){
         LambdaExpr le = Expr.lambda(Thread.currentThread().getStackTrace()[2]);
-        return of( le.getBody().toString(Ast.PRINT_NO_COMMENTS ) );
+        return $body.of( le.getBody().toString(Ast.PRINT_NO_COMMENTS ) );
     }
     
     public static $body of(Expr.TriConsumer commandLambda ){
         LambdaExpr le = Expr.lambda(Thread.currentThread().getStackTrace()[2]);
-        return of( le.getBody().toString(Ast.PRINT_NO_COMMENTS ) );
+        return $body.of( le.getBody().toString(Ast.PRINT_NO_COMMENTS ) );
     }
     
     public static $body of(Expr.QuadConsumer commandLambda ){
         LambdaExpr le = Expr.lambda(Thread.currentThread().getStackTrace()[2]);
-        return of( le.getBody().toString(Ast.PRINT_NO_COMMENTS ) );
+        return $body.of( le.getBody().toString(Ast.PRINT_NO_COMMENTS ) );
     }
     
     public static <A extends Object, B extends Object> $body of(Function<A,B> commandLambda ){
         LambdaExpr le = Expr.lambda(Thread.currentThread().getStackTrace()[2]);
-        return of( le.getBody().toString(Ast.PRINT_NO_COMMENTS ) );
+        return $body.of( le.getBody().toString(Ast.PRINT_NO_COMMENTS ) );
     }
     
     public static <A extends Object, B extends Object, C extends Object>  $body of(BiFunction<A,B,C> commandLambda ){
         LambdaExpr le = Expr.lambda(Thread.currentThread().getStackTrace()[2]);
-        return of( le.getBody().toString(Ast.PRINT_NO_COMMENTS ) );
+        return $body.of( le.getBody().toString(Ast.PRINT_NO_COMMENTS ) );
     }
     
     public static <A extends Object, B extends Object, C extends Object, D extends Object> $body of(Expr.TriFunction<A,B,C,D> commandLambda ){
         LambdaExpr le = Expr.lambda(Thread.currentThread().getStackTrace()[2]);
-        return of( le.getBody().toString(Ast.PRINT_NO_COMMENTS ) );
+        return $body.of( le.getBody().toString(Ast.PRINT_NO_COMMENTS ) );
     }
     
     public static <A extends Object, B extends Object, C extends Object, D extends Object, E extends Object>  $body of(Expr.QuadFunction<A,B,C,D,E> commandLambda ){
         LambdaExpr le = Expr.lambda(Thread.currentThread().getStackTrace()[2]);
-        return of( le.getBody().toString(Ast.PRINT_NO_COMMENTS ) );
+        return $body.of( le.getBody().toString(Ast.PRINT_NO_COMMENTS ) );
     }
     
     public static $body notImplemented(){

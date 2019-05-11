@@ -25,11 +25,15 @@ public class $modifiers
     implements $proto<_modifiers>, $constructor.$part, $method.$part, $field.$part{
     
     public static $modifiers any(){
+        return of();
+    }
+    
+    public static $modifiers of(){
         return new $modifiers();
     }
     
     public static $modifiers of( Predicate<_modifiers> constraint ){
-        return any().constraint(constraint);
+        return of().constraint(constraint);
     }
     
     public static $modifiers of( _hasModifiers _hm ){

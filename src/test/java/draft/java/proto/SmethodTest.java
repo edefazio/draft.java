@@ -92,7 +92,7 @@ public class SmethodTest extends TestCase {
      * Verify that I can find a $method by a body pattern
      */
     public void testSpecificBody(){
-        $method $m = $method.any().$body(new Object(){ void m(Object $any$) { 
+        $method $m = $method.of().$body(new Object(){ void m(Object $any$) { 
             System.out.println($any$); 
         }});
         
@@ -155,11 +155,11 @@ public class SmethodTest extends TestCase {
         /** Javadoc */ @Deprecated void f();
     }
     public void testAnyPrototype(){
-        assertTrue( $method.any().matches("void noBody();") );
-        assertTrue( $method.any().matches(" public static int someBody(){ return 103;}") );
+        assertTrue( $method.of().matches("void noBody();") );
+        assertTrue( $method.of().matches(" public static int someBody(){ return 103;}") );
         //verify that the any() prototype will list methods with or without body
-        System.out.println( $method.any().listIn(I.class) );
-        assertEquals( 3, $method.any().listIn(I.class).size() );
+        System.out.println( $method.of().listIn(I.class) );
+        assertEquals( 3, $method.of().listIn(I.class).size() );
     }
     
     public void testSimpleMatch(){

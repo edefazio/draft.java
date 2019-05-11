@@ -34,8 +34,8 @@ public class StypeRefTest extends TestCase {
         class C{
             int a;
         }
-        assertEquals(1, $typeRef.any().listIn(C.class).size() );
-        assertTrue($typeRef.any().listSelectedIn(C.class).get(0).is("typeDecl", int.class) );
+        assertEquals(1, $typeRef.of().listIn(C.class).size() );
+        assertTrue($typeRef.of().listSelectedIn(C.class).get(0).is("typeDecl", int.class) );
     }
     
     public void testFindAllTypeReferences(){

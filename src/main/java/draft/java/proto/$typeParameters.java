@@ -29,7 +29,7 @@ public final class $typeParameters
      * @return 
      */
     public static final List<_typeParameters> list(Class clazz){
-        return any().listIn(clazz);
+        return of().listIn(clazz);
     }
     
     /**
@@ -430,11 +430,15 @@ public final class $typeParameters
         return $typeParameters.of(pattern).constraint(constraint).removeIn(_type);
     }
     
+    public static $typeParameters any(){
+        return of();
+    }
+    
     /**
      * Match ANY import
      * @return 
      */
-    public static $typeParameters any(){
+    public static $typeParameters of(){
         return new $typeParameters( t-> true );        
     }
     

@@ -30,6 +30,10 @@ public class $parameters implements Template<_parameters>, $proto<_parameters>,
     Predicate<_parameters> constraint = t-> true;
     
     public static $parameters any(){
+        return of();
+    }
+    
+    public static $parameters of(){
         return new $parameters( _parameters.of() );
     }
         

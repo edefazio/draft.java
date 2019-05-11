@@ -45,7 +45,7 @@ public class $typeUse {
      * @return 
      */
     public static List<Select> listSelected(Class clazz, Class targetClass){
-        return of(targetClass).listSelectedIn(clazz);
+        return $typeUse.of(targetClass).listSelectedIn(clazz);
     }
     
     /**
@@ -56,7 +56,7 @@ public class $typeUse {
      * @return 
      */
     public static List<Select> listSelected(Class clazz, Class targetClass, Predicate<Select> selectConstraint ){
-        return of(targetClass).listSelectedIn(clazz, selectConstraint);
+        return $typeUse.of(targetClass).listSelectedIn(clazz, selectConstraint);
     }
     
     /**
@@ -67,7 +67,7 @@ public class $typeUse {
      * @return 
      */
     public static <N extends _node> List<Select> listSelected( N _n, Class targetClass ){
-        return of(targetClass).listSelectedIn(_n);
+        return $typeUse.of(targetClass).listSelectedIn(_n);
     }
     
     /**
@@ -79,7 +79,7 @@ public class $typeUse {
      * @return 
      */
     public static <N extends _node> List<Select> listSelected( N _n, Class targetClass, Predicate<Select> selectConstraint ){
-        return of(targetClass).listSelectedIn(_n, selectConstraint);
+        return $typeUse.of(targetClass).listSelectedIn(_n, selectConstraint);
     }
     
     /**
@@ -90,7 +90,7 @@ public class $typeUse {
      * @return 
      */
     public static <N extends Node> List<Select> listSelected( N astNode, Class targetClass ){
-        return of(targetClass).listSelectedIn(astNode);
+        return $typeUse.of(targetClass).listSelectedIn(astNode);
     }
     
     /**
@@ -102,7 +102,7 @@ public class $typeUse {
      * @return 
      */
     public static <N extends Node> List<Select> listSelected( N astNode, Class targetClass, Predicate<Select> selectConstraint ){
-        return of(targetClass).listSelectedIn(astNode);
+        return $typeUse.of(targetClass).listSelectedIn(astNode);
     }
     
     /**
@@ -305,11 +305,16 @@ public class $typeUse {
               n.getParentNode().get() instanceof SimpleName ||      
               n.getParentNode().get() instanceof ClassOrInterfaceType) );
     
+    
+    public static final $typeUse any(){
+        return of();
+    }
+    
     /**
      * Matches any 
      * @return the classUse
      */
-    public static final $typeUse any(){        
+    public static final $typeUse of(){        
         return new $typeUse("", $node.of("$classUse$").addConstraint(n -> n.toString().contains(".")), 
             Collections.EMPTY_LIST, 
             $node.of("$classUse$").addConstraint(n -> !n.toString().contains(".") ) ).addConstraint(IS_EXPECTED_NODE_TYPE);

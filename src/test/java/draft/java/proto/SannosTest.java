@@ -18,7 +18,7 @@ import junit.framework.TestCase;
 public class SannosTest extends TestCase {
     
     public void testComposeAny(){
-        $annos $as = $annos.any();
+        $annos $as = $annos.of();
         _annos _as = $as.construct(); //should work fine... empty annos
         assertTrue( _as.isEmpty() );
         

@@ -116,7 +116,7 @@ public class SfTest extends TestCase {
      * only the things you want (to list/update/modify)
      */
     public void testBuild$f(){
-        $field $b = $field.any(); //any field
+        $field $b = $field.of(); //any field
         $b.addConstraint(f-> f.hasAnno(Deprecated.class));
         
         assertFalse( $b.matches("int a") ); //expected Deprecated

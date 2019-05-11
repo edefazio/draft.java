@@ -23,7 +23,7 @@ public final class $import
      * @return 
      */
     public static final List<_import> list(Class clazz){
-        return any().listIn(clazz);
+        return of().listIn(clazz);
     }
     
     /**
@@ -823,11 +823,15 @@ public final class $import
         return $import.of(_import.of(target)).constraint(constraint).removeIn(_type);
     }
     
+    public static $import any(){
+        return of();
+    }
+    
     /**
      * Match ANY import
      * @return 
      */
-    public static $import any(){
+    public static $import of(){
         return new $import( t-> true );        
     }
     

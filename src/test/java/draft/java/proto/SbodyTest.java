@@ -23,10 +23,10 @@ public class SbodyTest extends TestCase {
     }
     
     public void testAnyConstruct(){
-        _body _b = $body.any().construct();
+        _body _b = $body.of().construct();
         assertTrue( _b.isEmpty() );
         
-        _b = $body.any().construct("$body", "{System.out.println(1);}");
+        _b = $body.of().construct("$body", "{System.out.println(1);}");
     }
     
     public void testComposeWith$Label(){        

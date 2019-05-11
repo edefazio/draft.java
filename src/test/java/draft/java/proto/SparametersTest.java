@@ -12,7 +12,7 @@ import junit.framework.TestCase;
 public class SparametersTest extends TestCase {
     
     public void testParametersAny(){
-        $parameters $ps = $parameters.any();
+        $parameters $ps = $parameters.of();
         
         //verify that ANY matches / Selects NO parameters at all
         assertNotNull( $ps.select("") );

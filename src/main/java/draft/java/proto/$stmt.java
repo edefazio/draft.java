@@ -1,7 +1,6 @@
 package draft.java.proto;
 
 import com.github.javaparser.ast.Node;
-import com.github.javaparser.ast.comments.Comment;
 import com.github.javaparser.ast.expr.Expression;
 import com.github.javaparser.ast.stmt.*;
 import com.github.javaparser.printer.PrettyPrinterConfiguration;
@@ -664,8 +663,16 @@ public final class $stmt<T extends Statement>
         return fromStackTrace( ste );
     }
 
-    /** Will match ANY statement, or empty statement*/
+    /**
+     * 
+     * @return 
+     */
     public static $stmt any(){
+        return of();
+    }
+    
+    /** Will match ANY statement, or empty statement*/
+    public static $stmt of(){
         return new $stmt( Statement.class, t-> true );
     }
     
@@ -688,6 +695,15 @@ public final class $stmt<T extends Statement>
         return new $stmt<>(astProto);
     }
      
+    
+    /**
+     * Returns a prototype that matches ANY assertStmt
+     * @return 
+     */
+    public static $stmt<AssertStmt> assertStmt(){
+        return new $stmt( AssertStmt.class, "$assertStmt$" );
+    } 
+    
     /**
      * i.e."assert(1==1);"
      * @param pattern
@@ -706,6 +722,16 @@ public final class $stmt<T extends Statement>
     public static $stmt<AssertStmt> assertStmt(String pattern, Predicate<AssertStmt> constraint) {
         return new $stmt( Stmt.assertStmt(pattern) ).constraint(constraint);
     }
+    
+    
+    
+    /**
+     * Returns a prototype that matches ANY assertStmt
+     * @return 
+     */
+    public static $stmt<BlockStmt> blockStmt(){
+        return new $stmt( BlockStmt.class, "$blockStmt$" );
+    } 
     
     /**
      * NOTE: If you omit the opening and closing braces { }, they will be added
@@ -743,6 +769,15 @@ public final class $stmt<T extends Statement>
         return new $stmt( Stmt.block(pattern)).constraint(constraint);
     }
     
+    
+    /**
+     * Returns a prototype that matches ANY assertStmt
+     * @return 
+     */
+    public static $stmt<BreakStmt> breakStmt(){
+        return new $stmt( BreakStmt.class, "$breakStmt$" );
+    } 
+    
     /**
      * i.e."break;" or "break outer;"
      * @param constraint
@@ -772,6 +807,15 @@ public final class $stmt<T extends Statement>
     public static $stmt<BreakStmt> breakStmt(String pattern, Predicate<BreakStmt> constraint) {
         return new $stmt( Stmt.breakStmt(pattern)).constraint(constraint);
     }
+    
+    
+    /**
+     * Returns a prototype that matches ANY continueStmt
+     * @return 
+     */
+    public static $stmt<ContinueStmt> continueStmt(){
+        return new $stmt( ContinueStmt.class, "$continueStmt$" );
+    } 
     
     /** 
      * i.e."continue outer;" 
@@ -803,6 +847,14 @@ public final class $stmt<T extends Statement>
         return new $stmt( Stmt.continueStmt(pattern)).constraint(constraint);
     }
     
+    
+    /**
+     * Returns a prototype that matches ANY assertStmt
+     * @return 
+     */
+    public static $stmt<DoStmt> doStmt(){
+        return new $stmt( DoStmt.class, "$DoStmt$" );
+    } 
     
     /** 
      * i.e."do{ System.out.println(1); }while( a < 100 );" 
@@ -841,6 +893,15 @@ public final class $stmt<T extends Statement>
         return new $stmt( new EmptyStmt() );
     }
     
+    
+    /**
+     * Returns a prototype that matches ANY assertStmt
+     * @return 
+     */
+    public static $stmt<ExplicitConstructorInvocationStmt> ctorInvocationStmt(){
+        return new $stmt( ExplicitConstructorInvocationStmt.class, "$ctorInvocationStmt$" );
+    } 
+    
     /** 
      * i.e."this(100,2900);" 
      * @param constraint
@@ -869,6 +930,15 @@ public final class $stmt<T extends Statement>
      */
     public static $stmt<ExplicitConstructorInvocationStmt> ctorInvocationStmt(String pattern, Predicate<ExplicitConstructorInvocationStmt> constraint) {
         return new $stmt( Stmt.ctorInvocationStmt(pattern)).constraint(constraint);
+    }
+    
+
+    /** 
+     * i.e."s += t;" 
+     * @return 
+     */
+    public static $stmt<ExpressionStmt> expressionStmt() {
+        return new $stmt( ExpressionStmt.class, "$expressionStmt$");
     }
     
     /** 
@@ -902,6 +972,14 @@ public final class $stmt<T extends Statement>
     }
 
     /** 
+     * i.e."s += t;" 
+     * @return 
+     */
+    public static $stmt<ForStmt> forStmt( ) {
+        return new $stmt( ForStmt.class, "$forStmt$");
+    }
+    
+    /** 
      * i.e."for(int i=0; i<100;i++) {...}" 
      * @param constraint
      * @return 
@@ -930,8 +1008,15 @@ public final class $stmt<T extends Statement>
     public static $stmt<ForStmt> forStmt( String pattern, Predicate<ForStmt> constraint ) {
         return new $stmt( Stmt.forStmt(pattern)).constraint(constraint);
     }
-    
 
+    /** 
+     * i.e."s += t;" 
+     * @return 
+     */
+    public static $stmt<ForEachStmt> forEachStmt() {
+        return new $stmt( ForEachStmt.class, "$forEachStmt$");
+    }
+    
     /** 
      * i.e."for(String element:arr){...}" 
      * @param constraint
@@ -964,6 +1049,14 @@ public final class $stmt<T extends Statement>
 
     /** 
      * i.e."if(a==1){...}" 
+     * @return 
+     */
+    public static $stmt<IfStmt> ifStmt( ) {
+        return new $stmt( IfStmt.class, "$ifStmt$");
+    }
+    
+    /** 
+     * i.e."if(a==1){...}" 
      * @param constraint
      * @return 
      */
@@ -991,8 +1084,15 @@ public final class $stmt<T extends Statement>
     public static $stmt<IfStmt> ifStmt( String pattern, Predicate<IfStmt> constraint) {
         return new $stmt( Stmt.ifStmt(pattern)).constraint(constraint);
     }
-    
 
+    /** 
+     * i.e."outer:   start = getValue();" 
+     * @return 
+     */
+    public static $stmt<LabeledStmt> labeledStmt( ) {
+        return new $stmt( LabeledStmt.class, "$labeledStmt$");
+    }
+    
     /** 
      * i.e."outer:   start = getValue();" 
      * @param constraint
@@ -1020,6 +1120,14 @@ public final class $stmt<T extends Statement>
      */
     public static $stmt<LabeledStmt> labeledStmt( String pattern, Predicate<LabeledStmt> constraint) {
         return new $stmt( Stmt.labeledStmt(pattern)).constraint(constraint);
+    }
+    
+    /**
+     * i.e."class C{ int a, b; }"
+     * @return the AST implementation
+     */
+    public static $stmt<LocalClassDeclarationStmt> localClassStmt() {
+        return new $stmt( LocalClassDeclarationStmt.class, "$localClass$");
     }
     
     
@@ -1055,6 +1163,14 @@ public final class $stmt<T extends Statement>
         return new $stmt( Stmt.localClass(pattern)).constraint(constraint);
     }
 
+    /**
+     * 
+     * @return 
+     */
+    public static $stmt<ReturnStmt> returnStmt() {
+        return new $stmt(ReturnStmt.class, "$returnStmt$");
+    }
+    
     /** 
      * i.e."return VALUE;" 
      * @param constraint
@@ -1086,6 +1202,14 @@ public final class $stmt<T extends Statement>
 
     /**
      * 
+     * @return 
+     */
+    public static $stmt<SwitchStmt> switchStmt() {
+        return new $stmt(SwitchStmt.class, "$switchStmt$");
+    }
+    
+    /**
+     * 
      * @param pattern
      * @return 
      */
@@ -1112,6 +1236,14 @@ public final class $stmt<T extends Statement>
         return new $stmt( Stmt.switchStmt("switch(a){ default : a(); }"))
                 .$(Stmt.of("switch(a){ default : a(); }"), "any")
                 .constraint(constraint);
+    }
+    
+    /**
+     * 
+     * @return 
+     */
+    public static $stmt<SynchronizedStmt> synchronizedStmt() {
+        return new $stmt(SynchronizedStmt.class, "$synchronizedStmt$" );
     }
     
     /**
@@ -1146,6 +1278,14 @@ public final class $stmt<T extends Statement>
     
     /**
      * 
+     * @return 
+     */
+    public static $stmt<ThrowStmt> throwStmt( ) {
+        return new $stmt(ThrowStmt.class, "$throwStmt$");
+    }
+    
+    /**
+     * 
      * @param constraint
      * @return 
      */
@@ -1172,6 +1312,14 @@ public final class $stmt<T extends Statement>
         return new $stmt( Stmt.throwStmt(pattern)).constraint(constraint);
     }
 
+    /**
+     * 
+     * @return 
+     */
+    public static $stmt<TryStmt> tryStmt( ) {
+        return new $stmt(TryStmt.class, "$tryStmt$" );
+    }
+    
     /** 
      * i.e."try{ clazz.getMethod("fieldName"); }" 
      * @param constraint
@@ -1202,6 +1350,14 @@ public final class $stmt<T extends Statement>
         return new $stmt( Stmt.tryStmt(pattern)).constraint(constraint);
     }
     
+    /**
+     * 
+     * @return 
+     */
+    public static $stmt<WhileStmt> whileStmt( ) {
+        return new $stmt(WhileStmt.class, "$whileStmt$");
+    }
+    
     /** 
      * i.e."while(i< 1) { ...}"
      * @param pattern
@@ -1230,12 +1386,6 @@ public final class $stmt<T extends Statement>
         return new $stmt( Stmt.whileStmt("while(true){a();}") ).
                 $(Stmt.whileStmt("while(true){a();}").toString(), "any").constraint(constraint);
     }
-    
-    /**
-     * IF the statement has a comment, it is stored separately, because,
-     * in situations where we are composing the statement, we want to construct the
-     */
-    //public Stencil commentPattern;
 
     /**
      * Optional matching predicate applied to matches to ensure 
@@ -1249,6 +1399,16 @@ public final class $stmt<T extends Statement>
     /** the class of the statement */
     public Class<T> statementClass;
 
+    private $stmt( Class<T> statementClass ){
+        this( statementClass, "$any$"); 
+    }
+    
+    private $stmt( Class<T> statementClass, String pattern){
+        this.constraint = t->true;
+        this.statementClass = statementClass;
+        this.stmtPattern = Stencil.of(pattern);
+    }
+    
     private $stmt( Class<T> statementClass, Predicate<T> constraint ){
         this.statementClass = statementClass;
         this.stmtPattern = Stencil.of("$any$");

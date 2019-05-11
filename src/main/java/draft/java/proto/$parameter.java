@@ -19,6 +19,11 @@ import java.util.stream.Collectors;
 public class $parameter implements Template<_parameter>, $proto<_parameter> {
 
     /**
+     * the component parts of a $parameter
+     */
+    public interface $part{}
+    
+    /**
      * 
      * @param clazz
      * @param pattern
@@ -132,7 +137,7 @@ public class $parameter implements Template<_parameter>, $proto<_parameter> {
      * @return 
      */
     public static List<_parameter> list(Class clazz){
-        return any().listIn(clazz);
+        return of().listIn(clazz);
     }
     
     /**
@@ -142,7 +147,7 @@ public class $parameter implements Template<_parameter>, $proto<_parameter> {
      * @return 
      */
     public static <N extends _node> List<_parameter> list(N _n){
-        return any().listIn(_n);
+        return of().listIn(_n);
     }
     
     /**
@@ -264,20 +269,92 @@ public class $parameter implements Template<_parameter>, $proto<_parameter> {
     
     /** Name of the parameter */
     //public $component<String> name = new $component("$name$", t->true);
-    public $id name = $id.any();
+    public $id name = $id.of();
     
     /** the underlying type of the parameter */
-    public $typeRef type;
+    public $typeRef type = $typeRef.of();
     
     /** annos prototype */
     public $annos annos = new $annos();
+    
+    /**
+     * <PRE>
+     * This signifies that :
+     * when matching the parameter MUST be final
+     * when composing the parameter will be made final
+     * </PRE>
+     */
+    public static class FINAL_PARAMETER implements $part { }
+    
+    /**
+     * <PRE>
+     * This signifies that :
+     * when matching the parameter MUST be a Var Arg
+     * when composing the parameter will be made a Var Arg
+     * </PRE>
+     */
+    public static class VAR_ARG_PARAMETER implements $part { }
+    
+    /**
+     * Build a prototype of a parameter accepting these parts
+     * @param parts
+     * @return 
+     */
+    public static $parameter of( $part... parts ){
+        return new $parameter(parts);
+    }
+
+    /**
+     * Build a prototype of a parameter accepting these parts
+     * @param part the single part of the parameter
+     * @return 
+     */
+    public static $parameter of( $part part ){
+        $part[] parts = new $part[]{part};
+        return new $parameter(parts);
+    }
+    
+    
+    public $parameter( $part...parts){
+        for(int i=0;i<parts.length;i++){
+            if( parts[i] instanceof $id){
+                name = ($id)parts[i];
+            }
+            else if( parts[i] instanceof $typeRef){
+                type = ($typeRef)parts[i];
+            }
+            else if( parts[i] instanceof $annos ){
+                annos = ($annos)parts[i];
+            }
+            else if( parts[i] instanceof $anno){
+                annos.$annosList.add( ($anno)parts[i]);
+            } 
+            else if(parts[i] instanceof FINAL_PARAMETER){
+                this.isFinal = true;
+            }
+            else if(parts[i] instanceof VAR_ARG_PARAMETER){
+                this.isVarArg = true;
+            }
+            else{
+                throw new DraftException("unable to process part ["+i+"] "+ parts[i]+" not of expected type");
+            }
+        }
+    }
     
     /**
      * 
      * @return 
      */
     public static $parameter any(){
-        return new $parameter( $typeRef.any( ), $id.any() );
+        return of();
+    }
+    
+    /**
+     * 
+     * @return 
+     */
+    public static $parameter of(){
+        return new $parameter( $typeRef.of( ), $id.of() );
     }
     
     
@@ -300,7 +377,7 @@ public class $parameter implements Template<_parameter>, $proto<_parameter> {
     }
     
     public $parameter( $typeRef type, $id name ){
-        this( $annos.any(), type, name );
+        this( $annos.of(), type, name );
     }
     
     
