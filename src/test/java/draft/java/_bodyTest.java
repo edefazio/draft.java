@@ -116,7 +116,7 @@ public class _bodyTest extends TestCase {
         assertNotNull(_m.getBody());
         assertFalse( _m.hasBody() );
         assertFalse(_m.getBody().isImplemented());
-        assertTrue(_m.getBody().isEmpty());
+        //assertTrue(_m.getBody().isEmpty());
         //assertTrue(_m.getBody().is( null )); //you can ask
         
         assertNotNull(_sm.getBody());

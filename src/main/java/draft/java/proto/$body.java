@@ -98,7 +98,11 @@ public class $body implements Template<_body>, $proto<_body>, $constructor.$part
     }
     
     public static $body notImplemented(){
-        return new $body();
+        return new $body().constraint( b-> !b.isImplemented());
+    }
+    
+    public static $body empty(){
+        return new $body().constraint(b -> b.isEmpty() );
     }
     
     public Predicate<_body> constraint = t->true;
@@ -113,6 +117,11 @@ public class $body implements Template<_body>, $proto<_body>, $constructor.$part
      */
     private $body( ){
         this.isImplemented = false;        
+    }
+    
+    
+    public $body( LambdaExpr le ){
+        this( _body.of(le.getBody().toString(Ast.PRINT_NO_COMMENTS )) );
     }
     
     /**
@@ -538,11 +547,15 @@ public class $body implements Template<_body>, $proto<_body>, $constructor.$part
         astRootNode.walk(Node.class, n->{
             if(n instanceof NodeWithBlockStmt){
                 Select sel = select( (NodeWithBlockStmt)n );
-                _bodyActionFn.accept( sel.body );
+                if( sel != null ){
+                    _bodyActionFn.accept( sel.body );
+                }
             }
             if(n instanceof NodeWithOptionalBlockStmt){
                 Select sel = select( (NodeWithOptionalBlockStmt)n );
-                _bodyActionFn.accept( sel.body );
+                if( sel != null){
+                    _bodyActionFn.accept( sel.body );
+                }
             }            
         });
         return astRootNode;

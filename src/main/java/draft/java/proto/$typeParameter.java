@@ -21,6 +21,10 @@ public class $typeParameter
     public $id name = $id.of();
     
     
+    public static $typeParameter any(){
+        return null;
+    }
+    
     public $typeParameter(_typeParameter _tp){
         as = $annos.of(_tp);
         name = $id.of(_tp.getName() );

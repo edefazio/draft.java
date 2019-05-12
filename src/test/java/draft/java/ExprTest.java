@@ -6,6 +6,7 @@ import com.github.javaparser.ast.comments.BlockComment;
 import com.github.javaparser.ast.comments.Comment;
 import com.github.javaparser.ast.comments.JavadocComment;
 import com.github.javaparser.ast.comments.LineComment;
+import com.github.javaparser.ast.expr.DoubleLiteralExpr;
 import com.github.javaparser.ast.expr.LambdaExpr;
 import com.github.javaparser.ast.expr.Name;
 import com.github.javaparser.ast.expr.ObjectCreationExpr;
@@ -23,6 +24,13 @@ import java.util.*;
 @Ast.cache
 public class ExprTest extends TestCase {
 
+    
+    
+    public void testByteShort(){
+        StaticJavaParser.parseExpression("(byte)b");
+        StaticJavaParser.parseExpression("(short)s");
+    }
+    
     public void testUnary(){
         UnaryExpr ue = Expr.unary( ()->!true );
         assertEquals( Expr.of("!true"), ue);

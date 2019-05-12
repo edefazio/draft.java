@@ -34,12 +34,19 @@ public class $annos
      */
     Predicate<_annos> constraint = t-> true;
     
+    
     /**
      * 
      * @return 
      */
     public static $annos any(){
         return of();
+    }
+    
+    /**
+     * Entities that have NO annotations applied to them */
+    public static $annos none(){
+        return of().constraint(as -> as.isEmpty());
     }
     
     /**

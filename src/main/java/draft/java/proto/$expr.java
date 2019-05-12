@@ -5,6 +5,7 @@ import com.github.javaparser.ast.expr.*;
 import draft.*;
 import draft.java.*;
 import draft.java._model._node;
+import java.text.NumberFormat;
 
 import java.util.*;
 import java.util.function.BiConsumer;
@@ -2217,7 +2218,7 @@ public final class $expr <T extends Expression>
     public boolean matches( String...expression ){
         return select( expression) != null;
     }
-
+    
     /**
      * 
      * @param astExpr
@@ -2238,6 +2239,80 @@ public final class $expr <T extends Expression>
     }
 
     /**
+     * A local number format we can use to compare number literals...
+     * we need this because number can have different syntax
+     * 
+     */
+    private static final NumberFormat NF = NumberFormat.getInstance();
+    
+    /**
+     * Compare (2) Strings that represent numbers to see if they represent the
+     * SAME number...
+     * <PRE>
+     * NOTE: this is useful because sometimes we 
+     * use BINARY notation to represent numbers :  "0b101001010"
+     * use HEX notation to represent numbers :  "0xDEADBEEF"
+     * 
+     * use optional postfixes on numbers (L/l for long, D/d for double, F/f for float)
+     * so we CAN'T JUST compare the string values.
+     * 
+     * </PRE>
+     * 
+     * NOTE: only public to allow for testing (used internally)
+     * @param expected
+     * @param actual
+     * @return 
+     */
+    public static boolean compareNumberLiterals( String expected, String actual ){
+        Number ex = parseNumber(expected);
+        Number act = parseNumber(actual);
+        if( ex.equals( act ) ){
+            return true;
+        }
+        if( ex.getClass() == act.getClass() ){ //botht he same class
+            return false;
+        }
+        if( ex instanceof Long || ex instanceof Integer ){
+            Long exl = ex.longValue();
+            Long actL = act.longValue();
+            return exl.equals(actL);
+        }
+        return false;
+    }
+    
+    /**
+     * Parses and returns the number from the String
+     * 
+     * NOTE this is public for testing, but only really used internally
+     * @param str
+     * @return 
+     */
+    public static Number parseNumber( String s ){
+        String str = s.trim();
+        if(str.startsWith("0x") || str.startsWith("0X") ){
+            if( str.endsWith("L") || str.endsWith("l")){
+                //System.out.println("parsing hex long"+ str);    
+                return Long.parseLong(str.substring(2, str.length()-1), 16);
+            }
+            //System.out.println("parsing hex int "+ str);
+            return Integer.parseInt(str.substring(2), 16);
+        }
+        if( str.startsWith("0b")|| str.startsWith("0B")){
+            if( str.endsWith("L") || str.endsWith("l") ){
+                String subSt = str.substring(2, str.length() -1);
+                //System.out.println( subSt +" "+ subSt.length() );
+                return Long.parseUnsignedLong(subSt, 2);
+            }
+            return Integer.parseInt(str.substring(2), 2);
+        }        
+        try{
+            return NF.parse(str);
+        }catch( Exception e){
+            throw new RuntimeException(""+e);
+        }
+    }
+    
+    /**
      * 
      * @param astExpr
      * @return 
@@ -2246,19 +2321,29 @@ public final class $expr <T extends Expression>
         if( expressionClass.isAssignableFrom(astExpr.getClass()) 
                 && constraint.test( (T)astExpr)){
             //slight modification..
-            if( astExpr instanceof LiteralStringValueExpr ) {
+            if( (astExpr instanceof IntegerLiteralExpr 
+                || astExpr instanceof DoubleLiteralExpr 
+                || astExpr instanceof LongLiteralExpr)  
+                    && exprPattern.isFixedText()) {       
+                
                 //there is an issue here the lowercase and uppercase Expressions 1.23d =/= 1.23D (which they are equivalent
                 //need to handle postfixes 1.2f, 2.3d, 1000l
                 //need to handle postfixes 1.2F, 2.3D, 1000L
-            }
-            if( astExpr instanceof DoubleLiteralExpr ){
-                DoubleLiteralExpr dle = (DoubleLiteralExpr)astExpr;
+                String st = astExpr.toString(Ast.PRINT_NO_COMMENTS);
+                if( compareNumberLiterals(exprPattern.getTextBlanks().getFixedText(), st) ){
+                    return new Select(astExpr, new Tokens());
+                }
+                //Number expected = parseNumber( exprPattern.getTextBlanks().getFixedText() );
+                //Number actual = parseNumber( ((IntegerLiteralExpr) astExpr).getValue() );
+                //if( Objects.equals( expected,actual) ){
+                //    return new Select(astExpr, new Tokens());
+                //}                    
+                return null;                
             }
             Tokens ts = exprPattern.deconstruct(astExpr.toString(Ast.PRINT_NO_COMMENTS) );
             if( ts != null ){
                 return new Select(astExpr, ts);
-                //return $args.of(ts);
-            }
+            }            
         }
         return null;        
     }
@@ -2276,6 +2361,7 @@ public final class $expr <T extends Expression>
      * @param clazz
      * @return 
      */
+    @Override
     public T firstIn(Class clazz){
         return firstIn( _type.of(clazz));
     }

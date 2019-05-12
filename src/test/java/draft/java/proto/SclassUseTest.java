@@ -1,7 +1,5 @@
 package draft.java.proto;
 
-import draft.java.Ast;
-import draft.java.Expr;
 import draft.java._class;
 import java.util.HashMap;
 import java.util.Map;
@@ -191,10 +189,6 @@ public class SclassUseTest extends TestCase {
         $typeUse.replace(_c, Base.class, Replace.class);
         $typeUse.replace(_c, Inter.class, Outer.class);
         $typeUse.replace(_c, Ann.class, Stan.class);
-        
-        
-        
-        
         
         /*
         $node $n = new $node($nodeTest.Ann.class.getCanonicalName());

@@ -1,22 +1,241 @@
 package draft.java.proto;
 
 import com.github.javaparser.StaticJavaParser;
+import com.github.javaparser.ast.expr.DoubleLiteralExpr;
 import com.github.javaparser.ast.expr.Expression;
 import com.github.javaparser.ast.expr.IntegerLiteralExpr;
+import com.github.javaparser.ast.expr.LongLiteralExpr;
 import com.github.javaparser.ast.stmt.Statement;
 import com.github.javaparser.ast.stmt.SwitchEntry;
 import com.github.javaparser.ast.stmt.SwitchStmt;
+import draft.java.Ast;
 import draft.java.Expr;
 import draft.java._class;
+import java.text.NumberFormat;
 import junit.framework.TestCase;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Predicate;
+import static junit.framework.TestCase.assertEquals;
 import static junit.framework.TestCase.assertNotNull;
 
 public class SexprTest extends TestCase {
 
+    public static final NumberFormat NF = NumberFormat.getInstance();
+    
+    
+    public void testNumberLiteralsFloatDouble(){
+        class AClass{
+            float ff = 3.14f;
+            float fF = 3.14F;
+            double d = 3.14;
+            double dd = 3.14d;
+            double dD = 3.14D;            
+        }
+        //doesnt matter if you use the F/f/d/D postfixes, we can match
+        assertEquals(5, $expr.of("3.14").count(AClass.class));
+        assertEquals(5, $expr.of("3.14f").count(AClass.class));
+        assertEquals(5, $expr.of("3.14F").count(AClass.class));
+        assertEquals(5, $expr.of("3.14d").count(AClass.class));
+        assertEquals(5, $expr.of("3.14D").count(AClass.class));        
+    }
+    
+    public void testNumLiteralsIntsHexBin(){
+        class IntClass{
+            int i = 1;
+            int ib = 0b1;
+            int ibz = 0b01;
+            int ih = 0x1;
+            int ihz = 0x01;
+        }
+        assertEquals(5, $expr.of("1").count(IntClass.class));
+        assertEquals(5, $expr.of("0b1").count(IntClass.class));
+        assertEquals(5, $expr.of("0b01").count(IntClass.class));
+        assertEquals(5, $expr.of("0x1").count(IntClass.class));
+        assertEquals(5, $expr.of("0x01").count(IntClass.class));        
+    }
+    
+    public void testNumLiteralsLongsHexBin(){
+        class LongClass{
+            long l = 1;
+            long lb = 0b1;
+            long lbz = 0b01;
+            long lh = 0x1;
+            long lhz = 0x01;
+            
+            long lL = 1L;
+            long lLb = 0b1L;
+            long lLbz = 0b01L;
+            long lLh = 0x1L;
+            long lLhz = 0x01L;
+            
+            
+            long ll = 1L;
+            long llb = 0b1L;
+            long llbz = 0b01L;
+            long llh = 0x1L;
+            long llhz = 0x01L;
+        }
+        assertEquals(5, $expr.of("1").count(LongClass.class));
+        assertEquals(5, $expr.of("0b1").count(LongClass.class));
+        assertEquals(5, $expr.of("0b01").count(LongClass.class));
+        assertEquals(5, $expr.of("0x1").count(LongClass.class));
+        assertEquals(5, $expr.of("0x01").count(LongClass.class));        
+        
+        assertEquals(10, $expr.of("1L").count(LongClass.class));
+        assertEquals(10, $expr.of("0b1L").count(LongClass.class));
+        assertEquals(10, $expr.of("0b01L").count(LongClass.class));
+        assertEquals(10, $expr.of("0x1L").count(LongClass.class));
+        assertEquals(10, $expr.of("0x01L").count(LongClass.class));        
+        
+        assertEquals(10, $expr.of("1l").count(LongClass.class));
+        assertEquals(10, $expr.of("0b1l").count(LongClass.class));
+        assertEquals(10, $expr.of("0b01l").count(LongClass.class));
+        assertEquals(10, $expr.of("0x1l").count(LongClass.class));
+        assertEquals(10, $expr.of("0x01l").count(LongClass.class));
+    }
+    
+    public void testLiteralsWithPrefix(){
+        
+        
+        Number f2 = $expr.parseNumber("3.14F");
+        Number f3 = $expr.parseNumber("3.14f");
+        
+        Number d = $expr.parseNumber("3.14");
+        Number d1 = $expr.parseNumber("3.14d");
+        Number d2 = $expr.parseNumber("3.14D");
+        
+        assertEquals( f2, f3);        
+        assertEquals( d1, d2);
+        
+        int one = 1;
+        int hex = 0x01;
+        int Hex = 0X01;
+        int binary = 0b1;
+        int Binary = 0B1;
+        
+         
+        int ihex = 0xFFFFFFFF;
+        long lhex = 0xFFFFFFFFFFFFFFFFL;
+        
+        int ibin = 0b11111111111111111111111111111111;
+        long lbin = 0b1111111111111111111111111111111111111111111111111111111111111111L;
+        assertEquals( hex, one);
+        assertEquals( one, binary);
+        assertEquals( hex, binary);
+        assertEquals( Hex, binary);
+        assertEquals( Hex, Binary);
+        assertEquals( Hex, one);
+        assertEquals( Binary, binary);
+        
+        assertTrue( $expr.compareNumberLiterals( "1", "0x1"));
+        assertTrue( $expr.compareNumberLiterals( "1", "0X1"));
+        assertTrue( $expr.compareNumberLiterals( "1", "0b1"));
+        assertTrue( $expr.compareNumberLiterals( "1", "0B1"));
+        
+        assertTrue( $expr.compareNumberLiterals( "15", "0xF"));
+        assertTrue( $expr.compareNumberLiterals( "15", "0XF"));
+        
+        //assertEquals( 1, $expr.parseNumber("0x1"));
+        
+        //assertEquals( 1, $expr.parseNumber("0x1"));
+        //assertEquals( 15, $expr.parseNumber("0xF"));
+        //assertEquals( 1, $expr.parseNumber("0x01")); 
+        //assertEquals( 1, $expr.parseNumber("0b01"));
+        
+        assertEquals( $expr.parseNumber("0x01"), $expr.parseNumber("0b01") );
+        
+        System.out.println( $expr.parseNumber("1").getClass() );
+        System.out.println( $expr.parseNumber("0x01").getClass() );
+        
+        //assertEquals( $expr.parseNumber("0x01"), $expr.parseNumber("1") );
+        //assertEquals( $expr.parseNumber("0X01"), $expr.parseNumber("0B01") );
+        
+        
+        
+        IntegerLiteralExpr eone = new IntegerLiteralExpr("1");
+        IntegerLiteralExpr ehex = new IntegerLiteralExpr("0x01");
+        IntegerLiteralExpr ebin = new IntegerLiteralExpr("0b01");
+        IntegerLiteralExpr eHex = new IntegerLiteralExpr("0X01");
+        IntegerLiteralExpr eBin = new IntegerLiteralExpr("0B01");
+        
+        $expr<IntegerLiteralExpr> $one = $expr.intLiteral("1");
+        $expr<IntegerLiteralExpr> $hex = $expr.intLiteral("0x01");
+        $expr<IntegerLiteralExpr> $bin = $expr.intLiteral("0b01");
+        $expr<IntegerLiteralExpr> $Hex = $expr.intLiteral("0X01");
+        $expr<IntegerLiteralExpr> $Bin = $expr.intLiteral("0B01");
+        
+        assertTrue($one.matches("1"));
+        assertTrue($one.matches("0x01"));
+        assertTrue($one.matches("0b01"));
+        assertTrue($one.matches("0X01"));
+        assertTrue($one.matches("0B01"));
+        
+        
+        assertTrue($hex.matches("1"));
+        assertTrue($hex.matches("0x01"));
+        assertTrue($hex.matches("0b01"));
+        assertTrue($hex.matches("0X01"));
+        assertTrue($hex.matches("0B01"));
+        
+        assertTrue($bin.matches("1"));
+        assertTrue($bin.matches("0x01"));
+        assertTrue($bin.matches("0b01"));        
+        assertTrue($bin.matches("0X01"));
+        assertTrue($bin.matches("0B01"));        
+        
+        assertTrue($Hex.matches("1"));
+        assertTrue($Hex.matches("0x01"));
+        assertTrue($Hex.matches("0b01"));
+        assertTrue($Hex.matches("0X01"));
+        assertTrue($hex.matches("0B01"));
+        
+        assertTrue($Bin.matches("1"));
+        assertTrue($Bin.matches("0x01"));
+        assertTrue($Bin.matches("0b01"));        
+        assertTrue($Bin.matches("0X01"));
+        assertTrue($Bin.matches("0B01"));                
+    }
+    
+    public void testFloatAndDouble(){
+        //assertEquals( new DoubleLiteralExpr("3.14F"), new DoubleLiteralExpr("3.14f") );
+        
+        $expr<DoubleLiteralExpr>d = $expr.of( new DoubleLiteralExpr("3.14") );
+        $expr<DoubleLiteralExpr>dd = $expr.of( new DoubleLiteralExpr("3.14d") );
+        $expr<DoubleLiteralExpr>dD = $expr.of( new DoubleLiteralExpr("3.14D"));
+        
+        assertTrue( d.matches("3.14") );
+        assertTrue( d.matches("3.14d") );
+        assertTrue( d.matches("3.14D") );
+        
+        assertTrue( dd.matches("3.14") );
+        assertTrue( dd.matches("3.14d") );
+        assertTrue( dd.matches("3.14D") );
+        
+        assertTrue( dD.matches("3.14") );
+        assertTrue( dD.matches("3.14d") );
+        assertTrue( dD.matches("3.14D") );
+        
+        
+        $expr<DoubleLiteralExpr>f = $expr.of( new DoubleLiteralExpr("3.14") );
+        $expr<DoubleLiteralExpr>fd = $expr.of( new DoubleLiteralExpr("3.14f") );
+        $expr<DoubleLiteralExpr>fD = $expr.of( new DoubleLiteralExpr("3.14F"));
+        
+        assertTrue( d.matches("3.14") );
+        assertTrue( d.matches("3.14f") );
+        assertTrue( d.matches("3.14F") );
+        
+        assertTrue( dd.matches("3.14") );
+        assertTrue( dd.matches("3.14f") );
+        assertTrue( dd.matches("3.14F") );
+        
+        assertTrue( dD.matches("3.14") );
+        assertTrue( dD.matches("3.14f") );
+        assertTrue( dD.matches("3.14F") );        
+    }
+    
+    
     public void testCase(){
         class DD{
             String t = "101";
@@ -187,8 +406,23 @@ public class SexprTest extends TestCase {
         assertTrue( $expr.unary("!$var$").matches("!isDead"));
         assertTrue($expr.varDecl("int $var$").matches("int x"));
 
-        assertTrue( $expr.of("0b1010000101000101101000010100010110100001010001011010000101000101L")
-                .matches("0b1010000101000101101000010100010110100001010001011010000101000101L"));
+        //assertEquals(0b1010000101000101101000010100010110100001010001011010000101000101L, 
+        //        0b1010000101000101101000010100010110100001010001011010000101000101L);
+        
+        //Long.parseUnsignedLong("1010000101000101101000010100010110100001010001011010000101000101", 2);
+        
+        //Long.parseLong("1010000101000101101000010100010110100001010001011010000101000101", 2);
+        
+        $expr $e = $expr.of("0b0010000101000101101000010100010110100001010001011010000101000101L");
+        assertEquals( $e.expressionClass, LongLiteralExpr.class);
+        System.out.println("PATTERN" + $e.exprPattern );
+        
+        LongLiteralExpr lle = (LongLiteralExpr)Expr.of("0b0010000101000101101000010100010110100001010001011010000101000101L");
+        System.out.println("VALUE  " + lle.getValue() );
+        assertTrue( $e.matches(lle) );
+        assertTrue( 
+            $expr.of("0b0010000101000101101000010100010110100001010001011010000101000101L")
+            .matches("0b0010000101000101101000010100010110100001010001011010000101000101L"));
     }
 
     public void testSelect(){

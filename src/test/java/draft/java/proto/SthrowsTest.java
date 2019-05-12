@@ -11,6 +11,20 @@ import junit.framework.TestCase;
  */
 public class SthrowsTest extends TestCase {
     
+    public void testThrowsNone(){
+        
+        class TTTT{
+            void a(){}
+            void b(){}
+            void m() throws IOException{}       //Yes     
+            void r() throws java.io.IOException, URISyntaxException{} //YES
+            void f() throws URISyntaxException{} //YES
+            void g() throws RuntimeException{} //YES            
+        }
+        assertEquals(2, $throws.none().count(TTTT.class));
+        
+    }
+    
     public void testThrowCompose(){
         _throws _th = $throws.of().construct();
         assertTrue( _th.isEmpty());

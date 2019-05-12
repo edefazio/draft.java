@@ -360,11 +360,15 @@ public final class _body implements _model {
     }
 
     /**
-     * Is the body empty "{}" (or non existent like "void m();" )
+     * <PRE>
+     * Is the body empty "{}" 
+     * NOTE: NOT the same as Not implemented (i.e. like abstract methods:
+     * "public abstract void m();")
+     * </PRE>
      * @return 
      */
     public boolean isEmpty() {
-        return !isImplemented() || ast().isEmpty();
+        return isImplemented() && ast().isEmpty();
     }
 
     /**
@@ -504,7 +508,7 @@ public final class _body implements _model {
         default T add(String... statements) {            
             BlockStmt bs = Ast.blockStmt(statements);
             
-            if( !this.getBody().isImplemented() && bs.getStatements().size() == 0 ){ //empty body
+            if( !this.getBody().isImplemented() && bs.getStatements().isEmpty() ){ //empty body
                 this.setBody("{}");
             }
             //organize orphan comments

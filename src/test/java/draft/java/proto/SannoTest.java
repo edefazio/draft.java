@@ -9,6 +9,15 @@ import junit.framework.TestCase;
 
 public class SannoTest extends TestCase {
  
+    public void testStaticConvenience(){
+        @Deprecated
+        class GHJ{
+            @Deprecated int i;
+        }
+        assertEquals( 2, $anno.list(GHJ.class).size());        
+        $anno.forEach(GHJ.class, a-> System.out.println(a));
+    }
+    
     public void testConstruct(){
         $anno $a = $anno.of("A");
         assertEquals(_anno.of("A"), $a.construct());
@@ -44,14 +53,14 @@ public class SannoTest extends TestCase {
     
     public void testAny(){
         _class _c = _class.of("C");
-        assertEquals( 0, SOLDanno.list(_c).size());
+        assertEquals( 0, $anno.list(_c).size());
         
         //add a top level annotation
         _c.annotate(Deprecated.class);
-        assertEquals( 1, SOLDanno.list(_c).size());
+        assertEquals( 1, $anno.list(_c).size());
         
-        SOLDanno.forEach(_c, a-> System.out.println(a.getName()));
-        SOLDanno.forEach(_c, a-> !a.hasValues(), a-> System.out.println( a) );
+        $anno.forEach(_c, a-> System.out.println(a.getName()));
+        $anno.forEach(_c, a-> !a.hasValues(), a-> System.out.println( a) );
     }
     
     @interface R{ int value() default 10; }
@@ -59,42 +68,42 @@ public class SannoTest extends TestCase {
    
     public void testMatchClass(){
         
-        assertTrue(SOLDanno.of(R.class).matches("R"));
-        assertTrue(SOLDanno.of(R.class).matches("@draft.java.proto.SannoTest.R"));
+        assertTrue($anno.of(R.class).matches("R"));
+        assertTrue($anno.of(R.class).matches("@draft.java.proto.SannoTest.R"));
         
-        assertTrue(SOLDanno.of(R.class).matches("R()"));
-        assertTrue(SOLDanno.of(R.class).matches("@draft.java.proto.SannoTest.R()"));
+        assertTrue($anno.of(R.class).matches("R()"));
+        assertTrue($anno.of(R.class).matches("@draft.java.proto.SannoTest.R()"));
         
-        assertTrue(SOLDanno.of(R.class).matches("R(1)"));
-        assertTrue(SOLDanno.of(R.class).matches("@draft.java.proto.SannoTest.R(2)"));        
+        assertTrue($anno.of(R.class).matches("R(1)"));
+        assertTrue($anno.of(R.class).matches("@draft.java.proto.SannoTest.R(2)"));        
         
-        assertTrue(SOLDanno.of(R.class).matches("R(value=1)"));
-        assertTrue(SOLDanno.of(R.class).matches("@draft.java.proto.SannoTest.R(value=2)"));   
+        assertTrue($anno.of(R.class).matches("R(value=1)"));
+        assertTrue($anno.of(R.class).matches("@draft.java.proto.SannoTest.R(value=2)"));   
         
-        assertTrue(SOLDanno.of(R.class, "()").matches("@draft.java.proto.SannoTest.R()"));   
-        assertTrue(SOLDanno.of(R.class, "()").matches("R()"));   
+        assertTrue($anno.of(R.class, "()").matches("@draft.java.proto.SannoTest.R()"));   
+        assertTrue($anno.of(R.class, "()").matches("R()"));   
         
-        assertTrue(SOLDanno.of(R.class, "($any$)").matches("@draft.java.proto.SannoTest.R()"));   
-        assertTrue(SOLDanno.of(R.class, "($any$)").matches("R()"));   
+        assertTrue($anno.of(R.class, "($any$)").matches("@draft.java.proto.SannoTest.R()"));   
+        assertTrue($anno.of(R.class, "($any$)").matches("R()"));   
         
-        assertTrue(SOLDanno.of(R.class, "($any$)").matches("@draft.java.proto.SannoTest.R(1)"));   
-        assertTrue(SOLDanno.of(R.class, "($any$)").matches("R(2)"));
+        assertTrue($anno.of(R.class, "($any$)").matches("@draft.java.proto.SannoTest.R(1)"));   
+        assertTrue($anno.of(R.class, "($any$)").matches("R(2)"));
         
-        assertTrue(SOLDanno.of(R.class, "($any$)").select("@draft.java.proto.SannoTest.R(1)").is("any", Expr.of(1) ) );   
-        assertTrue(SOLDanno.of(R.class, "($any$)").select("@draft.java.proto.SannoTest.R(1)").is("any", "1" ) );  
+        assertTrue($anno.of(R.class, "($any$)").select("@draft.java.proto.SannoTest.R(1)").is("any", Expr.of(1) ) );   
+        assertTrue($anno.of(R.class, "($any$)").select("@draft.java.proto.SannoTest.R(1)").is("any", "1" ) );  
        
-        assertTrue(SOLDanno.of(R.class, "($any$)").select("@draft.java.proto.SannoTest.R(1)").is("any", Expr.of(1) ) );   
-        assertTrue(SOLDanno.of(R.class, "($any$)").select("@draft.java.proto.SannoTest.R(1)").is("any", "1" ) );  
+        assertTrue($anno.of(R.class, "($any$)").select("@draft.java.proto.SannoTest.R(1)").is("any", Expr.of(1) ) );   
+        assertTrue($anno.of(R.class, "($any$)").select("@draft.java.proto.SannoTest.R(1)").is("any", "1" ) );  
         
         
         
-        assertTrue(SOLDanno.of(R.class, "($any$)").matches("R(2)"));
+        assertTrue($anno.of(R.class, "($any$)").matches("R(2)"));
         
-        assertTrue(SOLDanno.of(S.class, "($any$)").matches("S()"));
-        assertTrue(SOLDanno.of(S.class, "($any$)").matches("S(Float.class)"));
-        assertTrue(SOLDanno.of(S.class, "($any$)", a-> a.hasValue(v -> v.isClassExpr())).matches("@S(Float.class)"));
-        assertFalse(SOLDanno.of(S.class, "($any$)", a-> a.hasValue(v -> v.isClassExpr())).matches("@S"));
-        assertFalse(SOLDanno.of(S.class, "($any$)", a-> a.hasValue(v -> v.isClassExpr())).matches("@S({Float.class, String.class})"));
+        assertTrue($anno.of(S.class, "($any$)").matches("S()"));
+        assertTrue($anno.of(S.class, "($any$)").matches("S(Float.class)"));
+        assertTrue($anno.of(S.class).constraint(a-> a.hasValue(v -> v.isClassExpr())).matches("@S(Float.class)"));
+        assertFalse($anno.of(S.class).constraint(a-> a.hasValue(v -> v.isClassExpr())).matches("@S"));
+        assertFalse($anno.of(S.class).constraint(a-> a.hasValue(v -> v.isClassExpr())).matches("@S({Float.class, String.class})"));
         
     }
     
@@ -105,7 +114,7 @@ public class SannoTest extends TestCase {
     public void testFullyQualified(){        
         // when I do this, I need to change the regex as EITHER
         // 
-        SOLDanno $a = SOLDanno.of(R.class);
+        $anno $a = $anno.of(R.class);
         
         @draft.java.proto.SannoTest.R
         class C{}        
@@ -150,20 +159,20 @@ public class SannoTest extends TestCase {
         }
         
         _class _c = _class.of(C.class);
-        assertNotNull( SOLDanno.first(_c, "name($any$)") );
+        assertNotNull( $anno.first(_c, "name($any$)") );
         
         //verify that we can find 
-        assertNotNull( SOLDanno.first(_c, "name($any$)", 
+        assertNotNull( $anno.first(_c, "name($any$)", 
                 //there is an Integer attribute value that is odd
                 (a)-> a.hasValue(e -> e.isIntegerLiteralExpr() && e.asIntegerLiteralExpr().asInt() % 2 == 1)) );
         
-        assertNotNull( SOLDanno.first(_c, "name($any$)", (a) -> a.hasValue(3)) );
-        assertNotNull( SOLDanno.first(_c, "name(3)"));        
-        assertNotNull( SOLDanno.first(_c, "name(3)", _a-> _a.hasValue(3)) );
+        assertNotNull( $anno.first(_c, "name($any$)", (a) -> a.hasValue(3)) );
+        assertNotNull( $anno.first(_c, "name(3)"));        
+        assertNotNull( $anno.first(_c, "name(3)", _a-> _a.hasValue(3)) );
     }
      
     public void testStatic$anno(){
-        SOLDanno $a = SOLDanno.of("@name");
+        $anno $a = $anno.of("@name");
         assertEquals( _anno.of("@name"), $a.construct());
         assertTrue( $a.matches(_anno.of("@name")));
 
@@ -174,14 +183,14 @@ public class SannoTest extends TestCase {
         }
         _class _c = _class.of(C.class);
         assertEquals( 3, $a.listSelectedIn(_c).size() );
-        _c = $a.replaceIn(_c, SOLDanno.of("@name2"));
+        _c = $a.replaceIn(_c, $anno.of("@name2"));
         assertEquals( 0, $a.listSelectedIn(_c).size() ); //verify they are all changed
-        assertEquals( 3, SOLDanno.of("@name2").listSelectedIn(_c).size() ); //verify they are all changed
+        assertEquals( 3, $anno.of("@name2").listSelectedIn(_c).size() ); //verify they are all changed
     }
 
     public void testDynamicAnno(){
         //any @NAME annotation with a prefix
-        SOLDanno $a = SOLDanno.of("@name(prefix=$any$)");
+        $anno $a = $anno.of("@name(prefix=$any$)");
 
         assertTrue( $a.matches( _anno.of("@name(prefix=\"1\")") ));
 
@@ -201,7 +210,7 @@ public class SannoTest extends TestCase {
 
         // In this case, it'd be better to just use Walk
         // Here we Transpose the property information from @NAME to the @name2 annotation
-        $a.replaceIn(_c, SOLDanno.of("@name2(string=$any$)") );
+        $a.replaceIn(_c, $anno.of("@name2(string=$any$)") );
         System.out.println(_c );
 
         _anno _a = $a.construct("any", "\"Some String\"");

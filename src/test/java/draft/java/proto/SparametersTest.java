@@ -11,6 +11,15 @@ import junit.framework.TestCase;
  */
 public class SparametersTest extends TestCase {
     
+    public void testEmptyParameters(){
+        class M{
+            void a(){}
+            void b(int a){}
+            void c(int...f){}
+        }
+        assertEquals(1, $parameters.none().count(M.class));
+    }
+    
     public void testParametersAny(){
         $parameters $ps = $parameters.of();
         

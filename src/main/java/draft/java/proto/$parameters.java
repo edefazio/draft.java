@@ -33,6 +33,14 @@ public class $parameters implements Template<_parameters>, $proto<_parameters>,
         return of();
     }
     
+    /**
+     * Matches empty parameters lists only
+     * @return 
+     */
+    public static $parameters none(){
+        return $parameters.of().constraint( ps-> ps.isEmpty());
+    }
+    
     public static $parameters of(){
         return new $parameters( _parameters.of() );
     }

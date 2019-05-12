@@ -9,7 +9,6 @@ import com.github.javaparser.printer.PrettyPrinterConfiguration;
 import draft.*;
 import draft.java.*;
 import draft.java._model._node;
-//import static draft.java.proto.$var.NO_COMMENTS;
 
 import java.util.*;
 import java.util.function.Consumer;
@@ -756,18 +755,10 @@ public class $var
         return this;
     }
     
-    /*
-    public $v init( Stencil initPattern ){
-        this.init.pattern = initPattern;
-        return this;
-    }
-    */
-    
     public $var init( Expression initExprProto ){
         init.pattern( initExprProto.toString(NO_COMMENTS) );
         return this;
-    }
-    
+    }    
       
     /**
      * 
@@ -796,8 +787,6 @@ public class $var
         Tokens all = new Tokens();
         if(this.constraint.test(astVar)) {            
             if( astVar.getInitializer().isPresent()){
-                //System.out.println("INIT" + astVar.getInitializer().get() );
-                //System.out.println(this.init.pattern);
                 all = this.init.decomposeTo(astVar.getInitializer().get(), all );
                 if( all == null ){
                     return null;
@@ -832,7 +821,6 @@ public class $var
             return Ast.variable(this.type.construct(translator, base)+ " "+ this.name.compose(translator, base)+" = "+in+";");
         }        
         return Ast.variable(this.type.construct(translator, base)+ " "+ this.name.compose(translator, base)+";");
-            //varPattern.construct(translator, keyValues));
     }
    
     @Override
@@ -869,7 +857,7 @@ public class $var
         vars.addAll(this.name.list$Normalized());
         vars =  vars.stream().distinct().collect(Collectors.toList());
         
-        List<String> allVars = new ArrayList<String>();
+        List<String> allVars = new ArrayList<>();
         allVars.addAll( vars );
         allVars.addAll( this.init.list$Normalized() );
         allVars = allVars.stream().distinct().collect(Collectors.toList());
@@ -888,19 +876,7 @@ public class $var
             }
             return Ast.variable( type.construct(translator, toCompose) + " "+ name.compose(translator, toCompose) );
         }
-        throw new DraftException("Expected fill fields of size ("+allVars.size()+") or ("+vars.size()+") got ("+values.length+")");
-        /*
-        if( values.length > vars.size() ){
-            //they must want an init
-            List<String> initVars = this.init.list$Normalized();
-            
-        }
-        if( this.initPattern != null ){
-            Stencil combined = Stencil.of(varPattern, Stencil.of(" = "), initPattern );
-            return Ast.variable(combined.fill(translator, values));
-        }
-        return Ast.variable(varPattern.fill(translator, values));
-        */
+        throw new DraftException("Expected fill fields of size ("+allVars.size()+") or ("+vars.size()+") got ("+values.length+")");        
     }
 
     /**
@@ -952,7 +928,6 @@ public class $var
 
     @Override
     public List<String> list$() {
-        //List<String> $names = new ArrayList<>();
         List<String> $names = this.type.list$();
         $names.addAll( this.name.list$());
         $names.addAll( this.init.list$());
@@ -1346,7 +1321,6 @@ public class $var
     @Override
     public <N extends Node> N forEachIn(N astNode, Consumer<VariableDeclarator> varActionFn){
         astNode.walk(VariableDeclarator.class, e-> {
-            //Tokens tokens = this.stencil.partsMap( e.toString());
             Select sel = select( e );
             if( sel != null ){
                 varActionFn.accept( e );
@@ -1358,7 +1332,6 @@ public class $var
     @Override
     public <N extends _node> N forEachIn(N _n, Consumer<VariableDeclarator> varActionFn){
         Walk.in(_n, VariableDeclarator.class, e-> {
-            //$args tokens = deconstruct( e );
             Select sel = select(e);
             if( sel != null ){
                 varActionFn.accept( e );

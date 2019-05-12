@@ -781,7 +781,6 @@ public class $anno
             .replaceIn(_n, $anno.of(replacementAnno));
     }
     
-    
     public static $anno any(){
         return of();
     }
@@ -820,6 +819,10 @@ public class $anno
         
     public static $anno of(Class<? extends Annotation>sourceAnnoClass) {
         return new $anno(_anno.of(sourceAnnoClass));
+    }
+    
+    public static $anno of (Class<? extends Annotation>sourceAnnoClass, Predicate<_anno> constraint) {
+        return of( sourceAnnoClass).constraint(constraint); 
     }
     
     /**

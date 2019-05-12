@@ -32,6 +32,10 @@ public class SaTest extends TestCase {
     }
     
     public void testConstructWith$Components(){
+        $.anno($id.of("A")).matches("@A(1)");
+        $.anno("A").matches("@A(1)");
+        
+        
         $anno $a = $anno.of( $id.of("A"), $anno.$memberValue.of(Expr.of(1)));
         assertTrue( $a.matches("@A(1)") );        
     }

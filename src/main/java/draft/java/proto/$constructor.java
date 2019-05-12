@@ -35,9 +35,7 @@ public class $constructor
      * (i.e. all of the components $annos, $annos, $id, $body,... )
      * that make up the $constructor
      */
-    interface $part{
-        
-    }
+    public interface $part{ }
     
     /**
      * list all constructors in the clazz
@@ -428,6 +426,10 @@ public class $constructor
      */
     public static $constructor of( Object anonymousObjectContainingMethod ){
         StackTraceElement ste = Thread.currentThread().getStackTrace()[2];
+        return of( ste, anonymousObjectContainingMethod);
+    }
+    
+    public static $constructor of( StackTraceElement ste, Object anonymousObjectContainingMethod ){
         ObjectCreationExpr oce = Expr.anonymousObject( ste );        
         
         _class _c = _class.of("C");

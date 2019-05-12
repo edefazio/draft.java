@@ -1,11 +1,5 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package draft.java.proto;
 
-import draft.Translator;
 import draft.java._anno;
 import draft.java._anno._annos;
 import draft.java._class;
@@ -16,6 +10,18 @@ import junit.framework.TestCase;
  * @author Eric
  */
 public class SannosTest extends TestCase {
+    
+    public void testAnnosNone(){
+        @Deprecated
+        class DF{
+            @Deprecated int a;
+            String s;
+            @Deprecated void m(){}
+            int g;
+        }
+        //s and g
+        assertEquals(2, $annos.none().count(DF.class));
+    }
     
     public void testComposeAny(){
         $annos $as = $annos.of();

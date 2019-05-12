@@ -628,6 +628,14 @@ public final class $throws
         return $throws.of(_throws.of(target)).constraint(constraint).removeIn(_type);
     }
     
+    /**
+     * Matches entities that CAN have throws but have none
+     * @return 
+     */
+    public static $throws none(){
+        return of().constraint( t-> t.isEmpty() );
+    }
+    
     public static $throws any(){
         return of();
     }

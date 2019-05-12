@@ -11,6 +11,16 @@ import junit.framework.TestCase;
  */
 public class SbodyTest extends TestCase {
     
+    static abstract class FFF{
+        abstract void m();
+        int v(){ return 1; }
+        abstract String b(); 
+    }
+    
+    public void testBodyNotImpl(){        
+        assertEquals(2, $body.notImplemented().count(FFF.class));
+    }
+    
     public void testMatchEmptyBody(){
         
         assertTrue( $body.of("{}").isImplemented);
@@ -23,8 +33,9 @@ public class SbodyTest extends TestCase {
     }
     
     public void testAnyConstruct(){
-        _body _b = $body.of().construct();
-        assertTrue( _b.isEmpty() );
+        _body _b = $body.any().construct();
+        System.out.println("BODY " + _b );
+        assertFalse( _b.isImplemented() );
         
         _b = $body.of().construct("$body", "{System.out.println(1);}");
     }
