@@ -4,6 +4,7 @@ import com.github.javaparser.ast.Node;
 import com.github.javaparser.ast.expr.LambdaExpr;
 import com.github.javaparser.ast.nodeTypes.NodeWithBlockStmt;
 import com.github.javaparser.ast.nodeTypes.NodeWithOptionalBlockStmt;
+import com.github.javaparser.ast.nodeTypes.NodeWithStatements;
 import com.github.javaparser.ast.stmt.Statement;
 import draft.*;
 import draft.java.*;
@@ -43,6 +44,7 @@ public class $body implements Template<_body>, $proto<_body>, $constructor.$part
     public static $body of( _body _bd ){
         return new $body(_bd);
     }
+    
     
     public static $body of( NodeWithBlockStmt astNodeWithBlock ){
         return new $body(_body.of(astNodeWithBlock));
@@ -136,6 +138,12 @@ public class $body implements Template<_body>, $proto<_body>, $constructor.$part
             this.isImplemented = false;
         }        
     }
+    
+    /*
+    private $body( NodeWithStatements astNodeWithStatements ){
+        this.bodyStmts = astNodeWithStatements.
+    }
+    */
     
     /**
      * 

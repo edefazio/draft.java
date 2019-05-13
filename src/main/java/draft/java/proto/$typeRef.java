@@ -438,7 +438,7 @@ public final class $typeRef
     public static $typeRef of(String pattern ){
         return new $typeRef(Ast.typeRef(pattern));
     }
-
+ 
     /**
      * 
      * @param pattern

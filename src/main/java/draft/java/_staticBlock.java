@@ -134,7 +134,7 @@ public final class _staticBlock
     @Override
     public Map<_java.Component, Object> componentsMap( ) {
         Map<_java.Component, Object> parts = new HashMap<>();
-        parts.put( _java.Component.BODY, getBody() );
+        parts.put(_java.Component.BODY, getBody() );
         return parts;
     }
 
@@ -221,12 +221,20 @@ public final class _staticBlock
             return null;
         }
         
-        /** returns the static Blocks on the _type matching the matchFn */
+        /** 
+         * returns the static Blocks on the _type matching the matchFn 
+         * @param _staticBlockMatchFn
+         * @return 
+         */
         default List<_staticBlock> listStaticBlocks( Predicate<_staticBlock>_staticBlockMatchFn){
             return listStaticBlocks().stream().filter(_staticBlockMatchFn).collect(Collectors.toList());
         }
 
-        /** adds a Static block based on th body of the lambda */
+        /** 
+         * adds a Static block based on the body of the lambda
+         * @param command
+         * @return 
+         */
         default T staticBlock( Expr.Command command ){
             StackTraceElement ste = Thread.currentThread().getStackTrace()[2];
             return staticBlock( Stmt.block(ste));
@@ -265,9 +273,10 @@ public final class _staticBlock
         }
 
         /**
-         * Build a static Block based on the Lambda Body
+         * Build a static Block based on the Lambda Body         
          * @param command the lambda command body (to get the source of the Static Block)
          * @param <A> the command type
+         * @param <B>
          * @return the modified T
          */
         default <A extends Object, B extends Object> T staticBlock( BiConsumer<A, B> command ){

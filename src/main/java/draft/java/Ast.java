@@ -1513,6 +1513,27 @@ public enum Ast {
         return Expr.of(doubleValue);
     }
 
+    public static SwitchEntry switchCase( String...switchCase ){
+        return switchEntry(switchCase);
+    }
+    /**
+     * A "case" (or default) within a Switch statement
+     * i.e.
+     * switch(a){
+     *     case 1: break;
+     *     case 2: System.out.println("Even"); break;
+     *     case 3: throw RuntimeException();
+     *     default: System.out.println("default");
+     * }
+     * @param switchEntry
+     * @return 
+     */
+    public static SwitchEntry switchEntry(String...switchEntry){
+        SwitchStmt ss = (SwitchStmt) StaticJavaParser.parseStatement(
+            "switch (a){"+ Text.combine(switchEntry)+ System.lineSeparator() + "}");
+        return ss.getEntry(0);
+    }
+    
     private static final String TRY_HARDCODED = "try{ assert(true); }";
 
     /**

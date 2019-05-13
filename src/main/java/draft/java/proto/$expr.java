@@ -2228,6 +2228,19 @@ public final class $expr <T extends Expression>
         return select(astExpr) != null;
     }
 
+    /**
+     * Does this $expr match ANY
+     * @return 
+     */
+    public boolean isMatchAny(){
+        try{
+            return this.expressionClass == Expression.class 
+                && this.constraint.test(null) 
+                && this.exprPattern.isMatchAny();
+        }catch(Exception e){
+            return false;
+        }
+    }
     @Override
     public List<String> list$(){
         return this.exprPattern.list$();

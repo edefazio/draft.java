@@ -25,6 +25,22 @@ public class SexprTest extends TestCase {
     public static final NumberFormat NF = NumberFormat.getInstance();
     
     
+    public void testFloatLiteral(){
+        class FF{
+            float f = 3.14f;
+            double d = 3.145;
+        }
+        assertEquals(1, $.of(3.14f).count(FF.class));
+    }
+    
+    public void testDoubleLiteral(){
+        class DD{
+            double d = 3.14;
+            float f = 3.1f;
+        }        
+        assertEquals(1, $.of(3.14).count(DD.class));
+    }
+    
     public void testNumberLiteralsFloatDouble(){
         class AClass{
             float ff = 3.14f;

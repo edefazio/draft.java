@@ -19,6 +19,7 @@ import com.github.javaparser.ast.comments.LineComment;
 import com.github.javaparser.ast.expr.*;
 import com.github.javaparser.ast.stmt.ExpressionStmt;
 import com.github.javaparser.ast.stmt.Statement;
+import com.github.javaparser.ast.stmt.SwitchEntry;
 import com.github.javaparser.ast.type.Type;
 import com.github.javaparser.ast.type.TypeParameter;
 import com.github.javaparser.ast.visitor.VoidVisitorAdapter;
@@ -33,6 +34,36 @@ import java.util.function.Consumer;
  */
 public class AstTest extends TestCase {
 
+    /**
+     * Test switch "cases"
+     */
+    public void testSwitchEntry(){
+        SwitchEntry se = Ast.switchEntry("case 1: System.out.println(1);");
+        assertTrue( se.getLabels().get(0).equals(Expr.of(1)) );
+        assertEquals( se.getStatement(0), Stmt.of("System.out.println(1);"));
+        
+        //the default case is always empty
+        se = Ast.switchEntry("default: System.out.println(1);");
+        assertTrue( se.getLabels().isEmpty() );
+        assertEquals( se.getStatement(0), Stmt.of("System.out.println(1);"));
+        int a = 1;
+        switch (a){
+            case 1:
+            case 2: break;
+        }
+        se = Ast.switchEntry("case 0:");
+        assertTrue( se.getLabels().get(0).equals( Expr.of(0)) );
+        System.out.println( se.getType() );
+        assertTrue( se.getStatements().isEmpty() );
+        
+        se = Ast.switchEntry("case 2: System.out.println(12);");
+        assertTrue( se.getLabels().get(0).equals(Expr.of(2)) );
+        assertEquals( se.getStatement(0), Stmt.of("System.out.println(12);"));
+       // assertTrue( se.getLabels().get(1).equals(Expr.of(2)) );
+        
+        
+    }
+    
     public void testAnnoExprEqualsAndHash(){
         _anno _a = _anno.of("a(1)");
         _anno _b = _anno.of("a(value=1)");

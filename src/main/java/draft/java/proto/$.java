@@ -47,6 +47,7 @@ import com.github.javaparser.ast.stmt.SwitchStmt;
 import com.github.javaparser.ast.stmt.ThrowStmt;
 import com.github.javaparser.ast.stmt.TryStmt;
 import com.github.javaparser.ast.stmt.WhileStmt;
+import draft.DraftException;
 import draft.java.Expr;
 import draft.java._anno;
 import draft.java._anno._annos;
@@ -58,6 +59,8 @@ import draft.java._method;
 import draft.java._modifiers;
 import draft.java._parameter;
 import draft.java._parameter._parameters;
+import draft.java._type;
+import draft.java.proto.$stmt.Select;
 import java.lang.annotation.Annotation;
 import java.util.function.*;
 
@@ -272,11 +275,49 @@ public final class $ {
      * @return 
      */
     public static $expr<DoubleLiteralExpr> of(float f){
-        return $expr.of(f);
+        StackTraceElement ste = Thread.currentThread().getStackTrace()[2];
+        Class clazz = null;
+        try{
+            clazz = Class.forName(ste.getClassName() );
+        }catch(Exception e){
+            throw new DraftException("unable to resolve calling class "+ ste.getClassName());
+        }
+        $expr.Select s = $expr.of("$.of($val$)").selectFirstIn(
+                clazz, se-> {
+            try{
+                if( se.astExpression.getBegin().get().line == ste.getLineNumber() ){
+                    Float.parseFloat( se.get("val").toString() );
+                    return true;
+                }
+                return false;
+            } catch(Exception ex ){
+                return false;
+            }
+        });
+        return $expr.doubleLiteral( s.get("val").toString() );        
     }
     
     public static $expr<DoubleLiteralExpr> of(double d){
-        return $expr.of(d);
+        StackTraceElement ste = Thread.currentThread().getStackTrace()[2];
+        Class clazz = null;
+        try{
+            clazz = Class.forName(ste.getClassName() );
+        }catch(Exception e){
+            throw new DraftException("unable to resolve calling class "+ ste.getClassName());
+        }
+        $expr.Select s = $expr.of("$.of($val$)").selectFirstIn(
+                clazz, se-> {
+            try{
+                if( se.astExpression.getBegin().get().line == ste.getLineNumber() ){
+                    Float.parseFloat( se.get("val").toString() );
+                    return true;
+                }
+                return false;
+            } catch(Exception ex ){
+                return false;
+            }
+        });
+        return $expr.doubleLiteral( s.get("val").toString() );        
     }
     
     public static $expr<LongLiteralExpr> of(long l){

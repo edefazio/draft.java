@@ -3,9 +3,11 @@ package draft.java;
 import com.github.javaparser.ast.expr.LambdaExpr;
 import com.github.javaparser.ast.expr.ObjectCreationExpr;
 import com.github.javaparser.ast.nodeTypes.NodeWithParameters;
+import com.github.javaparser.ast.stmt.BlockStmt;
 import com.github.javaparser.ast.stmt.EmptyStmt;
 import com.github.javaparser.ast.stmt.Statement;
 import draft.DraftException;
+import draft.java._parameter._hasParameters;
 import draft.java._parameter._parameters;
 import java.util.Optional;
 import java.util.function.BiConsumer;
@@ -14,10 +16,12 @@ import java.util.function.Consumer;
 import java.util.function.Function;
 
 /**
- *
+ * Representation of a java lambda expression
+ * 
  * @author Eric
  */
-public class _lambda implements _model, _parameter._hasParameters<_lambda> {
+public class _lambda 
+    implements _model, _hasParameters<_lambda> {
 
       /**
      * Builds a lambda expression from the *CODE* passed in...i,.e.<PRE>
@@ -188,11 +192,19 @@ public class _lambda implements _model, _parameter._hasParameters<_lambda> {
         return astLambda;
     }
  
+    /**
+     * 
+     * @return 
+     */
     public Statement getBody(){        
         return astLambda.getBody();                
     }
     
-    
+    /**
+     * 
+     * @param _b
+     * @return 
+     */
     public _lambda setBody( _body _b ){
         if( _b.isImplemented() ){
             this.astLambda.setBody(_b.ast());
@@ -219,6 +231,17 @@ public class _lambda implements _model, _parameter._hasParameters<_lambda> {
     
     public _lambda setEnclosingParameters(boolean toSet){
         this.astLambda.setEnclosingParameters(toSet);
+        return this;
+    }
+
+    public _lambda setBody(BlockStmt body) {
+        this.astLambda.setBody(body);
+        return this;
+    }
+
+
+    public _lambda clearBody() {
+        this.setBody( _body.empty() );
         return this;
     }
 }

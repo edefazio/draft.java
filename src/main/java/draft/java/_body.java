@@ -38,6 +38,14 @@ public final class _body implements _model {
     private final Object astParentNode;
 
     /**
+     * returns an empty body (i.e. "{}")
+     * @return an empty body
+     */
+    public static final _body empty(){
+        return of("{}");
+    }
+    
+    /**
      * 
      * @param body
      * @return 
