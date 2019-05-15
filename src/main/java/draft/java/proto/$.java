@@ -319,6 +319,7 @@ public final class $ {
         });
         return $expr.doubleLiteral( s.get("val").toString() );        
     }
+     
     
     public static $expr<LongLiteralExpr> of(long l){
         return $expr.of(l);
@@ -440,6 +441,14 @@ public final class $ {
         return $expr.varDecl();
     }
     
+    public static $case switchCase(){
+        return $case.any();
+    }
+    
+    public static $catch catchClause(){
+        return $catch.any();
+    }
+    
     public static $field field(){
         return $field.any();
     }
@@ -554,33 +563,6 @@ public final class $ {
     public static $stmt<WhileStmt> whileStmt(){
         return $stmt.whileStmt();
     }
-    
-    
-    /*
-    //stmt
-    static Class<Statement>[] ST = new Class<Statement>[] {
-        Stmt.ASSERT,
-        Stmt.BLOCK,
-        Stmt.BREAK,
-        Stmt.CONSTRUCTOR_INVOCATION,
-        Stmt.CONTINUE,
-        Stmt.DO,
-        Stmt.EMPTY,
-        Stmt.EXPRESSION,
-        Stmt.FOR,
-        Stmt.FOR_EACH,
-        Stmt.IF,
-        Stmt.LABELED,
-        Stmt.LOCAL_CLASS,
-        Stmt.RETURN,
-        Stmt.SWITCH,
-        Stmt.SYNCHRONIZED,
-        Stmt.THROW,
-        Stmt.TRY,
-        Stmt.WHILE,        
-    };
-    */
-    
     
     public static $throws thrown(){
         return $throws.any();

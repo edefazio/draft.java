@@ -93,23 +93,23 @@ public class SexprTest extends TestCase {
             long llh = 0x1L;
             long llhz = 0x01L;
         }
-        assertEquals(5, $expr.of("1").count(LongClass.class));
-        assertEquals(5, $expr.of("0b1").count(LongClass.class));
-        assertEquals(5, $expr.of("0b01").count(LongClass.class));
-        assertEquals(5, $expr.of("0x1").count(LongClass.class));
-        assertEquals(5, $expr.of("0x01").count(LongClass.class));        
+        assertEquals(15, $expr.of("1").count(LongClass.class));
+        assertEquals(15, $expr.of("0b1").count(LongClass.class));
+        assertEquals(15, $expr.of("0b01").count(LongClass.class));
+        assertEquals(15, $expr.of("0x1").count(LongClass.class));
+        assertEquals(15, $expr.of("0x01").count(LongClass.class));        
         
-        assertEquals(10, $expr.of("1L").count(LongClass.class));
-        assertEquals(10, $expr.of("0b1L").count(LongClass.class));
-        assertEquals(10, $expr.of("0b01L").count(LongClass.class));
-        assertEquals(10, $expr.of("0x1L").count(LongClass.class));
-        assertEquals(10, $expr.of("0x01L").count(LongClass.class));        
+        assertEquals(15, $expr.of("1L").count(LongClass.class));
+        assertEquals(15, $expr.of("0b1L").count(LongClass.class));
+        assertEquals(15, $expr.of("0b01L").count(LongClass.class));
+        assertEquals(15, $expr.of("0x1L").count(LongClass.class));
+        assertEquals(15, $expr.of("0x01L").count(LongClass.class));        
         
-        assertEquals(10, $expr.of("1l").count(LongClass.class));
-        assertEquals(10, $expr.of("0b1l").count(LongClass.class));
-        assertEquals(10, $expr.of("0b01l").count(LongClass.class));
-        assertEquals(10, $expr.of("0x1l").count(LongClass.class));
-        assertEquals(10, $expr.of("0x01l").count(LongClass.class));
+        assertEquals(15, $expr.of("1l").count(LongClass.class));
+        assertEquals(15, $expr.of("0b1l").count(LongClass.class));
+        assertEquals(15, $expr.of("0b01l").count(LongClass.class));
+        assertEquals(15, $expr.of("0x1l").count(LongClass.class));
+        assertEquals(15, $expr.of("0x01l").count(LongClass.class));
     }
     
     public void testLiteralsWithPrefix(){
@@ -360,7 +360,7 @@ public class SexprTest extends TestCase {
         //select returns the selected tokens
         assertTrue($e.select(Expr.of("1 * 2")).args.is("op", "*"));
 
-        $e = $expr.of("$a$ + $b$");
+        $e = $expr.binary("$a$ + $b$");
         @aa(1 + 2)
         class G{
             int f = 3 + 5;
@@ -429,7 +429,7 @@ public class SexprTest extends TestCase {
         
         //Long.parseLong("1010000101000101101000010100010110100001010001011010000101000101", 2);
         
-        $expr $e = $expr.of("0b0010000101000101101000010100010110100001010001011010000101000101L");
+        $expr $e = $expr.longLiteral("0b0010000101000101101000010100010110100001010001011010000101000101L");
         assertEquals( $e.expressionClass, LongLiteralExpr.class);
         System.out.println("PATTERN" + $e.exprPattern );
         

@@ -359,6 +359,15 @@ public class $parameter implements Template<_parameter>, $proto<_parameter> {
     
     
     /**
+     * 
+     * @param astParam
+     * @return 
+     */
+    public static $parameter of( Parameter astParam ){
+        return new $parameter( _parameter.of(astParam), p->true);
+    }
+    
+    /**
      * Build and return a parameter
      * @param _p the prototype parameter
      * @return the $parameter

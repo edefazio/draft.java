@@ -1513,9 +1513,38 @@ public enum Ast {
         return Expr.of(doubleValue);
     }
 
-    public static SwitchEntry switchCase( String...switchCase ){
+    /**
+     * Java 12+ switch Expression
+     * 
+     * @param switchExpr
+     * @return 
+     */
+    public static SwitchExpr switchExpr( String... switchExpr ){
+        
+        return StaticJavaParser.parseExpression( Text.combine(switchExpr) );
+    }
+    
+    /**
+     * Found in Java 12+ switch expressions
+     * 
+     * @param caseExpr
+     * @return 
+     */
+    public static SwitchEntry caseExpr( String...caseExpr ){
+        SwitchExpr se = (SwitchExpr)StaticJavaParser.parseExpression("switch(x) { " +  Text.combine(caseExpr) + "};");
+        return se.getEntry(0);
+    }
+    
+    
+    /**
+     * 
+     * @param switchCase
+     * @return 
+     */
+    public static SwitchEntry caseStmt( String...switchCase ){
         return switchEntry(switchCase);
     }
+    
     /**
      * A "case" (or default) within a Switch statement
      * i.e.
@@ -1531,7 +1560,9 @@ public enum Ast {
     public static SwitchEntry switchEntry(String...switchEntry){
         SwitchStmt ss = (SwitchStmt) StaticJavaParser.parseStatement(
             "switch (a){"+ Text.combine(switchEntry)+ System.lineSeparator() + "}");
-        return ss.getEntry(0);
+        SwitchEntry se = ss.getEntry(0);
+        ss.remove(se);
+        return se;
     }
     
     private static final String TRY_HARDCODED = "try{ assert(true); }";

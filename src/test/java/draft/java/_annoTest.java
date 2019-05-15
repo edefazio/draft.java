@@ -91,7 +91,7 @@ public class _annoTest extends TestCase {
         st.walk(Ast.ANNOTATION_EXPR, a-> ai.incrementAndGet() );
         System.out.println( st );
         //lost the new $Test Array...
-        assertEquals( 2, ai.get());
+        assertEquals( 3, ai.get());
         
         Type t = st.asExpressionStmt().getExpression().asVariableDeclarationExpr().getVariable(0).getType();
         System.out.println( t );
@@ -170,7 +170,7 @@ public class _annoTest extends TestCase {
     
     
     public void testT(){
-        Statement st = Stmt.of("new  <String>  @Test  MyObject();");
+        Statement st = Stmt.of("new  @Test  MyObject();");
         assertEquals( 1, $anno.of(Test.class).count( st ));
         System.out.println( st );
     }
@@ -204,7 +204,7 @@ public class _annoTest extends TestCase {
         System.out.println( _c );
        
         //this SHOULD be 8 if we can fix the issue in JavaParser with ObjectCreationExpr
-        assertEquals( 6, $anno.of("@Test").count(C.class));
+        assertEquals( 8, $anno.of("@Test").count(C.class));
         
         $anno $aa = $anno.of(Test.class);
             //.constraint( a->a.ast().getParentNode().isPresent() 

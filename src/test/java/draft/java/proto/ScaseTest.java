@@ -3,6 +3,7 @@ package draft.java.proto;
 import com.github.javaparser.ast.stmt.SwitchEntry;
 import com.github.javaparser.ast.stmt.SwitchStmt;
 import draft.java.Ast;
+import draft.java.Expr;
 import java.util.ArrayList;
 import junit.framework.TestCase;
 
@@ -11,6 +12,20 @@ import junit.framework.TestCase;
  * @author Eric
  */
 public class ScaseTest extends TestCase {
+    
+    public void testConstruct(){
+        $case $c = $case.of( $expr.of("$val$")
+            .constraint(i -> i.isIntegerLiteralExpr() && Integer.parseInt( i.asIntegerLiteralExpr().getValue() ) % 2 == 1 ), 
+            $stmt.of("System.out.println($val$);"));
+        System.out.println( $c.construct("val", 1) );
+    }
+    
+    public void testConstructAny(){
+        SwitchEntry se = 
+            $case.any().construct("$label", Expr.of(1), 
+                "$statements", "System.out.println(1);");
+        System.out.println( se );
+    }
     
     public void testStaticCase(){
         String sss = "case 0: System.out.println(1);";
@@ -47,8 +62,29 @@ public class ScaseTest extends TestCase {
     
     
     public void testDynamicCase(){
-        $case $c = $case.of($expr.any());
+        $case $c = $case.of($expr.any(), $stmt.of( (String $content$)-> System.out.println($content$)));
         
+        assertTrue($c.select("default: System.out.println(1);").is("content", 1));
+        assertTrue($c.select("case 1: System.out.println('a');").is("content", 'a'));
+        assertTrue($c.select("case 'w': System.out.println(3578);").is("content", 3578));
+        
+        assertTrue($c.matches(Ast.switchEntry("default: System.out.println(1);")));
+        assertTrue($c.matches(Ast.switchEntry("case 1: System.out.println('a');")));
+        
+        
+    }
+    
+    public static final void main(String[] args){
+        $case $c = $case.of($expr.of("$val$"), $stmt.of( (String $val$)-> System.out.println($val$) ));
+        SwitchEntry se = Ast.switchEntry( "case 'a': System.out.println('a');");
+        assertTrue($c.select(se).is("val", 'a'));
+    }
+    
+    public void testCorrelatedCase(){
+        $case $c = $case.of($expr.of("$val$"), $stmt.of( (String $val$)-> System.out.println($val$) ));
+        assertTrue($c.select("case 'a': System.out.println('a');").is("val", 'a'));
+        
+        assertNull($c.select("case 'a': System.out.println('b');"));        
     }
     
     public void testTT(){        

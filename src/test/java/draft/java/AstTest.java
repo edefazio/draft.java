@@ -23,6 +23,7 @@ import com.github.javaparser.ast.stmt.SwitchEntry;
 import com.github.javaparser.ast.type.Type;
 import com.github.javaparser.ast.type.TypeParameter;
 import com.github.javaparser.ast.visitor.VoidVisitorAdapter;
+import static draft.java.Ast.switchEntry;
 import junit.framework.TestCase;
 
 import java.util.List;
@@ -34,6 +35,25 @@ import java.util.function.Consumer;
  */
 public class AstTest extends TestCase {
 
+    /*
+    public void testJDK12SwitchExpression(){        
+        //SwitchExpr astSwe = 
+        //    Ast.switchExpr( "int a = switch(x) { case 5,6 -> 20; case 9 -> 30; default -> 40; };"); 
+        
+        Statement st = 
+            Ast.stmt( "int a = switch(x) { case 5,6 -> 20; case 9 -> 30; default -> 40; };");
+        
+        System.out.println( st );
+        
+        SwitchExpr se = new SwitchExpr();
+        se.setSelector( Expr.of("x") );
+        NodeList<SwitchEntry> ses = new NodeList<>();
+        ses.add( Ast.switchEntry("case 5 -> 20;") );
+        se.setEntries( ses );
+        System.out.println( se ); 
+        //assertEquals(3, astSwe.getEntries().size());
+    }
+    */
     /**
      * Test switch "cases"
      */

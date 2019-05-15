@@ -592,7 +592,12 @@ public final class $expr <T extends Expression>
      * @return 
      */
     public static <T extends Expression> $expr<T> of( String...pattern ){
-        return new $expr<>( (T)Expr.of(pattern));
+        //so.... if I JUST do a pattern, I want to se the experssion class
+        // to Expression.class
+        Expression expr = Expr.of(pattern);
+        return ($expr<T>)new $expr<Expression>( Expression.class, 
+                expr.toString(Ast.PRINT_NO_COMMENTS) );
+        //return new $expr<>( (T)Expr.of(pattern));
     }
     
     /**
@@ -1398,7 +1403,7 @@ public final class $expr <T extends Expression>
      * @return 
      */
     public static $expr<IntegerLiteralExpr> of(int i) {
-        return new $expr( Expr.of( i ) );
+        return new $expr( Expr.intLiteral(i ) );
     }
 
     /**
@@ -1408,7 +1413,7 @@ public final class $expr <T extends Expression>
      * @return 
      */
     public static $expr<IntegerLiteralExpr> of(int i, Predicate<IntegerLiteralExpr> constraint) {
-        return new $expr( Expr.of( i ) ).constraint(constraint);
+        return new $expr( Expr.intLiteral( i ) ).constraint(constraint);
     }
     
     /**
@@ -1417,7 +1422,7 @@ public final class $expr <T extends Expression>
      * @return 
      */
     public static $expr<IntegerLiteralExpr> intLiteral(Predicate<IntegerLiteralExpr> constraint) {
-        return new $expr( Expr.of( 1 ) ).$("1", "any").constraint(constraint);
+        return new $expr( Expr.intLiteral( 1 ) ).$("1", "any").constraint(constraint);
     }
     
     public static $expr<IntegerLiteralExpr> intLiteral( ) {
@@ -1430,7 +1435,7 @@ public final class $expr <T extends Expression>
      * @return 
      */
     public static $expr<IntegerLiteralExpr> intLiteral(int i) {
-        return new $expr( Expr.of( i ) );
+        return new $expr( Expr.intLiteral( i ) );
     }
 
     /**
@@ -1440,7 +1445,7 @@ public final class $expr <T extends Expression>
      * @return 
      */
     public static $expr<IntegerLiteralExpr> intLiteral(int i, Predicate<IntegerLiteralExpr> constraint) {
-        return new $expr( Expr.of( i ) ).constraint(constraint);
+        return new $expr( Expr.intLiteral( i ) ).constraint(constraint);
     }
     
     /**
@@ -1504,7 +1509,7 @@ public final class $expr <T extends Expression>
      * @return 
      */
     public static $expr<LongLiteralExpr> of(long l) {
-        return new $expr( Expr.of( l ) );
+        return new $expr( Expr.longLiteral( l ) );
     }
 
     /**
@@ -1514,7 +1519,7 @@ public final class $expr <T extends Expression>
      * @return 
      */
     public static $expr<LongLiteralExpr> of(long l, Predicate<LongLiteralExpr> constraint ) {
-        return new $expr( Expr.of( l ) ).constraint(constraint);
+        return new $expr( Expr.longLiteral( l ) ).constraint(constraint);
     }
     
     /**
@@ -1523,7 +1528,7 @@ public final class $expr <T extends Expression>
      * @return 
      */
     public static $expr<LongLiteralExpr> longLiteral( long l ) {
-        return new $expr( Expr.of( l ) );
+        return new $expr( Expr.longLiteral( l ) );
     }
 
     /**
@@ -1543,7 +1548,7 @@ public final class $expr <T extends Expression>
      * @return 
      */
     public static $expr<LongLiteralExpr> longLiteral( long l, Predicate<LongLiteralExpr> constraint ) {
-        return new $expr( Expr.of( l ) ).constraint(constraint);
+        return new $expr( Expr.longLiteral( l ) ).constraint(constraint);
     }
    
     /**
