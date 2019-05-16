@@ -112,15 +112,24 @@ public class SexprTest extends TestCase {
         assertEquals(15, $expr.of("0x01l").count(LongClass.class));
     }
     
+    /**
+     * Had to fix a problem in integer.parseInt("1_000")
+     * its like, if you are going to support it, then support it
+     */
+    public void testNumbersThousandsSeparator(){
+        assertTrue( $expr.of(1_000_000).matches("1000000") );
+        assertTrue( $expr.of(1000000).matches("1_000_000") );
+    }
+    
     public void testLiteralsWithPrefix(){
         
         
-        Number f2 = $expr.parseNumber("3.14F");
-        Number f3 = $expr.parseNumber("3.14f");
+        Number f2 = Expr.parseNumber("3.14F");
+        Number f3 = Expr.parseNumber("3.14f");
         
-        Number d = $expr.parseNumber("3.14");
-        Number d1 = $expr.parseNumber("3.14d");
-        Number d2 = $expr.parseNumber("3.14D");
+        Number d = Expr.parseNumber("3.14");
+        Number d1 = Expr.parseNumber("3.14d");
+        Number d2 = Expr.parseNumber("3.14D");
         
         assertEquals( f2, f3);        
         assertEquals( d1, d2);
@@ -160,10 +169,10 @@ public class SexprTest extends TestCase {
         //assertEquals( 1, $expr.parseNumber("0x01")); 
         //assertEquals( 1, $expr.parseNumber("0b01"));
         
-        assertEquals( $expr.parseNumber("0x01"), $expr.parseNumber("0b01") );
+        assertEquals( Expr.parseNumber("0x01"), Expr.parseNumber("0b01") );
         
-        System.out.println( $expr.parseNumber("1").getClass() );
-        System.out.println( $expr.parseNumber("0x01").getClass() );
+        System.out.println( Expr.parseNumber("1").getClass() );
+        System.out.println( Expr.parseNumber("0x01").getClass() );
         
         //assertEquals( $expr.parseNumber("0x01"), $expr.parseNumber("1") );
         //assertEquals( $expr.parseNumber("0X01"), $expr.parseNumber("0B01") );

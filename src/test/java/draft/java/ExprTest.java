@@ -8,6 +8,7 @@ import com.github.javaparser.ast.comments.JavadocComment;
 import com.github.javaparser.ast.comments.LineComment;
 import com.github.javaparser.ast.expr.DoubleLiteralExpr;
 import com.github.javaparser.ast.expr.LambdaExpr;
+import com.github.javaparser.ast.expr.LongLiteralExpr;
 import com.github.javaparser.ast.expr.Name;
 import com.github.javaparser.ast.expr.ObjectCreationExpr;
 import com.github.javaparser.ast.expr.UnaryExpr;
@@ -24,8 +25,36 @@ import java.util.*;
 @Ast.cache
 public class ExprTest extends TestCase {
 
-    
-    
+    public void testExprThousandsSeparatorHexBinary(){
+        StaticJavaParser.parseExpression("1_000");
+        StaticJavaParser.parseExpression("0xDEADBEEF");
+        StaticJavaParser.parseExpression("0b110100111");
+        
+        Ast.expr("1_000");
+        Ast.expr("0xDEADBEEF");
+        Ast.expr("0b110100111");
+        
+        Expr.intLiteral("1_000");
+        Expr.intLiteral("0xDEADBEEF");
+        Expr.intLiteral("0b110100111");
+        
+        
+        
+        LongLiteralExpr l = Expr.longLiteral("1_000_000L");
+        LongLiteralExpr ll = Expr.longLiteral("1000000L");
+        
+        //this is a direct syntax comparison
+        assertFalse( l.equals(11));
+        
+        //this is a "semantic" equality comparison
+        assertTrue( Expr.equatesTo(l, ll) );
+        
+        //this is interesting, because syntactically they ARE equal
+        // but semantically they are not
+        //assertEquals( l, ll);
+        
+        
+    }
     public void testByteShort(){
         StaticJavaParser.parseExpression("(byte)b");
         StaticJavaParser.parseExpression("(short)s");

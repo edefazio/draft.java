@@ -2256,12 +2256,7 @@ public final class $expr <T extends Expression>
         return this.exprPattern.list$Normalized();
     }
 
-    /**
-     * A local number format we can use to compare number literals...
-     * we need this because number can have different syntax
-     * 
-     */
-    private static final NumberFormat NF = NumberFormat.getInstance();
+   
     
     /**
      * Compare (2) Strings that represent numbers to see if they represent the
@@ -2282,8 +2277,8 @@ public final class $expr <T extends Expression>
      * @return 
      */
     public static boolean compareNumberLiterals( String expected, String actual ){
-        Number ex = parseNumber(expected);
-        Number act = parseNumber(actual);
+        Number ex = Expr.parseNumber(expected);
+        Number act = Expr.parseNumber(actual);
         if( ex.equals( act ) ){
             return true;
         }
@@ -2298,37 +2293,7 @@ public final class $expr <T extends Expression>
         return false;
     }
     
-    /**
-     * Parses and returns the number from the String
-     * 
-     * NOTE this is public for testing, but only really used internally
-     * @param str
-     * @return 
-     */
-    public static Number parseNumber( String s ){
-        String str = s.trim();
-        if(str.startsWith("0x") || str.startsWith("0X") ){
-            if( str.endsWith("L") || str.endsWith("l")){
-                //System.out.println("parsing hex long"+ str);    
-                return Long.parseLong(str.substring(2, str.length()-1), 16);
-            }
-            //System.out.println("parsing hex int "+ str);
-            return Integer.parseInt(str.substring(2), 16);
-        }
-        if( str.startsWith("0b")|| str.startsWith("0B")){
-            if( str.endsWith("L") || str.endsWith("l") ){
-                String subSt = str.substring(2, str.length() -1);
-                //System.out.println( subSt +" "+ subSt.length() );
-                return Long.parseUnsignedLong(subSt, 2);
-            }
-            return Integer.parseInt(str.substring(2), 2);
-        }        
-        try{
-            return NF.parse(str);
-        }catch( Exception e){
-            throw new RuntimeException(""+e);
-        }
-    }
+    
     
     /**
      * 

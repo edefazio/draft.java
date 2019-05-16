@@ -11,6 +11,7 @@ import draft.Text;
 import draft.java.io._in;
 import draft.java.io._io;
 import draft.java.io._ioException;
+import java.text.NumberFormat;
 import java.util.*;
 import java.util.function.*;
 
@@ -1253,7 +1254,7 @@ public enum Expr {
         }
         return of( str ).asStringLiteralExpr();
     }
-    
+        
     /** "super" */
     public static final Class<SuperExpr> SUPER = SuperExpr.class;
 
@@ -1319,6 +1320,37 @@ public enum Expr {
         return StaticJavaParser.parseVariableDeclarationExpr( Text.combine( code ));
     }    
     
+    
+    /**
+     * We need this because syntactically there are many ways to represent the 
+     * same number as an IntLiteralExpr/LongLiteralExpr.
+     * <PRE>
+     * i.e.
+     * simple "1"
+     * binary "0b01"
+     * hex    "0x01"
+     * 
+     * </PRE>
+     * @param left
+     * @param right
+     * @return 
+     */
+    
+    public static boolean equatesTo( LiteralStringValueExpr left, LiteralStringValueExpr right ){
+        return equatesTo( parseNumber(left.getValue()), parseNumber( right.getValue() ) );        
+    }
+    
+    public static boolean equatesTo( Number left, Number right ){
+        if( left.getClass() == right.getClass() ){
+            return left.equals(right);
+        }
+        if( (left.getClass() == Integer.class || left.getClass() == Long.class) 
+          && (right.getClass() == Integer.class || right.getClass() == Long.class ) ){
+            return left.longValue() == right.longValue();
+        }
+        return false;
+    }
+    
     /**
      * 
      * @param exp
@@ -1329,22 +1361,22 @@ public enum Expr {
         if( o == null || o instanceof NullLiteralExpr || o.equals("null") ) {
             return exp.equals( new NullLiteralExpr() );
         }
-        else if( o instanceof Expression ){
-            return Objects.equals( exp, o );
-        }   
+        if( exp instanceof LiteralStringValueExpr && o instanceof LiteralStringValueExpr ){
+            return equatesTo( (LiteralStringValueExpr) exp, (LiteralStringValueExpr)o);
+        }
         else if( o instanceof String ){
             try{
                 Expression e = Expr.of( (String)o);
-                return exp.equals(e);
+                return equatesTo(exp , e );
             }catch(Exception e){
                 if( exp instanceof StringLiteralExpr ){
-                    return Objects.equals( exp, Expr.stringLiteral(o.toString()) );
+                    return equatesTo( exp, Expr.stringLiteral(o.toString()) );
                 }
             }
         }
         //handle All Wrapper types
         else if( o instanceof Number ||  o instanceof Boolean ){ //Int Float, etc.
-            return Objects.equals( Expr.of(o.toString()), exp );
+            return equatesTo( Expr.of(o.toString()), exp );
         }
         else if(o instanceof Character ){
             return Objects.equals( Expr.charLiteral( (Character)o), exp );
@@ -1373,4 +1405,85 @@ public enum Expr {
         }
         return false;
     }    
+    
+    
+     /**
+     * A local number format we can use to compare number literals...
+     * we need this because number can have different syntax
+     * 
+     */
+    private static final NumberFormat NF = NumberFormat.getInstance();
+    
+    public static boolean isEqual(LiteralStringValueExpr ie, Expression e){
+        if( e instanceof LiteralStringValueExpr ){
+            return parseLong(ie).equals( parseLong( e.asLiteralStringValueExpr().getValue() ) );
+        }
+        return false;
+    }
+    
+    public static Long parseLong( LiteralStringValueExpr les ){
+        return parseNumber(les.getValue()).longValue();
+    }
+    
+    public static Long parseLong( IntegerLiteralExpr ile){
+        Number n = parseNumber(ile.getValue());
+        return n.longValue();        
+    }
+    
+    public static Long parseLong( LongLiteralExpr lle){
+        Number n = parseNumber(lle.getValue());
+        return n.longValue();        
+    }
+    
+    public static Integer parseInt( IntegerLiteralExpr ile ){
+        return parseInt(ile.getValue());
+    }
+    
+    public static Long parseLong( String s ){
+        Number n = parseNumber(s);
+        return n.longValue();        
+    }
+    
+    /**
+     * 
+     * @param s
+     * @return 
+     */
+    public static Integer parseInt( String s){
+        Number n = parseNumber(s);
+        return n.intValue();        
+    }
+    
+    /**
+     * Parses and returns the number from the String
+     * 
+     * NOTE this is public for testing, but only really used internally
+     * @param s
+     * @return 
+     */
+    public static Number parseNumber( String s ){
+        //Long l = 0xAAA_BBBL; this is valid
+        String str = s.trim();
+        if(str.startsWith("0x") || str.startsWith("0X") ){
+            if( str.endsWith("L") || str.endsWith("l")){
+                //System.out.println("parsing hex long"+ str);    
+                return Long.parseLong(str.substring(2, str.length()-1).replace("_", ""), 16);
+            }
+            //System.out.println("parsing hex int "+ str);
+            return Integer.parseInt(str.substring(2).replace("_", ""), 16);
+        }
+        if( str.startsWith("0b")|| str.startsWith("0B")){
+            if( str.endsWith("L") || str.endsWith("l") ){
+                String subSt = str.substring(2, str.length() -1);
+                //System.out.println( subSt +" "+ subSt.length() );
+                return Long.parseUnsignedLong(subSt.replace("_", ""), 2);
+            }
+            return Integer.parseInt(str.substring(2).replace("_", ""), 2);
+        }        
+        try{
+            return NF.parse(str.replace("_", ""));
+        }catch( Exception e){
+            throw new RuntimeException(""+e);
+        }
+    }
 }

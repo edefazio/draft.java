@@ -12,6 +12,7 @@ import com.github.javaparser.ast.body.FieldDeclaration;
 import com.github.javaparser.ast.body.InitializerDeclaration;
 import com.github.javaparser.ast.body.MethodDeclaration;
 import com.github.javaparser.ast.body.Parameter;
+import com.github.javaparser.ast.body.TypeDeclaration;
 import com.github.javaparser.ast.comments.BlockComment;
 import com.github.javaparser.ast.comments.Comment;
 import com.github.javaparser.ast.comments.JavadocComment;
@@ -54,6 +55,14 @@ public class AstTest extends TestCase {
         //assertEquals(3, astSwe.getEntries().size());
     }
     */
+    
+    public void testCC(){
+        class C{
+            
+        }
+        TypeDeclaration td = Ast.type(C.class);
+        
+    }
     /**
      * Test switch "cases"
      */
