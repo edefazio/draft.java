@@ -314,7 +314,12 @@ public enum Stmt {
     /** i.e. "continue outer;" */
     public static final Class<ContinueStmt> CONTINUE = ContinueStmt.class;
 
-    /** i.e. "continue outer;" */
+    /** 
+     * i.e."continue outer;" 
+     *
+     * @param code
+     * @return 
+     */
     public static ContinueStmt continueStmt(String... code ) {
         return of( code ).asContinueStmt();
     }
@@ -322,16 +327,27 @@ public enum Stmt {
     /** i.e. "do{ System.out.println(1); }while( a < 100 );" */
     public static final Class<DoStmt> DO = DoStmt.class;
 
-    /** i.e. "do{ System.out.println(1); }while( a < 100 );" */
+    /** 
+     *  i.e."do{ System.out.println(1); }while( a < 100 );"
+     * @param code
+     * @return  
+     */
     public static DoStmt doStmt(String... code ) {
         return of( code ).asDoStmt();
     }
 
-    /** i.e. "this(100,2900);" */
+    /** 
+     * i.e. "this(100,2900);" 
+     */
     public static final Class<ExplicitConstructorInvocationStmt> CONSTRUCTOR_INVOCATION
             = ExplicitConstructorInvocationStmt.class;
 
-    /** i.e. "this(100,2900);" */
+    /** 
+     * i.e."this(100,2900);" 
+     * 
+     * @param code the java code
+     * @return an ExplicitConstructorInvocationStmt based on the code
+     */
     public static ExplicitConstructorInvocationStmt ctorInvocationStmt(String... code ) {
         return of( code ).asExplicitConstructorInvocationStmt();
     }
@@ -339,7 +355,12 @@ public enum Stmt {
     /** i.e. "s += t;" */
     public static final Class<ExpressionStmt> EXPRESSION = ExpressionStmt.class;
 
-    /** i.e. "s += t;" */
+    /** 
+     * i.e."s += t;" 
+     * 
+     * @param code
+     * @return 
+     */
     public static ExpressionStmt expressionStmt( String... code ) {
         String str = Text.combine( code );
         if(str.endsWith(";") ){
@@ -352,7 +373,11 @@ public enum Stmt {
     /** i.e. "for(int i=0; i<100;i++) {...}" */
     public static final Class<ForStmt> FOR = ForStmt.class;
 
-    /** i.e. "for(int i=0; i<100;i++) {...}" */
+    /** 
+     * i.e."for(int i=0; i<100;i++) {...}"
+     * @param code
+     * @return 
+     */
     public static ForStmt forStmt( String... code ) {
         return of( code ).asForStmt();
     }
@@ -360,7 +385,12 @@ public enum Stmt {
     /** i.e. "for(String element:arr){...}" */
     public static final Class<ForEachStmt> FOR_EACH = ForEachStmt.class;
 
-    /** i.e. "for(String element:arr){...}" */
+    /** 
+     * i.e."for(String element:arr){...}" 
+     * 
+     * @param code
+     * @return 
+     */
     public static ForEachStmt forEachStmt( String... code ) {
         return of( code ).asForEachStmt(); //.asForeachStmt();
     }
@@ -368,7 +398,11 @@ public enum Stmt {
     /** i.e. "if(a==1){...}" */
     public static final Class<IfStmt> IF = IfStmt.class;
 
-    /** i.e. "if(a==1){...}" */
+    /** 
+     * i.e."if(a==1){...}" 
+     * @param code
+     * @return 
+     */
     public static IfStmt ifStmt( String... code ) {
         return of( code ).asIfStmt();
     }
@@ -376,7 +410,11 @@ public enum Stmt {
     /** i.e. "outer:   start = getValue();" */
     public static final Class<LabeledStmt> LABELED = LabeledStmt.class;
 
-    /** i.e. "outer:   start = getValue();" */
+    /** 
+     * i.e."outer:   start = getValue();" 
+     * @param code
+     * @return 
+     */
     public static LabeledStmt labeledStmt( String... code ) {
         return of( code ).asLabeledStmt();
     }
@@ -397,41 +435,83 @@ public enum Stmt {
     /** i.e. "return VALUE;" */
     public static final Class<ReturnStmt> RETURN = ReturnStmt.class;
 
-    /** i.e. "return VALUE;" */
+    /** 
+     * i.e."return VALUE;" 
+     * 
+     * @param code
+     * @return 
+     */
     public static ReturnStmt returnStmt( String... code ) {
         return of( code ).asReturnStmt();
     }
 
+    /** i.e. "switch(a) { case 1: break; default : doMethod(a); }" */ 
     public static final Class<SwitchStmt> SWITCH = SwitchStmt.class;
     
+    /** 
+     * i.e."switch(a) { case 1: break; default : doMethod(a); }" 
+     * 
+     * @param code
+     * @return 
+     */    
     public static SwitchStmt switchStmt( String... code ) {
 
         return of( code ).asSwitchStmt();
     }
 
+    /** i.e. "synchronized(e) { ...}" */
     public static final Class<SynchronizedStmt> SYNCHRONIZED = SynchronizedStmt.class;
     
+    /**
+     * i.e. "synchronized(e) { ...}"
+     * @param code
+     * @return 
+     */
     public static SynchronizedStmt synchronizedStmt( String... code ) {
         return of( code ).asSynchronizedStmt();
     }
 
+    /**
+     * i.e. "throw new RuntimeException("SHOOT");"
+     */
     public static final Class<ThrowStmt> THROW = ThrowStmt.class;
+    
+    /**
+     * i.e."throw new RuntimeException("SHOOT");"
+     * 
+     * @param code
+     * @return 
+     */
     public static ThrowStmt throwStmt( String... code ) {
         return of( code ).asThrowStmt();
     }
 
     /** i.e. "try{ clazz.getMethod("fieldName"); }" */
     public static final Class<TryStmt> TRY = TryStmt.class;
+    
+    /** 
+     * i.e. "try{ clazz.getMethod("fieldName"); }" 
+     * @param code
+     * @return 
+     */
     public static TryStmt tryStmt( String... code ) {
         return of( code ).asTryStmt();
     }
 
     /** i.e. "while(i< 1) { ... }"*/
     public static final Class<WhileStmt> WHILE = WhileStmt.class;
+    
+    /** 
+     * i.e."while(i< 1) { ...}"
+     * 
+     * @param code
+     * @return 
+     */    
     public static WhileStmt whileStmt( String... code ) {
         return of( code ).asWhileStmt();
     }
 
+    /** an empty statement i.e. ";" */
     public static final Class<EmptyStmt> EMPTY = EmptyStmt.class;
 }
 
