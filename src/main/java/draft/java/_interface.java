@@ -309,9 +309,12 @@ public final class _interface implements _type<ClassOrInterfaceDeclaration, _int
         if( !Objects.equals( this.getPackage(), other.getPackage())){
             return false;
         }
-        if( !Objects.equals( this.getAnnos(), other.getAnnos())){
+        if( ! Expr.equivalentAnnos(this.astInterface, other.astInterface)){
             return false;
         }
+        //if( !Objects.equals( this.getAnnos(), other.getAnnos())){
+        //    return false;
+        // }
         if( this.hasJavadoc() != other.hasJavadoc() ){
             return false;
         }
@@ -381,13 +384,15 @@ public final class _interface implements _type<ClassOrInterfaceDeclaration, _int
         Set<_type> nests = new HashSet<>();
         nests.addAll(  this.listNests() );
 
-        hash = 53 * Objects.hash( this.getPackage(), Ast.annotationsHash(astInterface),
-                this.getJavadoc(),this.getModifiers(), this.getTypeParameters(),
-                tm, tf,
-                //te, tis,
-                Ast.importsHash(astInterface),
-                Ast.typesHashCode(astInterface.getExtendedTypes()),
-                nests);
+        hash = 53 * Objects.hash( this.getPackage(), 
+            Expr.hashAnnos(astInterface),
+            //Ast.annotationsHash(astInterface),
+            this.getJavadoc(),this.getModifiers(), this.getTypeParameters(),
+            tm, tf,
+            //te, tis,
+            Ast.importsHash(astInterface),
+            Ast.typesHashCode(astInterface.getExtendedTypes()),
+            nests);
 
         return hash;
     }

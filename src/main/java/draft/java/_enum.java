@@ -337,10 +337,12 @@ public final class _enum implements _type<EnumDeclaration, _enum>,_method._hasMe
         if( !Objects.equals( this.getPackage(), other.getPackage() ) ) {
             return false;
         }
-        if( !Objects.equals( this.getAnnos(), other.getAnnos() ) ) {
+        if( ! Expr.equivalentAnnos(this.astEnum, other.astEnum)){
             return false;
         }
-        
+        //if( !Objects.equals( this.getAnnos(), other.getAnnos() ) ) {
+        //    return false;
+        //}        
         if( !Objects.equals( this.getJavadoc(), other.getJavadoc() ) ) {
             return false;
         }
@@ -513,7 +515,8 @@ public final class _enum implements _type<EnumDeclaration, _enum>,_method._hasMe
         sbs.addAll( this.listStaticBlocks() );
 
         hash = 53 * hash + Objects.hash( this.getPackage(),
-                Ast.annotationsHash( astEnum),
+                Expr.hashAnnos(astEnum),
+                //Ast.annotationsHash( astEnum),
                 this.getJavadoc(), 
                 this.getEffectiveModifiers(),
                 this.getName(), 
@@ -562,6 +565,7 @@ public final class _enum implements _type<EnumDeclaration, _enum>,_method._hasMe
             return this.astConstant.getArguments().size() > 0;
         }
 
+        @Override
         public boolean is(String...stringRep){
            try{
                return is(Ast.constant(stringRep));
@@ -571,6 +575,7 @@ public final class _enum implements _type<EnumDeclaration, _enum>,_method._hasMe
            }
         }
         
+        @Override
         public boolean is(EnumConstantDeclaration ecd ){
             return of(ecd).equals(this);
         }
@@ -764,9 +769,12 @@ public final class _enum implements _type<EnumDeclaration, _enum>,_method._hasMe
             if( this.astConstant == other.astConstant){
                 return true; //two _constant pointing to the same AstEnumDeclaration
             }
-            if( !Objects.equals( this.getAnnos(), other.getAnnos() ) ) {
-                return false;
+            if( !Expr.equivalentAnnos(this.astConstant, other.astConstant ) ){
+                  return false;  
             }
+            //if( !Objects.equals( this.getAnnos(), other.getAnnos() ) ) {
+            //    return false;
+            //}
             if( !Objects.equals( this.getJavadoc(), other.getJavadoc() ) ) {
                 return false;
             }
@@ -826,7 +834,10 @@ public final class _enum implements _type<EnumDeclaration, _enum>,_method._hasMe
             Set<_field> tfs = new HashSet<>();
             tfs.addAll( this.listFields());
 
-            hash = 13 * hash + Objects.hash( tms, tfs, getAnnos(), getJavadoc(),
+            hash = 13 * hash + Objects.hash( tms, tfs, 
+                    //getAnnos(), 
+                    Expr.hashAnnos(astConstant),
+                    getJavadoc(),
                     getName(), listArguments() );
             return hash;
         }        

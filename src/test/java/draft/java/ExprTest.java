@@ -47,7 +47,7 @@ public class ExprTest extends TestCase {
         assertFalse( l.equals(11));
         
         //this is a "semantic" equality comparison
-        assertTrue( Expr.equatesTo(l, ll) );
+        assertTrue( Expr.equivalent(l, ll) );
         
         //this is interesting, because syntactically they ARE equal
         // but semantically they are not

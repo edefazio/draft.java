@@ -336,9 +336,12 @@ public final class _annotation
         if( !Objects.equals( this.getJavadoc(), other.getJavadoc()) ){
             return false;
         }
-        if( !Ast.annotationsEqual( astAnnotation, other.astAnnotation)){
+        if( !Expr.equivalentAnnos(astAnnotation, astAnnotation)){
             return false;
         }
+        //if( !Ast.annotationsEqual( astAnnotation, other.astAnnotation)){
+        //    return false;
+        //}
         if( !Objects.equals( this.getName(), other.getName()) ){
             return false;
         }
@@ -442,7 +445,8 @@ public final class _annotation
         hash = 13 * hash + Objects.hashCode( this.getEffectiveModifiers() );
 
         hash = 13 * hash + Objects.hashCode( this.getJavadoc() );
-        hash = 13 * hash + Ast.annotationsHash( astAnnotation  );
+        hash = 13 * hash + Expr.hashAnnos(astAnnotation);
+        //hash = 13 * hash + Ast.annotationsHash( astAnnotation  );
 
         hash = 13 * hash + Objects.hashCode( this.getName() );
 
@@ -673,9 +677,12 @@ public final class _annotation
             if( this.astAnnMember == other.astAnnMember){
                 return true; //two _element instances pointing to same AstMemberDeclaration
             }
-            if( !Ast.annotationsEqual( this.astAnnMember, other.astAnnMember)){
+            if( ! Expr.equivalentAnnos(this.astAnnMember, other.astAnnMember)){
                 return false;
             }
+            //if( !Ast.annotationsEqual( this.astAnnMember, other.astAnnMember)){
+            //    return false;
+            //}
             if( !Objects.equals( this.getJavadoc(), other.getJavadoc() ) ) {
                 return false;
             }
@@ -706,7 +713,8 @@ public final class _annotation
         public int hashCode() {
             int hash = 7;
             hash = 97 * hash + Objects.hash(
-                    Ast.annotationsHash(this.astAnnMember),
+                    Expr.hashAnnos(this.astAnnMember),
+                    //Ast.annotationsHash(this.astAnnMember),
                     this.getJavadoc(),
                     this.getName(),
                     Ast.typeHash(this.astAnnMember.getType()),

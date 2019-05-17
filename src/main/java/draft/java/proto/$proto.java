@@ -418,10 +418,10 @@ public interface $proto<Q> {
                 return s.equals(v);
             }
             if (expectedValue instanceof Expression) {
-                return Expr.equatesTo((Expression) expectedValue, get($name));
+                return Expr.equivalent((Expression) expectedValue, get($name));
             } else if (expectedValue instanceof String) {
                 try {
-                    return Expr.equatesTo(Expr.of((String) expectedValue), o);
+                    return Expr.equivalent(Expr.of((String) expectedValue), o);
                 } catch (Exception e) {
 
                 }

@@ -97,10 +97,12 @@ public final class _parameter
         return this.astParameter.getType().equals( type );
     }
 
+    @Override
     public boolean isNamed( String name ) {
         return this.astParameter.getNameAsString().equals( name );
     }
 
+    @Override
     public boolean is( String... paramDecl ) {
         try {
             return equals( _parameter.of( Text.combine( paramDecl ) ) );
@@ -110,6 +112,7 @@ public final class _parameter
         return false;
     }
 
+    @Override
     public boolean is( Parameter astParam ){
         try {
             return equals( _parameter.of( astParam ) );
@@ -124,8 +127,11 @@ public final class _parameter
         int hash = 7;
         hash = 71 * hash
                 + //Objects.hashCode(this.astParameter );
-                Objects.hash( Ast.annotationsHash(astParameter),
+                Objects.hash( 
+                        Expr.hashAnnos(astParameter),
+                        //Ast.annotationsHash(astParameter),
                         this.getName(),
+                        
                         Ast.typeHash(astParameter.getType()),
                         this.isVarArg(),
                         this.isFinal() );
@@ -151,9 +157,12 @@ public final class _parameter
         if( left.isFinal() != right.isFinal()){
             return false;
         }
-        if( !Ast.annotationsEqual( left, right)){
+        if( ! Expr.equivalentAnnos(left, right)){
             return false;
         }
+        //if( !Ast.annotationsEqual( left, right)){
+        //    return false;
+        //}
         if( ! Ast.typesEqual(left.getType(), right.getType())){
             return false;
         }
@@ -184,9 +193,12 @@ public final class _parameter
         if( !Ast.typesEqual(astParameter.getType(), other.astParameter.getType())){
             return false;
         }
-        if(!Ast.annotationsEqual(astParameter, other.astParameter)){
+        if( !Expr.equivalentAnnos(astParameter, other.astParameter)){
             return false;
         }
+        //if(!Ast.annotationsEqual(astParameter, other.astParameter)){
+        //    return false;
+        //}
         return true;
     }
 

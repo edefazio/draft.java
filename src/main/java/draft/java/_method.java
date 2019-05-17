@@ -167,10 +167,15 @@ public final class _method
         final _method other = (_method) obj;
         if (this.astMethod == other.astMethod) {
             return true; //two _method s pointing to the same MethodDeclaration
-        }        
+        }
+        if( ! Expr.equivalentAnnos(astMethod, other.astMethod)){
+            return false;
+        }
+        /*
         if (!Ast.annotationsEqual(astMethod, other.astMethod)) {
             return false;
         }
+        */
         if (!Objects.equals(this.getBody(), other.getBody())) {
             return false;
         }
@@ -225,7 +230,8 @@ public final class _method
         int hash = 3;
 
         hash = 23 * hash + Objects.hash(
-                Ast.annotationsHash(astMethod),
+                Expr.hashAnnos(astMethod),
+                //Ast.annotationsHash(astMethod),
                 this.getBody(),
                 this.getJavadoc(),
                 this.getEffectiveModifiers(), //this.getModifiers(),

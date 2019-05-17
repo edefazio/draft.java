@@ -2,9 +2,11 @@ package draft.java;
 
 import com.github.javaparser.*;
 import com.github.javaparser.ast.Node;
+import com.github.javaparser.ast.NodeList;
 import com.github.javaparser.ast.comments.BlockComment;
 import com.github.javaparser.ast.comments.JavadocComment;
 import com.github.javaparser.ast.expr.*;
+import com.github.javaparser.ast.nodeTypes.NodeWithAnnotations;
 import com.github.javaparser.ast.stmt.Statement;
 import draft.DraftException;
 import draft.Text;
@@ -1170,7 +1172,12 @@ public enum Expr {
     /** i.e. "String:toString" */
     public static final Class<MethodReferenceExpr> METHOD_REFERENCE = MethodReferenceExpr.class;
 
-    /** i.e. "String:toString" */
+    /** 
+     * i.e."String:toString" 
+     * 
+     * @param code
+     * @return 
+     */
     public static MethodReferenceExpr methodReference( String... code ) {
         String r = Text.combine(code);
         r = "o -> "+ r;
@@ -1258,7 +1265,11 @@ public enum Expr {
     /** "super" */
     public static final Class<SuperExpr> SUPER = SuperExpr.class;
 
-    /** "super" */
+    /** 
+     * "super" 
+     * 
+     * @return a super expression
+     */
     public static SuperExpr superExpr(  ) {
         return new SuperExpr();
     }
@@ -1307,6 +1318,12 @@ public enum Expr {
         return le.getBody().findFirst(UnaryExpr.class).get();        
     }
     
+    /**
+     * i.e. "!equals(t)" 
+     * 
+     * @param code the unary operator expression
+     * @return 
+     */
     public static UnaryExpr unary( String... code ) {
         return of( code ).asUnaryExpr();
     }
@@ -1316,10 +1333,16 @@ public enum Expr {
      */
     public static final Class<VariableDeclarationExpr> VARIABLE_DECLARATION = VariableDeclarationExpr.class;
 
+    /**
+     * i.e. "int i=1"
+     * Variable declaration expression
+     * 
+     * @param code
+     * @return 
+     */
     public static VariableDeclarationExpr varDecl( String... code ) {
         return StaticJavaParser.parseVariableDeclarationExpr( Text.combine( code ));
     }    
-    
     
     /**
      * We need this because syntactically there are many ways to represent the 
@@ -1336,11 +1359,21 @@ public enum Expr {
      * @return 
      */
     
-    public static boolean equatesTo( LiteralStringValueExpr left, LiteralStringValueExpr right ){
-        return equatesTo( parseNumber(left.getValue()), parseNumber( right.getValue() ) );        
+    public static boolean equivalent( LiteralStringValueExpr left, LiteralStringValueExpr right ){
+        //System.out.println( " checking eq "+left+ " "+right); 
+        if( left instanceof CharLiteralExpr ){
+            return (right instanceof CharLiteralExpr) && Objects.equals(left, right);
+        }
+        return equivalent( parseNumber(left.getValue()), parseNumber( right.getValue() ) );        
     }
     
-    public static boolean equatesTo( Number left, Number right ){
+    /**
+     * 
+     * @param left
+     * @param right
+     * @return 
+     */
+    public static boolean equivalent( Number left, Number right ){
         if( left.getClass() == right.getClass() ){
             return left.equals(right);
         }
@@ -1353,30 +1386,163 @@ public enum Expr {
     
     /**
      * 
+     * @param left
+     * @param right
+     * @return 
+     */
+    public static boolean equivalent( Expression left, Expression right ){
+        if( left == null ){
+            return right == null;
+        }
+        if( right == null ){
+            return false;
+        }
+        if( left.getClass() != right.getClass()){
+            return false;
+        }
+        if( left instanceof LiteralStringValueExpr ){
+            return equivalent( (LiteralStringValueExpr)left , (LiteralStringValueExpr)right);
+        }
+        if( left instanceof ArrayInitializerExpr ){
+            ArrayInitializerExpr ll = (ArrayInitializerExpr)left;
+            ArrayInitializerExpr rr = (ArrayInitializerExpr)right;
+            NodeList<Expression> lvs = ll.getValues();
+            NodeList<Expression> rvs = rr.getValues();
+            if( lvs.size() != lvs.size() ){
+                return false;
+            }
+            for(int i=0;i<lvs.size();i++){
+                if( ! equivalent( lvs.get(i), rvs.get(i))){
+                    return false;
+                }
+            }
+            return true;
+        }
+        //todo more work to be done
+        return left.equals(right);
+    }
+     
+    /**
+     * 
+     * @param left
+     * @param right
+     * @return 
+     */
+    public static boolean equivalentAnnos( NodeWithAnnotations left, NodeWithAnnotations right ){
+       NodeList<AnnotationExpr> las = left.getAnnotations();
+       NodeList<AnnotationExpr> ras = right.getAnnotations();
+       
+       if( las.size() != ras.size() ){
+           return false;
+       }
+       for(int i=0;i<las.size(); i++){
+           AnnotationExpr la = las.get(i);
+           if( !ras.stream().filter(a -> equivalent(a, la) ).findFirst().isPresent() ){
+               return false;
+           }
+       }
+       return true;       
+    }
+    
+    /**
+     * 
+     * @param left
+     * @param right
+     * @return 
+     */
+    public static boolean equivalent( AnnotationExpr left, AnnotationExpr right){
+        if( left == null ){
+            return right == null;
+        }
+        if( right == null ){
+            return false;
+        }
+        if( !normalizeName( left.getNameAsString()).equals( normalizeName(left.getNameAsString()) ) ){
+            return false;
+        }
+        if( left instanceof MarkerAnnotationExpr){
+            if( right instanceof MarkerAnnotationExpr){
+                return true;
+            }
+            if( right instanceof SingleMemberAnnotationExpr ){
+                return false;
+            }
+            return ((NormalAnnotationExpr)right).getPairs().isEmpty();            
+        }
+        if( left instanceof SingleMemberAnnotationExpr){
+            if( right instanceof MarkerAnnotationExpr){
+                return false;
+            }
+            if( right instanceof SingleMemberAnnotationExpr ){
+                return equivalent( ((SingleMemberAnnotationExpr) left).getMemberValue(), 
+                    ((SingleMemberAnnotationExpr) right).getMemberValue());
+            }
+            NormalAnnotationExpr ra = ((NormalAnnotationExpr)right);            
+            if( ra.getPairs().size() == 1 && ra.getPairs().get(0).getNameAsString().equals("value")){
+                return equivalent( ((SingleMemberAnnotationExpr) left).getMemberValue(),
+                    ra.getPairs().get(0).getValue() );
+            }
+            return false;
+        }
+        //left Must be a NormalAnnotationExpr
+        NormalAnnotationExpr la = (NormalAnnotationExpr)left;
+        if( right instanceof MarkerAnnotationExpr){
+            return la.getPairs().isEmpty();
+        }
+        if( right instanceof SingleMemberAnnotationExpr){
+            if( la.getPairs().size() == 1 && la.getPairs().get(0).getNameAsString().equals("value") ){
+                return equivalent( ((SingleMemberAnnotationExpr) right).getMemberValue(),
+                    la.getPairs().get(0).getValue() );
+            }
+            return false;
+        }
+        NormalAnnotationExpr ra = (NormalAnnotationExpr)right;
+        
+        if( la.getPairs().size() != ra.getPairs().size()){
+            return false;
+        }
+        for(int i=0;i<la.getPairs().size(); i++){
+            String name = la.getPairs().get(i).getNameAsString();
+            Expression ex = la.getPairs().get(i).getValue();
+            if( !ra.getPairs().stream().filter( p -> p.getNameAsString().equals(name) && equivalent( p.getValue(), ex) ).findFirst().isPresent()){
+                return false;
+            }
+        }
+        return true;        
+    }
+    
+    /**
+     * 
      * @param exp
      * @param o could be another expression, a String, or a value (integer, Float, array, etc.)
      * @return 
      */
-    public static boolean equatesTo (Expression exp, Object o) {
+    public static boolean equivalent (Expression exp, Object o) {
+        if( exp == null){
+            return o == null;
+        }
+        if( o instanceof Expression ){
+            return equivalent( exp, (Expression)exp );
+        }
         if( o == null || o instanceof NullLiteralExpr || o.equals("null") ) {
             return exp.equals( new NullLiteralExpr() );
         }
         if( exp instanceof LiteralStringValueExpr && o instanceof LiteralStringValueExpr ){
-            return equatesTo( (LiteralStringValueExpr) exp, (LiteralStringValueExpr)o);
+            return equivalent( (LiteralStringValueExpr) exp, (LiteralStringValueExpr)o);
         }
         else if( o instanceof String ){
             try{
                 Expression e = Expr.of( (String)o);
-                return equatesTo(exp , e );
+                return equivalent(exp , e );
             }catch(Exception e){
                 if( exp instanceof StringLiteralExpr ){
-                    return equatesTo( exp, Expr.stringLiteral(o.toString()) );
+                    return equivalent( exp, Expr.stringLiteral(o.toString()) );
                 }
             }
         }
         //handle All Wrapper types
         else if( o instanceof Number ||  o instanceof Boolean ){ //Int Float, etc.
-            return equatesTo( Expr.of(o.toString()), exp );
+            return equivalent( Expr.of(o.toString()), exp );
         }
         else if(o instanceof Character ){
             return Objects.equals( Expr.charLiteral( (Character)o), exp );
@@ -1386,19 +1552,19 @@ public enum Expr {
             if( o.getClass().getComponentType().isPrimitive() ){
                 Class ct = o.getClass().getComponentType();
                 if( ct == int.class ){
-                    return Objects.equals(exp, Expr.of( (int[])o) );
+                    return equivalent(exp, Expr.of( (int[])o) );
                 }
                 if( ct == float.class ){
-                    return Objects.equals(exp, Expr.of( (float[])o) );
+                    return equivalent(exp, Expr.of( (float[])o) );
                 }
                 if( ct == double.class ){
-                    return Objects.equals(exp, Expr.of( (double[])o) );
+                    return equivalent(exp, Expr.of( (double[])o) );
                 }
                 if( ct == boolean.class ){
-                    return Objects.equals(exp, Expr.of( (boolean[])o) );
+                    return equivalent(exp, Expr.of( (boolean[])o) );
                 }
                 if( ct == char.class ){
-                    return Objects.equals(exp, Expr.of( (char[])o) );
+                    return equivalent(exp, Expr.of( (char[])o) );
                 }
                 throw new DraftException("Only simple primitive types supported");                
             } 
@@ -1406,6 +1572,131 @@ public enum Expr {
         return false;
     }    
     
+    /**
+     * We need to do this for Expressions because there are many ways to 
+     * syntactically represent the same (semantic) thing
+     * i.e. 
+     * 
+     * @param e
+     * @return 
+     */
+    public static int hash( Expression e ){
+        if( e == null ){
+            return 0;
+        }
+        //here the expressions store their (numberic) values as Strings
+        // so there are a few ways to represent the same number
+        // 0b01110
+        // 0xDEADBEEF
+        // ...so we need to convert from the String representation to the 
+        // number representation and use that for the hashcode
+        if( e instanceof LiteralExpr ){
+            if( e instanceof LiteralStringValueExpr){
+                if( e instanceof IntegerLiteralExpr ){
+                    return Objects.hash( IntegerLiteralExpr.class, parseInt( (IntegerLiteralExpr)e ) );
+                } else if( e instanceof LongLiteralExpr ){
+                    return Objects.hash( LongLiteralExpr.class, parseLong( (LongLiteralExpr)e ) );
+                } else if( e instanceof DoubleLiteralExpr ){
+                    return Objects.hash( DoubleLiteralExpr.class, parseNumber( ((LiteralStringValueExpr)e).getValue() ) );
+                } else if( e instanceof BooleanLiteralExpr ){
+                    return e.hashCode();
+                } else if( e instanceof CharLiteralExpr ){
+                    return e.hashCode();
+                } else if( e instanceof StringLiteralExpr ){
+                    return e.hashCode();
+                }
+                return Objects.hash( e );            
+            } 
+            return e.hashCode(); //NullLiteral
+        }
+        if( e instanceof ArrayInitializerExpr){
+            //an array CAN have literals in them, so I have to do a visit/walk/hash 
+            //for each element
+            ArrayInitializerExpr aee = (ArrayInitializerExpr)e;
+            NodeList<Expression> es = aee.getValues();
+            List<Integer> hashy = new ArrayList<>();
+            for(int i=0;i<es.size();i++){
+                hashy.add( hash(es.get(i)) );
+            }
+            return hashy.hashCode();
+        }
+        if( e instanceof AnnotationExpr){
+            return hash( (AnnotationExpr)e);
+        }
+        //TODO I need to walk other entities (especially for complex things like
+        // 
+        return e.hashCode();
+    }
+    
+    
+    public static int memberValueHash(MemberValuePair mvp) {
+        if (mvp.getValue() instanceof AnnotationExpr) {
+            return Objects.hash(mvp.getNameAsString(), hash((AnnotationExpr) mvp.getValue()));
+        }
+        return Objects.hash(mvp.getNameAsString(), hash(mvp.getValue()));
+    }
+    
+    public static String normalizeName(String name) {
+        int idx = name.lastIndexOf('.');
+        if (idx < 0) {
+            return name;
+        }
+        return name.substring(idx + 1);
+    }
+    
+    public static int hashAnnos( NodeWithAnnotations nwa ){
+        Set<Integer> annoHashes = new HashSet<>();
+        nwa.getAnnotations().forEach(a -> annoHashes.add(hash( (AnnotationExpr)a) ) );
+        return annoHashes.hashCode();
+    }
+    
+    /**
+     * Return a Hash of an Annotation Expression we need to do this because
+     * <PRE>
+     * 1) the name can be simple or fully qualified
+     * 2) key-value pairs can appear in any order
+     *
+     * we want this annotation:
+     * @annotation(a=1,b='e')
+     * ...to be "equal" to this annotation:
+     * @fully.qualified.annotation(b='e',a=1)
+     *
+     * </PRE>
+     *
+     * @param ae
+     * @return
+     */
+    public static int hash(AnnotationExpr ae) {
+        if (ae instanceof NormalAnnotationExpr) {
+            NormalAnnotationExpr nae = (NormalAnnotationExpr) ae;
+            String normalizedName = normalizeName(nae.getNameAsString());
+
+            NodeList<MemberValuePair> pairs = nae.getPairs();
+            //Annotations can contain OTHER ANNOTATIONS
+            Set<Integer> memberValueHashes = new HashSet<>(); //Hash them all
+            pairs.forEach(p -> memberValueHashes.add(memberValueHash(p)));
+            return Objects.hash(normalizedName, memberValueHashes);
+        }
+        if (ae instanceof SingleMemberAnnotationExpr) {
+            SingleMemberAnnotationExpr sa = (SingleMemberAnnotationExpr) ae;
+            String normalizedName = normalizeName(sa.getNameAsString());
+            Expression memberValue = sa.getMemberValue();
+            if (memberValue instanceof AnnotationExpr) {
+                //we ALSO have t
+                return Objects.hash(normalizedName, hash((AnnotationExpr) memberValue));
+            }
+            //Set<MemberValuePair> mvps = new HashSet<>();
+            Set<Integer> memberValueHashes = new HashSet<>(); //Hash them all
+            memberValueHashes.add( memberValueHash(new MemberValuePair("value", memberValue) ) );
+            //we want this: 
+            // @a(1)
+            //to be the same as:
+            // @a(value=1)
+            return Objects.hash(normalizedName, memberValueHashes);
+        }
+        //it's a marker annotation
+        return Objects.hash(normalizeName(ae.getNameAsString()));
+    }
     
      /**
      * A local number format we can use to compare number literals...
@@ -1414,7 +1705,7 @@ public enum Expr {
      */
     private static final NumberFormat NF = NumberFormat.getInstance();
     
-    public static boolean isEqual(LiteralStringValueExpr ie, Expression e){
+    public static boolean equivalent(LiteralStringValueExpr ie, Expression e){
         if( e instanceof LiteralStringValueExpr ){
             return parseLong(ie).equals( parseLong( e.asLiteralStringValueExpr().getValue() ) );
         }
@@ -1481,7 +1772,7 @@ public enum Expr {
             return Integer.parseInt(str.substring(2).replace("_", ""), 2);
         }        
         try{
-            return NF.parse(str.replace("_", ""));
+            return NF.parse(str.replace("_", "").replace("F", "f").replace("D", "d"));
         }catch( Exception e){
             throw new RuntimeException(""+e);
         }

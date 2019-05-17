@@ -121,6 +121,8 @@ public final class _field
         try {
             return of(fieldDeclaration).equals(this);
         } catch (Exception e) {
+            System.err.println("AN EXCEPTION " + e);
+            System.out.println( Text.combine(fieldDeclaration)+" not a valid field ");
             return false;
         }
     }
@@ -346,9 +348,13 @@ public final class _field
         if (!Ast.typesEqual(this.astVar.getType(), other.astVar.getType())) {
             return false;
         }
-        if (!Objects.equals(getInit(), other.getInit())) {
+        if( !Expr.equivalent(getInit(), other.getInit())) {
+            //System.out.println("Not equivalent" + getInit() +" "+ other.getInit());
             return false;
         }
+        //if (!Objects.equals(getInit(), other.getInit())) {
+        //    return false;
+        //}
         if (!Objects.equals(getJavadoc(), other.getJavadoc())) {
             return false;
         }
@@ -357,9 +363,16 @@ public final class _field
                 if (!Ast.modifiersEqual(getFieldDeclaration(), other.getFieldDeclaration())) {
                     return false;
                 }
-                if (!Ast.annotationsEqual(getFieldDeclaration(), other.getFieldDeclaration())) {
+                //if( !Expr.(left, right))
+                if(! Expr.equivalentAnnos(getFieldDeclaration(), other.getFieldDeclaration()) ){
                     return false;
                 }
+                //if( !Expr.(left, right)){
+                    
+                //}
+                //if (!Ast.annotationsEqual(getFieldDeclaration(), other.getFieldDeclaration())) {
+                //    return false;
+                //}
             }
         } else{
             //if this is ONLY a var
@@ -387,8 +400,10 @@ public final class _field
         ms.addAll(getEffectiveModifiers());
         return Objects.hash(getName(), Ast.typeHash(astVar.getType()),
                 ms, //getModifiers(),
-                Ast.annotationsHash(getFieldDeclaration()),
-                getJavadoc(), getInit());
+                //Ast.annotationsHash(getFieldDeclaration()),
+                Expr.hashAnnos(getFieldDeclaration()),
+                getJavadoc(), 
+                Expr.hash(getInit()));
     }
 
     public _field copy() {

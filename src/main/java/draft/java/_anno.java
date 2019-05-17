@@ -660,14 +660,21 @@ public final class _anno
         if( this.astAnno instanceof MarkerAnnotationExpr ){
             return 31 * name.hashCode() + 15;
         }
-        if( this.astAnno instanceof SingleMemberAnnotationExpr){
-            Set<MemberValuePair> mvp = new HashSet<>();
-            mvp.add(new MemberValuePair( "value", this.astAnno.asSingleMemberAnnotationExpr().getMemberValue()));            
-            return Objects.hash(name, mvp );    
+        if( this.astAnno instanceof SingleMemberAnnotationExpr){            
+            Map<String,Integer> hm = new HashMap<>();
+            hm.put( "value", Expr.hash(this.astAnno.asSingleMemberAnnotationExpr().getMemberValue()));
+            return hm.hashCode();
+            //Set<MemberValuePair> mvp = new HashSet<>();
+            //mvp.add(new MemberValuePair( "value", this.astAnno.asSingleMemberAnnotationExpr().getMemberValue()));            
+            //return Objects.hash(name, mvp );    
         }        
-        Set<MemberValuePair> mvp = new HashSet<>();
-        this.astAnno.asNormalAnnotationExpr().getPairs().forEach(p -> mvp.add(p) );        
-        return Objects.hash(name, mvp );        
+        Map<String,Integer> hm = new HashMap<>();
+        this.astAnno.asNormalAnnotationExpr().getPairs().forEach(p -> hm.put(p.getNameAsString(), Expr.hash( p.getValue()) ) );        
+        return hm.hashCode();
+        
+        //Set<MemberValuePair> mvp = new HashSet<>();
+        //this.astAnno.asNormalAnnotationExpr().getPairs().forEach(p -> mvp.add(p) );        
+        //return Objects.hash(name, mvp );        
     }
 
     @Override

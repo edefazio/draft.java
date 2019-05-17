@@ -753,9 +753,12 @@ public final class _class implements _type<ClassOrInterfaceDeclaration, _class>,
         if( !Objects.equals( this.getJavadoc(), other.getJavadoc() ) ) {
             return false;
         }
-        if( !Ast.annotationsEqual( this.astClass, other.astClass)){
+        if( ! Expr.equivalentAnnos(this.astClass, other.astClass)){
             return false;
         }
+        //if( !Ast.annotationsEqual( this.astClass, other.astClass)){
+        //    return false;
+        //}
         if( !Objects.equals( this.getModifiers(), other.getModifiers() ) ) {
             return false;
         }
@@ -860,7 +863,8 @@ public final class _class implements _type<ClassOrInterfaceDeclaration, _class>,
                 this.getJavadoc(), this.getAnnos(), this.getModifiers(),
                 this.getTypeParameters(), Ast.typeHash(this.getExtends()),
                 sbs, Ast.typesHashCode( ast().getImplementedTypes() ),
-                Ast.importsHash(astClass),
+                Expr.hashAnnos(astClass),
+                //Ast.importsHash(astClass),
                 tf, tm, tc, tn);
 
         return hash;

@@ -148,9 +148,12 @@ public final class _constructor implements _anno._hasAnnos<_constructor>,
         if( this.astCtor == other.astCtor ) {
             return true; //two _constructor instances pointing to same ConstructorDeclaration instance
         }        
-        if( !Ast.annotationsEqual( this.astCtor, other.astCtor)) {
+        if( ! Expr.equivalentAnnos(this.astCtor, other.astCtor)){
             return false;
         }
+        //if( !Ast.annotationsEqual( this.astCtor, other.astCtor)) {
+        //   return false;
+        //}
         if( !Objects.equals( this.getBody(), other.getBody() ) ) {
             return false;
         }
@@ -200,12 +203,13 @@ public final class _constructor implements _anno._hasAnnos<_constructor>,
     public int hashCode() {
         int hash = 7;
         hash = 79 * hash + Objects.hash(
-            Ast.annotationsHash( astCtor ), 
+            Expr.hashAnnos(astCtor),
+            //Ast.annotationsHash( astCtor ), 
             this.getBody(), 
             this.getJavadoc(),
             this.getEffectiveModifiers(),
             this.getName(), 
-            this.getParameters(),
+            this.getParameters(),            
             Ast.typesHashCode( astCtor.getThrownExceptions()), 
             this.getTypeParameters(), 
             this.getReceiverParameter() );

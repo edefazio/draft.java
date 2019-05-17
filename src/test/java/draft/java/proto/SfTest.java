@@ -163,6 +163,8 @@ public class SfTest extends TestCase {
     
     public void testConstruct$F(){
         _field _f = $field.of("int f").construct();
+        System.out.println( _f );
+        
         assertTrue( _f.is("int f") );
         
         _f = $field.ofName("f").construct("type", int.class);
