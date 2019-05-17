@@ -1,6 +1,7 @@
 package draft.java.proto;
 
 import com.github.javaparser.ast.Node;
+import com.github.javaparser.ast.expr.AnnotationExpr;
 import com.github.javaparser.ast.nodeTypes.NodeWithAnnotations;
 import draft.*;
 import draft.java.Walk;
@@ -246,24 +247,34 @@ public class $annos
         if( ! this.constraint.test(_anns)){
             return null;
         }
+        //System.out.println( "annos BEFORE "+_anns);
+        //System.out.println( "annos BEFORE "+_anns.list());
         List<_anno> annosLeft = new ArrayList<>();
         annosLeft.addAll( _anns.list() );
         Tokens tokens = new Tokens();
         //_annos _as = _annotated.getAnnos();
         for(int i=0;i<this.$annosList.size();i++){
+            
             $anno $a = $annosList.get(i);
+            //System.out.println("checking "+ $a );
             Optional<_anno> oa = annosLeft.stream().filter(a-> $a.matches(a)).findFirst();
             if( !oa.isPresent() ){
+                //System.out.println( "Not present anno "+$a +"  : "+annosLeft);
                 return null; //didnf find a matching anno
             }
-            annosLeft.remove(oa.get());
+            _anno got = oa.get();
+           // System.out.println( "annosLeft BEFORE "+annosLeft +" "+ got);
+            annosLeft.remove(got);
+            //System.out.println( "annosLeft AFTER  "+annosLeft +" "+got);
             $anno.Select $as = $a.select(oa.get());
-            if( tokens.isConsistent($as.args.asTokens())){ //args arent consistent
+            if( tokens.isConsistent($as.args.asTokens())){ //args are consistent                
                 tokens.putAll($as.args.asTokens());
             } else{
+                //System.out.println( "Consistency error for "+tokens +"  : "+$as.args.asTokens() );
                 return null;
             }
         }
+        //System.out.println("returning new Select for "+_anns);
         return new Select(_anns, tokens);
     }
     

@@ -966,19 +966,24 @@ public class $anno
         }
         
         Tokens ts = name.decompose(_a.getName());
-        if ($mvs.isEmpty() || ts == null) {
+        if( ts == null ){
+            //System.out.println( "Decompose null for name "+name+" for \""+_a.getName()+"\"");
+            return null;
+        }
+        if ($mvs.isEmpty() ) {
             //System.out.println( "Returning "+ts+" for name \""+_a.getName()+"\"");
             return ts;
         }
         AnnotationExpr astAnn = _a.ast();
         if (astAnn instanceof MarkerAnnotationExpr) {
-            //System.out.println( "Marketer");
+            //System.out.println( "Marketer");            
             if ($mvs.size() == 1) {
                 if ($mvs.get(0).isMatchAll()) {
                     return ts;
                 }
                 return null;
             }
+            
             return null;
         }
         if (astAnn instanceof SingleMemberAnnotationExpr) {
@@ -1101,8 +1106,10 @@ public class $anno
     }
     
     public Select select(_anno _a){
+        System.out.println( "testing "+ _a);
         if(this.constraint.test(_a)){
-            Tokens ts = decompose(_a);
+            System.out.println( "passed constraint "+ _a);
+            Tokens ts = decompose(_a);            
             if( ts != null ){
                 return new Select(_a, ts);
             }
@@ -1510,7 +1517,7 @@ public class $anno
     public String toString(){
         StringBuilder sb = new StringBuilder();
         sb.append("@");
-        sb.append(this.name);
+        sb.append(this.name.pattern);
         if( this.$mvs.isEmpty() ){
             return sb.toString();
         }

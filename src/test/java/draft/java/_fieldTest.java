@@ -16,6 +16,14 @@ import test.ann;
  */
 public class _fieldTest extends TestCase {
 
+    public void testFieldWithAnnotationOrder(){
+        _field _f1 = _field.of("@A @B int i= 0;");
+        _field _f2 = _field.of("@B @A int i= 0;");
+        
+        assertEquals( _f1, _f2);
+        assertEquals( _f1.hashCode(), _f2.hashCode());
+    }
+    
     public void testFieldInitWithLambda(){
         _field _f = _field.of("private final String s;")
                 .init( ()-> "Lollipop v." + 5.0d );

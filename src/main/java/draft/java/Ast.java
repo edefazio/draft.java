@@ -1997,16 +1997,7 @@ public enum Ast {
                         nodeActionFn.accept((N) n);
                     }
                 }
-            });
-        /*
-        astRootNode.stream(traversal).forEach(n -> {
-            if (targetNodeClass.isAssignableFrom(n.getClass())) {
-                if (nodeMatchFn.test((N) n)) {
-                    nodeActionFn.accept((N) n);
-                }
-            }
-        });
-        */
+            });        
         return astRootNode;
     }
 
@@ -2569,9 +2560,11 @@ public enum Ast {
         //return EnumSet.noneOf(Modifier.class); //nothing for a _class
     }
 
+    /*
     private static boolean isFullyQualified(String s) {
         return s.indexOf('.') > 0;
     }
+    */
 
     /**
      * Here we test for equivalency of two AST AnnotationExpr s note: if we
@@ -2587,7 +2580,7 @@ public enum Ast {
      * @param right
      * @return if the left and right ANNOTATIONS are equal in the semantic sense
      * (they MEAN the same thing)
-     */
+    
     public static boolean annotationEqual(AnnotationExpr left, AnnotationExpr right) {
         if (left == null) {
             return right == null;
@@ -2637,22 +2630,9 @@ public enum Ast {
         }
         return lps.equals(rps);
     }
+    */ 
 
-    /**
-     * Test the member value pairs of an NormalAnnotationExpr to determine if
-     * they are equal
-     *
-     * @param ta
-     * @param oa
-     * @return
-     */
-    public boolean memberValuePairsEqual(NodeList<MemberValuePair> ta, NodeList<MemberValuePair> oa) {
-        if (ta.size() != oa.size()) {
-            return false;
-        }
-        return !ta.stream().filter(m -> !oa.contains(m)).findFirst().isPresent();
-    }
-
+    /*
     public static String normalizeName(String name) {
         int idx = name.lastIndexOf('.');
         if (idx < 0) {
@@ -2660,38 +2640,7 @@ public enum Ast {
         }
         return name.substring(idx + 1);
     }
-
-    public static int memberValueHash(MemberValuePair mvp) {
-        if (mvp.getValue() instanceof AnnotationExpr) {
-            return Objects.hash(mvp.getNameAsString(), annotationHash((AnnotationExpr) mvp.getValue()));
-        }
-        return Objects.hash(mvp.getNameAsString(), mvp.getValue());
-    }
-
-    public static boolean annotationsEqual(NodeWithAnnotations left, NodeWithAnnotations right) {
-        if (left == right) {
-            return true;
-        }
-        if (left == null) {
-            return right == null;
-        }
-        if (right == null) {
-            return false;
-        }
-        if (left.getAnnotations().size() != right.getAnnotations().size()) {
-            return false;
-        }
-        //if they ARE the same size, iterate over one and stream to find each in the other
-        List<AnnotationExpr> la = left.getAnnotations();
-        for (int i = 0; i < la.size(); i++) {
-            AnnotationExpr t = la.get(i);
-            if (!right.getAnnotations().stream()
-                    .filter(a -> annotationEqual((AnnotationExpr) a, t)).findFirst().isPresent()) {
-                return false;
-            }
-        }
-        return true;
-    }
+    */
 
     public static int importsHash(TypeDeclaration td) {
         if (!td.isTopLevelType()) {
@@ -2708,71 +2657,7 @@ public enum Ast {
         cu.getImports().forEach(i -> is.add(i.hashCode()));
         return is.hashCode();
     }
-
-    /**
-     * A way to handle fully - v- non fully qualified ANNOTATIONS that can
-     * appear in any order to create the same hashcode
-     *
-     * @param na a Node With ANNOTATIONS
-     * @return the hashCode
-     */
-    public static int annotationsHash(NodeWithAnnotations na) {
-        if (na == null) {
-            return 0;
-        }
-        Set<Integer> annotationHashes = new HashSet<>();
-        na.getAnnotations().forEach(a -> annotationHashes.add(annotationHash((AnnotationExpr) a)));
-        return annotationHashes.hashCode();
-    }
-
-    /**
-     * Return a Hash of an Annotation Expression we need to do this because
-     * <PRE>
-     * 1) the name can be simple or fully qualified
-     * 2) key-value pairs can appear in any order
-     *
-     * we want this annotation:
-     * @annotation(a=1,b='e')
-     * ...to be "equal" to this annotation:
-     * @fully.qualified.annotation(b='e',a=1)
-     *
-     * </PRE>
-     *
-     * @param ae
-     * @return
-     */
-    public static int annotationHash(AnnotationExpr ae) {
-        if (ae instanceof NormalAnnotationExpr) {
-            NormalAnnotationExpr nae = (NormalAnnotationExpr) ae;
-            String normalizedName = normalizeName(nae.getNameAsString());
-
-            NodeList<MemberValuePair> pairs = nae.getPairs();
-            //Annotations can contain OTHER ANNOTATIONS
-            Set<Integer> memberValueHashes = new HashSet<>(); //Hash them all
-            pairs.forEach(p -> memberValueHashes.add(memberValueHash(p)));
-            return Objects.hash(normalizedName, memberValueHashes);
-        }
-        if (ae instanceof SingleMemberAnnotationExpr) {
-            SingleMemberAnnotationExpr sa = (SingleMemberAnnotationExpr) ae;
-            String normalizedName = normalizeName(sa.getNameAsString());
-            Expression memberValue = sa.getMemberValue();
-            if (memberValue instanceof AnnotationExpr) {
-                //we ALSO have t
-                return Objects.hash(normalizedName, annotationHash((AnnotationExpr) memberValue));
-            }
-            //Set<MemberValuePair> mvps = new HashSet<>();
-            Set<Integer> memberValueHashes = new HashSet<>(); //Hash them all
-            memberValueHashes.add( memberValueHash(new MemberValuePair("value", memberValue) ) );
-            //we want this: 
-            // @a(1)
-            //to be the same as:
-            // @a(value=1)
-            return Objects.hash(normalizedName, memberValueHashes);
-        }
-        //it's a marker annotation
-        return Objects.hash(normalizeName(ae.getNameAsString()));
-    }
-
+    
     /**
      *
      * @param t

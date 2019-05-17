@@ -36,7 +36,8 @@ import java.util.function.Consumer;
  */
 public class AstTest extends TestCase {
 
-    /*
+     
+   /*
     public void testJDK12SwitchExpression(){        
         //SwitchExpr astSwe = 
         //    Ast.switchExpr( "int a = switch(x) { case 5,6 -> 20; case 9 -> 30; default -> 40; };"); 
@@ -103,8 +104,10 @@ public class AstTest extends TestCase {
         assertNotSame(_a.ast(), _b.ast() );
         
         //make sure I can equate them to be equal
-        assertTrue( Ast.annotationEqual(_a.ast(), _b.ast()) );
-        assertEquals( Ast.annotationHash(_a.ast() ), Ast.annotationHash( _b.ast() ) );
+        assertTrue( Expr.equivalent(_a.ast(), _b.ast()) );
+        //assertTrue( Ast.annotationEqual(_a.ast(), _b.ast()) );
+        assertEquals( Expr.hash(_a.ast() ), Expr.hash( _b.ast() ) );
+        //assertEquals( Ast.annotationHash(_a.ast() ), Ast.annotationHash( _b.ast() ) );
         
     }
     

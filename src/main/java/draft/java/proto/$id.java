@@ -137,6 +137,15 @@ public class $id implements $constructor.$part, $method.$part, $field.$part, $pa
         return null;
     }
 
+    /**
+     * 
+     * @return 
+     */
+    @Override
+    public String toString(){
+        return this.pattern.toString();
+    }
+    
     public final String normalize( String str ){
         int idx = str.lastIndexOf(".");
         if( idx > 0 ){

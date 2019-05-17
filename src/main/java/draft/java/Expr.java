@@ -1364,6 +1364,9 @@ public enum Expr {
         if( left instanceof CharLiteralExpr ){
             return (right instanceof CharLiteralExpr) && Objects.equals(left, right);
         }
+        if( left instanceof StringLiteralExpr){
+            return (right instanceof StringLiteralExpr) && Objects.equals(left, right);
+        }
         return equivalent( parseNumber(left.getValue()), parseNumber( right.getValue() ) );        
     }
     
@@ -1457,7 +1460,7 @@ public enum Expr {
         if( right == null ){
             return false;
         }
-        if( !normalizeName( left.getNameAsString()).equals( normalizeName(left.getNameAsString()) ) ){
+        if( !normalizeName( left.getNameAsString()).equals( normalizeName(right.getNameAsString()) ) ){
             return false;
         }
         if( left instanceof MarkerAnnotationExpr){

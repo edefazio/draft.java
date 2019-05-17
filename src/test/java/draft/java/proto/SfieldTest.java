@@ -1,5 +1,8 @@
 package draft.java.proto;
 
+import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
+import draft.java._class;
+import draft.java.macro._autoDto;
 import junit.framework.TestCase;
 
 /**
@@ -24,6 +27,10 @@ public class SfieldTest extends TestCase {
         
     }
     
+    public void testIso(){
+        assertTrue( $field.of("@A @B int i=0;").matches("@B @A int i=0;"));
+    }
+    
     public void testWithAnno(){
         
         assertTrue( $field.of("@A int i;").matches("@A int i;"));
@@ -34,8 +41,6 @@ public class SfieldTest extends TestCase {
         
         assertFalse( $field.of("@A @B int i=0;").matches("int i=0;"));
         assertFalse( $field.of("@A @B int i=0;").matches("@B int i=0;"));
-        assertFalse( $field.of("@A @B int i=0;").matches("@A int i=0;"));
-        assertTrue( $field.of("@A @B int i=0;").matches("@B @A int i=0;"));
-        
-    }
+        assertFalse( $field.of("@A @B int i=0;").matches("@A int i=0;"));        
+    }    
 }

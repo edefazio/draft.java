@@ -690,7 +690,8 @@ public final class _anno
         }
         final _anno other = (_anno)obj;
 
-        return Ast.annotationEqual(this.astAnno, other.astAnno );
+        return Expr.equivalent(astAnno, other.astAnno);
+        //return Ast.annotationEqual(this.astAnno, other.astAnno );
     }
 
     @Override
@@ -1191,7 +1192,8 @@ public final class _anno
 
         public int indexOf( AnnotationExpr astAnno ) {
             for( int i = 0; i < this.astAnnNode.getAnnotations().size(); i++ ) {
-                if( Ast.annotationEqual((AnnotationExpr)this.astAnnNode.getAnnotations().get( i ), astAnno ) ) {
+                if( Expr.equivalent((AnnotationExpr)this.astAnnNode.getAnnotations().get( i ), astAnno ) ) {
+                //if( Ast.annotationEqual((AnnotationExpr)this.astAnnNode.getAnnotations().get( i ), astAnno ) ) {
                     return i;
                 }
             }
@@ -1203,7 +1205,11 @@ public final class _anno
         }
 
         public boolean contains( AnnotationExpr astAnno ) {
-            return this.astAnnNode.getAnnotations().stream().filter(a -> Ast.annotationEqual((AnnotationExpr)a, astAnno ) ).findFirst().isPresent();
+            return this.astAnnNode.getAnnotations().stream().filter(
+                a -> Expr.equivalent((AnnotationExpr)a, astAnno ) ).findFirst().isPresent();
+            
+            //return this.astAnnNode.getAnnotations().stream().filter(
+            //    a -> Ast.annotationEqual((AnnotationExpr)a, astAnno ) ).findFirst().isPresent();
         }
 
         public boolean contains( Class<? extends Annotation> clazz ) {
@@ -1282,7 +1288,10 @@ public final class _anno
             for( int i = 0; i < this.astAnnNode.getAnnotations().size(); i++ ) {
                 AnnotationExpr e = (AnnotationExpr)this.astAnnNode.getAnnotations().get( i );
                 //find a matching annotation in other, if one isnt found, then not equal
-                if( !other.astAnnNode.getAnnotations().stream().filter( a -> Ast.annotationEqual( e, (AnnotationExpr)a ) ).findFirst().isPresent() ) {
+                if( !other.astAnnNode.getAnnotations().stream().filter( 
+                    a -> Expr.equivalent(e, (AnnotationExpr)a ) ).findFirst().isPresent() ) {    
+                    //a -> Ast.annotationEqual( e, (AnnotationExpr)a ) ).findFirst().isPresent() ) {
+                    
                     return false;
                 }
             }
