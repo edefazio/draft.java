@@ -52,6 +52,7 @@ import java.util.stream.Collectors;
  * .java     [javac]     .class     [JVM]
  * </PRE>
  *
+ * <PRE>
  * Examples:
  * //draft & compile return the (unloaded) byteCode for a drafted class
  * _classFiles _cfs = _javac.of(_class.of("C").fields("String firstName, lastName;"));
@@ -68,7 +69,7 @@ import java.util.stream.Collectors;
  * int num = (int)
  *    project.of( _class.of("C", new Object(){ public static int getNum(){return 123;} }))
  *        .proxy("C").call("getNum");
- *
+ * </PRE>
  * @author Eric
  * @param <AST> the Ast {@link TypeDeclaration} ({@link ClassOrInterfaceDeclaration},
  * {@link AnnotationDeclaration}, {@link EnumDeclaration}) that stores the state

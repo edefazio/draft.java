@@ -36,6 +36,10 @@ public class $case
     //public static final SwitchEntry.Type BLOCK = SwitchEntry.Type.BLOCK;
     //public static final SwitchEntry.Type THROWS_STATEMENT = SwitchEntry.Type.THROWS_STATEMENT;
 
+    public static $case of( Predicate<SwitchEntry> constraint ){
+        return any().addConstraint(constraint);
+    }
+    
     public static $case of( String...acase ){
         return of( Ast.switchEntry(acase ));
     }

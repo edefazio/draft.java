@@ -12,8 +12,13 @@ import java.util.List;
 import junit.framework.TestCase;
 
 /**
- * conversion of the Manual Tests found in the JavaParser Manual at:
- * https://github.com/javaparser/javaparser/wiki/Manual
+ * These are some real-world examples of building code provided by JavaParser.
+ * 
+ * This is useful for comparing and contrasting the API design of JavaParser 
+ * to the draft.java API.
+ * 
+ * the Manual Tests found in the  at:
+ * <A HREF="https://github.com/javaparser/javaparser/wiki/Manual">JavaParser Manual</A>
  * 
  * @author Eric
  */
