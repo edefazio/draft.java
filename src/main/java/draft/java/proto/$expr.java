@@ -5,7 +5,6 @@ import com.github.javaparser.ast.expr.*;
 import draft.*;
 import draft.java.*;
 import draft.java._model._node;
-import java.text.NumberFormat;
 
 import java.util.*;
 import java.util.function.BiConsumer;
@@ -2107,7 +2106,7 @@ public final class $expr <T extends Expression>
      * @param expressionClass
      * @param stencil 
      */
-    public $expr(Class<T>expressionClass, String stencil ){
+    public $expr (Class<T>expressionClass, String stencil ){
         this.expressionClass = expressionClass;
         this.exprPattern = Stencil.of(stencil);
     }
@@ -2117,7 +2116,7 @@ public final class $expr <T extends Expression>
      * @param constraint a constraint to be added
      * @return the modified $expr prototype
      */
-    public $expr addConstraint( Predicate<T>constraint ){
+    public $expr<T> addConstraint( Predicate<T>constraint ){
         this.constraint = this.constraint.and(constraint);
         return this;
     }
@@ -2128,7 +2127,7 @@ public final class $expr <T extends Expression>
      * @param constraint
      * @return 
      */
-    public $expr constraint( Predicate<T> constraint){
+    public $expr<T> constraint( Predicate<T> constraint){
         this.constraint = constraint;
         return this;
     }
@@ -2664,12 +2663,22 @@ public final class $expr <T extends Expression>
 
     /**
      * 
+     * @param clazz the target class to search through
+     * @param selectConsumer the consumer to operate on all selected entities
+     * @return the (potentially modified) _type of the clazz
+     */
+    public _type forSelectedIn(Class clazz, Consumer<Select<T>> selectConsumer ){
+        return forSelectedIn( _type.of(clazz), selectConsumer);
+    }
+    
+    /**
+     * 
      * @param <N>
      * @param _n
      * @param selectConsumer
      * @return 
      */
-    public <N extends _node> N forSelectedIn(N _n, Consumer<Select> selectConsumer ){
+    public <N extends _node> N forSelectedIn(N _n, Consumer<Select<T>> selectConsumer ){
         Walk.in(_n, this.expressionClass, e-> {
             Select sel = select( e );
             if( sel != null ){
@@ -2686,7 +2695,7 @@ public final class $expr <T extends Expression>
      * @param selectConsumer
      * @return 
      */
-    public <N extends Node> N forSelectedIn(N astNode, Consumer<Select> selectConsumer ){
+    public <N extends Node> N forSelectedIn(N astNode, Consumer<Select<T>> selectConsumer ){
         astNode.walk(this.expressionClass, e-> {
             Select sel = select( e );
             if( sel != null ){
@@ -2698,13 +2707,24 @@ public final class $expr <T extends Expression>
     
     /**
      * 
+     * @param clazz
+     * @param selectConstraint
+     * @param selectConsumer
+     * @return 
+     */
+    public _type forSelectedIn( Class clazz, Predicate<Select<T>> selectConstraint, Consumer<Select<T>> selectConsumer ){
+        return forSelectedIn( _type.of(clazz), selectConstraint, selectConsumer );
+    }
+    
+    /**
+     * 
      * @param <N>
      * @param _n
      * @param selectConstraint
      * @param selectConsumer
      * @return 
      */
-    public <N extends _node> N forSelectedIn(N _n, Predicate<Select<T>> selectConstraint, Consumer<Select> selectConsumer ){
+    public <N extends _node> N forSelectedIn(N _n, Predicate<Select<T>> selectConstraint, Consumer<Select<T>> selectConsumer ){
         Walk.in(_n, this.expressionClass, e-> {
             Select sel = select( e );
             if( sel != null  && selectConstraint.test(sel)){
