@@ -10,7 +10,9 @@ import draft.Template;
 import draft.Tokens;
 import draft.Translator;
 import draft.java.Ast;
+import draft.java.Walk;
 import draft.java._model._node;
+import draft.java._type;
 import draft.java.proto.$proto.$nameValues;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -123,33 +125,33 @@ public class $case
     }
     
     public Select select( SwitchEntry astSwitchEntry ){
-        System.out.println( "KKKKLLL ");
+        //System.out.println( "KKKKLLL ");
         if( ! constraint.test(astSwitchEntry)){
             return null;
         }
         if( astSwitchEntry.getLabels().isEmpty() ){
-            System.out.println( "test label is null");  
+            //System.out.println( "test label is null");  
             if( this.label == null ){
-                System.out.println( "$case label is null");                
+                //System.out.println( "$case label is null");                
                 return selectStatements( astSwitchEntry, new Tokens());
             }
             if( this.label.isMatchAny() ){
-                System.out.println( "isMatchAny");                
+                //System.out.println( "isMatchAny");                
                 return selectStatements( astSwitchEntry, new Tokens());
             }
             return null;
         }
         Expression label = astSwitchEntry.getLabels().get(0);
-        System.out.println("the label is "+ label);
+        //System.out.println("the label is "+ label);
         if( this.label == null ){
-            System.out.println( "$case label is null");
+            //System.out.println( "$case label is null");
             return null;
         }
-        System.out.println("Selecting "+ this.label);
+        //System.out.println("Selecting "+ this.label);
         $expr.Select sel = this.label.select(label);
         
         if( sel != null ){
-            System.out.println("Matched the label "+ label+" to "+this.label );
+            //System.out.println("Matched the label "+ label+" to "+this.label );
             return selectStatements(astSwitchEntry, sel.args.asTokens());            
         }
         return null;
@@ -174,7 +176,45 @@ public class $case
         }
         return null;                
     }
-
+    
+    /**
+     * 
+     * @param clazz
+     * @param selectConstraint
+     * @return 
+     */
+    public Select selectFirstIn(Class clazz, Predicate<Select>selectConstraint ){
+        return selectFirstIn( _type.of(clazz), selectConstraint);
+    }
+    
+    /**
+     * 
+     * @param _n
+     * @param selectConstraint
+     * @return 
+     */
+    public Select selectFirstIn(_node _n, Predicate<Select>selectConstraint ){
+        return selectFirstIn(_n.ast(), selectConstraint );
+    }
+    
+    /**
+     * 
+     * @param n
+     * @param selectConstraint
+     * @return 
+     */
+    public Select selectFirstIn(Node n, Predicate<Select>selectConstraint ){
+        Optional<SwitchEntry> ose = 
+            n.findFirst(SwitchEntry.class, se -> {
+                Select sel = select(se);
+                return sel != null && selectConstraint.test(sel);
+            });
+        if( ose.isPresent() ){
+            return select(ose.get());
+        }
+        return null;                
+    }
+    
     @Override
     public List<SwitchEntry> listIn(Node astRootNode) {
         List<SwitchEntry> found = new ArrayList<>();
@@ -189,10 +229,23 @@ public class $case
         return found;        
     }
     
+    /**
+     * 
+     * @param <N>
+     * @param _n
+     * @param selectConstraint
+     * @return 
+     */
     public <N extends _node> List<Select> listSelectedIn(N _n, Predicate<Select> selectConstraint) {
         return listSelectedIn( _n.ast() );        
     }
     
+    /**
+     * 
+     * @param astRootNode
+     * @param selectConstraint
+     * @return 
+     */
     public List<Select> listSelectedIn(Node astRootNode, Predicate<Select> selectConstraint) {
         List<Select> found = new ArrayList<>();
         forEachIn( astRootNode, s-> {
@@ -214,6 +267,97 @@ public class $case
         return astRootNode;
     }
 
+    /**
+     * 
+     * @param clazz
+     * @param selectActionFn
+     * @return 
+     */
+    public _type forSelectedIn(Class clazz, Consumer<Select> selectActionFn) {
+        return forSelectedIn(_type.of(clazz), selectActionFn);
+    }
+    
+    /**
+     * 
+     * @param clazz
+     * @param selectConstraint
+     * @param selectActionFn
+     * @return 
+     */
+    public _type forSelectedIn(Class clazz, Predicate<Select> selectConstraint, Consumer<Select> selectActionFn) {
+        return forSelectedIn(_type.of(clazz), selectConstraint, selectActionFn);
+    }
+    
+    /**
+     * 
+     * @param <N>
+     * @param _n
+     * @param selectActionFn
+     * @return 
+     */
+    public <N extends _node> N forSelectedIn(N _n, Consumer<Select> selectActionFn) {
+        Walk.in(_n, SwitchEntry.class, se-> {
+            Select sel = select(se);
+            if( sel != null ) {
+                selectActionFn.accept(sel);
+            }
+        });
+        return _n;
+    }
+    
+    /**
+     * 
+     * @param <N>
+     * @param _n
+     * @param selectConsumer
+     * @param selectActionFn
+     * @return 
+     */
+    public <N extends _node> N forSelectedIn(N _n, Predicate<Select> selectConsumer, Consumer<Select> selectActionFn) {
+        Walk.in(_n, SwitchEntry.class, se-> {
+            Select sel = select(se);
+            if( sel != null && selectConsumer.test(sel) ) {
+                selectActionFn.accept(sel);
+            }
+        });
+        return _n;
+    }
+    
+    /**
+     * 
+     * @param <N>
+     * @param astRootNode
+     * @param selectActionFn
+     * @return 
+     */
+    public <N extends Node> N forSelectedIn(N astRootNode, Consumer<Select> selectActionFn) {
+        astRootNode.walk(SwitchEntry.class, se-> {
+            Select sel = select(se);
+            if( sel != null ) {
+                selectActionFn.accept(sel);
+            }
+        });
+        return astRootNode;
+    }
+    
+    /**
+     * 
+     * @param <N>
+     * @param astRootNode
+     * @param selectConsumer
+     * @param selectActionFn
+     * @return 
+     */
+    public <N extends Node> N forSelectedIn(N astRootNode, Predicate<Select> selectConsumer, Consumer<Select> selectActionFn) {
+        astRootNode.walk(SwitchEntry.class, se-> {
+            Select sel = select(se);
+            if( sel != null && selectConsumer.test(sel) ) {
+                selectActionFn.accept(sel);
+            }
+        });
+        return astRootNode;
+    }
+    
     @Override
     public <N extends Node> N removeIn(N astRootNode) {
         return forEachIn(astRootNode, n -> n.remove() );

@@ -1246,6 +1246,16 @@ public class $method
         });
         return astNode;
     }
+
+    /**
+     * 
+     * @param clazz
+     * @param selectedActionFn
+     * @return 
+     */
+    public _type forSelectedIn(Class clazz, Consumer<Select> selectedActionFn ){
+        return forSelectedIn( _type.of(clazz), selectedActionFn);
+    }    
     
     /**
      * 
@@ -1280,6 +1290,17 @@ public class $method
             }
         });
         return astNode;
+    }
+    
+    /**
+     * 
+     * @param clazz
+     * @param selectConstraint
+     * @param selectedActionFn
+     * @return 
+     */
+    public _type forSelectedIn(Class clazz, Predicate<Select> selectConstraint, Consumer<Select> selectedActionFn ){
+        return forSelectedIn(_type.of(clazz), selectConstraint, selectedActionFn);
     }
     
     /**

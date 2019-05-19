@@ -79,7 +79,7 @@ public interface $proto<Q> {
      * @return 
      */
     <S extends selected> S selectFirstIn( Node n );
-    
+        
     /**
      * Find and return a List of all matching node types within _n
      *

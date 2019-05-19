@@ -3,9 +3,7 @@ package draft.java.proto;
 import com.github.javaparser.ast.Node;
 import com.github.javaparser.ast.NodeList;
 import com.github.javaparser.ast.body.CallableDeclaration;
-import com.github.javaparser.ast.nodeTypes.NodeWithThrownExceptions;
 import com.github.javaparser.ast.nodeTypes.NodeWithTypeParameters;
-import com.github.javaparser.ast.type.ReferenceType;
 import draft.*;
 import draft.java.*;
 import draft.java._model._node;
@@ -1032,8 +1030,8 @@ public final class $typeParameters
     
     /**
      * 
-     * @param <N>
-     * @param _n
+     * @param <T>
+     * @param _t
      * @param selectConsumer
      * @return 
      */
@@ -1063,8 +1061,19 @@ public final class $typeParameters
 
     /**
      * 
-     * @param <N>
-     * @param _n
+     * @param clazz
+     * @param selectConstraint
+     * @param selectConsumer
+     * @return 
+     */
+    public _type forSelectedIn(Class clazz, Predicate<Select> selectConstraint, Consumer<Select> selectConsumer ){
+       return forSelectedIn(_type.of(clazz), selectConstraint, selectConsumer); 
+    }
+    
+    /**
+     * 
+     * @param <T>
+     * @param _t
      * @param selectConstraint
      * @param selectConsumer
      * @return 

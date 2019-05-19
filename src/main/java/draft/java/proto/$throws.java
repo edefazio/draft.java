@@ -121,11 +121,12 @@ public final class $throws
     /**
      * 
      * @param clazz
+     * @param exception
      * @param astProtoTarget
      * @param constraint
      * @return 
      */
-    public static final List<_throws> list(Class clazz, Class exception, Predicate<_throws> constraint){
+    public static final List<_throws> list(Class clazz, Class<? extends Throwable> exception, Predicate<_throws> constraint){
         return list(_type.of(clazz), exception, constraint);
     }    
     
@@ -133,12 +134,12 @@ public final class $throws
      * 
      * @param <T>
      * @param _type
-     * @param target
+     * @param exception
      * @param constraint
      * @return 
      */
-    public static final <T extends _type> List<_throws> list( T _type, Class target, Predicate<_throws> constraint){
-        return $throws.of(target).constraint(constraint).listIn(_type);
+    public static final <T extends _type> List<_throws> list( T _type, Class<? extends Throwable> exception, Predicate<_throws> constraint){
+        return $throws.of(exception).constraint(constraint).listIn(_type);
     }
 
     /**
@@ -222,12 +223,12 @@ public final class $throws
      * 
      * @param <T>
      * @param _type
-     * @param target
+     * @param exception
      * @param constraint
      * @return 
      */
-    public static final <T extends _type> List<Select> listSelected( T _type, Class target, Predicate<_throws> constraint){
-        return $throws.of(target).constraint(constraint).listSelectedIn(_type);
+    public static final <T extends _type> List<Select> listSelected( T _type, Class<? extends Throwable> exception, Predicate<_throws> constraint){
+        return $throws.of(exception).constraint(constraint).listSelectedIn(_type);
     }
    
     /**
@@ -256,11 +257,11 @@ public final class $throws
      * 
      * @param <T>
      * @param _type
-     * @param target
+     * @param exception
      * @return the first _import matching
      */ 
-    public static final <T extends _type> _throws first( T _type, Class target ){
-        return $throws.of(target).firstIn(_type);
+    public static final <T extends _type> _throws first( T _type, Class<? extends Throwable> exception ){
+        return $throws.of(exception).firstIn(_type);
     }
     
     /**
@@ -291,12 +292,12 @@ public final class $throws
      * 
      * @param <T>
      * @param _type
-     * @param target
+     * @param exception
      * @param constraint
      * @return 
      */
-    public static final <T extends _type> _throws first( T _type, Class target, Predicate<_throws> constraint){
-        return $throws.of(target)
+    public static final <T extends _type> _throws first( T _type, Class<? extends Throwable> exception, Predicate<_throws> constraint){
+        return $throws.of(exception)
                 .constraint(constraint)
                 .firstIn(_type);
     }
@@ -329,12 +330,12 @@ public final class $throws
      * 
      * @param <T>
      * @param _type
-     * @param target
+     * @param exception
      * @param actionFn
      * @return 
      */
-    public static final <T extends _type> T forEach( T _type, Class target, Consumer<_throws> actionFn){
-        return $throws.of(target).forEachIn(_type, actionFn);
+    public static final <T extends _type> T forEach( T _type, Class<? extends Throwable> exception, Consumer<_throws> actionFn){
+        return $throws.of(exception).forEachIn(_type, actionFn);
     }
     
     /**
@@ -354,26 +355,26 @@ public final class $throws
      * 
      * @param <T>
      * @param _type
-     * @param protoTargetImport
+     * @param pattern
      * @param constraint
      * @param actionFn
      * @return 
      */
-    public static final <T extends _type> T forEach( T _type, String protoTarget, Predicate<_throws> constraint, Consumer<_throws> actionFn){
-        return $throws.of(protoTarget).constraint(constraint).forEachIn(_type, actionFn);
+    public static final <T extends _type> T forEach( T _type, String pattern, Predicate<_throws> constraint, Consumer<_throws> actionFn){
+        return $throws.of(pattern).constraint(constraint).forEachIn(_type, actionFn);
     }
     
     /**
      * 
      * @param <T>
      * @param _type
-     * @param target
+     * @param exception
      * @param constraint
      * @param actionFn
      * @return 
      */
-    public static final <T extends _type> T forEach( T _type, Class target, Predicate<_throws> constraint, Consumer<_throws> actionFn){
-        return $throws.of(target).constraint(constraint).forEachIn(_type, actionFn);
+    public static final <T extends _type> T forEach( T _type, Class<? extends Throwable> exception, Predicate<_throws> constraint, Consumer<_throws> actionFn){
+        return $throws.of(exception).constraint(constraint).forEachIn(_type, actionFn);
     }
     
     /**
@@ -404,12 +405,12 @@ public final class $throws
      * 
      * @param <T>
      * @param _type
-     * @param target
+     * @param exception
      * @param actionFn
      * @return 
      */
-    public static final <T extends _type> T forSelected( T _type, Class target, Consumer<Select> actionFn){
-        return $throws.of(target).forSelectedIn(_type, actionFn);
+    public static final <T extends _type> T forSelected( T _type, Class<? extends Throwable> exception, Consumer<Select> actionFn){
+        return $throws.of(exception).forSelectedIn(_type, actionFn);
     }
     
     /**
@@ -444,13 +445,13 @@ public final class $throws
      * 
      * @param <T>
      * @param _type
-     * @param target
+     * @param exception
      * @param constraint
      * @param actionFn
      * @return 
      */
-    public static final <T extends _type> T forSelected( T _type, Class target, Predicate<_throws> constraint, Consumer<Select> actionFn){
-        return $throws.of(target).constraint(constraint).forSelectedIn(_type, actionFn);
+    public static final <T extends _type> T forSelected( T _type, Class<? extends Throwable> exception, Predicate<_throws> constraint, Consumer<Select> actionFn){
+        return $throws.of(exception).constraint(constraint).forSelectedIn(_type, actionFn);
     }
     
     /**
@@ -479,11 +480,11 @@ public final class $throws
      * 
      * @param <T>
      * @param _type
-     * @param target
+     * @param exceptions
      * @return 
      */
-    public static final <T extends _type> Select selectFirst( T _type, Class... target ){
-        return $throws.of(target).selectFirstIn(_type);
+    public static final <T extends _type> Select selectFirst( T _type, Class<? extends Throwable>... exceptions ){
+        return $throws.of(exceptions).selectFirstIn(_type);
     }
                
     /**
@@ -514,12 +515,12 @@ public final class $throws
      * 
      * @param <T>
      * @param _type
-     * @param target
+     * @param exception
      * @param constraint
      * @return 
      */
-    public static final <T extends _type> Select selectFirst( T _type, Class target, Predicate<_throws> constraint){
-        return $throws.of(target).constraint(constraint).selectFirstIn(_type);
+    public static final <T extends _type> Select selectFirst( T _type, Class<? extends Throwable> exception, Predicate<_throws> constraint){
+        return $throws.of(exception).constraint(constraint).selectFirstIn(_type);
     }
     
     /**
@@ -550,13 +551,13 @@ public final class $throws
      * 
      * @param <T>
      * @param _type
-     * @param protoSource
-     * @param protoTarget
+     * @param srcException
+     * @param targetException
      * @return 
      */
-    public static final <T extends _type> T replace( T _type, Class protoSource, Class protoTarget ){
-        return $throws.of(protoSource)
-            .replaceIn(_type, _throws.of(protoTarget));
+    public static final <T extends _type> T replace( T _type, Class<? extends Throwable> srcException, Class<? extends Throwable> targetException ){
+        return $throws.of(srcException)
+            .replaceIn(_type, _throws.of(targetException));
     }
 
     /**
@@ -585,11 +586,11 @@ public final class $throws
      * 
      * @param <T>
      * @param _type
-     * @param target
+     * @param exception
      * @return 
      */
-    public static final <T extends _type> T remove( T _type, Class target ){
-        return $throws.of(_throws.of(target)).removeIn(_type);
+    public static final <T extends _type> T remove( T _type, Class<? extends Throwable> exception ){
+        return $throws.of(_throws.of(exception)).removeIn(_type);
     }
     
     /**
@@ -620,12 +621,12 @@ public final class $throws
      * 
      * @param <T>
      * @param _type
-     * @param target
+     * @param exception
      * @param constraint
      * @return 
      */
-    public static final <T extends _type> T remove( T _type, Class target, Predicate<_throws> constraint){
-        return $throws.of(_throws.of(target)).constraint(constraint).removeIn(_type);
+    public static final <T extends _type> T remove( T _type, Class<? extends Throwable> exception, Predicate<_throws> constraint){
+        return $throws.of(_throws.of(exception)).constraint(constraint).removeIn(_type);
     }
     
     /**
@@ -681,22 +682,12 @@ public final class $throws
     
     /**
      * 
-     * @param clazz
-     * @return 
-     
-    public static <C extends Throwable> $throws of( Class<C>... clazz ){
-        return new $throws( clazz  );
-    }
-    */ 
-    
-    /**
-     * 
-     * @param clazz
+     * @param exception
      * @param constraint
      * @return 
      */
-    public static <C extends Throwable> $throws of( Class<C> clazz, Predicate<_throws> constraint){
-        return new $throws( clazz  ).constraint(constraint);
+    public static $throws of( Class<? extends Throwable> exception, Predicate<_throws> constraint){
+        return new $throws( exception  ).constraint(constraint);
     }
     
     /**
@@ -774,7 +765,7 @@ public final class $throws
     
     /**
      * 
-     * @param _i
+     * @param _t
      * @return 
      */
     public boolean matches( _throws _t){
@@ -784,6 +775,8 @@ public final class $throws
     public Select select( NodeWithThrownExceptions astCallable ){
         return select( _throws.of( astCallable ) );
     }
+    
+    
     public Select select( CallableDeclaration astCallable ){
         return select( _throws.of( astCallable ) );
     }
@@ -1137,13 +1130,7 @@ public final class $throws
                     final NodeList<ReferenceType> nodes = sel.thrown.astNodeWithThrows.getThrownExceptions();
                     $id th = this.throwsPatterns.get(i);
                     nodes.removeIf(t -> th.matches(t.toString()) );
-                }
-                //sel._i.astNodeWithThrows.getThrownExceptions().clear();
-                //this.throwsPatterns.
-                //NodeList<ReferenceType> tes = e.getThrownExceptions();
-                ///TODO remove the thrown exceptions
-                //tes.stream().filter(t -> this. );                
-                //sel.ast().removeForced();
+                }                
             }
         });
         return astNode;
@@ -1304,8 +1291,8 @@ public final class $throws
     
     /**
      * 
-     * @param <N>
-     * @param _n
+     * @param <T>
+     * @param _t
      * @param selectConsumer
      * @return 
      */
@@ -1335,8 +1322,19 @@ public final class $throws
 
     /**
      * 
-     * @param <N>
-     * @param _n
+     * @param clazz
+     * @param selectConstraint
+     * @param selectConsumer
+     * @return 
+     */
+    public _type forSelectedIn( Class clazz, Predicate<Select> selectConstraint, Consumer<Select> selectConsumer){
+        return forSelectedIn(_type.of(clazz), selectConstraint, selectConsumer);
+    }
+    
+    /**
+     * 
+     * @param <T>
+     * @param _t
      * @param selectConstraint
      * @param selectConsumer
      * @return 

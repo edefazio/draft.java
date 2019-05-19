@@ -14,6 +14,8 @@ import junit.framework.TestCase;
 /**
  * These are some real-world examples of building code provided by JavaParser.
  * 
+ * CoMoD
+ * 
  * This is useful for comparing and contrasting the API design of JavaParser 
  * to the draft.java API.
  * 

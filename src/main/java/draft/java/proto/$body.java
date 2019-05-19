@@ -448,7 +448,55 @@ public class $body implements Template<_body>, $proto<_body>, $constructor.$part
         }
         return null;
     }
-
+    
+    /**
+     * 
+     * @param clazz
+     * @param selectConstraint
+     * @return 
+     */
+    public Select selectFirstIn( Class clazz, Predicate<Select>selectConstraint){
+        return selectFirstIn(_type.of(clazz), selectConstraint);
+    }
+    
+    /**
+     * 
+     * @param _n
+     * @param selectConstraint
+     * @return 
+     */
+    public Select selectFirstIn(_node _n, Predicate<Select> selectConstraint) {
+        return selectFirstIn( _n.ast(), selectConstraint );
+    }
+    
+    /**
+     * 
+     * @param astRootNode
+     * @param selectConstraint
+     * @return 
+     */
+    public Select selectFirstIn(Node astRootNode, Predicate<Select> selectConstraint) {
+        Optional<Node> on = astRootNode.findFirst(Node.class, n-> { 
+            if(n instanceof NodeWithBlockStmt){
+                Select sel = select( (NodeWithBlockStmt)n );
+                return sel != null && selectConstraint.test(sel);
+            }
+            if(n instanceof NodeWithOptionalBlockStmt){
+                Select sel = select( (NodeWithOptionalBlockStmt)n );
+                return sel != null && selectConstraint.test(sel);
+            }
+            return false;
+            });
+        if( on.isPresent() ){
+            Node node = on.get();
+            if( node instanceof NodeWithBlockStmt ){
+                return select( (NodeWithBlockStmt)node );
+            }
+            return select( (NodeWithOptionalBlockStmt)node );            
+        }
+        return null;
+    }
+    
     @Override
     public Select selectFirstIn(Node astRootNode) {
         Optional<Node> on = astRootNode.findFirst(Node.class, n-> { 
@@ -488,6 +536,27 @@ public class $body implements Template<_body>, $proto<_body>, $constructor.$part
 
     /**
      * 
+     * @param clazz
+     * @param selectActionFn
+     * @return 
+     */
+    public _type forSelectedIn( Class clazz, Consumer<Select>selectActionFn){
+        return forSelectedIn(_type.of(clazz), selectActionFn);
+    }
+    
+    /**
+     * 
+     * @param clazz
+     * @param selectConstraint
+     * @param selectActionFn
+     * @return 
+     */
+    public _type forSelectedIn( Class clazz, Predicate<Select>selectConstraint,  Consumer<Select>selectActionFn){
+        return forSelectedIn(_type.of(clazz), selectConstraint, selectActionFn);
+    }
+    
+    /**
+     * 
      * @param <N>
      * @param astRootNode
      * @param selectActionFn
@@ -509,6 +578,18 @@ public class $body implements Template<_body>, $proto<_body>, $constructor.$part
             }            
         });
         return astRootNode;
+    }
+
+    /**
+     * 
+     * @param <N>
+     * @param _n
+     * @param selectActionFn
+     * @return 
+     */
+    public <N extends _node> N forSelectedIn(N _n,  Consumer<Select> selectActionFn) {
+        forSelectedIn(_n.ast(),  selectActionFn);
+        return _n;
     }
     
     /**

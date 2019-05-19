@@ -825,6 +825,11 @@ public final class $typeRef
         return listSelectedIn(_n.ast(), selectConstraint);
     }
     
+    public _type forSelectedIn( Class clazz, Consumer<Select> selectConsumer ){
+        return forSelectedIn(_type.of(clazz), selectConsumer);
+    }
+    
+    
     /**
      * 
      * @param <N>
@@ -844,6 +849,34 @@ public final class $typeRef
 
     /**
      * 
+     * @param clazz
+     * @param selectConstraint
+     * @param selectConsumer
+     * @return 
+     */
+    public _type forSelectedIn(Class clazz, Predicate<Select> selectConstraint, Consumer<Select> selectConsumer ){
+        return forSelectedIn( _type.of(clazz), selectConstraint, selectConsumer);
+    }
+    /**
+     * 
+     * @param <N>
+     * @param _n
+     * @param selectConstraint
+     * @param selectConsumer
+     * @return 
+     */
+    public <N extends _node> N forSelectedIn(N _n, Predicate<Select> selectConstraint, Consumer<Select> selectConsumer ){
+        Walk.in(_n, Type.class, e-> {
+            Select sel = select( e );
+            if( sel != null && selectConstraint.test(sel) ){
+                selectConsumer.accept( sel );
+            }
+        });
+        return _n;
+    }
+    
+    /**
+     * 
      * @param <N>
      * @param astNode
      * @param selectConsumer
@@ -859,6 +892,24 @@ public final class $typeRef
         return astNode;
     }
 
+    /**
+     * 
+     * @param <N>
+     * @param astNode
+     * @param selectConstraint
+     * @param selectConsumer
+     * @return 
+     */
+    public <N extends Node> N forSelectedIn(N astNode, Predicate<Select> selectConstraint, Consumer<Select> selectConsumer ){
+        astNode.walk(Type.class, e-> {
+            Select sel = select( e );
+            if( sel != null && selectConstraint.test(sel)){
+                selectConsumer.accept( sel );
+            }
+        });
+        return astNode;
+    }
+    
     @Override
     public List<_typeRef> listIn(_node _n ){
         return listIn( _n.ast() );

@@ -1454,7 +1454,6 @@ public class $anno
         return astRootNode;
     }
     
-
     /**
      * 
      * @param <N>

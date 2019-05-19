@@ -1456,8 +1456,8 @@ public final class $import
     
     /**
      * 
-     * @param <N>
-     * @param _n
+     * @param <T>
+     * @param _t
      * @param selectConsumer
      * @return 
      */
@@ -1487,8 +1487,19 @@ public final class $import
 
     /**
      * 
-     * @param <N>
-     * @param _n
+     * @param clazz
+     * @param selectConstraint
+     * @param selectConsumer
+     * @return 
+     */
+    public _type forSelectedIn(Class clazz, Predicate<Select> selectConstraint, Consumer<Select> selectConsumer ){
+        return forSelectedIn(_type.of(clazz), selectConstraint, selectConsumer );
+    }
+    
+    /**
+     * 
+     * @param <T>
+     * @param _t
      * @param selectConstraint
      * @param selectConsumer
      * @return 

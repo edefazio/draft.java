@@ -249,6 +249,10 @@ public class $modifiers
         return astRootNode;
     }
     
+    public _type forSelectedIn(Class clazz, Predicate<Select> selectConstraint, Consumer<Select> selectActionFn) {
+        return forSelectedIn(_type.of(clazz), selectConstraint, selectActionFn);
+    }
+    
     public <N extends _node> N forSelectedIn(N _n, Predicate<Select> selectConstraint, Consumer<Select> selectActionFn) {
         return Walk.in( _n, 
             NodeWithModifiers.class, 
@@ -260,6 +264,23 @@ public class $modifiers
             });
     }
     
+    /**
+     * 
+     * @param clazz
+     * @param selectActionFn
+     * @return 
+     */
+    public _type forSelectedIn(Class clazz, Consumer<Select> selectActionFn) {
+        return forSelectedIn(_type.of(clazz), selectActionFn);
+    }
+    
+    /**
+     * 
+     * @param <N>
+     * @param _n
+     * @param selectActionFn
+     * @return 
+     */
     public <N extends _node> N forSelectedIn(N _n, Consumer<Select> selectActionFn) {
         return Walk.in( _n, 
             NodeWithModifiers.class, 

@@ -10,6 +10,7 @@ import draft.java.Walk;
 import draft.java._model;
 import draft.java._model._node;
 import draft.java._parameter._parameters;
+import draft.java._type;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -377,6 +378,37 @@ public class $parameters implements Template<_parameters>, $proto<_parameters>,
     /**
      * 
      * @param <N>
+     * @param astRootNode
+     * @param selectConstraint
+     * @param _parametersActionFn
+     * @return 
+     */
+    public <N extends Node> N forSelectedIn(N astRootNode, Predicate<Select> selectConstraint, Consumer<Select> _parametersActionFn) {
+        
+        astRootNode.walk( Node.class, n-> {            
+            if( n instanceof NodeWithParameters){
+                Select sel = select(_parameters.of( (NodeWithParameters)n ) );
+                if( sel != null && selectConstraint.test(sel) ){
+                    _parametersActionFn.accept(sel);
+                }
+            }
+        });        
+        return astRootNode;        
+    }
+    
+    /**
+     * 
+     * @param clazz
+     * @param _parametersActionFn
+     * @return 
+     */
+    public _type forSelectedIn(Class clazz, Consumer<Select> _parametersActionFn) {
+        return forSelectedIn(_type.of(clazz), _parametersActionFn);
+    }
+    
+    /**
+     * 
+     * @param <N>
      * @param _n
      * @param _parametersActionFn
      * @return 
@@ -385,6 +417,35 @@ public class $parameters implements Template<_parameters>, $proto<_parameters>,
         Walk.in(_n, _parameters.class, n-> {            
             Select sel = select( n );
             if( sel != null ){
+                _parametersActionFn.accept(sel);            
+            }
+        });        
+        return _n;        
+    }
+    
+    /**
+     * 
+     * @param clazz
+     * @param selectConstraint
+     * @param _parametersActionFn
+     * @return 
+     */
+    public _type forSelectedIn(Class clazz, Predicate<Select> selectConstraint, Consumer<Select> _parametersActionFn) {
+        return forSelectedIn(_type.of(clazz), selectConstraint, _parametersActionFn);
+    }
+    
+    /**
+     * 
+     * @param <N>
+     * @param _n
+     * @param selectConstraint
+     * @param _parametersActionFn
+     * @return 
+     */
+    public <N extends _node> N forSelectedIn(N _n, Predicate<Select> selectConstraint, Consumer<Select> _parametersActionFn) {
+        Walk.in(_n, _parameters.class, n-> {            
+            Select sel = select( n );
+            if( sel != null && selectConstraint.test(sel) ){
                 _parametersActionFn.accept(sel);            
             }
         });        
