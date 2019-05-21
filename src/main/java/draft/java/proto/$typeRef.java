@@ -648,6 +648,15 @@ public final class $typeRef
     }
     
     /**
+     * A TypeRef 
+     * @param constraint
+     * @return 
+     */
+    public static $typeRef of( Predicate<_typeRef> constraint ){
+        return of().addConstraint(constraint);
+    }
+    
+    /**
      * 
      * @param _n
      * @return 

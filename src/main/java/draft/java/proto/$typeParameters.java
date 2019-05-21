@@ -403,7 +403,6 @@ public final class $typeParameters
         return $typeParameters.of(pattern).removeIn(_type);
     }
     
-    
     /**
      * 
      * @param <T>
@@ -428,10 +427,18 @@ public final class $typeParameters
         return $typeParameters.of(pattern).addConstraint(constraint).removeIn(_type);
     }
     
+    /**
+     * 
+     * @return 
+     */
     public static $typeParameters any(){
         return of();
     }
     
+    /**
+     * 
+     * @return 
+     */
     public static $typeParameters none(){
         return of().addConstraint( tps-> tps.isEmpty());
     }

@@ -527,6 +527,15 @@ public class $constructor
     
     /**
      * 
+     * @param constraint
+     * @return 
+     */
+    public static $constructor of( Predicate<_constructor> constraint){
+        return of().addConstraint(constraint);
+    }
+    
+    /**
+     * 
      * @param components
      * @return 
      */

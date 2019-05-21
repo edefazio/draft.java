@@ -43,14 +43,27 @@ public class $typeParameter
      */
     public List<$typeRef> $typeBound = new ArrayList<>();
     
+    /**
+     * Matches / constructs any 
+     * @return 
+     */
     public static $typeParameter any(){
         return new $typeParameter();
     }
     
+    /**
+     * prototype to match ANY typeParameter
+     * @return 
+     */
     public static $typeParameter of(){
         return new $typeParameter();
     }
     
+    /**
+     * 
+     * @param parts
+     * @return 
+     */
     public static $typeParameter of( $typeParameter.$part...parts ){
         return new $typeParameter( parts );
     }

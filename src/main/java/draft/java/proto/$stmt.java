@@ -675,7 +675,7 @@ public final class $stmt<T extends Statement>
     public static $stmt of(){
         return new $stmt( Statement.class, t-> true );
     }
-    
+        
     /**
      * 
      * @param pattern

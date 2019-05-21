@@ -258,6 +258,15 @@ public class $typeUse {
         return new $typeUse(clazz);
     }
     
+    /**
+     * 
+     * @param clazz
+     * @param constraint
+     * @return 
+     */
+    public static $typeUse of( Class clazz, Predicate<Node> constraint ){
+        return of(clazz).addConstraint(constraint);
+    }
     public final String packageName;
     
     /** 
@@ -320,6 +329,7 @@ public class $typeUse {
             $node.of("$classUse$").addConstraint(n -> !n.toString().contains(".") ) ).addConstraint(IS_EXPECTED_NODE_TYPE);
     }
     
+    
     /**
      * This is for any()
      */
@@ -354,19 +364,6 @@ public class $typeUse {
      * 
      * @param constraint
      * @return 
-     
-    public $typeUse constraint(Predicate<Node> constraint){
-        $fullName.addConstraint(constraint);
-        $memberNames.forEach(m -> constraint(constraint));
-        $simpleName.addConstraint(constraint);        
-        return this;
-    }
-    */ 
-    
-    /**
-     * 
-     * @param constraint
-     * @return 
      */
     public $typeUse addConstraint(Predicate<Node> constraint){
         $fullName.addConstraint(constraint);
@@ -390,7 +387,7 @@ public class $typeUse {
         return sel;
     }
     
-    public <N extends _model._node> N replaceIn(N _n, Class replacement) {
+    public <N extends _node> N replaceIn(N _n, Class replacement) {
         if( _n instanceof _type && ((_type)_n).isTopClass()){
             replaceIn( ((_type)_n).findCompilationUnit(), replacement);
             return _n;
@@ -442,7 +439,7 @@ public class $typeUse {
         return replaceIn( _type.of(clazz), replacement);
     }
     
-    public <N extends _model._node> N replaceIn(N _n, String replacement) {
+    public <N extends _node> N replaceIn(N _n, String replacement) {
         if( _n instanceof _type && ((_type)_n).isTopClass()){
             replaceIn( ((_type)_n).findCompilationUnit(), replacement);
             return _n;

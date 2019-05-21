@@ -477,6 +477,15 @@ public class $method
     
     /**
      * 
+     * @param constraint
+     * @return 
+     */
+    public static $method of( Predicate<_method> constraint ){
+        return of().addConstraint(constraint);
+    }
+    
+    /**
+     * 
      * @param part
      * @return 
      */

@@ -31,6 +31,10 @@ public class $catch implements $proto<CatchClause> {
         return new $catch( astCatch ).addConstraint(constraint);
     }
     
+    public static $catch of( Predicate<CatchClause> constraint ){
+        return any().addConstraint(constraint);
+    }
+    
     public static $catch any(){
         return new $catch( $parameter.any(), $body.any() );
     }

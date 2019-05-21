@@ -71,13 +71,6 @@ public class $parameters implements Template<_parameters>, $proto<_parameters>,
         return this;
     }
     
-    /*
-    public $parameters constraint(Predicate<_parameters> constraint){
-        this.constraint = constraint;
-        return this;
-    }
-    */
-    
     @Override
     public _parameters construct(Translator translator, Map<String, Object> keyValues) {
         //System.out.println("IN CONSTRUCT PARAMETERS WITH "+$params.size());

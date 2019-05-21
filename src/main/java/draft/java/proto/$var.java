@@ -656,6 +656,15 @@ public class $var
     }
     
     /**
+     * 
+     * @param constraint
+     * @return 
+     */
+    public static final $var of( Predicate<VariableDeclarator> constraint){
+        return of().addConstraint(constraint);
+    }
+    
+    /**
      * a Var Prototype only specifying the type
      * @param varType
      * @return 

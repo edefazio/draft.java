@@ -220,6 +220,15 @@ public class $node implements $proto<Node> {
         return new $node( name );
     }
     
+    /**
+     * 
+     * @param constraint
+     * @return 
+     */
+    public static $node of( Predicate<Node> constraint ){
+        return new $node("$name$").addConstraint(constraint);
+    }
+    
     /** the string pattern */
     public Stencil pattern;
     

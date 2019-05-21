@@ -150,7 +150,11 @@ public final class $snip implements Template<List<Statement>>, $proto<List<State
     public static final <N extends _node> List<Select> listSelected( N _n, String... proto){
         return $snip.of(proto).listSelectedIn(_n);
     }
-        
+    
+    /**     */
+    public Predicate<List<Statement>> constraint = t-> true;
+    
+    /** */
     public List<$stmt> $sts = new ArrayList<>();
 
     /**
@@ -285,6 +289,17 @@ public final class $snip implements Template<List<Statement>>, $proto<List<State
         return this;
     }
 
+    /**
+     * Adds a constraint the selecting / matching a list of statements
+     * 
+     * @param constraint
+     * @return the modified snip
+     */
+    public $snip addConstraint( Predicate<List<Statement>> constraint ){
+        this.constraint = this.constraint.and(constraint);
+        return this;
+    }
+    
     @Override
     public $snip $(String target, String paramName){
         this.$sts.forEach(s -> s.$(target, paramName));
@@ -475,6 +490,9 @@ public final class $snip implements Template<List<Statement>>, $proto<List<State
             }
             all.putAll(sel.args);
         }
+        if( !this.constraint.test(ss) ){
+            return null; //failed the constraint
+        }
         return new Select( ss, all);
     }
 
@@ -517,8 +535,6 @@ public final class $snip implements Template<List<Statement>>, $proto<List<State
         }        
         return ss.get(0);        
     }
-    
-  
     
     @Override
     public List<List<Statement>> listIn(Node astNode ){
