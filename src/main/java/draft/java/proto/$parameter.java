@@ -191,7 +191,7 @@ public class $parameter implements Template<_parameter>, $proto<_parameter> {
      * @return 
      */
     public static <N extends _node> List<_parameter> list(N _n, String pattern, Predicate<_parameter> constraint){
-        return $parameter.of(pattern).constraint(constraint).listIn(_n);        
+        return $parameter.of(pattern).addConstraint(constraint).listIn(_n);        
     }
 
     /**
@@ -203,7 +203,7 @@ public class $parameter implements Template<_parameter>, $proto<_parameter> {
      * @return 
      */
     public static <N extends Node> List<_parameter> list(N _n, String pattern, Predicate<_parameter> constraint){
-        return $parameter.of(pattern).constraint(constraint).listIn(_n );        
+        return $parameter.of(pattern).addConstraint(constraint).listIn(_n );        
     }
     
     /**
@@ -475,11 +475,12 @@ public class $parameter implements Template<_parameter>, $proto<_parameter> {
      * SET / OVERRIDE the constraint
      * @param constraint the constraint to set
      * @return the modified $parameter
-     */
+     
     public $parameter constraint( Predicate<_parameter> constraint ){
         this.constraint = constraint;
         return this;
-    }
+    }    
+    */
     
     /**
      * ADDS an additional matching constraint to the prototype

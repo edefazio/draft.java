@@ -442,7 +442,7 @@ public class $method
      * @return 
      */
     public static $method of( _method _m, Predicate<_method> constraint){
-        return new $method( _m).constraint(constraint);
+        return new $method( _m).addConstraint(constraint);
     }
         
     /**
@@ -472,7 +472,7 @@ public class $method
      * @return 
      */
     public static $method of( String proto, Predicate<_method> constraint ){
-        return new $method(_method.of(proto) ).constraint(constraint);
+        return new $method(_method.of(proto) ).addConstraint(constraint);
     }
     
     /**
@@ -599,11 +599,12 @@ public class $method
      * SETS/ OVERRIDES the matching constraint
      * @param constraint
      * @return 
-     */
+     
     public $method constraint( Predicate<_method> constraint){
         this.constraint = constraint;
         return this;
     }
+    */ 
     
     @Override
     public List<String> list$Normalized(){

@@ -38,7 +38,7 @@ public class SimpleResolveParam extends TestCase {
         }
         
         $expr.methodCall("$a$.equals($b$)")
-            .constraint( m-> m.getScope().isPresent() && m.getScope().get().isNameExpr() )
+            .addConstraint( m-> m.getScope().isPresent() && m.getScope().get().isNameExpr() )
             .forSelectedIn(T.class, s-> {                
                 String aVar = s.get("a").toString();
                 String bVar = s.get("b").toString();

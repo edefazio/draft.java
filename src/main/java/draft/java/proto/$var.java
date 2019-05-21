@@ -60,7 +60,7 @@ public class $var
      * @return 
      */
     public static final <N extends _node> List<VariableDeclarator> list( N _n, Predicate<VariableDeclarator> constraint){
-        return of().constraint(constraint).listIn(_n);
+        return of().addConstraint(constraint).listIn(_n);
     }
     
     /**
@@ -71,7 +71,7 @@ public class $var
      * @return 
      */
     public static final <N extends _node> List<VariableDeclarator> list( Class clazz, Predicate<VariableDeclarator> constraint){
-        return of().constraint(constraint).listIn(_type.of(clazz));
+        return of().addConstraint(constraint).listIn(_type.of(clazz));
     }
     
     /**
@@ -662,7 +662,7 @@ public class $var
      */
     public static $var ofType( Class varType ){
         final _typeRef e = _typeRef.of(varType );
-        return of().constraint( v-> e.is(v.getType()) );
+        return of().addConstraint( v-> e.is(v.getType()) );
     }
     
     /**
@@ -672,7 +672,7 @@ public class $var
      */
     public static $var ofType( Type varType ){
         final _typeRef e = _typeRef.of(varType );
-        return of().constraint( v-> e.is(v) );
+        return of().addConstraint( v-> e.is(v) );
     }
 
     /**
@@ -681,7 +681,7 @@ public class $var
      * @return 
      */
     public static $var ofType( _typeRef varType ){        
-        return of().constraint( v-> varType.is(v) );
+        return of().addConstraint( v-> varType.is(v) );
     }    
     
     /**
@@ -700,7 +700,7 @@ public class $var
      * @return 
      */
     public static $var of( String pattern, Predicate<VariableDeclarator> constraint){
-        return $var.of(new String[]{pattern}).constraint(constraint);
+        return $var.of(new String[]{pattern}).addConstraint(constraint);
     }
     
     /**
@@ -722,7 +722,7 @@ public class $var
     }
 
     public static $var of(VariableDeclarator proto, Predicate<VariableDeclarator> constraint){
-        return new $var( proto  ).constraint(constraint);
+        return new $var( proto  ).addConstraint(constraint);
     }
     
     /** Matching constraint */
@@ -745,10 +745,12 @@ public class $var
         }           
     }
     
+    /*
     public $var constraint( Predicate<VariableDeclarator> constraint){
         this.constraint = constraint;
         return this;
     }
+    */
     
     public $var addConstraint(Predicate<VariableDeclarator> constraint){
         this.constraint = this.constraint.and(constraint);

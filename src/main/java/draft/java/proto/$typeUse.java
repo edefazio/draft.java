@@ -342,11 +342,11 @@ public class $typeUse {
         }
         //this.type = type;
         this.$fullName = new $node(type.getCanonicalName())
-            .constraint( IS_EXPECTED_NODE_TYPE );
+            .addConstraint( IS_EXPECTED_NODE_TYPE );
         //Note: there can be (0, 1, or more OTHER nodes that represent
         //Inner member classes, i.e. not fully qualified 
         
-        this.$simpleName = new $node(type.getSimpleName()).constraint(IS_EXPECTED_NODE_TYPE);        
+        this.$simpleName = new $node(type.getSimpleName()).addConstraint(IS_EXPECTED_NODE_TYPE);        
         $memberNames = $typeUse.buildMemberClassNames( type );
     }
     
@@ -354,13 +354,14 @@ public class $typeUse {
      * 
      * @param constraint
      * @return 
-     */
+     
     public $typeUse constraint(Predicate<Node> constraint){
-        $fullName.constraint(constraint);
+        $fullName.addConstraint(constraint);
         $memberNames.forEach(m -> constraint(constraint));
-        $simpleName.constraint(constraint);        
+        $simpleName.addConstraint(constraint);        
         return this;
     }
+    */ 
     
     /**
      * 

@@ -54,6 +54,10 @@ public class $case
         return new $case(astSwitchEntry );
     }
     
+    public static $case of( SwitchEntry astSwitchEntry, Predicate<SwitchEntry> constraint){
+        return new $case(astSwitchEntry).addConstraint(constraint);
+    }
+    
     public static $case of( $expr expr, $stmt...stmts ){
         return new $case(expr, stmts);
     }

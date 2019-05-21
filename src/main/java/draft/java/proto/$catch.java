@@ -19,11 +19,26 @@ import java.util.function.Predicate;
  */
 public class $catch implements $proto<CatchClause> {
     
+    public static $catch of( String...catchCode ){
+        return new $catch( Ast.catchClause(catchCode));
+    }
+    
+    public static $catch of( CatchClause astCatch){
+        return new $catch( astCatch );
+    }
+    
+    public static $catch of( CatchClause astCatch, Predicate<CatchClause> constraint){
+        return new $catch( astCatch ).addConstraint(constraint);
+    }
+    
     public static $catch any(){
         return new $catch( $parameter.any(), $body.any() );
     }
     
+    public Predicate<CatchClause> constraint = t-> true;
+    
     public $parameter $param = $parameter.any();
+    
     public $body $bd = $body.any();
     
     public $catch(CatchClause astCC){
@@ -36,6 +51,11 @@ public class $catch implements $proto<CatchClause> {
         this.$bd = $bd;
     }
 
+    public $catch addConstraint( Predicate<CatchClause> constraint){
+        this.constraint = this.constraint.and(constraint);
+        return this;
+    }
+    
     @Override
     public CatchClause firstIn(Node astRootNode) {
         Optional<CatchClause> occ = 
@@ -251,6 +271,9 @@ public class $catch implements $proto<CatchClause> {
     }
     
     public Select select(CatchClause astCatch){
+        if( !constraint.test(astCatch)){
+            return null;
+        }
         $parameter.Select ps = this.$param.select(astCatch.getParameter());
         if( ps == null ){
             return null;

@@ -447,15 +447,15 @@ public class $field implements Template<_field>, $proto<_field> {
     }
     
     public static $field of( String field, Predicate<_field> constraint){
-        return of( _field.of(field)).constraint(constraint);
+        return of( _field.of(field)).addConstraint(constraint);
     }
     
     public static $field of( _field _f, Predicate<_field> constraint){
-        return of(_f).constraint(constraint);
+        return of(_f).addConstraint(constraint);
     }
     
     public static $field of( Predicate<_field> constraint ){
-        return of().constraint( constraint);
+        return of().addConstraint( constraint);
     }
     
     public static $field ofName( String str){
@@ -648,11 +648,12 @@ public class $field implements Template<_field>, $proto<_field> {
      * Sets or resets the _field constraint
      * @param constraint the constraint
      * @return the modified $f
-     */
+     
     public $field constraint( Predicate<_field> constraint ){
         this.constraint = constraint;
         return this;
     }
+    */ 
     
     /**
      * Adds ANOTHER constraint to the existing _field level constraint

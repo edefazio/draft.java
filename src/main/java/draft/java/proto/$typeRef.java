@@ -73,7 +73,7 @@ public final class $typeRef
      * @return 
      */
     public static final <N extends _node> _typeRef first( N _n, String pattern, Predicate<_typeRef> constraint){
-        return $typeRef.of(pattern).constraint(constraint).firstIn(_n);
+        return $typeRef.of(pattern).addConstraint(constraint).firstIn(_n);
     }
     
     /**
@@ -85,7 +85,7 @@ public final class $typeRef
      * @return 
      */
     public static final <N extends _node> _typeRef first( N _n, Class typeClass, Predicate<_typeRef> constraint ){
-        return $typeRef.of(typeClass).constraint(constraint).firstIn(_n);
+        return $typeRef.of(typeClass).addConstraint(constraint).firstIn(_n);
     }
         
     /**
@@ -97,7 +97,7 @@ public final class $typeRef
      * @return 
      */
     public static final <N extends _node> _typeRef first( N _n, _typeRef proto,Predicate<_typeRef> constraint){
-        return $typeRef.of(proto).constraint(constraint).firstIn(_n);
+        return $typeRef.of(proto).addConstraint(constraint).firstIn(_n);
     }
     
     /**
@@ -142,7 +142,7 @@ public final class $typeRef
      * @return 
      */
     public static final <N extends _node> Select selectFirst( N _n, String pattern, Predicate<_typeRef> constraint){
-        return $typeRef.of(pattern).constraint(constraint).selectFirstIn(_n);
+        return $typeRef.of(pattern).addConstraint(constraint).selectFirstIn(_n);
     }
     
     /**
@@ -154,7 +154,7 @@ public final class $typeRef
      * @return 
      */
     public static final <N extends _node> Select selectFirst( N _n, Class typeClass, Predicate<_typeRef> constraint ){
-        return $typeRef.of(typeClass).constraint(constraint).selectFirstIn(_n);
+        return $typeRef.of(typeClass).addConstraint(constraint).selectFirstIn(_n);
     }
         
     /**
@@ -166,7 +166,7 @@ public final class $typeRef
      * @return 
      */
     public static final <N extends _node> Select selectFirst( N _n, _typeRef proto, Predicate<_typeRef> constraint){
-        return $typeRef.of(proto).constraint(constraint).selectFirstIn(_n);
+        return $typeRef.of(proto).addConstraint(constraint).selectFirstIn(_n);
     }
     
     /**
@@ -251,7 +251,7 @@ public final class $typeRef
      * @return 
      */
     public static final <N extends _node> List<_typeRef> list( N _n, String pattern, Predicate<_typeRef> constraint){
-        return $typeRef.of(pattern).constraint(constraint).listIn(_n);
+        return $typeRef.of(pattern).addConstraint(constraint).listIn(_n);
     }
     
     /**
@@ -263,7 +263,7 @@ public final class $typeRef
      * @return 
      */
     public static final <N extends _node> List<_typeRef> list( N _n, Class typeClass, Predicate<_typeRef> constraint ){
-        return $typeRef.of(typeClass).constraint(constraint).listIn(_n);
+        return $typeRef.of(typeClass).addConstraint(constraint).listIn(_n);
     }
         
     /**
@@ -286,7 +286,7 @@ public final class $typeRef
      * @return 
      */
     public static final <N extends _node> List<_typeRef> list( N _n, _typeRef proto, Predicate<_typeRef> constraint){
-        return $typeRef.of(proto).constraint(constraint).listIn(_n);
+        return $typeRef.of(proto).addConstraint(constraint).listIn(_n);
     }
 
     /**
@@ -447,7 +447,7 @@ public final class $typeRef
      * @return 
      */
     public static $typeRef of(String pattern, Predicate<_typeRef> constraint){
-        return new $typeRef(Ast.typeRef(pattern)).constraint(constraint);
+        return new $typeRef(Ast.typeRef(pattern)).addConstraint(constraint);
     }
     
     /**
@@ -475,7 +475,7 @@ public final class $typeRef
      * @return 
      */
     public static $typeRef of(Type astType, Predicate<_typeRef> constraint){
-        return new $typeRef( astType ).constraint(constraint);
+        return new $typeRef( astType ).addConstraint(constraint);
     }
     
     /**
@@ -494,7 +494,7 @@ public final class $typeRef
      * @return 
      */
     public static $typeRef of( _typeRef _proto, Predicate<_typeRef> constraint){
-        return new $typeRef(_proto.ast()).constraint(constraint);
+        return new $typeRef(_proto.ast()).addConstraint(constraint);
     }
     
     /** Matching constraint */
@@ -542,11 +542,12 @@ public final class $typeRef
      * SETS/ OVERRIDES the constraint
      * @param constraint the new constraint
      * @return the modified 
-     */
+     
     public $typeRef constraint(Predicate<_typeRef> constraint){
         this.constraint = constraint;
         return this;
     }
+    */ 
     
     /**
      * 

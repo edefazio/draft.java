@@ -33,7 +33,7 @@ public class $modifiers
     }
     
     public static $modifiers of( Predicate<_modifiers> constraint ){
-        return of().constraint(constraint);
+        return of().addConstraint(constraint);
     }
     
     public static $modifiers of( _hasModifiers _hm ){
@@ -116,10 +116,12 @@ public class $modifiers
     public $modifiers(){        
     }
     
+    /*
     public $modifiers constraint( Predicate<_modifiers> constraint ){
         this.constraint = constraint;
         return this;
     }
+    */
     
     public $modifiers addConstraint( Predicate<_modifiers> constraint ){
         this.constraint = this.constraint.and(constraint);

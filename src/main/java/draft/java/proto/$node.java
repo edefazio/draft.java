@@ -238,11 +238,12 @@ public class $node implements $proto<Node> {
      * 
      * @param constraint
      * @return 
-     */
+     
     public $node constraint( Predicate<Node> constraint ){
         this.constraint = constraint;
         return this;
     }
+    */ 
     
     /**
      * ADDS an additional matching constraint to the prototype

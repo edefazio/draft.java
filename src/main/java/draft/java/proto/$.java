@@ -128,7 +128,7 @@ public final class $ {
     }
     
     public static $body body( Predicate<_body> constraint){
-        return $body.of().constraint(constraint);
+        return $body.of().addConstraint(constraint);
     }
     
     public static $body body(String...body){
@@ -201,7 +201,7 @@ public final class $ {
     }
 
     public static $constructor constructor( Predicate<_constructor> constraint){
-        return $constructor.of().constraint(constraint);
+        return $constructor.of().addConstraint(constraint);
     }
     
     public static $constructor constructor( _constructor _proto ){
@@ -209,7 +209,7 @@ public final class $ {
     }
     
     public static $constructor constructor( _constructor _proto, Predicate<_constructor> constraint ){
-        return $constructor.of(_proto).constraint(constraint);
+        return $constructor.of(_proto).addConstraint(constraint);
     }
     
     public static $constructor constructor( String pattern){
@@ -217,7 +217,7 @@ public final class $ {
     }
     
     public static $constructor constructor( String pattern, Predicate<_constructor> constraint){
-        return $constructor.of(pattern).constraint(constraint);
+        return $constructor.of(pattern).addConstraint(constraint);
     }
     
     public static $constructor constructor( String...pattern){
@@ -242,7 +242,7 @@ public final class $ {
     }
     
     public static $expr expr(Predicate<Expression> constraint){
-        return $expr.any().constraint(constraint);
+        return $expr.any().addConstraint(constraint);
     }
     
     public static $expr expr(String... pattern){
@@ -254,7 +254,7 @@ public final class $ {
     }
     
     public static <T extends Expression> $expr<T> of(T protoExpr, Predicate<T> constraint){
-        return $expr.of(protoExpr).constraint(constraint);
+        return $expr.of(protoExpr).addConstraint(constraint);
     }
    
     public static $expr<StringLiteralExpr> of( String stringLiteral ){

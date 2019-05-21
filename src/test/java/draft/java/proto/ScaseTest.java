@@ -15,7 +15,7 @@ public class ScaseTest extends TestCase {
     
     public void testConstruct(){
         $case $c = $case.of( $expr.of("$val$")
-            .constraint(i -> i.isIntegerLiteralExpr() && Integer.parseInt( i.asIntegerLiteralExpr().getValue() ) % 2 == 1 ), 
+            .addConstraint(i -> i.isIntegerLiteralExpr() && Integer.parseInt( i.asIntegerLiteralExpr().getValue() ) % 2 == 1 ), 
             $stmt.of("System.out.println($val$);"));
         System.out.println( $c.construct("val", 1) );
     }

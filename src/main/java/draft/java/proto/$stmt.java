@@ -130,7 +130,7 @@ public final class $stmt<T extends Statement>
      * @return true if found else false
      */
     public static final <T extends Statement> T first( _node _n, String pattern, Predicate<T>constraint){
-        return (T)$stmt.of(pattern).constraint(constraint).firstIn(_n);
+        return (T)$stmt.of(pattern).addConstraint(constraint).firstIn(_n);
     }
     
     /**
@@ -142,7 +142,7 @@ public final class $stmt<T extends Statement>
      * @return true if found else false
      */
     public static final <T extends Statement> T first( _node _n, T proto, Predicate<T>constraint){
-        return (T)$stmt.of(proto).constraint(constraint).firstIn(_n);
+        return (T)$stmt.of(proto).addConstraint(constraint).firstIn(_n);
     }
     
     /**
@@ -176,7 +176,7 @@ public final class $stmt<T extends Statement>
      * @return true if found else false
      */
     public static final <T extends Statement> Select<T> selectFirst( _node _n, String pattern, Predicate<T>constraint ){
-        return (Select<T>)$stmt.of(pattern).constraint(constraint).selectFirstIn(_n);
+        return (Select<T>)$stmt.of(pattern).addConstraint(constraint).selectFirstIn(_n);
     }
     
     /**
@@ -199,7 +199,7 @@ public final class $stmt<T extends Statement>
      * @return true if found else false
      */
     public static final <T extends Statement> Select<T> selectFirst( _node _n, T proto, Predicate<T> constraint){
-        return (Select<T>)$stmt.of(proto).constraint(constraint).selectFirstIn(_n);
+        return (Select<T>)$stmt.of(proto).addConstraint(constraint).selectFirstIn(_n);
     }
     
     /**
@@ -246,7 +246,7 @@ public final class $stmt<T extends Statement>
      * @return 
      */
     public static final <T extends Statement, N extends _node> List<Select<T>> selectList( N _n, String pattern, Predicate<T>constraint){
-        return $stmt.of(pattern).constraint(constraint).listSelectedIn(_n);
+        return $stmt.of(pattern).addConstraint(constraint).listSelectedIn(_n);
     }
     
     /**
@@ -294,7 +294,7 @@ public final class $stmt<T extends Statement>
      * @return 
      */
     public static final <N extends _node, T extends Statement> List<T> list( N _n, String pattern, Predicate<T> constraint){
-        return $stmt.of(pattern).constraint(constraint).listIn(_n);
+        return $stmt.of(pattern).addConstraint(constraint).listIn(_n);
     }
     
     /**
@@ -319,7 +319,7 @@ public final class $stmt<T extends Statement>
      * @return 
      */
     public static final <N extends _node, T extends Statement> List<T> list( N _n, T proto, Predicate<T> constraint){
-        return $stmt.of(proto).constraint(constraint).listIn(_n);
+        return $stmt.of(proto).addConstraint(constraint).listIn(_n);
     }
     
     /**
@@ -370,7 +370,7 @@ public final class $stmt<T extends Statement>
      * @return 
      */
     public static final <N extends _node, T extends Statement> N forEach( N _n, String pattern, Predicate<T> constraint, Consumer<T> statementFn){
-        return (N)$stmt.of(pattern).constraint(constraint).forEachIn(_n, statementFn);
+        return (N)$stmt.of(pattern).addConstraint(constraint).forEachIn(_n, statementFn);
     }
     
     /**
@@ -397,7 +397,7 @@ public final class $stmt<T extends Statement>
      * @return 
      */
     public static final <N extends _node, T extends Statement> N forEach( N _n, T proto, Predicate<T> constraint, Consumer<T> statementFn){
-        return (N)$stmt.of(proto).constraint(constraint).forEachIn(_n, statementFn);
+        return (N)$stmt.of(proto).addConstraint(constraint).forEachIn(_n, statementFn);
     }
     
     /**
@@ -437,7 +437,7 @@ public final class $stmt<T extends Statement>
      * @return 
      */
     public static final <N extends _node, T extends Statement> N forSelected( N _n, String pattern, Predicate<T> constraint, Consumer<Select<T>> selectActionFn){
-        return (N)$stmt.of(pattern).constraint(constraint).forSelectedIn(_n, selectActionFn);
+        return (N)$stmt.of(pattern).addConstraint(constraint).forSelectedIn(_n, selectActionFn);
     }
     
     /**
@@ -464,7 +464,7 @@ public final class $stmt<T extends Statement>
      * @return 
      */
     public static final <N extends _node, T extends Statement> N forSelected( N _n, T proto, Predicate<T> constraint, Consumer<Select<T>> selectActionFn){
-        return (N)$stmt.of(proto).constraint(constraint).forSelectedIn(_n, selectActionFn);
+        return (N)$stmt.of(proto).addConstraint(constraint).forSelectedIn(_n, selectActionFn);
     }
     
     /**
@@ -513,7 +513,7 @@ public final class $stmt<T extends Statement>
      * @return 
      */
     public static final <N extends _node, T extends Statement> N remove( N _n, String pattern, Predicate<T> constraint){
-        return (N)$stmt.of(pattern).constraint(constraint).removeIn(_n);
+        return (N)$stmt.of(pattern).addConstraint(constraint).removeIn(_n);
     }   
     
     /**
@@ -526,7 +526,7 @@ public final class $stmt<T extends Statement>
      * @return 
      */
     public static final <N extends _node, T extends Statement> N remove( N _n, T proto, Predicate<T> constraint){
-        return (N)$stmt.of(proto).constraint(constraint).removeIn(_n);
+        return (N)$stmt.of(proto).addConstraint(constraint).removeIn(_n);
     }   
     
     /**
@@ -562,7 +562,7 @@ public final class $stmt<T extends Statement>
      * @return 
      */
     public static final <N extends Node, T extends Statement> N remove( N astNode, String pattern, Predicate<T> constraint){
-        return (N)$stmt.of(pattern).constraint(constraint).removeIn(astNode);
+        return (N)$stmt.of(pattern).addConstraint(constraint).removeIn(astNode);
     }   
     
     /**
@@ -720,7 +720,7 @@ public final class $stmt<T extends Statement>
      * @return and AssertStmt with the code
      */
     public static $stmt<AssertStmt> assertStmt(String pattern, Predicate<AssertStmt> constraint) {
-        return new $stmt( Stmt.assertStmt(pattern) ).constraint(constraint);
+        return new $stmt( Stmt.assertStmt(pattern) ).addConstraint(constraint);
     }
     
     
@@ -743,7 +743,7 @@ public final class $stmt<T extends Statement>
     public static $stmt<BlockStmt> blockStmt(Predicate<BlockStmt> constraint) {
         return new $stmt( Stmt.block("{ a(); }"))
                 .$(Stmt.block("{ a(); }"), "any")
-                .constraint(constraint);
+                .addConstraint(constraint);
     }
     
     /**
@@ -766,7 +766,7 @@ public final class $stmt<T extends Statement>
      * @return the BlockStmt
      */
     public static $stmt<BlockStmt> blockStmt(String pattern, Predicate<BlockStmt> constraint) {
-        return new $stmt( Stmt.block(pattern)).constraint(constraint);
+        return new $stmt( Stmt.block(pattern)).addConstraint(constraint);
     }
     
     
@@ -786,7 +786,7 @@ public final class $stmt<T extends Statement>
     public static $stmt<BreakStmt> breakStmt(Predicate<BreakStmt> constraint) {
         return new $stmt( Stmt.breakStmt("break;"))
                 .$(Stmt.breakStmt("break;"), "any")
-                .constraint(constraint);
+                .addConstraint(constraint);
     }
     
     /**
@@ -805,7 +805,7 @@ public final class $stmt<T extends Statement>
      * @return the breakStmt
      */
     public static $stmt<BreakStmt> breakStmt(String pattern, Predicate<BreakStmt> constraint) {
-        return new $stmt( Stmt.breakStmt(pattern)).constraint(constraint);
+        return new $stmt( Stmt.breakStmt(pattern)).addConstraint(constraint);
     }
     
     
@@ -824,7 +824,7 @@ public final class $stmt<T extends Statement>
      */
     public static $stmt<ContinueStmt> continueStmt(Predicate<ContinueStmt> constraint) {
         return new $stmt( Stmt.continueStmt("continue r;")).
-                $(Stmt.continueStmt("continue r;"), "any").constraint(constraint);
+                $(Stmt.continueStmt("continue r;"), "any").addConstraint(constraint);
     }
     
     /** 
@@ -844,7 +844,7 @@ public final class $stmt<T extends Statement>
      * @return 
      */
     public static $stmt<ContinueStmt> continueStmt(String pattern, Predicate<ContinueStmt> constraint) {
-        return new $stmt( Stmt.continueStmt(pattern)).constraint(constraint);
+        return new $stmt( Stmt.continueStmt(pattern)).addConstraint(constraint);
     }
     
     
@@ -863,7 +863,7 @@ public final class $stmt<T extends Statement>
      */
     public static $stmt<DoStmt> doStmt(Predicate<DoStmt> constraint) {
         return new $stmt( Stmt.doStmt("do{ a(); } while(a==1);") )
-                .$(Stmt.doStmt("do{ a(); } while(a==1);"), "any").constraint(constraint);
+                .$(Stmt.doStmt("do{ a(); } while(a==1);"), "any").addConstraint(constraint);
     }
     
     /** 
@@ -882,7 +882,7 @@ public final class $stmt<T extends Statement>
      * @return 
      */
     public static $stmt<DoStmt> doStmt(String pattern, Predicate<DoStmt> constraint) {
-        return new $stmt( Stmt.doStmt(pattern)).constraint(constraint);
+        return new $stmt( Stmt.doStmt(pattern)).addConstraint(constraint);
     }
     
     /**
@@ -910,7 +910,7 @@ public final class $stmt<T extends Statement>
     public static $stmt<ExplicitConstructorInvocationStmt> ctorInvocationStmt(Predicate<ExplicitConstructorInvocationStmt> constraint) {
         return new $stmt( Stmt.ctorInvocationStmt("this(a);"))
             .$(Stmt.ctorInvocationStmt("this(a);"), "any")
-            .constraint(constraint);
+            .addConstraint(constraint);
     }
     
     /** 
@@ -929,7 +929,7 @@ public final class $stmt<T extends Statement>
      * @return 
      */
     public static $stmt<ExplicitConstructorInvocationStmt> ctorInvocationStmt(String pattern, Predicate<ExplicitConstructorInvocationStmt> constraint) {
-        return new $stmt( Stmt.ctorInvocationStmt(pattern)).constraint(constraint);
+        return new $stmt( Stmt.ctorInvocationStmt(pattern)).addConstraint(constraint);
     }
     
 
@@ -949,7 +949,7 @@ public final class $stmt<T extends Statement>
     public static $stmt<ExpressionStmt> expressionStmt( Predicate<ExpressionStmt> constraint) {
         return new $stmt( Stmt.expressionStmt("a += t;"))
                 .$("a += t;", "any")
-                .constraint(constraint);
+                .addConstraint(constraint);
     }
     
     /** 
@@ -968,7 +968,7 @@ public final class $stmt<T extends Statement>
      * @return 
      */
     public static $stmt<ExpressionStmt> expressionStmt( String pattern, Predicate<ExpressionStmt> constraint) {
-        return new $stmt( Stmt.expressionStmt(pattern)).constraint(constraint);
+        return new $stmt( Stmt.expressionStmt(pattern)).addConstraint(constraint);
     }
 
     /** 
@@ -987,7 +987,7 @@ public final class $stmt<T extends Statement>
     public static $stmt<ForStmt> forStmt( Predicate<ForStmt> constraint ) {
         return new $stmt( Stmt.forStmt("for(int i=0;i<1;i++){ a(); }"))
                 .$(Stmt.forStmt("for(int i=0;i<1;i++){ a(); }"), "any")
-                .constraint(constraint);
+                .addConstraint(constraint);
     }
     
     /** 
@@ -1006,7 +1006,7 @@ public final class $stmt<T extends Statement>
      * @return 
      */
     public static $stmt<ForStmt> forStmt( String pattern, Predicate<ForStmt> constraint ) {
-        return new $stmt( Stmt.forStmt(pattern)).constraint(constraint);
+        return new $stmt( Stmt.forStmt(pattern)).addConstraint(constraint);
     }
 
     /** 
@@ -1025,7 +1025,7 @@ public final class $stmt<T extends Statement>
     public static $stmt<ForEachStmt> forEachStmt( Predicate<ForEachStmt> constraint) {
         return new $stmt( Stmt.forEachStmt("for(int i:arr){}"))
                 .$(Stmt.forEachStmt("for(int i:arr){}"), "any")
-                .constraint(constraint);
+                .addConstraint(constraint);
     }
     
     /** 
@@ -1044,7 +1044,7 @@ public final class $stmt<T extends Statement>
      * @return 
      */
     public static $stmt<ForEachStmt> forEachStmt( String pattern, Predicate<ForEachStmt> constraint) {
-        return new $stmt( Stmt.forEachStmt(pattern)).constraint(constraint);
+        return new $stmt( Stmt.forEachStmt(pattern)).addConstraint(constraint);
     }
 
     /** 
@@ -1063,7 +1063,7 @@ public final class $stmt<T extends Statement>
     public static $stmt<IfStmt> ifStmt(Predicate<IfStmt> constraint) {
         return new $stmt( Stmt.ifStmt("if(a){ b(); }"))
                 .$(Stmt.of("if(a){ b();}"), "any")
-                .constraint(constraint);
+                .addConstraint(constraint);
     }
     
     /** 
@@ -1082,7 +1082,7 @@ public final class $stmt<T extends Statement>
      * @return 
      */
     public static $stmt<IfStmt> ifStmt( String pattern, Predicate<IfStmt> constraint) {
-        return new $stmt( Stmt.ifStmt(pattern)).constraint(constraint);
+        return new $stmt( Stmt.ifStmt(pattern)).addConstraint(constraint);
     }
 
     /** 
@@ -1100,7 +1100,7 @@ public final class $stmt<T extends Statement>
      */
     public static $stmt<LabeledStmt> labeledStmt( Predicate<LabeledStmt> constraint) {
         return new $stmt( Stmt.labeledStmt("l: a();"))
-                .$(Stmt.labeledStmt("l:a();"), "any").constraint(constraint);
+                .$(Stmt.labeledStmt("l:a();"), "any").addConstraint(constraint);
     }
     
     /** 
@@ -1119,7 +1119,7 @@ public final class $stmt<T extends Statement>
      * @return 
      */
     public static $stmt<LabeledStmt> labeledStmt( String pattern, Predicate<LabeledStmt> constraint) {
-        return new $stmt( Stmt.labeledStmt(pattern)).constraint(constraint);
+        return new $stmt( Stmt.labeledStmt(pattern)).addConstraint(constraint);
     }
     
     /**
@@ -1139,7 +1139,7 @@ public final class $stmt<T extends Statement>
     public static $stmt<LocalClassDeclarationStmt> localClassStmt( Predicate<LocalClassDeclarationStmt> constraint) {
         return new $stmt( Stmt.localClass( "class C{}"))
                 .$(Stmt.localClass("class C{}"), "any")
-                .constraint(constraint);
+                .addConstraint(constraint);
     }
     
     /**
@@ -1160,7 +1160,7 @@ public final class $stmt<T extends Statement>
      * @return the AST implementation
      */
     public static $stmt<LocalClassDeclarationStmt> localClassStmt( String pattern, Predicate<LocalClassDeclarationStmt> constraint) {
-        return new $stmt( Stmt.localClass(pattern)).constraint(constraint);
+        return new $stmt( Stmt.localClass(pattern)).addConstraint(constraint);
     }
 
     /**
@@ -1178,7 +1178,7 @@ public final class $stmt<T extends Statement>
      */
     public static $stmt<ReturnStmt> returnStmt( Predicate<ReturnStmt> constraint ) {
         return new $stmt( Stmt.returnStmt("return a;"))
-                .$(Stmt.of("return a;"), "any").constraint(constraint);
+                .$(Stmt.of("return a;"), "any").addConstraint(constraint);
     }
     
     /** 
@@ -1197,7 +1197,7 @@ public final class $stmt<T extends Statement>
      * @return 
      */
     public static $stmt<ReturnStmt> returnStmt( String pattern, Predicate<ReturnStmt> constraint ) {
-        return new $stmt( Stmt.returnStmt(pattern)).constraint(constraint);
+        return new $stmt( Stmt.returnStmt(pattern)).addConstraint(constraint);
     }
 
     /**
@@ -1224,7 +1224,7 @@ public final class $stmt<T extends Statement>
      * @return 
      */
     public static $stmt<SwitchStmt> switchStmt( String pattern, Predicate<SwitchStmt> constraint) {
-        return new $stmt( Stmt.switchStmt(pattern)).constraint(constraint);
+        return new $stmt( Stmt.switchStmt(pattern)).addConstraint(constraint);
     }
     
     /**
@@ -1235,7 +1235,7 @@ public final class $stmt<T extends Statement>
     public static $stmt<SwitchStmt> switchStmt(Predicate<SwitchStmt> constraint) {
         return new $stmt( Stmt.switchStmt("switch(a){ default : a(); }"))
                 .$(Stmt.of("switch(a){ default : a(); }"), "any")
-                .constraint(constraint);
+                .addConstraint(constraint);
     }
     
     /**
@@ -1254,7 +1254,7 @@ public final class $stmt<T extends Statement>
     public static $stmt<SynchronizedStmt> synchronizedStmt( Predicate<SynchronizedStmt> constraint ) {
         return new $stmt( Stmt.synchronizedStmt("synchronized(a){ b();}") ).
             $(Stmt.synchronizedStmt("synchronized(a){ b();}"), "any")
-            .constraint(constraint);
+            .addConstraint(constraint);
     }
     
     /**
@@ -1273,7 +1273,7 @@ public final class $stmt<T extends Statement>
      * @return 
      */
     public static $stmt<SynchronizedStmt> synchronizedStmt( String pattern, Predicate<SynchronizedStmt> constraint ) {
-        return new $stmt( Stmt.synchronizedStmt(pattern)).constraint(constraint);
+        return new $stmt( Stmt.synchronizedStmt(pattern)).addConstraint(constraint);
     }
     
     /**
@@ -1290,7 +1290,8 @@ public final class $stmt<T extends Statement>
      * @return 
      */
     public static $stmt<ThrowStmt> throwStmt( Predicate<ThrowStmt> constraint ) {
-        return new $stmt( Stmt.throwStmt("throw a;")).$(Stmt.throwStmt("throw a;"), "any").constraint(constraint);
+        return new $stmt( Stmt.throwStmt("throw a;")).$(Stmt.throwStmt("throw a;"), "any")
+                .addConstraint(constraint);
     }
     
     /**
@@ -1309,7 +1310,7 @@ public final class $stmt<T extends Statement>
      * @return 
      */
     public static $stmt<ThrowStmt> throwStmt( String pattern, Predicate<ThrowStmt> constraint) {
-        return new $stmt( Stmt.throwStmt(pattern)).constraint(constraint);
+        return new $stmt( Stmt.throwStmt(pattern)).addConstraint(constraint);
     }
 
     /**
@@ -1328,7 +1329,7 @@ public final class $stmt<T extends Statement>
     public static $stmt<TryStmt> tryStmt( Predicate<TryStmt> constraint ) {
         return new $stmt( Stmt.tryStmt("try{ a(); }"))
             .$(Stmt.tryStmt("try{ a();}"), "any")
-            .constraint(constraint);
+            .addConstraint(constraint);
     }
     
     /** 
@@ -1347,7 +1348,7 @@ public final class $stmt<T extends Statement>
      * @return 
      */
     public static $stmt<TryStmt> tryStmt( String pattern, Predicate<TryStmt> constraint ) {
-        return new $stmt( Stmt.tryStmt(pattern)).constraint(constraint);
+        return new $stmt( Stmt.tryStmt(pattern)).addConstraint(constraint);
     }
     
     /**
@@ -1374,7 +1375,7 @@ public final class $stmt<T extends Statement>
      * @return 
      */
     public static $stmt<WhileStmt> whileStmt( String pattern, Predicate<WhileStmt> constraint ) {
-        return new $stmt( Stmt.whileStmt(pattern)).constraint(constraint);
+        return new $stmt( Stmt.whileStmt(pattern)).addConstraint(constraint);
     }
 
     /** 
@@ -1384,7 +1385,7 @@ public final class $stmt<T extends Statement>
      */
     public static $stmt<WhileStmt> whileStmt( Predicate<WhileStmt> constraint ) {
         return new $stmt( Stmt.whileStmt("while(true){a();}") ).
-                $(Stmt.whileStmt("while(true){a();}").toString(), "any").constraint(constraint);
+                $(Stmt.whileStmt("while(true){a();}").toString(), "any").addConstraint(constraint);
     }
 
     /**
@@ -1420,15 +1421,21 @@ public final class $stmt<T extends Statement>
         this.stmtPattern = Stencil.of( st.toString(NO_COMMENTS) );
     }
 
+    public $stmt addConstraint( Predicate<T> constraint ){
+        this.constraint = this.constraint.and(constraint);
+        return this;
+    }
+    
     /**
      * 
      * @param constraint
      * @return 
-     */
+     
     public $stmt constraint( Predicate<T> constraint){
         this.constraint = constraint;
         return this;
     }
+    */ 
     
     @Override
     public T fill(Object...values){

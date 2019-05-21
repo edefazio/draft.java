@@ -493,7 +493,7 @@ public class $constructor
      * @return 
      */
     public static $constructor of( _constructor _ct, Predicate<_constructor> constraint){
-        return new $constructor( _ct).constraint(constraint);
+        return new $constructor( _ct).addConstraint(constraint);
     }
     
     /**
@@ -512,7 +512,7 @@ public class $constructor
      * @return 
      */
     public static $constructor of( String pattern, Predicate<_constructor> constraint ){
-        return new $constructor(_constructor.of(pattern) ).constraint(constraint);
+        return new $constructor(_constructor.of(pattern) ).addConstraint(constraint);
     }
 
     /**
@@ -638,11 +638,12 @@ public class $constructor
      * SETS/ OVERRIDES the matching constraint
      * @param constraint
      * @return 
-     */
+     
     public $constructor constraint( Predicate<_constructor> constraint){
         this.constraint = constraint;
         return this;
     }
+    */ 
     
     @Override
     public List<String> list$Normalized(){
