@@ -2768,20 +2768,20 @@ public final class $expr <T extends Expression>
             $proto.selectedAstNode<T> {
         
         public final T astExpression;
-        public final $nameValues args;
+        public final $args args;
 
         public Select( T astExpr, Tokens tokens){
             this.astExpression = astExpr;
-            this.args = $nameValues.of(tokens);
+            this.args = $args.of(tokens);
         }
                 
-        public Select( T astExpr, $nameValues tokens){
+        public Select( T astExpr, $args tokens){
             this.astExpression = astExpr;
             this.args = tokens;
         }
         
         @Override
-        public $nameValues args(){
+        public $args args(){
             return args;
         }
         

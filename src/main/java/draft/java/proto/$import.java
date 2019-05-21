@@ -1010,7 +1010,7 @@ public final class $import
             }             
             Tokens ts = importPattern.deconstruct( _i.getName().replace(".*", "").trim() );
             if( ts != null ){
-                return new Select(_i, $nameValues.of(ts) );
+                return new Select(_i, $args.of(ts) );
             }
         }
         return null;
@@ -1560,20 +1560,20 @@ public final class $import
         $proto.selected_model<_import> {
     
         public final _import _i;
-        public final $nameValues args;
+        public final $args args;
 
-        public Select(_import _i, $nameValues tokens){
+        public Select(_import _i, $args tokens){
             this._i = _i;  
             this.args = tokens;
         }
         
-        public Select( ImportDeclaration astImport, $nameValues tokens){
+        public Select( ImportDeclaration astImport, $args tokens){
             this._i = _import.of(astImport );
             this.args = tokens;
         }
         
         @Override
-        public $nameValues args(){
+        public $args args(){
             return args;
         }
         

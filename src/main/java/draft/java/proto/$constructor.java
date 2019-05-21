@@ -931,7 +931,7 @@ public class $constructor
         all = thrown.decomposeTo(_m.getThrows(), all);
         all = body.decomposeTo(_m.getBody(), all);
         if( all != null ){
-            return new Select( _m, $nameValues.of(all));
+            return new Select( _m, $args.of(all));
         }
         return null;        
     }
@@ -1498,20 +1498,20 @@ public class $constructor
             $proto.selected_model<_constructor> {
         
         public final _constructor _ct;
-        public final $nameValues args;
+        public final $args args;
 
-        public Select( _constructor _m, $nameValues tokens ){
+        public Select( _constructor _m, $args tokens ){
             this._ct = _m;
             this.args = tokens;
         }
                 
-        public Select( ConstructorDeclaration astMethod, $nameValues tokens ){
+        public Select( ConstructorDeclaration astMethod, $args tokens ){
             this._ct = _constructor.of(astMethod);
             this.args = tokens;
         }
 
         @Override
-        public $nameValues args(){
+        public $args args(){
             return args;
         }
         

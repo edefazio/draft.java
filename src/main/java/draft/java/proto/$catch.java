@@ -289,7 +289,7 @@ public class $catch implements $proto<CatchClause> {
         }
         if( ts.isConsistent(bs.args.asTokens())){
             ts.putAll(bs.args.asTokens());
-            return new Select(astCatch, $nameValues.of(ts));
+            return new Select(astCatch, $args.of(ts));
         }
         return null;        
     }
@@ -297,16 +297,16 @@ public class $catch implements $proto<CatchClause> {
     public static class Select 
         implements $proto.selected<CatchClause>, $proto.selectedAstNode<CatchClause>{
 
-        public $nameValues args;
+        public $args args;
         public CatchClause astCatchClause;
         
-        public Select(CatchClause cc, $nameValues args){
+        public Select(CatchClause cc, $args args){
             this.astCatchClause = cc;
             this.args = args;
         }
         
         @Override
-        public $nameValues args() {
+        public $args args() {
             return args;
         }
 

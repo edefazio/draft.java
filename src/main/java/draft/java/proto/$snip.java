@@ -882,10 +882,10 @@ public final class $snip implements Template<List<Statement>>, $proto<List<State
      */
     public static class Select implements $proto.selected {
         public List<Statement> statements;
-        public $nameValues args;
+        public $args args;
 
         @Override
-        public $nameValues args(){
+        public $args args(){
             return args;
         }
         

@@ -9,7 +9,7 @@ import com.github.javaparser.ast.stmt.Statement;
 import draft.*;
 import draft.java.*;
 import draft.java._model._node;
-import draft.java.proto.$proto.$nameValues;
+import draft.java.proto.$proto.$args;
 import draft.java.proto.$proto.selected;
 import java.util.*;
 import java.util.function.*;
@@ -316,7 +316,7 @@ public class $body implements Template<_body>, $proto<_body>, $constructor.$part
      */
     public Select select( _body body ){
         if( isMatchAny() ){
-            return new Select( body, $nameValues.of());
+            return new Select( body, $args.of());
         }
         if( !this.constraint.test(body)){
             return null;
@@ -325,7 +325,7 @@ public class $body implements Template<_body>, $proto<_body>, $constructor.$part
             if( this.isImplemented ){
                 return null;
             } 
-            return new Select(body, $nameValues.of());                
+            return new Select(body, $args.of());                
         }       
         if( this.isImplemented ){
             $stmt.Select ss = this.bodyStmts.select((Statement)body.ast());
@@ -334,7 +334,7 @@ public class $body implements Template<_body>, $proto<_body>, $constructor.$part
             }
             return null;
         }
-        return new Select( body, $nameValues.of());        
+        return new Select( body, $args.of());        
     }
     
     /**
@@ -665,15 +665,15 @@ public class $body implements Template<_body>, $proto<_body>, $constructor.$part
     public static class Select implements selected<_body>, selected_model<_body>{
 
         public _body body;
-        public $nameValues args;
+        public $args args;
         
-        public Select( _body body, $nameValues args){
+        public Select( _body body, $args args){
             this.body = body;
             this.args = args;
         }
         
         @Override
-        public $nameValues args() {
+        public $args args() {
             return args;
         }        
         

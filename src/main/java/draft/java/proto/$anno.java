@@ -1679,15 +1679,15 @@ public class $anno
             implements $proto.selected, selectedAstNode<MemberValuePair> {
 
             public final MemberValuePair astMvp;
-            public final $nameValues args;
+            public final $args args;
 
             public Select(MemberValuePair astMvp, Tokens tokens) {
                 this.astMvp = astMvp;
-                this.args = $nameValues.of(tokens);
+                this.args = $args.of(tokens);
             }
 
             @Override
-            public $nameValues args() {
+            public $args args() {
                 return args;
             }
 
@@ -1736,24 +1736,24 @@ public class $anno
         implements $proto.selected, selected_model<_anno>, selectedAstNode<AnnotationExpr> {
 
         public final _anno _ann;
-        public final $nameValues args;
+        public final $args args;
 
         public Select(_anno _a, Tokens tokens) {
-            this(_a, $nameValues.of(tokens));
+            this(_a, $args.of(tokens));
         }
 
-        public Select(_anno _a, $nameValues tokens) {
+        public Select(_anno _a, $args tokens) {
             this._ann = _a;
             args = tokens;
         }
 
-        public Select(AnnotationExpr astAnno, $nameValues tokens) {
+        public Select(AnnotationExpr astAnno, $args tokens) {
             this._ann = _anno.of( astAnno );
             this.args = tokens;
         }
 
         @Override
-        public $nameValues args() {
+        public $args args() {
             return args;
         }
 

@@ -809,7 +809,7 @@ public final class $throws
                 }        
             }
             if( ts != null ){
-                return new Select(_i, $nameValues.of(ts) );
+                return new Select(_i, $args.of(ts) );
             }
         }
         return null;
@@ -1390,20 +1390,20 @@ public final class $throws
         $proto.selected_model<_throws> {
     
         public final _throws thrown;
-        public final $nameValues args;
+        public final $args args;
 
-        public Select(_throws _i, $nameValues tokens){
+        public Select(_throws _i, $args tokens){
             this.thrown = _i;  
             this.args = tokens;
         }
         
-        public Select( NodeWithThrownExceptions astImport, $nameValues tokens){
+        public Select( NodeWithThrownExceptions astImport, $args tokens){
             this.thrown = _throws.of(astImport );
             this.args = tokens;
         }
         
         @Override
-        public $nameValues args(){
+        public $args args(){
             return args;
         }
         

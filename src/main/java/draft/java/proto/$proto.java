@@ -247,25 +247,25 @@ public interface $proto<Q> {
      * for holding value data that COULD be Expressions, Statements and the 
      * like
      */
-    public static class $nameValues implements Map<String, Object> {
+    public static class $args implements Map<String, Object> {
 
         /**
          *
          */
         private Tokens tokens;
 
-        public static $nameValues of(){
-            return new $nameValues( Tokens.of() ); 
+        public static $args of(){
+            return new $args( Tokens.of() ); 
         }
         
-        public static $nameValues of(Tokens ts) {
+        public static $args of(Tokens ts) {
             if (ts == null) {
                 return null;
             }
-            return new $nameValues(ts);
+            return new $args(ts);
         }
 
-        public $nameValues(Tokens ts) {
+        public $args(Tokens ts) {
             this.tokens = ts;
         }
 
@@ -372,12 +372,12 @@ public interface $proto<Q> {
             return stmt.toString(Ast.PRINT_NO_COMMENTS).equals(st.toString(Ast.PRINT_NO_COMMENTS));
         }
 
-        public boolean is($nameValues $nvs) {
+        public boolean is($args $nvs) {
             return this.equals($nvs);
         }
 
         public boolean is(Tokens tks) {
-            return this.equals($nameValues.of(tks));
+            return this.equals($args.of(tks));
         }
 
         public boolean is(String $name, Class clazz ){
@@ -452,10 +452,10 @@ public interface $proto<Q> {
 
         @Override
         public boolean equals(Object o) {
-            if (o == null || !o.getClass().equals($nameValues.class)) {
+            if (o == null || !o.getClass().equals($args.class)) {
                 return false;
             }
-            $nameValues co = ($nameValues) o;
+            $args co = ($args) o;
             return Objects.equals(co.tokens, tokens);
         }
 
@@ -672,7 +672,7 @@ public interface $proto<Q> {
             return null;
         }
 
-        public $nameValues decomposeTo(T t, $nameValues args ){
+        public $args decomposeTo(T t, $args args ){
             if( args == null) {
                 return null;                
             }
@@ -710,13 +710,14 @@ public interface $proto<Q> {
      */
     interface selected<T> {
 
-        $nameValues args();
+        $args args();
 
         /** Get the value of this $param$ via the name */
         default Object get(String $name ){
             return args().get($name);
         }
         
+        /*
         default Expression expr(String $name) {
             return args().expr($name);
         }
@@ -728,7 +729,8 @@ public interface $proto<Q> {
         default _typeRef type(String $name) {
             return args().type($name);
         }
-
+        */
+        /*
         default boolean isExpr(String $name, String expressionValue) {
             try {
                 return args().is($name, Expr.of(expressionValue));
@@ -736,7 +738,8 @@ public interface $proto<Q> {
                 return false;
             }
         }
-
+        */
+        
         default boolean is(Object... $nameValues) {
             return args().is($nameValues);
         }
@@ -755,7 +758,7 @@ public interface $proto<Q> {
 
         default boolean is(String $name, Type value) {
             return args().is($name, value);
-        }        
+        }                
     }
 
     /**

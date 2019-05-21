@@ -586,7 +586,7 @@ public final class $typeParameters
                 ts.putAll(s.args().asTokens());
                 listed.remove( ort.get() );                
             }
-            return new Select(_i, $nameValues.of(ts) );            
+            return new Select(_i, $args.of(ts) );            
         }            
         return null;
             
@@ -1145,20 +1145,20 @@ public final class $typeParameters
         $proto.selected_model<_typeParameters> {
     
         public final _typeParameters typeParameters;
-        public final $nameValues args;
+        public final $args args;
 
-        public Select(_typeParameters _i, $nameValues tokens){
+        public Select(_typeParameters _i, $args tokens){
             this.typeParameters = _i;  
             this.args = tokens;
         }
         
-        public Select( NodeWithTypeParameters astImport, $nameValues tokens){
+        public Select( NodeWithTypeParameters astImport, $args tokens){
             this.typeParameters = _typeParameters.of(astImport );
             this.args = tokens;
         }
         
         @Override
-        public $nameValues args(){
+        public $args args(){
             return args;
         }
         

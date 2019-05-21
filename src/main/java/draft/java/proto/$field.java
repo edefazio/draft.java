@@ -1107,7 +1107,7 @@ public class $field implements Template<_field>, $proto<_field> {
                 //all = init.decomposeTo(_f.getInit(), all);
             }
             if(all != null){
-                return new Select( _f, $nameValues.of(all));
+                return new Select( _f, $args.of(all));
             }
         }
         return null;
@@ -1260,15 +1260,15 @@ public class $field implements Template<_field>, $proto<_field> {
             $proto.selected_model<_field> {
         
         public final _field _f;
-        public final $nameValues args;
+        public final $args args;
 
-        public Select( _field _f, $nameValues tokens){
+        public Select( _field _f, $args tokens){
             this._f = _f;
             this.args = tokens;
         }
         
         @Override
-        public $nameValues args(){
+        public $args args(){
             return args;
         }
         

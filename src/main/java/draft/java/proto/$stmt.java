@@ -1743,7 +1743,7 @@ public final class $stmt<T extends Statement>
         if( st == null ){
             return null;
         }      
-        return new Select( astStmt, $nameValues.of(st) );
+        return new Select( astStmt, $args.of(st) );
         //if( ts.isConsistent(st)){
         //    ts.putAll(st);           
         //}
@@ -2329,15 +2329,15 @@ public final class $stmt<T extends Statement>
             $proto.selectedAstNode<T> {
         
         public T astStatement;
-        public $nameValues args;
+        public $args args;
         
-        public Select( T astStatement, $nameValues tokens){
+        public Select( T astStatement, $args tokens){
             this.astStatement = astStatement;
             this.args = tokens;
         }
         
         @Override
-        public $nameValues args(){
+        public $args args(){
             return args;
         }
         

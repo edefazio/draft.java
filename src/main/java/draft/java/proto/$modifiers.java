@@ -338,7 +338,7 @@ public class $modifiers
     public static class Select implements selected<_modifiers>, selected_model<_modifiers>{
 
         public _modifiers _mods;
-        public $nameValues args = new $nameValues(new Tokens());
+        public $args args = new $args(new Tokens());
         
         public Select(_modifiers _mods ) {
             this._mods = _mods;            
@@ -409,7 +409,7 @@ public class $modifiers
         }
         
         @Override
-        public $nameValues args() {
+        public $args args() {
             return args;
         }
 

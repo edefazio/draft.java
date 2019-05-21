@@ -589,19 +589,19 @@ public class $annos
         implements $proto.selected, selected_model<_annos> {
 
         public final _annos _anns;
-        public final $nameValues args;
+        public final $args args;
 
         public Select(_annos _a, Tokens tokens) {
-            this(_a, $nameValues.of(tokens));
+            this(_a, $args.of(tokens));
         }
 
-        public Select(_annos _as, $nameValues tokens) {
+        public Select(_annos _as, $args tokens) {
             this._anns = _as;
             args = tokens;
         }
 
         @Override
-        public $nameValues args() {
+        public $args args() {
             return args;
         }
 

@@ -416,14 +416,14 @@ public class $typeParameter
 
         public Select(_typeParameter _tp, Tokens ts){
             this._tp = _tp;
-            this.$args = $nameValues.of(ts);
+            this.$args = $args.of(ts);
         }
         
-        public $nameValues $args;
+        public $args $args;
         public _typeParameter _tp;
         
         @Override
-        public $nameValues args() {
+        public $args args() {
             return $args;
         }
 

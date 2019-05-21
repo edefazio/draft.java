@@ -156,7 +156,7 @@ public class $id implements $constructor.$part, $method.$part, $field.$part, $pa
         return str;
     }
     
-    public $proto.$nameValues decomposeTo(String t, $proto.$nameValues args) {
+    public $proto.$args decomposeTo(String t, $proto.$args args) {
         if (args == null) {
             return null;
         }

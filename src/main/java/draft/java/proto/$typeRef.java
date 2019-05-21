@@ -1087,20 +1087,20 @@ public final class $typeRef
         public _typeRef type;
         
         /** the arguments selected*/
-        public $nameValues args;
+        public $args args;
 
         public Select(_typeRef _tr, Tokens tokens ){
             this.type = _tr;
-            this.args = $nameValues.of(tokens);
+            this.args = $args.of(tokens);
         }
         
-        public Select( Type type, $nameValues tokens){
+        public Select( Type type, $args tokens){
             this.type = _typeRef.of(type);
             this.args = tokens;
         }
         
         @Override
-        public $nameValues args(){
+        public $args args(){
             return args;
         } 
         

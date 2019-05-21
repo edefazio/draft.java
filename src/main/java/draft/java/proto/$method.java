@@ -931,7 +931,7 @@ public class $method
         all = thrown.decomposeTo(_m.getThrows(), all);
         all = body.decomposeTo(_m.getBody(), all);
         if( all != null ){
-            return new Select( _m, $nameValues.of(all));
+            return new Select( _m, $args.of(all));
         }
         return null;        
     }
@@ -1501,20 +1501,20 @@ public class $method
             $proto.selected_model<_method> {
         
         public final _method _m;
-        public final $nameValues args;
+        public final $args args;
 
-        public Select( _method _m, $nameValues tokens ){
+        public Select( _method _m, $args tokens ){
             this._m = _m;
             this.args = tokens;
         }
                 
-        public Select( MethodDeclaration astMethod, $nameValues tokens ){
+        public Select( MethodDeclaration astMethod, $args tokens ){
             this._m = _method.of(astMethod);
             this.args = tokens;
         }
 
         @Override
-        public $nameValues args(){
+        public $args args(){
             return args;
         }
         

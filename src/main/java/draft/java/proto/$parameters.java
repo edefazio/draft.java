@@ -470,14 +470,14 @@ public class $parameters implements Template<_parameters>, $proto<_parameters>,
         implements $proto.selected, selected_model<_parameters> {
         
         public final _parameters _params;
-        public final $nameValues args;
+        public final $args args;
 
         public Select ( _parameters _p, Tokens tokens){
             this._params = _p;
-            args = $nameValues.of(tokens);
+            args = $args.of(tokens);
         }
         
-        public Select ( _parameters _p, $nameValues $a){
+        public Select ( _parameters _p, $args $a){
             this._params = _p;
             args = $a;
         }
@@ -492,7 +492,7 @@ public class $parameters implements Template<_parameters>, $proto<_parameters>,
         
         
         @Override
-        public $nameValues args(){
+        public $args args(){
             return args;
         }
         

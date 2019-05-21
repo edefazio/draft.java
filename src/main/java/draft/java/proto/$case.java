@@ -13,7 +13,7 @@ import draft.java.Ast;
 import draft.java.Walk;
 import draft.java._model._node;
 import draft.java._type;
-import draft.java.proto.$proto.$nameValues;
+import draft.java.proto.$proto.$args;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -104,7 +104,7 @@ public class $case
         //System.out.println( "In selectStatements");
         if( statements.isEmpty()){
             //System.out.println("Statments empty");
-            return new Select( astSwitchEntry, $proto.$nameValues.of(tokens) );
+            return new Select( astSwitchEntry, $proto.$args.of(tokens) );
         }
         if( statements.size() != astSwitchEntry.getStatements().size() ){
             //System.out.println( "Statement size mismatch");
@@ -121,7 +121,7 @@ public class $case
             }
             ts.putAll(ss.args.asTokens());                
         }
-        return new Select(astSwitchEntry, $nameValues.of(ts));
+        return new Select(astSwitchEntry, $args.of(ts));
     }
     
     public Select select( String... switchCase ){
@@ -457,15 +457,15 @@ public class $case
         implements $proto.selected<SwitchEntry>, $proto.selectedAstNode<SwitchEntry>{
         
         public SwitchEntry astCase;
-        public $proto.$nameValues args;
+        public $proto.$args args;
         
-        public Select( SwitchEntry astCase, $nameValues $nv){
+        public Select( SwitchEntry astCase, $args $nv){
             this.astCase = astCase;
             this.args = $nv;
         }
 
         @Override
-        public $proto.$nameValues args() {
+        public $proto.$args args() {
             return args;
         }
 

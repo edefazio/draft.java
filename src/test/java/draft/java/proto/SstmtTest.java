@@ -8,7 +8,7 @@ import draft.java.Stmt;
 import draft.java._body;
 import draft.java._class;
 import draft.java._method;
-import draft.java.proto.$proto.$nameValues;
+import draft.java.proto.$proto.$args;
 import draft.java.proto.$stmt.Select;
 import java.util.ArrayList;
 import junit.framework.TestCase;
