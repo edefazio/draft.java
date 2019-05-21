@@ -41,7 +41,7 @@ public class $anno
      * @return 
      */
     public static final _anno first( Class clazz, Predicate<_anno> constraint ){
-       return of().constraint(constraint).firstIn(clazz);
+       return of().addConstraint(constraint).firstIn(clazz);
     }
     
     /**
@@ -63,7 +63,7 @@ public class $anno
      * @return 
      */
     public static final <N extends _node> _anno first( N _n, Predicate<_anno> constraint ){
-        return of().constraint(constraint).firstIn(_n);
+        return of().addConstraint(constraint).firstIn(_n);
     }
     
     /**
@@ -203,7 +203,7 @@ public class $anno
      * @return 
      */
     public static final List<_anno> list( Class clazz, Predicate<_anno> constraint){
-        return of().constraint(constraint).listIn(clazz);
+        return of().addConstraint(constraint).listIn(clazz);
     }
     
     /**
@@ -214,7 +214,7 @@ public class $anno
      * @return 
      */
     public static final <N extends _node> List<_anno> list( N _n, Predicate<_anno> constraint){
-        return of().constraint(constraint).listIn(_n);
+        return of().addConstraint(constraint).listIn(_n);
     }
     
     /**
@@ -326,7 +326,7 @@ public class $anno
      * @return 
      */
     public static final <N extends _node> N forEach( N _n, Predicate<_anno> constraint, Consumer<_anno> _annoConsumer){
-        return of().constraint(constraint).forEachIn(_n, _annoConsumer);
+        return of().addConstraint(constraint).forEachIn(_n, _annoConsumer);
     }
 
     /**
@@ -633,7 +633,7 @@ public class $anno
      * @return the modified N
      */
     public static final _type remove( Class clazz, Predicate<_anno> constraint ){
-        return $anno.of().constraint(constraint).removeIn(clazz);
+        return $anno.of().addConstraint(constraint).removeIn(clazz);
     }
     
     /**
@@ -644,7 +644,7 @@ public class $anno
      * @return the modified N
      */
     public static final <N extends _node> N remove( N _n, Predicate<_anno> constraint ){
-        return $anno.of().constraint(constraint).removeIn(_n);
+        return $anno.of().addConstraint(constraint).removeIn(_n);
     }
     
     /**
@@ -802,11 +802,11 @@ public class $anno
     }
     
     public static $anno of( Predicate<_anno> constraint ){
-        return of().constraint(constraint);
+        return of().addConstraint(constraint);
     }
     
     public static $anno of(String pattern, Predicate<_anno>constraint) {
-        return new $anno(_anno.of(pattern)).constraint(constraint);
+        return new $anno(_anno.of(pattern)).addConstraint(constraint);
     }
     
     public static $anno of(_anno _an) {
@@ -814,7 +814,7 @@ public class $anno
     }
 
     public static $anno of(_anno _an, Predicate<_anno>constraint) {
-        return new $anno(_an).constraint(constraint);
+        return new $anno(_an).addConstraint(constraint);
     }
         
     public static $anno of(Class<? extends Annotation>sourceAnnoClass) {
@@ -822,7 +822,7 @@ public class $anno
     }
     
     public static $anno of (Class<? extends Annotation>sourceAnnoClass, Predicate<_anno> constraint) {
-        return of( sourceAnnoClass).constraint(constraint); 
+        return of( sourceAnnoClass).addConstraint(constraint); 
     }
     
     /**
@@ -941,11 +941,12 @@ public class $anno
      * Sets the underlying constraint
      * @param constraint
      * @return 
-     */
+     
     public $anno constraint(Predicate<_anno> constraint) {
         this.constraint = constraint;
         return this;
     }
+    */ 
 
     /**
      * ADDS an additional matching constraint to the prototype
@@ -1087,13 +1088,13 @@ public class $anno
     @Override
     public $anno $(String target, String $Name) {
         name.$(target, $Name);
-        $mvs.forEach(mv -> mv.name.pattern = mv.name.pattern.$(target, $Name));
+        $mvs.forEach(mv -> mv.key.pattern = mv.key.pattern.$(target, $Name));
         return this;
     }
     
     public $anno hardcode$( Translator tr, Object...keyValues){
         name.hardcode$(tr, keyValues);
-        $mvs.forEach(mv -> mv.name.pattern = mv.name.pattern.hardcode$(tr, keyValues));
+        $mvs.forEach(mv -> mv.key.pattern = mv.key.pattern.hardcode$(tr, keyValues));
         return this;
     }
 
@@ -1106,9 +1107,9 @@ public class $anno
     }
     
     public Select select(_anno _a){
-        System.out.println( "testing "+ _a);
+        //System.out.println( "testing "+ _a);
         if(this.constraint.test(_a)){
-            System.out.println( "passed constraint "+ _a);
+            //System.out.println( "passed constraint "+ _a);
             Tokens ts = decompose(_a);            
             if( ts != null ){
                 return new Select(_a, ts);
@@ -1122,7 +1123,7 @@ public class $anno
         List<String> params = new ArrayList<>();
         params.addAll( this.name.list$() );
         this.$mvs.forEach(m -> {
-            params.addAll( m.name.pattern.list$() ); 
+            params.addAll( m.key.pattern.list$() ); 
             params.addAll( m.value.pattern.list$() ); 
         });
         return params;
@@ -1133,7 +1134,7 @@ public class $anno
         List<String> params = new ArrayList<>();
         params.addAll( this.name.list$() );
         this.$mvs.forEach(m -> {
-            params.addAll( m.name.pattern.list$Normalized() ); 
+            params.addAll( m.key.pattern.list$Normalized() ); 
             params.addAll( m.value.pattern.list$Normalized() ); 
         });
         return params.stream().distinct().collect(Collectors.toList() );
@@ -1538,7 +1539,8 @@ public class $anno
      */
     public static class $memberValue {
 
-        public $component<String> name = new $component("$key$", t -> true);
+        public $id key = $id.any();
+        
         public $component<String> value = new $component("$value$", t -> true);
         public Predicate<MemberValuePair> constraint = t -> true;
 
@@ -1551,7 +1553,10 @@ public class $anno
         }
 
         public String compose(Translator translator, Map<String, Object> keyValues) {
-            String k = name.compose(translator, keyValues);
+            String k = null;
+            if( !key.isMatchAny() ){
+                k = key.compose(translator, keyValues);
+            }
             String v = value.compose(translator, keyValues);
             if (k == null || k.length() == 0) {
                 return v;
@@ -1560,7 +1565,7 @@ public class $anno
         }
 
         public boolean isMatchAll() {
-            return name.pattern.isMatchAny() && value.pattern.isMatchAny();
+            return key.pattern.isMatchAny() && value.pattern.isMatchAny();
         }
 
         public static $memberValue of(String key, Expression exp) {
@@ -1576,12 +1581,12 @@ public class $anno
         }
 
         public $memberValue(String name, Expression value) {
-            this.name.pattern = Stencil.of(name);
+            this.key.pattern = Stencil.of(name);
             this.value.pattern = Stencil.of(value.toString());
         }
 
         public $memberValue $(String target, String $name) {
-            this.name.pattern = this.name.pattern.$(target, $name);
+            this.key.pattern = this.key.pattern.$(target, $name);
             this.value.pattern = this.value.pattern.$(target, $name);
             return this;
         }
@@ -1596,6 +1601,11 @@ public class $anno
             return null;
         }
         
+        /**
+         * 
+         * @param mvp
+         * @return 
+         */
         public boolean matches(MemberValuePair mvp) {
             return select(mvp) != null;
         }
@@ -1612,12 +1622,17 @@ public class $anno
             return null;
         }
         
+        /**
+         * 
+         * @param mvp
+         * @return 
+         */
         public Tokens decompose(MemberValuePair mvp ){
             if (mvp == null) {
                 return null;
             }
             if (constraint.test(mvp)) {
-                Tokens ts = name.decompose(mvp.getNameAsString());
+                Tokens ts = key.decompose(mvp.getNameAsString());
                 ts = value.decomposeTo(mvp.getValue().toString(), ts);
                 return ts;
             }
@@ -1651,7 +1666,7 @@ public class $anno
                 return null;
             }
             if (constraint.test(mvp)) {
-                Tokens ts = name.decompose(mvp.getNameAsString());
+                Tokens ts = key.decompose(mvp.getNameAsString());
                 ts = value.decomposeTo(mvp.getValue().toString(), ts);
                 if( ts != null ){
                     return new Select(mvp, ts);

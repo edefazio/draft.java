@@ -10,7 +10,8 @@ import java.util.function.Predicate;
  * or fully qualified "java.util.Map" 
  * 
  */
-public class $id implements $constructor.$part, $method.$part, $field.$part, $parameter.$part {
+public class $id implements $constructor.$part, $method.$part, $field.$part, $parameter.$part, 
+        $typeParameter.$part {
 
     public static $id any(){
         return of();

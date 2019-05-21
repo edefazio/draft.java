@@ -20,6 +20,17 @@ import static junit.framework.TestCase.assertEquals;
  */
 public class _typeRefTest extends TestCase {
 
+    public void testTypeParams(){
+        _typeRef _tr = _typeRef.of("List<? extends Foo>"); //upper bounded wildcards
+        //System.out.println(_tr);
+        _tr = _typeRef.of("List<?>");//unbounded wildcard
+        //System.out.println(_tr);
+        _tr = _typeRef.of("List<? super Integer>"); //lower bound wildcard
+        //System.out.println(_tr);
+        _tr = _typeRef.of("ArrayList<>");
+        //System.out.println(_tr);
+    }
+    
     public void testWorkingTypeWithAnnotation(){
         _typeRef _tr = _typeRef.of("@Test List<A>");        
         //      

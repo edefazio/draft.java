@@ -22,7 +22,7 @@ import java.util.stream.Collectors;
  */
 public class $annos 
     implements Template<_annos>, $proto<_annos>, $constructor.$part, $method.$part, 
-        $field.$part, $parameter.$part {
+        $field.$part, $parameter.$part, $typeParameter.$part {
 
     /** 
      * List of anno prototypes, note: an empty list means it matches ANY list 
@@ -46,7 +46,7 @@ public class $annos
     /**
      * Entities that have NO annotations applied to them */
     public static $annos none(){
-        return of().constraint(as -> as.isEmpty());
+        return of().addConstraint(as -> as.isEmpty());
     }
     
     /**
@@ -63,7 +63,7 @@ public class $annos
      * @return 
      */
     public static $annos of( Predicate<_annos> constraint ){
-       return of().constraint(constraint);
+       return of().addConstraint(constraint);
     }
     
     /**
@@ -107,15 +107,20 @@ public class $annos
         }        
     }
     
+    public boolean isEmpty(){
+        return this.$annosList.isEmpty();
+    }
+    
     /**
      * 
      * @param constraint
      * @return 
-     */
+     
     public $annos constraint( Predicate<_annos> constraint ){
         this.constraint = constraint;
         return this;
     }
+    */ 
     
     /**
      * 

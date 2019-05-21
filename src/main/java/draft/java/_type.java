@@ -396,6 +396,8 @@ public interface _type<AST extends TypeDeclaration & NodeWithJavadoc & NodeWithM
             return (T) this;
         }
         CompilationUnit cu = findCompilationUnit();
+        System.out.println("Setting package name to \""+ packageName+"\" in "+ cu );
+        //TODO I need to make sure it's a valid name
         cu.setPackageDeclaration( packageName );        
         return (T)this;
     }

@@ -40,6 +40,10 @@ public class $modifiers
         return $modifiers.of( _hm.getModifiers() );
     }
     
+    public static $modifiers of(String...mods){
+        return of(_modifiers.of(mods));
+    }
+    
     /**
      * 
      * @param ms
@@ -123,9 +127,25 @@ public class $modifiers
     }
     
     public _modifiers compose(Translator translator, Map<String,Object> keyValues){
+        //parameter override
+        if( keyValues.get("$modifiers") != null){
+            Object mods = keyValues.get("$modifiers");
+            Map<String,Object> ii = new HashMap<>();
+            ii.putAll(keyValues);
+            ii.remove("$modifiers");
+            if( mods instanceof $modifiers ){
+                return (($modifiers)mods).compose(translator, ii);
+            }
+            return $modifiers.of( mods.toString() ).compose( translator, ii);
+        }
+        
         _modifiers _ms = _modifiers.of();
-        this.mustInclude.forEach(m -> _ms.set(m) );
-        return _ms;
+        if( keyValues.get("modifiers") != null ){
+            _ms = _modifiers.of( keyValues.get("modifiers").toString() );
+        }
+        final _modifiers _mods = _ms;
+        this.mustInclude.forEach(m -> _mods.set(m) );
+        return _mods;
     }
     
      /**

@@ -12,6 +12,7 @@ import com.github.javaparser.ast.expr.SimpleName;
 import com.github.javaparser.ast.type.IntersectionType;
 import com.github.javaparser.ast.type.TypeParameter;
 import com.github.javaparser.ast.type.UnionType;
+import draft.Text;
 import draft.java._typeParameter._typeParameters;
 import junit.framework.TestCase;
 
@@ -22,6 +23,7 @@ import java.lang.annotation.Target;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 /**
  *
@@ -29,6 +31,43 @@ import java.util.List;
  */
 public class _typeParameterTest extends TestCase {
 
+    public void testTypeParameterT(){
+        _typeParameters _tps = _typeParameters.of("B extends R & J");
+        System.out.println( _tps.get(0).getTypeBound() );
+        
+        System.out.println( _tps );
+        
+        
+        TypeParameter t = new TypeParameter();
+        
+        t.setName("A");
+        
+        
+        System.out.println( t );
+        
+        System.out.println( _typeParameters.of("A") );        
+        System.out.println( _typeParameters.of("A,B") );        
+        System.out.println( _typeParameters.of("A,B extends R & J") );        
+        //System.out.println( _typeParameters.of("A,B super R") );        
+        _typeParameters _tp = _typeParameters.of("A, B extends R");        
+        TypeParameter A = _tp.get(0).ast();
+        System.out.println( A.getName() );
+        System.out.println( "TYPE BOUND" + A.getTypeBound() );
+        TypeParameter B = _tp.get(1).ast();
+        System.out.println( B.getName() );
+        System.out.println( "TYPE BOUND" + B.getTypeBound() );
+        
+        _tp = _typeParameters.of( "<String, Integer>" );
+        _tp = _typeParameters.of( "<A, B extends Map<Integer, ? extends R>>" );
+        
+        
+        //System.out.println("TYPE PARAMETERS "+  _tp );        
+        //Ast.classDeclaration("class Dummy"+ Text.combine(tps) +"{}");
+    }
+    
+    //class CC <A, B extends Map<Integer, ? extends R>> {
+        
+    //}
    
     public void testTypeParameterAnno(){
         String s = "@R A extends @Test B";

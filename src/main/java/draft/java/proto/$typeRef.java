@@ -18,7 +18,8 @@ import java.util.function.Predicate;
  * Template for a Java Type Reference
  */
 public final class $typeRef
-    implements Template<_typeRef>, $proto<_typeRef>, $method.$part, $field.$part, $parameter.$part {
+    implements Template<_typeRef>, $proto<_typeRef>, $method.$part, $field.$part, 
+        $parameter.$part, $typeParameter.$part {
 
     /**
      * 

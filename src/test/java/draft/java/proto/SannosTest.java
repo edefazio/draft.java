@@ -11,6 +11,18 @@ import junit.framework.TestCase;
  */
 public class SannosTest extends TestCase {
     
+    public void testAnnosSingleMember(){
+        $anno $a = $anno.of("A(2)" );
+        _anno _a = $a.construct();
+        
+        _anno _aa = _anno.of("A(4)");
+        _annos _aaa = _annos.of("@A(2)");
+        
+        $annos $as = $annos.of("@A(1)");
+        $as.construct();
+        System.out.println( $as.construct() );
+    }
+    
     public void testAnnosNone(){
         @Deprecated
         class DF{

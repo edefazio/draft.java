@@ -132,8 +132,16 @@ public final class _typeParameter
     public static final class _typeParameters
         implements _model {
 
+        public static _typeParameters of(){
+            return of( Ast.classDeclaration("class Dummy{}" ));
+        }
+        
         public static _typeParameters of( String...tps){
-            ClassOrInterfaceDeclaration coid = Ast.classDeclaration("class Dummy"+ Text.combine(tps) +"{}");
+            String typeParams = Text.combine(tps);
+            if( !typeParams.startsWith("<") ){
+                typeParams = "<"+ typeParams +">";
+            }
+            ClassOrInterfaceDeclaration coid = Ast.classDeclaration("class Dummy"+ typeParams +"{}");
             return of( coid );
         }
 
@@ -256,7 +264,18 @@ public final class _typeParameter
         @Override
         public String toString() {
             if( this.astNodeWithTypeParams.getTypeParameters().isNonEmpty() ) {
-                return this.astNodeWithTypeParams.getTypeParameters().toString();
+                NodeList<TypeParameter> tps = this.ast();
+                StringBuilder sb = new StringBuilder();
+                sb.append("<");
+                for(int i=0;i<tps.size(); i++ ){
+                    if( i > 0 ){
+                        sb.append(",");
+                    }
+                    sb.append( tps.get(i) );
+                }
+                sb.append(">");
+                return sb.toString();
+                //return this.astNodeWithTypeParams.getTypeParameters().toString();
             }
             return "";
         }

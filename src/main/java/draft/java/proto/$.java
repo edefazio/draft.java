@@ -84,7 +84,7 @@ public final class $ {
     }
     
     public static $anno anno(Predicate<_anno> constraint){
-        return $anno.any().constraint(constraint);
+        return $anno.any().addConstraint(constraint);
     }
     
     public static $anno anno(String pattern){
@@ -92,7 +92,7 @@ public final class $ {
     }
     
     public static $anno anno(String pattern, Predicate<_anno> constraint){
-        return $anno.of(pattern).constraint(constraint);
+        return $anno.of(pattern).addConstraint(constraint);
     }
     
     public static $anno anno( Class<? extends Annotation> clazz ){
@@ -100,7 +100,7 @@ public final class $ {
     }
     
     public static $anno anno( Class<? extends Annotation> clazz, Predicate<_anno> constraint){
-        return $anno.of(clazz).constraint(constraint);
+        return $anno.of(clazz).addConstraint(constraint);
     }
     
     public static $annos annos(){
@@ -108,7 +108,7 @@ public final class $ {
     }
     
     public static $annos annos( Predicate<_annos> constraint ){
-        return $annos.of().constraint(constraint);
+        return $annos.of().addConstraint(constraint);
     }
     
     public static $annos annos( _annos _anns ){
@@ -116,7 +116,7 @@ public final class $ {
     }
     
     public static $annos annos( _annos _anns, Predicate<_annos> constraint){
-        return $annos.of(_anns).constraint(constraint);
+        return $annos.of(_anns).addConstraint(constraint);
     }
     
     public static $annos annos($anno... annos){
