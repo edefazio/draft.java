@@ -4,9 +4,11 @@ import com.github.javaparser.ast.Node;
 import com.github.javaparser.ast.body.Parameter;
 import draft.*;
 import draft.java.Walk;
+import draft.java._anno._annos;
 import draft.java._model._node;
 import draft.java._parameter;
 import draft.java._type;
+import draft.java._typeRef;
 import java.lang.annotation.Annotation;
 import java.util.*;
 import java.util.function.Consumer;
@@ -412,6 +414,71 @@ public class $parameter implements Template<_parameter>, $proto<_parameter> {
         this.type = $typeRef.of(_p.getType());     
         this.annos = $annos.of( _p.getAnnos() );        
     }
+    
+    public $parameter $anno(){
+        this.annos = $annos.any();
+        return this;
+    }
+    
+    public $parameter $anno( $anno $ann ){
+        this.annos.$annosList.add($ann);
+        return this;
+    }
+    
+    public $parameter $annos( $annos $anns){
+        this.annos = $anns;
+        return this;
+    }
+    
+    public $parameter $annos( Predicate<_annos> annosPredicate){
+        this.annos.addConstraint(annosPredicate);
+        return this;
+    }
+    
+    public $parameter $name(){
+        this.name = $id.any();
+        return this;
+    }
+    
+    public $parameter $name( $id name ){
+        this.name = name;
+        return this;
+    }
+    
+    public $parameter $name( String name ){
+        this.name.pattern = Stencil.of(name);
+        return this;
+    }
+    
+    public $parameter $name( String name, Predicate<String> constraint){
+        this.name= $id.of(name).addConstraint(constraint);
+        return this;
+    }
+    
+    public $parameter $name( Predicate<String> constraint){
+        this.name.addConstraint(constraint);
+        return this;
+    }
+    
+    public $parameter $type(){
+        this.type = $typeRef.any();
+        return this;
+    }
+    
+    public $parameter $type( String type ){
+        this.type.typePattern = Stencil.of(type);
+        return this;
+    }
+    
+    public $parameter $type( String type, Predicate<_typeRef> constraint){
+        this.type = $typeRef.of( type, constraint);
+        return this;
+    }
+    
+    public $parameter $type( Predicate<_typeRef> constraint){
+        this.type.addConstraint(constraint);
+        return this;
+    }    
     
     /**
      * Will this $parameter match ANY

@@ -525,7 +525,7 @@ public class $field implements Template<_field>, $proto<_field> {
     public $modifiers modifiers = $modifiers.of();
     public $typeRef type = $typeRef.of();
     public $id name = $id.of();
-    public $expr init = null; //$expr.any();
+    public $expr init = null;
     
     private $field( $part...parts ){
         for(int i=0;i<parts.length;i++){
@@ -591,14 +591,21 @@ public class $field implements Template<_field>, $proto<_field> {
     
     public $field $type(){
         this.type.typePattern = Stencil.of("$type$");
-        //this.type.pattern = Stencil.of("$type$");
+        return this;
+    }
+    
+    public $field $type( $typeRef tr){
+        this.type = tr;
+        return this;
+    }
+    
+    public $field $type( Class clazz){
+        this.type = $typeRef.of(clazz);
         return this;
     }
     
     public $field $type( String pattern ){
-        //this.type = $typeRef.of(pattern);
         this.type.typePattern = Stencil.of(_typeRef.of(pattern).toString());
-        //this.type.$component.this.pattern = Stencil.of(_typeDecl.of(pattern).toString());
         return this;
     }
     
@@ -609,6 +616,11 @@ public class $field implements Template<_field>, $proto<_field> {
     
     public $field $name(){
         this.name.pattern = Stencil.of("$name$");
+        return this;
+    }
+    
+    public $field $name( $id id ){
+        this.name = id;
         return this;
     }
     
@@ -642,18 +654,7 @@ public class $field implements Template<_field>, $proto<_field> {
     public $field $init( Predicate<Expression> initConstraint ){
         this.init.constraint = this.init.constraint.and(initConstraint);
         return this;
-    }
-    
-    /**
-     * Sets or resets the _field constraint
-     * @param constraint the constraint
-     * @return the modified $f
-     
-    public $field constraint( Predicate<_field> constraint ){
-        this.constraint = constraint;
-        return this;
-    }
-    */ 
+    }    
     
     /**
      * Adds ANOTHER constraint to the existing _field level constraint

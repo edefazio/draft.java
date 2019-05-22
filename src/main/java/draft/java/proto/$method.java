@@ -509,7 +509,9 @@ public class $method
     public $annos annos = new $annos();
     public $modifiers modifiers = $modifiers.of();
     public $typeRef type = $typeRef.of();
-    public $component<_typeParameters> typeParameters = new $component( "$typeParameters$", t->true);    
+    
+    //public $component<_typeParameters> typeParameters = new $component( "$typeParameters$", t->true);    
+    public $typeParameters typeParameters = $typeParameters.any();
     public $id name = $id.of();    
     public $parameters parameters = $parameters.of();
     public $throws thrown = $throws.of();
@@ -548,7 +550,14 @@ public class $method
             }
             else if( parts[i] instanceof $throws ){
                 this.thrown = ($throws)parts[i];
-            } else{
+            }
+            else if( parts[i] instanceof $typeParameters ){
+                this.typeParameters = ($typeParameters)parts[i];
+            }
+            else if( parts[i] instanceof $typeParameter ){
+                this.typeParameters.typeParams.add( ($typeParameter)parts[i]);
+            }
+            else{
                 throw new DraftException("Unable to add $part "+ parts[i]+" to $method" );
             }
         }
@@ -570,9 +579,12 @@ public class $method
         type = $typeRef.of(_m.getType() );
         if( !_m.hasTypeParameters() ){
             final _typeParameters etps = _m.getTypeParameters();
+            typeParameters = $typeParameters.of( etps );
+            /*
             typeParameters = new $component(
                 "$typeParameters$", 
                 (tps)-> tps.equals(etps) );
+            */
         }
         name = $id.of(_m.getName());
         if( _m.hasParameters() ){
@@ -620,7 +632,7 @@ public class $method
         List<String>normalized$ = new ArrayList<>();
         normalized$.addAll( javadoc.pattern.list$Normalized() );
         normalized$.addAll( annos.list$Normalized() );
-        normalized$.addAll( typeParameters.pattern.list$Normalized() );
+        normalized$.addAll( typeParameters.list$Normalized() );
         normalized$.addAll( type.list$Normalized() );        
         normalized$.addAll( name.pattern.list$Normalized() );
         normalized$.addAll( parameters.list$Normalized() );
@@ -634,7 +646,7 @@ public class $method
         List<String>all$ = new ArrayList<>();
         all$.addAll( javadoc.pattern.list$() );
         all$.addAll( annos.list$() );
-        all$.addAll( typeParameters.pattern.list$() );
+        all$.addAll( typeParameters.list$() );
         all$.addAll( type.list$() );        
         all$.addAll( name.pattern.list$() );
         all$.addAll( parameters.list$() );
@@ -660,6 +672,11 @@ public class $method
     
     public $method $parameters( Predicate<_parameters> constraint){
         this.parameters.addConstraint( constraint);
+        return this;
+    }
+    
+    public $method $throws(){
+        this.thrown = $throws.any();
         return this;
     }
     
@@ -759,17 +776,32 @@ public class $method
     }
     
     public $method $typeParameters(){
-        this.typeParameters.pattern("$typeParameters$");
+        this.typeParameters = $typeParameters.any(); //pattern("$typeParameters$");
         return this;
     }
     
-    public $method $typeParameters(String tps){
-        this.typeParameters.pattern(tps);
+    public $method $typeParameters($typeParameter $tp){
+        this.typeParameters.typeParams.add($tp);
+        return this;
+    }
+    
+    public $method $typeParameters(Predicate<_typeParameters> constraint){
+        this.typeParameters.addConstraint(constraint);
+        return this;
+    }
+    
+    public $method $typeParameters(String... tps){
+        this.typeParameters = $typeParameters.of(tps);
         return this;
     }
 
     public $method $modifiers(){
         this.modifiers = $modifiers.of();
+        return this;
+    }    
+    
+    public $method $modifiers(_modifiers _ms){
+        this.modifiers = $modifiers.of(_ms);
         return this;
     }    
     
@@ -790,6 +822,11 @@ public class $method
     
     public $method $javadoc( String... form ){
         this.javadoc.pattern(form);
+        return this;
+    }
+    
+    public $method $body (){
+        this.body = $body.any();
         return this;
     }
     
@@ -877,7 +914,7 @@ public class $method
         sb.append(System.lineSeparator());
         sb.append( modifiers.compose(translator, base));
         sb.append(" ");
-        sb.append( typeParameters.compose(translator, base));
+        sb.append( typeParameters.construct(translator, base));
         sb.append(" ");
         sb.append( type.construct(translator, base));
         sb.append(" ");
@@ -988,7 +1025,7 @@ public class $method
     public $method hardcode$( Translator translator, Tokens kvs ) {
         javadoc.pattern = javadoc.pattern.hardcode$(translator, kvs);
         annos = annos.hardcode$(translator, kvs);
-        typeParameters.pattern = typeParameters.pattern.hardcode$(translator, kvs);
+        typeParameters = typeParameters.hardcode$(translator, kvs);
         type = type.hardcode$(translator, kvs);
         name.pattern = name.pattern.hardcode$(translator, kvs);
         parameters = parameters.hardcode$(translator, kvs);
@@ -1003,7 +1040,7 @@ public class $method
     public $method $(String target, String $Name) {
         javadoc.pattern = javadoc.pattern.$(target, $Name);
         annos = annos.$(target, $Name);
-        typeParameters.pattern = typeParameters.pattern.$(target, $Name);
+        typeParameters = typeParameters.$(target, $Name);
         type = type.$(target, $Name);
         name.pattern = name.pattern.$(target, $Name);
         parameters = parameters.$(target, $Name);

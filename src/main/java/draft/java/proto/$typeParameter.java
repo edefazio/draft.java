@@ -116,6 +116,11 @@ public class $typeParameter
         _tp.getTypeBound().forEach(tb -> this.$typeBound.add($typeRef.of(tb)));                   
     }
     
+    public $typeParameter $anno(){
+        this.$anns = $annos.any();
+        return this;
+    }
+    
     public $typeParameter $anno( $anno $ann ){
         this.$anns.$annosList.add($ann);
         return this;

@@ -17,7 +17,7 @@ import java.util.function.Predicate;
  * @param <T> the underlying Expression TYPE
  */
 public final class $expr <T extends Expression>
-    implements Template<T>, $proto<T>, $field.$part {
+    implements Template<T>, $proto<T>, $field.$part, $var.$part {
 
     /**
      * find the first occurring instance of a matching expression within the clazz

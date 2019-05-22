@@ -101,7 +101,7 @@ public class SvarTest extends TestCase {
     public void testVar(){
         $var $anyInt = $var.of("int $name$");
         $var $anyString = $var.of("String $name$");
-        $var $anyInit = $var.of("$type$ $name$ = $init$");
+        $var $anyInit = $var.of("$type$ $name$", v-> v.getInitializer().isPresent() );
         
         VariableDeclarator v = Ast.variable("int count");
         assertEquals( $anyInt.fill("count"), v );

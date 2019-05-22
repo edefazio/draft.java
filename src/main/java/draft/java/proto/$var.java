@@ -32,6 +32,9 @@ import java.util.stream.Collectors;
 public class $var
     implements Template<VariableDeclarator>, $proto<VariableDeclarator> {
     
+    /** marker interface for components that are a part of a var */ 
+    public interface $part{}
+    
     /**
      * list all variables in the clazz
      * 
@@ -655,6 +658,10 @@ public class $var
         return $var.of("$type$ $name$");
     }
     
+    public static final $var of( $part...parts){
+        return new $var(parts);
+    }
+    
     /**
      * 
      * @param constraint
@@ -740,34 +747,118 @@ public class $var
     
     public $typeRef type = $typeRef.of("$type$");
     public $id name = $id.of();
-    public $component<Expression> init = new $component( "$init$", t->true);
+    public $expr init = $expr.of("$init$");
+    //public $component<Expression> init = new $component( "$init$", t->true);
 
     public static final PrettyPrinterConfiguration NO_COMMENTS = new PrettyPrinterConfiguration()
         .setPrintComments(false).setPrintJavadoc(false);
   
+    private $var( $part...parts ){
+        for(int i=0;i<parts.length;i++){
+            if( parts[i] instanceof $typeRef ){
+                this.type = ($typeRef)parts[i];
+            }
+            else if( parts[i] instanceof $id ){
+                this.name = ($id)parts[i];
+            }
+            else{
+                this.init = ($expr)parts[i];
+            }
+        }
+    }
+    
     private $var( VariableDeclarator astProtoVar ){
         this.name = $id.of(astProtoVar.getNameAsString());
         this.type = $typeRef.of(astProtoVar.getTypeAsString());
         if( astProtoVar.getInitializer().isPresent() ){
-            this.init = $component.of(astProtoVar.getInitializer().get());
+            this.init = $expr.of(astProtoVar.getInitializer().get());
+            //this.init = $component.of(astProtoVar.getInitializer().get());
             this.constraint = v -> v.getInitializer().isPresent();
         }           
     }
-    
-    /*
-    public $var constraint( Predicate<VariableDeclarator> constraint){
-        this.constraint = constraint;
-        return this;
-    }
-    */
     
     public $var addConstraint(Predicate<VariableDeclarator> constraint){
         this.constraint = this.constraint.and(constraint);
         return this;
     }
     
-    public $var init( Expression initExprProto ){
-        init.pattern( initExprProto.toString(NO_COMMENTS) );
+    public $var $name( String name ){
+        this.name.pattern = Stencil.of(name);
+        return this;
+    }
+    
+    public $var $name( String name, Predicate<String> constraint){
+        this.name.pattern = Stencil.of(name);
+        this.name.addConstraint(constraint);
+        return this;
+    }
+    
+    public $var $name(Predicate<String> constraint){
+        this.name.addConstraint(constraint);
+        return this;
+    }
+
+    public $var $type(){
+        this.type = $typeRef.any();
+        return this;
+    }
+    
+    public $var $type( Class clazz){
+        this.type = $typeRef.of(clazz);
+        return this;
+    }
+    
+    public $var $type( $typeRef $t ){
+        this.type = $t;
+        return this;
+    }
+     
+    public $var $type( String type ){
+        this.type.typePattern = Stencil.of(name);
+        return this;
+    }
+    
+    public $var $type( String type, Predicate<_typeRef> constraint){
+        this.type = $typeRef.of(type).addConstraint(constraint);
+        return this;
+    }
+    
+    public $var $type(Predicate<_typeRef> constraint){
+        this.type.addConstraint(constraint);
+        return this;
+    }
+    
+    public $var $init(){
+        this.init = $expr.any();
+        return this;
+    }
+    
+    public <E extends Expression> $var $init( Predicate<E> constraint ){
+        this.init.addConstraint(constraint);
+        return this;
+    }
+    
+    /** What about NO init?? ...I can put that in the lambda*/    
+    public $var $init( String...expr ){
+        this.init = $expr.of(expr);
+        return this;
+    }
+    
+    /**
+     * Select/match only variables that do not have an init
+     * @return 
+     */
+    public $var noInit(){
+        return addConstraint( v -> !v.getInitializer().isPresent());
+    }
+    
+    public <E extends Expression> $var $init( E initExprProto){
+        this.init = $expr.of(initExprProto);
+        return this;
+    }
+    
+    public <E extends Expression> $var $init( E initExprProto, Predicate<E> constraint){
+        this.init = $expr.of(initExprProto).addConstraint(constraint);
         return this;
     }    
       
@@ -797,11 +888,20 @@ public class $var
     public Select select(VariableDeclarator astVar){       
         Tokens all = new Tokens();
         if(this.constraint.test(astVar)) {            
+            if( !this.init.isMatchAny() && !astVar.getInitializer().isPresent()){
+                //we EXPECT some type of init, but it's null
+                return null;
+            }
             if( astVar.getInitializer().isPresent()){
-                all = this.init.decomposeTo(astVar.getInitializer().get(), all );
-                if( all == null ){
+                $expr.Select sel = this.init.select(astVar.getInitializer().get());
+                if( sel == null ){
                     return null;
-                }                             
+                }
+                all = sel.args.asTokens();
+                //all = this.init.decomposeTo(astVar.getInitializer().get(), all );
+                //if( all == null ){
+                //    return null;
+                //}                             
             }
             all = this.name.decomposeTo(astVar.getNameAsString(), all);
             all = this.type.decomposeTo(_typeRef.of(astVar.getType()), all);
@@ -827,7 +927,7 @@ public class $var
         base.put("init", "");
         base.putAll(keyValues);
         
-        String in = init.compose(translator, base);
+        String in = init.construct(translator, base).toString();
         if( in != null ){
             return Ast.variable(this.type.construct(translator, base)+ " "+ this.name.compose(translator, base)+" = "+in+";");
         }        

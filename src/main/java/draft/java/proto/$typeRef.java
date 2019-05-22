@@ -19,7 +19,7 @@ import java.util.function.Predicate;
  */
 public final class $typeRef
     implements Template<_typeRef>, $proto<_typeRef>, $method.$part, $field.$part, 
-        $parameter.$part, $typeParameter.$part {
+        $parameter.$part, $typeParameter.$part, $var.$part {
 
     /**
      * 

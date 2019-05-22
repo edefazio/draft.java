@@ -521,6 +521,11 @@ public final class $typeParameters
         return this;
     }
     
+    public $typeParameters $add( $typeParameter $tp ){
+        this.typeParams.add($tp);
+        return this;
+    }
+    
     /**
      * SETs a constraint
      * @param constraint

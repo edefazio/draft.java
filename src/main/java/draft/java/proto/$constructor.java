@@ -549,7 +549,7 @@ public class $constructor
     public $annos annos = new $annos();
     public $modifiers modifiers = $modifiers.of();
     
-    public $component<_typeParameters> typeParameters = new $component( "$typeParameters$", t->true);
+    public $typeParameters typeParameters = $typeParameters.any();
     public $id name = $id.of();
     public $parameters parameters = $parameters.of();
     public $throws thrown = $throws.of();
@@ -593,6 +593,12 @@ public class $constructor
             else if( components[i] instanceof $throws ){
                 this.thrown = ($throws)components[i];
             }
+            else if( components[i] instanceof $typeParameters){
+                this.typeParameters = ($typeParameters)components[i];
+            }
+            else if( components[i] instanceof $typeParameter){
+                this.typeParameters.typeParams.add( ($typeParameter)components[i]);
+            }
             else{
                 throw new DraftException("Unable to use $proto component " +components[i]+" for $constructor" );
             }            
@@ -614,9 +620,10 @@ public class $constructor
         modifiers = $modifiers.of(_ct );        
         if( !_ct.hasTypeParameters() ){
             final _typeParameters etps = _ct.getTypeParameters();
-            typeParameters = new $component(
-                "$typeParameters$", 
-                (tps)-> tps.equals(etps) );
+            typeParameters = $typeParameters.of(etps);
+            //typeParameters = new $component(
+            //    "$typeParameters$", 
+            //    (tps)-> tps.equals(etps) );
         }
         name = $id.of(_ct.getName() );
         if( _ct.hasParameters() ){
@@ -659,7 +666,7 @@ public class $constructor
         List<String>normalized$ = new ArrayList<>();
         normalized$.addAll( javadoc.pattern.list$Normalized() );
         normalized$.addAll( annos.list$Normalized() );
-        normalized$.addAll( typeParameters.pattern.list$Normalized() );
+        normalized$.addAll( typeParameters.list$Normalized() );
         normalized$.addAll( name.pattern.list$Normalized() );
         normalized$.addAll( parameters.list$Normalized() );
         
@@ -673,7 +680,7 @@ public class $constructor
         List<String>all$ = new ArrayList<>();
         all$.addAll( javadoc.pattern.list$() );
         all$.addAll( annos.list$() );
-        all$.addAll( typeParameters.pattern.list$() );
+        all$.addAll( typeParameters.list$() );
         all$.addAll( name.pattern.list$() );
         all$.addAll( parameters.list$() );
         all$.addAll( thrown.list$() );
@@ -755,13 +762,18 @@ public class $constructor
         return this;
     }
     
-    public $constructor $typeParameters(){
-        this.typeParameters.pattern("$typeParameters$");
+    public $constructor $typeParameters( $typeParameters $tps ){
+        this.typeParameters = $tps;
         return this;
     }
     
-    public $constructor $typeParameters(String typeParameters){
-        this.typeParameters.pattern(typeParameters);
+    public $constructor $typeParameters(){
+        this.typeParameters = $typeParameters.any();
+        return this;
+    }
+    
+    public $constructor $typeParameters(String... typeParameters){
+        this.typeParameters = $typeParameters.of(typeParameters);
         return this;
     }
 
@@ -887,7 +899,7 @@ public class $constructor
         sb.append(System.lineSeparator());
         sb.append( modifiers.compose(translator, base));
         sb.append(" ");
-        sb.append( typeParameters.compose(translator, base));
+        sb.append( typeParameters.construct(translator, base));
         sb.append(" ");
         sb.append( name.compose(translator, base));
         sb.append(" ");
@@ -988,7 +1000,7 @@ public class $constructor
     public $constructor hardcode$( Translator translator, Tokens kvs ) {
         javadoc.pattern = javadoc.pattern.hardcode$(translator, kvs);
         annos = annos.hardcode$(translator, kvs);
-        typeParameters.pattern = typeParameters.pattern.hardcode$(translator, kvs);
+        typeParameters = typeParameters.hardcode$(translator, kvs);
         name.pattern = name.pattern.hardcode$(translator, kvs);
         parameters = parameters.hardcode$(translator, kvs);
         thrown = thrown.hardcode$(translator, kvs);
@@ -1002,7 +1014,7 @@ public class $constructor
     public $constructor $(String target, String $Name) {
         javadoc.pattern = javadoc.pattern.$(target, $Name);
         annos = annos.$(target, $Name);
-        typeParameters.pattern = typeParameters.pattern.$(target, $Name);
+        typeParameters = typeParameters.$(target, $Name);
         name.pattern = name.pattern.$(target, $Name);
         parameters = parameters.$(target, $Name);
         thrown = thrown.$(target, $Name);
