@@ -13,6 +13,7 @@ import draft.Text;
 import draft.java.io._in;
 import draft.java.io._io;
 import draft.java.io._ioException;
+import java.math.BigInteger;
 import java.text.NumberFormat;
 import java.util.*;
 import java.util.function.*;
@@ -1595,7 +1596,9 @@ public enum Expr {
         // number representation and use that for the hashcode
         if( e instanceof LiteralExpr ){
             if( e instanceof LiteralStringValueExpr){
-                if( e instanceof IntegerLiteralExpr ){
+                if( e instanceof StringLiteralExpr ){
+                    return e.hashCode();
+                } else if( e instanceof IntegerLiteralExpr ){
                     return Objects.hash( IntegerLiteralExpr.class, parseInt( (IntegerLiteralExpr)e ) );
                 } else if( e instanceof LongLiteralExpr ){
                     return Objects.hash( LongLiteralExpr.class, parseLong( (LongLiteralExpr)e ) );
@@ -1605,9 +1608,7 @@ public enum Expr {
                     return e.hashCode();
                 } else if( e instanceof CharLiteralExpr ){
                     return e.hashCode();
-                } else if( e instanceof StringLiteralExpr ){
-                    return e.hashCode();
-                }
+                } 
                 return Objects.hash( e );            
             } 
             return e.hashCode(); //NullLiteral
@@ -1760,8 +1761,27 @@ public enum Expr {
         String str = s.trim();
         if(str.startsWith("0x") || str.startsWith("0X") ){
             if( str.endsWith("L") || str.endsWith("l")){
-                //System.out.println("parsing hex long"+ str);    
-                return Long.parseLong(str.substring(2, str.length()-1).replace("_", ""), 16);
+                //Im a simple man... and If I can represent some long as a string
+                //in some form in Java, JAVA should provide a parser that (given this string)
+                //returns me the appropriate long value... but NOOOOOOOO
+                // they have to just screw it all up and waste my time with this 
+                // bullshit
+                if( str.equals("0x0L")|| str.equals("0X0L") || str.equals("0x0l") || str.equals("0X0L") ){
+                    return 0L;
+                }
+                
+                
+                //System.out.println("parsing hex long : \""+ str+"\""); 
+                return new BigInteger( str.replace("L", "").replace("l", "")
+                    .replace("0x", "").replace("0X", "").replace("_", ""), 16).longValue();
+                //return new BigInteger( str.replace("L", "").replace("l", "") ).longValue();
+                //return Long.decode( str  );
+                //try{
+                //    return Long.decode( str ); //.replace("L", "").replace("l", "") );
+                //}catch(Exception e){
+                //    return Long.decode( str.replace("L", "").replace("l", "") );
+                //}
+                //return Long.parseLong(str.substring(2, str.length()-1).replace("_", ""), 16);
             }
             //System.out.println("parsing hex int "+ str);
             return Integer.parseInt(str.substring(2).replace("_", ""), 16);
@@ -1770,6 +1790,7 @@ public enum Expr {
             if( str.endsWith("L") || str.endsWith("l") ){
                 String subSt = str.substring(2, str.length() -1);
                 //System.out.println( subSt +" "+ subSt.length() );
+                //return Long.decode(s)
                 return Long.parseUnsignedLong(subSt.replace("_", ""), 2);
             }
             return Integer.parseInt(str.substring(2).replace("_", ""), 2);
