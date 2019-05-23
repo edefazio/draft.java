@@ -54,7 +54,7 @@ public class _astFeatures extends TestCase {
         //List<Comment>todoComments = new ArrayList();
         _io.out(_io.config().outProjectDir("C:/dev/refi"),
             _project.of(_javac.options().parameterNamesStoredForRuntimeReflection(),
-                _bulk.load("C:/dev/orig",
+                _bulk.fn("C:/dev/orig",
                     (_t) -> (_type)$stmt.of("System.out.println($any$);").removeIn(_t)
                     ).typesArray() ) );
 
@@ -65,7 +65,7 @@ public class _astFeatures extends TestCase {
 
         _io.out( _io.config().outProjectDir("C:/dev/refi"),
             _project.of(_javac.options().parameterNamesStoredForRuntimeReflection(),
-            _bulk.load("C:/dev/orig",
+            _bulk.fn("C:/dev/orig",
                 _replaceSystemOutWithLog.JavaLoggerFine,
                 (t)->{ todoComments.addAll(
                         Walk.list(t, Comment.class, (Comment c) -> Ast.getContent(c).startsWith("TODO")) );

@@ -14,6 +14,7 @@ import java.util.*;
 import java.util.function.Function;
 
 import static java.nio.file.FileVisitResult.CONTINUE;
+import java.util.function.Consumer;
 
 /**
  * Bulk read in .java files and optionally transform or inspect the {@link _type}s created
@@ -38,7 +39,7 @@ public enum _bulk {
      * @return Receipt containing the files read in, and the paths read from
      */
     public static _load read(Path rootPath ){
-        return load( rootPath );
+        return fn( rootPath );
     }
 
     /**
@@ -49,28 +50,105 @@ public enum _bulk {
      * @return the _load (containing the files as Strings)
      */
     public static _load read( String rootPath ){
-        return load( rootPath );
+        return _bulk.fn( rootPath );
     }
 
     /**
-     * loads all of the .java files into {@link _type} s that are located within the rootPath(recursively)
-     * (or the files within a .zip or .jar file) and runs the _type consumer
+     * 1) Read in the individual .java files, 
+     * 2) convert them to _type
+     * 3) call all _typeConsumers on each _type
+     * 4) return the receipt (i.e. the _type(s) are not stored)
+     * 
+     * @param rootPath
+     * @param _typeConsumers
+     * @return 
+     */
+    public static _receipt consume(String rootPath, Consumer<_type>..._typeConsumers ){
+        return consume(Paths.get(rootPath), _typeConsumers);
+    }
+    
+    /**
+     * 1) Read in the individual .java files, 
+     * 2) convert them to _type
+     * 3) call all _typeConsumers on each _type
+     * 4) return the receipt (i.e. the _type(s) are not stored)
+     * 
+     * @param rootPath
+     * @param _typeConsumers
+     * @return 
+     */
+    public static _receipt consume(Path rootPath, Consumer<_type>..._typeConsumers ){
+        _receipt receipt = new _receipt();
+        receipt.baseReadPath = rootPath;
+        if( rootPath.toFile().isDirectory() ) { //bulk read in a directory
+            _bulkReadJavaFiles javaFileReader = new _bulkReadJavaFiles();
+            try {
+                receipt.startTimestamp = System.currentTimeMillis();
+                Files.walkFileTree(rootPath, javaFileReader);
+                receipt.readFilesTimestamp = System.currentTimeMillis();
+                receipt.paths = javaFileReader.listPaths();
+            } catch (IOException ioe) {
+                throw new _ioException("unable to list files in " + rootPath, ioe);
+            }
+            /** Use parallel worker threads for parsing and transforming */
+            javaFileReader.filesRead.parallelStream().forEach( fr-> {
+                _type _t = _type.of( fr.fileContents ); //1) parse the String to _type
+                
+                //3) apply transforms
+                for(int i=0;i<_typeConsumers.length; i++){
+                    _typeConsumers[i].accept(_t);
+                }                
+            } );
+            receipt.processedTimestamp = System.currentTimeMillis();
+            return receipt;
+        }
+        /* its a file ( a .zip or .jar file ) */
+        SourceZip sz = new SourceZip(rootPath);
+        receipt.startTimestamp = System.currentTimeMillis();
+        receipt.readFilesTimestamp = System.currentTimeMillis();
+        try {
+            sz.parse( (Path relativeZipEntryPath, ParseResult<CompilationUnit> result) -> {
+                if( result.isSuccessful() ){
+                    receipt.paths.add(relativeZipEntryPath);
+                    _type _t = _type.of(result.getResult().get());
+                    for(int i=0;i<_typeConsumers.length; i++){
+                        _typeConsumers[i].accept(_t);
+                    }
+                } else{
+                    throw new DraftException("Unable to parse File in zip/jar at: "+ relativeZipEntryPath+System.lineSeparator()+
+                            "problems:"+result.getProblems() );
+                }
+            });
+            receipt.processedTimestamp = System.currentTimeMillis();
+            return receipt;
+        } catch(IOException ioe){
+            throw new DraftException("Unable to read from .jar or .zip file at "+rootPath);
+        } 
+    }
+    
+    /**
+     * loads all of the .java files into {@link _type} s that are located within 
+     * the rootPath(recursively) (or the files within a .zip or .jar file) 
+     * and runs the _type functions and stores the original _read in _type and 
+     * (if the _type changed after applying the functions) the modified
+     * _type is also saved in the _load.
+     * 
      * @param rootPath
      * @param _typeFns
      * @return
      */
-    public static _load load(String rootPath, Function<_type,_type>... _typeFns){
-        return load( Paths.get(rootPath), _typeFns);
+    public static _load fn(String rootPath, Function<_type,_type>... _typeFns){
+        return fn( Paths.get(rootPath), _typeFns);
     }
-
+   
     /**
-     * Will read in bulk, if the rootPath is a .zip or a .jar file, will delegate to reading these in
-     * if rootPath is a Directory, will read
+     * Will read in bulk, if the rootPath is a .zip or a .jar file, will delegate 
+     * to reading these in if rootPath is a Directory, will read
      * @param rootPath
      * @param _typeFns
      * @return
      */
-    public static _load load(Path rootPath, Function<_type, _type>... _typeFns){
+    public static _load fn(Path rootPath, Function<_type,_type>... _typeFns){
 
         _load receipt = new _load();
         receipt.baseReadPath = rootPath;
@@ -88,16 +166,17 @@ public enum _bulk {
             /** Use parallel worker threads for parsing and transforming */
             javaFileReader.filesRead.parallelStream().forEach( fr-> {
                 _type _t = _type.of( fr.fileContents ); //1) parse the String to _type
+                _type _orig = _t.copy();
                 int beforeHash = _t.hashCode();         //2) store the before hash
+                receipt.types.add(_orig); //store the _type in the receipt
                 //3) apply transforms
                 for(int i=0;i<_typeFns.length; i++){
                     _t = _typeFns[i].apply(_t);
                 }
                 int afterHash = _t.hashCode();
                 if( beforeHash != afterHash ) { //check if after hash is different
-                    receipt.addTransformedType(_type.of(fr.fileContents), _t);
-                }
-                receipt.types.add(_t); //store the _type in the receipt
+                    receipt.addTransformedType(_orig, _t);
+                }                
             } );
             receipt.processedTimestamp = System.currentTimeMillis();
             return receipt;
@@ -110,13 +189,14 @@ public enum _bulk {
             sz.parse( (Path relativeZipEntryPath, ParseResult<CompilationUnit> result) -> {
                 if( result.isSuccessful() ){
                     _type _t = _type.of(result.getResult().get());
-                    _type _orig = null;
-                    receipt.types.add(_t);
+                    _type _orig = _t.copy();
+                    receipt.types.add(_orig); //store the clean version
+                    //System.out.println( "Type "+ _t.getFullName());
                     int beforeHash = _t.hashCode();         //2) store the before hash
                     //3) apply transforms
-                    if( _typeFns.length > 0 ){
-                        _orig = _t.copy(); //clone BEFORE trying to apply annos
-                    }
+                    //if( _typeFns.length > 0 ){
+                    //    _orig = _t.copy(); //clone BEFORE trying to apply annos
+                    // }
                     for(int i=0;i<_typeFns.length; i++){
                         _t = _typeFns[i].apply(_t);
                     }
@@ -124,17 +204,17 @@ public enum _bulk {
                     if( beforeHash != afterHash ) { //check if after hash is different
                         receipt.addTransformedType(_orig, _t);
                     }
-                    receipt.types.add(_t); //store the _type in the receipt
+                    //receipt.types.add(_t); //store the _type in the receipt
                 } else{
                     throw new DraftException("Unable to parse File in zip/jar at: "+ relativeZipEntryPath+System.lineSeparator()+
-                            "problems:"+result.getProblems() );
+                        "problems:"+result.getProblems() );
                 }
             });
             receipt.processedTimestamp = System.currentTimeMillis();
             return receipt;
         } catch(IOException ioe){
             throw new DraftException("Unable to read from .jar or .zip file at "+rootPath);
-        }
+        } 
     }
 
     /**
@@ -151,6 +231,37 @@ public enum _bulk {
         }
     }
 
+    /**
+     * Receipt for a consumer, i.e. bulk read and operate on
+     * (don't keep the _types in memory)
+     */
+    public static class _receipt {
+        /** where the .java files were read from*/
+        public Path baseReadPath;
+        //public List<String> typeNames = new ArrayList<String>();
+        public List<Path>paths = new ArrayList<>();
+        public long startTimestamp;
+        public long readFilesTimestamp;
+        public long processedTimestamp;
+        
+         public long timeToRead(){
+            return readFilesTimestamp - startTimestamp;
+        }
+
+        public long timeToProcess(){
+            return processedTimestamp - readFilesTimestamp;
+        }
+        
+        @Override
+        public String toString(){
+            StringBuilder sb = new StringBuilder();
+            sb.append( "Read and Processed ("+paths.size()+") .java files from \""+ baseReadPath +"\" in : "+(processedTimestamp - startTimestamp)+"ms"+System.lineSeparator());
+            
+            paths.forEach(p -> sb.append("    ").append(p).append(System.lineSeparator()) );
+            return sb.toString();
+        }
+    }
+    
     /**
      * Maintains the details as well as the bulk payload of
      * _types that have been read in from the directory
