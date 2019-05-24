@@ -53,6 +53,10 @@ public enum _bulk {
         return _bulk.fn( rootPath );
     }
 
+    public static _receipt consume(String rootPath, Consumer<_type> _typeConsumer ){
+        return consume ( rootPath, 
+                (Consumer<_type>[]) new Consumer[]{ _typeConsumer } );
+    }
     /**
      * 1) Read in the individual .java files, 
      * 2) convert them to _type
