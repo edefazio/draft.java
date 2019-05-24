@@ -2560,88 +2560,6 @@ public enum Ast {
         //return EnumSet.noneOf(Modifier.class); //nothing for a _class
     }
 
-    /*
-    private static boolean isFullyQualified(String s) {
-        return s.indexOf('.') > 0;
-    }
-    */
-
-    /**
-     * Here we test for equivalency of two AST AnnotationExpr s note: if we
-     * check equality between the following two AnnotationExprs: AnnotationExpr
-     * left = Ast.annotation("@ann(a=1,b=2)"); AnnotationExpr right =
-     * Ast.annotation("@ann(b=2,a=1)");
-     *
-     * left.typesEqual(right); //returns false...(because of the ORDER of vars a
-     * and b) so we need to fix this (if an annotation has KEY_VALUES we need
-     * test equality regardless of order)
-     *
-     * @param left
-     * @param right
-     * @return if the left and right ANNOTATIONS are equal in the semantic sense
-     * (they MEAN the same thing)
-    
-    public static boolean annotationEqual(AnnotationExpr left, AnnotationExpr right) {
-        if (left == null) {
-            return right == null;
-        }
-        if (right == null) {
-            return false;
-        }
-        if (left == right) { //short curcuit if same implementation
-            return true;
-        }
-        
-        //if EITHER (NOT BOTH, or NEITHER) are fully qualified
-        if (isFullyQualified(left.getNameAsString())
-                ^ isFullyQualified(right.getNameAsString())) {
-            String leftSimple = left.getNameAsString();
-            String rightSimple = right.getNameAsString();
-            if (leftSimple.indexOf('.') > 0) {
-                leftSimple = leftSimple.substring(leftSimple.lastIndexOf('.') + 1);
-            }
-            if (rightSimple.indexOf('.') > 0) {
-                rightSimple = rightSimple.substring(rightSimple.lastIndexOf('.') + 1);
-            }
-            //return Objects.equals(leftSimple, rightSimple);
-            if( ! Objects.equals(leftSimple, rightSimple)){
-                return false;
-            }
-        } else {
-            if (!left.getName().equals(right.getName())) {
-                return false;
-            }
-        }
-        Set<MemberValuePair> lps = new HashSet<>();
-        Set<MemberValuePair> rps = new HashSet<>();
-        
-        if( left instanceof SingleMemberAnnotationExpr ){            
-            lps.add(new MemberValuePair( "value", 
-                left.asSingleMemberAnnotationExpr().getMemberValue()) );            
-        } else if( left instanceof NormalAnnotationExpr ){
-            lps.addAll(((NormalAnnotationExpr) left).asNormalAnnotationExpr().getPairs());
-        }
-        
-        if( right instanceof SingleMemberAnnotationExpr ){            
-            rps.add(new MemberValuePair( "value", 
-                right.asSingleMemberAnnotationExpr().getMemberValue()) );            
-        } else if( right instanceof NormalAnnotationExpr ){
-            rps.addAll(((NormalAnnotationExpr) right).asNormalAnnotationExpr().getPairs());
-        }
-        return lps.equals(rps);
-    }
-    */ 
-
-    /*
-    public static String normalizeName(String name) {
-        int idx = name.lastIndexOf('.');
-        if (idx < 0) {
-            return name;
-        }
-        return name.substring(idx + 1);
-    }
-    */
-
     public static int importsHash(TypeDeclaration td) {
         if (!td.isTopLevelType()) {
             return 0;
@@ -2744,6 +2662,21 @@ public enum Ast {
      */
     public static final NodeStartPositionComparator COMPARE_NODE_BY_LOCATION = 
         new NodeStartPositionComparator();
+    
+    /**
+     * Sorts a list of nodes by the position:
+     * HUGE CAVEAT: Asts that have been modified often will have nodes out of 
+     * order, in this case it is best to serialize the AST to a String then read it
+     * back in to ensure the node positions are parsed and maintained.
+     * 
+     * @param <N>
+     * @param unsorted
+     * @return 
+     */
+    public static <N extends Node> List<N> sortNodesByPosition( List<N> unsorted){        
+        Collections.sort(unsorted, COMPARE_NODE_BY_LOCATION);
+        return unsorted;
+    }
     
     /**
      * Comparator for Nodes within an AST node that organizes based on the
