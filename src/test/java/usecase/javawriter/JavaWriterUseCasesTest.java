@@ -1,12 +1,6 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package usecase.javawriter;
 
 import draft.java._class;
-import draft.java.io._io;
 import draft.java.macro._package;
 import draft.java.macro._remove;
 import junit.framework.TestCase;

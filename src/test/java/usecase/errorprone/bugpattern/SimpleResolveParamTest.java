@@ -27,7 +27,7 @@ import junit.framework.TestCase;
  * 
  * @author Eric
  */
-public class SimpleResolveParam extends TestCase {
+public class SimpleResolveParamTest extends TestCase {
     
     public void testG(){
         class T{

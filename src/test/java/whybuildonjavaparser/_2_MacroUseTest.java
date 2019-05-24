@@ -22,7 +22,7 @@ import static junit.framework.TestCase.assertTrue;
  *
  * @author Eric
  */
-public class _2_MacroUse extends TestCase {
+public class _2_MacroUseTest extends TestCase {
     
       /** How hard is it to build and use your own annotation macro?? */
     

@@ -23,7 +23,7 @@ import junit.framework.TestCase;
  *
  * @author Eric
  */
-public class SpoonAnalysis extends TestCase {
+public class SpoonAnalysisTest extends TestCase {
     
     /** Use case from :
      * <A HREF="http://spoon.gforge.inria.fr/first_analysis_processor.html">First Analysis Processor</A> 
