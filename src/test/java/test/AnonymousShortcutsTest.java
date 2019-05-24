@@ -23,7 +23,7 @@ import junit.framework.TestCase;
  *
  * @author Eric
  */
-public class AnonymousShortcuts extends TestCase {
+public class AnonymousShortcutsTest extends TestCase {
     
     /**
      * 

@@ -35,7 +35,7 @@ import java.util.List;
  *
  * ... and then I want to generate
  */
-public class _astFeatures extends TestCase {
+public class _astFeaturesTest extends TestCase {
 
     public void setUp(){
         @_package("aaaa.bbbb") @_autoDto class C{

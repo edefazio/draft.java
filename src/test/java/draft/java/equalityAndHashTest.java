@@ -11,7 +11,7 @@ import junit.framework.TestCase;
  *
  * @author Eric
  */
-public class equalityAndHashTests extends TestCase {
+public class equalityAndHashTest extends TestCase {
     
     public void testFieldInit(){                
         _field _f = _field.of( "int val = 1;" );

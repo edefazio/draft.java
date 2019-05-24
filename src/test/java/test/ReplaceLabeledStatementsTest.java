@@ -20,7 +20,7 @@ import junit.framework.TestCase;
  *
  * @author Eric
  */
-public class TestReplaceLabeledStatements extends TestCase {
+public class ReplaceLabeledStatementsTest extends TestCase {
     public void testLS(){
         class F{
             void m(int i){

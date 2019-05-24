@@ -6,7 +6,7 @@ import junit.framework.TestCase;
 
 import java.util.function.Predicate;
 
-public class readAndUpdate extends TestCase {
+public class readAndUpdateTest extends TestCase {
 
     public static final Predicate<ExpressionStmt> MATCH_SYSTEM_OUT_ST_FN =
             m-> m.isExpressionStmt()
