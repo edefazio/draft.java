@@ -24,81 +24,81 @@ import java.util.function.Predicate;
  *
  * @author Eric
  */
-public class $comment 
-    implements $proto<Comment>, Template<Comment> {
+public class $comment <C extends Comment>
+    implements $proto<C>, Template<C> {
     
-    public static $comment any(){
+    public static $comment<Comment> any(){
         return new $comment();
     }
     
-    public static $comment of( String pattern, Predicate<Comment> constraint ){
-        return new $comment(Ast.comment(pattern)).addConstraint(constraint);
+    public static<C extends Comment> $comment<C> of( String pattern, Predicate<C> constraint ){
+        return (($comment<C>) new $comment(Ast.comment(pattern))).addConstraint(constraint);
     }
     
-    public static $comment of( Predicate<Comment> constraint ){
+    public static $comment<Comment> of( Predicate<Comment> constraint ){
         return any().addConstraint(constraint);
     }
     
-    public static $comment javadocComment(){
+    public static $comment<JavadocComment> javadocComment(){
         return new $comment().omitBlockComments().omitLineComments();
     }
 
-    public static $comment javadocComment(String...comment){
+    public static $comment<JavadocComment> javadocComment(String...comment){
         return new $comment(Ast.javadocComment(comment)).omitBlockComments().omitLineComments();
     }
         
-    public static $comment javadocComment(String pattern, Predicate<Comment> constraint){
+    public static $comment<JavadocComment> javadocComment(String pattern, Predicate<Comment> constraint){
         return new $comment(Ast.javadocComment(pattern)).omitBlockComments().omitLineComments()
             .addConstraint(constraint);
     }
     
-    public static $comment javadocComment(Predicate<Comment> constraint){
+    public static $comment<JavadocComment> javadocComment(Predicate<Comment> constraint){
         return new $comment().omitBlockComments().omitLineComments()
             .addConstraint(constraint);
     }
         
-    public static $comment blockComment(){
+    public static $comment<BlockComment> blockComment(){
         return new $comment().omitJavadocComments().omitLineComments();
     }
 
-    public static $comment blockComment(String...blockComment){
+    public static $comment<BlockComment> blockComment(String...blockComment){
         return new $comment(Ast.blockComment(blockComment)).omitJavadocComments().omitLineComments();
     }
     
-    public static $comment blockComment(String pattern, Predicate<Comment> constraint){
+    public static $comment<BlockComment> blockComment(String pattern, Predicate<Comment> constraint){
         return new $comment(Ast.blockComment(pattern)).omitJavadocComments().omitLineComments()
             .addConstraint(constraint);
     }
     
-    public static $comment blockComment(Predicate<Comment> constraint){
+    public static $comment<BlockComment> blockComment(Predicate<Comment> constraint){
         return new $comment().omitJavadocComments().omitLineComments()
             .addConstraint(constraint);
     }
     
-    public static $comment lineComment(){
+    public static $comment<LineComment> lineComment(){
         return new $comment().omitBlockComments().omitJavadocComments();
     }
 
-    public static $comment lineComment(String lineComment){
+    public static $comment<LineComment> lineComment(String lineComment){
         return new $comment(Ast.lineComment(lineComment)).omitBlockComments().omitJavadocComments();
     }
     
-    public static $comment lineComment(String pattern, Predicate<Comment> constraint){
+    public static $comment<LineComment> lineComment(String pattern, Predicate<LineComment> constraint){
         return new $comment(Ast.lineComment( pattern))
                 .omitBlockComments().omitJavadocComments()
                 .addConstraint(constraint);
     }
     
-    public static $comment lineComment(Predicate<Comment> constraint){
+    public static $comment<LineComment> lineComment(Predicate<LineComment> constraint){
         return new $comment().omitBlockComments().omitJavadocComments()
             .addConstraint(constraint);
     }
     
-    public static $comment of(Comment comment){
+    public static <C extends Comment> $comment<C> of(C comment){
         return new $comment(comment);
     }
     
-    public static $comment of( String...comment ){
+    public static <C extends Comment> $comment<C> of( String...comment ){
         return new $comment( Ast.comment(comment));
     }
     
@@ -116,7 +116,7 @@ public class $comment
     /** The pattern for the contents of the Comment */
     public Stencil contentsPattern = Stencil.of("$comment$");
     
-    public Predicate<Comment> constraint = t -> true;
+    public Predicate<C> constraint = t -> true;
     
     /** this is the any() constructor private intentionally*/
     private $comment(){
@@ -128,12 +128,12 @@ public class $comment
      * A $proto based on a particular kind of comment
      * @param astComment 
      */
-    public $comment( Comment astComment ){
+    public <C extends Comment> $comment( C astComment ){
         this.commentClasses.add(astComment.getClass() );
         this.contentsPattern = Stencil.of(Ast.getContent(astComment) );        
     }
     
-    public $comment addConstraint( Predicate<Comment> constraint ){
+    public $comment addConstraint( Predicate<C> constraint ){
         this.constraint = this.constraint.and(constraint);
         return this;
     }
@@ -181,12 +181,12 @@ public class $comment
     }
     
     public Select select( Comment astComment ){
-        if( !this.constraint.test(astComment) ){
-            return null;
-        }
         if(! this.commentClasses.contains(astComment.getClass())){
             return null;
         }
+        if( !this.constraint.test( (C)astComment) ){
+            return null;
+        }        
         Tokens ts = this.contentsPattern.deconstruct(Ast.getContent(astComment));
         if( ts == null ){
             return null;
@@ -195,11 +195,12 @@ public class $comment
     }
 
     @Override
-    public Comment firstIn(Node astRootNode) {
+    public C firstIn(Node astRootNode) {
         
         //this is extra work, but it "acts" like we want it to
-        List<Comment> found = listIn(astRootNode );
-        Collections.sort( found, Ast.COMPARE_NODE_BY_LOCATION);
+        List<C> found = listIn(astRootNode );
+        Ast.sortNodesByPosition(found);
+        //Collections.sort( found, Ast.COMPARE_NODE_BY_LOCATION);
         if( found.isEmpty() ){
             return null;
         }
@@ -217,8 +218,9 @@ public class $comment
 
     @Override
     public Select selectFirstIn(Node n) {
-        List<Comment> found = listIn(n );
-        Collections.sort( found, Ast.COMPARE_NODE_BY_LOCATION);
+        List<C> found = listIn(n );
+        Ast.sortNodesByPosition(found);
+        //Collections.sort( found, Ast.COMPARE_NODE_BY_LOCATION);
         if( found.isEmpty() ){
             return null;
         }
@@ -254,8 +256,8 @@ public class $comment
     }
         
     @Override
-    public List<Comment> listIn(Node astRootNode) {
-        List<Comment> found = new ArrayList<>();
+    public List<C> listIn(Node astRootNode) {
+        List<C> found = new ArrayList<>();
         forEachIn(astRootNode, c -> found.add(c));
         return found;
     }
@@ -274,11 +276,11 @@ public class $comment
     }
 
     @Override
-    public <N extends Node> N forEachIn(N astRootNode, Consumer<Comment> _nodeActionFn) {
+    public <N extends Node> N forEachIn(N astRootNode, Consumer<C> _nodeActionFn) {
         Walk.comments(astRootNode, c->{
             Select s = select(c);
             if( s != null ){
-                _nodeActionFn.accept(c);
+                _nodeActionFn.accept( (C)c);
             }
         });
         return astRootNode;
@@ -326,27 +328,27 @@ public class $comment
     }
     
     @Override
-    public Comment construct(Translator translator, Map<String, Object> keyValues) {
+    public C construct(Translator translator, Map<String, Object> keyValues) {
         if( this.commentClasses.isEmpty()){
-            return constructBlockComment( translator, keyValues );
+            return (C)constructBlockComment( translator, keyValues );
         }
         if( this.commentClasses.size() == 1 ){
             Class cc = this.commentClasses.toArray(new Class[0])[0];
             if( cc == JavadocComment.class){
-                return constructJavadocComment(translator, keyValues);
+                return (C)constructJavadocComment(translator, keyValues);
             }
             if( cc == BlockComment.class){
-                return constructBlockComment( translator, keyValues );
+                return (C)constructBlockComment( translator, keyValues );
             }
-            return constructLineComment(translator, keyValues );            
+            return (C)constructLineComment(translator, keyValues );            
         }
         if( this.commentClasses.contains(JavadocComment.class)){
-            return constructJavadocComment(translator, keyValues);
+            return (C)constructJavadocComment(translator, keyValues);
         }
         if( this.commentClasses.contains(BlockComment.class)){
-            return constructJavadocComment(translator, keyValues);
+            return (C)constructJavadocComment(translator, keyValues);
         }
-        return constructLineComment(translator, keyValues);
+        return (C)constructLineComment(translator, keyValues);
     }
 
     @Override
@@ -410,6 +412,5 @@ public class $comment
         public String getContent(){
             return Ast.getContent(comment);
         }
-    }
-    
+    }    
 }

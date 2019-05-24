@@ -1,5 +1,6 @@
 package draft.java.proto;
 
+import com.github.javaparser.ast.comments.Comment;
 import com.github.javaparser.ast.expr.ArrayAccessExpr;
 import com.github.javaparser.ast.expr.ArrayCreationExpr;
 import com.github.javaparser.ast.expr.ArrayInitializerExpr;
@@ -74,6 +75,7 @@ import java.util.function.*;
 public final class $ {
     /** cant construct one of these */
     private $(){}
+    
     
     public static $anno anno(){
         return $anno.any();
@@ -194,6 +196,18 @@ public final class $ {
     public static <A extends Object, B extends Object, C extends Object, D extends Object, E extends Object>  $body body(Expr.QuadFunction<A,B,C,D,E> commandLambda ){
         LambdaExpr le = Expr.lambda(Thread.currentThread().getStackTrace()[2]);
         return new $body ( le );
+    }
+    
+    public static $comment comment(){
+        return $comment.any();
+    }
+    
+    public static $comment comment( Predicate<Comment> constraint ){
+        return $comment.of(constraint);
+    }
+    
+    public static $comment comment( String commentPattern ){
+        return $comment.of(commentPattern);
     }
     
     public static $constructor constructor(){
