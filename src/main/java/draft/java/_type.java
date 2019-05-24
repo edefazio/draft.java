@@ -133,6 +133,42 @@ public interface _type<AST extends TypeDeclaration & NodeWithJavadoc & NodeWithM
     }
     
     /**
+     * perform some action on the code if the _type extends a 
+     * @param clazz specific class to test for extension
+     * @param extendsTypeAction the action to perform if the type extends
+     * @return true if the action was taken, false otherwise
+     */
+    default boolean ifExtends( Class clazz, Consumer<_hasExtends> extendsTypeAction){
+        if( this instanceof _class && ((_class)this).isExtends(clazz) ){
+            extendsTypeAction.accept((_class)this);            
+            return true;
+        }
+        if( this instanceof _interface && ((_interface)this).isExtends(clazz) ){
+            extendsTypeAction.accept((_interface)this);
+            return true;
+        }
+        return false;
+    }
+    
+    /**
+     * Perform some action on the code if the code implements the specific class
+     * @param clazz specific class to test for implementing
+     * @param implementsTypeAction the action to perform if the type implements
+     * @return true if the action was taken, false otherwise
+     */
+    default boolean ifImplements( Class clazz, Consumer<_hasImplements> implementsTypeAction ){
+        if( this instanceof _class && ((_class)this).isImplementer(clazz) ){
+            implementsTypeAction.accept( ((_class)this) );
+            return true;
+        }       
+        if( this instanceof _enum && ((_enum)this).isImplementer(clazz) ){
+            implementsTypeAction.accept( ((_enum)this) );
+            return true;
+        }
+        return false;
+    }
+    
+    /**
      * find members that are of the specific class and perform the _memberAction on them
      * @param <M>
      * @param memberClass the member Class (i.e. _field, _method, _constructor)
@@ -396,7 +432,7 @@ public interface _type<AST extends TypeDeclaration & NodeWithJavadoc & NodeWithM
             return (T) this;
         }
         CompilationUnit cu = findCompilationUnit();
-        System.out.println("Setting package name to \""+ packageName+"\" in "+ cu );
+        //System.out.println("Setting package name to \""+ packageName+"\" in "+ cu );
         //TODO I need to make sure it's a valid name
         cu.setPackageDeclaration( packageName );        
         return (T)this;
@@ -1101,6 +1137,32 @@ public interface _type<AST extends TypeDeclaration & NodeWithJavadoc & NodeWithM
         return listNests().stream().filter( typeMatchFn ).collect(Collectors.toList());
     }
 
+    /*
+    default void ifClass( Consumer<_class> _classAction ){
+        if( this instanceof _class ){
+            _classAction.accept((_class)this);
+        }
+    }
+    
+    default void ifEnum( Consumer<_enum> _enumAction ){
+        if( this instanceof _enum ){
+            _enumAction.accept((_enum)this);
+        }
+    }
+    
+    default void ifInterface( Consumer<_interface> _interfaceAction ){
+        if( this instanceof _interface ){
+            _interfaceAction.accept((_interface)this);
+        }
+    }
+    
+    default void ifAnnotation( Consumer<_annotation> _annotationAction ){
+        if( this instanceof _annotation ){
+            _annotationAction.accept((_annotation)this);
+        }
+    }
+    */
+    
     /**
      * list all nested children underneath this logical _type
      * (1-level, DIRECT CHILDREN, and NOT grand children or great grand children)
