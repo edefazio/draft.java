@@ -101,6 +101,13 @@ public interface _type<AST extends TypeDeclaration & NodeWithJavadoc & NodeWithM
     List<_member> listMembers();
 
     /**
+     * 
+     * @param m
+     * @return 
+     */
+    List<_method> listMethods(Predicate<_method> m );
+    
+    /**
      * Is this TYPE the top level class TYPE within a (i.e. a separate top level file /compilation Unit)?
      * @return true if the _type is a top level TYPE, false otherwise
      */
@@ -131,7 +138,7 @@ public interface _type<AST extends TypeDeclaration & NodeWithJavadoc & NodeWithM
         listMembers(memberClass).forEach(_memberAction);
         return (T)this;
     }
-    
+
     /**
      * perform some action on the code if the _type extends a 
      * @param clazz specific class to test for extension
@@ -157,11 +164,11 @@ public interface _type<AST extends TypeDeclaration & NodeWithJavadoc & NodeWithM
      * @return true if the action was taken, false otherwise
      */
     default boolean ifImplements( Class clazz, Consumer<_hasImplements> implementsTypeAction ){
-        if( this instanceof _class && ((_class)this).isImplementer(clazz) ){
+        if( this instanceof _class && ((_class)this).isImplements(clazz) ){
             implementsTypeAction.accept( ((_class)this) );
             return true;
         }       
-        if( this instanceof _enum && ((_enum)this).isImplementer(clazz) ){
+        if( this instanceof _enum && ((_enum)this).isImplements(clazz) ){
             implementsTypeAction.accept( ((_enum)this) );
             return true;
         }
@@ -896,6 +903,110 @@ public interface _type<AST extends TypeDeclaration & NodeWithJavadoc & NodeWithM
         return ast().getNameAsString();
     }
 
+    /**
+     * does this type extend the other type?
+     * NOTE: this does not work for Generics, use 
+     * {@link #isExtends(ClassOrInterfaceType) }
+     * @param _t the type to check
+     * @return true if this type extends _t
+     */
+    default boolean isExtends( _type _t ){
+        return isExtends(_t.getFullName() );
+    }
+    
+    /**
+     * 
+     * @param astType
+     * @return 
+     */
+    default boolean isExtends( ClassOrInterfaceType astType ){
+        if( this instanceof _hasExtends ){
+            NodeList<ClassOrInterfaceType> extnds = 
+                ((NodeWithExtends)((_type)this).ast()).getExtendedTypes();
+            return extnds.stream().filter(i -> Ast.typesEqual(i, astType)).findFirst().isPresent();
+        }
+        return false;
+    }
+    
+    /**
+     * does this type extend the type described in baseType?  
+     * (Note this will parse/deal with Generics appropriately)
+     * @param baseType
+     * @return true if the type extends the baseType
+     */
+    default boolean isExtends( String baseType ){
+        try{
+            return isExtends( (ClassOrInterfaceType)Ast.typeRef( baseType ) );
+        } catch( Exception e){}
+        
+        if( baseType.contains(".") ){
+            return isExtends (baseType.substring(baseType.lastIndexOf(".")+1 ) );
+        }
+        return false;
+    }
+
+    /**
+     * does this type extend this specific class 
+     * (Note: this does not handle generic base classes... for that use 
+     * {@link #isExtends(com.github.javaparser.ast.type.ClassOrInterfaceType)}
+     * @param clazz the class type
+     * @return true if the type extends this (raw) type
+     */
+    default boolean isExtends( Class clazz ){
+        try{
+            return isExtends( (ClassOrInterfaceType)Ast.typeRef( clazz ) ) ||
+                isExtends( (ClassOrInterfaceType)Ast.typeRef( clazz.getSimpleName() ) );
+        }catch( Exception e){}
+        return false;
+    }
+   
+    /**
+     * 
+     * @param str
+     * @return 
+     */
+    default boolean isImplements( String str ){
+        try{
+            return isImplements( (ClassOrInterfaceType)Ast.typeRef( str ) );
+        } catch( Exception e){}
+        
+        if( str.contains(".") ){
+            return isImplements (str.substring(str.lastIndexOf(".")+1 ) );
+        }
+        return false;        
+    }
+
+    /**
+     * does this _type implement this (specific) classOrInterfaceType
+     * (NOTE: this WILL handle generics, i.e. (Fileable<File>)
+     * @param astType 
+     * @return 
+     */
+    default boolean isImplements( ClassOrInterfaceType astType ){        
+        NodeList<ClassOrInterfaceType> impls = 
+            ((NodeWithImplements)((_type)this).ast()).getImplementedTypes();
+        return impls.stream().filter(i -> Ast.typesEqual(i, astType)).findFirst().isPresent();        
+    }
+        
+    /**
+     * does this class implement this (raw) interface
+     * @param clazz the (raw...not generic) interface class
+     * @return true 
+     */
+    default boolean isImplements( Class clazz ){        
+        return isImplements( StaticJavaParser.parseClassOrInterfaceType(clazz.getCanonicalName()) ) 
+                || isImplements( StaticJavaParser.parseClassOrInterfaceType(clazz.getSimpleName()) );        
+    }
+    
+    /**
+     * Does this type implement this (raw...not generic) interface type
+     * @param _i the interface type to check
+     * @return true if this _type implements _i 
+     */
+    default boolean isImplements( _interface _i){
+        return isImplements(_i.getFullName() );        
+    }
+    
     @Override
     default List<_field> listFields() {
         List<_field> _fs = new ArrayList<>();
@@ -1391,31 +1502,8 @@ public interface _type<AST extends TypeDeclaration & NodeWithJavadoc & NodeWithM
             return !listImplements().isEmpty();
         }
         
-        default boolean isImplementer( String str ){
-            try{
-                return _hasImplements.this.isImplementer( (ClassOrInterfaceType)Ast.typeRef( str ) );
-            }catch( Exception e){}
-            return false;
-        }
-
-        default boolean isImplementer( ClassOrInterfaceType ct ){
-            return ((NodeWithImplements)((_type)this).ast()).getImplementedTypes().contains(ct);
-            //return this.astEnum.getImplementedTypes().contains( ct );
-        }
         
-        default boolean isImplementer( Class clazz ){
-            try{
-                _type t = ((_type)this);
-                
-                return _hasImplements.this.isImplementer( (ClassOrInterfaceType)Ast.typeRef( clazz ) ) ||
-                    t.hasImport( clazz ) && _hasImplements.this.isImplementer(clazz.getSimpleName() );
-            } catch( Exception e){ }
-            return false;
-        }
-    
-        default boolean isImplementer( _interface _i){
-            return _hasImplements.this.isImplementer( _i.getFullName() );
-        }
+        
         
         default List<ClassOrInterfaceType> listImplements(){
             return ((NodeWithImplements)((_type)this).ast()).getImplementedTypes();
@@ -1481,11 +1569,6 @@ public interface _type<AST extends TypeDeclaration & NodeWithJavadoc & NodeWithM
 
         T extend( String toExtend );
 
-        boolean isExtends( String str );
-
-        boolean isExtends( ClassOrInterfaceType ct );
-
-        boolean isExtends( Class clazz );
 
         T removeExtends( Class clazz);
 

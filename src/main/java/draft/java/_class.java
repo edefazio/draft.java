@@ -389,7 +389,10 @@ public final class _class implements _type<ClassOrInterfaceDeclaration, _class>,
         return this;
     }
 
-    /** Make sure to route this to the correct (default method) */
+    /** Make sure to route this to the correct (default method)
+     * @param classToImplement 
+     * @return  
+     */
     public _class implement ( String classToImplement ){
         return implement( new String[]{classToImplement});
     }
@@ -611,6 +614,18 @@ public final class _class implements _type<ClassOrInterfaceDeclaration, _class>,
         return _ms;
     }
 
+    @Override
+    public List<_method> listMethods(Predicate<_method> _methodMatchFn ){
+        List<_method> _ms = new ArrayList<>();
+        astClass.getMethods().forEach( m-> {
+            _method _m = _method.of( m);
+            if( _methodMatchFn.test(_m)){
+                _ms.add(_m ); 
+            }
+        } );
+        return _ms;
+    }
+    
     public _method getMethod( int index ){
         return _method.of(astClass.getMethods().get( index ));
     }
@@ -682,29 +697,6 @@ public final class _class implements _type<ClassOrInterfaceDeclaration, _class>,
         }
     }
     
-    @Override
-    public boolean isExtends( ClassOrInterfaceType ct ){
-        return this.astClass.getExtendedTypes().contains( ct );
-    }
-
-    @Override
-    public boolean isExtends( String str ){
-        try{
-
-            return isExtends( (ClassOrInterfaceType)Ast.typeRef( str ) );
-        }catch( Exception e){}
-        return false;
-    }
-
-    @Override
-    public boolean isExtends( Class clazz ){
-        try{
-            return isExtends( (ClassOrInterfaceType)Ast.typeRef( clazz ) ) ||
-                isExtends( (ClassOrInterfaceType)Ast.typeRef( clazz.getSimpleName() ) );
-        }catch( Exception e){}
-        return false;
-    }
-
     @Override
     public boolean isAbstract(){
         return this.astClass.isAbstract();

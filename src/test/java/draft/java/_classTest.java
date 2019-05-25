@@ -5,6 +5,7 @@ import java.io.Serializable;
 import java.util.*;
 
 import com.github.javaparser.ast.comments.*;
+import com.github.javaparser.ast.type.ClassOrInterfaceType;
 import draft.java.macro.*;
 import draft.java.runtime.*;
 import junit.framework.TestCase;
@@ -24,6 +25,32 @@ import java.util.concurrent.atomic.AtomicBoolean;
  * @author Eric
  */
 public class _classTest extends TestCase {
+    
+    class Be{        
+    }
+    
+    public void testIsExtends(){
+        _type _t = _class.of("C").extend("B");        
+        assertTrue( _t.isExtends("B"));
+        assertTrue( _t.isExtends( (ClassOrInterfaceType)_typeRef.of("B").ast() ));
+        
+        assertFalse( _t.isExtends("D"));
+        assertFalse( _t.isExtends(String.class));
+        
+        _t = _class.of("C").extend(Be.class);
+        assertTrue( _t.isExtends(Be.class));
+        assertTrue( _t.isExtends("Be"));
+        assertTrue( _t.isExtends(Be.class.getCanonicalName()));        
+    }
+    
+    public void testIsImplements(){
+        _type _t = _class.of("C").extend("B").implement(Serializable.class);
+        assertTrue( _t.isImplements(Serializable.class));
+        assertTrue( _t.isImplements(Serializable.class.getCanonicalName()));
+        assertTrue( _t.isImplements("Serializable"));
+        
+        
+    }
     
     public class Inner{
         
@@ -534,7 +561,7 @@ public class _classTest extends TestCase {
         _c = _class.of("aaaa.bbbb.C", new Serializable(){
 
         });
-        assertTrue( _c.isImplementer(Serializable.class));
+        assertTrue( _c.isImplements(Serializable.class));
         assertTrue( _c.hasImport(Serializable.class));
 
         //you can set a base class
@@ -728,7 +755,7 @@ public class _classTest extends TestCase {
         assertFalse( _c.isAbstract());
         assertFalse( _c.hasStaticBlock());
         assertFalse( _c.isExtends( Serializable.class ) );
-        assertFalse( _c.isImplementer( Serializable.class ) );
+        assertFalse( _c.isImplements( Serializable.class ) );
         assertNull( _c.getStaticBlock(0) );
         assertTrue( _c.listMethods().isEmpty() );
         assertTrue( _c.listFields().isEmpty() );
@@ -901,8 +928,8 @@ public class _classTest extends TestCase {
         assertTrue( _c.hasTypeParameters() );
         assertTrue( _c.getTypeParameters().is( "<T extends Impl>"));
         assertTrue( _c.isExtends( "Base") );
-        assertTrue( _c.isImplementer( "A"));
-        assertTrue( _c.isImplementer( "B"));        
+        assertTrue( _c.isImplements( "A"));
+        assertTrue( _c.isImplements( "B"));        
         assertTrue( _c.hasStaticBlock());
         assertNotNull( _c.getStaticBlock(0) ); //todo better static block
         assertTrue( _c.hasFields());        

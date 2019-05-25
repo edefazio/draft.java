@@ -84,8 +84,8 @@ public class _enumTest extends TestCase {
         System.out.println( _e );
         assertEquals("ComplexEnum", _e.getName());
         assertTrue(_e.getModifiers().is("public"));
-        assertTrue(_e.isImplementer( Serializable.class ) );
-        assertTrue(_e.isImplementer( "MarkerInterface<String>" ) );
+        assertTrue(_e.isImplements( Serializable.class ) );
+        assertTrue(_e.isImplements( "MarkerInterface<String>" ) );
         assertNotNull( _e.getConstant( "A"));
         assertNotNull( _e.getConstant( "A").getJavadoc());
         

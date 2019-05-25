@@ -7,7 +7,7 @@ import draft.java._type;
 import java.lang.annotation.*;
 
 @Retention(RetentionPolicy.RUNTIME)
-@Target(ElementType.TYPE)
+@Target({ElementType.TYPE})
 public @interface _package {
 
     String value() default "";

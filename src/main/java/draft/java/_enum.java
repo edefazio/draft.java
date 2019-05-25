@@ -171,6 +171,18 @@ public final class _enum implements _type<EnumDeclaration, _enum>,_method._hasMe
     }
 
     @Override
+    public List<_method> listMethods(Predicate<_method> _methodMatchFn ){
+        List<_method> _ms = new ArrayList<>();
+        astEnum.getMethods().forEach( m-> {
+            _method _m = _method.of( m);
+            if( _methodMatchFn.test(_m)){
+                _ms.add(_m ); 
+            }
+        } );
+        return _ms;
+    }
+    
+    @Override
     public _enum method( MethodDeclaration method ) {
         astEnum.addMember( method );
         return this;
@@ -709,6 +721,12 @@ public final class _enum implements _type<EnumDeclaration, _enum>,_method._hasMe
             this.astConstant.getClassBody().stream().filter(b -> b instanceof MethodDeclaration).forEach( m -> ms.add(_method.of( (MethodDeclaration)m )) );
             return ms;
         }
+        
+         @Override
+        public List<_method> listMethods(Predicate<_method> _methodMatchFn ){
+            return listMethods().stream().filter(_methodMatchFn).collect(Collectors.toList());            
+        }
+        
 
         @Override
         public _constant method( MethodDeclaration method ) {

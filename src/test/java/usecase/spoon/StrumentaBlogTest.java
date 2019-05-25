@@ -3,6 +3,7 @@ package usecase.spoon;
 import draft.java.io._bulk;
 import junit.framework.TestCase;
 import draft.java._class;
+import draft.java._method;
 import draft.java._method._hasMethods;
 import draft.java._type;
 import draft.java.io._bulk._receipt;
@@ -56,6 +57,22 @@ public class StrumentaBlogTest extends TestCase  {
         List<String> listOfBadlyNamedTests = new ArrayList<>();
         List<String> listOfProperlyNamedTests = new ArrayList<>();
         
+        _type _t = _class.of(B.class);
+        //_t.listMethods( (_method m) -> m.hasAnno(Test.class) );
+        //_t.countMembers(_method.class, (_method m)-> m.hasAnno(Test.class));
+        //_t.hasMethod( m-> m.hasAnno(String.class) );
+        /*        
+        Consumer<_type> v = t-> {
+            if( _t.isExtends(TestCase.class) 
+                || _t.listMethods( (_method _m)-> _m.hasAnno(Test.class) ).size() > 0 ){
+                    if (_t.getName().endsWith("Test")){
+                        listOfProperlyNamedTests.add( t.getFullName());                        
+                    } else{                    
+                        listOfBadlyNamedTests.add(t.getFullName());
+                    }
+                }            
+            };
+        */
         Consumer<_type> verifyTestClassesHaveProperName = t-> {
             if( t instanceof _class ){
                 _class _c = (_class)t;
@@ -83,8 +100,7 @@ public class StrumentaBlogTest extends TestCase  {
         _bulk.consume("C:\\draft\\project\\draft-java\\src\\test", 
             verifyTestClassesHaveProperName);
         
-        listOfBadlyNamedTests.forEach( t -> System.out.println( "badly named test \""+ t+"\""));
-       
+        listOfBadlyNamedTests.forEach( t -> System.out.println( "badly named test \""+ t+"\""));        
         
     }
 }

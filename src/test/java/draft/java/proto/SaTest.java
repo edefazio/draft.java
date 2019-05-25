@@ -11,7 +11,6 @@ import draft.java.Expr;
 import draft.java._anno;
 import draft.java._class;
 import java.util.regex.Pattern;
-import javax.annotation.Generated;
 import junit.framework.TestCase;
 import static junit.framework.TestCase.assertEquals;
 import static junit.framework.TestCase.assertFalse;
@@ -65,7 +64,7 @@ public class SaTest extends TestCase {
         class T{
             @Deprecated int a;
             
-            @Generated("a")
+            @Deprecated
             void m(){}
         }
         

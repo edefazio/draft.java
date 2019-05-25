@@ -508,9 +508,12 @@ public final class _method
             return listMethods().stream().filter(m -> m.getName().equals(name)).collect(Collectors.toList());
         }
 
-        default List<_method> listMethods(Predicate<_method> _methodMatchFn) {
+        List<_method> listMethods(Predicate<_method> _methodMatchFn);
+        /*
+        default 
             return listMethods().stream().filter(_methodMatchFn).collect(Collectors.toList());
         }
+        */
 
         default T forMethods(Consumer<_method> methodConsumer) {
             return forMethods(m -> true, methodConsumer);

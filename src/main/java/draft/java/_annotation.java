@@ -415,6 +415,11 @@ public final class _annotation
     }
 
     @Override
+    public List<_method> listMethods(Predicate<_method> _methodMatchFn ){
+        return Collections.EMPTY_LIST;
+    }
+    
+    @Override
     public _annotation forMembers( Predicate<_member>_memberMatchFn, Consumer<_member> _memberActionFn){
         listMembers(_memberMatchFn).forEach(m -> _memberActionFn.accept(m) );
         return this;

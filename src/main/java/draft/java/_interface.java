@@ -132,7 +132,6 @@ public final class _interface implements _type<ClassOrInterfaceDeclaration, _int
         return new _interface( astClass );
     }
 
-
     public static _interface of(InputStream is){
         return of( StaticJavaParser.parse(is) );
     }
@@ -232,6 +231,18 @@ public final class _interface implements _type<ClassOrInterfaceDeclaration, _int
         astInterface.getMethods().forEach( m-> _ms.add(_method.of( m ) ) );
         return _ms;
     }
+    
+    @Override
+    public List<_method> listMethods(Predicate<_method> _methodMatchFn ){
+        List<_method> _ms = new ArrayList<>();
+        astInterface.getMethods().forEach( m-> {
+            _method _m = _method.of( m);
+            if( _methodMatchFn.test(_m)){
+                _ms.add(_m ); 
+            }
+        } );
+        return _ms;
+    }
 
     @Override
     public _interface method( MethodDeclaration method ) {
@@ -261,6 +272,7 @@ public final class _interface implements _type<ClassOrInterfaceDeclaration, _int
         return _annos.of(this.astInterface);
     }
 
+    /*
     @Override
     public boolean isExtends( ClassOrInterfaceType ct ){
         return this.astInterface.getExtendedTypes().contains( ct ) ||
@@ -282,6 +294,7 @@ public final class _interface implements _type<ClassOrInterfaceDeclaration, _int
         }catch( Exception e){}
         return false;
     }
+    */
 
     @Override
     public String toString(){

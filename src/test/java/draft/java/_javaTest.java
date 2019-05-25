@@ -141,7 +141,7 @@ public class _javaTest extends TestCase {
         System.out.println( _c );
 
         assertTrue( _c.getModifiers().is("public", "final"));
-        _c.isImplementer(Serializable.class);
+        _c.isImplements(Serializable.class);
         _c.isExtends(BaseClass.class);
         assertEquals( "aaaa.bbbb", _c.getPackage());
 
@@ -221,7 +221,7 @@ public class _javaTest extends TestCase {
         _c = _class.of(C.class);
 
         assertTrue( _c.getModifiers().is("public",  "final"));
-        _c.isImplementer(Serializable.class);
+        _c.isImplements(Serializable.class);
         _c.isExtends(BaseClass.class);
         assertEquals( "aaaa.bbbb", _c.getPackage());
 
