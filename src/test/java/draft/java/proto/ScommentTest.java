@@ -1,5 +1,6 @@
 package draft.java.proto;
 
+import com.github.javaparser.ast.comments.JavadocComment;
 import draft.java.Ast;
 import junit.framework.TestCase;
 
@@ -13,6 +14,19 @@ public class ScommentTest extends TestCase {
         assertEquals( Ast.lineComment("//Hello ").getContent().trim(), 
                 $comment.of("//Hello").construct().getContent().trim());
         //assertEquals( Ast.blockComment("/* Hello */"), $comment.of("/* Hello */").construct());
+    }
+    
+    public void testConstruct(){
+        assertNull($comment.javadocComment().construct());        
+        assertNotNull($comment.javadocComment().construct("javadoc", "Hi"));
+        System.out.println($comment.javadocComment().construct("javadoc", "Hi"));
+        System.out.println($comment.javadocComment().construct("javadoc", "Hi"+System.lineSeparator()+"There"));
+        
+        assertNull($comment.lineComment().construct());
+        assertNotNull($comment.lineComment().construct("comment", "Hi"));
+        
+        System.out.println($comment.lineComment().construct("comment", "Hi"));
+        System.out.println($comment.lineComment().construct("comment", "Hi"+System.lineSeparator()+"There"));
     }
     
     public void testAnyMatch(){
@@ -47,6 +61,7 @@ public class ScommentTest extends TestCase {
             }            
         }
         assertEquals(4, $comment.any().count(C.class));
+        
         
         //as expected the orphaned comment comes first...
         System.out.println( $comment.any().firstIn(C.class) );

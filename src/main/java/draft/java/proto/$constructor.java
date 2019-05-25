@@ -6,6 +6,7 @@ import com.github.javaparser.ast.NodeList;
 import com.github.javaparser.ast.body.BodyDeclaration;
 import com.github.javaparser.ast.body.ConstructorDeclaration;
 import com.github.javaparser.ast.body.MethodDeclaration;
+import com.github.javaparser.ast.comments.JavadocComment;
 import com.github.javaparser.ast.expr.*;
 import com.github.javaparser.ast.stmt.*;
 import draft.*;
@@ -545,7 +546,8 @@ public class $constructor
     
     public Predicate<_constructor> constraint = t -> true;
     
-    public $component<_javadoc> javadoc = new $component( "$javadoc$", t->true);    
+    //public $component<_javadoc> javadoc = new $component( "$javadoc$", t->true);
+    public $comment<JavadocComment> javadoc = $comment.javadocComment();
     public $annos annos = new $annos();
     public $modifiers modifiers = $modifiers.of();
     
@@ -599,6 +601,9 @@ public class $constructor
             else if( components[i] instanceof $typeParameter){
                 this.typeParameters.typeParams.add( ($typeParameter)components[i]);
             }
+            else if( components[i] instanceof $comment){
+                this.javadoc = ($comment<JavadocComment>)components[i];
+            }
             else{
                 throw new DraftException("Unable to use $proto component " +components[i]+" for $constructor" );
             }            
@@ -612,7 +617,8 @@ public class $constructor
     private $constructor( _constructor _ct, Predicate<_constructor> constraint){
         
         if( _ct.hasJavadoc() ){
-            javadoc.pattern(_ct.getJavadoc().toString() );
+            javadoc = $comment.javadocComment(_ct.getJavadoc());
+            //javadoc.pattern(_ct.getJavadoc().toString() );
         }        
         if( _ct.hasAnnos() ){
             annos = $annos.of(_ct.getAnnos() );
@@ -650,21 +656,10 @@ public class $constructor
         return this;
     }
     
-    /**
-     * SETS/ OVERRIDES the matching constraint
-     * @param constraint
-     * @return 
-     
-    public $constructor constraint( Predicate<_constructor> constraint){
-        this.constraint = constraint;
-        return this;
-    }
-    */ 
-    
     @Override
     public List<String> list$Normalized(){
         List<String>normalized$ = new ArrayList<>();
-        normalized$.addAll( javadoc.pattern.list$Normalized() );
+        normalized$.addAll( javadoc.list$Normalized() );
         normalized$.addAll( annos.list$Normalized() );
         normalized$.addAll( typeParameters.list$Normalized() );
         normalized$.addAll( name.pattern.list$Normalized() );
@@ -678,7 +673,7 @@ public class $constructor
     @Override
     public List<String> list$(){
         List<String>all$ = new ArrayList<>();
-        all$.addAll( javadoc.pattern.list$() );
+        all$.addAll( javadoc.list$() );
         all$.addAll( annos.list$() );
         all$.addAll( typeParameters.list$() );
         all$.addAll( name.pattern.list$() );
@@ -686,6 +681,26 @@ public class $constructor
         all$.addAll( thrown.list$() );
         all$.addAll( body.list$() );        
         return all$;
+    }
+    
+    public $constructor $javadoc(){
+        this.javadoc = $comment.javadocComment();
+        return this;
+    }
+    
+    public $constructor $javadoc(_javadoc _jd){
+        this.javadoc = $comment.javadocComment(_jd);
+        return this;
+    }
+    
+    public $constructor $javadoc( String... form ){
+        this.javadoc.contentsPattern = Stencil.of((Object[])form);
+        return this;
+    }
+    
+    public $constructor $javadoc( Predicate<JavadocComment> _javadocMatchFn){
+        this.javadoc.addConstraint(_javadocMatchFn);
+        return this;
     }
     
     public $constructor $parameters( ){
@@ -817,21 +832,6 @@ public class $constructor
         return this;
     }
     
-    public $constructor $javadoc(){
-        this.javadoc.pattern = Stencil.of( "$javadoc$" ); 
-        return this;
-    }
-    
-    public $constructor $javadoc( Predicate<_javadoc> constraint ){
-        this.javadoc.addConstraint(constraint);
-        return this;
-    }
-    
-    public $constructor $javadoc( String... form ){
-        this.javadoc.pattern(form);
-        return this;
-    }
-    
     public $constructor $body( Predicate<_body> constraint){
         this.body.addConstraint(constraint);
         return this;
@@ -893,7 +893,10 @@ public class $constructor
         base.putAll(keyValues);
         
         StringBuilder sb = new StringBuilder();   
-        sb.append( javadoc.compose(translator, base ));        
+        JavadocComment jdc = javadoc.construct(translator, base );
+        if( jdc != null ){
+            sb.append(jdc);        
+        }
         sb.append(System.lineSeparator());
         sb.append( annos.compose(translator, base));
         sb.append(System.lineSeparator());
@@ -935,7 +938,11 @@ public class $constructor
             return null;
         }
         Tokens all = new Tokens();
-        all = javadoc.decomposeTo(_m.getJavadoc(), all);
+        if( _m.getJavadoc() != null ){
+            all = javadoc.decomposeTo(_m.getJavadoc().ast(), all);
+        } else{
+            all = javadoc.decomposeTo(null, all);
+        }
         all = annos.decomposeTo(_m.getAnnos(), all);        
         all = typeParameters.decomposeTo(_m.getTypeParameters(), all);
         all = name.decomposeTo(_m.getName(), all);
@@ -998,7 +1005,7 @@ public class $constructor
      * @return 
      */
     public $constructor hardcode$( Translator translator, Tokens kvs ) {
-        javadoc.pattern = javadoc.pattern.hardcode$(translator, kvs);
+        javadoc = javadoc.hardcode$(translator, kvs);
         annos = annos.hardcode$(translator, kvs);
         typeParameters = typeParameters.hardcode$(translator, kvs);
         name.pattern = name.pattern.hardcode$(translator, kvs);
@@ -1012,7 +1019,7 @@ public class $constructor
     /** Post - parameterize, create a parameter from the target string named $Name#$*/
     @Override
     public $constructor $(String target, String $Name) {
-        javadoc.pattern = javadoc.pattern.$(target, $Name);
+        javadoc = javadoc.$(target, $Name);
         annos = annos.$(target, $Name);
         typeParameters = typeParameters.$(target, $Name);
         name.pattern = name.pattern.$(target, $Name);

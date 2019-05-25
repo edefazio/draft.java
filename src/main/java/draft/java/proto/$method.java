@@ -3,6 +3,7 @@ package draft.java.proto;
 import com.github.javaparser.ast.Node;
 import com.github.javaparser.ast.body.BodyDeclaration;
 import com.github.javaparser.ast.body.MethodDeclaration;
+import com.github.javaparser.ast.comments.JavadocComment;
 import com.github.javaparser.ast.expr.*;
 import com.github.javaparser.ast.stmt.*;
 import com.github.javaparser.ast.type.Type;
@@ -505,7 +506,8 @@ public class $method
 
     public Predicate<_method> constraint = t -> true;
     
-    public $component<_javadoc> javadoc = new $component( "$javadoc$", t->true);    
+    //public $component<_javadoc> javadoc = new $component( "$javadoc$", t->true);    
+    public $comment<JavadocComment> javadoc = $comment.javadocComment("$javadoc$");
     public $annos annos = new $annos();
     public $modifiers modifiers = $modifiers.of();
     public $typeRef type = $typeRef.of();
@@ -557,6 +559,9 @@ public class $method
             else if( parts[i] instanceof $typeParameter ){
                 this.typeParameters.typeParams.add( ($typeParameter)parts[i]);
             }
+            else if( parts[i] instanceof $comment ){
+                this.javadoc = ($comment<JavadocComment>)parts[i];
+            }
             else{
                 throw new DraftException("Unable to add $part "+ parts[i]+" to $method" );
             }
@@ -570,7 +575,7 @@ public class $method
     private $method( _method _m , Predicate<_method> constraint){
         
         if( _m.hasJavadoc() ){
-            javadoc.pattern(_m.getJavadoc().toString() );
+            javadoc = $comment.javadocComment(_m.getJavadoc() );
         }        
         if( _m.hasAnnos() ){
             annos = $annos.of(_m.getAnnos() );
@@ -579,12 +584,7 @@ public class $method
         type = $typeRef.of(_m.getType() );
         if( !_m.hasTypeParameters() ){
             final _typeParameters etps = _m.getTypeParameters();
-            typeParameters = $typeParameters.of( etps );
-            /*
-            typeParameters = new $component(
-                "$typeParameters$", 
-                (tps)-> tps.equals(etps) );
-            */
+            typeParameters = $typeParameters.of( etps );           
         }
         name = $id.of(_m.getName());
         if( _m.hasParameters() ){
@@ -614,23 +614,12 @@ public class $method
     public $method addConstraint( Predicate<_method>constraint ){
         this.constraint = this.constraint.and(constraint);
         return this;
-    }
-    
-    /**
-     * SETS/ OVERRIDES the matching constraint
-     * @param constraint
-     * @return 
-     
-    public $method constraint( Predicate<_method> constraint){
-        this.constraint = constraint;
-        return this;
-    }
-    */ 
+    }    
     
     @Override
     public List<String> list$Normalized(){
         List<String>normalized$ = new ArrayList<>();
-        normalized$.addAll( javadoc.pattern.list$Normalized() );
+        normalized$.addAll( javadoc.list$Normalized() );
         normalized$.addAll( annos.list$Normalized() );
         normalized$.addAll( typeParameters.list$Normalized() );
         normalized$.addAll( type.list$Normalized() );        
@@ -644,7 +633,7 @@ public class $method
     @Override
     public List<String> list$(){
         List<String>all$ = new ArrayList<>();
-        all$.addAll( javadoc.pattern.list$() );
+        all$.addAll( javadoc.list$() );
         all$.addAll( annos.list$() );
         all$.addAll( typeParameters.list$() );
         all$.addAll( type.list$() );        
@@ -816,12 +805,12 @@ public class $method
     }
     
     public $method $javadoc(){
-        this.javadoc.pattern("$javadoc$");
+        this.javadoc = $comment.javadocComment("$javadoc$");
         return this;
     }
     
     public $method $javadoc( String... form ){
-        this.javadoc.pattern(form);
+        this.javadoc.contentsPattern = Stencil.of((Object[])form);
         return this;
     }
     
@@ -908,8 +897,11 @@ public class $method
         base.putAll(keyValues);
         
         StringBuilder sb = new StringBuilder();   
-        sb.append( javadoc.compose(translator, base ));        
-        sb.append(System.lineSeparator());
+        JavadocComment jdc = javadoc.construct(translator, base );
+        if( jdc != null ){
+            sb.append(jdc);        
+            sb.append(System.lineSeparator());
+        }        
         sb.append( annos.compose(translator, base));
         sb.append(System.lineSeparator());
         sb.append( modifiers.compose(translator, base));
@@ -959,7 +951,13 @@ public class $method
             return null;
         }
         Tokens all = new Tokens();
-        all = javadoc.decomposeTo(_m.getJavadoc(), all);
+        if( _m.hasJavadoc() ){
+            all = javadoc.decomposeTo(_m.getJavadoc().ast(), all);
+        } else{
+            if(!javadoc.isMatchAny() ){
+                return null;
+            }
+        }
         all = annos.decomposeTo(_m.getAnnos(), all);
         all = typeParameters.decomposeTo(_m.getTypeParameters(), all);
         all = type.decomposeTo(_m.getType(), all);
@@ -1023,7 +1021,7 @@ public class $method
      * @return 
      */
     public $method hardcode$( Translator translator, Tokens kvs ) {
-        javadoc.pattern = javadoc.pattern.hardcode$(translator, kvs);
+        javadoc = javadoc.hardcode$(translator, kvs);
         annos = annos.hardcode$(translator, kvs);
         typeParameters = typeParameters.hardcode$(translator, kvs);
         type = type.hardcode$(translator, kvs);
@@ -1038,7 +1036,7 @@ public class $method
     /** Post - parameterize, create a parameter from the target string named $Name#$*/
     @Override
     public $method $(String target, String $Name) {
-        javadoc.pattern = javadoc.pattern.$(target, $Name);
+        javadoc = javadoc.$(target, $Name);
         annos = annos.$(target, $Name);
         typeParameters = typeParameters.$(target, $Name);
         type = type.$(target, $Name);

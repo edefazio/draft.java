@@ -586,7 +586,7 @@ public class $annos
      * inside of some Node or _node
      */
     public static class Select
-        implements $proto.selected, selected_model<_annos> {
+        implements $proto.selected<_annos>, selected_model<_annos> {
 
         public final _annos _anns;
         public final $args args;

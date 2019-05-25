@@ -11,6 +11,7 @@ import draft.Tokens;
 import draft.Translator;
 import draft.java.Ast;
 import draft.java.Walk;
+import draft.java._javadoc;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
@@ -23,9 +24,10 @@ import java.util.function.Predicate;
 /**
  *
  * @author Eric
+ * @param <C>
  */
 public class $comment <C extends Comment>
-    implements $proto<C>, Template<C> {
+    implements $proto<C>, Template<C>, $constructor.$part, $method.$part, $field.$part {
     
     public static $comment<Comment> any(){
         return new $comment();
@@ -40,9 +42,15 @@ public class $comment <C extends Comment>
     }
     
     public static $comment<JavadocComment> javadocComment(){
-        return new $comment().omitBlockComments().omitLineComments();
+        $comment $c = new $comment().omitBlockComments().omitLineComments();
+        $c.contentsPattern = Stencil.of("$javadoc$");
+        return $c;
     }
 
+    public static $comment<JavadocComment> javadocComment( _javadoc _jc){
+        return new $comment( _jc.ast()).omitBlockComments().omitLineComments();
+    }
+    
     public static $comment<JavadocComment> javadocComment(String...comment){
         return new $comment(Ast.javadocComment(comment)).omitBlockComments().omitLineComments();
     }
@@ -133,6 +141,17 @@ public class $comment <C extends Comment>
         this.contentsPattern = Stencil.of(Ast.getContent(astComment) );        
     }
     
+     /**
+     * 
+     * @param translator
+     * @param kvs
+     * @return 
+     */
+    public $comment hardcode$(Translator translator, Tokens kvs ) {
+        this.contentsPattern = this.contentsPattern.hardcode$(translator, kvs);        
+        return this;
+    }
+    
     public $comment addConstraint( Predicate<C> constraint ){
         this.constraint = this.constraint.and(constraint);
         return this;
@@ -192,6 +211,36 @@ public class $comment <C extends Comment>
             return null;
         }
         return new Select( astComment, $args.of( ts ));
+    }
+    
+    public boolean isMatchAny(){
+        try{
+            return 
+                this.contentsPattern.isMatchAny() && this.constraint.test(null);
+        }catch(Exception e){
+            return false;
+        }
+    }
+        
+    public Tokens decomposeTo( Comment comment, Tokens allTokens ){
+        if(allTokens == null){
+            return allTokens;
+        }
+        if( comment == null ){
+            if( isMatchAny() ){
+                return allTokens;
+            } else{
+                return null;
+            }
+        }
+        Select sel = select(comment);
+        if( sel != null ){
+            if( allTokens.isConsistent(sel.args.asTokens()) ){
+                allTokens.putAll(sel.args.asTokens());
+                return allTokens;
+            }
+        }
+        return null;
     }
 
     @Override
@@ -314,21 +363,40 @@ public class $comment <C extends Comment>
 
     public JavadocComment constructJavadocComment(Translator translator, Map<String, Object> keyValues) {
         String contents = this.contentsPattern.construct(translator, keyValues);
+        if( contents.trim().length() == 0 ){
+            return null;
+        }
+        if( contents.trim().equals( "null" ) ){
+            return null;
+        }
         return new JavadocComment( contents );
     }
     
     public BlockComment constructBlockComment(Translator translator, Map<String, Object> keyValues) {
+        
         String contents = this.contentsPattern.construct(translator, keyValues);
+        if( contents.trim().length() == 0 || contents.equals("null")){
+            return null;
+        }
         return new BlockComment( contents );
     }
     
     public LineComment constructLineComment( Translator translator,  Map<String,Object> keyValues){
         String contents = this.contentsPattern.construct(translator, keyValues);
+        if( contents.trim().length() == 0 || contents.equals("null")){
+            return null;
+        }
         return new LineComment( contents );
     }
     
     @Override
     public C construct(Translator translator, Map<String, Object> keyValues) {
+        if( !keyValues.containsKey("comment")){
+            keyValues.put("comment", "");
+        }        
+        if( !keyValues.containsKey("javadoc")){
+            keyValues.put("javadoc", "");
+        }      
         if( this.commentClasses.isEmpty()){
             return (C)constructBlockComment( translator, keyValues );
         }
@@ -371,7 +439,7 @@ public class $comment <C extends Comment>
      * 
      * @param <C> 
      */
-    public static class Select <C extends Comment> 
+    public static class Select<C extends Comment> 
         implements $proto.selected<C>, 
             $proto.selectedAstNode<C> {
 

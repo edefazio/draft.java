@@ -948,6 +948,20 @@ public enum Ast {
      */
     public static LineComment lineComment(String... str) {
         StringBuilder sb = new StringBuilder();
+        System.out.println( "In line comment ");
+        for(int i=0;i<str.length;i++){
+            String st = str[i];
+            if( i > 0 ){
+                sb.append(" ");
+            }
+            if (st.trim().startsWith("//")) {
+                sb.append(st.substring(st.indexOf("//") + 2));
+            } else {
+                sb.append(st);
+            }            
+        }
+        /*
+        
         for (String str1 : str) {
             if (str1.trim().startsWith("//")) {
                 sb.append(str1.substring(str1.indexOf("//") + 2));
@@ -955,6 +969,7 @@ public enum Ast {
                 sb.append(str1);
             }
         }
+        */
         LineComment lc = new LineComment();
         lc.setContent(sb.toString());
         return lc;

@@ -3,6 +3,7 @@ package draft.java.proto;
 import com.github.javaparser.ast.Node;
 import com.github.javaparser.ast.body.FieldDeclaration;
 import com.github.javaparser.ast.body.VariableDeclarator;
+import com.github.javaparser.ast.comments.JavadocComment;
 import com.github.javaparser.ast.expr.Expression;
 import com.github.javaparser.ast.expr.ObjectCreationExpr;
 import com.github.javaparser.ast.type.Type;
@@ -12,7 +13,6 @@ import draft.java.*;
 import draft.java._model._node;
 import draft.java.macro._macro;
 import draft.java.macro._remove;
-import draft.java.proto.$proto.$component;
 import java.lang.annotation.Annotation;
 import java.util.*;
 import java.util.function.Consumer;
@@ -491,7 +491,8 @@ public class $field implements Template<_field>, $proto<_field> {
     public static $field of( _field _f ){
         $field $inst = new $field();
         if( _f.hasJavadoc() ){
-            $inst.javadoc = new $component<>(_f.getJavadoc().toString() );
+            $inst.javadoc = $comment.javadocComment(_f.getJavadoc());
+            //$inst.javadoc = new $component<>(_f.getJavadoc().toString() );
         }
         if( _f.hasAnnos() ){
             $inst.annos = $annos.of(_f.getAnnos());
@@ -520,7 +521,8 @@ public class $field implements Template<_field>, $proto<_field> {
     }
     
     public Predicate<_field> constraint = t->true;
-    public $component<_javadoc> javadoc = new $component( "$javadoc$", t->true);
+    //public $component<_javadoc> javadoc = new $component( "$javadoc$", t->true);
+    public $comment<JavadocComment> javadoc = $comment.javadocComment("$javadoc$");
     public $annos annos = new $annos(); 
     public $modifiers modifiers = $modifiers.of();
     public $typeRef type = $typeRef.of();
@@ -547,45 +549,42 @@ public class $field implements Template<_field>, $proto<_field> {
             else if( parts[i] instanceof $expr ){
                 this.init = ($expr)parts[i];
             }
+            else if(parts[i] instanceof $comment ){
+                this.javadoc = ($comment<JavadocComment>)parts[i];
+            }
         }
     }
     
     private $field(){        
     }
     
-    /** prototype post initialization self mutations */
+    /** prototype post parameterization (i.e. the query can change) */
     
     /**
      * Post parameterize the javadoc field (accept any and return it as "javadoc")
      * @return 
      */
     public $field $javadoc(){
-        this.javadoc.pattern = Stencil.of("$javadoc$");
+        this.javadoc = $comment.javadocComment("$javadoc$");        
         return this;
     }
     
-    public $field $javadoc( String javadoc ){
-        this.javadoc.pattern = Stencil.of(javadoc);
+    public $field $javadoc( String... javadoc ){
+        this.javadoc.contentsPattern = Stencil.of((Object[])javadoc);
         return this;
     }
     
-    /**
-     * Post parameterize the javadoc (expecting a specific form)
-     * @param pattern
-     * @return 
-     */
-    public $field $javadoc(String... pattern){
-        this.javadoc.pattern = Stencil.of(Text.combine(pattern) );
+    public $field $javadoc( _javadoc _jd ){
+        this.javadoc.contentsPattern = Stencil.of(_jd.getContent() );
         return this;
-    }
-    
+    }    
     /**
      * set a constraint on the 
      * @param javadocConstraint
      * @return 
      */
-    public $field $javadoc(Predicate<_javadoc> javadocConstraint ){
-        this.javadoc.constraint = this.javadoc.constraint.and(javadocConstraint);
+    public $field $javadoc(Predicate<JavadocComment> javadocConstraint ){
+        this.javadoc.addConstraint(javadocConstraint);
         return this;
     }
     
@@ -599,7 +598,7 @@ public class $field implements Template<_field>, $proto<_field> {
         return this;
     }
     
-    public $field $type( Class clazz){
+    public $field $type(Class clazz){
         this.type = $typeRef.of(clazz);
         return this;
     }
@@ -626,7 +625,6 @@ public class $field implements Template<_field>, $proto<_field> {
     
     public $field $name(String pattern ){
         this.name.pattern = Stencil.of(pattern);
-        //this.name.$component.this.pattern = Stencil.of(pattern );
         return this;
     }
     
@@ -1089,7 +1087,11 @@ public class $field implements Template<_field>, $proto<_field> {
     public Select select(_field _f){
         if( this.constraint.test(_f) && modifiers.select(_f) != null ){            
             Tokens all = new Tokens();
-            all = javadoc.decomposeTo(_f.getJavadoc(), all);
+            if (_f.getJavadoc() == null ){
+                all = javadoc.decomposeTo(_f.getJavadoc().ast(), all);
+            } else{
+                all = javadoc.decomposeTo(null, all);
+            }            
             all = annos.decomposeTo(_f.getAnnos(), all);
             all = type.decomposeTo(_f.getType(), all);
             all = name.decomposeTo(_f.getName(), all);
@@ -1156,8 +1158,11 @@ public class $field implements Template<_field>, $proto<_field> {
         baseMap.putAll(keyValues);
         
         StringBuilder sb = new StringBuilder();
-        sb.append(javadoc.pattern.construct(translator, baseMap) );
-        sb.append(System.lineSeparator());
+        JavadocComment jdc = javadoc.construct(translator, baseMap);
+        if( jdc != null){
+            sb.append(jdc);
+            sb.append(System.lineSeparator());
+        }        
         sb.append(annos.construct(translator, baseMap) );
         sb.append(System.lineSeparator());
         sb.append(modifiers.construct(translator, baseMap) );
@@ -1195,7 +1200,7 @@ public class $field implements Template<_field>, $proto<_field> {
     
     @Override
     public $field $(String target, String $Name) {
-        javadoc.pattern.$(target, $Name);
+        javadoc.$(target, $Name);
         annos.$(target, $Name);
         type.$(target, $Name);
         name.$(target, $Name);
@@ -1208,7 +1213,7 @@ public class $field implements Template<_field>, $proto<_field> {
     @Override
     public List<String> list$() {
         List<String> vars = new ArrayList<>();
-        vars.addAll( javadoc.pattern.list$() );
+        vars.addAll( javadoc.list$() );
         vars.addAll( annos.list$() );
         vars.addAll( type.list$() );
         vars.addAll( name.list$() );
@@ -1221,7 +1226,7 @@ public class $field implements Template<_field>, $proto<_field> {
     @Override
     public List<String> list$Normalized() {
         List<String> vars = new ArrayList<>();
-        vars.addAll( javadoc.pattern.list$Normalized() );
+        vars.addAll( javadoc.list$Normalized() );
         vars.addAll( annos.list$Normalized() );
         vars.addAll( type.list$Normalized() );
         vars.addAll( name.list$Normalized() );
@@ -1234,7 +1239,7 @@ public class $field implements Template<_field>, $proto<_field> {
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
-        sb.append(javadoc.pattern );
+        sb.append(javadoc );
         sb.append(System.lineSeparator());
         sb.append(annos );
         sb.append(System.lineSeparator());

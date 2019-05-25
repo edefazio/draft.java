@@ -1733,7 +1733,7 @@ public class $anno
      * inside of some Node or _node
      */
     public static class Select
-        implements $proto.selected, selected_model<_anno>, selectedAstNode<AnnotationExpr> {
+        implements $proto.selected<_anno>, selected_model<_anno>, selectedAstNode<AnnotationExpr> {
 
         public final _anno _ann;
         public final $args args;

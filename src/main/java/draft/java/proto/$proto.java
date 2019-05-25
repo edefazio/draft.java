@@ -22,10 +22,6 @@ import java.util.function.Predicate;
  * {@link _model._node}
  */
 public interface $proto<Q> {
-
-    public interface $member{
-        
-    }
     
     /**
      * 
@@ -58,7 +54,7 @@ public interface $proto<Q> {
      * @param clazz
      * @return 
      */
-    default <S extends selected> S selectFirstIn( Class clazz ){
+    default <S extends selected<Q>> S selectFirstIn( Class clazz ){
         return selectFirstIn(_type.of(clazz));
     }
     
@@ -68,7 +64,7 @@ public interface $proto<Q> {
      * @param _n
      * @return 
      */
-    default <S extends selected> S selectFirstIn( _node _n ){
+    default <S extends selected<Q>> S selectFirstIn( _node _n ){
         return selectFirstIn( _n.ast() );    
     }
     
@@ -78,7 +74,7 @@ public interface $proto<Q> {
      * @param n
      * @return 
      */
-    <S extends selected> S selectFirstIn( Node n );
+    <S extends selected<Q>> S selectFirstIn( Node n );
         
     /**
      * Find and return a List of all matching node types within _n

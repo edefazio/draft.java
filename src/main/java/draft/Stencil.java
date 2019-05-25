@@ -296,7 +296,7 @@ public final class Stencil implements Template<String>{
     }
 
     /**
-     * Assign/ fill in a constant VALUE for an existing $parameter
+     * <P>Assign/ fill in a constant VALUE for an existing $parameter
      * ************** and return the NEW Stencil instance*****************
      * (the opposite of $() method which parameterizes the instance of some text
      * within the
@@ -308,6 +308,8 @@ public final class Stencil implements Template<String>{
      * // query is now the following Stencil:
      * "SELECT $query$ FROM MyTable WHERE $where$"
      * </PRE>
+     * </P>
+     * 
      * @param translator translator for translating values to text for filling
      * the template
      * @param kvs tokens to assign
