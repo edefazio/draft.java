@@ -492,7 +492,6 @@ public class $field implements Template<_field>, $proto<_field> {
         $field $inst = new $field();
         if( _f.hasJavadoc() ){
             $inst.javadoc = $comment.javadocComment(_f.getJavadoc());
-            //$inst.javadoc = new $component<>(_f.getJavadoc().toString() );
         }
         if( _f.hasAnnos() ){
             $inst.annos = $annos.of(_f.getAnnos());
@@ -521,7 +520,6 @@ public class $field implements Template<_field>, $proto<_field> {
     }
     
     public Predicate<_field> constraint = t->true;
-    //public $component<_javadoc> javadoc = new $component( "$javadoc$", t->true);
     public $comment<JavadocComment> javadoc = $comment.javadocComment("$javadoc$");
     public $annos annos = new $annos(); 
     public $modifiers modifiers = $modifiers.of();
@@ -589,7 +587,13 @@ public class $field implements Template<_field>, $proto<_field> {
     }
     
     public $field $type(){
-        this.type.typePattern = Stencil.of("$type$");
+        this.type = $typeRef.of("$type$");
+        //this.type.typePattern = Stencil.of("$type$");
+        return this;
+    }
+    
+    public $field $type( _typeRef _tr){
+        this.type = $typeRef.of(_tr);
         return this;
     }
     
@@ -1176,14 +1180,10 @@ public class $field implements Template<_field>, $proto<_field> {
                 sb.append( " = ");
                 sb.append( expr );
             }
-            //if( str.length() > 0 ){
-            //    sb.append(" = ");
-            //    sb.append(str);
-            //}
         }
         sb.append(";");
         String s = sb.toString();
-        System.out.println( s );
+        //System.out.println( s );
         return _field.of( sb.toString() );        
     }
 

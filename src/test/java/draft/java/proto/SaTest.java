@@ -213,29 +213,31 @@ public class SaTest extends TestCase {
         assertTrue($anno.of(R.class).matches("R()"));   
         assertTrue($anno.of(R.class).matches("@draft.java.proto.SaTest.R()"));   
         
+        /*
         assertTrue($anno.of("R($any$)").matches("@draft.java.proto.SaTest.R()"));  
         
-        assertTrue($anno.of(R.class, "($any$)").matches("@draft.java.proto.SaTest.R()"));   
-        assertTrue($anno.of(R.class, "($any$)").matches("R()"));   
+        assertTrue($anno.of("R($any$)").matches("@draft.java.proto.SaTest.R()"));   
+        assertTrue($anno.of("R($any$)").matches("R()"));   
         
-        assertTrue($anno.of(R.class, "($any$)").matches("@draft.java.proto.SaTest.R(1)"));   
-        assertTrue($anno.of(R.class, "($any$)").matches("R(2)"));
+        assertTrue($anno.of("R($any$)").matches("@draft.java.proto.SaTest.R(1)"));   
+        assertTrue($anno.of("R($any$)").matches("R(2)"));
         
-        assertTrue($anno.of(R.class, "($any$)").select("@draft.java.proto.SaTest.R(1)").is("any", Expr.of(1) ) );   
-        assertTrue($anno.of(R.class, "($any$)").select("@draft.java.proto.SaTest.R(1)").is("any", "1" ) );  
+        assertTrue($anno.of("R($any$)").select("@draft.java.proto.SaTest.R(1)").is("any", Expr.of(1) ) );   
+        assertTrue($anno.of("R($any$)").select("@draft.java.proto.SaTest.R(1)").is("any", "1" ) );  
        
-        assertTrue($anno.of(R.class, "($any$)").select("@draft.java.proto.SaTest.R(1)").is("any", Expr.of(1) ) );   
-        assertTrue($anno.of(R.class, "($any$)").select("@draft.java.proto.SaTest.R(1)").is("any", "1" ) );  
+        assertTrue($anno.of("R($any$)").select("@draft.java.proto.SaTest.R(1)").is("any", Expr.of(1) ) );   
+        assertTrue($anno.of("R.class, "($any$)").select("@draft.java.proto.SaTest.R(1)").is("any", "1" ) );  
+        */
         
         
         
-        assertTrue($anno.of(R.class, "($any$)").matches("R(2)"));
+        assertTrue($anno.of(R.class).matches("R(2)"));
         
-        assertTrue($anno.of(S.class, "($any$)").matches("S()"));
-        assertTrue($anno.of(S.class, "($any$)").matches("S(Float.class)"));
-        assertTrue($anno.of(S.class, "($any$)").addConstraint( a-> a.hasValue(v -> v.isClassExpr())).matches("@S(Float.class)"));
-        assertFalse($anno.of(S.class, "($any$)").addConstraint( a-> a.hasValue(v -> v.isClassExpr())).matches("@S"));
-        assertFalse($anno.of(S.class, "($any$)").addConstraint( a-> a.hasValue(v -> v.isClassExpr())).matches("@S({Float.class, String.class})"));
+        assertTrue($anno.of(S.class).matches("S()"));
+        assertTrue($anno.of(S.class).matches("S(Float.class)"));
+        assertTrue($anno.of(S.class).addConstraint( a-> a.hasValue(v -> v.isClassExpr())).matches("@S(Float.class)"));
+        assertFalse($anno.of(S.class).addConstraint( a-> a.hasValue(v -> v.isClassExpr())).matches("@S"));
+        assertFalse($anno.of(S.class).addConstraint( a-> a.hasValue(v -> v.isClassExpr())).matches("@S({Float.class, String.class})"));
         
     }
     
@@ -291,14 +293,14 @@ public class SaTest extends TestCase {
         }
         
         _class _c = _class.of(C.class);
-        assertNotNull( $anno.first(_c, "name($any$)") );
+        assertNotNull( $anno.first(_c, "name") );
         
         //verify that we can find 
-        assertNotNull( $anno.first(_c, "name($any$)", 
+        assertNotNull( $anno.first(_c, "name", 
                 //there is an Integer attribute value that is odd
                 (a)-> a.hasValue(e -> e.isIntegerLiteralExpr() && e.asIntegerLiteralExpr().asInt() % 2 == 1)) );
         
-        assertNotNull( $anno.first(_c, "name($any$)", (a) -> a.hasValue(3)) );
+        assertNotNull( $anno.first(_c, "name", (a) -> a.hasValue(3)) );
         assertNotNull( $anno.first(_c, "name(3)"));        
         assertNotNull( $anno.first(_c, "name(3)", _a-> _a.hasValue(3)) );
     }
@@ -325,8 +327,11 @@ public class SaTest extends TestCase {
         $anno a = $anno.of("@name(prefix=$any$)");
 
         assertTrue( a.matches( _anno.of("@name(prefix=\"1\")") ));
+        
+        assertNotNull( a.select( _anno.of("@name(prefix=\"1\")") ));
 
-        assertTrue( a.select(_anno.of("@name(prefix=\"1\")") ).is("any", "1") );
+        System.out.println( "GOTTEN " + a.select(_anno.of("@name(prefix=\"1\")") ).args );
+        assertTrue( a.select(_anno.of("@name(prefix=\"1\")") ).is("any", Expr.stringLiteral("1")) );
 
         assertTrue( a.select(_anno.of("@name(prefix=\"ABCD\")")).is("any", "ABCD"));
         assertTrue( a.list$().contains("any"));

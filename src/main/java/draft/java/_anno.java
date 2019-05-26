@@ -9,6 +9,7 @@ import com.github.javaparser.ast.nodeTypes.NodeWithAnnotations;
 import com.github.javaparser.ast.type.Type;
 import com.github.javaparser.ast.type.TypeParameter;
 import draft.DraftException;
+import draft.Stencil;
 import draft.Text;
 import draft.java._model.*;
 import static draft.java.Ast.field;
@@ -49,7 +50,7 @@ import java.util.function.Predicate;
 public final class _anno
         implements _node<AnnotationExpr>, _named<_anno> {
 
-    public static _anno of( String anno ){
+    public static _anno of( String anno ){        
         return of( new String[]{anno} );
     }
     public static _anno of( String... annotation ) {

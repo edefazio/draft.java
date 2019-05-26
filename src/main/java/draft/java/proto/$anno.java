@@ -8,7 +8,6 @@ import com.github.javaparser.ast.expr.*;
 import draft.*;
 import draft.java.*;
 import draft.java._model._node;
-import draft.java.proto.$proto.$component;
 import java.lang.annotation.Annotation;
 import java.util.*;
 import java.util.function.Consumer;
@@ -838,14 +837,7 @@ public class $anno
         return of( _anno.of(bd.getAnnotation(0) ) );        
     }
     
-    public static $anno of(Class<? extends Annotation>sourceAnnoClass, String argumentStencil) {
-        if( !argumentStencil.trim().startsWith("(") ){
-            argumentStencil = "("+ argumentStencil + ")";
-        }
-        String str = "@"+sourceAnnoClass.getSimpleName()+argumentStencil;
-        return new $anno(_anno.of(str));               
-    }
-        
+    
     /** Default Matching constraint (by default ALWAYS Match)*/
     public Predicate<_anno> constraint = a -> true;
 
@@ -871,7 +863,7 @@ public class $anno
         if (astAnn instanceof NormalAnnotationExpr) {
             NormalAnnotationExpr na = (NormalAnnotationExpr) astAnn;
             na.getPairs().forEach(mv -> $mvs.add($memberValue.of(mv.getNameAsString(), mv.getValue())));
-        } else if (astAnn instanceof SingleMemberAnnotationExpr) {
+        } else if (astAnn instanceof SingleMemberAnnotationExpr) {            
             SingleMemberAnnotationExpr sa = (SingleMemberAnnotationExpr) astAnn;
             $mvs.add($memberValue.of(sa.getMemberValue()));
         }
@@ -934,20 +926,9 @@ public class $anno
      * @return 
      */
     public boolean isMatchAny(){
-        return name.isMatchAny() && ( this.$mvs.isEmpty() || (this.$mvs.size() ==1 && this.$mvs.get(0).isMatchAll() ));
+        return name.isMatchAny() && ( this.$mvs.isEmpty() || (this.$mvs.size() ==1 && this.$mvs.get(0).isMatchAny() ));
     }
     
-    /**
-     * Sets the underlying constraint
-     * @param constraint
-     * @return 
-     
-    public $anno constraint(Predicate<_anno> constraint) {
-        this.constraint = constraint;
-        return this;
-    }
-    */ 
-
     /**
      * ADDS an additional matching constraint to the prototype
      *
@@ -979,12 +960,11 @@ public class $anno
         if (astAnn instanceof MarkerAnnotationExpr) {
             //System.out.println( "Marketer");            
             if ($mvs.size() == 1) {
-                if ($mvs.get(0).isMatchAll()) {
+                if ($mvs.get(0).isMatchAny()) {
                     return ts;
                 }
                 return null;
-            }
-            
+            }            
             return null;
         }
         if (astAnn instanceof SingleMemberAnnotationExpr) {
@@ -1003,15 +983,31 @@ public class $anno
             return null;
         }
         if (astAnn instanceof NormalAnnotationExpr) {
-            //System.out.println( "Normal "+ astAnn );
-            NormalAnnotationExpr sme = (NormalAnnotationExpr) astAnn;
-            if( $mvs.size() == 1 && sme.getPairs().isEmpty() && $mvs.get(0).isMatchAll() ){
-                return new Tokens();
+            NormalAnnotationExpr astNa = (NormalAnnotationExpr) astAnn;
+            //System.out.println( "Normal "+ astAnn +" mvs size "+ $mvs.size()+" "+astNa+" "+astNa.getPairs());
+            if( astNa.getPairs().isEmpty() ){
+                //System.out.println( "Empty parameters ");
+                if( $mvs.isEmpty() ){
+                    //System.out.println( "returning "+ ts );
+                    return ts;
+                }
+                if( $mvs.size() == 1 && $mvs.get(0).isMatchAny() ){
+                    //System.out.println( "returning "+ ts );
+                    return ts;
+                }
+                return null;
             }
-            if ($mvs.size() <= sme.getPairs().size()) {
-                
+            if( $mvs.size() == 0 ){
+                return ts;
+            }
+            
+            if( $mvs.size() == 1 && astNa.getPairs().isEmpty() && $mvs.get(0).isMatchAny() ){
+                return ts;
+            }
+            if ($mvs.size() <= astNa.getPairs().size()) {
+                //System.out.println( "Checking pairs"+astNa.getPairs());
                 List<MemberValuePair> mvpsC = new ArrayList<>();
-                mvpsC.addAll(sme.getPairs());
+                mvpsC.addAll(astNa.getPairs());
                 for (int i = 0; i < $mvs.size(); i++) {
                     $memberValue.Select sel = $mvs.get(i).selectFirst(mvpsC);
                     if (sel == null) {
@@ -1021,7 +1017,9 @@ public class $anno
                         if( !ts.isConsistent(sel.args.asTokens())){
                             return null;
                         }
+                        //System.out.println( "    Adding Tokens "+ ts );
                         ts.putAll(sel.args.asTokens());
+                        //System.out.println( "    Added Tokens "+ ts );
                     }
                 }
                 return ts;                 
@@ -1124,7 +1122,7 @@ public class $anno
         params.addAll( this.name.list$() );
         this.$mvs.forEach(m -> {
             params.addAll( m.key.pattern.list$() ); 
-            params.addAll( m.value.pattern.list$() ); 
+            params.addAll( m.value.list$() ); 
         });
         return params;
     }
@@ -1135,7 +1133,7 @@ public class $anno
         params.addAll( this.name.list$() );
         this.$mvs.forEach(m -> {
             params.addAll( m.key.pattern.list$Normalized() ); 
-            params.addAll( m.value.pattern.list$Normalized() ); 
+            params.addAll( m.value.list$Normalized() ); 
         });
         return params.stream().distinct().collect(Collectors.toList() );
     }
@@ -1541,7 +1539,8 @@ public class $anno
 
         public $id key = $id.any();
         
-        public $component<String> value = new $component("$value$", t -> true);
+        //public $component<String> value = new $component("$value$", t -> true);
+        public $expr value = new $expr(Expression.class, "$value$");
         public Predicate<MemberValuePair> constraint = t -> true;
 
         public static $memberValue of(Expression value) {
@@ -1557,15 +1556,18 @@ public class $anno
             if( !key.isMatchAny() ){
                 k = key.compose(translator, keyValues);
             }
-            String v = value.compose(translator, keyValues);
-            if (k == null || k.length() == 0) {
-                return v;
+            Expression v = value.construct(translator, keyValues);
+            if (k == null || k.length() == 0) {                
+                return v.toString();
             }
             return k + "=" + v;
         }
 
-        public boolean isMatchAll() {
-            return key.pattern.isMatchAny() && value.pattern.isMatchAny();
+        public boolean isMatchAny() {
+            boolean k = key.isMatchAny();
+            boolean v = value.isMatchAny(); 
+            //System.out.println( "K "+k+" v "+v );
+            return   k && v;
         }
 
         public static $memberValue of(String key, Expression exp) {
@@ -1582,12 +1584,18 @@ public class $anno
 
         public $memberValue(String name, Expression value) {
             this.key.pattern = Stencil.of(name);
-            this.value.pattern = Stencil.of(value.toString());
+            Stencil st = Stencil.of(value.toString());
+            if( st.isMatchAny() ){
+                this.value = new $expr(Expression.class, value.toString() );   
+            } else {
+                this.value = $expr.of(value);
+            }
+            //this.value.pattern = Stencil.of(value.toString());
         }
 
         public $memberValue $(String target, String $name) {
             this.key.pattern = this.key.pattern.$(target, $name);
-            this.value.pattern = this.value.pattern.$(target, $name);
+            this.value = this.value.$(target, $name);
             return this;
         }
         
@@ -1617,7 +1625,11 @@ public class $anno
          */
         public Tokens decompose(Expression onlyValueExpression){            
             if( constraint.test( new MemberValuePair("_", onlyValueExpression) ) ) {
-                return value.decompose(onlyValueExpression.toString());
+                $expr.Select sel = value.select(onlyValueExpression.toString());
+                if( sel == null ){
+                    return null;
+                }
+                return sel.args.asTokens();
             }
             return null;
         }
@@ -1633,7 +1645,12 @@ public class $anno
             }
             if (constraint.test(mvp)) {
                 Tokens ts = key.decompose(mvp.getNameAsString());
-                ts = value.decomposeTo(mvp.getValue().toString(), ts);
+                $expr.Select sel = value.select(mvp.getValue());
+                if( sel == null || !ts.isConsistent(sel.args.asTokens())){
+                    return null;
+                }
+                ts.putAll(sel.args.asTokens());
+                //ts = value.decomposeTo(mvp.getValue().toString(), ts);
                 return ts;
             }
             return null;
@@ -1650,8 +1667,13 @@ public class $anno
         public Select select (Expression onlyValueExpression){            
             MemberValuePair mvp = new MemberValuePair("", onlyValueExpression); 
             if( constraint.test( mvp ) ) {
-                Tokens ts = value.decompose(onlyValueExpression.toString());
-                return new Select(mvp, ts);
+                $expr.Select sel = value.select(onlyValueExpression);
+                if( sel != null ){
+                    return new Select(mvp, sel.args.asTokens());
+                }
+                //return null;
+                //Tokens ts = value.decompose(onlyValueExpression.toString());
+                //return new Select(mvp, ts);
             }
             return null;
         }
@@ -1667,10 +1689,19 @@ public class $anno
             }
             if (constraint.test(mvp)) {
                 Tokens ts = key.decompose(mvp.getNameAsString());
-                ts = value.decomposeTo(mvp.getValue().toString(), ts);
-                if( ts != null ){
-                    return new Select(mvp, ts);
+                if( ts == null ){
+                    return null;
                 }
+                $expr.Select sel = value.select(mvp.getValue());
+                if( sel == null || !ts.isConsistent(sel.args.asTokens())){
+                    return null;
+                }
+                ts.putAll(sel.args.asTokens());
+                return new Select(mvp, ts);
+                //ts = value.decomposeTo(mvp.getValue().toString(), ts);
+                //if( ts != null ){
+                //    return new Select(mvp, ts);
+                //}
             }
             return null;
         }

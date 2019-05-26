@@ -2121,18 +2121,6 @@ public final class $expr <T extends Expression>
         return this;
     }
     
-    /**
-     * Sets/Overrides the constraint
-     * 
-     * @param constraint
-     * @return 
-     
-    public $expr<T> constraint( Predicate<T> constraint){
-        this.constraint = constraint;
-        return this;
-    }
-    */ 
-    
     @Override
     public T fill(Object...values){
         String str = exprPattern.fill(Translator.DEFAULT_TRANSLATOR, values);
@@ -2239,8 +2227,8 @@ public final class $expr <T extends Expression>
      */
     public boolean isMatchAny(){
         try{
-            return this.expressionClass == Expression.class 
-                && this.constraint.test(null) 
+            return  //this.expressionClass == Expression.class 
+                this.constraint.test(null) 
                 && this.exprPattern.isMatchAny();
         }catch(Exception e){
             return false;
@@ -2291,9 +2279,7 @@ public final class $expr <T extends Expression>
             return exl.equals(actL);
         }
         return false;
-    }
-    
-    
+    }    
     
     /**
      * 
