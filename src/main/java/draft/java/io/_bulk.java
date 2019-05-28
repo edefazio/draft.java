@@ -1,6 +1,7 @@
 package draft.java.io;
 
 import com.github.javaparser.ParseResult;
+import com.github.javaparser.StaticJavaParser;
 import com.github.javaparser.ast.CompilationUnit;
 import com.github.javaparser.utils.SourceZip;
 import draft.DraftException;
@@ -39,7 +40,53 @@ public enum _bulk {
      * @return Receipt containing the files read in, and the paths read from
      */
     public static _load read(Path rootPath ){
-        return fn( rootPath );
+        _load receipt = new _load();
+        receipt.baseReadPath = rootPath;
+
+        if( rootPath.toFile().isDirectory() ) { //bulk read in a directory
+            _bulkReadJavaFiles javaFileReader = new _bulkReadJavaFiles();
+            try {
+                receipt.startTimestamp = System.currentTimeMillis();
+                Files.walkFileTree(rootPath, javaFileReader);
+                receipt.readFilesTimestamp = System.currentTimeMillis();
+                receipt.paths = javaFileReader.listPaths();
+            } catch (IOException ioe) {
+                throw new _ioException("unable to list files in " + rootPath, ioe);
+            }
+            /** Use parallel worker threads for parsing and transforming */            
+            javaFileReader.filesRead.stream().forEach( fr-> {
+                //System.out.println("Trying to read "+ fr.filePath );
+                if( !fr.filePath.endsWith("package-info.java") ){
+                    _type _t = _type.of( fr.fileContents ); //1) parse the String to _type                
+                    receipt.types.add(_t); //store the _type in the receipt                
+                } else{
+                    //System.out.println( "****** FOUND package-info ****");
+                    //System.out.println( fr.fileContents );
+                    CompilationUnit cu = StaticJavaParser.parse(fr.fileContents);
+                }
+            });
+            receipt.processedTimestamp = System.currentTimeMillis();
+            return receipt;        
+        }
+        /* its a file ( a .zip or .jar file ) */
+        SourceZip sz = new SourceZip(rootPath);
+        receipt.startTimestamp = System.currentTimeMillis();
+        receipt.readFilesTimestamp = System.currentTimeMillis();
+        try {
+            sz.parse( (Path relativeZipEntryPath, ParseResult<CompilationUnit> result) -> {
+                if( result.isSuccessful() ){
+                    receipt.paths.add(relativeZipEntryPath);
+                    _type _t = _type.of(result.getResult().get());                    
+                } else{
+                    throw new DraftException("Unable to parse File in zip/jar at: "+ relativeZipEntryPath+System.lineSeparator()+
+                            "problems:"+result.getProblems() );
+                }
+            });
+            receipt.processedTimestamp = System.currentTimeMillis();
+            return receipt;
+        } catch(IOException ioe){
+            throw new DraftException("Unable to read from .jar or .zip file at "+rootPath);
+        } 
     }
 
     /**
@@ -50,7 +97,7 @@ public enum _bulk {
      * @return the _load (containing the files as Strings)
      */
     public static _load read( String rootPath ){
-        return _bulk.fn( rootPath );
+        return read( Paths.get(rootPath) );
     }
 
     public static _receipt consume(String rootPath, Consumer<_type> _typeConsumer ){
@@ -168,7 +215,9 @@ public enum _bulk {
                 throw new _ioException("unable to list files in " + rootPath, ioe);
             }
             /** Use parallel worker threads for parsing and transforming */
-            javaFileReader.filesRead.parallelStream().forEach( fr-> {
+            
+            javaFileReader.filesRead.stream().forEach( fr-> {
+            //javaFileReader.filesRead.parallelStream().forEach( fr-> {
                 _type _t = _type.of( fr.fileContents ); //1) parse the String to _type
                 _type _orig = _t.copy();
                 int beforeHash = _t.hashCode();         //2) store the before hash
@@ -348,6 +397,12 @@ public enum _bulk {
 
         public List<_type> listTypes(){
             return types;
+        }
+        
+        public List<_type> listTransformedTypes(){
+            List<_type> transformed = new ArrayList<>();
+            this.transformedTypes.forEach(tt-> transformed.add(tt.transformed) );
+            return transformed;
         }
 
         public _type getType(Class typeClass){
