@@ -58,7 +58,7 @@ public final class Stencil implements Template<String>{
     private final List<String> $NamesNormalized = new ArrayList<>();
 
     /**
-     * returns a unique listAt of "normalized" $Names in the order
+     * returns a unique list of "normalized" $Names in the order
      * in which they occur within the Stencil (NO DUPLICATES)
      *
      * @return
@@ -192,6 +192,11 @@ public final class Stencil implements Template<String>{
         return new Stencil( this.textBlanks, revisedParams );
     }
 
+    /**
+     * Internal A way to normalize the $names
+     * @param $name
+     * @return 
+     */
     private static String normalize$( String $name ) {
         if( $name.toUpperCase().equals( $name ) ) {
             return $name.toLowerCase();
@@ -217,6 +222,14 @@ public final class Stencil implements Template<String>{
         return Objects.hash( textBlanks, $Names );
     }
 
+    /**
+     * Internal parser for building up the Stencil
+     * @param builder text blanks builder
+     * @param $names the current names of things in the stencil
+     * @param text the FULL text to be parsed
+     * @param target the target tag
+     * @param $name the tag being parsed
+     */
     private static void parse(
         TextBlanks.Builder builder, List<String> $names, String text,
         String target, String $name ) {
@@ -453,10 +466,20 @@ public final class Stencil implements Template<String>{
         return fills;
     }
 
+    /**
+     * Does the stencil pattern match the multi line string passed in
+     * @param constructed
+     * @return true if the stencil pattern matches, false otherwise
+     */
     public boolean matches(String... constructed ) {
         return matches( Text.combine( constructed ) );
     }
 
+    /**
+     * Does the stencil pattern match the multi line string passed in
+     * @param constructed
+     * @return true if the stencil pattern matches, false otherwise
+     */
     public boolean matches(String constructed ) {
         List<String> valsInOrder = this.textBlanks.deconstruct( constructed );
         return (valsInOrder != null);
@@ -466,10 +489,24 @@ public final class Stencil implements Template<String>{
         return this.textBlanks.getRegexPattern();
     }
 
+    /**
+     * If the stencil matches the (single) string input, deconstruct it into
+     * Tokens (key-value pairs) from the fixed text or return null
+     * 
+     * @param constructed the String to be deconstructed
+     * @return the Tokens or null if the constructed string doesn't match the stencil pattern
+     */
     public Tokens deconstruct(String constructed ){
         return deconstruct( new String[]{constructed} );
     }
     
+    /**
+     * If the stencil matches the (single) string input, deconstruct it into
+     * Tokens (key-value pairs) from the fixed text or return null
+     * 
+     * @param constructed the String to be deconstructed
+     * @return the Tokens or null if the constructed String doesnt match the stencil pattern
+     */
     public Tokens deconstruct(String... constructed ) {
         List<String> valsInOrder = this.textBlanks.deconstruct( Text.combine( constructed) );
         if( valsInOrder == null ) {
