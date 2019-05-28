@@ -394,6 +394,11 @@ public class _io{
         Arrays.stream(types).forEach( t-> System.out.println( t ) );
     }
 
+    
+    public static _out._filesReceipt out( Collection<_type> types){
+        return _out.of( types.toArray(new _type[0]));
+    }
+    
     /**
      * Using the OUT_DIR (or defaulting to the user.dir)
      * write the _types to .java files in the appropriate directories
@@ -404,6 +409,10 @@ public class _io{
          return _out.of(_types);
     }
 
+    public static _out._filesReceipt out( String baseDir, Collection<_type> _types ){
+        return _out.to(baseDir, _types.toArray(new _type[0]));
+    }
+    
     public static _out._filesReceipt out( String baseDir, _type..._types ){
         return _out.to(baseDir, _types);
     }
@@ -412,6 +421,10 @@ public class _io{
         return _out.of(cfg.out, _p);
     }
 
+    public static _out._filesReceipt out( _config cfg, Collection<_type> types ){
+        return _out.of(cfg.out, types.toArray(new _type[0]));
+    }
+    
     public static _out._filesReceipt out( _config cfg, _type...types ){
         return _out.of(cfg.out, types);
     }
