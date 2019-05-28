@@ -13,6 +13,7 @@ import javax.tools.ToolProvider;
 import java.io.IOException;
 import java.io.Writer;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
@@ -25,6 +26,16 @@ import java.util.List;
 public final class _javac {
 
     /**
+     * Compile the collection of types and return the _classfiles if successful
+     * (else throw an DraftException or _javacException)
+     * @param types
+     * @return 
+     */
+    public static _classFiles of( Collection<_type> types ){
+        return _javac.of( types.toArray(new _type[0]) );
+    }
+    
+    /**
      * Compile of {@link _type}s returning the {@link _classFiles}
      * containing the compiled {@link draft.java.file._classFile}s
      *
@@ -35,6 +46,10 @@ public final class _javac {
         return _javac.of(_javaFiles.of(_types ) );
     }
 
+    public static _classFiles of( Processor annotationProcessor, Collection<_type> types ){
+        return of( annotationProcessor, types.toArray(new _type[0]));
+    }
+    
     public static _classFiles of( Processor annotationProcessor, _type...types ){
         return _javac.of(_javaFiles.of( types), annotationProcessor );
     }
@@ -72,6 +87,10 @@ public final class _javac {
         return _javac.of( new _javacOptions(), null, javaFiles, l, null, null );
     }
 
+    public static _classFiles of( _classLoader parent, Collection<_type> types ){
+        return of( parent, types.toArray(new _type[0]));
+    }
+    
     /**
      * Compile of {@link _type}s returning the {@link _classFiles}
      * containing the compiled {@link draft.java.file._classFile}s
@@ -115,6 +134,10 @@ public final class _javac {
         return _javac.of(null, parent, javaFiles, annProcessors, null, null );
     }
 
+    public static _classFiles of( _javacOptions compilerOpts, _classLoader parent, Collection<_type> types){
+        return of( compilerOpts, parent, types.toArray(new _type[0]));
+    }
+    
     /**
      * Compile of {@link _type}s returning the {@link _classFiles}
      * containing the compiled {@link draft.java.file._classFile}s
@@ -153,6 +176,10 @@ public final class _javac {
         return _javac.of(compilerOpts, parent, javaFiles, annProcessors, null, null );
     }
 
+    public static _classFiles of( _javacOptions compilerOpts, Collection<_type> types){
+        return of( compilerOpts, types.toArray(new _type[0]));
+    }
+    
     /**
      * Compile of {@link _type}s returning the {@link _classFiles}
      * containing the compiled {@link draft.java.file._classFile}s
