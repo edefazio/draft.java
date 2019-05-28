@@ -19,9 +19,38 @@ import java.util.List;
 import java.util.function.Predicate;
 import static junit.framework.TestCase.assertEquals;
 import static junit.framework.TestCase.assertNotNull;
+import static junit.framework.TestCase.assertTrue;
+import org.junit.Assert;
 
 public class SexprTest extends TestCase {
 
+     public void testSpecificFullyQualifiedStaticAssertions(){
+        _class _c = _class.of("C", new Object(){
+            void m(){
+                org.junit.Assert.assertTrue("message", 1==1);
+                Assert.assertTrue("message", 1==1);                
+                assertTrue("message", 1==1);
+            }
+        }).imports(Assert.class);
+        
+        //change the API AND
+        //$typeUse.of(org.junit.Assert.class).replaceIn(_c, )
+        
+        //$oldAssert this will handle:
+        //   org.junit.Assert.assertTrue("message", 1==1);
+        //   Assert.assertTrue("message", 1==1);
+        //   assertTrue("message", 1==1);
+        $expr $oldAssert = $expr.of("$scope$assertTrue($message$, $condition$)");
+        $expr $newAssert = $expr.of("Assertions.assertTrue($condition$, $message$)");
+        
+        $oldAssert.replaceIn(_c, $newAssert);
+        
+        //Expression exp = Expr.of("Assertions.assertTrue(1==1,\"message\")");
+        //System.out.println( exp );
+        $expr $e = $expr.of("Assertions.assertTrue(1==1,\"message\")");
+        assertTrue($e.listIn(_c).size() == 3);
+    }
+     
     public static final NumberFormat NF = NumberFormat.getInstance();
     
     
