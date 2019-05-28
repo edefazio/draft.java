@@ -194,7 +194,7 @@ public class $body implements Template<_body>, $proto<_body>, $constructor.$part
     @Override
     public List<String> list$Normalized(){
         if( isImplemented ){
-            this.bodyStmts.list$Normalized();
+            return this.bodyStmts.list$Normalized();
         }
         return Collections.EMPTY_LIST;
     }
@@ -397,14 +397,14 @@ public class $body implements Template<_body>, $proto<_body>, $constructor.$part
     @Override
     public $body $(String target, String $Name) {
         if( this.isImplemented ){            
-            this.bodyStmts.$(target, $Name);
+            this.bodyStmts = this.bodyStmts.$(target, $Name);
         }
         return this;
     }
     
     public $body $( Statement st, String name){
         if( this.isImplemented ){
-            this.bodyStmts.$(st, name);
+            this.bodyStmts = this.bodyStmts.$(st, name);
         }
         return this;
     }
