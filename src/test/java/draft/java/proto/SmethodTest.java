@@ -10,6 +10,30 @@ import junit.framework.TestCase;
 
 public class SmethodTest extends TestCase {
     
+    private $method $computeRange = $method.of(new Object(){
+        public int $name$(){
+            int result = 1;
+            for(int i=$from$;i<$to$;i++){
+                result = result * i;
+            }
+            return result;
+        }        
+        int $from$, $to$;
+    }).$("*", "op");        
+    public void test4Draft(){
+        
+        //System.out.println( $computeRange.body.bodyStmts );
+        //System.out.println( $computeRange.body.list$() );
+        //System.out.println( "IMPLD" + $computeRange.body.isImplemented );
+        //System.out.println( $computeRange.body.list$Normalized() );
+        //System.out.println( "STENCIL " + $computeRange.body.bodyStmts.stmtPattern.list$Normalized() );
+        //System.out.println( $computeRange.list$() );
+        assertEquals( 4, $computeRange.list$().size());
+        //System.out.println( $computeRange.list$Normalized() );
+        assertEquals( 4, $computeRange.list$Normalized().size());
+        //System.out.println($computeRange.fill("multiply10to20",10,20,"*"));
+    }
+    
     public void testMethodCtor(){
         $method $m = $method.of( $anno.of(Deprecated.class) );
         $m.$annos(t -> t.size() == 1);
