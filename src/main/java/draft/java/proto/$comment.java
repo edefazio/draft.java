@@ -12,6 +12,8 @@ import draft.Translator;
 import draft.java.Ast;
 import draft.java.Walk;
 import draft.java._javadoc;
+import draft.java._model._node;
+import draft.java._type;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
@@ -60,7 +62,7 @@ public class $comment <C extends Comment>
             .addConstraint(constraint);
     }
     
-    public static $comment<JavadocComment> javadocComment(Predicate<Comment> constraint){
+    public static $comment<JavadocComment> javadocComment(Predicate<JavadocComment> constraint){
         return new $comment().omitBlockComments().omitLineComments()
             .addConstraint(constraint);
     }
@@ -335,6 +337,16 @@ public class $comment <C extends Comment>
         return astRootNode;
     }
 
+    public <N extends _node> N forSelectedIn(_node _n, Consumer<Select> selectActionFn) {
+        Walk.comments(_n, c->{
+            Select s = select(c);
+            if( s != null ){
+                selectActionFn.accept(s);
+            }
+        });
+        return (N)_n;        
+    }
+    
     public <N extends Node> N forSelectedIn(N astRootNode, Consumer<Select> selectActionFn) {
         //Walk will organize by order
         Walk.comments(astRootNode, c->{
@@ -344,6 +356,16 @@ public class $comment <C extends Comment>
             }
         });
         return astRootNode;
+    }
+    
+    public <N extends _node> N forSelectedIn(_node _n, Predicate<Select> selectConstraint, Consumer<Select> selectActionFn) {
+        Walk.comments(_n, c->{
+            Select s = select(c);
+            if( s != null && selectConstraint.test(s)){
+                selectActionFn.accept(s);
+            }
+        });
+        return (N)_n;        
     }
     
     public <N extends Node> N forSelectedIn(N astRootNode, Predicate<Select> selectConstraint, Consumer<Select> selectActionFn) {
