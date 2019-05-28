@@ -514,9 +514,11 @@ public final class _body implements _model {
          * @return the modified T (_method, _constructor, _staticBlock)
          */
         default T add(String... statements) {            
-            BlockStmt bs = Ast.blockStmt(statements);
-            
+            BlockStmt bs = Ast.blockStmt(statements);            
+            //System.out.println( bs );            
+            // we have to create a body (blockStmt) FIRST before adding
             if( !this.getBody().isImplemented() && bs.getStatements().isEmpty() ){ //empty body
+                //System.out.println("creating empty body");
                 this.setBody("{}");
             }
             //organize orphan comments
@@ -529,6 +531,7 @@ public final class _body implements _model {
 
             for (int i = 0; i < bs.getStatements().size(); i++) {
                 Statement st = bs.getStatement(i);
+                //System.out.println( "Adding "+ st);
                 if (c != null && c.getBegin().get().isBefore(st.getBegin().get())) {
                     getBody().ast().addOrphanComment(c);
                     coms.remove(0);
@@ -543,6 +546,9 @@ public final class _body implements _model {
                     if( !nobs.getBody().isPresent()){
                         BlockStmt bss = nobs.createBody();
                         bs.getStatements().forEach(s -> bss.addStatement(s));
+                    } else{
+                        //System.out.println("adding here");
+                        ((BlockStmt)nobs.getBody().get()).addStatement(st);
                     }
                 } else{
                     getBody().ast().addStatement(st);
