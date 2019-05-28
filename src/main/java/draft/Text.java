@@ -10,7 +10,6 @@ import java.util.*;
  */
 public final class Text {
 
-    
     /**
      * Look through the sourceString for any instances of the target string.
      * IF the target String is identified within the source String
