@@ -1,6 +1,7 @@
 package draft.java.proto;
 
 import com.github.javaparser.ast.comments.Comment;
+import com.github.javaparser.ast.comments.JavadocComment;
 import com.github.javaparser.ast.expr.ArrayAccessExpr;
 import com.github.javaparser.ast.expr.ArrayCreationExpr;
 import com.github.javaparser.ast.expr.ArrayInitializerExpr;
@@ -75,7 +76,6 @@ import java.util.function.*;
 public final class $ {
     /** cant construct one of these */
     private $(){}
-    
     
     public static $anno anno(){
         return $anno.any();
@@ -183,7 +183,7 @@ public final class $ {
         return new $body( le );
     }
     
-    public static <A extends Object, B extends Object, C extends Object>  $body body(BiFunction<A,B,C> commandLambda ){
+    public static <A extends Object, B extends Object, C extends Object> $body body(BiFunction<A,B,C> commandLambda ){
         LambdaExpr le = Expr.lambda(Thread.currentThread().getStackTrace()[2]);
         return new $body( le );
     }
@@ -209,6 +209,14 @@ public final class $ {
     public static $comment comment( String commentPattern ){
         return $comment.of(commentPattern);
     }
+    
+    public static $comment<JavadocComment> javadoc( String contentPattern){
+        return $comment.javadocComment(contentPattern);
+    } 
+    
+    public static $comment<JavadocComment> javadoc( Predicate<JavadocComment> constraint ){
+        return $comment.javadocComment(constraint);
+    } 
     
     public static $constructor constructor(){
         return $constructor.any();
@@ -343,6 +351,10 @@ public final class $ {
         return $expr.of(b);
     }
     
+    /**
+     * index Expression 
+     * @return 
+     */
     public static $expr<ArrayAccessExpr> arrayAccessExpr(){
         return $expr.arrayAccess();
     }
@@ -351,6 +363,10 @@ public final class $ {
         return $expr.arrayCreation();    
     }
     
+    /**
+     * new int[][]{{1, 1}, {2, 2}};
+     * @return 
+     */
     public static $expr<ArrayInitializerExpr> arrayInitExpr(){
         return $expr.arrayInitializer();
     }
@@ -450,6 +466,11 @@ public final class $ {
     public static $expr<UnaryExpr> unaryExpr(){
         return $expr.unary();
     }
+    /*
+    public static $unaryExpr unaryExpr(){
+        return $unaryExpr.any();
+    }
+    */
     
     public static $expr<VariableDeclarationExpr> varDeclarationExpr(){
         return $expr.varDecl();

@@ -619,7 +619,12 @@ public class $method
     @Override
     public List<String> list$Normalized(){
         List<String>normalized$ = new ArrayList<>();
-        normalized$.addAll( javadoc.list$Normalized() );
+        if( javadoc.contentsPattern.isMatchAny() && javadoc.contentsPattern.list$().contains("javadoc")){
+            //Javadoc is OPTIONAL (it's only 
+        } else{
+            //all$.addAll( javadoc.list$() );
+            normalized$.addAll( javadoc.list$Normalized() );
+        }        
         normalized$.addAll( annos.list$Normalized() );
         normalized$.addAll( typeParameters.list$Normalized() );
         normalized$.addAll( type.list$Normalized() );        
@@ -633,7 +638,11 @@ public class $method
     @Override
     public List<String> list$(){
         List<String>all$ = new ArrayList<>();
-        all$.addAll( javadoc.list$() );
+        if( javadoc.contentsPattern.isMatchAny() && javadoc.contentsPattern.list$().contains("javadoc")){
+            //Javadoc is OPTIONAL (it's only 
+        } else{
+            all$.addAll( javadoc.list$() );
+        }
         all$.addAll( annos.list$() );
         all$.addAll( typeParameters.list$() );
         all$.addAll( type.list$() );        
