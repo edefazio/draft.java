@@ -26,6 +26,25 @@ import java.util.concurrent.atomic.AtomicBoolean;
  */
 public class _classTest extends TestCase {
     
+    
+    public void testSimpleAndShortcutClasses(){
+        _class _a = _class.of(
+            "package hello;",
+            "public class HelloWorld{",
+            "public static void main(String[] args){",
+            "    System.out.println(\"Hello World\");",
+            "}}");
+    
+    
+        //shortcut class & component way
+        // shortcut class assumes you pass in the fully qualified NAME of the class
+        // sets the package and class NAME
+        _class _b = _class.of("hello.HelloWorld")
+            .main("System.out.println(\"Hello World\");");
+        
+        assertEquals( _a, _b);
+    }
+    
     class Be{        
     }
     
