@@ -97,7 +97,7 @@ public class _1_SimpleTest extends TestCase {
         // behind the _class facade, is just a JavaParser 
         // CompiltionUnit / ClassOrInterfaceDeclaration, 
         // you can get to them easily:
-        CompilationUnit astCu = _c.findCompilationUnit();
+        CompilationUnit astCu = _c.astCompilationUnit();
         
         ClassOrInterfaceDeclaration astCl = _c.ast();        
         
@@ -278,8 +278,8 @@ public class _1_SimpleTest extends TestCase {
         _interface _i1 = _interface.of(A.class);
         _interface _i2 = _interface.of(B.class).name("A"); //change the name
         
-        CompilationUnit astI1 = _i1.findCompilationUnit();
-        CompilationUnit astI2 = _i2.findCompilationUnit();
+        CompilationUnit astI1 = _i1.astCompilationUnit();
+        CompilationUnit astI2 = _i2.astCompilationUnit();
         
         assertNotSame( astI1, astI2 ); //we know the ASTs are not syntactically the same
         

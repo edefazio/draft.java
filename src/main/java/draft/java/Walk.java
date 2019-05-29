@@ -506,8 +506,8 @@ public enum Walk {
      */
     public static <T, _N extends _node> _N in(
             _N _n, Class<T> targetClass, Consumer<T> action ) {
-        if( _n instanceof _type && ((_type)_n).isTopClass() ){
-            of(Node.TreeTraversal.PREORDER, ((_type)_n).findCompilationUnit(), targetClass, t->true, action );
+        if( _n instanceof _type && ((_type)_n).isTopLevel() ){
+            of(Node.TreeTraversal.PREORDER, ((_type)_n).astCompilationUnit(), targetClass, t->true, action );
         } else{
             of(Node.TreeTraversal.PREORDER, _n.ast(), targetClass, t->true, action );
         }
@@ -1201,8 +1201,8 @@ public enum Walk {
      * @param commentActionFn 
      */
     public static void comments( _node _n, Consumer<Comment> commentActionFn){
-        if( _n instanceof _type && ((_type)_n).isTopClass() ){
-            comments( ((_type)_n).findCompilationUnit(), commentActionFn );            
+        if( _n instanceof _type && ((_type)_n).isTopLevel() ){
+            comments( ((_type)_n).astCompilationUnit(), commentActionFn );            
         } else{
             comments( _n.ast(), commentActionFn );            
         }
@@ -1228,8 +1228,8 @@ public enum Walk {
      * @param commentActionFn 
      */
     public static <C extends Comment, N extends _node> void comments(N _n, Class<C> commentClass, Predicate<C> commentMatchFn, Consumer<C> commentActionFn ){
-        if( _n instanceof _type && ((_type)_n).isTopClass() ){
-            comments( ((_type)_n).findCompilationUnit(), commentClass, commentMatchFn, commentActionFn );            
+        if( _n instanceof _type && ((_type)_n).isTopLevel() ){
+            comments( ((_type)_n).astCompilationUnit(), commentClass, commentMatchFn, commentActionFn );            
         } else{
             comments( _n.ast(), commentClass, commentMatchFn, commentActionFn );            
         }
@@ -1274,8 +1274,8 @@ public enum Walk {
      * @param commentActionFn 
      */
     public static <N extends _node> void  comments(N _n, Predicate<Comment> commentMatchFn, Consumer<Comment> commentActionFn ){
-        if( _n instanceof _type && ((_type)_n).isTopClass() ){
-            comments( ((_type)_n).findCompilationUnit(), commentMatchFn, commentActionFn );            
+        if( _n instanceof _type && ((_type)_n).isTopLevel() ){
+            comments( ((_type)_n).astCompilationUnit(), commentMatchFn, commentActionFn );            
         } else{
             comments( _n.ast(), commentMatchFn, commentActionFn );            
         }
@@ -1319,8 +1319,8 @@ public enum Walk {
      * @return 
      */
     public static <N extends _node> List<Comment> listComments(N _n){
-        if( _n instanceof _type && ((_type)_n).isTopClass() ){
-            return listComments( ((_type)_n).findCompilationUnit());            
+        if( _n instanceof _type && ((_type)_n).isTopLevel() ){
+            return listComments( ((_type)_n).astCompilationUnit());            
         }
         return listComments( _n.ast() );                    
     }
@@ -1346,8 +1346,8 @@ public enum Walk {
      * @return 
      */
     public static <N extends _node> List<Comment> listComments(N _n, Predicate<Comment> commentMatchFn){
-        if( _n instanceof _type && ((_type)_n).isTopClass() ){
-            return listComments( ((_type)_n).findCompilationUnit(), commentMatchFn);            
+        if( _n instanceof _type && ((_type)_n).isTopLevel() ){
+            return listComments( ((_type)_n).astCompilationUnit(), commentMatchFn);            
         }
         return listComments( _n.ast(), commentMatchFn);                    
     }
@@ -1382,8 +1382,8 @@ public enum Walk {
      */
     public static <C extends Comment, N extends _node> List<C> listComments(
             N _n, Class<C> commentTargetClass, Predicate<C> commentMatchFn){
-        if( _n instanceof _type && ((_type)_n).isTopClass() ){
-            return listComments( ((_type)_n).findCompilationUnit(), commentTargetClass, commentMatchFn);            
+        if( _n instanceof _type && ((_type)_n).isTopLevel() ){
+            return listComments( ((_type)_n).astCompilationUnit(), commentTargetClass, commentMatchFn);            
         }
         return listComments( _n.ast(), commentTargetClass, commentMatchFn);                    
     }

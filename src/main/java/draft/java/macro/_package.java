@@ -27,7 +27,7 @@ public @interface _package {
         }
 
         public static <T extends _type> T to( T _model, String packageName ){
-            if( !_model.isTopClass() ){
+            if( !_model.isTopLevel() ){
                 _model.getModifiers().setStatic(false); //top level entities cannot be static
                 CompilationUnit cu = new CompilationUnit();
                 cu.addType( (TypeDeclaration)_model.ast());

@@ -238,7 +238,6 @@ public enum _java {
             return staticBlock(code);
         }
         if (_type.class.isAssignableFrom(nodeClass)) {
-            //System.out.println( "Parsing TYPE Decl" + nodeClass );
             return typeDeclaration(code);
         }
         if (_parameter.class == nodeClass) {

@@ -345,7 +345,7 @@ public class _methodTest extends TestCase {
 
         _interface _dict = _interface.of(Dict.class)
                 .setPackage("dictionary.spi");
-        _dict.listImports().clear();
+        _dict.getImports().clear();
 
         System.out.println( _dict );
         assertTrue( _dict.getMethod( "getDefinition" ).isAbstract() );

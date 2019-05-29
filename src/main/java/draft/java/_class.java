@@ -15,9 +15,7 @@ import draft.java.macro._remove;
 
 import java.io.InputStream;
 import java.util.*;
-import java.util.function.Consumer;
-import java.util.function.Function;
-import java.util.function.Predicate;
+import java.util.function.*;
 
 /**
  * Top-Level draft object representing a Java class, and implementation of a {@link _type}<BR/>
@@ -538,12 +536,12 @@ public final class _class implements _type<ClassOrInterfaceDeclaration, _class>,
     private final ClassOrInterfaceDeclaration astClass;
 
     @Override
-    public boolean isTopClass(){
+    public boolean isTopLevel(){
         return ast().isTopLevelType();
     }
     
     @Override
-    public CompilationUnit findCompilationUnit(){
+    public CompilationUnit astCompilationUnit(){
         if( ast().isTopLevelType()){
             return (CompilationUnit)ast().getParentNode().get(); //astCompilationUnit.get();
         }
@@ -721,7 +719,7 @@ public final class _class implements _type<ClassOrInterfaceDeclaration, _class>,
     @Override
     public String toString(){
         if( this.astClass.isTopLevelType()){
-            return this.findCompilationUnit().toString();
+            return this.astCompilationUnit().toString();
         }
         return this.astClass.toString();        
     }   
@@ -818,7 +816,7 @@ public final class _class implements _type<ClassOrInterfaceDeclaration, _class>,
     public Map<_java.Component, Object> componentsMap( ) {
         Map<_java.Component, Object> parts = new HashMap<>();
         parts.put( _java.Component.PACKAGE_NAME, this.getPackage() );
-        parts.put( _java.Component.IMPORTS, this.listImports() );
+        parts.put( _java.Component.IMPORTS, this.getImports().list() );
         parts.put( _java.Component.ANNOS, this.listAnnos() );
         parts.put( _java.Component.EXTENDS, this.astClass.getExtendedTypes() );        
         parts.put( _java.Component.IMPLEMENTS, this.listImplements() );

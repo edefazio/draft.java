@@ -67,7 +67,7 @@ public class _importTest extends TestCase {
     
     public void test_imports() throws NoSuchMethodException{
         _class _c = _class.of(_importTest.class);
-        _imports _is = _imports.of( _c.findCompilationUnit());
+        _imports _is = _imports.of( _c.astCompilationUnit());
         assertTrue( _is.hasImport(IOException.class));
         assertTrue( _is.hasImport(IOException.class.getCanonicalName()));
         assertFalse( _is.hasImport(java.net.URISyntaxException.class));

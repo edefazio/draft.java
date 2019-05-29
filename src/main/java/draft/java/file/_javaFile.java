@@ -86,7 +86,7 @@ public final class _javaFile implements JavaFileObject {
      */
     public _javaFile( _javaFile prototype ){
         this.lastUpdateTimeMillis = prototype.lastUpdateTimeMillis;
-        this.type = (_type)_java.of( prototype.type.findCompilationUnit().clone());
+        this.type = (_type)_java.of( prototype.type.astCompilationUnit().clone());
     }
 
     /**

@@ -5,6 +5,7 @@ import com.github.javaparser.StaticJavaParser;
 import com.github.javaparser.ast.CompilationUnit;
 import com.github.javaparser.utils.SourceZip;
 import draft.DraftException;
+import draft.java._compilationUnit._packageInfo;
 import draft.java._type;
 
 import java.io.*;
@@ -329,6 +330,7 @@ public enum _bulk {
         public long readFilesTimestamp;
         public long processedTimestamp;
         public List<_type> types = new ArrayList<>();
+        public List<_packageInfo>pkgInfo = new ArrayList<>(); 
         public List<_transformed> transformedTypes = new ArrayList<>();
 
         public _load addTransformedType(_type original, _type transformed){
@@ -433,7 +435,7 @@ public enum _bulk {
         }
     }
 
-    /**
+      /**
      * Reads and Stores all Java files found within a directory
      * into a List of Strings in memory.
      *

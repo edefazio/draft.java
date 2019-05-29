@@ -32,7 +32,7 @@ public class macroTest extends TestCase {
     @Target(ElementType.TYPE)
     @Retention(RetentionPolicy.RUNTIME)
     public @interface U{
-        _macro<_type> M = (_type _t)-> _t.imports(UUID.class);
+        _macro<_type> M = (_type _t)-> (_type)_t.imports(UUID.class);
     }
 
     public void testAnnotationFieldAsMacro(){

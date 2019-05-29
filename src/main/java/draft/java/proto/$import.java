@@ -1463,7 +1463,7 @@ public final class $import
      * @return 
      */
     public <T extends _type> T forSelectedIn( T _t, Consumer<Select> selectConsumer ){
-        forSelectedIn(_t.findCompilationUnit(), selectConsumer);
+        forSelectedIn(_t.astCompilationUnit(), selectConsumer);
         return _t;
     }
 
@@ -1506,7 +1506,7 @@ public final class $import
      * @return 
      */
     public <T extends _type> T forSelectedIn(T _t, Predicate<Select> selectConstraint, Consumer<Select> selectConsumer ){
-        forSelectedIn(_t.findCompilationUnit(), selectConstraint, selectConsumer);
+        forSelectedIn(_t.astCompilationUnit(), selectConstraint, selectConsumer);
         return _t;
     }
 
@@ -1544,7 +1544,7 @@ public final class $import
 
     @Override
     public <N extends _node> N forEachIn(N _n, Consumer<_import> _importActionFn){
-        if( _n instanceof _type && ((_type)_n).isTopClass() ){
+        if( _n instanceof _type && ((_type)_n).isTopLevel() ){
             forEachIn(_n, _importActionFn);
             return _n;
         }

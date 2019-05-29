@@ -79,7 +79,7 @@ public class _classTest extends TestCase {
     public void setPackageToInner(){
         
         _class _c = _class.of(Inner.class).setPackage("aaaa.bbbb.dddd");
-        assertTrue( _c.isTopClass() );
+        assertTrue( _c.isTopLevel() );
         assertEquals( _c.getPackage(), "aaaa.bbbb.dddd" );
     }
     
@@ -663,7 +663,7 @@ public class _classTest extends TestCase {
     public void testStaticClassLambdaAuto(){
         //when we create the model, we make it a top level model (not a Local Class)
         assertTrue( _c.isPublic() );
-        assertTrue( _c.isTopClass() );
+        assertTrue( _c.isTopLevel() );
         assertTrue( _c.getPackage().equals("aaaa.bbbb") );
         assertTrue( _c.getField("a").isPublic() );
         assertTrue( _c.getField("a").isType(int.class) );
@@ -697,7 +697,7 @@ public class _classTest extends TestCase {
         assertEquals( "F", _c.getName());
 
         assertTrue( _c.isPublic() ); //we ensure the class is public
-        assertTrue( _c.isTopClass() ); //we Promote it to a top level class
+        assertTrue( _c.isTopLevel() ); //we Promote it to a top level class
 
         assertTrue( _c.getPackage() == null );
 

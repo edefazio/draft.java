@@ -1298,7 +1298,7 @@ public final class $throws
      * @return 
      */
     public <T extends _type> T forSelectedIn( T _t, Consumer<Select> selectConsumer ){
-        forSelectedIn(_t.findCompilationUnit(), selectConsumer);
+        forSelectedIn(_t.astCompilationUnit(), selectConsumer);
         return _t;
     }
 
@@ -1341,7 +1341,7 @@ public final class $throws
      * @return 
      */
     public <T extends _type> T forSelectedIn(T _t, Predicate<Select> selectConstraint, Consumer<Select> selectConsumer ){
-        forSelectedIn(_t.findCompilationUnit(), selectConstraint, selectConsumer);
+        forSelectedIn(_t.astCompilationUnit(), selectConstraint, selectConsumer);
         return _t;
     }
 

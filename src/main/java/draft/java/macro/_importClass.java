@@ -63,7 +63,7 @@ public @interface _importClass {
         }
 
         public static <T extends _type> T to( T _t, Set<ImportDeclaration> ids){
-            ids.forEach( id-> _t.findCompilationUnit().addImport(id) );
+            ids.forEach( id-> _t.astCompilationUnit().addImport(id) );
             return _t;
         }
     }

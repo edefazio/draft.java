@@ -308,7 +308,7 @@ public class _import implements _model {
          * @return 
          */
         public boolean isImpliedImport( _type _t ){
-            return _t.isTopClass() && isImpliedImport( _t.getFullName() );
+            return _t.isTopLevel() && isImpliedImport( _t.getFullName() );
         }
         
         /**
@@ -394,6 +394,11 @@ public class _import implements _model {
         
         public _imports forEach( Consumer<_import> _importConsumer ){
             list().forEach(_importConsumer);
+            return this;
+        }
+        
+        public _imports clear(){
+            this.astCompilationUnit.getImports().clear();
             return this;
         }
         

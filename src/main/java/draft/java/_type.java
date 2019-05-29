@@ -9,7 +9,6 @@ import com.github.javaparser.ast.stmt.LocalClassDeclarationStmt;
 import com.github.javaparser.ast.type.ClassOrInterfaceType;
 import draft.DraftException;
 import draft.Text;
-import draft.java._import._imports;
 import draft.java._model.*;
 import draft.java.io._in;
 import draft.java.io._io;
@@ -79,7 +78,7 @@ import java.util.stream.Collectors;
  */
 public interface _type<AST extends TypeDeclaration & NodeWithJavadoc & NodeWithModifiers & NodeWithAnnotations, T extends _type>
     extends _javadoc._hasJavadoc<T>, _anno._hasAnnos<T>, _modifiers._hasModifiers<T>,
-        _field._hasFields<T>, _member<AST, T> {
+        _field._hasFields<T>, _member<AST, T>, _compilationUnit<T> {
 
     static _type of( InputStream is ){
         return of(StaticJavaParser.parse(is));
@@ -108,10 +107,12 @@ public interface _type<AST extends TypeDeclaration & NodeWithJavadoc & NodeWithM
     List<_method> listMethods(Predicate<_method> m );
     
     /**
-     * Is this TYPE the top level class TYPE within a (i.e. a separate top level file /compilation Unit)?
+     * Is this TYPE the top level class TYPE within a (i.e. a separate top level 
+     * file /compilation Unit)?
      * @return true if the _type is a top level TYPE, false otherwise
      */
-    boolean isTopClass();
+    @Override
+    boolean isTopLevel();
     
     /**
      * Resolve the Compilation Unit that contains this _type,
@@ -125,7 +126,8 @@ public interface _type<AST extends TypeDeclaration & NodeWithJavadoc & NodeWithM
      * @return the top level CompilationUnit, or null if this _type is "orphaned"
      * (created without linking to a CompilationUnit)
      */
-    CompilationUnit findCompilationUnit();    
+    @Override
+    CompilationUnit astCompilationUnit();    
     
     /**
      * find members that are of the specific class and perform the _memberAction on them
@@ -235,8 +237,9 @@ public interface _type<AST extends TypeDeclaration & NodeWithJavadoc & NodeWithM
      *
      * @return the Comment a JavaDoc comment or BlockComment or null
      */
+    @Override
     default Comment getHeaderComment(){
-        if( isTopClass() && ast().getComment().isPresent()){
+        if( isTopLevel() && ast().getComment().isPresent()){
             return ast().getComment().get();
         }
         return null;
@@ -249,23 +252,15 @@ public interface _type<AST extends TypeDeclaration & NodeWithJavadoc & NodeWithM
      * @param astBlockComment the comment (i.e. the copyright)
      * @return the modified T
      */
+    @Override
     default T setHeaderComment( BlockComment astBlockComment ){
-        if( isTopClass() ){
+        if( isTopLevel() ){
             if( ast().getComment().isPresent()){
                 ast().removeComment();
             }
             ast().setComment(astBlockComment);
         }
         return (T)this;
-    }
-
-    /**
-     * Sets the header comment (i.e. the copywrite)
-     * @param commentLines the lines in the header comment
-     * @return the modified T
-     */
-    default T setHeaderComment( String...commentLines ){
-        return setHeaderComment( new BlockComment( Text.combine(commentLines )) );
     }
 
     /**
@@ -400,7 +395,7 @@ public interface _type<AST extends TypeDeclaration & NodeWithJavadoc & NodeWithM
      * @return
      */
     default T removePackage(){
-        CompilationUnit cu = findCompilationUnit();
+        CompilationUnit cu = astCompilationUnit();
         if( cu == null ){
             return (T)this;
         }
@@ -415,7 +410,7 @@ public interface _type<AST extends TypeDeclaration & NodeWithJavadoc & NodeWithM
      * @return
      */
     default String getPackage(){
-        CompilationUnit cu = findCompilationUnit();
+        CompilationUnit cu = astCompilationUnit();
         if( cu == null ){
             return null;
         }
@@ -431,14 +426,14 @@ public interface _type<AST extends TypeDeclaration & NodeWithJavadoc & NodeWithM
      * @return the modified TYPE
      */
     default T setPackage( String packageName ){
-        if( !this.isTopClass() ){ //this "means" that the class is an inner class
+        if( !this.isTopLevel() ){ //this "means" that the class is an inner class
             // and we should move it OUT into it's own class at this package
             CompilationUnit cu = new CompilationUnit();    
             cu.setPackageDeclaration(packageName);
             cu.addType( (TypeDeclaration) this.ast() );            
             return (T) this;
         }
-        CompilationUnit cu = findCompilationUnit();
+        CompilationUnit cu = astCompilationUnit();
         //System.out.println("Setting package name to \""+ packageName+"\" in "+ cu );
         //TODO I need to make sure it's a valid name
         cu.setPackageDeclaration( packageName );        
@@ -460,17 +455,17 @@ public interface _type<AST extends TypeDeclaration & NodeWithJavadoc & NodeWithM
     }
 
     default T copy(){
-        if( this.isTopClass()){
+        if( this.isTopLevel()){
             if( this instanceof _class ) {
-                return (T)_class.of(this.findCompilationUnit().clone());
+                return (T)_class.of(this.astCompilationUnit().clone());
             }
             if( this instanceof _enum ) {
-                return (T)_enum.of(this.findCompilationUnit().clone());
+                return (T)_enum.of(this.astCompilationUnit().clone());
             }
             if( this instanceof _interface ) {
-                return (T)_interface.of(this.findCompilationUnit().clone());
+                return (T)_interface.of(this.astCompilationUnit().clone());
             }
-            return (T)_annotation.of(this.findCompilationUnit().clone());
+            return (T)_annotation.of(this.astCompilationUnit().clone());
         }
         if( this instanceof _class ) {
             return (T)_class.of( ((_class) this).ast().clone());
@@ -482,293 +477,6 @@ public interface _type<AST extends TypeDeclaration & NodeWithJavadoc & NodeWithM
             return (T)_interface.of( ((_interface) this).ast().clone());
         }
         return (T)_annotation.of( ((_annotation) this).ast().clone());
-    }
-
-    /**
-     * remove imports based on predicate
-     * @param _importMatchFn filter for deciding which imports to removeIn
-     * @return the modified TYPE
-     */
-    default T removeImports( Predicate<_import> _importMatchFn ){
-        getImports().remove(_importMatchFn );
-        return (T)this;
-    }
-    
-    /**
-     * removeIn imports by classes
-     * @param clazzes
-     * @return
-     */
-    default T removeImports( Class...clazzes ){
-        _imports.of(findCompilationUnit()).remove(clazzes);
-        return (T)this;        
-    }
-
-    default T removeImports( _import...toRemove ){
-        _imports.of(findCompilationUnit()).remove(toRemove);
-        return (T)this;
-    }
-    
-    default T removeImports( _type..._typesToRemove ){
-        getImports().remove(_typesToRemove);        
-        return (T)this;
-    }
-    
-    /**
-     *
-     * @param toRemove the ImportDeclarations to removeIn
-     * @return the modified _type
-     */
-    default T removeImports( ImportDeclaration...toRemove ){
-        CompilationUnit cu = findCompilationUnit();
-        if( cu != null ){
-            for(int i=0;i<toRemove.length;i++){
-                cu.getImports().remove( toRemove[i] );
-            }
-        }
-        return (T)this;
-    }
-
-    default T removeImports( List<ImportDeclaration> toRemove ){
-        CompilationUnit cu = findCompilationUnit();
-        if( cu != null ){
-            for(int i=0;i<toRemove.size();i++){
-                cu.getImports().remove( toRemove.get(i) );
-            }
-        }
-        return (T)this;
-    }
-    
-    /**
-     * Select some imports based on the astImportPredicate and apply the 
-     * astImportActionFn on the selected Imports
-     * @param _importActionFn function to apply to the imports
-     * @return the T
-     */
-    default T forImports( Consumer<_import> _importActionFn ){
-        _imports.of(findCompilationUnit()).forEach(_importActionFn);
-        //listImports(_importMatchFn).forEach(astImportActionFn);
-        return (T)this;
-    }
-    
-    /**
-     * Select some imports based on the astImportPredicate and apply the 
-     * astImportActionFn on the selected Imports
-     * @param _importMatchFn selects the Imports to act on
-     * @param _importActionFn function to apply to the imports
-     * @return the T
-     */
-    default T forImports( Predicate<_import> _importMatchFn, Consumer<_import> _importActionFn ){
-        _imports.of(findCompilationUnit()).forEach(_importMatchFn, _importActionFn);
-        //listImports(_importMatchFn).forEach(astImportActionFn);
-        return (T)this;
-    }
-    
-    /**
-     * Gets the _imports abstraction for the _type
-     * @return the imports abstraction
-     */
-    default _imports getImports(){       
-        return _imports.of(findCompilationUnit());
-    }
-    
-    //TODO get rid of this in place of _imports, or getImports()    
-    default List<ImportDeclaration> listAstImports(){
-        CompilationUnit cu = findCompilationUnit();
-        if( cu != null ){
-            return cu.getImports();
-        }
-        return new ArrayList<>();
-    }
-    
-    default List<_import> listImports(){
-        return getImports().list();       
-    }
-    
-    default boolean hasImport( _type _t ){
-        return hasImport( _t.getFullName() );
-    }
-    
-    /**
-     * Does this class statically import this class
-     * i.e.
-     * <PRE>
-     * _class _c = _class.of("A").imports("import static draft.java.Ast.*;");
-     * assertTrue( _c.hasImportStatic(Ast.class));
-     * </PRE>
-     * 
-     * @param clazz
-     * @return 
-     */
-    default boolean hasImportStatic( Class clazz ){
-        return !listImports( i -> i.isStatic() && i.isWildcard() && i.hasImport(clazz)).isEmpty();        
-    }
-
-    /**
-     * class or method name
-     * <PRE>
-     * 
-     * </PRE>
-     * @param className
-     * @return 
-     */
-    default boolean hasImport(String className){
-        return _imports.of(findCompilationUnit()).hasImport(className);        
-    }
-
-    default boolean hasImports( Class...clazzes ){
-        return _imports.of(findCompilationUnit()).hasImports(clazzes);
-    }
-    
-    default boolean hasImport(Class clazz ){        
-        return _imports.of(findCompilationUnit()).hasImport(clazz);        
-    }
-    
-    default boolean hasImport( Predicate<_import> _importMatchFn ){
-        return !listImports( _importMatchFn ).isEmpty();
-    }
-    
-    default boolean hasImport( _import _i){
-        return listImports( i -> i.equals(_i )).size() > 0;
-    }
-
-    default List<_import> listImports( Predicate<_import> _importMatchFn ){
-        return this.getImports().list().stream().filter( _importMatchFn ).collect(Collectors.toList());
-    }
-
-    /**
-     * Adds static wildcard imports for all Classes
-     * @param wildcardStaticImports a list of classes that will WildcardImports
-     * @return the T
-     */
-    default T importStatic( Class ...wildcardStaticImports ){
-        CompilationUnit cu = findCompilationUnit();
-        if( cu != null ){
-            Arrays.stream(wildcardStaticImports).forEach( i -> {
-                ImportDeclaration id = Ast.importDeclaration(i);
-                id.setAsterisk(true);
-                id.setStatic(true);
-                cu.addImport( id );
-                /*
-                if( i.isArray() ){
-                    cu.addImport(new ImportDeclaration((i.getComponentType().getCanonicalName()), true, true));
-                } else {
-                    cu.addImport(new ImportDeclaration(i.getCanonicalName(), true, true));
-                }
-                */
-            });
-        }
-        return (T)this;
-    }
-
-    /**
-     *
-     * @param staticWildcardImports
-     * @return
-     */
-    default T importStatic( String...staticWildcardImports){
-        CompilationUnit cu = findCompilationUnit();
-        if( cu != null ){
-            Arrays.stream(staticWildcardImports).forEach( i -> {
-                ImportDeclaration id = Ast.importDeclaration(i);
-                id.setStatic(true);
-                id.setAsterisk(true);
-                cu.addImport(id);
-                /*
-                if( i.endsWith(".*")) {
-                    ImportDeclaration id = Ast.importDeclaration(i);
-                    cu.addImport(new ImportDeclaration(i.substring(0, i.length() - 2), true, true));
-                } else{
-                    cu.addImport(new ImportDeclaration(i, true, false));
-                }
-                */
-            });
-        }
-        return (T)this;
-    }
-    
-
-    /**
-     * Statically import all of the
-     * @param wildcardTypeStaticImport
-     * @return
-     */
-    default T importStatic( _type...wildcardTypeStaticImport){
-        CompilationUnit cu = findCompilationUnit();
-        if( cu != null ){
-            Arrays.stream(wildcardTypeStaticImport).forEach( i -> {
-                cu.addImport(new ImportDeclaration(i.getFullName(), true, true));
-            });
-        }
-        return (T)this;
-    }
-
-    /**
-     *
-     * @param _ts
-     * @return
-     */
-    default T imports( _type... _ts ){
-        Arrays.stream(_ts).forEach( _t -> imports(_t.getFullName()));
-        return (T)this;
-    }
-
-    
-    /**
-     * Regularly import a class
-     * @param classesToImport
-     * @return
-     */
-    default T imports( Class...classesToImport ){
-        CompilationUnit cu = findCompilationUnit();
-        if( cu != null ){
-            for(int i=0;i<classesToImport.length; i++){
-                if( classesToImport[i].isArray() ){
-                    //System.out.println("CT " + classesToImport[i].getComponentType() );
-                    imports(classesToImport[i].getComponentType());
-                }else{
-                    //dont import primitives or primitive arrays
-                    if( classesToImport[i] == null 
-                        || classesToImport[i].isPrimitive() 
-                        || classesToImport[i].isArray() && classesToImport[i].getComponentType().isPrimitive() 
-                        || classesToImport[i].getPackageName().equals("java.lang") ) {
-                        break;
-                    }
-                    String cn = classesToImport[i].getCanonicalName();
-                    //fix a minor bug in JavaParser API where anything in "java.lang.**.*" is not imported
-                    // so java.lang.annotation.* classes are not imported when they should be
-                    if( classesToImport[i].getPackage() != Integer.class.getPackage()
-                        && classesToImport[i].getCanonicalName().startsWith("java.lang") ) {
-                        //System.out.println( "manually adding "+ classesToImport[i].getCanonicalName());
-                        cu.addImport(classesToImport[i].getCanonicalName());
-                    } else {
-                        cu.addImport(cn);
-                    }
-                }
-            }
-            return (T)this;
-        }
-        throw new DraftException("No AST CompilationUnit of TYPE "+ ((T)this).getName()+" to add imports");
-    }
-
-    default T imports( ImportDeclaration...importDecls){
-        CompilationUnit cu = findCompilationUnit();
-        if( cu != null ){
-            Arrays.stream( importDecls ).forEach( c-> cu.addImport( c ) );
-            return (T)this;
-        }
-        //return (T) this;
-        throw new DraftException("No AST CompilationUnit of class "+ getName()+" to add imports");
-    }
-
-    default T imports( String...importStatements ){
-        CompilationUnit cu = findCompilationUnit();
-        if( cu != null ){
-            Arrays.stream( importStatements ).forEach( c-> cu.addImport( Ast.importDeclaration( c ) ) );
-            return (T)this;
-        }
-        //return (T) this;
-        throw new DraftException("No AST CompilationUnit of "+ getName()+" to add imports");
     }
 
     @Override
@@ -854,6 +562,7 @@ public interface _type<AST extends TypeDeclaration & NodeWithJavadoc & NodeWithM
         this.ast().setProtected(true);
         return (T)this;
     }
+    
     default T setPrivate(){
         this.ast().setPublic(false);
         this.ast().setPrivate(true);
@@ -1248,32 +957,6 @@ public interface _type<AST extends TypeDeclaration & NodeWithJavadoc & NodeWithM
         return listNests().stream().filter( typeMatchFn ).collect(Collectors.toList());
     }
 
-    /*
-    default void ifClass( Consumer<_class> _classAction ){
-        if( this instanceof _class ){
-            _classAction.accept((_class)this);
-        }
-    }
-    
-    default void ifEnum( Consumer<_enum> _enumAction ){
-        if( this instanceof _enum ){
-            _enumAction.accept((_enum)this);
-        }
-    }
-    
-    default void ifInterface( Consumer<_interface> _interfaceAction ){
-        if( this instanceof _interface ){
-            _interfaceAction.accept((_interface)this);
-        }
-    }
-    
-    default void ifAnnotation( Consumer<_annotation> _annotationAction ){
-        if( this instanceof _annotation ){
-            _annotationAction.accept((_annotation)this);
-        }
-    }
-    */
-    
     /**
      * list all nested children underneath this logical _type
      * (1-level, DIRECT CHILDREN, and NOT grand children or great grand children)
@@ -1501,9 +1184,6 @@ public interface _type<AST extends TypeDeclaration & NodeWithJavadoc & NodeWithM
         default boolean hasImplements(){
             return !listImplements().isEmpty();
         }
-        
-        
-        
         
         default List<ClassOrInterfaceType> listImplements(){
             return ((NodeWithImplements)((_type)this).ast()).getImplementedTypes();

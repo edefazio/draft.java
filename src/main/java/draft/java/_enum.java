@@ -131,7 +131,7 @@ public final class _enum implements _type<EnumDeclaration, _enum>,_method._hasMe
     }
     
     @Override
-    public boolean isTopClass(){
+    public boolean isTopLevel(){
         return astEnum.isTopLevelType();
     }
 
@@ -150,7 +150,7 @@ public final class _enum implements _type<EnumDeclaration, _enum>,_method._hasMe
     }
     
     @Override
-    public CompilationUnit findCompilationUnit(){
+    public CompilationUnit astCompilationUnit(){
         //it might be a member class
         if( this.astEnum.findCompilationUnit().isPresent()){
             return this.astEnum.findCompilationUnit().get();
@@ -324,7 +324,7 @@ public final class _enum implements _type<EnumDeclaration, _enum>,_method._hasMe
 
     @Override
     public String toString(){
-        if( this.isTopClass() ){
+        if( this.isTopLevel() ){
             return this.astEnum.findCompilationUnit().get().toString();
         }
         return this.astEnum.toString();
@@ -487,7 +487,7 @@ public final class _enum implements _type<EnumDeclaration, _enum>,_method._hasMe
     public Map<_java.Component, Object> componentsMap( ) {
         Map<_java.Component, Object> parts = new HashMap<>();
         parts.put( _java.Component.PACKAGE_NAME, this.getPackage() );
-        parts.put( _java.Component.IMPORTS, this.listImports() );
+        parts.put( _java.Component.IMPORTS, this.getImports().list() );
         parts.put( _java.Component.ANNOS, this.listAnnos() );
         parts.put( _java.Component.IMPLEMENTS, this.listImplements() );
         parts.put( _java.Component.JAVADOC, this.getJavadoc() );

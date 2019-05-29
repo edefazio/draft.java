@@ -388,8 +388,8 @@ public class $typeUse {
     }
     
     public <N extends _node> N replaceIn(N _n, Class replacement) {
-        if( _n instanceof _type && ((_type)_n).isTopClass()){
-            replaceIn( ((_type)_n).findCompilationUnit(), replacement);
+        if( _n instanceof _type && ((_type)_n).isTopLevel()){
+            replaceIn( ((_type)_n).astCompilationUnit(), replacement);
             return _n;
         }
         replaceIn(_n.ast(), replacement);
@@ -440,8 +440,8 @@ public class $typeUse {
     }
     
     public <N extends _node> N replaceIn(N _n, String replacement) {
-        if( _n instanceof _type && ((_type)_n).isTopClass()){
-            replaceIn( ((_type)_n).findCompilationUnit(), replacement);
+        if( _n instanceof _type && ((_type)_n).isTopLevel()){
+            replaceIn( ((_type)_n).astCompilationUnit(), replacement);
             return _n;
         }
         replaceIn(_n.ast(), replacement);
@@ -456,8 +456,8 @@ public class $typeUse {
     }
 
     public <N extends _model._node> N replaceIn(N _n, Node replacement) {
-        if( _n instanceof _type && ((_type)_n).isTopClass()){
-            replaceIn( ((_type)_n).findCompilationUnit(), replacement);
+        if( _n instanceof _type && ((_type)_n).isTopLevel()){
+            replaceIn( ((_type)_n).astCompilationUnit(), replacement);
             return _n;
         }
         replaceIn(_n.ast(), replacement);
@@ -473,8 +473,8 @@ public class $typeUse {
     }
     
     public <N extends _model._node> N removeIn(N _n ) {
-        if( _n instanceof _type && ((_type)_n).isTopClass()){
-            removeIn( ((_type)_n).findCompilationUnit() );
+        if( _n instanceof _type && ((_type)_n).isTopLevel()){
+            removeIn( ((_type)_n).astCompilationUnit() );
             return _n;
         }
         removeIn(_n.ast() );
