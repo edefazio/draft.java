@@ -12,3 +12,6 @@ package draft.java;
 class PackagePrivateClass {
     
 }
+class AnotherPackagePrivateClass{
+    
+}

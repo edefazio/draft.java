@@ -18,6 +18,8 @@ import draft.java._anno._annos;
 import draft.java._anno._hasAnnos;
 import draft.java._annotation._element;
 import draft.java._body._hasBody;
+import draft.java._compilationUnit._moduleInfo;
+import draft.java._compilationUnit._packageInfo;
 import draft.java._constructor._hasConstructors;
 import draft.java._enum._constant;
 import draft.java._import._imports;
@@ -372,7 +374,18 @@ public enum _java {
         }
         if (node instanceof CompilationUnit) {
             CompilationUnit astRoot = (CompilationUnit) node;
+            if( astRoot.getPrimaryType().isPresent() ){
+                return _type.of(astRoot);
+            }
+            if( astRoot.getModule().isPresent() ){
+                return _moduleInfo.of(astRoot);                
+            }
+            if( astRoot.getTypes().isEmpty() ){
+                return _packageInfo.of(astRoot);
+            }
             return _type.of(astRoot);
+            /** Here I need to create an entity that "acts" like multiple types */
+            //throw new DraftException("Exceptional case... need to model multiple package level types");            
         }
         throw new DraftException("Unable to create logical entity from " + node);
     }
@@ -389,7 +402,6 @@ public enum _java {
          * i.e. @Deprecated @NotNull
          */
         ANNOS("annos", _anno._annos.class),
-        //annotation
         /**
          * i.e. @Deprecated
          */

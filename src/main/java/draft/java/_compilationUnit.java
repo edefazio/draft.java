@@ -169,8 +169,6 @@ public interface _compilationUnit<T extends _compilationUnit> extends _model {
      */
     default T forImports( Consumer<_import> _importActionFn ){
         getImports().forEach(_importActionFn);
-        //_imports.of(astCompilationUnit()).forEach(_importActionFn);
-        //listImports(_importMatchFn).forEach(astImportActionFn);
         return (T)this;
     }
     
@@ -182,12 +180,12 @@ public interface _compilationUnit<T extends _compilationUnit> extends _model {
      * @return the T
      */
     default T forImports( Predicate<_import> _importMatchFn, Consumer<_import> _importActionFn ){
-        _imports.of(astCompilationUnit()).forEach(_importMatchFn, _importActionFn);
-        //listImports(_importMatchFn).forEach(astImportActionFn);
+        getImports().forEach(_importMatchFn, _importActionFn);
         return (T)this;
     }
     
     //TODO get rid of this in place of _imports, or getImports()    
+    /*
     default List<ImportDeclaration> listAstImports(){
         CompilationUnit cu = astCompilationUnit();
         if( cu != null ){
@@ -195,11 +193,17 @@ public interface _compilationUnit<T extends _compilationUnit> extends _model {
         }
         return new ArrayList<>();
     }
+    */
     
     default List<_import> listImports(){
         return getImports().list();       
     }
     
+    /**
+     * Does this compilationUnit import (explicitly or *) import this _type 
+     * @param _t a top level _type
+     * @return true if the CompilationUnit imports this type, false otherwise
+     */
     default boolean hasImport( _type _t ){
         return hasImport( _t.getFullName() );
     }
@@ -328,7 +332,11 @@ public interface _compilationUnit<T extends _compilationUnit> extends _model {
         return (T)this;
     }
 
-    
+    /**
+     * Add a single class import to the compilationUnit
+     * @param singleClass
+     * @return the modified compilationUnit
+     */
     default T imports( Class singleClass ){
         return imports( new Class[]{singleClass});
     }
@@ -370,18 +378,23 @@ public interface _compilationUnit<T extends _compilationUnit> extends _model {
         throw new DraftException("No AST CompilationUnit to add imports");
     }
 
-    default T imports( ImportDeclaration...importDecls){
+    /**
+     * Adds these importDeclarations
+     * @param astImportDecls
+     * @return 
+     */
+    default T imports( ImportDeclaration...astImportDecls){
         CompilationUnit cu = astCompilationUnit();
         if( cu != null ){
-            Arrays.stream( importDecls ).forEach( c-> cu.addImport( c ) );
+            Arrays.stream(astImportDecls ).forEach( c-> cu.addImport( c ) );
             return (T)this;
         }
         //return (T) this;
         throw new DraftException("No AST CompilationUnit of class to add imports");
     }
 
-    default T imports( String singleStatement ){
-        return imports( new String[]{singleStatement});
+    default T imports( String anImport ){
+        return imports(new String[]{anImport});
     }
     
     default T imports( String...importStatements ){
@@ -390,14 +403,15 @@ public interface _compilationUnit<T extends _compilationUnit> extends _model {
             Arrays.stream( importStatements ).forEach( c-> cu.addImport( Ast.importDeclaration( c ) ) );
             return (T)this;
         }
-        //return (T) this;
-        throw new DraftException("No AST CompilationUnit of  to add imports");
+        throw new DraftException("No AST CompilationUnit of to add imports");
     }
 
     /**
-     *
+     * model of a package-info
+     * 
      */
-    public static class _packageInfo implements _compilationUnit<_packageInfo>, _anno._hasAnnos<_packageInfo> {
+    public static class _packageInfo 
+        implements _compilationUnit<_packageInfo>, _anno._hasAnnos<_packageInfo> {
 
         public static _packageInfo of(String... pkgInfo) {
             return new _packageInfo(StaticJavaParser.parse(Text.combine(pkgInfo)));
@@ -485,6 +499,10 @@ public interface _compilationUnit<T extends _compilationUnit> extends _model {
         public static _moduleInfo of(String... input) {
             return new _moduleInfo(StaticJavaParser.parse(Text.combine(input)));
         }
+        
+        public static _moduleInfo of(CompilationUnit astCu){
+            return new _moduleInfo( astCu);
+        } 
 
         public _moduleInfo(CompilationUnit cu) {
             this.astCompUnit = cu;

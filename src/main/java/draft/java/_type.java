@@ -29,7 +29,7 @@ import java.util.stream.Collectors;
  * 2) call the javac compiler to convert the .java files to an AST then into
  * Java .class files (ByteCode)
  * 3) run the java command/program to create a Java VM to run the bytecode
- * <PRE> 
+ * 
  * you
  *   |---------->---------->---------->
  * .java     [javac]     .class     [JVM] 
@@ -101,10 +101,10 @@ public interface _type<AST extends TypeDeclaration & NodeWithJavadoc & NodeWithM
 
     /**
      * 
-     * @param m
-     * @return 
+     * @param _methodMatchFn function for matching appropriate methods
+     * @return a list of matching methods
      */
-    List<_method> listMethods(Predicate<_method> m );
+    List<_method> listMethods(Predicate<_method> _methodMatchFn );
     
     /**
      * Is this TYPE the top level class TYPE within a (i.e. a separate top level 
@@ -211,9 +211,10 @@ public interface _type<AST extends TypeDeclaration & NodeWithJavadoc & NodeWithM
             CompilationUnit cu = (CompilationUnit) n;
             if (cu.getTypes().size() == 1) {
                 td = cu.getType(0);
-            } else {
+            } else {                
                 td = cu.getPrimaryType().get();
-            }
+                //System.out.println( "Getting primary type"+td);
+            }            
         }else {
             td = (TypeDeclaration) n;
         }
@@ -440,6 +441,11 @@ public interface _type<AST extends TypeDeclaration & NodeWithJavadoc & NodeWithM
         return (T)this;
     }
 
+    /**
+     * Does this type reside in this package
+     * @param packageName
+     * @return 
+     */
     default boolean isInPackage( String packageName){
         String pn  = getPackage();
         if( pn == null){
@@ -968,7 +974,7 @@ public interface _type<AST extends TypeDeclaration & NodeWithJavadoc & NodeWithM
         NodeList<BodyDeclaration> bds = ast().getMembers();
         List<BodyDeclaration> ts =
                 bds.stream().filter( n-> n instanceof TypeDeclaration )
-                        .collect(Collectors.toList());
+                    .collect(Collectors.toList());
 
         List<_type> nests = new ArrayList<>();
         ts.forEach( t-> {
