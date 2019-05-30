@@ -666,11 +666,35 @@ public enum Ast {
             return cached.clone();
         }
         if (!clazz.isLocalClass() && !clazz.isAnonymousClass() && !clazz.isSynthetic() && !clazz.getName().contains("$")) {
-            _in _i = resolver.resolve(clazz);
+            _in _i = resolver.resolve(clazz);            
             if (_i == null) {
                 throw new _ioException("could not find .java source for: " + clazz.getCanonicalName() + System.lineSeparator() + resolver.describe());
             }
-            TypeDeclaration tdd = type(_i.getInputStream());
+            
+            //TypeDeclaration tdd = type(_i.getInputStream(), clazz.getSimpleName());
+            
+            /** */
+            CompilationUnit cu = StaticJavaParser.parse(_i.getInputStream());
+            Optional<TypeDeclaration<?>> ot = 
+                cu.getTypes().stream().filter(t -> t.getNameAsString().equals(clazz.getSimpleName()) ).findFirst();
+        
+            
+            if( ot.isEmpty() ){
+                throw new DraftException("Unable to in source of type "+clazz.getSimpleName()+" in inputStream ");
+            }
+            //manually set the storage path on the cu
+            if( _i.getPath() != null ){
+                cu.setStorage(_i.getPath());
+            }
+            //ok, here 
+            //if( _i.getInputStream() instanceof FileInputStream ){
+                
+            //    FileInputStream fis = (FileInputStream)_i.getInputStream();
+            //    cu.set
+            //}
+            TypeDeclaration tdd = ot.get();       
+            
+            /* */
             if (tdd.getAnnotationByClass(cache.class).isPresent()) {
                 tdd.getAnnotations().remove(tdd.getAnnotationByClass(cache.class).get());
                 AST_CACHE_MAP.put(clazz, tdd);
@@ -682,7 +706,7 @@ public enum Ast {
             _in _i = resolver.resolve(topClass);
             if (_i == null) {
                 throw new _ioException("no .java source for: " + topClass + " containing " + clazz.getCanonicalName()
-                        + System.lineSeparator() + resolver.describe());
+                    + System.lineSeparator() + resolver.describe());
             }
 
             //CompilationUnit cu = (CompilationUnit)TYPE( _i.getInputStream() );
@@ -1040,6 +1064,11 @@ public enum Ast {
      */
     public static TypeDeclaration type(InputStream is) {
         CompilationUnit cu = StaticJavaParser.parse(is);
+        if( cu.getPrimaryType().isPresent()){
+            //System.out.println("Gettting the primary type");
+            return cu.getPrimaryType().get();
+        }
+        //System.out.println("No primary Type present");
         List<TypeDeclaration> tds = listAll(cu, TypeDeclaration.class);
         if (tds.size() == 1) {
             return tds.get(0);
