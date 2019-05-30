@@ -49,7 +49,7 @@ public final class _inFilePath implements _in._resolver {
     public static _in in( String fileName ){
         Path path = Paths.get(fileName);
         try{
-            return new _in._source(fileName, "file:" + fileName, new ByteArrayInputStream( Files.readAllBytes(path) ));
+            return new _in._source(path, fileName, "file:" + fileName, new ByteArrayInputStream( Files.readAllBytes(path) ));
         }catch (Exception e){
             throw new _ioException("could not read \""+path+"\"", e);
         }
@@ -261,7 +261,8 @@ public final class _inFilePath implements _in._resolver {
 
         InputStream is = inputStream( fileName );
         if( is != null ) {
-            return _in._source.of( sourceId, "file:" + fileName, is );
+            //return _in._source.of( sourceId, "file:" + fileName, is );
+            return _in._source.of( Paths.get(fileName), sourceId, "file:" + fileName, is );
         }
         return null;
     }
@@ -278,7 +279,7 @@ public final class _inFilePath implements _in._resolver {
 
         InputStream is = inputStream( fileName );
         if( is != null ) {
-            return _in._source.of( sourceId, "file:" + fileName, is );
+            return _in._source.of( Paths.get(fileName), sourceId, "file:" + fileName, is );
         }
         return null;
     }

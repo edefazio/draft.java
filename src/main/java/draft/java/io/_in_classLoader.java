@@ -53,6 +53,7 @@ public final class _in_classLoader implements _in._resolver {
             _type _t = _cl.get_type( clazz );
             if( _t != null ){
                 return _in._source.of(
+                    //hmm we dont have a Path... it's a cached file    
                     clazz.getCanonicalName()+".java",
                     "_classLoader cached .java file : \""+clazz.getCanonicalName()+".java\"",
                     new ByteArrayInputStream( _t.toString().getBytes() ) );

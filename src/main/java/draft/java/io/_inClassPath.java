@@ -1,8 +1,11 @@
 package draft.java.io;
 
 import draft.Text;
+import java.net.URISyntaxException;
 
 import java.net.URL;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 //import java.net.URLClassLoader;
 
 /**
@@ -30,6 +33,7 @@ public final class _inClassPath implements _in._resolver {
 
         if( url != null ){
             return _in._source.of(
+                    Paths.get(fileName),
                     sourceId,
                     "classpath:"+url.toString(),
                     getClass().getResourceAsStream( fileName ));
@@ -43,8 +47,19 @@ public final class _inClassPath implements _in._resolver {
         URL url = getClass().getClassLoader().getResource( sourceId );
 
         if( url != null ){
-            return _in._source.of(
+            Path path = null;
+            try{
+                path = Paths.get( url.toURI());
+            }catch(URISyntaxException u){
+                
+            }
+            if( path != null ){
+                return _in._source.of(path,
                     sourceId,
+                    "classpath:"+url.toString(),
+                    getClass().getClassLoader().getResourceAsStream( sourceId ));
+            }
+            return _in._source.of(sourceId,
                     "classpath:"+url.toString(),
                     getClass().getClassLoader().getResourceAsStream( sourceId ));
         }
