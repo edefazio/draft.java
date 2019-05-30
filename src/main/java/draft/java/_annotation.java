@@ -443,7 +443,7 @@ public final class _annotation
     @Override
     public int hashCode() {
         int hash = 5;
-
+        
         hash = 13 * hash + Objects.hashCode( this.getPackage() );
         hash = 13 * hash + Ast.importsHash( astAnnotation  );
 

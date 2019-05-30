@@ -391,8 +391,8 @@ public final class _interface implements _type<ClassOrInterfaceDeclaration, _int
         //Set<ClassOrInterfaceType> te = new HashSet<>();
         //te.addAll(this.listExtends() );
 
-        Set<ImportDeclaration> tis = new HashSet<>();
-        tis.addAll( this.listAstImports() );
+        //Set<ImportDeclaration> tis = new HashSet<>();
+        //tis.addAll( this.listAstImports() );
 
         Set<_type> nests = new HashSet<>();
         nests.addAll(  this.listNests() );

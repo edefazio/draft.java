@@ -505,8 +505,8 @@ public final class _enum implements _type<EnumDeclaration, _enum>,_method._hasMe
     @Override
     public int hashCode() {
         int hash = 3;
-        Set<ImportDeclaration> ti = new HashSet<>();
-        ti.addAll( this.listAstImports() );
+        //Set<ImportDeclaration> ti = new HashSet<>();
+        //ti.addAll( this.listAstImports() );
 
         Set<_constant> tc = new HashSet<>();
         tc.addAll( this.listConstants() );
