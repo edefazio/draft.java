@@ -19,6 +19,7 @@ class PackagePrivateMultiClass {
 interface A{
     int a = 100;
 }
+
 enum B{
     ;
     public static final int a = 100;    

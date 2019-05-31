@@ -4,9 +4,9 @@ import com.github.javaparser.ParseResult;
 import com.github.javaparser.ast.CompilationUnit;
 import com.github.javaparser.utils.SourceZip;
 import draft.DraftException;
-import draft.java._compilationUnit;
-import draft.java._compilationUnit._moduleInfo;
-import draft.java._compilationUnit._packageInfo;
+import draft.java._java._compilationUnitMember;
+import draft.java._java._moduleInfo;
+import draft.java._java._packageInfo;
 import draft.java._type;
 import java.io.IOException;
 import java.nio.charset.Charset;
@@ -46,7 +46,7 @@ public class _batch {
          * mapping between the path of the input file and the underlying 
          * java _compilationUnit (i.e. _type, 
          */
-        Map<Path, _compilationUnit> loadedUnits;
+        Map<Path, _compilationUnitMember> loadedUnits;
     }
 
     /**
@@ -55,7 +55,7 @@ public class _batch {
      * @param fr
      * @return 
      */
-    private static _compilationUnit loadJavaCompilationUnit(FileContents fr) {
+    private static _compilationUnitMember loadJavaCompilationUnit(FileContents fr) {
         if (fr.filePath.endsWith("package-info.java")) {
             return _packageInfo.of(fr.fileContents); //1) parse the String to _type                
             //receipt.compilationUnits.put(fr.filePath, _pi); //store the _type in the receipt                     
@@ -94,7 +94,7 @@ public class _batch {
              * Use parallel worker threads for parsing and transforming
              */
             javaFileReader.filesRead.stream().forEach(fr -> {
-                _compilationUnit _cu = loadJavaCompilationUnit( fr );
+                _compilationUnitMember _cu = loadJavaCompilationUnit( fr );
                 receipt.loadedUnits.put(fr.filePath, _cu);
                 /*
                 //System.out.println("Trying to read "+ fr.filePath );

@@ -5,7 +5,8 @@ import com.github.javaparser.StaticJavaParser;
 import com.github.javaparser.ast.CompilationUnit;
 import com.github.javaparser.utils.SourceZip;
 import draft.DraftException;
-import draft.java._compilationUnit._packageInfo;
+import draft.java._java._compilationUnitMember;
+import draft.java._java._packageInfo;
 import draft.java._type;
 
 import java.io.*;

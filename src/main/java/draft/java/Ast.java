@@ -675,10 +675,9 @@ public enum Ast {
             
             /** */
             CompilationUnit cu = StaticJavaParser.parse(_i.getInputStream());
+            cu.setStorage(_i.getPath());
             Optional<TypeDeclaration<?>> ot = 
-                cu.getTypes().stream().filter(t -> t.getNameAsString().equals(clazz.getSimpleName()) ).findFirst();
-        
-            
+                cu.getTypes().stream().filter(t -> t.getNameAsString().equals(clazz.getSimpleName()) ).findFirst();            
             if( ot.isEmpty() ){
                 throw new DraftException("Unable to in source of type "+clazz.getSimpleName()+" in inputStream ");
             }
@@ -686,12 +685,7 @@ public enum Ast {
             if( _i.getPath() != null ){
                 cu.setStorage(_i.getPath());
             }
-            //ok, here 
-            //if( _i.getInputStream() instanceof FileInputStream ){
-                
-            //    FileInputStream fis = (FileInputStream)_i.getInputStream();
-            //    cu.set
-            //}
+            //ok, here             
             TypeDeclaration tdd = ot.get();       
             
             /* */
@@ -709,11 +703,12 @@ public enum Ast {
                     + System.lineSeparator() + resolver.describe());
             }
 
+            
             //CompilationUnit cu = (CompilationUnit)TYPE( _i.getInputStream() );
             //get the enclosing class
             List<TypeDeclaration> tds = new ArrayList<>();
 
-            TypeDeclaration td = type(_i.getInputStream());
+            TypeDeclaration td = type( _i );
             td.walk(TypeDeclaration.class, t -> {
                 if (t.getName().asString().equals(clazz.getEnclosingClass().getSimpleName())) {
                     tds.add(t);
@@ -755,6 +750,7 @@ public enum Ast {
 
                 //promote Local classes to a new Compilation Unit before caching
                 CompilationUnit cu = new CompilationUnit();
+                cu.setStorage(_i.getPath());
                 cu.addType(coid);
                 if (localCand.get(0).getComment().isPresent()) {
                     coid.setComment(localCand.get(0).getComment().get());
@@ -770,6 +766,7 @@ public enum Ast {
                 coid.setPublic(true);
 
                 CompilationUnit cu = new CompilationUnit();
+                cu.setStorage(_i.getPath());
                 cu.addType(coid);
                 if (localCand.get(0).getComment().isPresent()) {
                     coid.setComment(localCand.get(0).getComment().get());
@@ -791,6 +788,7 @@ public enum Ast {
         //return TYPE( _i.getInputStream() );
 
         CompilationUnit cu = StaticJavaParser.parse(_i.getInputStream());
+        cu.setStorage(_i.getPath());
         List<TypeDeclaration> tds
                 = Ast.listAll(cu, TypeDeclaration.class, td -> td.getNameAsString().equals(clazz.getSimpleName())
                 && td.getParentNode().isPresent()
@@ -1058,6 +1056,14 @@ public enum Ast {
         return StaticJavaParser.parse(path);
     }
 
+    public static TypeDeclaration type(_in in ){
+        TypeDeclaration td = type(in.getInputStream() );
+        if( td.findCompilationUnit().isPresent() ){
+            td.findCompilationUnit().get().setStorage(in.getPath() );
+        }
+        return td;
+    }
+    
     /**
      * @param is the input Stream walk
      * @return the Top Level Ast Node (CompilationUnit, TypeDeclaration)

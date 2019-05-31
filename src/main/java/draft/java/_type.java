@@ -78,7 +78,7 @@ import java.util.stream.Collectors;
  */
 public interface _type<AST extends TypeDeclaration & NodeWithJavadoc & NodeWithModifiers & NodeWithAnnotations, T extends _type>
     extends _javadoc._hasJavadoc<T>, _anno._hasAnnos<T>, _modifiers._hasModifiers<T>,
-        _field._hasFields<T>, _member<AST, T>, _compilationUnit<T> {
+        _field._hasFields<T>, _member<AST, T>, _java._compilationUnitMember<T>, _node<AST> {
 
     static _type of( InputStream is ){
         return of(StaticJavaParser.parse(is));
@@ -107,8 +107,8 @@ public interface _type<AST extends TypeDeclaration & NodeWithJavadoc & NodeWithM
     List<_method> listMethods(Predicate<_method> _methodMatchFn );
     
     /**
-     * Is this TYPE the top level class TYPE within a (i.e. a separate top level 
-     * file /compilation Unit)?
+     * Is this TYPE the top level class TYPE within a compilationUnit 
+     * (i.e. the child of a CompilationUnit?) 
      * @return true if the _type is a top level TYPE, false otherwise
      */
     @Override
@@ -129,6 +129,288 @@ public interface _type<AST extends TypeDeclaration & NodeWithJavadoc & NodeWithM
     @Override
     CompilationUnit astCompilationUnit();    
     
+    
+    /**
+     * If we are a top level _type add the types as companion types
+     * (other top level types that are package private) to the CompilationUnit
+     * 
+     * @param _ts
+     * @return 
+     */
+    default T addCompanionTypes( _type..._ts ){
+        if( this.isTopLevel() ){            
+            for(int i=0;i<_ts.length; i++){
+                TypeDeclaration td = (TypeDeclaration)(_ts[i].setPackagePrivate()).ast();
+                if( td.getParentNode().isPresent() ){
+                    //System.out.println("divorcing parent");
+                    td.getParentNode().get().remove(td);
+                }
+                //System.out.println( "ADDING "+ td );
+                
+                //CompilationUnit cu = this.astCompilationUnit();
+                CompilationUnit cu = ast().findCompilationUnit().get();
+                //System.out.println("BEFORE "+ cu);
+                //System.out.println("TYPES "+ cu.getTypes() );
+                
+                //SO it looks like I have to add the 
+                //NodeList<TypeDeclaration<?>> cuts = cu.getTypes();
+                cu.getTypes().add(td);
+                //cu.addClass("BILL").setPrivate(false).setPublic(false).setProtected(false);
+                //cu = cu.addType(td);    
+                
+                //System.out.println("AFTER TYPES "+ cu.getTypes());
+            }
+            return (T)this;        
+        }   
+        throw new DraftException
+            ("cannot add companion Types to a Nested Type \""+this.getName()+"\"");
+    }
+    
+    /**
+     * If we are a top level _type add the types as companion types
+     * (other top level types that are package private) to the CompilationUnit
+     * 
+     * @param astTs
+     * @return 
+     */
+    default T addCompanionTypes( TypeDeclaration...astTs ){
+        if( this.isTopLevel() ){            
+            for(int i=0;i<astTs.length; i++){
+                //manually set it to package private
+                astTs[i].setPrivate(false);
+                astTs[i].setPublic(false);
+                astTs[i].setProtected(false);
+                this.astCompilationUnit().addType(astTs[i]);
+            }
+            return (T)this;        
+        }   
+        throw new DraftException
+            ("cannot add companion Types to a Nested Type \""+this.getName()+"\"");
+    }
+    
+    /**
+     * Looks for all "companion types" that match the _typeMatchFn and removes them
+     * "companion types" are top level types that are "package private" (i.e. they
+     * are neither public, private, or protected)
+     * 
+     * @param _typeMatchFn
+     * @return the modified T
+     */
+    default T removeCompanionTypes( Predicate<_type> _typeMatchFn){
+        listCompanionTypes(_typeMatchFn)
+            .forEach( t -> astCompilationUnit().remove( t.ast() ) );
+        return (T)this;
+    }
+    
+     /**
+     * Looks for all "companion types" that match the _typeMatchFn and removes them
+     * "companion types" are top level types that are "package private" (i.e. they
+     * are neither public, private, or protected)
+     * 
+     * @param name the name of the companion type to remove
+     * @return the modified T
+     */
+    default T removeCompanionType( String name ){
+        return removeCompanionTypes( t-> t.getName().equals(name) );
+    }
+    
+    /**
+     * Applies transforms to "companion types" declared in this compilationUnit
+     * "companion types" are top level types that are "package private" (i.e. they
+     * are neither public, private, or protected)
+     * 
+     * {@link _type}s (NOTE: this COULD include the primary type if the 
+     * "primary type" is also package private)
+     * 
+     * @param _typeActionFn
+     * @return 
+     */
+    default T forCompanionTypes( Consumer<_type> _typeActionFn ){
+        listCompanionTypes().forEach(_typeActionFn);
+        return (T)this;
+    }
+    
+    /**
+     * Applies transforms to "companion types" declared in this compilationUnit
+     * "companion types" are top level types that are "package private" (i.e. they
+     * are neither public, private, or protected)
+     * (i.e. {@link _class}.class {@link _interface}.class {@link _enum}.class, {@link _annotation}.class)
+     * with the _typeActionFn
+     * 
+     * @param <CT>
+     * @param packagePrivateType
+     * @param _typeActionFn
+     * @return the modified T
+     */
+    default <CT extends _type> T forCompanionTypes( 
+        Class<CT> packagePrivateType, Consumer<CT> _typeActionFn ){
+        
+        _type.this.listCompanionTypes(packagePrivateType).forEach(_typeActionFn);
+        return (T)this;
+    }
+    
+    /**
+     * Apply a transform to all "companion types"
+     * 
+     * "companion types" are top level types that are "package private" (i.e. they
+     * are neither public, private, or protected)
+     * @param <CT>
+     * @param packagePrivateType
+     * @param _typeMatchFn
+     * @param _typeActionFn
+     * @return the modified T
+     */
+    default <CT extends _type> T forCompanionTypes( 
+        Class<CT> packagePrivateType, Predicate<CT>_typeMatchFn, Consumer<CT> _typeActionFn ){
+        
+        _type.this.listCompanionTypes(packagePrivateType, _typeMatchFn).forEach(_typeActionFn);
+        return (T)this;
+    }
+    
+    /**
+     * List all top level "companion types" that match the _typeMatchFn
+     * 
+     * "companion types" are top level types that are "package private" (i.e. they
+     * are neither public, private, or protected)
+     * 
+     * @param _typeMatchFn
+     * @return 
+     */
+    default List<_type> listCompanionTypes(Predicate<_type> _typeMatchFn){
+        List<_type> found = new ArrayList<>();
+        listCompanionTypes().stream()
+                .filter(t-> _typeMatchFn.test(t) )
+                .forEach(t-> found.add(t) );
+        return found;
+    }
+    
+    /**
+     * List all top level "companion types" within this compilationUnit
+     * "companion types" are top level types that are "package private" (i.e. they
+     * are neither public, private, or protected)
+     * (assuming this is a top level type)
+     * 
+     * @param <CT>
+     * @param _typeClass
+     * @return 
+     */
+    default <CT extends _type> List<CT> listCompanionTypes(Class<CT> _typeClass ){
+        List<CT> found = new ArrayList<>();
+        listCompanionTypes().stream()
+                .filter(t-> t.getClass().equals(_typeClass) )
+                .forEach(t-> found.add((CT)t ) );
+        return found;
+    }
+    
+    /**
+     * List all top level "companion types" within this compilationUnit that
+     * are of the _typeClass( i.e. {@link _class}, {@link _enum}, ...) and match
+     * the _typeMatchFn.
+     * 
+     * "companion types" are top level types that are "package private" (i.e. they
+     * are neither public, private, or protected)
+     * (assuming this is a top level type)
+     * @param <CT>
+     * @param _typeClass
+     * @param _typeMatchFn
+     * @return 
+     */
+    default <CT extends _type> List<CT> listCompanionTypes(Class<CT> _typeClass, Predicate<CT> _typeMatchFn){
+        List<CT> found = new ArrayList<>();
+        _type.this.listCompanionTypes(_typeClass).stream()
+                .filter(t-> _typeMatchFn.test(t) )
+                .forEach(t-> found.add((CT)t ) );
+        return found;
+    }
+    
+    /**
+     * List all top level "companion types" within this compilationUnit
+     * 
+     * "companion types" are top level types that are "package private" 
+     * (i.e. they are neither public, private, or protected)
+     * 
+     * NOTE: according to the JLS there can be ONLY ONE public top level type (or none)
+     * but each "compilationUnit" can have 
+     * @return 
+     */
+    default List<_type> listCompanionTypes(){
+        if( isTopLevel() ){
+            List<_type> _ts = new ArrayList<>();
+            List<TypeDeclaration<?>> tds = 
+                this.astCompilationUnit().getTypes();
+            tds.stream().filter(t-> !t.isPublic()).forEach(t ->_ts.add(_type.of(t) ) );                    
+            return _ts;
+        }
+        return Collections.EMPTY_LIST;
+    }
+    
+    /**
+     * Attempts to find a "companion type" by name and return it
+     * 
+     * "companion types" are top level types that are "package private" 
+     * (i.e. they are neither public, private, or protected)
+     * 
+     * @param name the name of the package private type to get
+     * @return the package private type
+     */
+    default _type getCompanionType( String name ){
+        List<_type> ts = _type.this.listCompanionTypes( t-> t.getName().equals(name) ); 
+        if( ts.isEmpty() ){
+            return null;            
+        }
+        return ts.get(0); //just return the first one        
+    }
+    
+    /**
+     * Attempts to find a "companion type" by name and type and return it
+     * 
+     * "companion types" are top level types that are "package private" 
+     * (i.e. they are neither public, private, or protected)
+     * 
+     * 
+     * @param <CT> the package private type {@link _class}{@link _enum} 
+     * {@link _interface}, {@link _annotation}
+     * @param typeClass
+     * 
+     * @param name the name of the package private type to get
+     * @return the package private type
+     */
+    default  <CT extends _type> CT getCompanionType(Class<CT>typeClass, String name ){
+        List<CT> ts = _type.this.listCompanionTypes( typeClass, t-> t.getName().equals(name) ); 
+        if( ts.isEmpty() ){
+            return null;            
+        }
+        return ts.get(0); //just return the first one        
+    }
+    
+    /**
+     * Gets the Primary Type according to the CompilationUnit
+     * the "primary type" is the type associated with the file name)
+     * 
+     * NOTE: it is not always easy to define there does NOT have to be a primary 
+     * type for a compilationUnit.  
+     * 
+     * If we can find the compilationUnit, the compilationUnit SHould be 
+     * associated with a fileName (in the Storage field).  the primary type
+     * does NOT have to be public, but must be using the same name as the 
+     * fileName
+     * 
+     * @return the primary type (if it can be resolved) or null
+     */
+    default _type getPrimaryType(){
+        if( this.isTopLevel() ){
+            if (this.astCompilationUnit().getPrimaryType().isPresent()) {
+                return _type.of( this.astCompilationUnit().getPrimaryType().get() );
+            }            
+            Optional<TypeDeclaration<?>> ot = 
+                this.astCompilationUnit().getTypes().stream().filter(t -> t.isPublic() ).findFirst();
+            if( ot.isPresent() ){
+                return _type.of(ot.get());
+            }            
+        }        
+        return null;
+    }
+     
     /**
      * find members that are of the specific class and perform the _memberAction on them
      * @param <M>

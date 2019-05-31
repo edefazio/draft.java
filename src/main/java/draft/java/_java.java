@@ -1,9 +1,11 @@
 package draft.java;
 
+import com.github.javaparser.StaticJavaParser;
 import com.github.javaparser.ast.*;
 import com.github.javaparser.ast.body.*;
 import com.github.javaparser.ast.comments.*;
 import com.github.javaparser.ast.expr.*;
+import com.github.javaparser.ast.modules.ModuleDeclaration;
 import com.github.javaparser.ast.nodeTypes.*;
 import com.github.javaparser.ast.stmt.BlockStmt;
 import com.github.javaparser.ast.type.*;
@@ -18,8 +20,6 @@ import draft.java._anno._annos;
 import draft.java._anno._hasAnnos;
 import draft.java._annotation._element;
 import draft.java._body._hasBody;
-import draft.java._compilationUnit._moduleInfo;
-import draft.java._compilationUnit._packageInfo;
 import draft.java._constructor._hasConstructors;
 import draft.java._enum._constant;
 import draft.java._import._imports;
@@ -42,6 +42,9 @@ import draft.java._throws._hasThrows;
 import draft.java._type._hasExtends;
 import draft.java._type._hasImplements;
 import draft.java._typeParameter._typeParameters;
+import java.util.function.Consumer;
+import java.util.function.Predicate;
+import java.util.stream.Collectors;
 
 /**
  * Translates between AST {@link Node} entities to {@link _model} runtime
@@ -76,29 +79,33 @@ public enum _java {
         Walk.list( _m, Ast.RETURN_STMT );
       */    
         
-    public static final Class<_model> MODEL = _model.class;    
+    public static final Class<_model> MODEL = _model.class;
     public static final Class<_member> MEMBER = _member.class;
     public static final Class<_node> NODE = _node.class;
     public static final Class<_named> NAMED = _named.class;
     public static final Class<_namedType> NAMED_TYPE = _namedType.class;
-   
+
     public static final Class<_type> TYPE = _type.class;
-    
+
     public static final Class<_class> CLASS = _class.class;
     public static final Class<_enum> ENUM = _enum.class;
     public static final Class<_interface> INTERFACE = _interface.class;
     public static final Class<_annotation> ANNOTATION = _annotation.class;
-   
+
     public static final Class<_method> METHOD = _method.class;
     public static final Class<_field> FIELD = _field.class;
     public static final Class<_constructor> CONSTRUCTOR = _constructor.class;
-    
-    /** ENUM constant i.e. enum E { CONSTANT; } */
+
+    /**
+     * ENUM constant i.e. enum E { CONSTANT; }
+     */
     public static final Class<_constant> CONSTANT = _constant.class;
-    
-    /** Annotation Element i.e. @interface A{ int element(); } */
+
+    /**
+     * Annotation Element i.e. @interface A{ int element(); }
+     */
     public static final Class<_element> ELEMENT = _element.class;
-   
+
     public static final Class<_body> BODY = _body.class;
     public static final Class<_anno> ANNO = _anno.class;
     public static final Class<_annos> ANNOS = _annos.class;
@@ -109,12 +116,12 @@ public enum _java {
     public static final Class<_parameter> PARAMETER = _parameter.class;
     public static final Class<_parameters> PARAMETERS = _parameters.class;
     public static final Class<_typeParameter> TYPE_PARAMETER = _typeParameter.class;
-    public static final Class<_typeParameters> TYPE_PARAMETERS = _typeParameters.class;   
+    public static final Class<_typeParameters> TYPE_PARAMETERS = _typeParameters.class;
     public static final Class<_receiverParameter> RECEIVER_PARAMETER = _receiverParameter.class;
     public static final Class<_staticBlock> STATIC_BLOCK = _staticBlock.class;
     public static final Class<_throws> THROWS = _throws.class;
     public static final Class<_typeRef> TYPEREF = _typeRef.class;
-   
+
     public static final Class<_hasThrows> HAS_THROWS = _hasThrows.class;
     public static final Class<_hasBody> HAS_BODY = _hasBody.class;
     public static final Class<_hasAnnos> HAS_ANNOS = _hasAnnos.class;
@@ -124,10 +131,10 @@ public enum _java {
     public static final Class<_hasModifiers> HAS_MODIFIERS = _hasModifiers.class;
     public static final Class<_hasParameters> HAS_PARAMETERS = _hasParameters.class;
     public static final Class<_hasReceiverParameter> HAS_RECEIVER_PARAMETER = _hasReceiverParameter.class;
-    public static final Class<_hasStaticBlocks> HAS_STATIC_BLOCKS = _hasStaticBlocks.class;    
+    public static final Class<_hasStaticBlocks> HAS_STATIC_BLOCKS = _hasStaticBlocks.class;
     public static final Class<_hasExtends> HAS_EXTENDS = _hasExtends.class;
     public static final Class<_hasImplements> HAS_IMPLEMENTS = _hasImplements.class;
-   
+
     public static final Class<_hasFinal> HAS_FINAL = _hasFinal.class;
     public static final Class<_hasAbstract> HAS_ABSTRACT = _hasAbstract.class;
     public static final Class<_hasNative> HAS_NATIVE = _hasNative.class;
@@ -136,9 +143,10 @@ public enum _java {
     public static final Class<_hasSynchronized> HAS_SYNCHRONIZED = _hasSynchronized.class;
     public static final Class<_hasTransient> HAS_TRANSIENT = _hasTransient.class;
     public static final Class<_hasVolatile> HAS_VOLATILE = _hasVolatile.class;
-    
-   
-   /** Map from the _model._node classes to the Ast Node equivalent */
+
+    /**
+     * Map from the _model._node classes to the Ast Node equivalent
+     */
     public static final Map<Class<? extends _node>, Class<? extends Node>> _JAVA_TO_AST_NODE_CLASSES = new HashMap<>();
 
     static {
@@ -316,8 +324,8 @@ public enum _java {
         if (node instanceof EnumConstantDeclaration) {
             return _enum._constant.of((EnumConstantDeclaration) node);
         }
-        if (node instanceof LambdaExpr){
-            return _lambda.of((LambdaExpr)node);
+        if (node instanceof LambdaExpr) {
+            return _lambda.of((LambdaExpr) node);
         }
         if (node instanceof VariableDeclarator) {
             VariableDeclarator vd = (VariableDeclarator) node;
@@ -332,12 +340,12 @@ public enum _java {
             return _field.of(fd.getVariable(0));
         }
         if (node instanceof BlockStmt) {
-            if( node.getParentNode().isPresent() ){
-                if( node.getParentNode().get() instanceof NodeWithBlockStmt ){
-                    return _body.of( (NodeWithBlockStmt) node.getParentNode().get() );
+            if (node.getParentNode().isPresent()) {
+                if (node.getParentNode().get() instanceof NodeWithBlockStmt) {
+                    return _body.of((NodeWithBlockStmt) node.getParentNode().get());
                 }
-                if( node.getParentNode().get() instanceof NodeWithOptionalBlockStmt ){
-                    return _body.of( (NodeWithOptionalBlockStmt) node.getParentNode().get() );
+                if (node.getParentNode().get() instanceof NodeWithOptionalBlockStmt) {
+                    return _body.of((NodeWithOptionalBlockStmt) node.getParentNode().get());
                 }
             }
             throw new DraftException("Unable to return draft _java node for BlockStmt without NodeWithBlockStmt parent");
@@ -374,17 +382,19 @@ public enum _java {
         }
         if (node instanceof CompilationUnit) {
             CompilationUnit astRoot = (CompilationUnit) node;
-            if( astRoot.getPrimaryType().isPresent() ){
+            if (astRoot.getPrimaryType().isPresent()) {
                 return _type.of(astRoot);
             }
-            if( astRoot.getModule().isPresent() ){
-                return _moduleInfo.of(astRoot);                
+            if (astRoot.getModule().isPresent()) {
+                return _moduleInfo.of(astRoot);
             }
-            if( astRoot.getTypes().isEmpty() ){
+            if (astRoot.getTypes().isEmpty()) {
                 return _packageInfo.of(astRoot);
             }
             return _type.of(astRoot);
-            /** Here I need to create an entity that "acts" like multiple types */
+            /**
+             * Here I need to create an entity that "acts" like multiple types
+             */
             //throw new DraftException("Exceptional case... need to model multiple package level types");            
         }
         throw new DraftException("Unable to create logical entity from " + node);
@@ -425,7 +435,7 @@ public enum _java {
         KEY_VALUES("keyValues", List.class, MemberValuePair.class), //anno
         //KeyValue
         KEY_VALUE("keyValue", MemberValuePair.class), //anno
-        
+
         //VALUE("value", Expression.class), //anno
         PACKAGE_NAME("package", PackageDeclaration.class),
         IMPORTS("imports", List.class, _import.class),
@@ -439,7 +449,6 @@ public enum _java {
         FIELD("field", _field.class),
         NESTS("nests", List.class, _type.class),
         NEST("nest", _type.class),
-        
         TYPE("type", _typeRef.class), //annotation.element
         DEFAULT("default", Expression.class), //_annotation.element
 
@@ -501,383 +510,403 @@ public enum _java {
             }
             return null;
         }
-        
-        public static <N extends _node> Component of( Class<N> nodeClass ){
-            Optional<Component> op = Arrays.stream(Component.values()).filter(p -> p.implementationClass.equals(nodeClass) ).findFirst();
+
+        public static <N extends _node> Component of(Class<N> nodeClass) {
+            Optional<Component> op = Arrays.stream(Component.values()).filter(p -> p.implementationClass.equals(nodeClass)).findFirst();
             if (op.isPresent()) {
                 return op.get();
             }
             return null;
         }
-        
+
         /**
          * Returns the appropriate Component based on the _type
+         *
          * @param t the type instance
-         * @return the Component 
+         * @return the Component
          */
-        public static Component getComponent( _type t){
-            if( t instanceof _class){
+        public static Component getComponent(_type t) {
+            if (t instanceof _class) {
                 return Component.CLASS;
             }
-            if( t instanceof _interface){
+            if (t instanceof _interface) {
                 return Component.INTERFACE;
             }
-            if( t instanceof _enum){
+            if (t instanceof _enum) {
                 return Component.ENUM;
             }
-            return Component.ANNOTATION;        
+            return Component.ANNOTATION;
         }
     }
 
     /**
-     * Defines the Path through the hierarchial member components
-     * ( _types, methods, etc.) a specific member or property
-     * 
+     * Defines the Path through the hierarchial member components ( _types,
+     * methods, etc.) a specific member or property
+     *
      * (the notation we use is [xxxx] represents a name, and the other names
-     * represent components for example:    
+     * represent components for example:
      * <PRE>
      * class[MyClass].name                          : the name of class MyClass
      * interface[I].extends                         : the extends on the interface I
      * enum[Scope].implements                       : the implements on the enum Scope
      * annotation[Retain].field[hops].init          : init of a field hops on the annotation Retain
      * class[MyClass].method[m(int)].parameter[0]   : the first parameter on method m(int) in class MyClass
-     * 
-     * //if we have nested components it can get interesting (omit Component for brevity) 
+     *
+     * //if we have nested components it can get interesting (omit Component for brevity)
      * enum[E].nest.class[inner].method[m()].body   : (the method body on a nested class within an enum)
      * </PRE>
      */
-    public static class _path{
-            
-        public static _path of(Object...pathAsTokens){
+    public static class _path {
+
+        public static _path of(Object... pathAsTokens) {
             _path _p = new _path();
-            for(int i=0;i<pathAsTokens.length;i+=2){
-                if(! (pathAsTokens[i] instanceof Component)){
-                    throw new DraftException("element ["+i+"] MUST be a Component");
+            for (int i = 0; i < pathAsTokens.length; i += 2) {
+                if (!(pathAsTokens[i] instanceof Component)) {
+                    throw new DraftException("element [" + i + "] MUST be a Component");
                 }
-                if( (pathAsTokens.length > i + 1) && pathAsTokens[i+1] instanceof String){
-                    _p = _p.in( (Component)pathAsTokens[i], (String)pathAsTokens[i+1]);
-                } else{
-                    _p = _p.in( (Component)pathAsTokens[i]);
-                }                        
+                if ((pathAsTokens.length > i + 1) && pathAsTokens[i + 1] instanceof String) {
+                    _p = _p.in((Component) pathAsTokens[i], (String) pathAsTokens[i + 1]);
+                } else {
+                    _p = _p.in((Component) pathAsTokens[i]);
+                }
             }
             return _p;
         }
-        
-        /** 
-         * the types of components that identify an entity 
-         * for example: 
+
+        /**
+         * the types of components that identify an entity for example:
          * <PRE>
          * Component.CLASS, Component.NAME (the class Name)
          * Component.INTERFACE, Component.EXTENDS (the extends on the interface)
          * Component.ENUM, Component.IMPLEMENTS ( the implements on the enum)
          * Component.ANNOTATION. Component.FIELD, Component.INIT (init of a field on the annotation)
-         * 
-         * //if we have nested components it can get interesting (omit Component for brevity) 
+         *
+         * //if we have nested components it can get interesting (omit Component for brevity)
          * ENUM, CLASS, METHOD, BODY (the method body on a nested class within an enum)
          * </PRE>
-         * 
+         *
          * we build this as we traverse the class (when identifying diffs)
-         */ 
+         */
         public List<_java.Component> componentPath;
-        
+
         /**
-         * The identifying String of a member component (usually the name of the member) 
-         * (i.e. for a _field, _type, _method, _annotation._element, or _enum._constant the name)
-         * (for a constructor, the parameter types)
-         * 
-         * //NOTE: can be empty for non-named components (i.e. EXTENDS, IMPLEMENTS, etc.)
+         * The identifying String of a member component (usually the name of the
+         * member) (i.e. for a _field, _type, _method, _annotation._element, or
+         * _enum._constant the name) (for a constructor, the parameter types)
+         *
+         * //NOTE: can be empty for non-named components (i.e. EXTENDS,
+         * IMPLEMENTS, etc.)
          */
         public List<String> idPath;
-        
+
         /**
          * build a new empty path
          */
-        public _path(){
+        public _path() {
             componentPath = new ArrayList<>();
             idPath = new ArrayList<>();
         }
-        
+
         /**
          * create a new path containing all nodes as the original
-         * @param original 
+         *
+         * @param original
          */
-        public _path(_path original){
+        public _path(_path original) {
             componentPath = new ArrayList();
             componentPath.addAll(original.componentPath);
             idPath = new ArrayList();
             idPath.addAll(original.idPath);
         }
 
-        /** 
-         * Build and return a new _path that follows the current path 
-         * down one component
-         * @param component 
+        /**
+         * Build and return a new _path that follows the current path down one
+         * component
+         *
+         * @param component
          * @return a new _path that has a leaf node at the component
          */
-        public _path in( _java.Component component){
-            return in( component, "");            
+        public _path in(_java.Component component) {
+            return in(component, "");
         }
-        
+
         /**
          * How many "nodes" are in the path
+         *
          * @return the number of nodes in the path
          */
-        public int size(){
+        public int size() {
             return this.componentPath.size();
         }
-        
+
         /**
          * get the leaf (last component) component in the path
+         *
          * @return the last component in the path (null if the path is empty)
          */
-        public Component leaf(){
-            if( !this.componentPath.isEmpty() ){
-                return this.componentPath.get(this.componentPath.size() -1 );
+        public Component leaf() {
+            if (!this.componentPath.isEmpty()) {
+                return this.componentPath.get(this.componentPath.size() - 1);
             }
             return null;
         }
-        
+
         /**
-         * Gets the last id in the path (note: may be empty string, null if the path is empty)
+         * Gets the last id in the path (note: may be empty string, null if the
+         * path is empty)
+         *
          * @return the last id of the path or null if path is empty
          */
-        public String leafId(){
-            if( !this.idPath.isEmpty() ){
-                return this.idPath.get(this.idPath.size() -1 );
+        public String leafId() {
+            if (!this.idPath.isEmpty()) {
+                return this.idPath.get(this.idPath.size() - 1);
             }
             return null;
         }
-        
+
         /**
-         * does the path at index  have the id provided?
+         * does the path at index have the id provided?
+         *
          * @param index the index of the path (0 based)
          * @param id the id
          * @return true if the same, false otherwise
          */
-        public boolean is( int index, String id){
-            if( index <= this.size() && index >=0 ){
-                return this.idPath.get(index).equals(id);         
+        public boolean is(int index, String id) {
+            if (index <= this.size() && index >= 0) {
+                return this.idPath.get(index).equals(id);
             }
             return false;
         }
-        
+
         /**
          * does the path at index have the component provided
+         *
          * @param index the index from the start of the path (0-based)
          * @param component the component type expected
-         * @return true if the component at 
+         * @return true if the component at
          */
-        public boolean is( int index, Component component){
-            if( index <= this.size()  && index >=0 ){
-                return this.componentPath.get(index).equals(component);                        
+        public boolean is(int index, Component component) {
+            if (index <= this.size() && index >= 0) {
+                return this.componentPath.get(index).equals(component);
             }
             return false;
         }
-        
+
         /**
          * does the path at index have the component and id provided
+         *
          * @param index the index from the start of the path (0-based)
          * @param component the component type expected
          * @param id the expected id
-         * @return true if the component at index has the component and id provided, false otherwise
+         * @return true if the component at index has the component and id
+         * provided, false otherwise
          */
-        public boolean is( int index, Component component, String id){
-            if( index <= this.size()  && index >=0 ){
-                return this.componentPath.get(index).equals(component) &&
-                    this.idPath.get(index).equals(id);
+        public boolean is(int index, Component component, String id) {
+            if (index <= this.size() && index >= 0) {
+                return this.componentPath.get(index).equals(component)
+                        && this.idPath.get(index).equals(id);
             }
             return false;
         }
-        
+
         /**
-         * 
+         *
          * @param <N>
          * @param index
          * @param clazz
          * @param id
-         * @return 
+         * @return
          */
-        public <N extends _node> boolean is( int index, Class<N> clazz, String id){
-             if( index <= this.size()  && index >=0 ){
-                return this.componentPath.get(index).implementationClass.equals(clazz) &&
-                    this.idPath.get(index).equals(id);
+        public <N extends _node> boolean is(int index, Class<N> clazz, String id) {
+            if (index <= this.size() && index >= 0) {
+                return this.componentPath.get(index).implementationClass.equals(clazz)
+                        && this.idPath.get(index).equals(id);
             }
-            return false;            
+            return false;
         }
-                
+
         /**
          * Does the leaf part of the path have the provided component and id
+         *
          * @param component the component
          * @param id the id
          * @return true if the path has the leaf at component and id
          */
-        public boolean isLeaf(Component component, String id){
-            return component.equals( leaf() )&& id.equals(leafId());
+        public boolean isLeaf(Component component, String id) {
+            return component.equals(leaf()) && id.equals(leafId());
         }
-        
+
         /**
-         * 
+         *
          * @param <N>
          * @param clazz
          * @param id
-         * @return 
+         * @return
          */
-        public <N extends _node> boolean isLeaf( Class<N> clazz, String id){
+        public <N extends _node> boolean isLeaf(Class<N> clazz, String id) {
             return leaf().implementationClass.equals(clazz) && leaf().name.equals(id);
         }
-        
+
         /**
          * @param component the component
-         * @return is the last component in the path this component? 
+         * @return is the last component in the path this component?
          */
-        public boolean isLeaf( Component component ){
+        public boolean isLeaf(Component component) {
             return component.equals(leaf());
         }
-        
+
         /**
-         * 
+         *
          * @param <N>
          * @param clazz
-         * @return 
+         * @return
          */
-        public <N extends _node> boolean isLeaf( Class<N> clazz ){
+        public <N extends _node> boolean isLeaf(Class<N> clazz) {
             return leaf().implementationClass.equals(clazz);
         }
-        
-        /** 
-         * @param id 
-         * @return is the last id in the path this id? 
+
+        /**
+         * @param id
+         * @return is the last id in the path this id?
          */
-        public boolean isLeafId( String id ){
+        public boolean isLeafId(String id) {
             return id.equals(leafId());
         }
-        
+
         /**
          * does the path contain this id at any node?
-         * @param id 
-         * @return true if 
+         *
+         * @param id
+         * @return true if
          */
-        public boolean has(String id){
+        public boolean has(String id) {
             return idPath.contains(id);
         }
-        
+
         /**
          * does the path contain ALL of these ids (in ANY order)
+         *
          * @param ids the ids to look for in the path
          * @return true if the path contains all ids
          */
-        public boolean has(String...ids){
-            Set<String>sids = new HashSet<>();
+        public boolean has(String... ids) {
+            Set<String> sids = new HashSet<>();
             Arrays.stream(ids).forEach(i -> sids.add(i));
             return idPath.containsAll(sids);
         }
-        
+
         /**
          * does this path contain all of these components (in ANY order)?
-         * @param components 
+         *
+         * @param components
          * @return true if the path contains all these components in ANY order
          */
-        public boolean has(Component... components){  
+        public boolean has(Component... components) {
             Set<Component> s = new HashSet<>();
-            Arrays.stream(components).forEach( c -> s.add(c));
+            Arrays.stream(components).forEach(c -> s.add(c));
             return componentPath.containsAll(s);
         }
-        
+
         /**
          * does the path contain this component (anywhere?)
+         *
          * @param component component to look for
          * @return true if the component occurs anywhere in the path
          */
-        public boolean has(Component component){
+        public boolean has(Component component) {
             return componentPath.contains(component);
         }
-        
+
         /**
          * id there a
+         *
          * @param <N>
          * @param clazz
-         * @return 
+         * @return
          */
-        public <N extends _node> boolean has( Class<N> clazz ){
-            for(int i=0;i<size(); i++){
-                if( this.componentPath.get(i).implementationClass.equals(clazz) ){
+        public <N extends _node> boolean has(Class<N> clazz) {
+            for (int i = 0; i < size(); i++) {
+                if (this.componentPath.get(i).implementationClass.equals(clazz)) {
                     return true;
                 }
             }
             return false;
         }
-        
+
         /**
          * does the path contain a part that has this exact component and id
-         * @param component the component we are looking for 
+         *
+         * @param component the component we are looking for
          * @param id the path we are looking for
-         * @return true if the path contains part with this component & id, 
+         * @return true if the path contains part with this component & id,
          * false otherwise
          */
-        public boolean has(Component component, String id){
-            for(int i=0;i<size(); i++){
-                if( this.componentPath.get(i).equals(component) 
-                        && this.idPath.get(i).equals(id)){
-                    return true;
-                }
-            }
-            return false;
-        }
-        
-        /**
-         * 
-         * @param <N>
-         * @param clazz
-         * @param id
-         * @return 
-         */
-        public <N extends _node> boolean has( Class<N> clazz, String id ){
-            for(int i=0;i<size(); i++){
-                if( this.componentPath.get(i).implementationClass.equals(clazz) 
+        public boolean has(Component component, String id) {
+            for (int i = 0; i < size(); i++) {
+                if (this.componentPath.get(i).equals(component)
                         && this.idPath.get(i).equals(id)) {
                     return true;
                 }
             }
             return false;
         }
-        
-        /** 
-         * Build and return a new _path that follows the current path down one component 
+
+        /**
+         *
+         * @param <N>
+         * @param clazz
+         * @param id
+         * @return
+         */
+        public <N extends _node> boolean has(Class<N> clazz, String id) {
+            for (int i = 0; i < size(); i++) {
+                if (this.componentPath.get(i).implementationClass.equals(clazz)
+                        && this.idPath.get(i).equals(id)) {
+                    return true;
+                }
+            }
+            return false;
+        }
+
+        /**
+         * Build and return a new _path that follows the current path down one
+         * component
+         *
          * @param component the next component part
          * @param id the id for the component
          * @return a new _path advanced to the next component/id
          */
-        public _path in(_java.Component component, String id){
+        public _path in(_java.Component component, String id) {
             _path _p = new _path(this);
             _p.componentPath.add(component);
             _p.idPath.add(id);
             return _p;
-        }        
-        
-        /** 
-         * @return the component path as a String 
+        }
+
+        /**
+         * @return the component path as a String
          */
-        public String componentPathString(){
+        public String componentPathString() {
             StringBuilder sb = new StringBuilder();
-            for(int i=0;i<this.componentPath.size();i++){
-                if( i > 0 ){
+            for (int i = 0; i < this.componentPath.size(); i++) {
+                if (i > 0) {
                     sb.append(".");
                 }
                 sb.append(this.componentPath.get(i).getName());
             }
             return sb.toString();
         }
-        
+
         @Override
-        public String toString(){
+        public String toString() {
             StringBuilder sb = new StringBuilder();
-            for(int i=0;i<this.componentPath.size();i++){
-                if( i > 0 ){
+            for (int i = 0; i < this.componentPath.size(); i++) {
+                if (i > 0) {
                     sb.append(".");
                 }
                 sb.append(this.componentPath.get(i).getName());
-                if( this.idPath.get(i).length() > 0){
-                    sb.append("[").append( this.idPath.get(i) ).append("]");
+                if (this.idPath.get(i).length() > 0) {
+                    sb.append("[").append(this.idPath.get(i)).append("]");
                 }
             }
             return sb.toString();
@@ -890,22 +919,613 @@ public enum _java {
             hash = 79 * hash + Objects.hashCode(this.idPath);
             return hash;
         }
-        
+
         @Override
-        public boolean equals( Object obj ){
-            if( obj == null ){
+        public boolean equals(Object obj) {
+            if (obj == null) {
                 return false;
             }
-            if( this == obj ){
+            if (this == obj) {
                 return true;
             }
-            if( !( obj instanceof _path) ){
+            if (!(obj instanceof _path)) {
                 return false;
             }
-            _path other = (_path)obj;
-            
-            return Objects.equals(this.componentPath, other.componentPath) &&
-                    Objects.equals( this.idPath, other.idPath);
+            _path other = (_path) obj;
+
+            return Objects.equals(this.componentPath, other.componentPath)
+                    && Objects.equals(this.idPath, other.idPath);
         }
-    }    
+    }
+
+    /**
+     * model of a package-info
+     *
+     */
+    public static class _packageInfo
+            implements _compilationUnitMember<_packageInfo>, _anno._hasAnnos<_packageInfo>, _model._node<CompilationUnit> {
+
+        public static _packageInfo of(String... pkgInfo) {
+            return new _packageInfo(StaticJavaParser.parse(Text.combine(pkgInfo)));
+        }
+
+        public static _packageInfo of(CompilationUnit astCu) {
+            return new _packageInfo(astCu);
+        }
+
+        public CompilationUnit astCompUnit;
+
+        @Override
+        public CompilationUnit astCompilationUnit() {
+            return astCompUnit;
+        }
+
+        public _packageInfo(CompilationUnit astCu) {
+            this.astCompUnit = astCu;
+        }
+
+        @Override
+        public boolean isTopLevel() {
+            return true;
+        }
+
+        @Override
+        public CompilationUnit ast() {
+            return astCompUnit;
+        }
+
+        public String getPackage() {
+            if (astCompilationUnit().getPackageDeclaration().isPresent()) {
+                return astCompilationUnit().getPackageDeclaration().get().getNameAsString();
+            }
+            return "";
+        }
+
+        /**
+         * Sets the package this TYPE is in
+         *
+         * @param packageName
+         * @return the modified TYPE
+         */
+        public _packageInfo setPackage(String packageName) {
+            CompilationUnit cu = astCompilationUnit();
+            //System.out.println("Setting package name to \""+ packageName+"\" in "+ cu );
+            //TODO I need to make sure it's a valid name
+            cu.setPackageDeclaration(packageName);
+            return this;
+        }
+
+        /**
+         * Returns true if this compilationUnit is located directly within this
+         * package
+         *
+         * @param packageName
+         * @return
+         */
+        public boolean isInPackage(String packageName) {
+            String pn = getPackage();
+            if (pn == null) {
+                return packageName == null || packageName.length() == 0;
+            }
+            if (Objects.equals(pn, packageName)) {
+                return true;
+            }
+            if (packageName != null) {
+                return packageName.indexOf(pn) == 0;
+            }
+            return false;
+        }
+
+        @Override
+        public _anno._annos getAnnos() {
+            if (astCompilationUnit().getPackageDeclaration().isPresent()) {
+                //annos are on the packageDeclaration
+                return _anno._annos.of(astCompilationUnit().getPackageDeclaration().get());
+            }
+            return _anno._annos.of(); //dont like this... but
+        }
+
+        /**
+         * is the String representation equal to the _node entity (i.e. if we
+         * parse the string, does it create an AST entity that is equal to the
+         * node?)
+         *
+         * @param stringRep the string representation of the node (parsed as an
+         * AST and compared to this entity to see if equal)
+         * @return true if the Parsed String represents the entity
+         */
+        public boolean is(String... stringRep) {
+            try {
+                return is(Ast.compilationUnit(stringRep));
+            } catch (Exception e) {
+                return false;
+            }
+        }
+
+        /**
+         * Is the AST node representation equal to the underlying entity
+         *
+         * @param astCu the astNode to compare against
+         * @return true if they represent the same _node, false otherwise
+         */
+        public boolean is(CompilationUnit astCu) {
+            return false;
+        }
+
+        /**
+         * Decompose the entity into key-VALUE pairs
+         *
+         * @return a map of key values
+         */
+        public Map<_java.Component, Object> componentsMap() {
+            Map m = new HashMap();
+            return m;
+            //m.put(Component.PACKAGE_NAME, getPackageName());
+
+        }
+    }
+
+    /**
+     * a module-info.java file it is it's own
+     *
+     */
+    public static class _moduleInfo implements _compilationUnitMember<_moduleInfo>, _model._node<CompilationUnit> {
+
+        public CompilationUnit astCompUnit;
+
+        @Override
+        public CompilationUnit astCompilationUnit() {
+            return astCompUnit;
+        }
+
+        /**
+         * is the String representation equal to the _node entity (i.e. if we
+         * parse the string, does it create an AST entity that is equal to the
+         * node?)
+         *
+         * @param stringRep the string representation of the node (parsed as an
+         * AST and compared to this entity to see if equal)
+         * @return true if the Parsed String represents the entity
+         */
+        public boolean is(String... stringRep) {
+            try {
+                return is(Ast.compilationUnit(stringRep));
+            } catch (Exception e) {
+                return false;
+            }
+        }
+
+        /**
+         * Is the AST node representation equal to the underlying entity
+         *
+         * @param astCu the astNode to compare against
+         * @return true if they represent the same _node, false otherwise
+         */
+        public boolean is(CompilationUnit astCu) {
+            return false;
+        }
+
+        /**
+         * Decompose the entity into key-VALUE pairs
+         *
+         * @return a map of key values
+         */
+        public Map<_java.Component, Object> componentsMap() {
+            Map m = new HashMap();
+            return m;
+            //m.put(Component.PACKAGE_NAME, getPackageName());
+
+        }
+
+        @Override
+        public CompilationUnit ast() {
+            return astCompUnit;
+        }
+
+        public static _moduleInfo of(String... input) {
+            return new _moduleInfo(StaticJavaParser.parse(Text.combine(input)));
+        }
+
+        public static _moduleInfo of(CompilationUnit astCu) {
+            return new _moduleInfo(astCu);
+        }
+
+        public _moduleInfo(CompilationUnit cu) {
+            this.astCompUnit = cu;
+        }
+
+        @Override
+        public boolean isTopLevel() {
+            return true;
+        }
+
+        public ModuleDeclaration getModuleAst() {
+            if (this.astCompUnit.getModule().isPresent()) {
+                return this.astCompUnit.getModule().get();
+            }
+            return null;
+        }
+    }
+
+    /**
+     * Marker interface which specifies potential members of _compilationUnits
+     * (i.e. {@link _type} {@link _class} {@link _enum} {@link _interface} {@link _annotation},
+     * {@link _packageInfo}, {@link
+     * @author Eric
+     */
+    public interface _compilationUnitMember<T> extends _model {
+
+        /**
+         * gets the compilationUnit (NOTE: could be null)
+         *
+         * @return
+         */
+        public CompilationUnit astCompilationUnit();
+
+        public boolean isTopLevel();
+
+        /**
+         * Gets the "Header comment" (usually the License) from the
+         * compilationUnit (NOTE: returns null if there are no header comments)
+         *
+         * @return the Comment implementation of the Header comment
+         */
+        default Comment getHeaderComment() {
+            if (astCompilationUnit().getComment().isPresent()) {
+                return astCompilationUnit().getComment().get();
+            }
+            return null;
+        }
+
+        /**
+         * sets the header comment (i.e.the license copyright, etc.) at the top
+         * of the _compilationUnit
+         *
+         * @param astBlockComment
+         * @return the Comment a JavaDoc comment or BlockComment or null
+         */
+        default T setHeaderComment(BlockComment astBlockComment) {
+            astCompilationUnit().setComment(astBlockComment);
+            return (T) this;
+        }
+
+        /**
+         * Sets the header comment (i.e. the copywrite)
+         *
+         * @param commentLines the lines in the header comment
+         * @return the modified T
+         */
+        default T setHeaderComment(String... commentLines) {
+            return setHeaderComment(Ast.blockComment(commentLines));
+        }
+
+        /**
+         * gets the imports from the CompilationUnit
+         *
+         * @return the _imports
+         */
+        default _imports getImports() {
+            CompilationUnit cu = astCompilationUnit();
+            if (cu != null) {
+                return _imports.of(cu);
+            }
+            return new _imports(new CompilationUnit()); //better of all the evils
+        }
+
+        /**
+         * remove imports based on predicate
+         *
+         * @param _importMatchFn filter for deciding which imports to removeIn
+         * @return the modified TYPE
+         */
+        default T removeImports(Predicate<_import> _importMatchFn) {
+            getImports().remove(_importMatchFn);
+            return (T) this;
+        }
+
+        /**
+         * removeIn imports by classes
+         *
+         * @param clazzes
+         * @return
+         */
+        default T removeImports(Class... clazzes) {
+            _imports.of(astCompilationUnit()).remove(clazzes);
+            return (T) this;
+        }
+
+        /**
+         *
+         * @param toRemove
+         * @return
+         */
+        default T removeImports(_import... toRemove) {
+            _imports.of(astCompilationUnit()).remove(toRemove);
+            return (T) this;
+        }
+
+        /**
+         *
+         * @param _typesToRemove
+         * @return
+         */
+        default T removeImports(_type... _typesToRemove) {
+            getImports().remove(_typesToRemove);
+            return (T) this;
+        }
+
+        /**
+         *
+         * @param toRemove the ImportDeclarations to removeIn
+         * @return the modified _type
+         */
+        default T removeImports(ImportDeclaration... toRemove) {
+            CompilationUnit cu = astCompilationUnit();
+            if (cu != null) {
+                for (int i = 0; i < toRemove.length; i++) {
+                    cu.getImports().remove(toRemove[i]);
+                }
+            }
+            return (T) this;
+        }
+
+        /**
+         *
+         * @param toRemove
+         * @return
+         */
+        default T removeImports(List<ImportDeclaration> toRemove) {
+            CompilationUnit cu = astCompilationUnit();
+            if (cu != null) {
+                for (int i = 0; i < toRemove.size(); i++) {
+                    cu.getImports().remove(toRemove.get(i));
+                }
+            }
+            return (T) this;
+        }
+
+        /**
+         * Select some imports based on the astImportPredicate and apply the
+         * astImportActionFn on the selected Imports
+         *
+         * @param _importActionFn function to apply to the imports
+         * @return the T
+         */
+        default T forImports(Consumer<_import> _importActionFn) {
+            getImports().forEach(_importActionFn);
+            return (T) this;
+        }
+
+        /**
+         * Select some imports based on the astImportPredicate and apply the
+         * astImportActionFn on the selected Imports
+         *
+         * @param _importMatchFn selects the Imports to act on
+         * @param _importActionFn function to apply to the imports
+         * @return the T
+         */
+        default T forImports(Predicate<_import> _importMatchFn, Consumer<_import> _importActionFn) {
+            getImports().forEach(_importMatchFn, _importActionFn);
+            return (T) this;
+        }
+
+        default List<_import> listImports() {
+            return getImports().list();
+        }
+
+        /**
+         * Does this compilationUnit import (explicitly or *) import this _type
+         *
+         * @param _t a top level _type
+         * @return true if the CompilationUnit imports this type, false
+         * otherwise
+         */
+        default boolean hasImport(_type _t) {
+            return hasImport(_t.getFullName());
+        }
+
+        /**
+         * Does this class statically import this class i.e.
+         * <PRE>
+         * _class _c = _class.of("A").imports("import static draft.java.Ast.*;");
+         * assertTrue( _c.hasImportStatic(Ast.class));
+         * </PRE>
+         *
+         * @param clazz
+         * @return
+         */
+        default boolean hasImportStatic(Class clazz) {
+            return !listImports(i -> i.isStatic() && i.isWildcard() && i.hasImport(clazz)).isEmpty();
+        }
+
+        /**
+         * class or method name
+         * <PRE>
+         *
+         * </PRE>
+         *
+         * @param className
+         * @return
+         */
+        default boolean hasImport(String className) {
+            return _imports.of(astCompilationUnit()).hasImport(className);
+        }
+
+        default boolean hasImports(Class... clazzes) {
+            return _imports.of(astCompilationUnit()).hasImports(clazzes);
+        }
+
+        default boolean hasImport(Class clazz) {
+            return _imports.of(astCompilationUnit()).hasImport(clazz);
+        }
+
+        default boolean hasImport(Predicate<_import> _importMatchFn) {
+            return !listImports(_importMatchFn).isEmpty();
+        }
+
+        default boolean hasImport(_import _i) {
+            return listImports(i -> i.equals(_i)).size() > 0;
+        }
+
+        default List<_import> listImports(Predicate<_import> _importMatchFn) {
+            return this.getImports().list().stream().filter(_importMatchFn).collect(Collectors.toList());
+        }
+
+        /**
+         * Adds static wildcard imports for all Classes
+         *
+         * @param wildcardStaticImports a list of classes that will
+         * WildcardImports
+         * @return the T
+         */
+        default T importStatic(Class... wildcardStaticImports) {
+            CompilationUnit cu = astCompilationUnit();
+            if (cu != null) {
+                Arrays.stream(wildcardStaticImports).forEach(i -> {
+                    ImportDeclaration id = Ast.importDeclaration(i);
+                    id.setAsterisk(true);
+                    id.setStatic(true);
+                    cu.addImport(id);
+                    /*
+                if( i.isArray() ){
+                    cu.addImport(new ImportDeclaration((i.getComponentType().getCanonicalName()), true, true));
+                } else {
+                    cu.addImport(new ImportDeclaration(i.getCanonicalName(), true, true));
+                }
+                     */
+                });
+            }
+            return (T) this;
+        }
+
+        /**
+         *
+         * @param staticWildcardImports
+         * @return
+         */
+        default T importStatic(String... staticWildcardImports) {
+            CompilationUnit cu = astCompilationUnit();
+            if (cu != null) {
+                Arrays.stream(staticWildcardImports).forEach(i -> {
+                    ImportDeclaration id = Ast.importDeclaration(i);
+                    id.setStatic(true);
+                    id.setAsterisk(true);
+                    cu.addImport(id);
+                    /*
+                if( i.endsWith(".*")) {
+                    ImportDeclaration id = Ast.importDeclaration(i);
+                    cu.addImport(new ImportDeclaration(i.substring(0, i.length() - 2), true, true));
+                } else{
+                    cu.addImport(new ImportDeclaration(i, true, false));
+                }
+                     */
+                });
+            }
+            return (T) this;
+        }
+
+        /**
+         * Statically import all of the
+         *
+         * @param wildcardTypeStaticImport
+         * @return
+         */
+        default T importStatic(_type... wildcardTypeStaticImport) {
+            CompilationUnit cu = astCompilationUnit();
+            if (cu != null) {
+                Arrays.stream(wildcardTypeStaticImport).forEach(i -> {
+                    cu.addImport(new ImportDeclaration(i.getFullName(), true, true));
+                });
+            }
+            return (T) this;
+        }
+
+        /**
+         *
+         * @param _ts
+         * @return
+         */
+        default T imports(_type... _ts) {
+            Arrays.stream(_ts).forEach(_t -> imports(_t.getFullName()));
+            return (T) this;
+        }
+
+        /**
+         * Add a single class import to the compilationUnit
+         *
+         * @param singleClass
+         * @return the modified compilationUnit
+         */
+        default T imports(Class singleClass) {
+            return imports(new Class[]{singleClass});
+        }
+
+        /**
+         * Regularly import a class
+         *
+         * @param classesToImport
+         * @return
+         */
+        default T imports(Class... classesToImport) {
+            CompilationUnit cu = astCompilationUnit();
+            if (cu != null) {
+                for (int i = 0; i < classesToImport.length; i++) {
+                    if (classesToImport[i].isArray()) {
+                        //System.out.println("CT " + classesToImport[i].getComponentType() );
+                        imports(classesToImport[i].getComponentType());
+                    } else {
+                        //dont import primitives or primitive arrays
+                        if (classesToImport[i] == null
+                                || classesToImport[i].isPrimitive()
+                                || classesToImport[i].isArray() && classesToImport[i].getComponentType().isPrimitive()
+                                || classesToImport[i].getPackageName().equals("java.lang")) {
+                            break;
+                        }
+                        String cn = classesToImport[i].getCanonicalName();
+                        //fix a minor bug in JavaParser API where anything in "java.lang.**.*" is not imported
+                        // so java.lang.annotation.* classes are not imported when they should be
+                        if (classesToImport[i].getPackage() != Integer.class.getPackage()
+                                && classesToImport[i].getCanonicalName().startsWith("java.lang")) {
+                            //System.out.println( "manually adding "+ classesToImport[i].getCanonicalName());
+                            cu.addImport(classesToImport[i].getCanonicalName());
+                        } else {
+                            cu.addImport(cn);
+                        }
+                    }
+                }
+                return (T) this;
+            }
+            throw new DraftException("No AST CompilationUnit to add imports");
+        }
+
+        /**
+         * Adds these importDeclarations
+         *
+         * @param astImportDecls
+         * @return
+         */
+        default T imports(ImportDeclaration... astImportDecls) {
+            CompilationUnit cu = astCompilationUnit();
+            if (cu != null) {
+                Arrays.stream(astImportDecls).forEach(c -> cu.addImport(c));
+                return (T) this;
+            }
+            //return (T) this;
+            throw new DraftException("No AST CompilationUnit of class to add imports");
+        }
+
+        default T imports(String anImport) {
+            return imports(new String[]{anImport});
+        }
+
+        default T imports(String... importStatements) {
+            CompilationUnit cu = astCompilationUnit();
+            if (cu != null) {
+                Arrays.stream(importStatements).forEach(c -> cu.addImport(Ast.importDeclaration(c)));
+                return (T) this;
+            }
+            throw new DraftException("No AST CompilationUnit of to add imports");
+        }
+    }
+
 }

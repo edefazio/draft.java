@@ -9,7 +9,7 @@ package draft.java;
  * A simple package-private (i.e. default) class 
  * @author Eric
  */
-class PackagePrivateClass {
+class TwoPackagePrivateClasses {
     
 }
 class AnotherPackagePrivateClass{
