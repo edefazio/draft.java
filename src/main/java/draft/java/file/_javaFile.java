@@ -19,17 +19,6 @@ import java.util.Objects;
  * {@link javax.tools.JavaCompiler} API handling ".java" files read in on
  * the hard disk
  *
- * NOTE: instead of treating it like an "immutable" flat file or a large
- * String you CAN _2_template it using the (_class, _enum,
- * _interface,_annotationType) models
- * for instance, instead of updating the file by manipulating the source
- * code...(i.e. parsing the code export an AST, and then changing it)
- * you can manipulate the _class model and it will "derive" the source code
- * _file _sf = _file.of( _class.of("public class A") ); _class TYPE
- * = (_class)_sf.getClone(); //returns a copy/copy of the _class model
- * TYPE._property("public int x;"); _sf.update(TYPE);
- *
- * //replaces the _class
  * ..this makes metaprogramming or extreme late program modification (via
  * ANNOTATIONS, javac compiler Plugins) easier (without having export resort export
  * bytecode modification.
@@ -153,7 +142,7 @@ public final class _javaFile implements JavaFileObject {
 
     @Override
     public String toString() {
-        return "_sourceFile " + getName();
+        return "_javaFile " + getName();
     }
 
     /** NAME "java.util.Map" returns "java/util/Map.java"*/
