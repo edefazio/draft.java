@@ -3,6 +3,8 @@ package draft.java.file;
 import javax.tools.FileObject;
 import javax.tools.JavaFileManager;
 import java.net.URL;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.*;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
@@ -119,6 +121,11 @@ public final class _files implements JavaFileManager.Location {
     public _files() {
     }
 
+    public _files add(Path filePath, byte[] data ) {
+        add( _file.of( filePath, "", data ) );
+        return this;
+    }
+    
     /**
      * Adds a binary file based on the path( could be null or blank for the base path)
      *
@@ -133,7 +140,8 @@ public final class _files implements JavaFileManager.Location {
      */
     public _files add(String filePath, String relativeName, byte[] data ) {
 
-        add( _file.of( filePath, relativeName, data ) );
+        //add( _file.of( filePath, relativeName, data ) );
+        add( _file.of( Paths.get(filePath), relativeName, data ) );
         return this;
     }
 
@@ -163,7 +171,8 @@ public final class _files implements JavaFileManager.Location {
      * @return
      */
     public _files add(String filePath, String relativeName, String... linesOfText ) {
-        add( _file.of( filePath, relativeName, linesOfText ) );
+        //add( _file.of( filePath, relativeName, linesOfText ) );
+        add( _file.of( Paths.get( filePath), relativeName, linesOfText ) );
         return this;
     }
 
@@ -188,7 +197,8 @@ public final class _files implements JavaFileManager.Location {
      */
     public FileObject reserveFile( String filePath, String relativeName ) {
 
-        _file _f = new _file( filePath, relativeName, new byte[0] );
+        //_file _f = new _file( filePath, relativeName, new byte[0] );
+        _file _f = new _file( Paths.get(filePath), relativeName, new byte[0] );
         this.add( _f  );
         return _f;
     }

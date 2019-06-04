@@ -5,6 +5,8 @@ import draft.DraftException;
 import javax.tools.FileObject;
 import java.io.*;
 import java.net.*;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.Objects;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -20,7 +22,8 @@ import java.util.concurrent.atomic.AtomicBoolean;
 public final class _file implements FileObject {
 
     /** "virtual" path to the file i.e. "META-INF/" empty string "" is root path */
-    public final String filePath;
+    //public final String filePath;
+    public final Path filePath;
 
     /** relative NAME of the file after the path i.e. "index.html", "data.json"*/
     public final String relativeName;
@@ -41,7 +44,8 @@ public final class _file implements FileObject {
      * @param data
      * @return
      */
-    public static _file of(String filePath, String relativeName, String... data ){
+//    public static _file of(String filePath, String relativeName, String... data ){
+    public static _file of(Path filePath, String relativeName, String... data ){    
         StringBuilder fileData = new StringBuilder();
         for( int i=0; i<data.length; i++ ){
             if( i > 0 ){
@@ -58,7 +62,8 @@ public final class _file implements FileObject {
      * @param data
      * @return
      */
-    public static _file of(String filePath, String relativeName, byte[] data ){
+//    public static _file of(String filePath, String relativeName, byte[] data ){
+    public static _file of(Path filePath, String relativeName, byte[] data ){    
         return new _file( filePath, relativeName, data );
     }
 
@@ -83,15 +88,26 @@ public final class _file implements FileObject {
      * @param relativeName relative file NAME (i.e. "data.txt")
      * @param data the bytes of data (could be textual or binary encoded)
      */
-    public _file( String filePath, String relativeName, byte[] data ){
-        if( filePath == null ){
+//    public _file( String filePath, String relativeName, byte[] data ){
+/* if( filePath == null ){
             filePath = "";
         }
         if( filePath.length() > 0 ){
             if( !filePath.endsWith( "/" ) ){
                 filePath = filePath + "/";
             }
+        }    */
+    public _file( Path filePath, String relativeName, byte[] data ){    
+        if( filePath == null ){
+            filePath = Paths.get("/");
         }
+        /*
+        if( filePath.length() > 0 ){
+            if( !filePath.endsWith( "/" ) ){
+                filePath = filePath + "/";
+            }
+        }
+        */
         this.filePath = filePath;
 
         this.relativeName = relativeName;
