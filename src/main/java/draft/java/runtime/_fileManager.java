@@ -6,6 +6,7 @@ import draft.java.file.*;
 import javax.tools.*;
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Paths;
 import java.util.*;
 
 /**
@@ -245,16 +246,18 @@ public final class _fileManager
 
 
     public _fileManager addResourceFile(
-            String filePath, String relativeName, String... linesOfText ) {
+        String filePath, String relativeName, String... linesOfText ) {
 
-        resourceFiles.add( _file.of( filePath, relativeName, linesOfText ) );
+        //resourceFiles.add( _file.of( filePath, relativeName, linesOfText ) );
+        resourceFiles.add( _file.of( Paths.get(filePath), relativeName, linesOfText ) );
         return this;
     }
 
     public _fileManager addResourceFile(
             String filePath, String relativeName, byte[] data ) {
 
-        resourceFiles.add( _file.of( filePath, relativeName, data ) );
+        //resourceFiles.add( _file.of( filePath, relativeName, data ) );
+        resourceFiles.add( _file.of( Paths.get( filePath), relativeName, data ) );
         return this;
     }
 
@@ -265,8 +268,12 @@ public final class _fileManager
     }
 
     /**
+     * @param a
+     * @param b
+     * @return 
      * @throws IllegalArgumentException {@inheritDoc}
      */
+    @Override
     public boolean isSameFile( FileObject a, FileObject b ) {
         //System.out.println( "is same file "+ a +" "+ b );
         if( a instanceof _javaFile) {
@@ -282,7 +289,6 @@ public final class _fileManager
         }
         return fileManager.isSameFile( a, b );
     }
-
 
     @Override
     public List<JavaFileObject> list(
