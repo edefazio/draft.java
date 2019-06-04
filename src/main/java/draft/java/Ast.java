@@ -1,5 +1,8 @@
 package draft.java;
 
+import com.github.javaparser.JavaParser;
+import com.github.javaparser.ParseResult;
+import com.github.javaparser.ParserConfiguration;
 import com.github.javaparser.Position;
 import com.github.javaparser.StaticJavaParser;
 import com.github.javaparser.ast.*;
@@ -30,6 +33,8 @@ import java.util.function.Consumer;
 import java.util.function.Predicate;
 
 import static com.github.javaparser.utils.Utils.normalizeEolInTextBlock;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import java.util.regex.Pattern;
 
 /**
@@ -59,6 +64,12 @@ import java.util.regex.Pattern;
  */
 public enum Ast {
     ;
+
+    /**
+     * A static reference to a JavaParser (used to replace StaticJavaParser, in
+     * order to properly handle module-info.java files)
+     */    
+    static final JavaParser JavaParser = new JavaParser( new ParserConfiguration() );
     
     /*---------------------------------------------------------
        the point of having all of these JavaParser Classes in a
@@ -554,10 +565,40 @@ public enum Ast {
     public @interface cache {
     }
 
+    private static CompilationUnit parse(String s){
+        ParseResult<CompilationUnit> pr = JavaParser.parse(s);
+        if( !pr.isSuccessful() ){
+            throw new DraftException("Unable to parse inputStream "+pr.getProblems());
+        }
+        return pr.getResult().get();
+    }
+    
+    private static CompilationUnit parse(Path path ){
+        ParseResult<CompilationUnit> pr;
+        try {
+            pr = JavaParser.parse(path);
+        } catch (IOException ex) {
+            throw new _ioException("Unable to read file at \""+path+"\"", ex);
+        }
+        if( !pr.isSuccessful() ){
+            throw new DraftException("Unable to parse at \""+path+"\"" + System.lineSeparator() + pr.getProblems());            
+        }
+        return pr.getResult().get();
+    }
+    
+    private static CompilationUnit parse(InputStream is){
+        ParseResult<CompilationUnit> pr = JavaParser.parse(is);
+        if( !pr.isSuccessful() ){
+            throw new DraftException("Unable to parse inputStream "+pr.getProblems());
+        }
+        return pr.getResult().get();
+    }
+    
     public static CompilationUnit of(InputStream is) {
-        return StaticJavaParser.parse(is);
+        return parse(is);
     }
 
+    
     /**
      * Parse and return the appropriate node based on the Node class
      *
@@ -674,11 +715,11 @@ public enum Ast {
             //TypeDeclaration tdd = type(_i.getInputStream(), clazz.getSimpleName());
             
             /** */
-            CompilationUnit cu = StaticJavaParser.parse(_i.getInputStream());
+            CompilationUnit cu = parse(_i.getInputStream());
             cu.setStorage(_i.getPath());
             Optional<TypeDeclaration<?>> ot = 
                 cu.getTypes().stream().filter(t -> t.getNameAsString().equals(clazz.getSimpleName()) ).findFirst();            
-            if( ot.isEmpty() ){
+            if( !ot.isPresent() ){
                 throw new DraftException("Unable to in source of type "+clazz.getSimpleName()+" in inputStream ");
             }
             //manually set the storage path on the cu
@@ -787,7 +828,7 @@ public enum Ast {
         }
         //return TYPE( _i.getInputStream() );
 
-        CompilationUnit cu = StaticJavaParser.parse(_i.getInputStream());
+        CompilationUnit cu = parse(_i.getInputStream());
         cu.setStorage(_i.getPath());
         List<TypeDeclaration> tds
                 = Ast.listAll(cu, TypeDeclaration.class, td -> td.getNameAsString().equals(clazz.getSimpleName())
@@ -1022,7 +1063,7 @@ public enum Ast {
      */
     public static CompilationUnit compilationUnit(String... code) {
         String str = Text.combine(code);
-        return StaticJavaParser.parse(str);
+        return parse(str);
     }
 
     /**
@@ -1053,7 +1094,7 @@ public enum Ast {
      */
     public static CompilationUnit compilationUnit(Path path)
             throws IOException {
-        return StaticJavaParser.parse(path);
+        return parse(path);
     }
 
     public static TypeDeclaration type(_in in ){
@@ -1069,7 +1110,7 @@ public enum Ast {
      * @return the Top Level Ast Node (CompilationUnit, TypeDeclaration)
      */
     public static TypeDeclaration type(InputStream is) {
-        CompilationUnit cu = StaticJavaParser.parse(is);
+        CompilationUnit cu = parse(is);
         if( cu.getPrimaryType().isPresent()){
             //System.out.println("Gettting the primary type");
             return cu.getPrimaryType().get();
@@ -1079,7 +1120,7 @@ public enum Ast {
         if (tds.size() == 1) {
             return tds.get(0);
         } else if (tds.isEmpty()) {
-            throw new DraftException("Unable to in source for inner class ");
+            throw new DraftException("Unable to find primary type in "+cu);
         }
         return tds.stream().filter(t -> t.isTopLevelType()).findFirst().get();
     }
