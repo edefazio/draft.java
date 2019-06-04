@@ -1,10 +1,12 @@
 package draft.java;
 
+import com.github.javaparser.ast.Node;
 import com.github.javaparser.ast.comments.Comment;
 import com.github.javaparser.ast.comments.JavadocComment;
 import com.github.javaparser.ast.nodeTypes.NodeWithJavadoc;
 import draft.Text;
 import java.util.Objects;
+import java.util.Optional;
 
 /**
  * Model of a Javadoc Comment
@@ -84,6 +86,29 @@ public final class _javadoc
         int hash = 3;
         hash = 41 * hash + Objects.hashCode( this.getContent() );
         return hash;
+    }
+    
+    /**
+     * Some things (specifically module-info and package info) do not implement
+     * NodeWithJavadoc, so we adapter
+     */
+    public static class JavadocHolderAdapter implements NodeWithJavadoc {
+        
+        final Node n;
+        
+        public JavadocHolderAdapter( Node n ){
+            this.n = n;
+        }
+        
+        @Override
+        public Optional getComment() {
+            return n.getComment();
+        }
+
+        @Override
+        public Node setComment(Comment comment) {
+            return n.setComment(comment);
+        }        
     }
     
     /**
