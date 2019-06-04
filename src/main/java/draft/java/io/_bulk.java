@@ -5,7 +5,6 @@ import com.github.javaparser.StaticJavaParser;
 import com.github.javaparser.ast.CompilationUnit;
 import com.github.javaparser.utils.SourceZip;
 import draft.DraftException;
-import draft.java._java._compilationUnitMember;
 import draft.java._java._packageInfo;
 import draft.java._type;
 
@@ -18,6 +17,7 @@ import java.util.function.Function;
 
 import static java.nio.file.FileVisitResult.CONTINUE;
 import java.util.function.Consumer;
+import draft.java._java._codeUnit;
 
 /**
  * Bulk read in .java files and optionally transform or inspect the {@link _type}s created
@@ -144,7 +144,7 @@ public enum _bulk {
                 throw new _ioException("unable to list files in " + rootPath, ioe);
             }
             /** Use parallel worker threads for parsing and transforming */
-            javaFileReader.filesRead.parallelStream().forEach( fr-> {
+            javaFileReader.filesRead.stream().forEach( fr-> {
                 _type _t = _type.of( fr.fileContents ); //1) parse the String to _type
                 
                 //3) apply transforms
@@ -447,7 +447,7 @@ public enum _bulk {
      * Consider an alternative if you have 1000s of .java files to be read in
      */
     private static class _bulkReadJavaFiles extends SimpleFileVisitor<Path> {
-        List<FileContents> filesRead = new ArrayList<>();
+        List<FileContents> filesRead = Collections.synchronizedList( new ArrayList<>() );
 
         public static class FileContents{
             public final Path filePath;
