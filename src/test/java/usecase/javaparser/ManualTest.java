@@ -8,7 +8,6 @@ import draft.java.macro._static;
 import draft.java.proto.$stmt;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
-import java.util.List;
 import junit.framework.TestCase;
 
 /**
