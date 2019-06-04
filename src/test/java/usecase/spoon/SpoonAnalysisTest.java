@@ -50,7 +50,7 @@ public class SpoonAnalysisTest extends TestCase {
         
         //analyze the source of each type in an entire jar file or directory:
         _receipt _l = // "C:\\Users\\Eric\\.m2\\repository\\com\\github\\javaparser\\javaparser-core\\3.14.2\\javaparser-core-3.14.2-sources.jar",
-            _bulk.consume("C:\\Users\\Eric\\.m2\\repository\\com\\github\\javaparser\\javaparser-core\\3.14.2\\javaparser-core-3.14.2-sources.jar", //"C:\\temp",
+            _bulk.consume("C:\\Users\\Eric\\.m2\\repository\\com\\github\\javaparser\\javaparser-core\\3.14.2\\javaparser-core-3.14.2-sources.jar", //"C:\\temp",                    
                 t-> $emptyCatch.forEachIn(t, 
                     c-> System.err.println("Empty catch at : "+
                         t.getFullName()+":"+ c.getBegin().get().line)));
