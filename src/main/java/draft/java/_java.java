@@ -23,6 +23,7 @@ import draft.java._body._hasBody;
 import draft.java._constructor._hasConstructors;
 import draft.java._enum._constant;
 import draft.java._import._imports;
+import draft.java._javadoc.JavadocHolderAdapter;
 import draft.java._javadoc._hasJavadoc;
 import draft.java._method._hasMethods;
 import draft.java._modifiers._hasAbstract;
@@ -943,7 +944,7 @@ public enum _java {
      *
      */
     public static class _packageInfo
-            implements _compilationUnitMember<_packageInfo>, _anno._hasAnnos<_packageInfo>, _model._node<CompilationUnit> {
+            implements _codeUnit<_packageInfo>, _anno._hasAnnos<_packageInfo>, _model._node<CompilationUnit> {
 
         public static _packageInfo of(String... pkgInfo) {
             return new _packageInfo(StaticJavaParser.parse(Text.combine(pkgInfo)));
@@ -954,6 +955,7 @@ public enum _java {
         }
 
         public CompilationUnit astCompUnit;
+        private final JavadocHolderAdapter javadocHolder;
 
         @Override
         public CompilationUnit astCompilationUnit() {
@@ -962,6 +964,7 @@ public enum _java {
 
         public _packageInfo(CompilationUnit astCu) {
             this.astCompUnit = astCu;
+            this.javadocHolder = new JavadocHolderAdapter( astCu );
         }
 
         @Override
@@ -974,6 +977,29 @@ public enum _java {
             return astCompUnit;
         }
 
+        @Override
+        public boolean equals(Object obj) {
+            if (this == obj) {
+                return true;
+            }
+            if (obj == null) {
+                return false;
+            }
+            if (getClass() != obj.getClass()) {
+                return false;
+            }
+            final _packageInfo other = (_packageInfo) obj;
+            if (!Objects.equals(this.astCompUnit, other.astCompUnit)) {
+                return false;
+            }
+            return true;
+        }
+
+        @Override
+        public int hashCode(){
+            return this.astCompUnit.hashCode();
+        }
+        
         public String getPackage() {
             if (astCompilationUnit().getPackageDeclaration().isPresent()) {
                 return astCompilationUnit().getPackageDeclaration().get().getNameAsString();
@@ -1058,10 +1084,13 @@ public enum _java {
          * @return a map of key values
          */
         public Map<_java.Component, Object> componentsMap() {
-            Map m = new HashMap();
+            Map m = new HashMap();            
+            //m.put( _java.Component.ANNOS, _annos.of(astCompUnit));
+            m.put( _java.Component.JAVADOC, this.javadocHolder.getJavadoc() );
+            
+            m.put( _java.Component.PACKAGE_NAME, getPackage() );
+            m.put(_java.Component.IMPORTS, _imports.of(astCompUnit));
             return m;
-            //m.put(Component.PACKAGE_NAME, getPackageName());
-
         }
     }
 
@@ -1069,9 +1098,10 @@ public enum _java {
      * a module-info.java file it is it's own
      *
      */
-    public static class _moduleInfo implements _compilationUnitMember<_moduleInfo>, _model._node<CompilationUnit> {
+    public static class _moduleInfo implements _codeUnit<_moduleInfo>, _model._node<CompilationUnit> {
 
         public CompilationUnit astCompUnit;
+        private final JavadocHolderAdapter javadocHolder;
 
         @Override
         public CompilationUnit astCompilationUnit() {
@@ -1087,6 +1117,7 @@ public enum _java {
          * AST and compared to this entity to see if equal)
          * @return true if the Parsed String represents the entity
          */
+        @Override
         public boolean is(String... stringRep) {
             try {
                 return is(Ast.compilationUnit(stringRep));
@@ -1095,12 +1126,36 @@ public enum _java {
             }
         }
 
+        @Override
+        public boolean equals(Object obj) {
+            if (this == obj) {
+                return true;
+            }
+            if (obj == null) {
+                return false;
+            }
+            if (getClass() != obj.getClass()) {
+                return false;
+            }
+            final _moduleInfo other = (_moduleInfo) obj;
+            if (!Objects.equals(this.astCompUnit, other.astCompUnit)) {
+                return false;
+            }
+            return true;
+        }
+
+        @Override
+        public int hashCode(){
+            return this.astCompUnit.hashCode();
+        }
+        
         /**
          * Is the AST node representation equal to the underlying entity
          *
          * @param astCu the astNode to compare against
          * @return true if they represent the same _node, false otherwise
          */
+        @Override
         public boolean is(CompilationUnit astCu) {
             return false;
         }
@@ -1110,11 +1165,17 @@ public enum _java {
          *
          * @return a map of key values
          */
+        @Override
         public Map<_java.Component, Object> componentsMap() {
+            
             Map m = new HashMap();
+            
+            m.put( _java.Component.NAME, getModuleAst().getNameAsString() );
+            m.put( _java.Component.ANNOS, _annos.of(getModuleAst()));
+            m.put(_java.Component.IMPORTS, _imports.of(astCompUnit));
+            m.put( _java.Component.JAVADOC, this.javadocHolder.getJavadoc());
+            
             return m;
-            //m.put(Component.PACKAGE_NAME, getPackageName());
-
         }
 
         @Override
@@ -1132,6 +1193,7 @@ public enum _java {
 
         public _moduleInfo(CompilationUnit cu) {
             this.astCompUnit = cu;
+            this.javadocHolder = new JavadocHolderAdapter(cu);
         }
 
         @Override
@@ -1148,20 +1210,32 @@ public enum _java {
     }
 
     /**
-     * Marker interface which specifies potential members of _compilationUnits
-     * (i.e. {@link _type} {@link _class} {@link _enum} {@link _interface} {@link _annotation},
-     * {@link _packageInfo}, {@link
+     * Common model for all source code units of a Java codebase 
+     * (a "code unit" is a model of the contents contained within a source file)
+     * i.e. 
+     * <UL>
+     * <LI> a model (AST, etc.) of a regular XXX.java files 
+     * <LI> a model of the contents  package-info.java files
+     * <LI> module-info.java files
+     * </UL>
+     * 
+     * (i.e. {@link _type} 
+     * {@link _class} {@link _enum} {@link _interface} {@link _annotation},
+     * {@link _packageInfo}, {@link _moduleInfo}
      * @author Eric
      */
-    public interface _compilationUnitMember<T> extends _model {
+    public interface _codeUnit<T> extends _model {
 
         /**
-         * gets the compilationUnit (NOTE: could be null)
-         *
-         * @return
+         * gets the compilationUnit (NOTE: could be null for nested _types)
          */
         public CompilationUnit astCompilationUnit();
 
+        /**
+         * A top level source code unit is the top level type, a "module-info.java"
+         * file or a "package-info.java" file
+         * @return 
+         */
         public boolean isTopLevel();
 
         /**
@@ -1309,6 +1383,10 @@ public enum _java {
             return (T) this;
         }
 
+        /**
+         * 
+         * @return 
+         */
         default List<_import> listImports() {
             return getImports().list();
         }
@@ -1385,14 +1463,7 @@ public enum _java {
                     ImportDeclaration id = Ast.importDeclaration(i);
                     id.setAsterisk(true);
                     id.setStatic(true);
-                    cu.addImport(id);
-                    /*
-                if( i.isArray() ){
-                    cu.addImport(new ImportDeclaration((i.getComponentType().getCanonicalName()), true, true));
-                } else {
-                    cu.addImport(new ImportDeclaration(i.getCanonicalName(), true, true));
-                }
-                     */
+                    cu.addImport(id);                    
                 });
             }
             return (T) this;
@@ -1410,15 +1481,7 @@ public enum _java {
                     ImportDeclaration id = Ast.importDeclaration(i);
                     id.setStatic(true);
                     id.setAsterisk(true);
-                    cu.addImport(id);
-                    /*
-                if( i.endsWith(".*")) {
-                    ImportDeclaration id = Ast.importDeclaration(i);
-                    cu.addImport(new ImportDeclaration(i.substring(0, i.length() - 2), true, true));
-                } else{
-                    cu.addImport(new ImportDeclaration(i, true, false));
-                }
-                     */
+                    cu.addImport(id);                    
                 });
             }
             return (T) this;
@@ -1527,5 +1590,4 @@ public enum _java {
             throw new DraftException("No AST CompilationUnit of to add imports");
         }
     }
-
 }
