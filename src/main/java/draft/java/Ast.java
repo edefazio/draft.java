@@ -69,7 +69,7 @@ public enum Ast {
      * A static reference to a JavaParser (used to replace StaticJavaParser, in
      * order to properly handle module-info.java files)
      */    
-    static final JavaParser JavaParser = new JavaParser( new ParserConfiguration() );
+    static final JavaParser JAVAPARSER = new JavaParser( new ParserConfiguration() );
     
     /*---------------------------------------------------------
        the point of having all of these JavaParser Classes in a
@@ -565,18 +565,18 @@ public enum Ast {
     public @interface cache {
     }
 
-    private static CompilationUnit parse(String s){
-        ParseResult<CompilationUnit> pr = JavaParser.parse(s);
+    protected static CompilationUnit parse(String s){
+        ParseResult<CompilationUnit> pr = JAVAPARSER.parse(s);
         if( !pr.isSuccessful() ){
             throw new DraftException("Unable to parse inputStream "+pr.getProblems());
         }
         return pr.getResult().get();
     }
     
-    private static CompilationUnit parse(Path path ){
+    protected static CompilationUnit parse(Path path ){
         ParseResult<CompilationUnit> pr;
         try {
-            pr = JavaParser.parse(path);
+            pr = JAVAPARSER.parse(path);
         } catch (IOException ex) {
             throw new _ioException("Unable to read file at \""+path+"\"", ex);
         }
@@ -586,8 +586,8 @@ public enum Ast {
         return pr.getResult().get();
     }
     
-    private static CompilationUnit parse(InputStream is){
-        ParseResult<CompilationUnit> pr = JavaParser.parse(is);
+    protected static CompilationUnit parse(InputStream is){
+        ParseResult<CompilationUnit> pr = JAVAPARSER.parse(is);
         if( !pr.isSuccessful() ){
             throw new DraftException("Unable to parse inputStream "+pr.getProblems());
         }
