@@ -5,7 +5,6 @@ import com.github.javaparser.StaticJavaParser;
 import com.github.javaparser.ast.CompilationUnit;
 import com.github.javaparser.utils.SourceZip;
 import draft.DraftException;
-import draft.java._java._packageInfo;
 import draft.java._type;
 
 import java.io.*;
@@ -17,8 +16,8 @@ import java.util.function.Function;
 
 import static java.nio.file.FileVisitResult.CONTINUE;
 import java.util.function.Consumer;
-import draft.java._java._codeUnit;
-
+import draft.java._code;
+import draft.java._code.*;
 /**
  * Bulk read in .java files and optionally transform or inspect the {@link _type}s created
  *
