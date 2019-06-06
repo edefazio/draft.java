@@ -72,7 +72,7 @@ public class SclassUseTest extends TestCase {
                 Base.class, Ann.class, Inter.class
             };            
         });
-        $typeUse.replace(_c, Ann.class, Stan.class);
+        $typeUse.of(Ann.class).replaceIn(_c, Stan.class);
         //System.out.println( _c );
         assertTrue( _c.getField("a").hasAnno(Stan.class));
         assertFalse( _c.getField("a").hasAnno(Ann.class));
@@ -83,8 +83,8 @@ public class SclassUseTest extends TestCase {
         assertTrue( _c.getField("d").hasAnno(Stan.class));
         assertFalse( _c.getField("d").hasAnno(Ann.class));        
         
-        $typeUse.replace(_c,Base.class, Replace.class);
-        $typeUse.replace(_c,Inter.class, Outer.class);
+        $typeUse.of(Base.class).replaceIn(_c,Replace.class);
+        $typeUse.of(Inter.class).replaceIn(_c,Outer.class);
         
         //System.out.println( _pExpr.list(_c, Expr.ARRAY_INITIALIZER ) );
         //gets the  array Initializer
@@ -186,9 +186,9 @@ public class SclassUseTest extends TestCase {
         
         //$classUse.any().listSelectedIn(_c).forEach(s-> System.out.println( s.node.getClass() + " : " + s.node.toString()+ s.node.getBegin().get().toString() ));
         
-        $typeUse.replace(_c, Base.class, Replace.class);
-        $typeUse.replace(_c, Inter.class, Outer.class);
-        $typeUse.replace(_c, Ann.class, Stan.class);
+        $typeUse.of(Base.class).replaceIn(_c, Replace.class);
+        $typeUse.of(Inter.class).replaceIn(_c, Outer.class);
+        $typeUse.of(Ann.class).replaceIn(_c, Stan.class);
         
         /*
         $node $n = new $node($nodeTest.Ann.class.getCanonicalName());

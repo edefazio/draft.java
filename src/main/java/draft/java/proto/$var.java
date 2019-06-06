@@ -40,7 +40,7 @@ public class $var
      * 
      * @param clazz
      * @return 
-     */
+    
     public static final List<VariableDeclarator> list(Class clazz){
        return of().listIn(clazz);
     }
@@ -50,7 +50,7 @@ public class $var
      * @param <N>
      * @param _n
      * @return 
-     */
+    
     public static final <N extends _node> List<VariableDeclarator> list( N _n ){
         return of().listIn(_n);
     }    
@@ -61,7 +61,7 @@ public class $var
      * @param _n
      * @param constraint
      * @return 
-     */
+     
     public static final <N extends _node> List<VariableDeclarator> list( N _n, Predicate<VariableDeclarator> constraint){
         return of().addConstraint(constraint).listIn(_n);
     }
@@ -72,7 +72,7 @@ public class $var
      * @param clazz
      * @param constraint
      * @return 
-     */
+     
     public static final <N extends _node> List<VariableDeclarator> list( Class clazz, Predicate<VariableDeclarator> constraint){
         return of().addConstraint(constraint).listIn(_type.of(clazz));
     }
@@ -83,7 +83,7 @@ public class $var
      * @param _n
      * @param pattern
      * @return 
-     */
+     
     public static final <N extends _node> List<VariableDeclarator> list( N _n, String pattern ){
         return $var.of(pattern).listIn(_n);
     }
@@ -94,7 +94,7 @@ public class $var
      * @param clazz the class
      * @param pattern
      * @return 
-     */
+     
     public static final <N extends _node> List<VariableDeclarator> list( Class clazz, String pattern ){
         return $var.of(pattern).listIn(_type.of(clazz));
     }
@@ -106,7 +106,7 @@ public class $var
      * @param pattern
      * @param constraint
      * @return 
-     */
+     
     public static final <N extends _node> List<VariableDeclarator> list( N _n, String pattern, Predicate<VariableDeclarator> constraint){
         return $var.of(pattern, constraint).listIn(_n);
     }
@@ -118,7 +118,7 @@ public class $var
      * @param pattern
      * @param constraint
      * @return 
-     */
+     
     public static final <N extends _node> List<VariableDeclarator> list( Class clazz, String pattern, Predicate<VariableDeclarator> constraint){
         return $var.of(pattern, constraint).listIn(_type.of(clazz));
     }
@@ -129,7 +129,7 @@ public class $var
      * @param _n
      * @param proto
      * @return 
-     */
+     
     public static final <N extends _node> List<VariableDeclarator> list( N _n, VariableDeclarator proto ){
         return $var.of(proto).listIn(_n);
     }
@@ -140,7 +140,7 @@ public class $var
      * @param clazz
      * @param proto
      * @return 
-     */
+     
     public static final <N extends _node> List<VariableDeclarator> list( Class clazz, VariableDeclarator proto ){
         return $var.of( proto).listIn(clazz);
     }
@@ -151,7 +151,7 @@ public class $var
      * @param proto
      * @param constraint
      * @return 
-     */
+     
     public static final List<VariableDeclarator> list(Class clazz, VariableDeclarator proto, Predicate<VariableDeclarator> constraint){
         return $var.of(proto, constraint).listIn(clazz);
     }
@@ -163,7 +163,7 @@ public class $var
      * @param proto
      * @param constraint
      * @return 
-     */
+     
     public static final <N extends _node> List<VariableDeclarator> list( N _n, VariableDeclarator proto, Predicate<VariableDeclarator> constraint){
         return $var.of(proto, constraint).listIn(_n);
     }
@@ -174,7 +174,7 @@ public class $var
      * @param _n
      * @param varActionFn
      * @return 
-     */
+     
     public static <N extends _node> N forEach(N _n, Consumer<VariableDeclarator> varActionFn){
         of().forEachIn(_n.ast(), varActionFn);
         return _n;
@@ -185,7 +185,7 @@ public class $var
      * @param clazz
      * @param varActionFn
      * @return 
-     */
+     
     public static _type forEach(Class clazz, Consumer<VariableDeclarator> varActionFn){
         _type _t = _type.of(clazz);
         of().forEachIn(_t, varActionFn);
@@ -198,7 +198,7 @@ public class $var
      * @param astNode
      * @param varActionFn
      * @return 
-     */
+     
     public static <N extends Node> N forEach(N astNode, Consumer<VariableDeclarator> varActionFn){
         of().forEachIn(astNode, varActionFn);
         return  astNode;
@@ -211,7 +211,7 @@ public class $var
      * @param pattern
      * @param varActionFn
      * @return 
-     */
+     
     public static <N extends _node> N forEach(N _n, String pattern, Consumer<VariableDeclarator> varActionFn){
         $var.of(pattern).forEachIn(_n.ast(), varActionFn);
         return _n;
@@ -223,7 +223,7 @@ public class $var
      * @param pattern
      * @param varActionFn
      * @return 
-     */
+     
     public static _type forEach(Class clazz, String pattern, Consumer<VariableDeclarator> varActionFn){
         _type _t = _type.of(clazz);
         $var.of(pattern).forEachIn(_t, varActionFn);
@@ -237,7 +237,7 @@ public class $var
      * @param pattern
      * @param varActionFn
      * @return 
-     */
+     
     public static <N extends Node> N forEach(N astNode, String pattern, Consumer<VariableDeclarator> varActionFn){
         $var.of(pattern).forEachIn(astNode, varActionFn);
         return  astNode;
@@ -249,7 +249,7 @@ public class $var
      * @param proto
      * @param varActionFn
      * @return 
-     */
+     
     public static _type forEach(Class clazz, VariableDeclarator proto, Consumer<VariableDeclarator> varActionFn){
         return forEach( _type.of(clazz), proto, varActionFn);
     }    
@@ -260,7 +260,7 @@ public class $var
      * @param proto
      * @param varActionFn
      * @return 
-     */
+     
     public static <N extends _node> N forEach(N _n, VariableDeclarator proto, Consumer<VariableDeclarator> varActionFn){
         $var.of(proto).forEachIn(_n.ast(), varActionFn);
         return _n;
@@ -273,7 +273,7 @@ public class $var
      * @param proto
      * @param varActionFn
      * @return 
-     */
+     
     public static <N extends Node> N forEach(N astNode, VariableDeclarator proto, Consumer<VariableDeclarator> varActionFn){
         $var.of(proto).forEachIn(astNode, varActionFn);
         return  astNode;
@@ -285,7 +285,7 @@ public class $var
      * @param pattern
      * @param selectedActionFn
      * @return 
-     */
+     
     public static _type forSelected(Class clazz, String pattern, Consumer<Select> selectedActionFn){
         return $var.of(pattern).forSelectedIn(clazz, selectedActionFn);
     }
@@ -297,7 +297,7 @@ public class $var
      * @param pattern
      * @param selectedActionFn
      * @return 
-     */
+     
     public static <N extends _node> N forSelected(N _n, String pattern, Consumer<Select> selectedActionFn){
         $var.of(pattern).forSelectedIn(_n.ast(), selectedActionFn);
         return _n;
@@ -310,18 +310,19 @@ public class $var
      * @param pattern
      * @param selectedActionFn
      * @return 
-     */
+     
     public static <N extends Node> N forSelected(N astNode, String pattern, Consumer<Select> selectedActionFn){
         $var.of(pattern).forSelectedIn(astNode, selectedActionFn);
         return  astNode;
     }
+    * 
     /**
      * 
      * @param clazz
      * @param astProtoVar
      * @param selectedActionFn
      * @return 
-     */
+     
     public static _type forSelected(Class clazz, VariableDeclarator astProtoVar, Consumer<Select> selectedActionFn){
         return $var.of(astProtoVar).forSelectedIn(clazz, selectedActionFn);
     }
@@ -332,7 +333,7 @@ public class $var
      * @param astProtoVar
      * @param selectedActionFn
      * @return 
-     */
+    
     public static <N extends _node> N forSelected(N _n, VariableDeclarator astProtoVar, Consumer<Select> selectedActionFn){
         $var.of(astProtoVar).forSelectedIn(_n.ast(), selectedActionFn);
         return _n;
@@ -345,7 +346,7 @@ public class $var
      * @param astProtoVar
      * @param selectedActionFn
      * @return 
-     */
+    
     public static <N extends Node> N forSelected(N astNode, VariableDeclarator astProtoVar, Consumer<Select> selectedActionFn){
         $var.of(astProtoVar).forSelectedIn(astNode, selectedActionFn);
         return  astNode;
@@ -358,7 +359,7 @@ public class $var
      * @param selectConstraint
      * @param selectedActionFn
      * @return 
-     */
+    
     public static _type forSelected(Class clazz, String pattern, Predicate<Select> selectConstraint, Consumer<Select> selectedActionFn){
         return forSelected(_type.of(clazz), pattern, selectConstraint, selectedActionFn);
     }
@@ -371,7 +372,7 @@ public class $var
      * @param selectConstraint
      * @param selectActionFn
      * @return 
-     */
+     
     public static <N extends _node> N forSelected(N _n, String pattern, Predicate<Select> selectConstraint, Consumer<Select> selectActionFn){
         $var.of(pattern).forSelectedIn(_n.ast(), selectActionFn);
         return _n;
@@ -385,7 +386,7 @@ public class $var
      * @param selectConstraint
      * @param selectActionFn
      * @return 
-     */
+     
     public static <N extends Node> N forSelected(N astNode, String pattern, Predicate<Select> selectConstraint,Consumer<Select> selectActionFn){
         $var.of(pattern).forSelectedIn(astNode, selectActionFn);
         return  astNode;
@@ -398,7 +399,7 @@ public class $var
      * @param selectConstraint
      * @param selectActionFn
      * @return 
-     */
+     
     public static _type forSelected(Class clazz, VariableDeclarator astProtoVar, Predicate<Select> selectConstraint, Consumer<Select> selectActionFn){
         return forSelected(_type.of(clazz), astProtoVar, selectConstraint, selectActionFn);
     }
@@ -411,7 +412,7 @@ public class $var
      * @param selectConstraint
      * @param selectActionFn
      * @return 
-     */
+     
     public static <N extends _node> N forSelected(N _n, VariableDeclarator astProtoVar, Predicate<Select> selectConstraint, Consumer<Select> selectActionFn){
         $var.of(astProtoVar).forSelectedIn(_n.ast(), selectConstraint, selectActionFn);
         return _n;
@@ -425,7 +426,7 @@ public class $var
      * @param selectConstraint
      * @param selectActionFn
      * @return 
-     */
+     
     public static <N extends Node> N forSelected(N astNode, VariableDeclarator astProtoVar, Predicate<Select> selectConstraint, Consumer<Select> selectActionFn){
         $var.of(astProtoVar).forSelectedIn(astNode, selectConstraint, selectActionFn);
         return  astNode;
@@ -437,7 +438,7 @@ public class $var
      * @param _n
      * @param pattern
      * @return 
-     */
+     
     public static final <N extends _node> VariableDeclarator first( N _n, String pattern ){
         return $var.of(pattern).firstIn(_n);
     }
@@ -448,7 +449,7 @@ public class $var
      * @param clazz
      * @param pattern
      * @return 
-     */
+     
     public static final <N extends _node> VariableDeclarator first( Class clazz, String pattern ){
         return $var.of(pattern).firstIn( _type.of(clazz) );
     }
@@ -460,7 +461,7 @@ public class $var
      * @param pattern
      * @param constraint
      * @return 
-     */
+     
     public static final <N extends _node> VariableDeclarator first( N _n, String pattern, Predicate<VariableDeclarator> constraint){
         return $var.of(pattern, constraint).firstIn(_n);
     }
@@ -475,7 +476,7 @@ public class $var
      * @param _n
      * @param astProtoVar
      * @return 
-     */
+     
     public static final <N extends _node> VariableDeclarator first( N _n, VariableDeclarator astProtoVar ){
         return $var.of(astProtoVar).firstIn(_n);
     }
@@ -487,7 +488,7 @@ public class $var
      * @param astProtoVar
      * @param constraint
      * @return 
-     */
+     
     public static final <N extends _node> VariableDeclarator first( N _n, VariableDeclarator astProtoVar, Predicate<VariableDeclarator> constraint){
         return $var.of(astProtoVar, constraint)
             .firstIn(_n);
@@ -499,7 +500,7 @@ public class $var
      * @param _n
      * @param pattern
      * @return 
-     */
+     
     public static final <N extends _node> Select selectFirst( N _n, String pattern ){
         return $var.of(pattern).selectFirstIn(_n);
     }
@@ -511,7 +512,7 @@ public class $var
      * @param pattern
      * @param selectConstraint
      * @return 
-     */
+     
     public static final <N extends _node> Select selectFirst( N _n, String pattern, Predicate<Select> selectConstraint ){
         return $var.of(pattern).selectFirstIn(_n, selectConstraint);
     }
@@ -522,7 +523,7 @@ public class $var
      * @param _n
      * @param proto
      * @return 
-     */
+     
     public static final <N extends _node> Select selectFirst( N _n, VariableDeclarator proto ){
         return $var.of(proto).selectFirstIn(_n);
     }
@@ -534,7 +535,7 @@ public class $var
      * @param proto
      * @param selectConstraint
      * @return 
-     */
+     
     public static final <N extends _node> Select selectFirst( N _n, VariableDeclarator proto, Predicate<Select> selectConstraint){
         return $var.of(proto).selectFirstIn(_n, selectConstraint);
     }
@@ -545,7 +546,7 @@ public class $var
      * @param _n
      * @param pattern
      * @return 
-     */
+     
     public static final <N extends _node> List<Select> selectList( N _n, String pattern ){
         return $var.of(pattern).listSelectedIn(_n);
     }
@@ -557,7 +558,7 @@ public class $var
      * @param pattern
      * @param selectConstraint
      * @return 
-     */
+     
     public static final <N extends _node> List<Select> selectList( N _n, String pattern, Predicate<Select> selectConstraint){
         return $var.of(pattern)
                 .listSelectedIn(_n, selectConstraint);
@@ -569,7 +570,7 @@ public class $var
      * @param _n
      * @param proto
      * @return 
-     */
+     
     public static final <N extends _node> List<Select> selectList( N _n, VariableDeclarator proto ){
         return $var.of(proto).listSelectedIn(_n);
     }
@@ -581,7 +582,7 @@ public class $var
      * @param proto
      * @param constraint
      * @return 
-     */
+     
     public static final <N extends _node> List<Select> selectList( N _n, VariableDeclarator proto, Predicate<VariableDeclarator> constraint){
         return $var.of(proto, constraint).listSelectedIn(_n);
     }
@@ -592,7 +593,7 @@ public class $var
      * @param _n
      * @param proto
      * @return the modified N
-     */
+     
     public static final <N extends _node> N remove( N _n, VariableDeclarator proto ){
         return $var.of(proto).removeIn(_n);
     }
@@ -604,7 +605,7 @@ public class $var
      * @param proto
      * @param constraint
      * @return the modified N
-     */
+     
     public static final <N extends _node> N remove( N _n, VariableDeclarator proto, Predicate<VariableDeclarator> constraint){
         return $var.of(proto, constraint).removeIn(_n);
     }
@@ -615,7 +616,7 @@ public class $var
      * @param _n
      * @param pattern
      * @return 
-     */
+     
     public static final <N extends _node> N remove( N _n, String pattern ){
         return $var.of(pattern).removeIn(_n);
     }
@@ -627,7 +628,7 @@ public class $var
      * @param sourceProto
      * @param targetProto
      * @return 
-     */
+     
     public static final <N extends _node> N replace(N rootNode, VariableDeclarator sourceProto, VariableDeclarator targetProto){
         return $var.of(sourceProto)
             .replaceIn(rootNode, $var.of(targetProto));
@@ -640,12 +641,17 @@ public class $var
      * @param sourcePattern
      * @param targetPattern
      * @return 
-     */
+     
     public static final <N extends _node> N replace(N rootNode, String sourcePattern, String targetPattern){
         return $var.of(Ast.variable(sourcePattern))
             .replaceIn(rootNode, $var.of(targetPattern));
     }
+    */
     
+    /**
+     * 
+     * @return 
+     */
     public static final $var any(){
         return of();
     }
@@ -658,6 +664,11 @@ public class $var
         return $var.of("$type$ $name$");
     }
     
+    /**
+     * 
+     * @param parts
+     * @return 
+     */
     public static final $var of( $part...parts){
         return new $var(parts);
     }
@@ -737,6 +748,12 @@ public class $var
         return new $var( proto  );
     }
 
+    /**
+     * 
+     * @param proto
+     * @param constraint
+     * @return 
+     */
     public static $var of(VariableDeclarator proto, Predicate<VariableDeclarator> constraint){
         return new $var( proto  ).addConstraint(constraint);
     }
@@ -744,9 +761,13 @@ public class $var
     /** Matching constraint */
     public Predicate<VariableDeclarator> constraint = t -> true;
     
-    
+    /** */
     public $typeRef type = $typeRef.of("$type$");
+    
+    /** */
     public $id name = $id.of();
+    
+    /** */
     public $expr init = $expr.of("$init$");
     //public $component<Expression> init = new $component( "$init$", t->true);
 
@@ -880,7 +901,7 @@ public class $var
         return select(astVar ) != null;
     }   
 
-     /**
+    /**
      * 
      * @param astVar
      * @return 
@@ -1058,16 +1079,17 @@ public class $var
      * 
      * @param clazz
      * @return 
-     */
+     
     public VariableDeclarator firstIn( Class clazz){
         return firstIn( _type.of(clazz));
     }
+    */ 
     
     /**
      * Returns the first VaribleDeclarator that matches the pattern and constraint
      * @param _n the _java node
      * @return  the first VaribleDeclarator that matches (or null if none found)
-     */
+     
     public VariableDeclarator firstIn( _node _n ){
         Optional<VariableDeclarator> v = _n.ast().findFirst(VariableDeclarator.class, s -> this.matches(s) );         
         if( v.isPresent()){
@@ -1075,14 +1097,20 @@ public class $var
         }
         return null;
     }
+    */ 
 
     /**
      * Returns the first VaribleDeclarator that matches the pattern and constraint
      * @param astNode the node to look through
+     * @param varMatchFn
      * @return  the first VaribleDeclarator that matches (or null if none found)
      */
-    public VariableDeclarator firstIn( Node astNode ){
-        Optional<VariableDeclarator> f = astNode.findFirst(VariableDeclarator.class, s -> this.matches(s) );         
+    @Override
+    public VariableDeclarator firstIn( Node astNode, Predicate<VariableDeclarator> varMatchFn){
+        Optional<VariableDeclarator> f = astNode.findFirst(VariableDeclarator.class, s -> {
+            Select sel = select(s);
+            return sel != null && varMatchFn.test(sel.astVar);
+            });         
         if( f.isPresent()){
             return f.get();
         }
@@ -1094,6 +1122,7 @@ public class $var
      * @param clazz
      * @return 
      */
+    @Override
     public Select selectFirstIn( Class clazz){
         return selectFirstIn(_type.of(clazz));
     }
@@ -1103,6 +1132,7 @@ public class $var
      * @param _n the _java node
      * @return  the first VaribleDeclarator that matches (or null if none found)
      */
+    @Override
     public Select selectFirstIn( _node _n ){
         Optional<VariableDeclarator> f = _n.ast().findFirst(VariableDeclarator.class, s -> this.matches(s) );         
         if( f.isPresent()){
@@ -1116,6 +1146,7 @@ public class $var
      * @param astNode the node to look through
      * @return  the first Select VaribleDeclarator that matches (or null if none found)
      */
+    @Override
     public Select selectFirstIn( Node astNode ){
         Optional<VariableDeclarator> f = astNode.findFirst(VariableDeclarator.class, s -> this.matches(s) );         
         if( f.isPresent()){
@@ -1168,6 +1199,7 @@ public class $var
         return null;
     }
     
+    /*
     @Override
     public List<VariableDeclarator> listIn(Class clazz){
         return listIn(_type.of(clazz) );
@@ -1188,6 +1220,7 @@ public class $var
         } );
         return varList;
     }
+    */
 
     @Override
     public List<Select> listSelectedIn(Class clazz){
@@ -1262,6 +1295,7 @@ public class $var
         return sts;
     }
     
+    /*
     @Override
     public _type removeIn( Class clazz){
         return removeIn(_type.of(clazz) );
@@ -1288,6 +1322,7 @@ public class $var
         });
         return _n;
     }
+    */
 
     /**
      * 
@@ -1424,22 +1459,25 @@ public class $var
         return astNode;
     }
 
+    /*
     @Override
     public _type forEachIn( Class clazz, Consumer<VariableDeclarator> varActionFn){
         return forEachIn( _type.of(clazz), varActionFn);
     }
+    */
     
     @Override
-    public <N extends Node> N forEachIn(N astNode, Consumer<VariableDeclarator> varActionFn){
+    public <N extends Node> N forEachIn(N astNode, Predicate<VariableDeclarator> varMatchFn, Consumer<VariableDeclarator> varActionFn){
         astNode.walk(VariableDeclarator.class, e-> {
             Select sel = select( e );
-            if( sel != null ){
+            if( sel != null && varMatchFn.test(sel.astVar)){
                 varActionFn.accept( e );
             }
         });
         return astNode;
     }
 
+    /*
     @Override
     public <N extends _node> N forEachIn(N _n, Consumer<VariableDeclarator> varActionFn){
         Walk.in(_n, VariableDeclarator.class, e-> {
@@ -1450,7 +1488,7 @@ public class $var
         });
         return _n;
     }
-
+    */
     /**
      * A Matched Selection result returned from matching a prototype $var
      * inside of some Node or _node

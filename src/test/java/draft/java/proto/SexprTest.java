@@ -366,7 +366,7 @@ public class SexprTest extends TestCase {
             int a = 1;
             int b = 3 + 4;
         });        
-        assertEquals( 1, $expr.list(_c, Expr.of(2) ).size());
+        assertEquals( 1, $expr.of(2).listIn(_c).size());
         assertEquals( 4, $expr.of(2).$("2", "number").listIn(_c).size());
     }
     
@@ -519,19 +519,19 @@ public class SexprTest extends TestCase {
         assertFalse($expr.arrayAccess("a[$any$]", a -> a.getIndex().isIntegerLiteralExpr() ).matches("a[b.count()]"));
         _class _c = _class.of("C").field("int i=1;");
         
-        assertEquals(1, $expr.list(_c, Expr.of(1) ).size());
+        assertEquals(1, $expr.of(1).listIn(_c ).size());
         
         System.out.println( Expr.of("1").getClass() );
         
-        System.out.println( $expr.replace(_c, Expr.of(1), Expr.of(2)) );
+        System.out.println( $expr.of(1).replaceIn(_c, Expr.of(2)) );
 
-        System.out.println( $expr.replace(_c, "1", "2") );
+        System.out.println( $expr.of("1").replaceIn(_c, "2") );
         
-        assertTrue( $expr.replace(_c, "1", "2").getField("i").isInit(2));
+        assertTrue( $expr.of("1").replaceIn(_c,"2").getField("i").isInit(2));
         
         //assertTrue( $expr.replace(_c, "1", "2").getField("i").initIs("2"));
         
-        assertTrue($expr.list(_c, "2").size() == 1);
+        assertTrue($expr.of("2").listIn(_c).size() == 1);
         
         //assertTrue( $expr.list(_c, "2").size() == 1 );
         

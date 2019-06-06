@@ -8,7 +8,6 @@ import draft.java._anno;
 import draft.java._anno._annos;
 import draft.java._anno._hasAnnos;
 import draft.java._java;
-import draft.java._model;
 import draft.java._model._node;
 import draft.java._type;
 import java.util.*;
@@ -24,17 +23,6 @@ public class $annos
     implements Template<_annos>, $proto<_annos>, $constructor.$part, $method.$part, 
         $field.$part, $parameter.$part, $typeParameter.$part {
 
-    /** 
-     * List of anno prototypes, note: an empty list means it matches ANY list 
-     * of _annos
-     */
-    List<$anno> $annosList = new ArrayList<>();
-    
-    /**
-     * A Matching predicate for _annos
-     */
-    Predicate<_annos> constraint = t-> true;
-    
     /**
      * 
      * @return 
@@ -107,20 +95,20 @@ public class $annos
         }        
     }
     
+    /** 
+     * List of anno prototypes, note: an empty list means it matches ANY list 
+     * of _annos
+     */
+    public List<$anno> $annosList = new ArrayList<>();
+    
+    /**
+     * A Matching predicate for _annos
+     */
+    public Predicate<_annos> constraint = t-> true;
+    
     public boolean isEmpty(){
         return this.$annosList.isEmpty();
     }
-    
-    /**
-     * 
-     * @param constraint
-     * @return 
-     
-    public $annos constraint( Predicate<_annos> constraint ){
-        this.constraint = constraint;
-        return this;
-    }
-    */ 
     
     /**
      * 
@@ -132,6 +120,10 @@ public class $annos
         return this;
     }
     
+    /**
+     * Will this prototype match any group of annos?
+     * @return 
+     */
     public boolean isMatchAny(){
         try{
             return( this.constraint.test(null) && 
@@ -142,6 +134,7 @@ public class $annos
             return false;
         }
     }
+    
     /**
      * 
      * @param translator
@@ -304,15 +297,21 @@ public class $annos
     /**
      * Returns the first Statement that matches the 
      * @param astNode the 
+     * @param _annosMatchFn 
      * @return 
      */
     @Override
-    public _annos firstIn( Node astNode ){
-        Optional<Node> f = 
-                
+    public _annos firstIn( Node astNode, Predicate<_annos> _annosMatchFn){
+        Optional<Node> f =                 
             astNode.findFirst( Node.class, 
-                n -> (n instanceof NodeWithAnnotations) 
-                && matches((NodeWithAnnotations)n) 
+                n -> {
+                    if(n instanceof NodeWithAnnotations){
+                        Select sel = select((NodeWithAnnotations)n);
+                        return (sel != null && _annosMatchFn.test(sel._anns));
+                    } 
+                    //TODO test with module-info and package-info
+                    return false;
+                }
             );         
         
         if( f.isPresent()){
@@ -386,13 +385,16 @@ public class $annos
         return null;
     }
     
+    /*
     @Override
     public _annos firstIn( _node _n ){
         return firstIn( _n.ast() );
     }
+    */
     
+    /*
     @Override
-    public List<_annos> listIn(_model._node _n) {
+    public List<_annos> listIn(_node _n) {
         List<_annos> found = new ArrayList<>();
         Walk.in(_n, _hasAnnos.class, _ha-> {
             Select sel = select(_ha);
@@ -404,12 +406,31 @@ public class $annos
     }
 
     @Override
-    public List<_annos> listIn(Node astRootNode) {
+    public List<_annos> listIn(Node astRootNode) {        
         return listIn( (_node)_java.of(astRootNode) );        
     }
-
+    */
+    
+    
+    /*
     @Override
-    public List<Select> listSelectedIn(Node astRootNode) {
+    public List<_annos> listIn(Node astRootNode, Predicate<_annos> _annosMatchFn ){
+        List<_annos> found = new ArrayList<>();
+        Walk.in(astRootNode, Node.class, n-> {
+            if( n instanceof NodeWithAnnotations ){
+                Select sel = select( (NodeWithAnnotations)n);
+                if( sel != null && _annosMatchFn.test(sel._anns)){
+                    found.add( sel._anns );
+                }
+            }            
+        });
+        return found;
+    }
+
+    */
+    
+    @Override
+    public List<Select> listSelectedIn(Node astRootNode) {         
         return listSelectedIn( (_node)_java.of(astRootNode) );        
     }
 
@@ -452,6 +473,7 @@ public class $annos
         return found;
     }
 
+    /*
     @Override
     public <N extends Node> N removeIn(N astRootNode) {
         removeIn( (_node)_java.of(astRootNode) );         
@@ -459,7 +481,7 @@ public class $annos
     }
 
     @Override
-    public <N extends _model._node> N removeIn(N _n) {
+    public <N extends _node> N removeIn(N _n) {
         return Walk.in(_n, _hasAnnos.class, _ha-> {
             Select sel = select(_ha);
             if( sel != null ){
@@ -467,23 +489,42 @@ public class $annos
             }
         });        
     }
+    */
 
+    /*
     @Override
     public <N extends Node> N forEachIn(N astRootNode, Consumer<_annos> _annosActionFn) {
         forEachIn( (_node)_java.of(astRootNode), _annosActionFn );         
         return astRootNode;
     }
+    */
 
     @Override
-    public <N extends _node> N forEachIn(N _n, Consumer<_annos> _annosActionFn) {
+    public <N extends Node> N forEachIn(N astRootNode, Predicate<_annos> _annosMatchFn, Consumer<_annos> _annosActionFn) {
+        return Walk.in(astRootNode, Node.class, n-> {
+            if( n instanceof NodeWithAnnotations ){
+                Select sel = select( (NodeWithAnnotations)n );
+                if( sel != null && _annosMatchFn.test(sel._anns)){
+                    _annosActionFn.accept(sel._anns);
+                }
+            }
+        });
+        
+        //forEachIn( (_node)_java.of(astRootNode), _annosMatchFn, _annosActionFn );         
+        //return astRootNode;
+    }
+    
+    /*
+    @Override
+    public <N extends _node> N forEachIn(N _n, Predicate<_annos> _annosMatchFn, Consumer<_annos> _annosActionFn) {
         return Walk.in(_n, _hasAnnos.class, _ha-> {
             Select sel = select(_ha);
-            if( sel != null ){
+            if( sel != null && _annosMatchFn.test(sel._anns)){
                 _annosActionFn.accept(sel._anns);
             }
         });
     }
-    
+    */
     /**
      * 
      * @param <N>

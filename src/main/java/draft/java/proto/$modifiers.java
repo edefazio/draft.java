@@ -153,15 +153,21 @@ public class $modifiers
      /**
      * Returns the first Statement that matches the 
      * @param astNode the 
+     * @param _modsMatchFn 
      * @return 
      */
     @Override
-    public _modifiers firstIn( Node astNode ){
+    public _modifiers firstIn( Node astNode, Predicate<_modifiers> _modsMatchFn){
         Optional<Node> f =                 
-            astNode.findFirst( Node.class, 
-                n -> (n instanceof NodeWithModifiers) 
-                && select((NodeWithModifiers)n) != null 
-            );         
+            astNode.findFirst( 
+                Node.class, 
+                n -> {
+                    if(n instanceof NodeWithModifiers){
+                        Select sel = select( (NodeWithModifiers)n );
+                        return sel != null && _modsMatchFn.test( sel._mods );
+                    }
+                    return false;
+                });         
         
         if( f.isPresent()){
             return _modifiers.of( (NodeWithModifiers)f.get());
@@ -174,6 +180,7 @@ public class $modifiers
      * @param astNode
      * @return 
      */
+    @Override
     public Select selectFirstIn( Node astNode ){
         Optional<Node> f =                 
             astNode.findFirst( Node.class, 
@@ -197,6 +204,7 @@ public class $modifiers
         return selectFirstIn( _n.ast() );
     }
     
+    /*
     @Override
     public _modifiers firstIn( _node _n ){
         return firstIn( _n.ast() );
@@ -215,7 +223,8 @@ public class $modifiers
         forEachIn( astRootNode, f-> found.add(f) );
         return found;
     }
-
+    */
+    
     @Override
     public List<Select> listSelectedIn(Node astRootNode) {
         List<Select> found = new ArrayList<>();
@@ -244,11 +253,23 @@ public class $modifiers
     }
 
     @Override
-    public <N extends Node> N forEachIn(N astRootNode, Consumer<_modifiers> _nodeActionFn) {
-        forEachIn( (_node)_java.of( astRootNode ), _nodeActionFn );        
-        return astRootNode;
+    public <N extends Node> N forEachIn(N astRootNode, Predicate<_modifiers> _modifiersMatchFn, Consumer<_modifiers> _nodeActionFn) {
+        return Walk.in( astRootNode,             
+            Node.class, 
+            n->{
+                if(n instanceof NodeWithModifiers ){
+                    Select sel = select( (NodeWithModifiers)n );
+                    if( sel != null && _modifiersMatchFn.test(sel._mods)){
+                        _nodeActionFn.accept(sel.model());
+                    }                
+                }
+            });
+        
+        //forEachIn( (_node)_java.of( astRootNode ), _nodeActionFn );        
+        //return astRootNode;
     }
 
+    /*
     @Override
     public <N extends _node> N forEachIn(N _n, Consumer<_modifiers> _nodeActionFn) {
         return Walk.in( _n, 
@@ -260,6 +281,7 @@ public class $modifiers
                 }                
             });
     }
+    */
 
     public <N extends Node> N forSelectedIn(N astRootNode, Consumer<Select> selectActionFn) {
         forSelectedIn( (_node)_java.of(astRootNode), selectActionFn );

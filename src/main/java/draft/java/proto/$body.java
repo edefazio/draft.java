@@ -139,23 +139,6 @@ public class $body implements Template<_body>, $proto<_body>, $constructor.$part
         }        
     }
     
-    /*
-    private $body( NodeWithStatements astNodeWithStatements ){
-        this.bodyStmts = astNodeWithStatements.
-    }
-    */
-    
-    /**
-     * 
-     * @param constraint
-     * @return 
-     
-    public $body constraint( Predicate<_body> constraint ){
-        this.constraint = constraint;
-        return this;
-    }
-    */ 
-    
     /**
      * 
      * @param constraint
@@ -422,6 +405,7 @@ public class $body implements Template<_body>, $proto<_body>, $constructor.$part
         return this;
     }
 
+    /*
     @Override
     public _body firstIn( _node _n) {
         return firstIn(_n.ast());
@@ -437,6 +421,30 @@ public class $body implements Template<_body>, $proto<_body>, $constructor.$part
             if(n instanceof NodeWithOptionalBlockStmt){
                 Select sel = select( (NodeWithOptionalBlockStmt)n );
                 return sel != null;
+            }
+            return false;
+            });
+        if( on.isPresent() ){
+            Node node = on.get();
+            if( node instanceof NodeWithBlockStmt ){
+                return _body.of( (NodeWithBlockStmt)node );
+            }
+            return _body.of( (NodeWithOptionalBlockStmt)node );            
+        }
+        return null;
+    }
+    */
+    
+    @Override
+    public _body firstIn(Node astRootNode, Predicate<_body> _bodyMatchFn) {
+        Optional<Node> on = astRootNode.findFirst(Node.class, n-> { 
+            if(n instanceof NodeWithBlockStmt){
+                Select sel = select( (NodeWithBlockStmt)n );
+                return sel != null && _bodyMatchFn.test(sel.body);
+            }
+            if(n instanceof NodeWithOptionalBlockStmt){
+                Select sel = select( (NodeWithOptionalBlockStmt)n );
+                return sel != null  && _bodyMatchFn.test(sel.body);
             }
             return false;
             });
@@ -521,12 +529,14 @@ public class $body implements Template<_body>, $proto<_body>, $constructor.$part
         return null;
     }
 
+    /*
     @Override
-    public List<_body> listIn(Node astRootNode) {
+    public List<_body> listIn(Node astRootNode, Predicate<_body> _bodyMatchFn) {
         List<_body> found = new ArrayList<>();
-        forEachIn(astRootNode, b-> found.add(b));
+        forEachIn(astRootNode, _bodyMatchFn, b-> found.add(b));
         return found;
     }
+    */
 
     @Override
     public List<Select> listSelectedIn(Node astRootNode) {
@@ -633,17 +643,17 @@ public class $body implements Template<_body>, $proto<_body>, $constructor.$part
     }
     
     @Override
-    public <N extends Node> N forEachIn(N astRootNode, Consumer<_body> _bodyActionFn) {
+    public <N extends Node> N forEachIn(N astRootNode, Predicate<_body> _bodyMatchFn, Consumer<_body> _bodyActionFn) {
         astRootNode.walk(Node.class, n->{
             if(n instanceof NodeWithBlockStmt){
                 Select sel = select( (NodeWithBlockStmt)n );
-                if( sel != null ){
+                if( sel != null && _bodyMatchFn.test(sel.body) ){
                     _bodyActionFn.accept( sel.body );
                 }
             }
             if(n instanceof NodeWithOptionalBlockStmt){
                 Select sel = select( (NodeWithOptionalBlockStmt)n );
-                if( sel != null){
+                if( sel != null  && _bodyMatchFn.test(sel.body) ){
                     _bodyActionFn.accept( sel.body );
                 }
             }            
@@ -651,6 +661,7 @@ public class $body implements Template<_body>, $proto<_body>, $constructor.$part
         return astRootNode;
     }
 
+    /*
     @Override
     public <N extends Node> N removeIn(N astRootNode) {
         forEachIn(astRootNode, _b->{
@@ -658,6 +669,7 @@ public class $body implements Template<_body>, $proto<_body>, $constructor.$part
         });
         return astRootNode;
     }
+    */
     
     /**
      * 

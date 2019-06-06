@@ -210,13 +210,13 @@ public class SstmtTest extends TestCase {
             }
         });
         //the easy things should be easy
-        assertTrue( $stmt.first(_c, "assertTrue(true);").getComment().isPresent());
-        assertTrue( $stmt.list(_c, "assertTrue(true);").size() ==1);
+        assertTrue( $stmt.of("assertTrue(true);").firstIn(_c).getComment().isPresent());
+        assertTrue( $stmt.of("assertTrue(true);").listIn(_c).size() ==1);
         
-        $stmt.replace(_c, "assertTrue(true);", "Assert.assertTrue(true);");
-        $stmt.remove(_c, "Assert.assertTrue(true);");
+        $stmt.of("assertTrue(true);").replaceIn(_c, "Assert.assertTrue(true);");
+        $stmt.of("Assert.assertTrue(true);").removeIn(_c);
         
-        assertNull($stmt.first(_c, "Assert.assertTrue(true);"));
+        assertNull($stmt.of("Assert.assertTrue(true);").firstIn(_c));
     }
     
     
@@ -235,9 +235,9 @@ public class SstmtTest extends TestCase {
         assertTrue( $assertTrue.listIn(_c).size() ==1);
         
         $assertTrue.replaceIn(_c, "Assert.assertTrue(true);");
-        $assertTrue.remove(_c, "Assert.assertTrue(true);");
+        $stmt.of("Assert.assertTrue(true);").removeIn(_c);
         
-        assertNull($stmt.first(_c, "Assert.assertTrue(true);"));        
+        assertNull($stmt.of("Assert.assertTrue(true);").firstIn(_c));        
     }
     
     public void test$ProtoWildcardVariablesAndSelect(){
@@ -250,7 +250,7 @@ public class SstmtTest extends TestCase {
             }
         });
         
-        $stmt $assertAny = $stmt.of("assertTrue($any$);");
+        $stmt<Statement> $assertAny = $stmt.of("assertTrue($any$);");
         //this produces the same result just using the lambda as input 
         $assertAny = $stmt.of( (Boolean $any$)->assertTrue($any$));
         
@@ -267,13 +267,13 @@ public class SstmtTest extends TestCase {
         assertTrue( $assertAny.selectFirstIn(_c).args.is("any", true));
         
         //you can statically query for a Select object which wraps the result
-        assertTrue( $stmt.selectFirst(_c, "assertTrue($any$);").astStatement.getComment().isPresent());
-        assertTrue( $stmt.selectList(_c, "assertTrue($any$);").size() ==2);     
+        assertTrue( $stmt.of("assertTrue($any$);").selectFirstIn(_c).astStatement.getComment().isPresent());
+        assertTrue( $stmt.of("assertTrue($any$);").listSelectedIn(_c).size() ==2);     
         
         //System.out.println( $stmt.selectFirst(_c, "System.out.println($any$);") );
         //What is GREAT about Select is that we can look at/verify the wildcard variables 
-        assertTrue( $stmt.selectFirst(_c, "System.out.println($any$);").is("any", "Hello World!"));     
-        assertTrue( $stmt.selectFirst(_c, "assertTrue( $a$ == $b$ );")
+        assertTrue( $stmt.of( "System.out.println($any$);").selectFirstIn(_c).is("any", "Hello World!"));     
+        assertTrue( $stmt.of("assertTrue( $a$ == $b$ );").selectFirstIn(_c)
                 .is("a", 1,"b", 1) );       
         
         //$expr.of(new int[]{1,2,3}).listIn(_c);
@@ -290,30 +290,31 @@ public class SstmtTest extends TestCase {
             }
         });
         //the easy things should be easy
-        assertNotNull( $stmt.first(_c, "assertTrue(true);"));
-        assertTrue( $stmt.list(_c, "assertTrue(true);").size() ==1);
-        assertTrue( $stmt.selectFirst(_c, "assertTrue(true);").astStatement.getComment().isPresent());
-        $stmt.replace(_c, "assertTrue(true);", "Assert.assertTrue(true);");
-        $stmt.remove(_c, "Assert.assertTrue(true);");
+        assertNotNull( $stmt.of("assertTrue(true);").firstIn(_c));
+        assertTrue( $stmt.of("assertTrue(true);").listIn(_c).size() ==1);
+        assertTrue( $stmt.of("assertTrue(true);").selectFirstIn(_c).astStatement.getComment().isPresent());
+        $stmt.of("assertTrue(true);").replaceIn(_c, "Assert.assertTrue(true);");
+        $stmt.of("Assert.assertTrue(true);").removeIn(_c);
         
-        $stmt.first(_c, "assertTrue($any$);");
-        $stmt.of( ()-> assertTrue(true) ).firstIn(_c);
+        $stmt.of("assertTrue($any$);").firstIn(_c);
+        $stmt.of( ()-> assertTrue(true) )
+                .firstIn(_c);
         $stmt.of( ()-> assertTrue(true) ).$("true", "any").firstIn(_c);
         
         $stmt.of( ($any$)-> assertNotNull($any$) ).firstIn(_c);
         
-        $stmt.first(_c, "assertTrue(1==1);" );
-        $stmt.first(_c, "assertTrue( $obj$.equals($obj$) );" );
+        $stmt.of("assertTrue(1==1);").firstIn(_c);
+        $stmt.of("assertTrue( $obj$.equals($obj$) );").firstIn(_c);
         
-        $stmt.first(_c, "assertTrue( $obj$.equals($obj$) );" );
-        $stmt.first(_c, "assertTrue( $a$.equals($b$) );" );
+        $stmt.of("assertTrue( $obj$.equals($obj$) );").firstIn(_c);
+        $stmt.of("assertTrue( $a$.equals($b$) );").firstIn(_c);
         
     }
     
     public void testStaticIsInListLambda(){
         _class _c = _class.of("C");
         
-        assertNull($stmt.first(_c, "System.out.println($any$);" ));
+        assertNull($stmt.of("System.out.println($any$);").firstIn(_c));
         
         _c = _class.of("C", new Object() { 
             void m(){
@@ -323,9 +324,9 @@ public class SstmtTest extends TestCase {
         
 
                 
-        assertNotNull($stmt.first(_c, "System.out.println($any$);" ));
+        assertNotNull($stmt.of("System.out.println($any$);").firstIn(_c));
         
-        assertNotNull($stmt.selectList(_c, "System.out.println($any$);").get(0));
+        assertNotNull($stmt.of("System.out.println($any$);").listSelectedIn(_c).get(0));
         
         assertNotNull( $stmt.of(($any$)->System.out.println($any$)).listIn(_c));
     }
@@ -356,7 +357,7 @@ public class SstmtTest extends TestCase {
         $stmt $s = $stmt.of(($any$)-> System.out.println($any$));
         _class _c = _class.of(L.class);
         assertEquals( 2, $s.listSelectedIn(_c).size());
-        assertEquals( 2, $stmt.list(_c, "System.out.println($any$);" ).size() );
+        assertEquals( 2, $stmt.of("System.out.println($any$);").listIn(_c).size() );
     }
 
     public void testReplaceStmt(){
@@ -377,8 +378,9 @@ public class SstmtTest extends TestCase {
         
         //static replace/ list
         _c = _class.of(L.class);
-        $stmt.replace(_c, "System.out.println($any$);", "System.out.print($any$);");
-        assertEquals( 2, $stmt.list(_c, "System.out.print($any$);").size() );
+        //$stmt.replace(_c, );
+        System.out.println( _c );
+        assertEquals( 2, $stmt.of("System.out.println($any$);").listIn(_c).size() );
         System.out.println( _c );
     }
 

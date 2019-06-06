@@ -154,7 +154,7 @@ public class SsnipTest extends TestCase {
         //System.out.println( _c );
         
         _c = _class.of(D.class);
-        $snip.replace( _c, "System.out.println($i$);", "{System.out.println($i$); System.out.println($i$);}" );
+        $snip.of("System.out.println($i$);").replaceIn( _c, "{System.out.println($i$); System.out.println($i$);}" );
         //System.out.println( _c );
 
         assertTrue( _c.getMethod("g").getBody().is( 

@@ -194,15 +194,20 @@ public class $parameters implements Template<_parameters>, $proto<_parameters>,
     /**
      * Returns the first Statement that matches the 
      * @param astNode the 
+     * @param _parametersMatchFn 
      * @return 
      */
     @Override
-    public _parameters firstIn( Node astNode ){
+    public _parameters firstIn( Node astNode, Predicate<_parameters> _parametersMatchFn){
         Optional<Node> f =                 
             astNode.findFirst( Node.class, 
-                    n -> (n instanceof NodeWithParameters) 
-                    && matches((NodeWithParameters)n) 
-            );         
+                n ->{
+                    if (n instanceof NodeWithParameters){ 
+                        Select sel = select( (NodeWithParameters)n);
+                        return sel != null && _parametersMatchFn.test(sel._params);                        
+                    }
+                    return false;
+                });         
         
         if( f.isPresent()){
             return _parameters.of( (NodeWithParameters)f.get());
@@ -230,6 +235,7 @@ public class $parameters implements Template<_parameters>, $proto<_parameters>,
         return null;
     }
     
+    /*
     @Override
     public List<_parameters> listIn( _node _n) {
         List<_parameters> found = new ArrayList<>();
@@ -244,6 +250,8 @@ public class $parameters implements Template<_parameters>, $proto<_parameters>,
         return found;
     }
 
+     */
+    
     @Override
     public List<Select> listSelectedIn(Node astRootNode) {
         List<Select> found = new ArrayList<>();
@@ -258,6 +266,7 @@ public class $parameters implements Template<_parameters>, $proto<_parameters>,
         return found;
     }
 
+    /*
     @Override
     public <N extends Node> N removeIn(N astRootNode) {
         return forEachIn( astRootNode, n-> n.forEach( p-> p.ast().remove() ) );
@@ -267,6 +276,7 @@ public class $parameters implements Template<_parameters>, $proto<_parameters>,
     public <N extends _node> N removeIn(N _n) {
         return forEachIn( _n, n-> n.forEach( p-> p.ast().remove() ) );
     }
+    */
 
     /**
      * 
@@ -320,11 +330,11 @@ public class $parameters implements Template<_parameters>, $proto<_parameters>,
     }
     
     @Override
-    public <N extends Node> N forEachIn(N astRootNode, Consumer<_parameters> _parametersActionFn) {        
+    public <N extends Node> N forEachIn(N astRootNode, Predicate<_parameters> _parametersMatchFn, Consumer<_parameters> _parametersActionFn) {        
         astRootNode.walk( Node.class, n-> {            
             if( n instanceof NodeWithParameters){
                 Select sel = select(_parameters.of( (NodeWithParameters)n ) );
-                if( sel != null ){
+                if( sel != null && _parametersMatchFn.test(sel._params)){
                     _parametersActionFn.accept(sel._params);
                 }
             }
@@ -332,6 +342,7 @@ public class $parameters implements Template<_parameters>, $proto<_parameters>,
         return astRootNode;        
     }
 
+    /*
     @Override
     public <N extends _node> N forEachIn(N _n, Consumer<_parameters> _parametersActionFn) {
         Walk.in(_n, _parameters.class, n-> {            
@@ -342,6 +353,7 @@ public class $parameters implements Template<_parameters>, $proto<_parameters>,
         });        
         return _n;        
     }
+    */
     
     /**
      * 

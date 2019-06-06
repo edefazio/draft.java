@@ -63,7 +63,7 @@ public class StypeRefTest extends TestCase {
             }            
         });
         
-        $typeRef.replace(_c, OldT.class, NewT.class );
+        $typeRef.of(OldT.class).replaceIn(_c, NewT.class );
         System.out.println( _c );
         
         //assertEquals( 12, $typeRef.of(OldT.class).listIn(_c).size() );
@@ -137,15 +137,15 @@ public class StypeRefTest extends TestCase {
             }
         }
         _class _c = _class.of(F.class);
-        assertEquals("expected (4) instance of int in _c", 4, $typeRef.list(_c, int.class).size());
+        assertEquals("expected (4) instance of int in _c", 4, $typeRef.of(int.class).listIn(_c).size());
         
-        $typeRef.replace(_c, int.class, float.class); //change all int TYPE references to float
+        $typeRef.of(int.class).replaceIn(_c, float.class); //change all int TYPE references to float
         //System.out.println( _c );
-        assertEquals("expected (0) instance of int in _c", 0, $typeRef.list(_c, int.class).size());
+        assertEquals("expected (0) instance of int in _c", 0, $typeRef.of(int.class).listIn(_c).size());
         assertEquals("expected (4) instance of float in _c", 4, $typeRef.of(float.class).listSelectedIn(_c).size());
 
         //find all float types in _c and replaceIn them with double
-        $typeRef.replace(_c, float.class, double.class);
+        $typeRef.of(float.class).replaceIn(_c, double.class);
         assertEquals("expected (4) instance of double in _class", 4, $typeRef.of(double.class).listSelectedIn(_c).size());
     }
     
@@ -218,8 +218,8 @@ public class StypeRefTest extends TestCase {
         //$typeRef $anyTreeSet = $typeRef.of("TreeSet<$any$>");
         _class _c = _class.of(FF.class);
         //verify I can find a
-        assertEquals(5, $typeRef.list(_c, "TreeSet<$any$>").size());
-        $typeRef.replace(_c, "TreeSet<$any$>", "HashSet<$any$>");
+        assertEquals(5, $typeRef.of("TreeSet<$any$>").listIn(_c).size());
+        $typeRef.of("TreeSet<$any$>").replaceIn(_c, "HashSet<$any$>");
         //$anyTreeSet.replaceIn(_c, $typeRef.of("HashSet<$any$>") ); //convert TreeSet to HashSet
         System.out.println( _c );
     }

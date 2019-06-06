@@ -54,7 +54,7 @@ public final class $stmt<T extends Statement>
      * @param _n where to look
      * @param constraint
      * @return true if found else false
-     */
+     
     public static final <T extends Statement> T first( _node _n, Predicate<T> constraint ){
         Optional<Node> os = _n.ast().stream().filter(n -> n instanceof Statement 
                 &&  constraint.test( (T)n) )
@@ -71,7 +71,7 @@ public final class $stmt<T extends Statement>
      * @param _n where to look
      * @param stmtClass
      * @return true if found else false
-     */
+     
     public static final <T extends Statement> T first( _node _n, Class<T> stmtClass){
         Optional<Node> os = _n.ast().stream().filter(n -> stmtClass.isAssignableFrom(n.getClass()))
                 .findFirst();
@@ -88,7 +88,7 @@ public final class $stmt<T extends Statement>
      * @param stmtClass
      * @param constraint
      * @return true if found else false
-     */
+     
     public static final <T extends Statement> T first( _node _n, Class<T> stmtClass, Predicate<T> constraint ){
         Optional<Node> os = _n.ast().stream().filter(n -> stmtClass.isAssignableFrom(n.getClass()) 
                 &&  constraint.test( (T)n) )
@@ -105,7 +105,7 @@ public final class $stmt<T extends Statement>
      * @param _n where to look
      * @param pattern the code of the Statement we're looking for
      * @return true if found else false
-     */
+     
     public static final <T extends Statement> T first( _node _n, String... pattern ){
         return (T)$stmt.of(pattern).firstIn(_n);
     }
@@ -116,7 +116,7 @@ public final class $stmt<T extends Statement>
      * @param _n where to look
      * @param proto the code of the Statement we're looking for
      * @return true if found else false
-     */
+     
     public static final <T extends Statement> T first( _node _n, T proto ){
         return (T)$stmt.of(proto).firstIn(_n);
     }
@@ -128,7 +128,7 @@ public final class $stmt<T extends Statement>
      * @param pattern the code of the Statement we're looking for
      * @param constraint
      * @return true if found else false
-     */
+     
     public static final <T extends Statement> T first( _node _n, String pattern, Predicate<T>constraint){
         return (T)$stmt.of(pattern).addConstraint(constraint).firstIn(_n);
     }
@@ -140,7 +140,7 @@ public final class $stmt<T extends Statement>
      * @param proto the code of the Statement we're looking for
      * @param constraint
      * @return true if found else false
-     */
+     
     public static final <T extends Statement> T first( _node _n, T proto, Predicate<T>constraint){
         return (T)$stmt.of(proto).addConstraint(constraint).firstIn(_n);
     }
@@ -151,7 +151,7 @@ public final class $stmt<T extends Statement>
      * @param _n where to look
      * @param proto the code of the Statement we're looking for
      * @return true if found else false
-     */
+     
     public static final <T extends Statement> T first( _node _n, $stmt<T> proto){
         return proto.firstIn(_n);
     }    
@@ -162,7 +162,7 @@ public final class $stmt<T extends Statement>
      * @param _n where to look
      * @param pattern the code of the Statement we're looking for
      * @return true if found else false
-     */
+     
     public static final <T extends Statement> Select<T> selectFirst( _node _n, String... pattern ){
         return (Select<T>)$stmt.of(pattern).selectFirstIn(_n);
     }
@@ -174,7 +174,7 @@ public final class $stmt<T extends Statement>
      * @param pattern the code of the Statement we're looking for
      * @param constraint
      * @return true if found else false
-     */
+     
     public static final <T extends Statement> Select<T> selectFirst( _node _n, String pattern, Predicate<T>constraint ){
         return (Select<T>)$stmt.of(pattern).addConstraint(constraint).selectFirstIn(_n);
     }
@@ -185,7 +185,7 @@ public final class $stmt<T extends Statement>
      * @param _n where to look
      * @param proto the code of the Statement we're looking for
      * @return true if found else false
-     */
+     
     public static final <T extends Statement> Select<T> selectFirst( _node _n, T proto ){
         return (Select<T>)$stmt.of(proto).selectFirstIn(_n);
     }
@@ -197,7 +197,7 @@ public final class $stmt<T extends Statement>
      * @param proto the code of the Statement we're looking for
      * @param constraint
      * @return true if found else false
-     */
+     
     public static final <T extends Statement> Select<T> selectFirst( _node _n, T proto, Predicate<T> constraint){
         return (Select<T>)$stmt.of(proto).addConstraint(constraint).selectFirstIn(_n);
     }
@@ -208,7 +208,7 @@ public final class $stmt<T extends Statement>
      * @param _n where to look
      * @param proto the code of the Statement we're looking for
      * @return true if found else false
-     */
+     
     public static final <T extends Statement> Select<T> selectFirst( _node _n, $stmt<T> proto){
         return proto.selectFirstIn(_n);
     }
@@ -219,7 +219,7 @@ public final class $stmt<T extends Statement>
      * @param _n where to look
      * @param proto the prototype of the Statement we're looking for
      * @return a List of Select<T>
-     */
+     
     public static final <T extends Statement> List<Select<T>> selectList( _node _n, $stmt<T> proto){
         return proto.listSelectedIn(_n);
     }
@@ -231,7 +231,7 @@ public final class $stmt<T extends Statement>
      * @param _n
      * @param pattern
      * @return 
-     */
+     
     public static final <T extends Statement, N extends _node> List<Select<T>> selectList( N _n, String pattern ){
         return $stmt.of(pattern).listSelectedIn(_n);
     }
@@ -244,7 +244,7 @@ public final class $stmt<T extends Statement>
      * @param pattern
      * @param constraint
      * @return 
-     */
+     
     public static final <T extends Statement, N extends _node> List<Select<T>> selectList( N _n, String pattern, Predicate<T>constraint){
         return $stmt.of(pattern).addConstraint(constraint).listSelectedIn(_n);
     }
@@ -255,7 +255,7 @@ public final class $stmt<T extends Statement>
      * @param _n where to look
      * @param pattern the code of the Statement we're looking for
      * @return true if found else false
-     */
+     
     public static final <T extends Statement> List<Select<T>> selectList( _node _n, String... pattern ){
         return $stmt.of(pattern).listSelectedIn(_n);
     }
@@ -267,7 +267,7 @@ public final class $stmt<T extends Statement>
      * @param _n
      * @param pattern
      * @return 
-     */
+     
     public static final <N extends _node, T extends Statement> List<T> list( N _n, String... pattern ){
         return $stmt.of(pattern).listIn(_n);
     }
@@ -279,7 +279,7 @@ public final class $stmt<T extends Statement>
      * @param _n
      * @param stmtClass
      * @return 
-     */
+     
     public static final <N extends _node, T extends Statement> List<T> list( N _n, Class<T> stmtClass ){
         return $stmt.of( (s)-> stmtClass.isAssignableFrom(s.getClass()) ).listIn(_n);
     }
@@ -292,7 +292,7 @@ public final class $stmt<T extends Statement>
      * @param pattern
      * @param constraint
      * @return 
-     */
+     
     public static final <N extends _node, T extends Statement> List<T> list( N _n, String pattern, Predicate<T> constraint){
         return $stmt.of(pattern).addConstraint(constraint).listIn(_n);
     }
@@ -304,7 +304,7 @@ public final class $stmt<T extends Statement>
      * @param _n
      * @param proto
      * @return 
-     */
+     
     public static final <N extends _node, T extends Statement> List<T> list( N _n, T proto ){
         return $stmt.of(proto).listIn(_n);
     }
@@ -317,7 +317,7 @@ public final class $stmt<T extends Statement>
      * @param proto
      * @param constraint
      * @return 
-     */
+     
     public static final <N extends _node, T extends Statement> List<T> list( N _n, T proto, Predicate<T> constraint){
         return $stmt.of(proto).addConstraint(constraint).listIn(_n);
     }
@@ -328,7 +328,7 @@ public final class $stmt<T extends Statement>
      * @param _n
      * @param proto
      * @return 
-     */
+     
     public static final <N extends _node> List<Statement> list( N _n, $stmt proto ){
         return proto.listIn(_n);
     }
@@ -341,7 +341,7 @@ public final class $stmt<T extends Statement>
      * @param stmtClass
      * @param statementFn
      * @return 
-     */
+     
     public static final <N extends _node, T extends Statement> N forEach( N _n, Class<T>stmtClass, Consumer<T> statementFn){
         return (N)$stmt.of( (s)-> stmtClass.isAssignableFrom(s.getClass()) ).forEachIn(_n, statementFn);
     }
@@ -354,7 +354,7 @@ public final class $stmt<T extends Statement>
      * @param pattern
      * @param statementFn
      * @return 
-     */
+     
     public static final <N extends _node, T extends Statement> N forEach( N _n, String pattern, Consumer<T> statementFn){
         return (N)$stmt.of(pattern).forEachIn(_n, statementFn);
     }
@@ -368,7 +368,7 @@ public final class $stmt<T extends Statement>
      * @param constraint
      * @param statementFn
      * @return 
-     */
+     
     public static final <N extends _node, T extends Statement> N forEach( N _n, String pattern, Predicate<T> constraint, Consumer<T> statementFn){
         return (N)$stmt.of(pattern).addConstraint(constraint).forEachIn(_n, statementFn);
     }
@@ -381,7 +381,7 @@ public final class $stmt<T extends Statement>
      * @param proto
      * @param statementFn
      * @return 
-     */
+     
     public static final <N extends _node, T extends Statement> N forEach( N _n, T proto , Consumer<T> statementFn){
         return (N)$stmt.of(proto).forEachIn(_n, statementFn);
     }
@@ -395,7 +395,7 @@ public final class $stmt<T extends Statement>
      * @param constraint
      * @param statementFn
      * @return 
-     */
+     
     public static final <N extends _node, T extends Statement> N forEach( N _n, T proto, Predicate<T> constraint, Consumer<T> statementFn){
         return (N)$stmt.of(proto).addConstraint(constraint).forEachIn(_n, statementFn);
     }
@@ -408,7 +408,7 @@ public final class $stmt<T extends Statement>
      * @param proto
      * @param statementFn
      * @return 
-     */
+     
     public static final <N extends _node, T extends Statement> N forEach( N _n, $stmt<T> proto, Consumer<T> statementFn){
         return proto.forEachIn(_n, statementFn);
     }
@@ -421,7 +421,7 @@ public final class $stmt<T extends Statement>
      * @param pattern
      * @param selectActionFn
      * @return 
-     */
+     
     public static final <N extends _node, T extends Statement> N forSelected( N _n, String pattern, Consumer<Select<T>> selectActionFn){
         return (N)$stmt.of(pattern).forEachIn(_n, selectActionFn);
     }
@@ -435,7 +435,7 @@ public final class $stmt<T extends Statement>
      * @param constraint
      * @param selectActionFn
      * @return 
-     */
+     
     public static final <N extends _node, T extends Statement> N forSelected( N _n, String pattern, Predicate<T> constraint, Consumer<Select<T>> selectActionFn){
         return (N)$stmt.of(pattern).addConstraint(constraint).forSelectedIn(_n, selectActionFn);
     }
@@ -448,7 +448,7 @@ public final class $stmt<T extends Statement>
      * @param proto
      * @param selectActionFn
      * @return 
-     */
+     
     public static final <N extends _node, T extends Statement> N forSelected( N _n, T proto , Consumer<Select<T>> selectActionFn){
         return (N)$stmt.of(proto).forSelectedIn(_n, selectActionFn);
     }
@@ -462,7 +462,7 @@ public final class $stmt<T extends Statement>
      * @param constraint
      * @param selectActionFn
      * @return 
-     */
+     
     public static final <N extends _node, T extends Statement> N forSelected( N _n, T proto, Predicate<T> constraint, Consumer<Select<T>> selectActionFn){
         return (N)$stmt.of(proto).addConstraint(constraint).forSelectedIn(_n, selectActionFn);
     }
@@ -475,7 +475,7 @@ public final class $stmt<T extends Statement>
      * @param proto
      * @param selectActionFn
      * @return 
-     */
+     
     public static final <N extends _node, T extends Statement> N forSelected( N _n, $stmt<T> proto, Consumer<Select<T>> selectActionFn){
         return proto.forSelectedIn(_n, selectActionFn);
     }
@@ -487,7 +487,7 @@ public final class $stmt<T extends Statement>
      * @param _n
      * @param proto
      * @return the modified N
-     */
+     
     public static final <N extends _node, T extends Statement> N remove( N _n, T proto ){
         return (N)$stmt.of(proto).removeIn(_n);
     }
@@ -498,7 +498,7 @@ public final class $stmt<T extends Statement>
      * @param _n
      * @param pattern
      * @return 
-     */
+     
     public static final <N extends _node> N remove( N _n, String pattern ){
         return (N)$stmt.of(pattern).removeIn(_n);
     }    
@@ -511,7 +511,7 @@ public final class $stmt<T extends Statement>
      * @param pattern
      * @param constraint
      * @return 
-     */
+     
     public static final <N extends _node, T extends Statement> N remove( N _n, String pattern, Predicate<T> constraint){
         return (N)$stmt.of(pattern).addConstraint(constraint).removeIn(_n);
     }   
@@ -524,7 +524,7 @@ public final class $stmt<T extends Statement>
      * @param proto
      * @param constraint
      * @return 
-     */
+     
     public static final <N extends _node, T extends Statement> N remove( N _n, T proto, Predicate<T> constraint){
         return (N)$stmt.of(proto).addConstraint(constraint).removeIn(_n);
     }   
@@ -536,7 +536,7 @@ public final class $stmt<T extends Statement>
      * @param astNode
      * @param proto
      * @return the modified N
-     */
+     
     public static final <N extends Node, T extends Statement> N remove( N astNode, T proto ){
         return (N)$stmt.of(proto).removeIn(astNode);
     }
@@ -547,7 +547,7 @@ public final class $stmt<T extends Statement>
      * @param astNode
      * @param pattern
      * @return 
-     */
+     
     public static final <N extends Node> N remove( N astNode, String... pattern ){
         return (N)$stmt.of(pattern).removeIn(astNode);
     }    
@@ -560,7 +560,7 @@ public final class $stmt<T extends Statement>
      * @param pattern
      * @param constraint
      * @return 
-     */
+     
     public static final <N extends Node, T extends Statement> N remove( N astNode, String pattern, Predicate<T> constraint){
         return (N)$stmt.of(pattern).addConstraint(constraint).removeIn(astNode);
     }   
@@ -573,7 +573,7 @@ public final class $stmt<T extends Statement>
      * @param protoTarget
      * @param protoReplacement the prototype/statement to replace
      * @return 
-     */
+     
     public static final <N extends _node,T extends Statement> N replace(N _n, T protoTarget, Statement protoReplacement){
         return (N)$stmt.of(protoTarget)
             .replaceIn(_n, $stmt.of(protoReplacement));
@@ -586,20 +586,21 @@ public final class $stmt<T extends Statement>
      * @param targetPattern
      * @param replacePattern
      * @return 
-     */
+     
     public static final <N extends _node> N replace(N _n, String targetPattern, String replacePattern){
         return (N)$stmt.of(targetPattern)
             .replaceIn(_n, $stmt.of(replacePattern));
     }            
+    */
     
     /**
      * 
      * @param ste
      * @return 
      */
-    private static $stmt fromStackTrace( StackTraceElement ste ){
+    private static <S extends Statement> $stmt<S> fromStackTrace( StackTraceElement ste ){
         Statement st = Stmt.from( ste );
-        return new $stmt( st );
+        return new $stmt( (S)st );
     }
 
     /**
@@ -607,8 +608,8 @@ public final class $stmt<T extends Statement>
      * @param <T>
      * @param proto
      * @return 
-     */ 
-    public static <T extends Object> $stmt of( Expr.Command proto ){
+     */
+    public static <S extends Statement> $stmt<S> of( Expr.Command proto ){
         StackTraceElement ste = Thread.currentThread().getStackTrace()[2];
         return fromStackTrace( ste );
     }
@@ -619,7 +620,7 @@ public final class $stmt<T extends Statement>
      * @param proto
      * @return 
      */
-    public static <T extends Object> $stmt of( Consumer<T> proto ){
+    public static <T extends Object, S extends Statement> $stmt<S> of( Consumer<T> proto ){
         StackTraceElement ste = Thread.currentThread().getStackTrace()[2];
         return fromStackTrace( ste );
     } 
@@ -631,7 +632,7 @@ public final class $stmt<T extends Statement>
      * @param proto
      * @return 
      */
-    public static <T extends Object, U extends Object> $stmt of( BiConsumer<T,U> proto ){
+    public static <T extends Object, U extends Object, S extends Statement> $stmt<S> of( BiConsumer<T,U> proto ){
         StackTraceElement ste = Thread.currentThread().getStackTrace()[2];
         return fromStackTrace( ste );
     }
@@ -644,7 +645,7 @@ public final class $stmt<T extends Statement>
      * @param proto
      * @return 
      */
-    public static <T extends Object, U extends Object, V extends Object> $stmt of(TriConsumer<T, U, V> proto ){
+    public static <T extends Object, U extends Object, V extends Object, S extends Statement> $stmt<S> of(TriConsumer<T, U, V> proto ){
         StackTraceElement ste = Thread.currentThread().getStackTrace()[2];
         return fromStackTrace( ste );
     }
@@ -658,7 +659,7 @@ public final class $stmt<T extends Statement>
      * @param proto
      * @return 
      */
-    public static <T extends Object, U extends Object, V extends Object, X extends Object> $stmt of(QuadConsumer<T, U, V, X> proto ){
+    public static <T extends Object, U extends Object, V extends Object, X extends Object, S extends Statement> $stmt<S> of(QuadConsumer<T, U, V, X> proto ){
         StackTraceElement ste = Thread.currentThread().getStackTrace()[2];
         return fromStackTrace( ste );
     }
@@ -667,12 +668,12 @@ public final class $stmt<T extends Statement>
      * 
      * @return 
      */
-    public static $stmt any(){
+    public static $stmt<Statement> any(){
         return of();
     }
     
     /** Will match ANY statement, or empty statement*/
-    public static $stmt of(){
+    public static <S extends Statement> $stmt<S> of(){
         return new $stmt( Statement.class, t-> true );
     }
         
@@ -681,7 +682,7 @@ public final class $stmt<T extends Statement>
      * @param pattern
      * @return 
      */
-    public static $stmt of(String...pattern ){
+    public static <S extends Statement> $stmt<S> of(String...pattern ){
         Statement st = Stmt.of(pattern);
         return new $stmt( st );
     }
@@ -691,7 +692,7 @@ public final class $stmt<T extends Statement>
      * @param astProto
      * @return 
      */ 
-    public static $stmt of(Statement astProto ){
+    public static <S extends Statement> $stmt of(Statement astProto ){
         return new $stmt<>(astProto);
     }
      
@@ -722,8 +723,6 @@ public final class $stmt<T extends Statement>
     public static $stmt<AssertStmt> assertStmt(String pattern, Predicate<AssertStmt> constraint) {
         return new $stmt( Stmt.assertStmt(pattern) ).addConstraint(constraint);
     }
-    
-    
     
     /**
      * Returns a prototype that matches ANY assertStmt
@@ -807,8 +806,7 @@ public final class $stmt<T extends Statement>
     public static $stmt<BreakStmt> breakStmt(String pattern, Predicate<BreakStmt> constraint) {
         return new $stmt( Stmt.breakStmt(pattern)).addConstraint(constraint);
     }
-    
-    
+        
     /**
      * Returns a prototype that matches ANY continueStmt
      * @return 
@@ -932,7 +930,6 @@ public final class $stmt<T extends Statement>
         return new $stmt( Stmt.ctorInvocationStmt(pattern)).addConstraint(constraint);
     }
     
-
     /** 
      * i.e."s += t;" 
      * @return 
@@ -948,8 +945,8 @@ public final class $stmt<T extends Statement>
      */
     public static $stmt<ExpressionStmt> expressionStmt( Predicate<ExpressionStmt> constraint) {
         return new $stmt( Stmt.expressionStmt("a += t;"))
-                .$("a += t;", "any")
-                .addConstraint(constraint);
+            .$("a += t;", "any")
+            .addConstraint(constraint);
     }
     
     /** 
@@ -986,8 +983,8 @@ public final class $stmt<T extends Statement>
      */
     public static $stmt<ForStmt> forStmt( Predicate<ForStmt> constraint ) {
         return new $stmt( Stmt.forStmt("for(int i=0;i<1;i++){ a(); }"))
-                .$(Stmt.forStmt("for(int i=0;i<1;i++){ a(); }"), "any")
-                .addConstraint(constraint);
+            .$(Stmt.forStmt("for(int i=0;i<1;i++){ a(); }"), "any")
+            .addConstraint(constraint);
     }
     
     /** 
@@ -1024,8 +1021,8 @@ public final class $stmt<T extends Statement>
      */
     public static $stmt<ForEachStmt> forEachStmt( Predicate<ForEachStmt> constraint) {
         return new $stmt( Stmt.forEachStmt("for(int i:arr){}"))
-                .$(Stmt.forEachStmt("for(int i:arr){}"), "any")
-                .addConstraint(constraint);
+            .$(Stmt.forEachStmt("for(int i:arr){}"), "any")
+            .addConstraint(constraint);
     }
     
     /** 
@@ -1062,8 +1059,8 @@ public final class $stmt<T extends Statement>
      */
     public static $stmt<IfStmt> ifStmt(Predicate<IfStmt> constraint) {
         return new $stmt( Stmt.ifStmt("if(a){ b(); }"))
-                .$(Stmt.of("if(a){ b();}"), "any")
-                .addConstraint(constraint);
+            .$(Stmt.of("if(a){ b();}"), "any")
+            .addConstraint(constraint);
     }
     
     /** 
@@ -1128,8 +1125,7 @@ public final class $stmt<T extends Statement>
      */
     public static $stmt<LocalClassDeclarationStmt> localClassStmt() {
         return new $stmt( LocalClassDeclarationStmt.class, "$localClass$");
-    }
-    
+    }    
     
     /**
      * i.e."class C{ int a, b; }"
@@ -1426,17 +1422,6 @@ public final class $stmt<T extends Statement>
         return this;
     }
     
-    /**
-     * 
-     * @param constraint
-     * @return 
-     
-    public $stmt constraint( Predicate<T> constraint){
-        this.constraint = constraint;
-        return this;
-    }
-    */ 
-    
     @Override
     public T fill(Object...values){
         //if( this.commentPattern != null ){
@@ -1465,11 +1450,6 @@ public final class $stmt<T extends Statement>
         String exprString = expr.toString();
         return $(exprString, $name);
     }
-    
-
-    
-    
-    
     
     /**
      * WE need to have custom logic to find the statements WITHIN statements...
@@ -1620,23 +1600,16 @@ public final class $stmt<T extends Statement>
      */
     public boolean matches( Statement astStmt ){        
         Select sel = select(astStmt);
-        //System.out.println( "SEL "+sel);
         return sel != null;
     }
 
     @Override
-    public List<String> list$(){
-        //if( this.commentPattern != null ){
-        //    return Stencil.of(commentPattern, stmtPattern).list$();
-        //}
+    public List<String> list$(){        
         return this.stmtPattern.list$();
     }
 
     @Override
     public List<String> list$Normalized(){
-        //if( this.commentPattern != null ){
-         //   return Stencil.of(commentPattern, stmtPattern).list$Normalized();
-        //}
         return this.stmtPattern.list$Normalized();
     }
 
@@ -1681,12 +1654,7 @@ public final class $stmt<T extends Statement>
      * @return 
      */
     public $stmt hardcode$( Translator translator, Tokens kvs ) {
-        //if( this.commentPattern != null ){
-        //    this.commentPattern = this.commentPattern.hardcode$(translator, kvs);
-        //    this.stmtPattern = this.stmtPattern.hardcode$(translator,kvs);
-        //} else {
         this.stmtPattern = this.stmtPattern.hardcode$(translator, kvs);
-        //}
         return this;
     }
 
@@ -1729,86 +1697,27 @@ public final class $stmt<T extends Statement>
         if( ! constraint.test(t)){
             return null;
         }
-        //Tokens ts = new Tokens();
-        //On the fence with this comment madness
-        //if( this.commentPattern != null && t.getComment().isPresent()){
-        //    Tokens ct = this.commentPattern.deconstruct(t.getComment().toString());
-        //    if( ct == null ){
-        //        return null;
-        //    }
-         //   ts.putAll(ct);            
-        //}
-        //String withoutComment = ;
         Tokens st = this.stmtPattern.deconstruct(astStmt.toString(NO_COMMENTS));
         if( st == null ){
             return null;
         }      
-        return new Select( astStmt, $args.of(st) );
-        //if( ts.isConsistent(st)){
-        //    ts.putAll(st);           
-        //}
-        
-        /*
-        if( statementClass.isAssignableFrom(astStmt.getClass())){
-            if( ! constraint.test((T) astStmt)){
-                return null;
-            }
-            if( !this.stmtPattern.getTextBlanks().hasBlanks()){ //if it's a static template
-                if( astStmt.getComment().isPresent() ){ //removeIn any comments before checking                    
-                    Tokens tks = stmtPattern.deconstruct(astStmt.toString());
-                    if( tks != null ){
-                        return new Select( astStmt, $args.of(tks) );
-                        //return $args.of(tks);
-                    }
-                    //if the statement HAS a comment and the template does not
-                    Statement cpy = astStmt.clone();
-                    cpy.removeComment();
-                    if( cpy.toString().trim().equals(stmtPattern.getTextBlanks().getFixedText().trim())){
-                        //return $args.of(Tokens.of());
-                        return new Select( astStmt, $args.of( new Tokens()) );
-                    }
-                }else if( astStmt.toString().equals(stmtPattern.getTextBlanks().getFixedText())){
-                    return new Select( astStmt, $args.of( new Tokens()) );
-                    //return $args.of(Tokens.of());
-                }
-                return null;
-            }
-            if( !astStmt.getComment().isPresent() ) {
-                Tokens ts = stmtPattern.deconstruct(astStmt.toString().trim());
-                if( ts != null ){
-                    //return $args.of(ts);
-                    return new Select( astStmt, $args.of(ts) );
-                }
-            } else{
-                Tokens ts = stmtPattern.deconstruct(astStmt.toString());
-                if( ts != null ){
-                    //return $args.of(ts);
-                    return new Select( astStmt, $args.of(ts) );
-                }
-                Statement cpy = astStmt.clone();
-                cpy.removeComment();
-                ts = stmtPattern.deconstruct(cpy.toString().trim());
-                if( ts != null ){
-                    return new Select( astStmt, $args.of(ts) );
-                }
-            }
-        }
-        */
-        //return null;        
+        return new Select( astStmt, $args.of(st) );        
     }
 
+    /*
     @Override
-    public List<T> listIn(Node astNode){
+    public List<T> listIn(Node astNode, Predicate<T> statementMatchFn){
         List<T>sts = new ArrayList<>();
         astNode.walk( this.statementClass,
             st -> {
                 Select s = select( (Statement)st);
-                if( s != null ){
+                if( s != null && statementMatchFn.test( (T)s.astStatement ) ){
                     sts.add( (T)s.astStatement );
                 }
             });
         return sts;
     }
+    */
 
     /**
      * Returns the first Statement that matches the 
@@ -1878,7 +1787,7 @@ public final class $stmt<T extends Statement>
      * Returns the first Statement that matches the 
      * @param _n
      * @return 
-     */
+     
     @Override
     public T firstIn( _node _n ){
         Optional<T> f = _n.ast().findFirst(this.statementClass, s -> this.matches(s) );         
@@ -1887,21 +1796,27 @@ public final class $stmt<T extends Statement>
         }
         return null;
     }
+    * */
 
     /**
      * Returns the first Statement that matches the 
      * @param astNode the 
+     * @param statementMatchFn 
      * @return 
      */
     @Override
-    public T firstIn( Node astNode ){
-        Optional<T> f = astNode.findFirst(this.statementClass, s -> this.matches(s) );         
+    public T firstIn( Node astNode, Predicate<T> statementMatchFn ){
+        Optional<T> f = astNode.findFirst(this.statementClass, s ->{
+            Select sel = select(s);
+            return sel != null && statementMatchFn.test((T)sel.astStatement);
+        });         
         if( f.isPresent()){
             return f.get();
         }
         return null;
     }    
     
+    /*
     @Override
     public List<T> listIn(_node _n ){
         List<T>sts = new ArrayList<>();
@@ -1913,17 +1828,20 @@ public final class $stmt<T extends Statement>
         });
         return sts;
     }
-
+    */
+    
     @Override
-    public <N extends Node> N forEachIn(N astNode, Consumer<T> statementActionFn){
+    public <N extends Node> N forEachIn(N astNode, Predicate<T> statementMatchFn, Consumer<T> statementActionFn){
         astNode.walk(this.statementClass, e-> {                        
-            if( select(e)  != null ){
+            Select sel = select(e);
+            if( sel != null && statementMatchFn.test((T)sel.astStatement) ) {
                 statementActionFn.accept( e);
             }
         });
         return astNode;
     }
 
+    /*
     @Override
     public <N extends _node> N forEachIn(N _n, Consumer<T> statementActionFn){
         Walk.in(_n, this.statementClass, e->{
@@ -1934,7 +1852,8 @@ public final class $stmt<T extends Statement>
         });
         return _n;
     }
-
+    */
+    
     /**
      * 
      * @param <N>
@@ -2117,12 +2036,13 @@ public final class $stmt<T extends Statement>
      * 
      * @param clazz
      * @return 
-     */
+     
     @Override
     public _type removeIn(Class clazz){
         return removeIn(_type.of(clazz) );
     }
-    
+    */ 
+    /*
     @Override
     public <N extends _node> N removeIn(N _n ){
         this.listSelectedIn(_n).forEach(s-> s.astStatement.removeForced() );
@@ -2134,7 +2054,7 @@ public final class $stmt<T extends Statement>
         this.listSelectedIn(astNode).forEach(s-> s.astStatement.removeForced() );
         return astNode;
     }
-
+    */
     /**
      * 
      * @param clazz

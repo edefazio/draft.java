@@ -31,7 +31,7 @@ public class $parameter implements Template<_parameter>, $proto<_parameter> {
      * @param pattern
      * @param parameterActionFn
      * @return 
-     */
+     
     public static _type forEach(Class clazz, String pattern, Consumer<_parameter> parameterActionFn ){
         return forEach(_type.of(clazz), pattern, parameterActionFn);
     }
@@ -43,7 +43,7 @@ public class $parameter implements Template<_parameter>, $proto<_parameter> {
      * @param pattern
      * @param parameterActionFn
      * @return 
-     */
+     
     public static <N extends _node> N forEach(N _n, String pattern, Consumer<_parameter> parameterActionFn ){
         return $parameter.of(pattern).forEachIn(_n, parameterActionFn);        
     }
@@ -55,7 +55,7 @@ public class $parameter implements Template<_parameter>, $proto<_parameter> {
      * @param pattern
      * @param parameterActionFn
      * @return 
-     */
+     
     public static <N extends Node> N forEach(N _n, String pattern, Consumer<_parameter> parameterActionFn ){
         return $parameter.of(pattern).forEachIn(_n, parameterActionFn);        
     }    
@@ -66,7 +66,7 @@ public class $parameter implements Template<_parameter>, $proto<_parameter> {
      * @param pattern
      * @param selectActionFn
      * @return 
-     */
+     
     public static _type forSelected(Class clazz, String pattern, Consumer<Select> selectActionFn ){
         return forSelected(_type.of(clazz), pattern, selectActionFn);
     }
@@ -78,7 +78,7 @@ public class $parameter implements Template<_parameter>, $proto<_parameter> {
      * @param pattern
      * @param selectActionFn
      * @return 
-     */
+     
     public static <N extends _node> N forSelected(N _n, String pattern, Consumer<Select> selectActionFn ){
         return $parameter.of(pattern).forSelectedIn(_n, selectActionFn);        
     }
@@ -90,7 +90,7 @@ public class $parameter implements Template<_parameter>, $proto<_parameter> {
      * @param pattern
      * @param selectActionFn
      * @return 
-     */
+     
     public static <N extends Node> N forSelected(N _n, String pattern, Consumer<Select> selectActionFn ){
         return $parameter.of(pattern).forSelectedIn(_n, selectActionFn);        
     } 
@@ -102,7 +102,7 @@ public class $parameter implements Template<_parameter>, $proto<_parameter> {
      * @param selectConstraint
      * @param selectActionFn
      * @return 
-     */
+     
     public static _type forSelected(Class clazz, String pattern, Predicate<Select> selectConstraint, Consumer<Select> selectActionFn ){
         return forSelected(_type.of(clazz), pattern,selectConstraint, selectActionFn);
     }
@@ -115,7 +115,7 @@ public class $parameter implements Template<_parameter>, $proto<_parameter> {
      * @param selectConstraint
      * @param selectActionFn
      * @return 
-     */
+     
     public static <N extends _node> N forSelected(N _n, String pattern, Predicate<Select> selectConstraint, Consumer<Select> selectActionFn ){
         return $parameter.of(pattern).forSelectedIn(_n, selectConstraint, selectActionFn);        
     }
@@ -128,7 +128,7 @@ public class $parameter implements Template<_parameter>, $proto<_parameter> {
      * @param selectConstraint
      * @param selectActionFn
      * @return 
-     */
+     
     public static <N extends Node> N forSelected(N _n, String pattern, Predicate<Select> selectConstraint, Consumer<Select> selectActionFn ){
         return $parameter.of(pattern).forSelectedIn(_n, selectConstraint, selectActionFn);        
     } 
@@ -137,7 +137,7 @@ public class $parameter implements Template<_parameter>, $proto<_parameter> {
      * 
      * @param clazz
      * @return 
-     */
+     
     public static List<_parameter> list(Class clazz){
         return of().listIn(clazz);
     }
@@ -147,7 +147,7 @@ public class $parameter implements Template<_parameter>, $proto<_parameter> {
      * @param <N>
      * @param _n
      * @return 
-     */
+     
     public static <N extends _node> List<_parameter> list(N _n){
         return of().listIn(_n);
     }
@@ -157,7 +157,7 @@ public class $parameter implements Template<_parameter>, $proto<_parameter> {
      * @param clazz
      * @param pattern
      * @return 
-     */
+     
     public static List<_parameter> list(Class clazz, String pattern ){
         return list(_type.of(clazz), pattern);
     }
@@ -168,7 +168,7 @@ public class $parameter implements Template<_parameter>, $proto<_parameter> {
      * @param _n
      * @param pattern
      * @return 
-     */
+     
     public static <N extends _node> List<_parameter> list(N _n, String pattern ){
         return $parameter.of(pattern).listIn(_n);        
     }
@@ -179,7 +179,7 @@ public class $parameter implements Template<_parameter>, $proto<_parameter> {
      * @param _n
      * @param pattern
      * @return 
-     */
+     
     public static <N extends Node> List<_parameter> list(N _n, String pattern ){
         return $parameter.of(pattern).listIn(_n );        
     }
@@ -191,10 +191,11 @@ public class $parameter implements Template<_parameter>, $proto<_parameter> {
      * @param pattern
      * @param constraint
      * @return 
-     */
+     
     public static <N extends _node> List<_parameter> list(N _n, String pattern, Predicate<_parameter> constraint){
         return $parameter.of(pattern).addConstraint(constraint).listIn(_n);        
     }
+    */ 
 
     /**
      * 
@@ -203,10 +204,11 @@ public class $parameter implements Template<_parameter>, $proto<_parameter> {
      * @param pattern
      * @param constraint
      * @return 
-     */
+     
     public static <N extends Node> List<_parameter> list(N _n, String pattern, Predicate<_parameter> constraint){
         return $parameter.of(pattern).addConstraint(constraint).listIn(_n );        
     }
+    */ 
     
     /**
      * 
@@ -214,10 +216,11 @@ public class $parameter implements Template<_parameter>, $proto<_parameter> {
      * @param _n
      * @param pattern
      * @return 
-     */
+     
     public static <N extends _node> List<Select> listSelected(N _n, String pattern ){
         return $parameter.of(pattern).listSelectedIn(_n);        
     }
+    */ 
 
     /**
      * 
@@ -225,10 +228,11 @@ public class $parameter implements Template<_parameter>, $proto<_parameter> {
      * @param _n
      * @param pattern
      * @return 
-     */
+     
     public static <N extends Node> List<Select> listSelected(N _n, String pattern ){
         return $parameter.of(pattern).listSelectedIn(_n );        
     }
+    */ 
     
     /**
      * 
@@ -237,10 +241,11 @@ public class $parameter implements Template<_parameter>, $proto<_parameter> {
      * @param pattern
      * @param selectConstraint
      * @return 
-     */
+     
     public static <N extends _node> List<Select> listSelected(N _n, String pattern, Predicate<Select> selectConstraint){
         return $parameter.of(pattern).listSelectedIn( _n, selectConstraint);        
     }
+    */ 
 
     /**
      * 
@@ -249,10 +254,11 @@ public class $parameter implements Template<_parameter>, $proto<_parameter> {
      * @param pattern
      * @param selectConstraint
      * @return 
-     */
+     
     public static <N extends Node> List<Select> listSelected(N _n, String pattern, Predicate<Select> selectConstraint){
         return $parameter.of(pattern).listSelectedIn(_n, selectConstraint );        
     }
+    */ 
     
     /** a constraint to be applied for matching*/
     public Predicate<_parameter> constraint = t->true;
@@ -316,7 +322,10 @@ public class $parameter implements Template<_parameter>, $proto<_parameter> {
         return new $parameter(parts);
     }
     
-    
+    /**
+     * 
+     * @param parts 
+     */
     public $parameter( $part...parts){
         for(int i=0;i<parts.length;i++){
             if( parts[i] instanceof $id){
@@ -387,11 +396,21 @@ public class $parameter implements Template<_parameter>, $proto<_parameter> {
         return new $parameter( _parameter.of(parameter), p->true );
     }
     
+    /**
+     * 
+     * @param type
+     * @param name 
+     */
     public $parameter( $typeRef type, $id name ){
         this( $annos.of(), type, name );
     }
     
-    
+    /**
+     * 
+     * @param annos
+     * @param type
+     * @param name 
+     */
     public $parameter( $annos annos, $typeRef type, $id name ){
         this.annos = annos;
         this.type = type;
@@ -539,17 +558,6 @@ public class $parameter implements Template<_parameter>, $proto<_parameter> {
     }
     
     /**
-     * SET / OVERRIDE the constraint
-     * @param constraint the constraint to set
-     * @return the modified $parameter
-     
-    public $parameter constraint( Predicate<_parameter> constraint ){
-        this.constraint = constraint;
-        return this;
-    }    
-    */
-    
-    /**
      * ADDS an additional matching constraint to the prototype
      * @param constraint a constraint to be added
      * @return the modified prototype
@@ -668,6 +676,7 @@ public class $parameter implements Template<_parameter>, $proto<_parameter> {
         return all.stream().distinct().collect(Collectors.toList());
     }
 
+    /*
     @Override
     public List<_parameter> listIn(_node _n) {
         return Walk.list(_n, _parameter.class, p-> matches(p) );
@@ -683,12 +692,14 @@ public class $parameter implements Template<_parameter>, $proto<_parameter> {
         });
         return found;
     }
+    */
 
     /**
      * 
      * @param clazz
      * @return 
      */
+    @Override
     public List<Select>listSelectedIn( Class clazz){
         return listSelectedIn(_type.of(clazz));
     }
@@ -765,7 +776,7 @@ public class $parameter implements Template<_parameter>, $proto<_parameter> {
      * 
      * @param clazz
      * @return 
-     */
+     
     @Override
     public _type removeIn(Class clazz){
         return removeIn(_type.of(clazz));
@@ -784,18 +795,28 @@ public class $parameter implements Template<_parameter>, $proto<_parameter> {
             p.ast().remove();
         });
     }
-
+    */ 
     
+    /**
+     * 
+     * @param <N>
+     * @param astRootNode
+     * @param _parameterMatchFn
+     * @param _parameterActionFn
+     * @return 
+     */
     @Override
-    public <N extends Node> N forEachIn(N astRootNode, Consumer<_parameter> _parameterActionFn) {        
+    public <N extends Node> N forEachIn(N astRootNode, Predicate<_parameter> _parameterMatchFn, Consumer<_parameter> _parameterActionFn) {        
         astRootNode.walk(Parameter.class, p-> {
-            if( matches(p) ){
+            Select sel = select(p);
+            if( sel != null && _parameterMatchFn.test(sel._param)){
                 _parameterActionFn.accept(_parameter.of(p));
             }
         });
         return astRootNode;
     }
 
+    /*
     @Override
     public <N extends _node> N forEachIn(N _n, Consumer<_parameter> _parameterActionFn) {
         return Walk.in(_n, _parameter.class, p->{
@@ -804,6 +825,7 @@ public class $parameter implements Template<_parameter>, $proto<_parameter> {
             }
         });
     }
+    */
     
     /**
      * 
@@ -919,10 +941,15 @@ public class $parameter implements Template<_parameter>, $proto<_parameter> {
     /**
      * Returns the first _field that matches the pattern and constraint
      * @param astNode the AST Node
+     * @param _parameterMatchFn
      * @return  the first _field that matches (or null if none found)
      */
-    public _parameter firstIn( Node astNode ){
-        Optional<Parameter> p = astNode.findFirst(Parameter.class, s -> this.matches(s) );         
+    @Override
+    public _parameter firstIn( Node astNode, Predicate<_parameter> _parameterMatchFn){
+        Optional<Parameter> p = astNode.findFirst(Parameter.class, s ->{
+            Select sel = select(s);
+            return sel != null && _parameterMatchFn.test( sel._param );
+          });         
         if( p.isPresent()){
             return _parameter.of(p.get());
         }
@@ -934,6 +961,7 @@ public class $parameter implements Template<_parameter>, $proto<_parameter> {
      * @param clazz
      * @return 
      */
+    @Override
     public Select selectFirstIn( Class clazz ){
         return selectFirstIn( _type.of(clazz));
     }
@@ -943,6 +971,7 @@ public class $parameter implements Template<_parameter>, $proto<_parameter> {
      * @param _n the _java node
      * @return  the first _field that matches (or null if none found)
      */
+    @Override
     public Select selectFirstIn( _node _n ){
         Optional<Parameter> p = _n.ast().findFirst(Parameter.class, s -> this.matches(s) );         
         if( p.isPresent()){
@@ -956,6 +985,7 @@ public class $parameter implements Template<_parameter>, $proto<_parameter> {
      * @param astNode the AST Node
      * @return  the first _field that matches (or null if none found)
      */
+    @Override
     public Select selectFirstIn( Node astNode ){
         Optional<Parameter> p = astNode.findFirst(Parameter.class, s -> this.matches(s) );         
         if( p.isPresent()){
@@ -1093,6 +1123,5 @@ public class $parameter implements Template<_parameter>, $proto<_parameter> {
         public _parameter model() {
             return _param;
         }        
-    }
-    
+    }    
 }

@@ -61,9 +61,12 @@ public class $catch implements $proto<CatchClause> {
     }
     
     @Override
-    public CatchClause firstIn(Node astRootNode) {
+    public CatchClause firstIn(Node astRootNode, Predicate<CatchClause> catchMatchFn) {
         Optional<CatchClause> occ = 
-            astRootNode.findFirst(CatchClause.class, cc-> matches(cc));
+            astRootNode.findFirst(CatchClause.class, cc-> {
+                Select sel = select(cc);
+                return sel != null && catchMatchFn.test(cc);
+            });
         if( occ.isPresent() ){
             return occ.get();
         }
@@ -118,12 +121,14 @@ public class $catch implements $proto<CatchClause> {
         return null;
     }
 
+    /*
     @Override
     public List<CatchClause> listIn(Node astRootNode) {
         List<CatchClause> found = new ArrayList<>();
         forEachIn( astRootNode, c-> found.add(c) );
         return found;
     }
+    */
 
     @Override
     public List<Select> listSelectedIn(Node astRootNode) {
@@ -157,10 +162,10 @@ public class $catch implements $proto<CatchClause> {
     }    
         
     @Override
-    public <N extends Node> N forEachIn(N astRootNode, Consumer<CatchClause> nodeActionFn) {
-        astRootNode.walk(CatchClause.class, cc-> {
-                if( matches(cc)){
-                    nodeActionFn.accept(cc);
+    public <N extends Node> N forEachIn(N astRootNode, Predicate<CatchClause> catchMatchFn, Consumer<CatchClause> catchActionFn) {
+        astRootNode.walk(CatchClause.class, cc-> {                
+                if( matches(cc) && catchMatchFn.test(cc)){
+                    catchActionFn.accept(cc);
                 }
             });
         return astRootNode;
@@ -257,10 +262,12 @@ public class $catch implements $proto<CatchClause> {
         return astRootNode;
     }    
 
+    /*
     @Override
     public <N extends Node> N removeIn(N astRootNode) {
         return forEachIn( astRootNode, n -> n.removeForced());
     }
+    */
     
     public boolean matches(String...catchClause){
         return select(catchClause) != null;

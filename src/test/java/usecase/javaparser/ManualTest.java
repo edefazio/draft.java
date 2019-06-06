@@ -1,13 +1,19 @@
 package usecase.javaparser;
 
+import com.github.javaparser.StaticJavaParser;
+import com.github.javaparser.ast.body.BodyDeclaration;
+import draft.java.Ast;
 import draft.java.Walk;
 import draft.java._class;
 import draft.java._method;
 import draft.java.io._io;
 import draft.java.macro._static;
+import draft.java.proto.$annos;
 import draft.java.proto.$stmt;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Target;
 import junit.framework.TestCase;
 
 /**
@@ -122,7 +128,7 @@ public class ManualTest extends TestCase {
         }
         _class _c = _class.of(D.class);
         
-        $stmt.remove(_c, "int a = 20;");
+        $stmt.of("int a = 20;").removeIn(_c);
         
         //BONUS: lets verify the code was removed
         assertTrue( _c.getMethod("foo").getBody().isEmpty());
@@ -151,6 +157,35 @@ public class ManualTest extends TestCase {
         assertNotNull($a.removeIn(_c));
                 
         //find any assignment of the variable a to any value
-        assertNull($stmt.first(_c, "$type$ a = $init$;"));        
+        assertNull($stmt.of("$type$ a = $init$;").firstIn(_c));        
     }
+    
+    
+    @Target({ElementType.TYPE_USE, ElementType.TYPE, ElementType.CONSTRUCTOR, ElementType.FIELD, ElementType.METHOD})
+    @interface TU{
+        
+    }
+    @interface R{
+        
+    }
+    
+    /** Commented out, causing an issue in JavaParser
+    public void testTypeUseAnnos(){
+        //Here, we can show the (5) annotations "could" be
+        @R //on the class
+        class D{
+            @R //on the field
+            public @TU String x = "STR"; //on the field's type
+            
+            @R //on the method
+            public @TU int m(){ return 1; } //on the methods return type            
+        }
+        
+        
+        $annos.any().listIn(D.class).forEach(a -> System.out.println(a.astAnnNode.getClass()+ " "+a.astAnnNode));
+        System.out.println( Ast.type(D.class) );
+        BodyDeclaration bd = StaticJavaParser.parseBodyDeclaration("public @TU String x;");
+        System.out.println("BODY DECL "+bd );
+    }
+    */ 
 }

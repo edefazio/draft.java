@@ -48,7 +48,7 @@ public class SvarTest extends TestCase {
                 String iteratorName = s.get("it").toString();
                 String replaceName = iteratorName+"_"+count.incrementAndGet();
                 System.out.println( "replaceing "+iteratorName+" with "+ replaceName);
-                $node.replace(s.astStatement, iteratorName, replaceName);
+                $node.of(iteratorName).replaceIn(s.astStatement, replaceName);
             });
         
         System.out.println (_c );
@@ -63,7 +63,7 @@ public class SvarTest extends TestCase {
             }
             */
         }
-        System.out.println( $var.list(F.class) );
+        System.out.println( $var.any().listIn(F.class) );
         System.out.println( $parameter.of().firstIn(F.class).getType().ast().getClass() );
         System.out.println( $parameter.of().listIn(F.class));
     }
@@ -82,12 +82,12 @@ public class SvarTest extends TestCase {
                 System.out.println(u + 3);
             }
         }
-        assertEquals( 4, $var.list(Holder.class).size() );
+        assertEquals( 4, $var.any().listIn(Holder.class).size() );
         
         //
-        assertEquals( 1, $var.list(Holder.class, (v)-> v.getInitializer().isPresent()).size() );
-        assertEquals( 1, $var.of().listSelectedIn(Holder.class, s-> s.hasInit()).size() );        
-        assertEquals( 4, $var.list(Holder.class, "int $name$").size() );
+        assertEquals( 1, $var.any().listIn(Holder.class, (v)-> v.getInitializer().isPresent()).size() );
+        assertEquals( 1, $var.any().listSelectedIn(Holder.class, s-> s.hasInit()).size() );        
+        assertEquals( 4, $var.of("int $name$").listIn(Holder.class).size() );
         
         assertEquals( 4, $var.ofType(int.class).listIn(Holder.class).size() );
         
@@ -119,11 +119,11 @@ public class SvarTest extends TestCase {
         //I want to list all var names
         
         List<String> varNames = new ArrayList<>();
-        $var.forEach(_c, vv -> varNames.add(vv.getNameAsString()));        
+        $var.any().forEachIn(_c, vv -> varNames.add(vv.getNameAsString()));        
         System.out.println( varNames );
         
         List<String> typeNames = new ArrayList<>();
-        $var.forEach(_c, vv -> typeNames.add(vv.getTypeAsString()));
+        $var.any().forEachIn(_c, vv -> typeNames.add(vv.getTypeAsString()));
         System.out.println( typeNames );
         
     }

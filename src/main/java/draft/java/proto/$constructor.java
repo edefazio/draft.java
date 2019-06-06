@@ -42,7 +42,7 @@ public class $constructor
      * list all constructors in the clazz
      * @param clazz
      * @return 
-     */
+     
     public static final List<_constructor> list(Class clazz){
         return of().listIn(clazz);
     }
@@ -52,7 +52,7 @@ public class $constructor
      * @param <N>
      * @param _n
      * @return 
-     */
+     
     public static final <N extends _node> List<_constructor> list( N _n ){
         return of().listIn(_n);
     }
@@ -63,7 +63,7 @@ public class $constructor
      * @param _n
      * @param pattern
      * @return 
-     */
+     
     public static final <N extends _node> List<_constructor> list( N _n, String... pattern ){
         return $constructor.of(pattern).listIn(_n);
     }
@@ -74,7 +74,7 @@ public class $constructor
      * @param _n
      * @param _proto
      * @return 
-     */
+     
     public static final <N extends _node> List<_constructor> list( N _n, _constructor _proto ){
         return $constructor.of(_proto).listIn(_n);
     }
@@ -86,7 +86,7 @@ public class $constructor
      * @param pattern
      * @param constraint
      * @return 
-     */
+     
     public static final <N extends _node> List<_constructor> list( N _n, String pattern, Predicate<_constructor> constraint){
         return $constructor.of(pattern, constraint).listIn(_n);
     }
@@ -98,7 +98,7 @@ public class $constructor
      * @param _proto
      * @param constraint
      * @return 
-     */
+     
     public static final <N extends _node> List<_constructor> list( N _n, _constructor _proto, Predicate<_constructor> constraint){
         return $constructor.of(_proto, constraint).listIn(_n);
     }
@@ -108,7 +108,7 @@ public class $constructor
      * @param clazz
      * @param pattern
      * @return 
-     */
+     
     public static final List<_constructor> list( Class clazz, String... pattern ){
         return $constructor.of(pattern).listIn(_type.of(clazz));
     }
@@ -118,7 +118,7 @@ public class $constructor
      * @param clazz
      * @param _proto
      * @return 
-     */
+     
     public static final List<_constructor> list(Class clazz, _constructor _proto ){
         return $constructor.of(_proto).listIn(_type.of(clazz));
     }
@@ -129,7 +129,7 @@ public class $constructor
      * @param proto
      * @param constraint
      * @return 
-     */
+     
     public static final List<_constructor> list( Class clazz, String proto, Predicate<_constructor> constraint){
         return $constructor.of(proto, constraint).listIn(_type.of(clazz) );
     }
@@ -140,7 +140,7 @@ public class $constructor
      * @param _proto
      * @param constraint
      * @return 
-     */
+     
     public static final List<_constructor> list( Class clazz, _constructor _proto, Predicate<_constructor> constraint){
         return $constructor.of(_proto, constraint).listIn(_type.of(clazz) );
     }
@@ -150,7 +150,7 @@ public class $constructor
      * @param clazz
      * @param pattern
      * @return 
-     */
+     
     public static final _constructor first(Class clazz, String... pattern){
         return $constructor.of(pattern).firstIn(_type.of(clazz) );
     }
@@ -160,7 +160,7 @@ public class $constructor
      * @param clazz
      * @param _proto
      * @return 
-     */
+     
     public static final _constructor first(Class clazz, _constructor _proto){
         return $constructor.of(_proto).firstIn(_type.of(clazz) );
     }
@@ -171,7 +171,7 @@ public class $constructor
      * @param pattern
      * @param constraint
      * @return 
-     */
+     
     public static final _constructor first(Class clazz, String pattern, Predicate<_constructor> constraint){
         return $constructor.of(pattern, constraint).firstIn(_type.of(clazz) );
     }
@@ -182,7 +182,7 @@ public class $constructor
      * @param _proto
      * @param constraint
      * @return 
-     */
+     
     public static final _constructor first(Class clazz, _constructor _proto, Predicate<_constructor> constraint){
         return $constructor.of(_proto, constraint).firstIn(_type.of(clazz) );
     }
@@ -193,7 +193,7 @@ public class $constructor
      * @param _n
      * @param pattern
      * @return 
-     */
+     
     public static final <N extends _node> _constructor first(N _n, String... pattern){
         return $constructor.of(pattern).firstIn(_n );
     }
@@ -204,7 +204,7 @@ public class $constructor
      * @param _n
      * @param _proto
      * @return 
-     */
+     
     public static final<N extends _node> _constructor first(N _n, _constructor _proto){
         return $constructor.of(_proto).firstIn(_n );
     }
@@ -216,7 +216,7 @@ public class $constructor
      * @param pattern
      * @param constraint
      * @return 
-     */
+     
     public static final <N extends _node> _constructor first(N _n, String pattern, Predicate<_constructor> constraint){
         return $constructor.of(pattern, constraint).firstIn(_n );
     }
@@ -228,7 +228,7 @@ public class $constructor
      * @param _proto
      * @param constraint
      * @return 
-     */
+     
     public static final <N extends _node> _constructor first(N _n, _constructor _proto, Predicate<_constructor> constraint){
         return $constructor.of(_proto, constraint).firstIn(_n );
     }
@@ -238,7 +238,7 @@ public class $constructor
      * @param clazz
      * @param pattern
      * @return 
-     */
+     
     public static final Select selectFirst(Class clazz, String... pattern){
         return $constructor.of(pattern).selectFirstIn(_type.of(clazz) );
     }
@@ -248,7 +248,7 @@ public class $constructor
      * @param clazz
      * @param _proto
      * @return 
-     */
+     
     public static final Select selectFirst(Class clazz, _constructor _proto){
         return $constructor.of(_proto).selectFirstIn(_type.of(clazz) );
     }
@@ -259,7 +259,7 @@ public class $constructor
      * @param pattern
      * @param selectConstraint
      * @return 
-     */
+     
     public static final Select selectFirst(Class clazz, String pattern, Predicate<Select> selectConstraint){
         return $constructor.of(pattern).selectFirstIn(_type.of(clazz), selectConstraint );
     }
@@ -270,7 +270,7 @@ public class $constructor
      * @param _proto
      * @param selectConstraint
      * @return 
-     */
+     
     public static final Select selectFirst(Class clazz, _constructor _proto, Predicate<Select> selectConstraint){
         return $constructor.of(_proto ).selectFirstIn(_type.of(clazz), selectConstraint);
     }
@@ -281,7 +281,7 @@ public class $constructor
      * @param _n
      * @param pattern
      * @return 
-     */
+     
     public static final <N extends _node> Select selectFirst(N _n, String... pattern){
         return $constructor.of(pattern).selectFirstIn(_n);
     }
@@ -292,7 +292,7 @@ public class $constructor
      * @param _n
      * @param _proto
      * @return 
-     */
+     
     public static final <N extends _node> Select selectFirst(N _n, _constructor _proto){
         return $constructor.of(_proto).selectFirstIn(_n );
     }
@@ -304,7 +304,7 @@ public class $constructor
      * @param pattern
      * @param selectConstraint
      * @return 
-     */
+     
     public static final <N extends _node> Select selectFirst(N _n, String pattern, Predicate<Select> selectConstraint){
         return $constructor.of(pattern).selectFirstIn(_n, selectConstraint );
     }
@@ -316,7 +316,7 @@ public class $constructor
      * @param _proto
      * @param selectConstraint
      * @return 
-     */   
+        
     public static final <N extends _node> Select selectFirst(N _n, _constructor _proto, Predicate<Select> selectConstraint){
         return $constructor.of(_proto ).selectFirstIn(_n, selectConstraint);
     }
@@ -327,7 +327,7 @@ public class $constructor
      * @param _n
      * @param _proto
      * @return the modified N
-     */
+     
     public static final <N extends _node> N remove( N _n, _constructor _proto ){
         return $constructor.of(_proto).removeIn(_n);
     }
@@ -338,7 +338,7 @@ public class $constructor
      * @param _n
      * @param proto
      * @return 
-     */
+     
     public static final <N extends _node> N remove( N _n, String... proto ){
         return $constructor.of(proto).removeIn(_n);
     }
@@ -348,7 +348,7 @@ public class $constructor
      * @param clazz
      * @param _proto
      * @return the modified N
-     */
+     
     public static final _type remove( Class clazz, _constructor _proto ){
         return $constructor.of(_proto).removeIn(_type.of(clazz));
     }
@@ -357,7 +357,7 @@ public class $constructor
      * @param clazz
      * @param proto
      * @return 
-     */
+     
     public static final _type remove( Class clazz, String... proto ){
         return $constructor.of(proto).removeIn(_type.of(clazz));
     }
@@ -369,7 +369,7 @@ public class $constructor
      * @param _protoSource
      * @param _protoReplacement
      * @return 
-     */
+     
     public static final <N extends _node> N replace( N _n, _constructor _protoSource, _constructor _protoReplacement ){
         return $constructor.of(_protoSource).replaceIn(_n, _protoReplacement);
     }
@@ -381,7 +381,7 @@ public class $constructor
      * @param targetCtor
      * @param replacementCtor
      * @return 
-     */
+     
     public static final <N extends _node> N replace( N _n, String[] targetCtor, String[] replacementCtor ){
         return $constructor.of(targetCtor).replaceIn(_n, replacementCtor);
     }
@@ -392,7 +392,7 @@ public class $constructor
      * @param _protoTarget
      * @param _protoReplacement
      * @return 
-     */
+     
     public static final _type replace( Class clazz, _constructor _protoTarget, _constructor _protoReplacement ){
         return $constructor.of(_protoTarget).replaceIn(_type.of(clazz), _protoReplacement);
     }
@@ -403,10 +403,11 @@ public class $constructor
      * @param protoTarget
      * @param replacementProto
      * @return 
-     */
+     
     public static final _type replace( Class clazz, String[] protoTarget, String[] replacementProto ){
         return $constructor.of(protoTarget).replaceIn(_type.of(clazz), replacementProto);
     }
+    */
     
     /**
      * 
@@ -1062,16 +1063,18 @@ public class $constructor
      * returns the first matching method from the source of the _class (or null)
      * @param clazz
      * @return 
-     */
+     
+    @Override
     public _constructor firstIn( Class clazz){
         return firstIn(_type.of(clazz));
     }
+    */ 
     
     /**
      * Returns the first _constructor that matches the pattern and constraint
      * @param _n the _java node
      * @return  the first _constructor that matches (or null if none found)
-     */
+     
     public _constructor firstIn( _node _n ){
         Optional<ConstructorDeclaration> f = _n.ast().findFirst(
             ConstructorDeclaration.class, s -> this.matches(s) );         
@@ -1080,15 +1083,21 @@ public class $constructor
         }
         return null;
     }
+    */ 
 
     /**
      * Returns the first _constructor that matches the pattern and constraint
      * @param astNode the node to look through
+     * @param _ctorMatchFn additional matching function for selecting the constructor
      * @return  the first _constructor that matches (or null if none found)
      */
-    public _constructor firstIn( Node astNode ){
+    @Override
+    public _constructor firstIn( Node astNode, Predicate<_constructor> _ctorMatchFn){
         Optional<ConstructorDeclaration> f = astNode.findFirst(
-            ConstructorDeclaration.class, s -> this.matches(s) );         
+            ConstructorDeclaration.class, s ->{
+                Select sel = select(s); 
+                return sel != null && _ctorMatchFn.test(sel._ct);
+            });         
         if( f.isPresent()){
             return _constructor.of(f.get());
         }
@@ -1099,10 +1108,12 @@ public class $constructor
      * Returns the first _constructor that matches the pattern and constraint
      * @param clazz the runtime class (WITH source available in classpath)
      * @return  the first _constructor that matches (or null if none found)
-     */
+     */ 
+    @Override
     public Select selectFirstIn( Class clazz){
         return selectFirstIn( _type.of(clazz));
     }
+     
     
     /**
      * Returns the first _constructor that matches the pattern and constraint
@@ -1119,6 +1130,7 @@ public class $constructor
      * @param _n the _java node
      * @return  the first _constructor that matches (or null if none found)
      */
+    @Override
     public Select selectFirstIn( _node _n ){
         Optional<ConstructorDeclaration> f = _n.ast().findFirst(ConstructorDeclaration.class, s -> this.matches(s) );         
         if( f.isPresent()){
@@ -1132,6 +1144,7 @@ public class $constructor
      * @param astNode the node to look through
      * @return  the first _constructor that matches (or null if none found)
      */
+    @Override
     public Select selectFirstIn( Node astNode ){
         Optional<ConstructorDeclaration> f = astNode.findFirst(ConstructorDeclaration.class, s -> this.matches(s) );         
         if( f.isPresent()){
@@ -1438,14 +1451,17 @@ public class $constructor
     /**
      * removes the matching prototype methods from the source of the class
      * and returns the modified _type
+     * @param astNode
      * @param clazz
      * @return 
-     */
+     
     @Override
     public _type removeIn(Class clazz){
         return removeIn(_type.of(clazz));
     }
+    */
     
+    /*
     @Override
     public <N extends _node> N removeIn(N _n ){
         Walk.in(_n, ConstructorDeclaration.class, e-> {            
@@ -1455,27 +1471,49 @@ public class $constructor
         });
         return _n;
     }
+    */
 
-    @Override
-    public <N extends Node> N removeIn(N astNode){
-        astNode.walk(ConstructorDeclaration.class, e-> {
-            if( select(e) != null ){
-                e.removeForced();
-            }
-        });
-        return astNode;
-    }
     
+    /**
+     * 
+     * @param <N>
+     * @param astNode
+     * @param _ctorMatchFn
+     * @return 
+     
     @Override
-    public <N extends Node> N forEachIn(N astNode, Consumer<_constructor> _constructorActionFn){
+    public <N extends Node> N removeIn(N astNode, Predicate<_constructor> _ctorMatchFn){
+        astNode.walk(ConstructorDeclaration.class, n-> {
+            Select sel = select(n);
+            if( sel != null && _ctorMatchFn.test(sel._ct)){
+                n.remove();
+            }
+        });
+        return astNode;
+    }
+    */
+    
+    
+    /**
+     * 
+     * @param <N>
+     * @param astNode
+     * @param _ctorMatchFn
+     * @param _constructorActionFn
+     * @return 
+     */
+    @Override
+    public <N extends Node> N forEachIn(N astNode, Predicate<_constructor> _ctorMatchFn, Consumer<_constructor> _constructorActionFn){
         astNode.walk(ConstructorDeclaration.class, e-> {
-            if( select(e) != null ){
-                _constructorActionFn.accept( _constructor.of(e) );
+            Select sel = select(e);
+            if( sel != null && _ctorMatchFn.test(sel._ct)){
+                _constructorActionFn.accept( sel._ct );
             }
         });
         return astNode;
     }
 
+    /*
     @Override
     public <N extends _node> N forEachIn(N _n, Consumer<_constructor> _constructorActionFn){
         Walk.in(_n, ConstructorDeclaration.class, e -> {
@@ -1486,7 +1524,9 @@ public class $constructor
         });
         return _n;
     }
+    */
 
+    /*
     @Override
     public List<_constructor> listIn( Class clazz){
         return listIn(_type.of(clazz));
@@ -1507,7 +1547,8 @@ public class $constructor
         } );
         return typesList;
     }
-
+    */
+    
     /**
      * A Matched Selection result returned from matching a prototype $ctor
      * inside of some Node or _node

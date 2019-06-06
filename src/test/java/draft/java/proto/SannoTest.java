@@ -14,8 +14,8 @@ public class SannoTest extends TestCase {
         class GHJ{
             @Deprecated int i;
         }
-        assertEquals( 2, $anno.list(GHJ.class).size());        
-        $anno.forEach(GHJ.class, a-> System.out.println(a));
+        assertEquals( 2, $anno.any().listIn(GHJ.class).size());        
+        $anno.any().forEachIn(GHJ.class, a-> System.out.println(a));
     }
     
     public void testConstruct(){
@@ -40,27 +40,27 @@ public class SannoTest extends TestCase {
         }
         
         //verify we can list fully and unqualified annotations 
-        assertEquals( 2, $anno.list(CL.class, Deprecated.class).size());
+        assertEquals( 2, $anno.of(Deprecated.class).listIn(CL.class).size());
         
         //verify I can remove the annotations
-        _type _t = $anno.remove(CL.class, Deprecated.class );
+        _type _t = $anno.of(Deprecated.class).removeIn(CL.class );
         
         assertEquals( 0, $anno.of(Deprecated.class).count(_t));
-        assertEquals( 0, $anno.list(_t, Deprecated.class).size());
+        assertEquals( 0, $anno.of(Deprecated.class).listIn(_t).size());
         
         System.out.println( _t );
     }
     
     public void testAny(){
         _class _c = _class.of("C");
-        assertEquals( 0, $anno.list(_c).size());
+        assertEquals( 0, $anno.any().listIn(_c).size());
         
         //add a top level annotation
         _c.annotate(Deprecated.class);
-        assertEquals( 1, $anno.list(_c).size());
+        assertEquals( 1, $anno.any().listIn(_c).size());
         
-        $anno.forEach(_c, a-> System.out.println(a.getName()));
-        $anno.forEach(_c, a-> !a.hasValues(), a-> System.out.println( a) );
+        $anno.any().forEachIn(_c, a-> System.out.println(a.getName()));
+        $anno.any().forEachIn(_c, a-> !a.hasValues(), a-> System.out.println( a) );
     }
     
     @interface R{ int value() default 10; }
@@ -170,16 +170,19 @@ public class SannoTest extends TestCase {
         }
         
         _class _c = _class.of(C.class);
-        assertNotNull( $anno.first(_c, "name($any$)") );
+        assertNotNull( $anno.of("name($any$)").firstIn(_c) );
         
         //verify that we can find 
-        assertNotNull( $anno.first(_c, "name($any$)", 
+        assertNotNull( $anno.of("name($any$)").firstIn(_c, 
                 //there is an Integer attribute value that is odd
                 (a)-> a.hasValue(e -> e.isIntegerLiteralExpr() && e.asIntegerLiteralExpr().asInt() % 2 == 1)) );
         
-        assertNotNull( $anno.first(_c, "name($any$)", (a) -> a.hasValue(3)) );
-        assertNotNull( $anno.first(_c, "name(3)"));        
-        assertNotNull( $anno.first(_c, "name(3)", _a-> _a.hasValue(3)) );
+        
+        assertNotNull( $anno.of("name(3)").firstIn(_c));        
+        //we can make the predicate part of the $anno
+        assertNotNull( $anno.of("name($any$)",(a)-> a.hasValue(3)) .firstIn(_c));
+        //we can make the predicate a part of the query
+        assertNotNull( $anno.of("name(3)").firstIn(_c, _a-> _a.hasValue(3)));
     }
      
     public void testStatic$anno(){

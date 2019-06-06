@@ -25,15 +25,13 @@ import java.util.stream.Collectors;
  */
 public class $field implements Template<_field>, $proto<_field> {
   
-    public interface $part{
-        
-    } 
+    public interface $part{} 
     
     /**
      * 
      * @param clazz
      * @return 
-     */
+     
     public static final List<_field> list( Class clazz){
         return of().listIn(clazz);
     }
@@ -43,7 +41,7 @@ public class $field implements Template<_field>, $proto<_field> {
      * @param clazz
      * @param proto
      * @return 
-     */
+     
     public static final List<_field> list( Class clazz, String proto ){
         return of(proto).listIn(_type.of( clazz ) );
     }
@@ -54,7 +52,7 @@ public class $field implements Template<_field>, $proto<_field> {
      * @param _n
      * @param proto
      * @return 
-     */
+     
     public static final <N extends _node> List<_field> list( N _n, String proto ){
         return of(proto).listIn(_n);
     }
@@ -66,7 +64,7 @@ public class $field implements Template<_field>, $proto<_field> {
      * @param proto
      * @param constraint
      * @return 
-     */
+     
     public static final <N extends _node> List<_field> list( N _n, String proto, Predicate<_field> constraint){
         return of(proto, constraint).listIn(_n);
     }
@@ -77,7 +75,7 @@ public class $field implements Template<_field>, $proto<_field> {
      * @param proto
      * @param constraint
      * @return 
-     */
+     
     public static final List<_field> list( Class clazz, String proto, Predicate<_field> constraint ){
         return of(proto, constraint).listIn(_type.of( clazz ) );
     }
@@ -88,7 +86,7 @@ public class $field implements Template<_field>, $proto<_field> {
      * @param _n
      * @param proto
      * @return 
-     */
+     
     public static final <N extends _node> List<_field> list( N _n, _field proto ){
         return of(proto).listIn(_n);
     }
@@ -100,7 +98,7 @@ public class $field implements Template<_field>, $proto<_field> {
      * @param proto
      * @param constraint
      * @return 
-     */
+     
     public static final <N extends _node> List<_field> list( N _n, _field proto, Predicate<_field> constraint){
         return of(proto, constraint).listIn(_n);
     }
@@ -110,7 +108,7 @@ public class $field implements Template<_field>, $proto<_field> {
      * @param clazz
      * @param proto
      * @return 
-     */
+     
     public static final _field first(Class clazz, String proto ){
         return of(proto).firstIn(_type.of(clazz) );
     }
@@ -121,7 +119,7 @@ public class $field implements Template<_field>, $proto<_field> {
      * @param _n
      * @param proto
      * @return 
-     */
+     
     public static final <N extends _node> _field first( N _n, String proto ){
         return of(proto).firstIn(_n);
     }
@@ -133,7 +131,7 @@ public class $field implements Template<_field>, $proto<_field> {
      * @param proto
      * @param constraint
      * @return 
-     */
+     
     public static final <N extends _node> _field first( N _n, String proto, Predicate<_field> constraint){
         return of(proto, constraint).firstIn(_n);
     }
@@ -144,7 +142,7 @@ public class $field implements Template<_field>, $proto<_field> {
      * @param proto
      * @param constraint
      * @return 
-     */
+     
     public static final _field first(Class clazz, String proto, Predicate<_field> constraint){
         return of(proto, constraint).firstIn(_type.of(clazz) );
     }
@@ -155,7 +153,7 @@ public class $field implements Template<_field>, $proto<_field> {
      * @param _n
      * @param proto
      * @return 
-     */
+     
     public static final <N extends _node> _field first( N _n, _field proto ){
         return of(proto).firstIn(_n);
     }
@@ -167,7 +165,7 @@ public class $field implements Template<_field>, $proto<_field> {
      * @param proto
      * @param constraint
      * @return 
-     */
+     
     public static final <N extends _node> _field first( N _n, _field proto, Predicate<_field> constraint){
         return of(proto, constraint).firstIn(_n);
     }
@@ -178,7 +176,7 @@ public class $field implements Template<_field>, $proto<_field> {
      * @param _n
      * @param proto
      * @return 
-     */
+     
     public static final <N extends _node> Select selectFirst( N _n, String proto ){
         return of(proto).selectFirstIn(_n);
     }
@@ -188,7 +186,7 @@ public class $field implements Template<_field>, $proto<_field> {
      * @param clazz
      * @param proto
      * @return 
-     */
+     
     public static final Select selectFirst( Class clazz, String proto ){
         return of(proto).selectFirstIn(_type.of(clazz));
     }
@@ -200,7 +198,7 @@ public class $field implements Template<_field>, $proto<_field> {
      * @param proto
      * @param constraint
      * @return 
-     */
+     
     public static final <N extends _node> Select selectFirst( N _n, String proto, Predicate<_field> constraint){
         return of(proto, constraint).selectFirstIn(_n);
     }
@@ -211,7 +209,7 @@ public class $field implements Template<_field>, $proto<_field> {
      * @param proto
      * @param constraint
      * @return 
-     */
+     
     public static final Select selectFirst( Class clazz, String proto, Predicate<_field>constraint){
         return of(proto, constraint).selectFirstIn(_type.of(clazz));
     }
@@ -222,7 +220,7 @@ public class $field implements Template<_field>, $proto<_field> {
      * @param _n
      * @param proto
      * @return 
-     */
+     
     public static final <N extends _node> Select selectFirst( N _n, _field proto ){
         return of(proto).selectFirstIn(_n);
     }
@@ -234,7 +232,7 @@ public class $field implements Template<_field>, $proto<_field> {
      * @param proto
      * @param constraint
      * @return 
-     */
+     
     public static final <N extends _node> Select selectFirst( N _n, _field proto, Predicate<_field> constraint){
         return of(proto, constraint).selectFirstIn(_n);
     }
@@ -245,7 +243,7 @@ public class $field implements Template<_field>, $proto<_field> {
      * @param _n
      * @param proto
      * @return 
-     */
+     
     public static final <N extends _node> List<Select> listSelected( N _n, String proto ){
         return of(proto).listSelectedIn(_n);
     }
@@ -255,7 +253,7 @@ public class $field implements Template<_field>, $proto<_field> {
      * @param clazz
      * @param proto
      * @return 
-     */
+     
     public static final List<Select> listSelected( Class clazz, String proto ){
         return of(proto).listSelectedIn(_type.of(clazz) );
     }
@@ -267,7 +265,7 @@ public class $field implements Template<_field>, $proto<_field> {
      * @param proto
      * @param selectConstraint
      * @return 
-     */
+     
     public static final <N extends _node> List<Select> listSelected( N _n, String proto, Predicate<Select> selectConstraint){
         return of(proto).listSelectedIn(_n, selectConstraint);
     }
@@ -278,7 +276,7 @@ public class $field implements Template<_field>, $proto<_field> {
      * @param proto
      * @param selectConstraint proto
      * @return 
-     */
+     
     public static final List<Select> listSelected( Class clazz, String proto, Predicate<Select>selectConstraint){
         return of(proto).listSelectedIn(_type.of(clazz), selectConstraint );
     }
@@ -289,7 +287,7 @@ public class $field implements Template<_field>, $proto<_field> {
      * @param _n
      * @param proto
      * @return 
-     */
+    
     public static final <N extends _node> List<Select> listSelected( N _n, _field proto ){
         return of(proto).listSelectedIn(_n);
     }
@@ -301,7 +299,7 @@ public class $field implements Template<_field>, $proto<_field> {
      * @param proto
      * @param selectConstraint
      * @return 
-     */
+    
     public static final <N extends _node> List<Select> listSelectedIn( N _n, _field proto, Predicate<Select> selectConstraint){
         return of(proto).listSelectedIn(_n, selectConstraint);
     }
@@ -312,7 +310,7 @@ public class $field implements Template<_field>, $proto<_field> {
      * @param _n
      * @param proto
      * @return the modified N
-     */
+    
     public static final <N extends _node> N remove( N _n, _field proto ){
         return of(proto).removeIn(_n);
     }
@@ -322,7 +320,7 @@ public class $field implements Template<_field>, $proto<_field> {
      * @param clazz
      * @param proto
      * @return the modified N
-     */
+    
     public static final _type remove( Class clazz, _field proto ){
         return of(proto).removeIn(_type.of(clazz));
     }
@@ -334,7 +332,7 @@ public class $field implements Template<_field>, $proto<_field> {
      * @param proto
      * @param constraint
      * @return the modified N
-     */
+    
     public static final <N extends _node> N remove( N _n, _field proto, Predicate<_field> constraint){
         return of(proto, constraint).removeIn(_n);
     }
@@ -345,7 +343,7 @@ public class $field implements Template<_field>, $proto<_field> {
      * @param proto
      * @param constraint
      * @return the modified N
-     */
+    
     public static final _type remove( Class clazz, _field proto, Predicate<_field> constraint){
         return of(proto, constraint).removeIn(_type.of(clazz));
     }
@@ -356,7 +354,7 @@ public class $field implements Template<_field>, $proto<_field> {
      * @param _n
      * @param proto
      * @return 
-     */
+    
     public static final <N extends _node> N remove( N _n, String proto ){
         return of(proto).removeIn(_n);
     }
@@ -367,7 +365,7 @@ public class $field implements Template<_field>, $proto<_field> {
      * @param _protoSource
      * @param _protoTarget
      * @return 
-     */
+    
     public static final _type replace(Class clazz, _field _protoSource, _field _protoTarget){
         return of(_protoSource)
             .replaceIn(_type.of(clazz), $field.of(_protoTarget));
@@ -380,7 +378,7 @@ public class $field implements Template<_field>, $proto<_field> {
      * @param _protoSource
      * @param _protoTarget
      * @return 
-     */
+    
     public static final <N extends _node> N replace(N rootNode, _field _protoSource, _field _protoTarget){
         return of(_protoSource)
             .replaceIn(rootNode, $field.of(_protoTarget));
@@ -393,7 +391,7 @@ public class $field implements Template<_field>, $proto<_field> {
      * @param protoSource
      * @param protoTarget
      * @return 
-     */
+    
     public static final <N extends _node> N replace(N rootNode, String protoSource, String protoTarget){
         return of(_field.of(protoSource))
             .replaceIn(rootNode, of(_field.of(protoTarget)));
@@ -405,11 +403,12 @@ public class $field implements Template<_field>, $proto<_field> {
      * @param _protoSource
      * @param _protoTarget
      * @return 
-     */
+    
     public static final _type replace(Class clazz, String _protoSource, String _protoTarget){
         return of(_protoSource)
             .replaceIn(_type.of(clazz), $field.of(_protoTarget));
     }
+    */
     
     /**
      * 
@@ -672,16 +671,18 @@ public class $field implements Template<_field>, $proto<_field> {
      * 
      * @param clazz
      * @return 
-     */
+     
+    @Override
     public _field firstIn( Class clazz){
         return firstIn(_type.of(clazz));
     }
+    */ 
     
     /**
      * Returns the first _field that matches the pattern and constraint
      * @param _n the _java node
      * @return  the first _field that matches (or null if none found)
-     */
+     
     public _field firstIn( _node _n ){
         Optional<VariableDeclarator> f = _n.ast().findFirst(VariableDeclarator.class, s -> this.matches(s) );         
         if( f.isPresent()){
@@ -689,14 +690,20 @@ public class $field implements Template<_field>, $proto<_field> {
         }
         return null;
     }
+    */ 
 
     /**
      * Returns the first _field that matches the pattern and constraint
      * @param astNode the node to look through
+     * @param _fieldMatchFn
      * @return  the first _field that matches (or null if none found)
      */
-    public _field firstIn( Node astNode ){
-        Optional<VariableDeclarator> f = astNode.findFirst(VariableDeclarator.class, s -> this.matches(s) );         
+    @Override
+    public _field firstIn( Node astNode, Predicate<_field> _fieldMatchFn){
+        Optional<VariableDeclarator> f = astNode.findFirst(VariableDeclarator.class, s ->{
+            Select sel = select(s);
+            return sel != null && _fieldMatchFn.test(sel._f);
+            });         
         if( f.isPresent()){
             return _field.of(f.get());
         }
@@ -707,16 +714,18 @@ public class $field implements Template<_field>, $proto<_field> {
      * 
      * @param clazz
      * @return 
-     */
+     
+    @Override
     public Select selectFirstIn(Class clazz){
         return $field.this.selectFirstIn(_type.of(clazz));
     }
+    */ 
     
     /**
      * Returns the first _field that matches the pattern and constraint
      * @param _n the _java node
      * @return  the first _field that matches (or null if none found)
-     */
+     
     public Select selectFirstIn( _node _n ){
         Optional<VariableDeclarator> f = 
             _n.ast().findFirst( 
@@ -727,12 +736,14 @@ public class $field implements Template<_field>, $proto<_field> {
         }
         return null;
     }
+    */ 
 
     /**
      * Returns the first _field that matches the pattern and constraint
      * @param astNode the node to look through
      * @return  the first _field that matches (or null if none found)
      */
+    @Override
     public Select selectFirstIn( Node astNode ){
         Optional<VariableDeclarator> f = astNode.findFirst(VariableDeclarator.class, s -> this.matches(s) );         
         if( f.isPresent()){
@@ -748,7 +759,7 @@ public class $field implements Template<_field>, $proto<_field> {
      * @return 
      */
     public Select selectFirstIn( Class clazz, Predicate<Select>selectConstraint ){
-       return $field.this.selectFirstIn(_type.of(clazz), selectConstraint); 
+       return selectFirstIn(_type.of(clazz), selectConstraint); 
     }
     
     /**
@@ -758,7 +769,7 @@ public class $field implements Template<_field>, $proto<_field> {
      * @return  the first _field that matches (or null if none found)
      */
     public Select selectFirstIn( _node _n, Predicate<Select> selectConstraint){
-        return $field.this.selectFirstIn(_n.ast(), selectConstraint );        
+        return selectFirstIn(_n.ast(), selectConstraint );        
     }
 
     /**
@@ -783,7 +794,8 @@ public class $field implements Template<_field>, $proto<_field> {
      * 
      * @param clazz
      * @return 
-     */
+     
+    @Override
     public List<_field> listIn( Class clazz ){
         return listIn(_type.of(clazz));
     }
@@ -803,7 +815,8 @@ public class $field implements Template<_field>, $proto<_field> {
         } );
         return fieldsList;
     }
-
+    */
+    
     @Override
     public List<Select> listSelectedIn(Node astNode ){
         List<Select>sts = new ArrayList<>();
@@ -858,6 +871,7 @@ public class $field implements Template<_field>, $proto<_field> {
         return listSelectedIn(_n.ast(), selectConstraint);        
     }
     
+    /*
     @Override
     public <N extends Node> N removeIn(N astNode ){
         astNode.walk(VariableDeclarator.class, e-> {
@@ -879,6 +893,7 @@ public class $field implements Template<_field>, $proto<_field> {
         });
         return _n;
     }
+    */
 
     /**
      * 
@@ -1016,17 +1031,17 @@ public class $field implements Template<_field>, $proto<_field> {
     }
     
     @Override
-    public <N extends Node> N forEachIn(N astNode, Consumer<_field> _fieldActionFn){
+    public <N extends Node> N forEachIn(N astNode, Predicate<_field> _fieldMatchFn, Consumer<_field> _fieldActionFn){
         astNode.walk(VariableDeclarator.class, e-> {
             //Tokens tokens = this.stencil.partsMap( e.toString());
             Select sel = select( e );
-            if( sel != null ){
-                _fieldActionFn.accept( _field.of(e) );
+            if( sel != null && _fieldMatchFn.test(sel._f)){
+                _fieldActionFn.accept( sel._f );
             }
         });
         return astNode;
     }
-
+    /*
     @Override
     public <N extends _model._node> N forEachIn(N _n, Consumer<_field> _fieldActionFn){
         Walk.in(_n, VariableDeclarator.class, e-> {
@@ -1038,6 +1053,7 @@ public class $field implements Template<_field>, $proto<_field> {
         });
         return _n;
     }
+    */
     
     /**
      * @param field 

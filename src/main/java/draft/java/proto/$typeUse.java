@@ -43,10 +43,11 @@ public class $typeUse {
      * @param clazz
      * @param targetClass
      * @return 
-     */
+     
     public static List<Select> listSelected(Class clazz, Class targetClass){
         return $typeUse.of(targetClass).listSelectedIn(clazz);
     }
+    */ 
     
     /**
      * 
@@ -54,10 +55,11 @@ public class $typeUse {
      * @param targetClass
      * @param selectConstraint
      * @return 
-     */
+     
     public static List<Select> listSelected(Class clazz, Class targetClass, Predicate<Select> selectConstraint ){
         return $typeUse.of(targetClass).listSelectedIn(clazz, selectConstraint);
     }
+    */ 
     
     /**
      * 
@@ -65,10 +67,11 @@ public class $typeUse {
      * @param _n
      * @param targetClass
      * @return 
-     */
+     
     public static <N extends _node> List<Select> listSelected( N _n, Class targetClass ){
         return $typeUse.of(targetClass).listSelectedIn(_n);
     }
+    */ 
     
     /**
      * 
@@ -77,10 +80,11 @@ public class $typeUse {
      * @param targetClass
      * @param selectConstraint
      * @return 
-     */
+     
     public static <N extends _node> List<Select> listSelected( N _n, Class targetClass, Predicate<Select> selectConstraint ){
         return $typeUse.of(targetClass).listSelectedIn(_n, selectConstraint);
     }
+    */ 
     
     /**
      * 
@@ -88,10 +92,11 @@ public class $typeUse {
      * @param astNode
      * @param targetClass
      * @return 
-     */
+     
     public static <N extends Node> List<Select> listSelected( N astNode, Class targetClass ){
         return $typeUse.of(targetClass).listSelectedIn(astNode);
     }
+    */ 
     
     /**
      * 
@@ -100,10 +105,11 @@ public class $typeUse {
      * @param targetClass
      * @param selectConstraint
      * @return 
-     */
+     
     public static <N extends Node> List<Select> listSelected( N astNode, Class targetClass, Predicate<Select> selectConstraint ){
         return $typeUse.of(targetClass).listSelectedIn(astNode);
     }
+    */ 
     
     /**
      * find all references the the target class in the clazz and replace it with 
@@ -112,10 +118,11 @@ public class $typeUse {
      * @param target
      * @param replacement
      * @return 
-     */
+     
     public static _type replace( Class clazz, Class target, Class replacement ){
         return $typeUse.of(target).replaceIn(_type.of(clazz), replacement);
     }
+    */ 
     
     /**
      * Find all situations where we use the target class and replace it with 
@@ -125,10 +132,11 @@ public class $typeUse {
      * @param target
      * @param replacement
      * @return 
-     */
+     
     public static <N extends _node> N replace(N _n, Class target, Class replacement) {
         return $typeUse.of(target).replaceIn(_n, replacement);
     }
+    */ 
     
     /**
      * 
@@ -137,10 +145,11 @@ public class $typeUse {
      * @param target
      * @param replacement
      * @return 
-     */
+     
     public static <N extends Node> N replace(N astNode, Class target, Class replacement) {
         return $typeUse.of(target).replaceIn(astNode, replacement);
     }
+    */ 
     
     /**
      * 
@@ -148,10 +157,11 @@ public class $typeUse {
      * @param target
      * @param nodeAction
      * @return 
-     */
+     
     public static _type forEach(Class clazz, Class target, Consumer<Node> nodeAction) {
         return $typeUse.of(target).forEachIn(clazz, nodeAction);
     }
+    */ 
 
     /**
      * 
@@ -160,10 +170,11 @@ public class $typeUse {
      * @param target
      * @param nodeAction
      * @return 
-     */
+     
     public static <N extends _node> N forEach(N _n, Class target, Consumer<Node> nodeAction) {
         return $typeUse.of(target).forEachIn(_n, nodeAction);
     }
+    */
     
     /**
      * 
@@ -172,10 +183,11 @@ public class $typeUse {
      * @param target
      * @param nodeAction
      * @return 
-     */
+     
     public static <N extends Node> N forEach(N astNode, Class target, Consumer<Node> nodeAction) {
         return $typeUse.of(target).forEachIn(astNode, nodeAction);
     }
+    */ 
     
     /**
      * 
@@ -183,10 +195,11 @@ public class $typeUse {
      * @param target
      * @param selectAction
      * @return 
-     */
+     
     public static _type forSelected(Class clazz, Class target, Consumer<Select> selectAction) {
         return $typeUse.of(target).forSelectedIn(clazz, selectAction);
     }
+    */ 
     
     /**
      * 
@@ -195,10 +208,11 @@ public class $typeUse {
      * @param target
      * @param selectAction
      * @return 
-     */
+     
     public static <N extends _node> N forSelected(N _n, Class target, Consumer<Select> selectAction) {
         return $typeUse.of(target).forSelectedIn(_n, selectAction);
     }
+    */ 
     
     /**
      * 
@@ -207,10 +221,11 @@ public class $typeUse {
      * @param target
      * @param selectAction
      * @return 
-     */
+     
     public static <N extends Node> N forSelected(N astNode, Class target, Consumer<Select> selectAction) {
         return $typeUse.of(target).forSelectedIn(astNode, selectAction);
     }
+    */ 
     
     /**
      * 
@@ -219,10 +234,11 @@ public class $typeUse {
      * @param selectConstraint
      * @param selectAction
      * @return 
-     */
+     
     public static _type forSelected(Class clazz, Class target, Predicate<Select> selectConstraint, Consumer<Select> selectAction) {
         return $typeUse.of(target).forSelectedIn(clazz, selectConstraint, selectAction);
     }
+    */ 
     
     /**
      * 
@@ -232,10 +248,12 @@ public class $typeUse {
      * @param selectConstraint
      * @param selectAction
      * @return 
-     */
+     
     public static <N extends _node> N forSelected(N _n, Class target, Predicate<Select> selectConstraint,  Consumer<Select> selectAction) {
         return $typeUse.of(target).forSelectedIn(_n, selectConstraint, selectAction);
     }
+    */
+    
     /**
      * 
      * @param <N>
@@ -244,10 +262,11 @@ public class $typeUse {
      * @param selectConstraint
      * @param selectAction
      * @return 
-     */
+     
     public static <N extends Node> N forSelected(N astNode, Class target, Predicate<Select> selectConstraint, Consumer<Select> selectAction) {
         return $typeUse.of(target).forSelectedIn(astNode, selectConstraint, selectAction);
     }
+    */
     
     /**
      * 

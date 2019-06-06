@@ -162,9 +162,12 @@ public class $case
     }
 
     @Override
-    public SwitchEntry firstIn(Node astRootNode) {
+    public SwitchEntry firstIn(Node astRootNode, Predicate<SwitchEntry> caseMatchFn ) {
         Optional<SwitchEntry> ose = 
-            astRootNode.findFirst(SwitchEntry.class, se -> select(se) != null );
+            astRootNode.findFirst(SwitchEntry.class, se ->{
+                Select sel = select(se);
+                return sel != null && caseMatchFn.test(se);
+            });
         if( ose.isPresent() ){
             return ose.get();
         }
@@ -219,12 +222,14 @@ public class $case
         return null;                
     }
     
+    /*
     @Override
     public List<SwitchEntry> listIn(Node astRootNode) {
         List<SwitchEntry> found = new ArrayList<>();
         forEachIn( astRootNode, s-> found.add(s));
         return found;        
     }
+    */
 
     @Override
     public List<Select> listSelectedIn(Node astRootNode) {
@@ -262,9 +267,10 @@ public class $case
     }
 
     @Override
-    public <N extends Node> N forEachIn(N astRootNode, Consumer<SwitchEntry> _nodeActionFn) {
+    public <N extends Node> N forEachIn(N astRootNode, Predicate<SwitchEntry> _caseMatchFn, Consumer<SwitchEntry> _nodeActionFn) {
         astRootNode.walk(SwitchEntry.class, se-> {
-            if( matches(se)) {
+            Select sel = select(se);
+            if( sel != null && _caseMatchFn.test(se) ) {
                 _nodeActionFn.accept(se);
             }
         });
@@ -362,10 +368,12 @@ public class $case
         return astRootNode;
     }
     
+    /*
     @Override
     public <N extends Node> N removeIn(N astRootNode) {
         return forEachIn(astRootNode, n -> n.remove() );
     }
+    */
 
     @Override
     public SwitchEntry construct(Translator translator, Map<String, Object> keyValues) {

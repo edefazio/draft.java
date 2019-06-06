@@ -13,12 +13,18 @@ import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import java.util.function.Consumer;
+import java.util.function.Predicate;
 
 /**
- * Defines a mechanism to query into code via Templates
+ * Model of a query-by-prototype, (a buildable/mutable query object that has the 
+ * structure of the AST entity being queried and contains a hierarchial structure)
+ * 
+ * $proto objects define a mechanism to walk the AST and query/modify Java code
+ * matching against grammar entries via the _node model 
  *
- * @param <Q> the TYPE of the node being queried for (likely a {@link Node} or
- * {@link _model._node}
+ * @param <Q> the TYPE of the node being queried for (likely a 
+ * {@link com.github.javaparser.ast.Node} or 
+ * {@link draft.java._model._node})
  */
 public interface $proto<Q> {
     
@@ -32,6 +38,16 @@ public interface $proto<Q> {
     }
     
     /**
+     * 
+     * @param clazz
+     * @param _nodeMatchFn
+     * @return 
+     */
+    default Q firstIn( Class clazz, Predicate<Q> _nodeMatchFn){
+        return firstIn(_type.of(clazz).astCompilationUnit(), _nodeMatchFn);
+    }
+    
+    /**
      * Find the first instance matching the prototype instance within the node
      * @param _n the "top" draft node
      * @return  the first matching instance or null if none is found
@@ -42,10 +58,31 @@ public interface $proto<Q> {
     
     /**
      * 
+     * @param _n
+     * @param _nodeMatchFn
+     * @return 
+     */
+    default Q firstIn(_node _n, Predicate<Q> _nodeMatchFn){
+        return firstIn(_n.ast(), _nodeMatchFn);
+    }
+    
+        
+    /**
+     * 
      * @param astRootNode
      * @return the first matching instance or null
      */
-    Q firstIn(Node astRootNode);
+    default Q firstIn(Node astRootNode){
+        return firstIn(astRootNode, t->true);
+    }
+    
+    /**
+     * 
+     * @param astRootNode
+     * @param _nodeMatchFn
+     * @return 
+     */
+    Q firstIn(Node astRootNode, Predicate<Q> _nodeMatchFn);
     
     /**
      * 
@@ -76,13 +113,23 @@ public interface $proto<Q> {
     <S extends selected<Q>> S selectFirstIn( Node n );
         
     /**
-     * Find and return a List of all matching node types within _n
+     * Find and return a List of all matching the prototype within clazz
      *
      * @param clazz the runtime class (MUST HAVE JAVA SOURCE AVAILABLE IN CLASSPATH)
      * @return a List of Q that match the query
      */
     default List<Q> listIn(Class clazz){
         return listIn(_type.of(clazz));
+    }
+    
+    /**
+     * 
+     * @param clazz
+     * @param _nodeMatchFn
+     * @return 
+     */
+    default List<Q> listIn(Class clazz, Predicate<Q> _nodeMatchFn){
+        return listIn(_type.of(clazz), _nodeMatchFn);
     }
     
     /**
@@ -97,11 +144,35 @@ public interface $proto<Q> {
     }
     
     /**
+     * 
+     * @param _n
+     * @param _nodeMatchFn
+     * @return 
+     */
+    default List<Q> listIn(_node _n, Predicate<Q>_nodeMatchFn){
+        return listIn(_n.ast(), _nodeMatchFn);
+    }
+    
+    /**
      *
      * @param astRootNode the root AST node to start the search
      * @return a List of Q matching the query
      */
-    List<Q> listIn(Node astRootNode);
+    default List<Q> listIn(Node astRootNode){
+        return listIn( astRootNode, t->true);
+    }
+    
+    /**
+     * 
+     * @param astRootNode
+     * @param _nodeMatchFn
+     * @return 
+     */
+    default List<Q> listIn(Node astRootNode, Predicate<Q>_nodeMatchFn){        
+        List<Q> found = new ArrayList<>();
+        forEachIn(astRootNode, _nodeMatchFn, b-> found.add(b));
+        return found;    
+    }
 
     /**
      * return the selections (containing the node and deconstructed parts) of
@@ -161,6 +232,22 @@ public interface $proto<Q> {
     }
     
     /**
+     * Find and execute a function on all of the matching occurrences that
+     * satisfy the _nodeMatchFn within the _node _n
+     *
+     * @param <N>
+     * @param _n the node to search through (_type, _method, etc.)
+     * @param _nodeMatchFn matching function to filter which nodes to operate on
+     * @param _nodeActionFn the function to run upon each encounter with a
+     * matching node
+     * @return the modified astRootNode
+     */
+    default <N extends _node> N forEachIn(N _n, Predicate<Q> _nodeMatchFn, Consumer<Q> _nodeActionFn){
+        forEachIn(_n.ast(), _nodeMatchFn, _nodeActionFn);
+        return _n;
+    }
+    
+    /**
      * Find and execute a function on all of the matching occurrences within
      * astRootNode
      *
@@ -171,8 +258,23 @@ public interface $proto<Q> {
      * matching node
      * @return the modified astRootNode
      */
-    <N extends Node> N forEachIn(N astRootNode, Consumer<Q> _nodeActionFn);
+    default <N extends Node> N forEachIn(N astRootNode, Consumer<Q> _nodeActionFn){
+        return forEachIn(astRootNode, t->true, _nodeActionFn);
+    }
 
+    /**
+     * Find and execute a function on all of the matching occurrences that
+     * satisfy the nodeMatchFn within the Node astRootNode
+     *
+     * @param <N>
+     * @param astRootNode the node to search through (CompilationUnit,
+     * MethodDeclaration, etc.)
+     * @param nodeMatchFn matching function to filter which nodes to operate on
+     * @param nodeActionFn the function to run upon each encounter with a
+     * matching node
+     * @return the modified astRootNode
+     */
+    <N extends Node> N forEachIn(N astRootNode, Predicate<Q> nodeMatchFn, Consumer<Q> nodeActionFn);
     /**
      * 
      * @param <N>
@@ -217,6 +319,16 @@ public interface $proto<Q> {
     } 
     
     /**
+     * 
+     * @param clazz the runtime _type (MUST have .java SOURCE in the classpath) 
+     * @param _nodeMatchFn 
+     * @return the _type with all entities matching the prototype (& constraint) removed
+     */
+    default _type removeIn(Class clazz, Predicate<Q> _nodeMatchFn){
+        return removeIn(_type.of(clazz), _nodeMatchFn);
+    } 
+    
+    /**
      *
      * @param _n the root java node to start from (_type, _method, etc.)
      * @param <N> the TYPE of model node
@@ -228,6 +340,18 @@ public interface $proto<Q> {
     }
     
     /**
+     * 
+     * @param <N> the TYPE of model node
+     * @param _n the root _java node to start from (_type, _method, etc.)     
+     * @param _nodeMatchFn
+     * @return the modified model node
+     */
+    default <N extends _node> N removeIn(N _n, Predicate<Q> _nodeMatchFn){
+        removeIn(_n.ast(), _nodeMatchFn);
+        return _n;
+    }
+    
+    /**
      * Remove all matching occurrences of the template in the node and return
      * the modified node
      *
@@ -235,8 +359,30 @@ public interface $proto<Q> {
      * @param <N> the input node TYPE
      * @return the modified node
      */
-    <N extends Node> N removeIn(N astRootNode);
+    default <N extends Node> N removeIn(N astRootNode){
+        return removeIn(astRootNode, t->true);
+    }
 
+    /**
+     * Remove all matching occurrences of the template in the node and return
+     * the modified node
+     * @param <N> the input node TYPE
+     * @param astRootNode the root node to start search     
+     * @param _nodeMatchFn function to match nodes to remove
+     * @return the modified node
+     */
+    default <N extends Node> N removeIn(N astRootNode, Predicate<Q> _nodeMatchFn){
+        return forEachIn(astRootNode, s-> {
+            if( _nodeMatchFn.test( s ) ){
+                if( s instanceof Node ){
+                    ((Node) s).remove();
+                } else{
+                    ((_node)s).ast().remove();
+                }
+            }            
+        });
+    }
+    
     /**
      * An extra layer on top of a Tokens that is specifically
      * for holding value data that COULD be Expressions, Statements and the 

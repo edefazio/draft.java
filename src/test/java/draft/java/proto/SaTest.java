@@ -182,14 +182,14 @@ public class SaTest extends TestCase {
     
     public void testAny(){
         _class _c = _class.of("C");
-        assertEquals( 0, $anno.list(_c).size());
+        assertEquals( 0, $anno.any().listIn(_c).size());
         
         //add a top level annotation
         _c.annotate(Deprecated.class);
-        assertEquals( 1, $anno.list(_c).size());
+        assertEquals( 1, $anno.any().listIn(_c).size());
         
-        $anno.forEach(_c, a-> System.out.println(a.getName()));
-        $anno.forEach(_c, a-> !a.hasValues(), a-> System.out.println( a) );
+        $anno.any().forEachIn(_c, a-> System.out.println(a.getName()));
+        $anno.any().forEachIn(_c, a-> !a.hasValues(), a-> System.out.println( a) );
     }
     
     @interface R{ int value() default 10; }
@@ -293,16 +293,16 @@ public class SaTest extends TestCase {
         }
         
         _class _c = _class.of(C.class);
-        assertNotNull( $anno.first(_c, "name") );
+        assertNotNull( $anno.of("name").firstIn(_c) );
         
         //verify that we can find 
-        assertNotNull( $anno.first(_c, "name", 
+        assertNotNull( $anno.of("name").firstIn(_c, 
                 //there is an Integer attribute value that is odd
                 (a)-> a.hasValue(e -> e.isIntegerLiteralExpr() && e.asIntegerLiteralExpr().asInt() % 2 == 1)) );
         
-        assertNotNull( $anno.first(_c, "name", (a) -> a.hasValue(3)) );
-        assertNotNull( $anno.first(_c, "name(3)"));        
-        assertNotNull( $anno.first(_c, "name(3)", _a-> _a.hasValue(3)) );
+        assertNotNull( $anno.of("name").firstIn(_c, (a) -> a.hasValue(3)) );
+        assertNotNull( $anno.of("name(3)").firstIn(_c ));        
+        assertNotNull( $anno.of("name(3)").firstIn(_c, _a-> _a.hasValue(3)) );
     }
      
     public void testStatic$a(){

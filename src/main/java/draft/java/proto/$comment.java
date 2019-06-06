@@ -136,6 +136,7 @@ public class $comment <C extends Comment>
     
     /**
      * A $proto based on a particular kind of comment
+     * @param <C>
      * @param astComment 
      */
     public <C extends Comment> $comment( C astComment ){
@@ -246,10 +247,10 @@ public class $comment <C extends Comment>
     }
 
     @Override
-    public C firstIn(Node astRootNode) {
+    public C firstIn(Node astRootNode, Predicate<C> commentMatchFn) {
         
         //this is extra work, but it "acts" like we want it to
-        List<C> found = listIn(astRootNode );
+        List<C> found = listIn(astRootNode, commentMatchFn);
         Ast.sortNodesByPosition(found);
         //Collections.sort( found, Ast.COMPARE_NODE_BY_LOCATION);
         if( found.isEmpty() ){
@@ -306,12 +307,14 @@ public class $comment <C extends Comment>
         */
     }
         
+    /*
     @Override
     public List<C> listIn(Node astRootNode) {
         List<C> found = new ArrayList<>();
         forEachIn(astRootNode, c -> found.add(c));
         return found;
     }
+    */
 
     @Override
     public List<Select> listSelectedIn(Node astRootNode) {
@@ -327,10 +330,10 @@ public class $comment <C extends Comment>
     }
 
     @Override
-    public <N extends Node> N forEachIn(N astRootNode, Consumer<C> _nodeActionFn) {
+    public <N extends Node> N forEachIn(N astRootNode, Predicate<C> commentMatchFn, Consumer<C> _nodeActionFn) {
         Walk.comments(astRootNode, c->{
             Select s = select(c);
-            if( s != null ){
+            if( s != null && commentMatchFn.test( (C)s.comment) ) {
                 _nodeActionFn.accept( (C)c);
             }
         });

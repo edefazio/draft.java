@@ -11,6 +11,7 @@ import draft.Template;
 import draft.Tokens;
 import draft.Translator;
 import draft.java._model;
+import draft.java._model._node;
 import draft.java._type;
 import draft.java.proto.$expr.Select;
 import java.util.List;
@@ -21,6 +22,7 @@ import java.util.function.Predicate;
 /**
  *
  * @author Eric
+ * @param <T>
  */
 public interface $exprProto<T extends Expression> 
     extends $field.$part, $proto<T>, $var.$part, Template<T> {
@@ -47,7 +49,7 @@ public interface $exprProto<T extends Expression>
      * @param _n
      * @return
      */
-    T construct(_model._node _n);
+    T construct(_node _n);
 
     T construct(Translator t, Map<String, Object> tokens);
 
@@ -58,21 +60,21 @@ public interface $exprProto<T extends Expression>
      * @param clazz
      * @return
      */
-    T firstIn(Class clazz);
+    //T firstIn(Class clazz);
 
     /**
      * Returns the first Expression that matches the pattern and constraint
      * @param _n the _java node
      * @return  the first Expression that matches (or null if none found)
      */
-    T firstIn(_model._node _n);
+    //T firstIn(_node _n);
 
     /**
      * Returns the first Expression that matches the pattern and constraint
      * @param astNode the node to look through
      * @return  the first Expression that matches (or null if none found)
      */
-    T firstIn(Node astNode);
+    //T firstIn(Node astNode);
 
     /**
      *
@@ -82,7 +84,7 @@ public interface $exprProto<T extends Expression>
      * @param expressionActionFn
      * @return
      */
-    <E extends Expression> _type forEach(Class clazz, Class<E> exprClass, Consumer<E> expressionActionFn);
+    //<E extends Expression> _type forEach(Class clazz, Class<E> exprClass, Consumer<E> expressionActionFn);
 
     /**
      *
@@ -93,7 +95,7 @@ public interface $exprProto<T extends Expression>
      * @param expressionActionFn
      * @return
      */
-    <N extends _model._node, E extends Expression> N forEach(N _n, Class<E> exprClass, Consumer<E> expressionActionFn);
+    //<N extends _node, E extends Expression> N forEach(N _n, Class<E> exprClass, Consumer<E> expressionActionFn);
 
     /**
      *
@@ -103,7 +105,7 @@ public interface $exprProto<T extends Expression>
      * @param expressionActionFn
      * @return
      */
-    <E extends Expression> _type forEach(Class clazz, E exprProto, Consumer<E> expressionActionFn);
+    //<E extends Expression> _type forEach(Class clazz, E exprProto, Consumer<E> expressionActionFn);
 
     /**
      *
@@ -114,7 +116,7 @@ public interface $exprProto<T extends Expression>
      * @param expressionActionFn
      * @return
      */
-    <N extends _model._node, E extends Expression> N forEach(N _n, E exprProto, Consumer<E> expressionActionFn);
+    //<N extends _node, E extends Expression> N forEach(N _n, E exprProto, Consumer<E> expressionActionFn);
 
     /**
      *
@@ -126,11 +128,11 @@ public interface $exprProto<T extends Expression>
      * @param expressionActionFn
      * @return
      */
-    <N extends _model._node, E extends Expression> N forEach(N _n, E exprProto, Predicate<E> constraint, Consumer<E> expressionActionFn);
+    //<N extends _node, E extends Expression> N forEach(N _n, E exprProto, Predicate<E> constraint, Consumer<E> expressionActionFn);
 
-    <N extends Node> N forEachIn(N astNode, Consumer<T> expressionActionFn);
+    //<N extends Node> N forEachIn(N astNode, Consumer<T> expressionActionFn);
 
-    <N extends _model._node> N forEachIn(N _n, Consumer<T> expressionActionFn);
+    //<N extends _node> N forEachIn(N _n, Consumer<T> expressionActionFn);
 
     /**
      *
@@ -147,7 +149,7 @@ public interface $exprProto<T extends Expression>
      * @param selectConsumer
      * @return
      */
-    <N extends _model._node> N forSelectedIn(N _n, Consumer<Select<T>> selectConsumer);
+    <N extends _node> N forSelectedIn(N _n, Consumer<Select<T>> selectConsumer);
 
     /**
      *
@@ -175,7 +177,7 @@ public interface $exprProto<T extends Expression>
      * @param selectConsumer
      * @return
      */
-    <N extends _model._node> N forSelectedIn(N _n, Predicate<Select<T>> selectConstraint, Consumer<Select<T>> selectConsumer);
+    <N extends _node> N forSelectedIn(N _n, Predicate<Select<T>> selectConstraint, Consumer<Select<T>> selectConsumer);
 
     /**
      *
@@ -233,13 +235,13 @@ public interface $exprProto<T extends Expression>
 
     List<String> list$Normalized();
 
-    List<T> listIn(_model._node _n);
+    List<T> listIn(_node _n);
 
     List<T> listIn(Node astNode);
 
     List<Select<T>> listSelectedIn(Node astNode);
 
-    List<Select<T>> listSelectedIn(_model._node _n);
+    List<Select<T>> listSelectedIn(_node _n);
 
     List<Select<T>> listSelectedIn(Class clazz);
 
@@ -265,7 +267,7 @@ public interface $exprProto<T extends Expression>
      * @param selectConstraint
      * @return
      */
-    List<Select<T>> listSelectedIn(_model._node _n, Predicate<Select<T>> selectConstraint);
+    List<Select<T>> listSelectedIn(_node _n, Predicate<Select<T>> selectConstraint);
 
     /**
      *
@@ -287,7 +289,7 @@ public interface $exprProto<T extends Expression>
      * @param astNode
      * @return 
      */
-    <N extends Node> N removeIn(N astNode);
+    //<N extends Node> N removeIn(N astNode);
 
     /**
      * 
@@ -295,7 +297,7 @@ public interface $exprProto<T extends Expression>
      * @param _n
      * @return 
      */
-    <N extends _model._node> N removeIn(N _n);
+    //<N extends _node> N removeIn(N _n);
 
     /**
      *
@@ -312,7 +314,7 @@ public interface $exprProto<T extends Expression>
      * @param astExprReplace
      * @return
      */
-    <N extends _model._node> N replaceIn(N _n, Node astExprReplace);
+    <N extends _node> N replaceIn(N _n, Node astExprReplace);
 
     /**
      *
@@ -321,7 +323,7 @@ public interface $exprProto<T extends Expression>
      * @param protoReplaceExpr
      * @return
      */
-    <N extends _model._node> N replaceIn(N _n, String protoReplaceExpr);
+    <N extends _node> N replaceIn(N _n, String protoReplaceExpr);
 
     /**
      *
@@ -338,7 +340,7 @@ public interface $exprProto<T extends Expression>
      * @param $repl
      * @return
      */
-    <N extends _model._node> N replaceIn(N _n, $expr $repl);
+    <N extends _node> N replaceIn(N _n, $expr $repl);
 
     /**
      *
@@ -359,21 +361,22 @@ public interface $exprProto<T extends Expression>
      * @param clazz
      * @return
      */
-    Select<T> selectFirstIn(Class clazz);
+    //@Override
+    //Select<T> selectFirstIn(Class clazz);
 
     /**
      * Returns the first Expression that matches the pattern and constraint
      * @param _n the _java node
      * @return  the first Expression that matches (or null if none found)
      */
-    Select<T> selectFirstIn(_model._node _n);
+    //Select<T> selectFirstIn(_model._node _n);
 
     /**
      * Returns the first Expression that matches the pattern and constraint
      * @param astNode the node to look through
      * @return  the first Expression that matches (or null if none found)
      */
-    Select<T> selectFirstIn(Node astNode);
+    //Select<T> selectFirstIn(Node astNode);
 
     /**
      *

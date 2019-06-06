@@ -25,7 +25,7 @@ public final class $typeParameters
      * 
      * @param clazz
      * @return 
-     */
+     
     public static final List<_typeParameters> list(Class clazz){
         return of().listIn(clazz);
     }
@@ -35,7 +35,7 @@ public final class $typeParameters
      * @param clazz
      * @param pattern
      * @return 
-     */
+     
     public static final List<_typeParameters> list(Class clazz, String pattern){
         return list(_type.of(clazz), pattern);
     }
@@ -46,7 +46,7 @@ public final class $typeParameters
      * @param _type
      * @param pattern
      * @return 
-     */
+    
     public static final <T extends _type> List<_typeParameters> list( T _type, String pattern ){
         return $typeParameters.of(pattern).listIn(_type);
     }
@@ -57,7 +57,7 @@ public final class $typeParameters
      * @param _protoTarget
      * @param constraint
      * @return 
-     */
+    
     public static final List<_typeParameters> list(Class clazz, _typeParameters _protoTarget, Predicate<_typeParameters> constraint){
         return list(_type.of(clazz), _protoTarget, constraint);
     }
@@ -69,7 +69,7 @@ public final class $typeParameters
      * @param _protoTarget
      * @param constraint
      * @return 
-     */
+    
     public static final <T extends _type> List<_typeParameters> list( T _type, _typeParameters _protoTarget, Predicate<_typeParameters> constraint){
         return $typeParameters.of(_protoTarget).addConstraint(constraint).listIn(_type);
     }
@@ -80,7 +80,7 @@ public final class $typeParameters
      * @param pattern
      * @param constraint
      * @return 
-     */
+    
     public static final List<_typeParameters> list( Class clazz, String pattern, Predicate<_typeParameters> constraint){
         return list(_type.of(clazz), pattern, constraint);
     }
@@ -92,7 +92,7 @@ public final class $typeParameters
      * @param pattern
      * @param constraint
      * @return 
-     */
+    
     public static final <T extends _type> List<_typeParameters> list( T _type, String pattern, Predicate<_typeParameters> constraint){
         return $typeParameters.of(pattern).addConstraint(constraint).listIn(_type);
     }   
@@ -102,7 +102,7 @@ public final class $typeParameters
      * @param clazz
      * @param _protoTarget
      * @return 
-     */
+    
     public static final List<Select> listSelected(Class clazz, _typeParameters _protoTarget){
         return (List<Select>)$typeParameters.of(_protoTarget).listSelectedIn(clazz);
     }
@@ -113,7 +113,7 @@ public final class $typeParameters
      * @param _type
      * @param _protoTarget
      * @return 
-     */
+    
     public static final <T extends _type> List<Select> listSelected( T _type, _typeParameters _protoTarget){
         return $typeParameters.of(_protoTarget).listSelectedIn(_type);
     }
@@ -123,7 +123,7 @@ public final class $typeParameters
      * @param clazz
      * @param pattern
      * @return 
-     */
+    
     public static final List<Select> listSelected( Class clazz, String pattern ){
        return $typeParameters.listSelected(_type.of(clazz), pattern);
     }
@@ -134,7 +134,7 @@ public final class $typeParameters
      * @param _type
      * @param pattern
      * @return 
-     */
+    
     public static final <T extends _type> List<Select> listSelected( T _type, String pattern ){
         return $typeParameters.of(pattern).listSelectedIn(_type);
     }
@@ -146,7 +146,7 @@ public final class $typeParameters
      * @param _protoTarget
      * @param constraint
      * @return 
-     */
+    
     public static final <T extends _type> List<Select> listSelected( T _type, _typeParameters _protoTarget, Predicate<Select> constraint){
         return $typeParameters.of(_protoTarget).listSelectedIn(_type, constraint);
     }
@@ -158,7 +158,7 @@ public final class $typeParameters
      * @param pattern
      * @param constraint
      * @return 
-     */
+    
     public static final <T extends _type> List<Select> listSelected( T _type, String pattern, Predicate<_typeParameters> constraint){
         return $typeParameters.of(pattern).addConstraint(constraint).listSelectedIn(_type);
     }    
@@ -169,7 +169,7 @@ public final class $typeParameters
      * @param _type
      * @param _protoTarget
      * @return 
-     */      
+    
     public static final <T extends _type> _typeParameters first( T _type, _typeParameters _protoTarget){
         return $typeParameters.of(_protoTarget).firstIn(_type);
     }
@@ -180,7 +180,7 @@ public final class $typeParameters
      * @param _type
      * @param pattern
      * @return 
-     */      
+    
     public static final <T extends _type> _typeParameters first( T _type, String pattern ){
         return $typeParameters.of(pattern).firstIn(_type);
     }
@@ -192,7 +192,7 @@ public final class $typeParameters
      * @param _protoTarget
      * @param constraint
      * @return 
-     */
+    
     public static final <T extends _type> _typeParameters first( T _type, _typeParameters _protoTarget, Predicate<_typeParameters> constraint){
         return $typeParameters.of(_protoTarget).addConstraint(constraint).firstIn(_type);
     }
@@ -204,7 +204,7 @@ public final class $typeParameters
      * @param pattern
      * @param constraint
      * @return 
-     */
+    
     public static final <T extends _type> _typeParameters first( T _type, String pattern, Predicate<_typeParameters> constraint){
         return $typeParameters.of(pattern).addConstraint(constraint).firstIn(_type);
     }
@@ -216,7 +216,7 @@ public final class $typeParameters
      * @param _protoTarget
      * @param actionFn
      * @return 
-     */
+    
     public static final <T extends _type> T forEach( T _type, _typeParameters _protoTarget, Consumer<_typeParameters> actionFn){
         return (T) $typeParameters.of(_protoTarget).forEachIn(_type, actionFn);
     }
@@ -228,7 +228,7 @@ public final class $typeParameters
      * @param pattern
      * @param actionFn
      * @return 
-     */
+    
     public static final <T extends _type> T forEach( T _type, String pattern, Consumer<_typeParameters> actionFn){
         return $typeParameters.of(pattern).forEachIn(_type, actionFn);
     }    
@@ -241,7 +241,7 @@ public final class $typeParameters
      * @param constraint
      * @param actionFn
      * @return 
-     */
+    
     public static final <T extends _type> T forEach( T _type, _typeParameters _protoTarget, Predicate<_typeParameters> constraint, Consumer<_typeParameters> actionFn){
         return $typeParameters.of(_protoTarget).addConstraint(constraint).forEachIn(_type, actionFn);
     }
@@ -254,7 +254,7 @@ public final class $typeParameters
      * @param constraint
      * @param actionFn
      * @return 
-     */
+    
     public static final <T extends _type> T forEach( T _type, String protoTarget, Predicate<_typeParameters> constraint, Consumer<_typeParameters> actionFn){
         return $typeParameters.of(protoTarget).addConstraint(constraint).forEachIn(_type, actionFn);
     }
@@ -266,7 +266,7 @@ public final class $typeParameters
      * @param _protoTarget
      * @param actionFn
      * @return 
-     */
+    
     public static final <T extends _type> T forSelected( T _type, _typeParameters _protoTarget, Consumer<Select> actionFn){
         return (T) $typeParameters.of(_protoTarget).forSelectedIn(_type, actionFn);
     }
@@ -278,7 +278,7 @@ public final class $typeParameters
      * @param pattern
      * @param actionFn
      * @return 
-     */
+    
     public static final <T extends _type> T forSelected( T _type, String pattern, Consumer<Select> actionFn){
         return $typeParameters.of(pattern).forSelectedIn(_type, actionFn);
     }
@@ -291,7 +291,7 @@ public final class $typeParameters
      * @param constraint
      * @param actionFn
      * @return 
-     */
+    
     public static final <T extends _type> T forSelected( T _type, _typeParameters _protoTarget, Predicate<_typeParameters> constraint, Consumer<Select> actionFn){
         return $typeParameters.of(_protoTarget).addConstraint(constraint)
                 .forSelectedIn(_type, actionFn);
@@ -305,7 +305,7 @@ public final class $typeParameters
      * @param constraint
      * @param actionFn
      * @return 
-     */
+    
     public static final <T extends _type> T forSelected( T _type, String pattern, Predicate<_typeParameters> constraint, Consumer<Select> actionFn){
         return $typeParameters.of(pattern).addConstraint(constraint)
                 .forSelectedIn(_type, actionFn);
@@ -317,7 +317,7 @@ public final class $typeParameters
      * @param _type
      * @param _protoTarget
      * @return 
-     */
+    
     public static final <T extends _type> Select selectFirst( T _type, _typeParameters _protoTarget){
         return $typeParameters.of(_protoTarget).selectFirstIn(_type);
     }
@@ -328,7 +328,7 @@ public final class $typeParameters
      * @param _type
      * @param pattern
      * @return 
-     */
+    
     public static final <T extends _type> Select selectFirst( T _type, String pattern ){
         return $typeParameters.of(pattern).selectFirstIn(_type);
     }
@@ -340,7 +340,7 @@ public final class $typeParameters
      * @param _protoTarget
      * @param constraint
      * @return 
-     */
+    
     public static final <T extends _type> Select selectFirst( T _type, _typeParameters _protoTarget, Predicate<_typeParameters> constraint){
         return $typeParameters.of(_protoTarget).addConstraint(constraint).selectFirstIn(_type);
     }
@@ -352,7 +352,7 @@ public final class $typeParameters
      * @param pattern
      * @param constraint
      * @return 
-     */
+    
     public static final <T extends _type> Select selectFirst( T _type, String pattern, Predicate<_typeParameters> constraint){
         return $typeParameters.of(pattern).addConstraint(constraint).selectFirstIn(_type);
     }
@@ -364,7 +364,7 @@ public final class $typeParameters
      * @param _sourceProto
      * @param _targetProto
      * @return 
-     */
+    
     public static final <T extends _type> T replace( T _type, _typeParameters _sourceProto, _typeParameters _targetProto ){
         return $typeParameters.of(_sourceProto).replaceIn(_type, _targetProto);
     }
@@ -376,7 +376,7 @@ public final class $typeParameters
      * @param sourcePattern
      * @param targetPattern
      * @return 
-     */
+    
     public static final <T extends _type> T replace( T _type, String sourcePattern, String targetPattern ){        
         return $typeParameters.of(sourcePattern).replaceIn(_type, targetPattern);
     }   
@@ -387,7 +387,7 @@ public final class $typeParameters
      * @param _type
      * @param _protoTarget
      * @return 
-     */
+    
     public static final <T extends _type> T remove( T _type, _typeParameters _protoTarget){
         return $typeParameters.of(_protoTarget).removeIn(_type);
     }
@@ -398,7 +398,7 @@ public final class $typeParameters
      * @param _type
      * @param pattern
      * @return 
-     */
+    
     public static final <T extends _type> T remove( T _type, String pattern ){
         return $typeParameters.of(pattern).removeIn(_type);
     }
@@ -410,7 +410,7 @@ public final class $typeParameters
      * @param _protoTarget
      * @param constraint
      * @return 
-     */
+    
     public static final <T extends _type> T remove( T _type, _typeParameters _protoTarget, Predicate<_typeParameters> constraint){
         return $typeParameters.of(_protoTarget).addConstraint(constraint).removeIn(_type);
     }
@@ -422,7 +422,7 @@ public final class $typeParameters
      * @param pattern
      * @param constraint
      * @return 
-     */
+    
     public static final <T extends _type> T remove( T _type, String pattern, Predicate<_typeParameters> constraint){
         return $typeParameters.of(pattern).addConstraint(constraint).removeIn(_type);
     }
@@ -479,7 +479,6 @@ public final class $typeParameters
         return new $typeParameters( _typeParameters.of(pattern) ).addConstraint(constraint);
     }
     
-    
     /**
      * 
      * @param _proto
@@ -521,21 +520,15 @@ public final class $typeParameters
         return this;
     }
     
+    /**
+     * 
+     * @param $tp
+     * @return 
+     */
     public $typeParameters $add( $typeParameter $tp ){
         this.typeParams.add($tp);
         return this;
     }
-    
-    /**
-     * SETs a constraint
-     * @param constraint
-     * @return 
-     
-    public $typeParameters constraint( Predicate<_typeParameters> constraint ){
-        this.constraint = this.constraint.and(constraint);
-        return this;
-    }
-    */ 
     
     /**
      * 
@@ -558,7 +551,11 @@ public final class $typeParameters
         return select( _t ) != null;
     }
 
-    
+    /**
+     * 
+     * @param astCallable
+     * @return 
+     */
     public Select select( CallableDeclaration astCallable ){
         return select( _typeParameters.of( astCallable ) );
     }
@@ -632,7 +629,12 @@ public final class $typeParameters
         return _ts;         
     }
     
-    
+    /**
+     * 
+     * @param _ts
+     * @param allTokens
+     * @return 
+     */
     public Tokens decomposeTo( _typeParameters _ts, Tokens allTokens ){
         if(allTokens == null){
             return allTokens;
@@ -717,7 +719,7 @@ public final class $typeParameters
      * Returns the first _import that matches the pattern and constraint
      * @param _n the _java node
      * @return  the first _import that matches (or null if none found)
-     */
+     
     public _typeParameters firstIn( _node _n ){
         if( _n.ast().findCompilationUnit().isPresent() ){
             Optional<CallableDeclaration> f = _n.ast().findCompilationUnit().get().findFirst(CallableDeclaration.class, s -> this.matches(s) );         
@@ -727,16 +729,22 @@ public final class $typeParameters
         }        
         return null;
     }
+    */ 
 
     /**
      * Returns the first _import that matches the pattern and constraint
      * @param astNode the node to look through
+     * @param typeParamsMatchFn
      * @return  the first _import that matches (or null if none found)
      */
-    public _typeParameters firstIn( Node astNode ){
+    @Override
+    public _typeParameters firstIn( Node astNode, Predicate<_typeParameters> typeParamsMatchFn){
         if( astNode.findCompilationUnit().isPresent() ){
             Optional<CallableDeclaration> f = astNode.findCompilationUnit().get()
-                .findFirst(CallableDeclaration.class, s -> this.matches(s) );         
+                .findFirst(CallableDeclaration.class, s ->{
+                    Select sel = select(s);
+                    return sel != null && typeParamsMatchFn.test(sel.typeParameters);                    
+                });         
             if( f.isPresent()){
                 return _typeParameters.of(f.get());
             }
@@ -748,7 +756,8 @@ public final class $typeParameters
      * Returns the first _import that matches the pattern and constraint
      * @param _n the _java node
      * @return  the first _import that matches (or null if none found)
-     */
+     */    
+    @Override
     public Select selectFirstIn( _node _n ){
         if( _n.ast().findCompilationUnit().isPresent() ){
             Optional<CallableDeclaration> f = _n.ast().findCompilationUnit().get()
@@ -765,6 +774,7 @@ public final class $typeParameters
      * @param astNode the node to look through
      * @return  the first _import that matches (or null if none found)
      */
+    @Override
     public Select selectFirstIn( Node astNode ){
         if( astNode.findCompilationUnit().isPresent() ){
             Optional<CallableDeclaration> f = astNode.findCompilationUnit().get()
@@ -816,7 +826,7 @@ public final class $typeParameters
         return null;
     }
     
-    
+    /*
     @Override
     public List<_typeParameters> listIn( _node _n ){
         return listIn( _n.ast() );
@@ -835,7 +845,8 @@ public final class $typeParameters
         }
         return Collections.EMPTY_LIST;
     }
-
+    */
+    
     @Override
     public List<Select> listSelectedIn( Node astNode ){
         List<Select>sts = new ArrayList<>();
@@ -855,6 +866,7 @@ public final class $typeParameters
      * @param clazz
      * @return 
      */
+    @Override
     public List<Select> listSelectedIn(Class clazz){
         return listSelectedIn(_type.of(clazz));
     }
@@ -907,11 +919,12 @@ public final class $typeParameters
      * Build ans return a _type with the import prototypes removed
      * @param clazz
      * @return 
-     */
+     
     @Override
     public _type removeIn( Class clazz){
         return removeIn( _type.of(clazz));
     }
+    */
     
     /**
      * Remove all matching occurrences of the proto in the node and return the
@@ -919,7 +932,7 @@ public final class $typeParameters
      * @param astNode the root node to start search
      * @param <N> the input node TYPE
      * @return the modified node
-     */
+     
     @Override
     public <N extends Node> N removeIn(N astNode ){
         astNode.walk( CallableDeclaration.class, e-> {
@@ -930,18 +943,20 @@ public final class $typeParameters
         });
         return astNode;
     }
+    */ 
 
     /**
      *
      * @param _n the root model node to start from
      * @param <N> the TYPE of model node
      * @return the modified model node
-     */
+     
     @Override
     public <N extends _node> N removeIn(N _n ){
         removeIn( _n.ast() );
         return _n;
     }
+    */
   
     /**
      * 
@@ -1005,7 +1020,6 @@ public final class $typeParameters
         return replaceIn(_type.of(clazz), $i);
     }
     
-        
     /**
      * Replace all occurrences of the template in the code with the replacement
      * (composing the replacement from the constructed tokens in the source)
@@ -1126,21 +1140,23 @@ public final class $typeParameters
     }
     
     @Override
-    public <N extends Node> N forEachIn(N astNode, Consumer<_typeParameters> _typeParamActionFn){
+    public <N extends Node> N forEachIn(N astNode, Predicate<_typeParameters>_typeParamMatchFn, Consumer<_typeParameters> _typeParamActionFn){
         astNode.walk(CallableDeclaration.class, e-> {
             Select sel = select(e);
-            if( sel != null ){
+            if( sel != null && _typeParamMatchFn.test(sel.typeParameters)){
                 _typeParamActionFn.accept(sel.typeParameters );
             }
         });
         return astNode;
     }
 
+    /*
     @Override
     public <N extends _node> N forEachIn(N _n, Consumer<_typeParameters> _importActionFn){
         forEachIn( _n.ast(), _importActionFn);        
         return _n;
     }
+    */
  
     /**
      * A Matched Selection result returned from matching a prototype $import

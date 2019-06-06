@@ -29,7 +29,7 @@ public class throwsTest extends TestCase {
         $typeRef.of(IOException.class).removeIn(_c);
         System.out.println( _c );
         
-        $typeUse.replace(_c, IOException.class, java.net.BindException.class);
+        $typeUse.of(IOException.class).replaceIn(_c, java.net.BindException.class);
         System.out.println( _c );
         
         $typeUse.of(BindException.class).removeIn(_c);

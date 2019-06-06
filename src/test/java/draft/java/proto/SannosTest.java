@@ -1,8 +1,14 @@
 package draft.java.proto;
 
+import com.github.javaparser.StaticJavaParser;
+import com.github.javaparser.ast.body.BodyDeclaration;
+import draft.java.Ast;
 import draft.java._anno;
 import draft.java._anno._annos;
 import draft.java._class;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Target;
+import java.util.concurrent.Callable;
 import junit.framework.TestCase;
 
 /**
@@ -32,7 +38,7 @@ public class SannosTest extends TestCase {
             int g;
         }
         //s and g
-        assertEquals(2, $annos.none().count(DF.class));
+        assertEquals(6, $annos.none().count(DF.class));
     }
     
     public void testComposeAny(){
@@ -47,14 +53,28 @@ public class SannosTest extends TestCase {
         
     }
     
+    @Target({ElementType.TYPE_USE, ElementType.TYPE, ElementType.CONSTRUCTOR, ElementType.FIELD, ElementType.METHOD})
+    @interface TU{
+        
+    }
+    @interface R{
+        
+    }
     public void testLambda(){
+        
+        
         class C{
             int x;
             public void m(){}
-        }
+        }        
+        assertEquals(5, $annos.none().count(C.class) );
+        assertEquals(5, $annos.of( ans-> ans.isEmpty() ).count(C.class));
         
-        assertEquals(3, $annos.of( ans-> ans.isEmpty() ).count(C.class));
         
+        //System.out.println( $annos.any().listIn(D.class) );
+        
+        //THIS IS 
+        //assertEquals(5, $annos.of( ans-> !ans.isEmpty() ).count(D.class));
     }
     public void testT(){
         $annos $as = new $annos();

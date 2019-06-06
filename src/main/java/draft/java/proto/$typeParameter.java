@@ -28,20 +28,11 @@ import java.util.stream.Collectors;
 public class $typeParameter 
     implements Template<_typeParameter>, $proto<_typeParameter>, $method.$part, $constructor.$part {
 
-    public Predicate<_typeParameter> constraint = t-> true;
-    public $annos $anns = $annos.of();
-    public $id $name = $id.of("$name$");
+    
+
     
     /** */
     public interface $part { }
-    
-    /**
-     * The (optional) lower bound on a type parameter (i.e. extends)
-     * for example (Serializable) in : "A extends Serializable" 
-     * NOTE: it can be more than one class or interface separated by the &:
-     * "A extends Serializable & Clonable"
-     */
-    public List<$typeRef> $typeBound = new ArrayList<>();
     
     /**
      * Matches / constructs any 
@@ -68,21 +59,63 @@ public class $typeParameter
         return new $typeParameter( parts );
     }
     
+    /**
+     * 
+     * @param constraint
+     * @return 
+     */
     public static $typeParameter of( Predicate<_typeParameter> constraint ){
         return of().addConstraint(constraint);
     }
     
+    /**
+     * 
+     * @param typeParameter
+     * @return 
+     */
     public static $typeParameter of( String typeParameter){
         return new $typeParameter( _typeParameter.of(typeParameter) );
     }
+    
+    /**
+     * 
+     * @param _tp
+     * @return 
+     */
     public static $typeParameter of( _typeParameter _tp){
         return new $typeParameter(_tp);
     }
     
+    /**
+     * 
+     * @param astTp
+     * @return 
+     */
     public static $typeParameter of( TypeParameter astTp){
         return new $typeParameter(_typeParameter.of(astTp));
     }
+
+    public Predicate<_typeParameter> constraint = t-> true;
     
+    public $annos $anns = $annos.of();
+    
+    public $id $name = $id.of("$name$");
+    
+    
+    /**
+     * The (optional) lower bound on a type parameter (i.e. extends)
+     * for example (Serializable) in : "A extends Serializable" 
+     * NOTE: it can be more than one class or interface separated by the &:
+     * "A extends Serializable & Clonable"
+     */
+    public List<$typeRef> $typeBound = new ArrayList<>();
+    
+    /**
+     * 
+     * @param $anns
+     * @param name
+     * @param typeBounds 
+     */
     private $typeParameter( $annos $anns, $id name, $typeRef...typeBounds){
         this.$anns = $anns;
         this.$name = name;
@@ -233,18 +266,21 @@ public class $typeParameter
         this.$name.hardcode$(trans, hardcodedKeyValues);
         this.$typeBound.forEach(tb -> tb.hardcode$(trans, hardcodedKeyValues));
         return this;
-   }
+    }
 
     @Override
-    public _typeParameter firstIn(Node astRootNode) {
+    public _typeParameter firstIn(Node astRootNode, Predicate<_typeParameter> _typeParamMatchFn) {
         Optional<TypeParameter> otp = 
-            astRootNode.findFirst(TypeParameter.class, tp-> matches(tp) );
+            astRootNode.findFirst(TypeParameter.class, tp->{
+                Select sel = select(tp);
+                return sel != null && _typeParamMatchFn.test(sel._tp);
+            });
         if( otp.isPresent()){
             return _typeParameter.of(otp.get());
         }
         return null;
     }
-
+    
     @Override
     public Select selectFirstIn(Node n) {
         Optional<TypeParameter> otp = 
@@ -255,6 +291,12 @@ public class $typeParameter
         return null;
     }
     
+    /**
+     * 
+     * @param n
+     * @param selectConstraint
+     * @return 
+     */
     public Select selectFirstIn(Node n, Predicate<Select> selectConstraint) {
         Optional<TypeParameter> otp = 
             n.findFirst(TypeParameter.class, tp-> {
@@ -267,13 +309,14 @@ public class $typeParameter
         return null;
     }
     
-
+    /*
     @Override
     public List<_typeParameter> listIn(Node astRootNode) {
         List<_typeParameter>found = new ArrayList<>();
         forEachIn( astRootNode, tp-> found.add(tp) );
         return found;
     }
+    */
 
     @Override
     public List<Select> listSelectedIn(Node astRootNode) {
@@ -329,14 +372,21 @@ public class $typeParameter
         return astRootNode;
     }
     
+    /*
     @Override
-    public <N extends Node> N forEachIn(N astRootNode, Consumer<_typeParameter> _typeParameterActionFn) {
+    public <N extends Node> _typeParameter firstIn( N astRootNode, Predicate<_typeParameter> _typeparamMatchFn){
+        
+    }
+    */
+    
+    @Override
+    public <N extends Node> N forEachIn(N astRootNode, Predicate<_typeParameter> _typeParamMatchFn, Consumer<_typeParameter> _typeParameterActionFn) {
         astRootNode.walk(TypeParameter.class, tp-> {
-                Select sel = select(tp);
-                if( sel != null ){
-                    _typeParameterActionFn.accept(sel.model());
-                }
-            });
+            Select sel = select(tp);
+            if( sel != null && _typeParamMatchFn.test(sel._tp)){
+                _typeParameterActionFn.accept(sel.model());
+            }
+        });
         return astRootNode;
     }
 
@@ -432,7 +482,6 @@ public class $typeParameter
             return $args;
         }
 
-        
         @Override
         public TypeParameter ast() {
             return _tp.ast();

@@ -6,6 +6,8 @@ import java.util.Map;
 import java.util.function.Predicate;
 
 /**
+ * TODO move this to $proto?
+ * 
  * Identifier that can be "simple" i.e. "Map"
  * or fully qualified "java.util.Map" 
  * 
