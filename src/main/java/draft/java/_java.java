@@ -4,6 +4,7 @@ import com.github.javaparser.ast.*;
 import com.github.javaparser.ast.body.*;
 import com.github.javaparser.ast.comments.*;
 import com.github.javaparser.ast.expr.*;
+import com.github.javaparser.ast.modules.ModuleDeclaration;
 import com.github.javaparser.ast.nodeTypes.*;
 import com.github.javaparser.ast.stmt.BlockStmt;
 import com.github.javaparser.ast.type.*;
@@ -409,6 +410,7 @@ public enum _java {
      * part basis)
      */
     public enum Component implements Named {
+        MODULE_DECLARATION("moduleDeclaration", ModuleDeclaration.class),
         /**
          * i.e. @Deprecated @NotNull
          */
@@ -424,6 +426,7 @@ public enum _java {
         BODY("body", _body.class),
         MODIFIERS("modifiers", List.class, Modifier.class),
         MODIFIER("modifier", Modifier.class),
+        HEADER_COMMENT("header", Comment.class),
         JAVADOC("javadoc", _javadoc.class),
         PARAMETERS("parameters", _parameter._parameters.class),
         //parameter

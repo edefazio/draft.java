@@ -23,6 +23,7 @@ public class _batchTest extends TestCase {
         assertEquals( "javaparser\\javaparser-core", basePath.relativize(path).toString());
     }
     
+    
     /**
      * Path simpleJavaFileInPath = 
             Paths.get(tmpDir, "draft_batchTest", "src", "main", "java", "com", "github", "javaparser", "ast", "A.java");       
@@ -53,6 +54,7 @@ public class _batchTest extends TestCase {
                 "/* License Erics 101 */"+ System.lineSeparator() +    
                 "package com.github.javaparser.ast;"+System.lineSeparator()+ 
                 "/** Javadoc Comment */");
+            
             Files.writeString(moduleInfoPath, 
                 "/* License 101 */"    + System.lineSeparator()+
                 "import java.util.Map;" + System.lineSeparator()+
@@ -74,10 +76,7 @@ public class _batchTest extends TestCase {
         );
         assertEquals(3, cus.size() );
         //verify that we modified 
-        cus.forEach(c-> assertTrue(c.hasImport(URI.class)));
-        
-        //batch.forFiles( f -> {System.out.println("**** "+f.filePath+" *****"); System.out.println( new String(f.data) );} );
-        //System.out.println( "NAMES "+ batch.files.listNames() );
+        cus.forEach(c-> assertTrue(c.hasImport(URI.class)));        
     }
    
 }

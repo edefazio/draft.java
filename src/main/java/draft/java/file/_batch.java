@@ -1,8 +1,6 @@
 package draft.java.file;
 
-import com.github.javaparser.JavaParser;
 import com.github.javaparser.ParseResult;
-import com.github.javaparser.ParserConfiguration;
 import com.github.javaparser.ast.CompilationUnit;
 import draft.DraftException;
 import draft.java.Ast;
@@ -22,6 +20,7 @@ import java.util.function.Consumer;
 import java.util.function.Predicate;
 import draft.java._code;
 import draft.java._code.*;
+import java.nio.file.Paths;
 
 /**
  * Given a root directory, (and optional Predicate) will recursively read in a 
@@ -53,8 +52,9 @@ public class _batch {
      * (by default skips NO files)... Note we use the Stringified path
      * i.e. "C:\\dev\\project\\aaa\\"... And the paths to files that were 
      * skipped are stored in the {@link #filesSkipped} member variable
-     */
+     
     public Predicate<String> skipFilesPathPredicate = p-> false;
+    */
     
     /** 
      * Collect the paths to all files that were skipped based on the 
@@ -63,7 +63,15 @@ public class _batch {
     public List<Path> filesSkipped;
     
     /** it's a private constructor, use one of the static of() */
-    private _batch (){        
+    private _batch (){ }
+    
+    /**
+     * 
+     * @param rootPath
+     * @return 
+     */
+    public static _batch of( String rootPath ){
+        return of(Paths.get(rootPath));
     }
     
     /**
@@ -77,6 +85,16 @@ public class _batch {
         return of(rootPath, skipFiles);
     }
 
+    /**
+     * 
+     * @param rootPath
+     * @param skipFiles
+     * @return 
+     */
+    public static _batch of( String rootPath, Predicate<String> skipFiles) {
+        return of(Paths.get(rootPath), skipFiles);
+    }
+    
     /**
      * Reads in all files into (accept those who match the {@link skipFiles} 
      * predicate) into a _batch
@@ -107,13 +125,6 @@ public class _batch {
     }
     
     /**
-     * Instance of the JavaParser to read external files
-     * (which may contain module-info.java files)
-     */
-    private static final JavaParser JAVAPARSER = new JavaParser( new ParserConfiguration() );
-    
-    
-    /**
      * build & return the Java code model (_type, _packageInfo, _moduleInfo)
      * 
      * @param f
@@ -121,7 +132,9 @@ public class _batch {
      */
     private static _code buildJavaCode( _file f){
         
-        ParseResult<CompilationUnit> pr = JAVAPARSER.parse(f.getCharContent(true).toString());
+        ParseResult<CompilationUnit> pr = 
+            Ast.JAVAPARSER.parse(f.getCharContent(true).toString());
+        
         CompilationUnit  astCompUnit = null;
         if( !pr.getResult().isPresent() ){
             throw new DraftException("Unable to parse " + f.filePath + System.lineSeparator() + pr.getProblems() );        
@@ -189,6 +202,10 @@ public class _batch {
             } 
         });
         return _cus;                
+    }
+    
+    public <T extends _type> _batch forJavaTypes( Consumer<_type> _typeActionFn){
+        return forJavaTypes(_type.class, t->true, _typeActionFn);
     }
     
     public <T extends _type> _batch forJavaTypes( Class<T> classType, Predicate<T> _typeMatchFn, Consumer<_type> _typeActionFn){

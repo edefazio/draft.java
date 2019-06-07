@@ -6,6 +6,7 @@ import draft.java._class;
 import draft.java._method;
 import draft.java._method._hasMethods;
 import draft.java._type;
+import draft.java.file._batch;
 import draft.java.io._bulk._receipt;
 import draft.java.macro._package;
 import draft.java.proto.$typeUse;
@@ -97,8 +98,11 @@ public class StrumentaBlogTest extends TestCase  {
         listOfBadlyNamedTests.clear();
         listOfProperlyNamedTests.clear();
         
-        _bulk.consume("C:\\draft\\project\\draft-java\\src\\test", 
-            verifyTestClassesHaveProperName);
+        //_bulk.consume("C:\\draft\\project\\draft-java\\src\\test\\java", 
+        //    verifyTestClassesHaveProperName);
+        
+        _batch.of("C:\\draft\\project\\draft-java\\src\\test\\java")
+            .forJavaTypes(verifyTestClassesHaveProperName);
         
         listOfBadlyNamedTests.forEach( t -> System.out.println( "badly named test \""+ t+"\""));        
         

@@ -1352,7 +1352,7 @@ public final class $import
         return _n;
     }
     */ 
-
+    
     /**
      * 
      * @param clazz
@@ -1448,6 +1448,17 @@ public final class $import
     public <N extends _node> N replaceIn(N _n, $import $i ){
         replaceIn( _n.ast(), $i);        
         return _n;
+    }
+    
+    /**
+     * 
+     * @param <N>
+     * @param astNode
+     * @param clazz
+     * @return 
+     */
+    public <N extends Node> N replaceIn(N astNode, Class clazz){
+        return replaceIn(astNode, $import.of(clazz));
     }
     
     /**

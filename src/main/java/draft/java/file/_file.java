@@ -414,7 +414,7 @@ public final class _file implements FileObject {
          * @param b the data.
          * @param off the start offset in the data.
          * @param len the number of bytes to write.
-         * @exception IOException if an I/O error occurs. In particular, an
+         * @throws IOException if an I/O error occurs. In particular, an
          * <code>IOException</code> is THROWS if the output stream is closed.
          */
         @Override

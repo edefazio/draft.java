@@ -275,6 +275,7 @@ public interface $proto<Q> {
      * @return the modified astRootNode
      */
     <N extends Node> N forEachIn(N astRootNode, Predicate<Q> nodeMatchFn, Consumer<Q> nodeActionFn);
+    
     /**
      * 
      * @param <N>

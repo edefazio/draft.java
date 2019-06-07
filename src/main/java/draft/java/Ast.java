@@ -3,6 +3,7 @@ package draft.java;
 import com.github.javaparser.JavaParser;
 import com.github.javaparser.ParseResult;
 import com.github.javaparser.ParserConfiguration;
+import com.github.javaparser.ParserConfiguration.LanguageLevel;
 import com.github.javaparser.Position;
 import com.github.javaparser.StaticJavaParser;
 import com.github.javaparser.ast.*;
@@ -67,9 +68,11 @@ public enum Ast {
 
     /**
      * A static reference to a JavaParser (used to replace StaticJavaParser, in
-     * order to properly handle module-info.java files)
+     * order to properly handle module-info.java files and other "bleeding edge")
+     * features
      */    
-    static final JavaParser JAVAPARSER = new JavaParser( new ParserConfiguration() );
+    public static final JavaParser JAVAPARSER = 
+        new JavaParser( new ParserConfiguration().setLanguageLevel(LanguageLevel.BLEEDING_EDGE) );
     
     /*---------------------------------------------------------
        the point of having all of these JavaParser Classes in a

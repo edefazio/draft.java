@@ -6,6 +6,7 @@ import draft.java._import._imports;
 import com.github.javaparser.ast.*;
 import com.github.javaparser.ast.comments.*;
 import com.github.javaparser.ast.modules.ModuleDeclaration;
+import draft.java._anno._annos;
 import java.util.*;
 import java.util.function.*;
 import java.util.stream.*;
@@ -42,14 +43,17 @@ public interface _code<T> extends _model {
 
     /**
      * Gets the "Header comment" (usually the License) from the compilationUnit
-     * (NOTE: returns null if there are no header comments)
+     * (NOTE: returns null if there are no header comments or this is nested _code)
      *
      * @return the Comment implementation of the Header comment
      */
     default Comment getHeaderComment() {
-        if (astCompilationUnit().getComment().isPresent()) {
-            return astCompilationUnit().getComment().get();
-        }
+        if(this.isTopLevel() ){
+            CompilationUnit cu = astCompilationUnit();
+            if (cu.getComment().isPresent()) {
+                return astCompilationUnit().getComment().get();
+            }
+        }        
         return null;
     }
 
@@ -390,14 +394,12 @@ public interface _code<T> extends _model {
         throw new DraftException("No AST CompilationUnit of to add imports");
     }
     
-    
-    
     /**
      * model of a package-info
      *
      */
     public static class _packageInfo
-            implements _code<_packageInfo>, _anno._hasAnnos<_packageInfo>, _model._node<CompilationUnit> {
+            implements _code<_packageInfo>, _anno._hasAnnos<_packageInfo>, _node<CompilationUnit> {
 
         public static _packageInfo of(String... pkgInfo) {
             return new _packageInfo(StaticJavaParser.parse(Text.combine(pkgInfo)));
@@ -458,7 +460,7 @@ public interface _code<T> extends _model {
                 return astCompilationUnit().getPackageDeclaration().get().getNameAsString();
             }
             return "";
-        }
+        }        
 
         /**
          * Sets the package this TYPE is in
@@ -536,13 +538,14 @@ public interface _code<T> extends _model {
          *
          * @return a map of key values
          */
+        @Override
         public Map<_java.Component, Object> componentsMap() {
             Map m = new HashMap();            
-            //m.put( _java.Component.ANNOS, _annos.of(astCompUnit));
-            m.put( _java.Component.JAVADOC, this.javadocHolder.getJavadoc() );
-            
+            m.put( _java.Component.HEADER_COMMENT, this.getHeaderComment() );
+            m.put( _java.Component.JAVADOC, this.javadocHolder.getJavadoc() );            
             m.put( _java.Component.PACKAGE_NAME, getPackage() );
-            m.put(_java.Component.IMPORTS, _imports.of(astCompUnit));
+            m.put( _java.Component.ANNOS, getAnnos());
+            m.put( _java.Component.IMPORTS, _imports.of(astCompUnit));
             return m;
         }
     }
@@ -622,11 +625,12 @@ public interface _code<T> extends _model {
         public Map<_java.Component, Object> componentsMap() {
             
             Map m = new HashMap();
-            
-            m.put( _java.Component.NAME, getModuleAst().getNameAsString() );
-            m.put( _java.Component.ANNOS, _anno._annos.of(getModuleAst()));
+            m.put(_java.Component.HEADER_COMMENT, getHeaderComment());
+            m.put(_java.Component.NAME, getModuleAst().getNameAsString() );
+            m.put(_java.Component.MODULE_DECLARATION, getModuleAst());
+            m.put(_java.Component.ANNOS, _anno._annos.of(getModuleAst()));
             m.put(_java.Component.IMPORTS, _imports.of(astCompUnit));
-            m.put( _java.Component.JAVADOC, this.javadocHolder.getJavadoc());
+            m.put(_java.Component.JAVADOC, this.javadocHolder.getJavadoc());
             
             return m;
         }

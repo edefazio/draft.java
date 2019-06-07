@@ -39,7 +39,6 @@ public final class _classFile extends SimpleJavaFileObject  {
         return this.packageName;
     }
 
-
     /**
      * Initialize an in memory Java Class for a given class Name
      *
