@@ -5,6 +5,7 @@ import com.github.javaparser.ast.*;
 import com.github.javaparser.ast.body.*;
 import com.github.javaparser.ast.expr.ObjectCreationExpr;
 import com.github.javaparser.ast.type.*;
+import com.github.javaparser.printer.lexicalpreservation.LexicalPreservingPrinter;
 import draft.DraftException;
 import draft.java._anno.*;
 import draft.java.io._in;
@@ -28,7 +29,6 @@ public final class _interface implements _type<ClassOrInterfaceDeclaration, _int
     public static _interface of( Class clazz ){
         Node n = Ast.type( clazz );
         if( n instanceof CompilationUnit ){
-            //_interface _i = ;
             return _macro.to(clazz, of( (CompilationUnit)n));
         } 
         
@@ -271,37 +271,21 @@ public final class _interface implements _type<ClassOrInterfaceDeclaration, _int
     public _annos getAnnos() {
         return _annos.of(this.astInterface);
     }
-
-    /*
-    @Override
-    public boolean isExtends( ClassOrInterfaceType ct ){
-        return this.astInterface.getExtendedTypes().contains( ct ) ||
-                this.astInterface.getExtendedTypes().contains( (ClassOrInterfaceType)Ast.typeRef(ct.getNameAsString()) );
-    }
-
-    @Override
-    public boolean isExtends( String str ){
-        try{
-            return isExtends( (ClassOrInterfaceType)Ast.typeRef( str ) );
-        }catch( Exception e){}
-        return false;
-    }
-
-    @Override
-    public boolean isExtends( Class clazz ){
-        try{
-            return isExtends( (ClassOrInterfaceType)Ast.typeRef( clazz ) );
-        }catch( Exception e){}
-        return false;
-    }
-    */
-
+    
     @Override
     public String toString(){
-        if( this.ast().isTopLevelType()){
-            return this.ast().findCompilationUnit().get().toString();
+        if( this.ast().isTopLevelType() ){
+            try{
+                return LexicalPreservingPrinter.print( this.astCompilationUnit() );    
+            } catch(Exception e){
+                return this.astCompilationUnit().toString();
+            }            
         }
-        return this.astInterface.toString();
+        try{
+            return LexicalPreservingPrinter.print( this.astInterface );
+        }catch(Exception e){ //there are sometimes spurious errors in LPP, so just normal toString()
+            return this.astInterface.toString();
+        }
     }
 
     @Override
@@ -325,9 +309,6 @@ public final class _interface implements _type<ClassOrInterfaceDeclaration, _int
         if( ! Expr.equivalentAnnos(this.astInterface, other.astInterface)){
             return false;
         }
-        //if( !Objects.equals( this.getAnnos(), other.getAnnos())){
-        //    return false;
-        // }
         if( this.hasJavadoc() != other.hasJavadoc() ){
             return false;
         }
@@ -388,11 +369,6 @@ public final class _interface implements _type<ClassOrInterfaceDeclaration, _int
 
         Set<Integer> te = new HashSet<>();
         this.listExtends().forEach(e-> te.add( Ast.typeHash(e)));
-        //Set<ClassOrInterfaceType> te = new HashSet<>();
-        //te.addAll(this.listExtends() );
-
-        //Set<ImportDeclaration> tis = new HashSet<>();
-        //tis.addAll( this.listAstImports() );
 
         Set<_type> nests = new HashSet<>();
         nests.addAll(  this.listNests() );

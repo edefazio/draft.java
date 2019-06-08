@@ -6,6 +6,7 @@ import com.github.javaparser.ast.body.*;
 import com.github.javaparser.ast.expr.Expression;
 import com.github.javaparser.ast.expr.ObjectCreationExpr;
 import com.github.javaparser.ast.type.Type;
+import com.github.javaparser.printer.lexicalpreservation.LexicalPreservingPrinter;
 import draft.DraftException;
 import draft.java._anno.*;
 import draft.java.io._in;
@@ -269,9 +270,17 @@ public final class _annotation
     @Override
     public String toString(){
         if( this.ast().isTopLevelType() ){
-            return this.ast().findCompilationUnit().get().toString();
+            try{
+                return LexicalPreservingPrinter.print( this.astCompilationUnit() );    
+            } catch(Exception e){
+                return this.astCompilationUnit().toString();
+            }            
         }
-        return this.astAnnotation.toString();
+        try{
+            return LexicalPreservingPrinter.print( this.astAnnotation );
+        }catch(Exception e){ //there are sometimes spurious errors in LPP, so just normal toString()
+            return this.astAnnotation.toString();
+        }
     }
 
     public boolean hasElements(){

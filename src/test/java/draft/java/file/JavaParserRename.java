@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package draft.java.file;
 
 import draft.java.io._ioException;
@@ -100,12 +95,13 @@ public class JavaParserRename {
                 if( transformedHashCode != originalHashCode ){
                     filesChanged.add( f.toUri() );
                 }
+                
                 try{
                     f.openWriter().write(dat);
                 }catch(IOException ioe){
                     throw new _ioException("unable to write to file "+f.toUri(), ioe);
                 }
-                //writeToTarget(f);            
+                writeToTarget(f);            
                 ai.addAndGet(1);
             }
         });

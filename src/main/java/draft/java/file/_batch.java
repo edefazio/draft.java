@@ -30,14 +30,12 @@ import javax.tools.FileObject;
  */
 public class _batch {
 
+    interface pathFile {
+        
+    }
+    
     /** the path for where files are read from*/
     public Path rootPath;
-
-    /** timestamp when the _batch first started */
-    public long startTimestamp;
-
-    /** timestamp when the _batch completed */
-    public long endTimestamp;
 
     /**
      * the paths of the files read in //public List<Path> sourceFilePaths;
@@ -45,15 +43,6 @@ public class _batch {
      * file, .pom file)
      */     
     public List<FileObject> files;
-
-    /**
-     * Optional predicate used to skip files from being read into the batch 
-     * (by default skips NO files)... Note we use the Stringified path
-     * i.e. "C:\\dev\\project\\aaa\\"... And the paths to files that were 
-     * skipped are stored in the {@link #filesSkipped} member variable
-     
-    public Predicate<String> skipFilesPathPredicate = p-> false;
-    */
     
     /** 
      * Collect the paths to all files that were skipped based on the 
@@ -110,9 +99,9 @@ public class _batch {
         if (rootPath.toFile().isDirectory()) { //bulk read in a directory
             _fileReader fileReader = new _fileReader(rootPath, skipFiles);
             try {
-                batch.startTimestamp = System.currentTimeMillis();
+                //batch.startTimestamp = System.currentTimeMillis();
                 Files.walkFileTree(batch.rootPath, fileReader);
-                batch.endTimestamp = System.currentTimeMillis();
+                //batch.endTimestamp = System.currentTimeMillis();
                 batch.filesSkipped = fileReader.filesSkipped;
             } catch (IOException ioe) {
                 throw new _ioException("unable to list files in " + rootPath, ioe);

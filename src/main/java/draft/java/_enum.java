@@ -7,6 +7,7 @@ import com.github.javaparser.ast.expr.Expression;
 import com.github.javaparser.ast.expr.ObjectCreationExpr;
 import com.github.javaparser.ast.type.ClassOrInterfaceType;
 import com.github.javaparser.printer.PrettyPrinterConfiguration;
+import com.github.javaparser.printer.lexicalpreservation.LexicalPreservingPrinter;
 import draft.DraftException;
 import draft.java._anno.*;
 import draft.java.io._in;
@@ -324,11 +325,29 @@ public final class _enum implements _type<EnumDeclaration, _enum>,_method._hasMe
 
     @Override
     public String toString(){
+        if( this.ast().isTopLevelType() ){
+            try{
+                return LexicalPreservingPrinter.print( this.astCompilationUnit() );    
+            } catch(Exception e){
+                return this.astCompilationUnit().toString();
+            }            
+        }
+        try{
+            return LexicalPreservingPrinter.print( this.astEnum );
+        }catch(Exception e){ //there are sometimes spurious errors in LPP, so just normal toString()
+            return this.astEnum.toString();
+        }
+    }
+    
+    /*
+    @Override
+    public String toString(){
         if( this.isTopLevel() ){
             return this.astEnum.findCompilationUnit().get().toString();
         }
         return this.astEnum.toString();
     }
+    */
 
     @Override
     public boolean equals( Object obj ) {

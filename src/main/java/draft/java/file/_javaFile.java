@@ -41,28 +41,26 @@ public final class _javaFile implements JavaFileObject {
      * this was last modified
      */
     protected long lastUpdateTimeMillis = -1L;
-
+    
     /**
-     * IF we are creating this _javaFile from existing code (perhaps code we 
-     * don't own) we MAY associate the original code with a LexicalPreservingPrinter
-     * that will attempt to keep the formatting of the code the same 
-     * for the parts of the code that were not modified
+     * 
+     * @param _type
+     * @return 
      */
-    protected LexicalPreservingPrinter LexPrinter;
-
     public static _javaFile of(_type _type ) {
         return new _javaFile( _type );
     }
 
+    /**
+     * build a javaFile from a String code & try to maintain its formatting
+     * @param javaCode String with the java code 
+     * @return the _javaFile
+     */
     public static _javaFile of( String javaCode ){
         _type _t = _type.of(javaCode);
         CompilationUnit cu = _t.astCompilationUnit();
-        LexicalPreservingPrinter.setup(cu);
+        LexicalPreservingPrinter.setup(cu); //try to keep the same formatting 
         return new _javaFile(_t );
-    }
-    
-    private _javaFile( String javaCode, LexicalPreservingPrinter lexPrinter ){
-        
     }
     
     /**
