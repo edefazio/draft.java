@@ -33,6 +33,24 @@ public class _interfaceTest extends TestCase {
                 .extend(MemberI.class, $Member.class, $Member.MemberMember.class);
     }
     
+    public void testHeader(){
+        _interface _i = _interface.of("/* License */",
+                "package aaaa.bbbb;",
+                "/**",
+                " * JavaDoc",
+                " */",
+                "public interface FFF{   }" );
+        assertNotNull( _i.getHeaderComment() );
+        assertNotNull( _i.getJavadoc() );
+        assertEquals( _i.getJavadoc().toString(), 
+            Ast.javadocComment(
+                "/**", 
+                " * JavaDoc", 
+                " */").toString() );
+        assertEquals( Ast.blockComment("/* License */").toString(), _i.getHeaderComment().toString() );
+        System.out.println( _i.getHeaderComment() );
+    }
+        
     public void testInterfaceViaAnonymousObject(){
         _interface _i = _interface.of("I", new Object(){
 

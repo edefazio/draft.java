@@ -16,6 +16,24 @@ import test.subpkg.ann2;
  */
 public class _annotationTest extends TestCase  {
 
+    public void testHeader(){
+        _annotation _a = _annotation.of("/* License */",
+                "package aaaa.bbbb;",
+                "/**",
+                " * JavaDoc",
+                " */",
+                "public @interface FFF{ }" );
+        assertNotNull( _a.getHeaderComment() );
+        assertNotNull( _a.getJavadoc() );
+        assertEquals( _a.getJavadoc().toString(), 
+            Ast.javadocComment(
+                "/**", 
+                " * JavaDoc", 
+                " */").toString() );
+        assertEquals( Ast.blockComment("/* License */").toString(), _a.getHeaderComment().toString() );
+        System.out.println( _a.getHeaderComment() );
+    }
+    
     public void testEquality(){
         _field _f1 = _field.of("public static final int f = 123;");
         _field _f2 = _field.of("public static final int f = 123;");

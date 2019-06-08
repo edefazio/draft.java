@@ -5,6 +5,7 @@ import com.github.javaparser.ast.body.*;
 import com.github.javaparser.ast.expr.ObjectCreationExpr;
 import com.github.javaparser.ast.stmt.*;
 import com.github.javaparser.ast.type.ClassOrInterfaceType;
+import com.github.javaparser.printer.lexicalpreservation.LexicalPreservingPrinter;
 
 import draft.java._anno.*;
 import draft.DraftException;
@@ -719,9 +720,19 @@ public final class _class implements _type<ClassOrInterfaceDeclaration, _class>,
     @Override
     public String toString(){
         if( this.astClass.isTopLevelType()){
-            return this.astCompilationUnit().toString();
+            try{
+                return LexicalPreservingPrinter.print(this.astCompilationUnit());            
+            }catch(Exception e){
+                ///well... I tried to keep the code formatted the same
+                // ... but it failed... so just toString the old fashioned way
+                return this.astCompilationUnit().toString();
+            }
         }
-        return this.astClass.toString();        
+        try{
+            return LexicalPreservingPrinter.print( this.astClass );        
+        }catch(Exception e){
+            return this.astClass.toString();
+        }
     }   
 
     @Override
@@ -818,6 +829,7 @@ public final class _class implements _type<ClassOrInterfaceDeclaration, _class>,
     @Override
     public Map<_java.Component, Object> componentsMap( ) {
         Map<_java.Component, Object> parts = new HashMap<>();
+        parts.put( _java.Component.HEADER_COMMENT, this.getHeaderComment() );
         parts.put( _java.Component.PACKAGE_NAME, this.getPackage() );
         parts.put( _java.Component.IMPORTS, this.getImports().list() );
         parts.put( _java.Component.ANNOS, this.listAnnos() );

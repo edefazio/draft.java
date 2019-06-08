@@ -23,6 +23,13 @@ public class _batchTest extends TestCase {
         assertEquals( "javaparser\\javaparser-core", basePath.relativize(path).toString());
     }
     
+    /**
+     * Verify that I can read a batch from a source directory, then modify the 
+     * paths selectively and then write them out
+     */
+    public void testRepath(){
+        
+    }
     
     /**
      * Path simpleJavaFileInPath = 
@@ -74,6 +81,7 @@ public class _batchTest extends TestCase {
             cus.add( c ); 
             c.imports(java.net.URI.class);} 
         );
+        System.out.println( cus );
         assertEquals(3, cus.size() );
         //verify that we modified 
         cus.forEach(c-> assertTrue(c.hasImport(URI.class)));        

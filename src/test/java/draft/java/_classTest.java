@@ -26,6 +26,28 @@ import java.util.concurrent.atomic.AtomicBoolean;
  */
 public class _classTest extends TestCase {
     
+    public void testHeader(){
+        _class _a = _class.of("/* License */",
+                "package aaaa.bbbb;",
+                "/**",
+                " * JavaDoc",
+                " */",
+                "public class FFF{ }" );
+        assertNotNull( _a.getHeaderComment() );
+        assertNotNull( _a.getJavadoc() );
+        assertEquals( _a.getJavadoc().toString(), 
+            Ast.javadocComment(
+                "/**", 
+                " * JavaDoc", 
+                " */").toString() );
+        assertEquals( Ast.blockComment("/* License */").toString(), _a.getHeaderComment().toString() );
+        System.out.println( _a.getHeaderComment() );
+    }
+    
+    public void testReadInCopyrightHeader(){
+        _class _c = _class.of(ClassWithCopyright.class);
+        assertNotNull(_c.getHeaderComment());
+    }
     
     public void testSimpleAndShortcutClasses(){
         _class _a = _class.of(

@@ -428,6 +428,7 @@ public final class _annotation
     @Override
     public Map<_java.Component, Object> componentsMap( ) {
         Map<_java.Component, Object> parts = new HashMap<>();
+        parts.put( _java.Component.HEADER_COMMENT, this.getHeaderComment() );
         parts.put( _java.Component.PACKAGE_NAME, this.getPackage() );
         parts.put( _java.Component.IMPORTS, this.getImports().list() );
         parts.put( _java.Component.ANNOS, this.listAnnos() );
@@ -719,7 +720,6 @@ public final class _annotation
             int hash = 7;
             hash = 97 * hash + Objects.hash(
                     Expr.hashAnnos(this.astAnnMember),
-                    //Ast.annotationsHash(this.astAnnMember),
                     this.getJavadoc(),
                     this.getName(),
                     Ast.typeHash(this.astAnnMember.getType()),

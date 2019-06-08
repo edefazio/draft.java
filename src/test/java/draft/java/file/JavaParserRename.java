@@ -5,8 +5,10 @@
  */
 package draft.java.file;
 
+import draft.java.io._ioException;
 import java.io.File;
 import java.io.IOException;
+import java.net.URI;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -18,6 +20,7 @@ import java.util.Objects;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Predicate;
+import javax.tools.FileObject;
 
 /**
  *
@@ -62,20 +65,27 @@ public class JavaParserRename {
             //|| p.endsWith(".class");
         _batch _l = _batch.of(Paths.get(sourcePath), skipFiles );
         AtomicInteger ai = new AtomicInteger(0);
-        List<Path>filesChanged = new ArrayList<Path>();
+        List<URI>filesChanged = new ArrayList<>();
         Set<String> fileExtensions = new HashSet<>();
         _l.files.forEach(f -> {
-            String name = f.filePath.toString();
+            String name = f.getName();
             int idx = name.lastIndexOf('.');
             if (idx > 0) {
                 fileExtensions.add(name.substring(idx));
             }
-            if (f.filePath.endsWith(".jar")) {
+            if (f.getName().endsWith(".jar")) {
                 writeToTarget(f); //dont do anything to jars... just write them over
             } else{
                 //we need to replace the occurrences of these text patterns in code
                 // and html and build scripts and yaml files
-                String dat = new String(f.data);
+                String dat = null;
+                try{
+                    dat = 
+                        f.getCharContent(true).toString();
+                }catch(IOException ioe){
+                    throw new _ioException("unable to read from file "+ f.toUri(), ioe);
+                }
+                        //new String(f.data);
                 int originalHashCode = Objects.hashCode( dat );
                 
                 dat.replace("com.github.javaparser", 
@@ -88,9 +98,14 @@ public class JavaParserRename {
                                 "\"org\", \"javaparser\"");
                 int transformedHashCode = Objects.hashCode( dat );
                 if( transformedHashCode != originalHashCode ){
-                    filesChanged.add( f.filePath );
+                    filesChanged.add( f.toUri() );
                 }
-                writeToTarget(f);            
+                try{
+                    f.openWriter().write(dat);
+                }catch(IOException ioe){
+                    throw new _ioException("unable to write to file "+f.toUri(), ioe);
+                }
+                //writeToTarget(f);            
                 ai.addAndGet(1);
             }
         });
@@ -99,6 +114,10 @@ public class JavaParserRename {
         System.out.println("file extensions" + fileExtensions);
     }
 
+    private static void writeToTarget(FileObject f) {
+        
+    }
+    
     private static void writeToTarget(_file f) {
         //String outPath = "C:\\";
         String outPath = drive;
@@ -118,6 +137,8 @@ public class JavaParserRename {
             }
         }
 
+        //this should be called repath
+        //I should also have a repackage
         if (outPath.contains("com\\github\\javaparser")) { //this happens in certain paths
             outPath = outPath.replace("com\\github\\javaparser", "org\\javaparser");
         }

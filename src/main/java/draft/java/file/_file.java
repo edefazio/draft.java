@@ -165,7 +165,7 @@ public final class _file implements FileObject {
 
     @Override
     public URI toUri() {
-        return URI.create("file:///" + this.filePath + this.relativeName );
+        return this.filePath.toUri();
     }
 
     @Override

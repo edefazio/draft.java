@@ -29,6 +29,23 @@ public class _enumTest extends TestCase {
         System.out.println( _e );
     }
     
+    public void testHeader(){
+        _enum _e = _enum.of("/* License */",
+                "package aaaa.bbbb;",
+                "/**",
+                " * JavaDoc",
+                " */",
+                "public enum FFF{  ; }" );
+        assertNotNull( _e.getHeaderComment() );
+        assertNotNull( _e.getJavadoc() );
+        assertEquals( _e.getJavadoc().toString(), 
+            Ast.javadocComment(
+                "/**", 
+                " * JavaDoc", 
+                " */").toString() );
+        assertEquals( Ast.blockComment("/* License */").toString(), _e.getHeaderComment().toString() );
+        System.out.println( _e.getHeaderComment() );
+    }
 
     public void testForMembers(){
         _enum _e = _enum.of("E", new Object(){

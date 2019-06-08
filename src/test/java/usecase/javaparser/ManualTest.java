@@ -1,7 +1,9 @@
 package usecase.javaparser;
 
 import com.github.javaparser.StaticJavaParser;
+import com.github.javaparser.ast.CompilationUnit;
 import com.github.javaparser.ast.body.BodyDeclaration;
+import com.github.javaparser.printer.lexicalpreservation.LexicalPreservingPrinter;
 import draft.java.Ast;
 import draft.java.Walk;
 import draft.java._class;
@@ -45,6 +47,19 @@ public class ManualTest extends TestCase {
            }
         });
         _io.out("C:\\temp", _c);
+    }
+    
+    public void testLexPresPrint(){
+        String cString = "class C{ int a=100; }";
+        
+        CompilationUnit cu = StaticJavaParser.parse(cString);
+        //So, effectively, I should ALWAYS call LexicalPreservingPrinter.print
+        System.out.println( "WITHOUT SETUP " + LexicalPreservingPrinter.print(cu) );
+        LexicalPreservingPrinter.setup(cu);
+        
+        System.out.println( cu.toString() );
+        
+        System.out.println( LexicalPreservingPrinter.print(cu) );
     }
     
     /*

@@ -522,8 +522,8 @@ public interface _type<AST extends TypeDeclaration & NodeWithJavadoc & NodeWithM
      */
     @Override
     default Comment getHeaderComment(){
-        if( isTopLevel() && ast().getComment().isPresent()){
-            return ast().getComment().get();
+        if( isTopLevel() && astCompilationUnit().getComment().isPresent()){
+            return astCompilationUnit().getComment().get();
         }
         return null;
     }
@@ -538,10 +538,10 @@ public interface _type<AST extends TypeDeclaration & NodeWithJavadoc & NodeWithM
     @Override
     default T setHeaderComment( BlockComment astBlockComment ){
         if( isTopLevel() ){
-            if( ast().getComment().isPresent()){
-                ast().removeComment();
+            if( astCompilationUnit().getComment().isPresent()){
+                astCompilationUnit().removeComment();
             }
-            ast().setComment(astBlockComment);
+            astCompilationUnit().setComment(astBlockComment);
         }
         return (T)this;
     }
