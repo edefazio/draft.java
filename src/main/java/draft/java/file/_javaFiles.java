@@ -271,7 +271,7 @@ public final class _javaFiles
     public _javaFile getFile( String className ) {
         for(int i=0;i<this.javaFiles.size();i++){
             _javaFile javaFile = javaFiles.get( i );
-            if( javaFile.getFullName().equals( className ) ){
+            if( javaFile.type.getFullName().equals( className ) ){
                 if( this.isOpen.get() ){
                     return javaFile;
                 }

@@ -171,6 +171,9 @@ public final class _fileManager
     }
 
     /**
+     * @param location
+     * @param file
+     * @return 
      * @throws IllegalStateException {@inheritDoc}
      */
     @Override
@@ -189,7 +192,8 @@ public final class _fileManager
         //}
         if( file instanceof _javaFile) {
             //System.out.println( "Inferring binary NAME for _source.file "+ file.getName() );
-            return ((_javaFile)file).getBinaryName();
+            return "." + ((_javaFile)file).type.getFullName();
+            //return ((_javaFile)file).getBinaryName();
         }
         if( file instanceof _classFile) {
             _classFile _cf = (_classFile)file;

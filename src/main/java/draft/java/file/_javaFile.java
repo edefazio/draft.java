@@ -1,7 +1,5 @@
 package draft.java.file;
 
-import com.github.javaparser.ast.CompilationUnit;
-import com.github.javaparser.printer.lexicalpreservation.LexicalPreservingPrinter;
 import draft.java.*;
 import draft.java.file._file.ActionAfterCloseWriter;
 
@@ -11,6 +9,7 @@ import javax.tools.JavaFileObject;
 import java.io.*;
 import java.net.URI;
 import java.nio.CharBuffer;
+import java.nio.file.Path;
 import java.util.Objects;
 
 /**
@@ -30,17 +29,31 @@ import java.util.Objects;
 public final class _javaFile implements JavaFileObject {
 
     /**
-     * the model the class and file contents export be compiled NOTE: clients
-     * should not directly access this _class, but CAN rather request a
-     * COPY/CLONE using {@link _type}
+     * If the _javaFile is associated/ read in from the file system, it can have 
+     * a filePath... 
+     * i.e. "file:///C:/dev/projects/MyProject/src/main/java/com/myproj/MyJavaFile.java"
+     * 
+     * Note: we have to "chop this" down to:
+     * "file:///C:/dev/projects/MyProject/src/main/java/"
+     * on initialization because it is possible that the package/path "com.myproj"
+     * or the type name "MyJavaFile.java" could change
      */
-    protected _type type;
+    public Path sourceRootPath;
+    
+    /**
+     * the model the class and file contents export be compiled
+     */
+    public _type type;
 
     /**
      * TODO, I should be able export DERIVE this of TYPE timestamp when
      * this was last modified
      */
     protected long lastUpdateTimeMillis = -1L;
+    
+    public static _javaFile of( Path sourceRootPath, _type _t ){
+        return new _javaFile( sourceRootPath, _t);
+    }
     
     /**
      * 
@@ -50,17 +63,10 @@ public final class _javaFile implements JavaFileObject {
     public static _javaFile of(_type _type ) {
         return new _javaFile( _type );
     }
-
-    /**
-     * build a javaFile from a String code & try to maintain its formatting
-     * @param javaCode String with the java code 
-     * @return the _javaFile
-     */
-    public static _javaFile of( String javaCode ){
-        _type _t = _type.of(javaCode);
-        CompilationUnit cu = _t.astCompilationUnit();
-        LexicalPreservingPrinter.setup(cu); //try to keep the same formatting 
-        return new _javaFile(_t );
+    
+    private _javaFile(Path sourceRootPath, _type _t){
+        this.sourceRootPath = sourceRootPath;
+        this.type = _t;
     }
     
     /**
@@ -68,7 +74,7 @@ public final class _javaFile implements JavaFileObject {
      * (export read or _2_template from later)
      * @param _t an instance of a TYPE
      */
-    public _javaFile( _type _t ) {
+    private _javaFile( _type _t ) {
         this.type = _t;
         this.lastUpdateTimeMillis = System.currentTimeMillis();
     }
@@ -80,7 +86,6 @@ public final class _javaFile implements JavaFileObject {
      * @param fullClassName
      */
     public _javaFile( String fullClassName ){
-        //this.fullClassName = _id._qualifiedName.of( fullClassName );
         this.lastUpdateTimeMillis = System.currentTimeMillis();
         this.type = _class.of(fullClassName);
         //no TYPE as of yet (we are probably reserving the file)
@@ -94,6 +99,7 @@ public final class _javaFile implements JavaFileObject {
     public _javaFile( _javaFile prototype ){
         this.lastUpdateTimeMillis = prototype.lastUpdateTimeMillis;
         this.type = (_type)_java.of( prototype.type.astCompilationUnit().clone());
+        this.sourceRootPath = prototype.sourceRootPath;
     }
 
     /**
@@ -134,6 +140,15 @@ public final class _javaFile implements JavaFileObject {
         return Kind.SOURCE;
     }
 
+    /**
+     * Verify the simpleName 
+     * (i.e. "Map", as apposed to the fully qualified name "java.util.Map") 
+     * And type is compatible, i.e.
+     * 
+     * @param simpleName
+     * @param kind
+     * @return 
+     */
     @Override
     public boolean isNameCompatible( String simpleName, Kind kind ) {
         String baseName = simpleName + kind.extension;
@@ -154,32 +169,28 @@ public final class _javaFile implements JavaFileObject {
 
     @Override
     public URI toUri() {
-        return URI.create("file:///" + this.type.getFullName().replace('.','/')
+        if( this.sourceRootPath == null ){
+            return URI.create("file:///" + this.type.getFullName().replace('.','/')
                 + Kind.SOURCE.extension );
+        }
+        URI uri = URI.create( this.sourceRootPath.toUri().toString() + this.type.getFullName().replace('.','/')+ Kind.SOURCE.extension);
+        return uri;
     }
 
     @Override
     public String toString() {
-        return "_javaFile " + getName();
+        return "_javaFile: " + toUri();
     }
 
-    /** NAME "java.util.Map" returns "java/util/Map.java"*/
+    /**
+     * returns the file name for the type (packages separated by / instead of .)
+     * and with the ".java" file extension
+     * 
+     * i.e. "java.util.Map" returns "java/util/Map.java"
+     */
     @Override
     public String getName() {
         return toUri().getPath();
-    }
-
-    private static String getName(_type _t) {
-        return URI.create("file:///" + _t.getFullName().replace('.','/')
-                + Kind.SOURCE.extension ).getPath();
-    }
-
-    // this is what the binary NAME for a file will look like
-    // for "java.util.Map" returns ".java.util.Map"
-    // STILL UNSURE WHY WE NEED THE "." prefix export satisfy the
-    // JAVAC TOOLS FileManager API
-    public String getBinaryName() {
-        return "." + this.type.getFullName();
     }
 
     @Override
@@ -187,17 +198,15 @@ public final class _javaFile implements JavaFileObject {
             throws IOException {
         //you cant read from a _sourceFile that is initialized but no TYPE exists yet
         if( type == null ){
-            throw new IOException("_sourceFile \""
+            throw new IOException("_javaFile \""
                     +this.type.getFullName()
                     +"\" is an AdHoc _class, and has not been written yet" );
         }
-        //you could consider this inefficient but (most likely) only do this once
-        return new ByteArrayInputStream( this.type.toString().getBytes() );
+        return new ByteArrayInputStream( this.type.toString().getBytes() );        
     }
 
     @Override
     public OutputStream openOutputStream() {
-
         return new _typeAfterCloseOutputStream( this );
     }
 
@@ -223,7 +232,7 @@ public final class _javaFile implements JavaFileObject {
         if( this.type == null ){
             throw new IOException("TYPE \""+this.type.getFullName()+"\" has not been  written");
         }
-        return type.toString();
+        return type.toString();        
     }
 
     public _javaFile copy(){
@@ -243,14 +252,6 @@ public final class _javaFile implements JavaFileObject {
     @Override
     public boolean delete() {
         return false; //lets say you cant delete it...?
-    }
-
-    public String getQualifier() {
-        return this.type.getPackage();
-    }
-
-    public String getFullName() {
-        return this.type.getFullName();
     }
 
     /**'

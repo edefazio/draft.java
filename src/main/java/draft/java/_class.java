@@ -5,7 +5,6 @@ import com.github.javaparser.ast.body.*;
 import com.github.javaparser.ast.expr.ObjectCreationExpr;
 import com.github.javaparser.ast.stmt.*;
 import com.github.javaparser.ast.type.ClassOrInterfaceType;
-import com.github.javaparser.printer.lexicalpreservation.LexicalPreservingPrinter;
 
 import draft.java._anno.*;
 import draft.DraftException;

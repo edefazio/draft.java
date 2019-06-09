@@ -251,7 +251,7 @@ public interface _model {
      * @param <T> the specialized entity that is a named TYPE
      */
     interface _namedType <T extends _namedType>
-            extends _named<T> {
+        extends _named<T> {
 
         /**
          * @return they TYPE

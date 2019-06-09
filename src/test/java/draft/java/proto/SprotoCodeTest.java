@@ -3,17 +3,15 @@ package draft.java.proto;
 import com.github.javaparser.ast.CompilationUnit;
 import draft.java.Ast;
 import draft.java._class;
-import draft.java._code;
-import draft.java._code._moduleInfo;
-import draft.java._code._packageInfo;
+import draft.java._java._code;
+import draft.java._java._moduleInfo;
+import draft.java._java._packageInfo;
 import draft.java._java;
 import draft.java._type;
 import java.net.URI;
 import java.net.URLConnection;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import junit.framework.TestCase;
 
 /**

@@ -8,7 +8,8 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 import junit.framework.TestCase;
-import draft.java._code;
+import draft.java._java._code;
+import draft.java._java;
 
 /**
  *
@@ -31,15 +32,15 @@ public class _batchTest extends TestCase {
         
     }
     
-    /**
-     * Path simpleJavaFileInPath = 
-            Paths.get(tmpDir, "draft_batchTest", "src", "main", "java", "com", "github", "javaparser", "ast", "A.java");       
-     */
-    public void testBatchLocal(){
-        /** this is setup routines for creating sample files */
-        String tmpDir = System.getProperty("java.io.tmpdir");
+    
+    public static final String tmpDir = System.getProperty("java.io.tmpdir");
+    public static final Path srcRoot = Paths.get(tmpDir, "draft_batchTest", "src", "main", "java");  
+    
+    public static void buildExampleFiles(){
+         /** this is setup routines for creating sample files */
+        
         Path root = Paths.get(tmpDir, "draft_batchTest");
-        Path srcRoot = Paths.get(tmpDir, "draft_batchTest", "src", "main", "java");        
+        
         //Path classesRoot = Paths.get(tmpDir, "draft_batchTest", "src", "main", "java", "classes");
         Path simpleJavaFileInPath = 
             Paths.get(tmpDir, "draft_batchTest", "src", "main", "java", "com", "github", "javaparser", "ast", "A.java");       
@@ -72,11 +73,25 @@ public class _batchTest extends TestCase {
         }catch(Exception e){
             throw new DraftException("unable to write", e);
         }
+    }
+    
+    
+    /**
+     * Path simpleJavaFileInPath = 
+            Paths.get(tmpDir, "draft_batchTest", "src", "main", "java", "com", "github", "javaparser", "ast", "A.java");       
+     */
+    public void testBatchLocal(){
+        buildExampleFiles();
         
-        _batch batch = _batch.of(srcRoot);
+        _batch batch = _batch.of(srcRoot);        
+        assertEquals( srcRoot, batch.rootPath);
+        
+        assertEquals(3, batch.files.size());
+        batch.files.forEach(f -> System.out.println( f.toUri() ));
+        
         
         //add an import to every codeunit
-        List<_code> cus = new ArrayList<>();
+        List<_java._code> cus = new ArrayList<>();
         batch.forJavaCode( c -> {
             cus.add( c ); 
             c.imports(java.net.URI.class);} 

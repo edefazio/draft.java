@@ -42,7 +42,7 @@ public class _javacException extends DraftException {
             if( !(d.getSource() instanceof _javaFile) ) {   //the source that originated the error is not available
                 return sb.toString();
             }
-            String className = ((_javaFile)d.getSource()).getFullName();
+            String className = ((_javaFile)d.getSource()).type.getFullName();
             sb.append( N );
             sb.append( className ); //javaCode.className );
             sb.append( ".class" );

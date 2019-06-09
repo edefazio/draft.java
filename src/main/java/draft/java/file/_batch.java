@@ -16,7 +16,6 @@ import java.util.Objects;
 import draft.java.io._ioException;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
-import draft.java._code;
 import draft.java._java;
 import java.nio.file.Paths;
 import javax.tools.FileObject;
@@ -29,10 +28,6 @@ import javax.tools.FileObject;
  * @author Eric
  */
 public class _batch {
-
-    interface pathFile {
-        
-    }
     
     /** the path for where files are read from*/
     public Path rootPath;
@@ -99,9 +94,7 @@ public class _batch {
         if (rootPath.toFile().isDirectory()) { //bulk read in a directory
             _fileReader fileReader = new _fileReader(rootPath, skipFiles);
             try {
-                //batch.startTimestamp = System.currentTimeMillis();
                 Files.walkFileTree(batch.rootPath, fileReader);
-                //batch.endTimestamp = System.currentTimeMillis();
                 batch.filesSkipped = fileReader.filesSkipped;
             } catch (IOException ioe) {
                 throw new _ioException("unable to list files in " + rootPath, ioe);
@@ -127,7 +120,7 @@ public class _batch {
      * @param _codeActionFn
      * @return 
      */
-    public List<_code> forJavaCode(Consumer<_code> _codeActionFn ){
+    public List<_java._code> forJavaCode(Consumer<_java._code> _codeActionFn ){
         return forJavaCode( t-> true, _codeActionFn );
     }
     
@@ -151,25 +144,21 @@ public class _batch {
      * @param _codeActionFn
      * @return 
      */
-    public List<_code> forJavaCode(Predicate<_code> _codeMatchFn, Consumer<_code> _codeActionFn ){
-        List<_code> _cus = new ArrayList<>();
+    public List<_java._code> forJavaCode(Predicate<_java._code> _codeMatchFn, Consumer<_java._code> _codeActionFn ){
+        List<_java._code> _cus = new ArrayList<>();
         this.files.forEach(f -> {
-            //System.out.println("testing file : >>> "+ f.getName()+System.lineSeparator()+"<<");
             if(f.getName().endsWith(".java") ){                          
-                //System.out.println( "NAME ENDS WITH .java"+ f.getName());
                 if( f instanceof _javaFile ){
-                    //System.out.println( "its a java file");
                     _type _t = ((_javaFile)f).get_type();
                     if(_codeMatchFn.test(_t)){
                         _codeActionFn.accept(_t);
                         _cus.add( _t);
                     }
                 } else {
-                    //System.out.println( "Mod Info Pkg Info "+f.getName());
                     //module-info, package-info
-                    _code _c = null;
+                    _java._code _c = null;
                     try{
-                        _c = (_code)_java.of( Ast.compilationUnit( f.getCharContent(true).toString()) );
+                        _c = (_java._code)_java.of( Ast.compilationUnit( f.getCharContent(true).toString()) );
                         _c.astCompilationUnit().setStorage( Paths.get( f.toUri() ));
                     }catch(IOException ioe){
                         throw new _ioException("unable to read file \""+ f.getName()+"\"");
@@ -271,7 +260,7 @@ public class _batch {
                     else{
                         CompilationUnit cu = Ast.compilationUnit(new String(bytes));
                         cu.setStorage(path);
-                        filesRead.add(_javaFile.of( _type.of(cu) ));
+                        filesRead.add(_javaFile.of( basePath, _type.of(cu) ));
                     }                    
                 }
             } catch (IOException e) {

@@ -78,7 +78,7 @@ import java.util.stream.Collectors;
  */
 public interface _type<AST extends TypeDeclaration & NodeWithJavadoc & NodeWithModifiers & NodeWithAnnotations, T extends _type>
     extends _javadoc._hasJavadoc<T>, _anno._hasAnnos<T>, _modifiers._hasModifiers<T>,
-        _field._hasFields<T>, _member<AST, T>, _code<T>, _node<AST> {
+        _field._hasFields<T>, _member<AST, T>, _java._code<T>, _node<AST> {
 
     static _type of( InputStream is ){
         return of(StaticJavaParser.parse(is));

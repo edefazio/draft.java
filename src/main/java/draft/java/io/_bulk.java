@@ -16,8 +16,8 @@ import java.util.function.Function;
 
 import static java.nio.file.FileVisitResult.CONTINUE;
 import java.util.function.Consumer;
-import draft.java._code;
-import draft.java._code.*;
+import draft.java._java._code;
+import draft.java._java.*;
 /**
  * Bulk read in .java files and optionally transform or inspect the {@link _type}s created
  *
