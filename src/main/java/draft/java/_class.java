@@ -720,19 +720,19 @@ public final class _class implements _type<ClassOrInterfaceDeclaration, _class>,
     @Override
     public String toString(){
         if( this.astClass.isTopLevelType()){
-            try{
-                return LexicalPreservingPrinter.print(this.astCompilationUnit());            
-            }catch(Exception e){
+            //try{
+            //    return LexicalPreservingPrinter.print(this.astCompilationUnit());            
+            //}catch(Exception e){
                 ///well... I tried to keep the code formatted the same
                 // ... but it failed... so just toString the old fashioned way
                 return this.astCompilationUnit().toString();
-            }
+            //}
         }
-        try{
-            return LexicalPreservingPrinter.print( this.astClass );        
-        }catch(Exception e){
+        //try{
+        //    return LexicalPreservingPrinter.print( this.astClass );        
+        //}catch(Exception e){
             return this.astClass.toString();
-        }
+        //}
     }   
 
     @Override

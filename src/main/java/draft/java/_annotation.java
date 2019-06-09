@@ -270,17 +270,17 @@ public final class _annotation
     @Override
     public String toString(){
         if( this.ast().isTopLevelType() ){
-            try{
-                return LexicalPreservingPrinter.print( this.astCompilationUnit() );    
-            } catch(Exception e){
+            //try{
+            //    return LexicalPreservingPrinter.print( this.astCompilationUnit() );    
+            //} catch(Exception e){
                 return this.astCompilationUnit().toString();
-            }            
+            //}            
         }
-        try{
-            return LexicalPreservingPrinter.print( this.astAnnotation );
-        }catch(Exception e){ //there are sometimes spurious errors in LPP, so just normal toString()
+        //try{
+        //    return LexicalPreservingPrinter.print( this.astAnnotation );
+        //}catch(Exception e){ //there are sometimes spurious errors in LPP, so just normal toString()
             return this.astAnnotation.toString();
-        }
+        //}
     }
 
     public boolean hasElements(){

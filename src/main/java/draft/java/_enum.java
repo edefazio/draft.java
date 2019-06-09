@@ -326,17 +326,17 @@ public final class _enum implements _type<EnumDeclaration, _enum>,_method._hasMe
     @Override
     public String toString(){
         if( this.ast().isTopLevelType() ){
-            try{
-                return LexicalPreservingPrinter.print( this.astCompilationUnit() );    
-            } catch(Exception e){
+            //try{
+            //    return LexicalPreservingPrinter.print( this.astCompilationUnit() );    
+            //} catch(Exception e){
                 return this.astCompilationUnit().toString();
-            }            
+            //}            
         }
-        try{
-            return LexicalPreservingPrinter.print( this.astEnum );
-        }catch(Exception e){ //there are sometimes spurious errors in LPP, so just normal toString()
+        //try{
+        //    return LexicalPreservingPrinter.print( this.astEnum );
+        //}catch(Exception e){ //there are sometimes spurious errors in LPP, so just normal toString()
             return this.astEnum.toString();
-        }
+        //}
     }
     
     /*
