@@ -60,6 +60,11 @@ public @interface _public {
     class Macro implements _macro<_anno._hasAnnos> {
 
         @Override
+        public String toString(){
+           return "macro[public]"; 
+        }
+        
+        @Override
         public _anno._hasAnnos apply(_anno._hasAnnos _annotatedModel) {
             return to(_annotatedModel);
         }

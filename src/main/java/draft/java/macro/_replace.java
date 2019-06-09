@@ -18,6 +18,19 @@ public @interface _replace {
     class Macro implements _macro<_hasAnnos> {
         String[] replacementKeyValues;
 
+        @Override
+        public String toString(){
+            StringBuilder body = new StringBuilder();
+            for(int i=0;i<replacementKeyValues.length;i+=2){
+                body.append("( \"");
+                body.append(replacementKeyValues[i]);
+                body.append("\" to \"");
+                body.append(replacementKeyValues[i+1]);
+                body.append("\" )");
+            }
+            return "macro[replace(" + body.toString()+ ")]"; 
+        }
+        
         public Macro( _replace _r ){
             this.replacementKeyValues = _r.value();
         }

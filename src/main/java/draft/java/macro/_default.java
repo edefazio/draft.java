@@ -18,6 +18,11 @@ public @interface _default {
     class Macro implements _macro<_method> {
 
         @Override
+        public String toString(){
+           return "macro[default]"; 
+        }
+        
+        @Override
         public _method apply(_method _m) {
             return to(_m);
         }

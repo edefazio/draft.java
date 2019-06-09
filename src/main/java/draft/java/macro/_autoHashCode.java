@@ -151,6 +151,11 @@ public @interface _autoHashCode {
              return to(_t);
          }
 
+        @Override
+        public String toString(){
+           return "macro[autoHashCode]"; 
+        }
+        
          public static <T extends _type> T to(T _t){
             if( _t instanceof _class){
                 _class _c = (_class)_t;

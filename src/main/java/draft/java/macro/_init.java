@@ -52,6 +52,11 @@ public @interface _init {
         }
 
         @Override
+        public String toString(){
+           return "macro[init(...)]"; 
+        }
+        
+        @Override
         public _anno._hasAnnos apply(_anno._hasAnnos _f) {
             if( _f instanceof _field) {
                 return to( (_field)_f, init);

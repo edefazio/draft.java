@@ -16,8 +16,13 @@ public @interface _abstract {
 
     Macro $ = new Macro();
 
-    class Macro implements _macro<_anno._hasAnnos> {
+    public class Macro implements _macro<_anno._hasAnnos> {
 
+        @Override
+        public String toString(){
+           return "macro[abstract]"; 
+        }
+        
         public _anno._hasAnnos apply( _anno._hasAnnos _ha ){
             return to( _ha);
         }

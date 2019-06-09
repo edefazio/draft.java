@@ -22,6 +22,11 @@ public @interface _name{
             this.name = _e.value();
         }
 
+        @Override
+        public String toString(){
+           return "macro[name("+name+")]"; 
+        }
+        
         public _anno._hasAnnos apply( _anno._hasAnnos _a){
             return to( _a, name );
         }

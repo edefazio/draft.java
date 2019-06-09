@@ -29,6 +29,11 @@ public @interface _autoToString {
             return to( _t);
         }
 
+        @Override
+        public String toString(){
+           return "macro[autoToString]"; 
+        }
+        
         public static final $method $TO_STRING = $method.of(
             "public String toString(){",
             "    StringBuilder sb = new StringBuilder();",

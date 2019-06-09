@@ -15,6 +15,11 @@ public @interface _package {
     class Macro implements _macro<_type> {
         String packageName;
 
+        @Override
+        public String toString(){
+           return "macro[package(\""+packageName+"\")]"; 
+        }
+        
         public Macro( _package _p ){ this.packageName = _p.value(); }
 
         public Macro( String packageName ){

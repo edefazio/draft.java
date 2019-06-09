@@ -13,6 +13,11 @@ public @interface _volatile {
     class Macro implements _macro<_field> {
 
         @Override
+        public String toString(){
+           return "macro[volatile]"; 
+        }
+        
+        @Override
         public _field apply(_field _f) {
             return to(_f);
         }

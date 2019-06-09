@@ -22,6 +22,11 @@ public @interface _autoGet {
                 "public $type$ get$Name$(){ return $name$; }");
 
         @Override
+        public String toString(){
+           return "macro[autoGet]"; 
+        }
+        
+        @Override
         public _type apply(_type _t) {
             return to( _t );
         }

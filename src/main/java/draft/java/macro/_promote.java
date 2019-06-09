@@ -18,6 +18,11 @@ public @interface _promote {
 
         public String packageName;
 
+        @Override
+        public String toString(){
+           return "macro[promote(\""+packageName+"\")]"; 
+        }
+        
         public Macro( _promote _pr){ this.packageName = _pr.value(); }
 
         public Macro( String packageName ){

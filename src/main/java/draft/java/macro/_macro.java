@@ -110,17 +110,22 @@ public interface _macro<M extends _anno._hasAnnos>
      * @return the modified _model (with all {@link _macro}s applied)
      */
     static <T extends _anno._hasAnnos> T applyAllAnnotationMacros(T _model, AnnotatedElement ae ) {
+        Arrays.stream(ae.getAnnotations()).forEach( a-> System.out.println( a ) );
+        //System.out.println( "Applying macros to "+ae.getAnnotations());
         Annotation[] anns = ae.getAnnotations();
         for (int i = 0; i < anns.length; i++) {
             _macro _ma = macroFor(anns[i]);
             if (_ma != null) {
+                
                 _model = (T)_ma.apply( (T)_model);
+                //System.out.println( "MODEL AFTER "+ _model);
                 if( _model != null ) {
                     //the _macro expansion MAY have actually removed the
                     // entity entirely, so double check... if not, make sure the
                     // annotation is removed after the _macro processes
-                    _model.removeAnnos(anns[i].annotationType());
+                    _model = (T)_model.removeAnnos(anns[i].annotationType());
                 }
+                System.out.println( "After "+_ma+" "+_model);
             }
         }
         return _model;
@@ -235,7 +240,7 @@ public interface _macro<M extends _anno._hasAnnos>
     }
 
     /**
-     * Given a Class and _type, check if ANNOTATIONS are Macro ANNOTATIONS, and if so,
+     * Given a Class and _type, check if annotations are Macro annotations, and if so,
      *
      * @param clazz a Runtime Class that may have ANNOTATIONS (or BODY with Macro ANNOTATIONS)
      * @param _t the _type model instance
@@ -266,7 +271,7 @@ public interface _macro<M extends _anno._hasAnnos>
                 */
             }
         });
-        //We process CONSTRUCTORS first because
+        //We process CONSTRUCTORS 
         if (_t instanceof _constructor._hasConstructors) {
             ((_constructor._hasConstructors) _t).forConstructors(_c -> to(clazz, (_constructor)_c));
         }

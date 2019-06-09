@@ -18,6 +18,11 @@ public @interface _remove {
     class Macro implements _macro<_hasAnnos> {
 
         @Override
+        public String toString(){
+           return "macro[remove]"; 
+        }
+        
+        @Override
         public _hasAnnos apply(_hasAnnos _model) {
             return to(_model);
         }

@@ -23,6 +23,11 @@ public @interface _autoEquals {
     class Macro implements _macro<_type> {
 
         @Override
+        public String toString(){
+           return "macro[autoEquals]"; 
+        }
+        
+        @Override
         public _type apply(_type _t) {
             return to(_t);
         }

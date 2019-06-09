@@ -48,6 +48,11 @@ public @interface _ctor {
     
     class Macro implements _macro<_method>{
 
+        @Override
+        public String toString(){
+           return "macro[ctor]"; 
+        }
+        
         /**
          * Given a MethodDeclaration, convert it to a ConstructorDeclaration
          * @param md

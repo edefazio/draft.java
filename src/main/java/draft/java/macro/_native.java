@@ -13,6 +13,11 @@ public @interface _native {
     class Macro implements _macro<_anno._hasAnnos> {
 
         @Override
+        public String toString(){
+           return "macro[native]"; 
+        }
+        
+        @Override
         public _anno._hasAnnos apply(_anno._hasAnnos _model) {
             return to(_model);
         }

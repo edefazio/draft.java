@@ -14,6 +14,11 @@ public @interface _non_static {
     class Macro implements _macro<_anno._hasAnnos> {
 
         @Override
+        public String toString(){
+           return "macro[non_static]"; 
+        }
+        
+        @Override
         public _anno._hasAnnos apply(_anno._hasAnnos _model) {
             return to(_model);
         }

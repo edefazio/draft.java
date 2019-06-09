@@ -30,6 +30,11 @@ public @interface _autoSetFluent {
                 "}");
 
         @Override
+        public String toString(){
+           return "macro[autoSetFluent]"; 
+        }
+        
+        @Override
         public _type apply(_type _t) {
             return to( _t );
         }

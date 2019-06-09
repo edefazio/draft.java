@@ -14,6 +14,11 @@ public @interface _private {
     class Macro implements _macro<_anno._hasAnnos> {
 
         @Override
+        public String toString(){
+           return "macro[private]"; 
+        }
+        
+        @Override
         public _anno._hasAnnos apply(_anno._hasAnnos _annotatedModel) {
             return to(_annotatedModel);
         }

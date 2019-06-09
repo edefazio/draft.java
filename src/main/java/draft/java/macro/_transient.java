@@ -13,6 +13,11 @@ public @interface _transient {
     class Macro implements _macro<_field> {
 
         @Override
+        public String toString(){
+           return "macro[transient]"; 
+        }
+        
+        @Override
         public _field apply(_field _f) {
             return to(_f);
         }

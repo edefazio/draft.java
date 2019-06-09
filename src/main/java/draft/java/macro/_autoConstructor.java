@@ -27,6 +27,11 @@ public @interface _autoConstructor {
         public _type apply( _type _t ){
             return to( _t );
         }
+        
+        @Override
+        public String toString(){
+           return "macro[autoConstructor]"; 
+        }
 
         public static <T extends _type> T to( T t  ){
             List<_field> _fs = t.listFields(CTOR_REQUIRED_FIELD);

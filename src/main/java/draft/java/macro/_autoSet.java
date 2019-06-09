@@ -29,6 +29,11 @@ public @interface _autoSet {
             "public void set$Name$($type$ $name$){ this.$name$ = $name$; }" );
 
         @Override
+        public String toString(){
+           return "macro[autoSet]"; 
+        }
+        
+        @Override
         public _type apply(_type _t) {
             return to( _t );
         }

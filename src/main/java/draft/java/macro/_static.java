@@ -14,6 +14,11 @@ public @interface _static  {
     class Macro implements _macro<_hasAnnos> {
 
         @Override
+        public String toString(){
+           return "macro[static]"; 
+        }
+        
+        @Override
         public _hasAnnos apply(_anno._hasAnnos _annotatedModel) {
             return to(_annotatedModel);
         }

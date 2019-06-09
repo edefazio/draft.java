@@ -20,6 +20,18 @@ public @interface _extend{
             this.toExtend = _e.value();
         }
 
+        @Override
+        public String toString(){
+            String s = "";
+            for(int i=0;i<toExtend.length;i++){
+                if( i > 0){
+                    s +=",";
+                }
+                s += toExtend[i].getCanonicalName();
+            }
+            return "macro[extend("+s+")]"; 
+        }
+        
         public Macro( Class...toExtend ){
             this.toExtend = toExtend;
         }

@@ -27,9 +27,15 @@ public @interface _importClass {
             return new Macro();
         }
 
+        
         private Macro (){
         }
 
+        @Override
+        public String toString(){
+           return "macro[importClass("+importDeclarations+")]"; 
+        }
+        
         public Macro( _importClass _i ){
             Arrays.stream( _i.value() ).forEach(c->  importDeclarations.add(new ImportDeclaration( c.getCanonicalName(), false, false)));
             Arrays.stream( _i.statically() ).forEach(s-> {

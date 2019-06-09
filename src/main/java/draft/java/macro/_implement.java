@@ -24,6 +24,18 @@ public @interface _implement {
 
         Class[] toImplement;
 
+        @Override
+        public String toString(){
+            String s = "";
+            for(int i=0;i<toImplement.length;i++){
+                if( i > 0){
+                    s +=",";
+                }
+                s += toImplement[i].getCanonicalName();
+            }
+            return "macro[toImplement("+s+")]"; 
+        }
+        
         public Macro( _implement _i ){
             /** Transfer the properties on the _implement annotation to a field in the Macro instance*/
             this.toImplement = _i.value();
