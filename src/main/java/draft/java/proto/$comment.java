@@ -13,7 +13,6 @@ import draft.java.Ast;
 import draft.java.Walk;
 import draft.java._javadoc;
 import draft.java._model._node;
-import draft.java._type;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
@@ -276,15 +275,7 @@ public class $comment <C extends Comment>
         if( found.isEmpty() ){
             return null;
         }
-        return select(found.get(0));
-        /*
-        Optional<Comment> oc = 
-            n.findFirst(Comment.class, c-> matches(c) );
-        if( oc.isPresent() ){
-            return select(oc.get());
-        }
-        return null;
-        */
+        return select(found.get(0));        
     }
 
     public Select selectFirstIn(Node n, Predicate<Select> selectConstraint) {
@@ -293,28 +284,8 @@ public class $comment <C extends Comment>
         if( found.isEmpty() ){
             return null;
         }
-        return found.get(0);
-        /*
-        Optional<Comment> oc = 
-            n.findFirst(Comment.class, c->{
-                Select sel = select(c);
-                return sel != null && selectConstraint.test(sel );
-            });
-        if( oc.isPresent() ){
-            return select(oc.get());
-        }
-        return null;
-        */
+        return found.get(0);        
     }
-        
-    /*
-    @Override
-    public List<C> listIn(Node astRootNode) {
-        List<C> found = new ArrayList<>();
-        forEachIn(astRootNode, c -> found.add(c));
-        return found;
-    }
-    */
 
     @Override
     public List<Select> listSelectedIn(Node astRootNode) {

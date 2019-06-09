@@ -4,7 +4,6 @@ import com.github.javaparser.ast.Node;
 import com.github.javaparser.ast.expr.LambdaExpr;
 import com.github.javaparser.ast.nodeTypes.NodeWithBlockStmt;
 import com.github.javaparser.ast.nodeTypes.NodeWithOptionalBlockStmt;
-import com.github.javaparser.ast.nodeTypes.NodeWithStatements;
 import com.github.javaparser.ast.stmt.Statement;
 import draft.*;
 import draft.java.*;
@@ -404,36 +403,6 @@ public class $body implements Template<_body>, $proto<_body>, $constructor.$part
         }
         return this;
     }
-
-    /*
-    @Override
-    public _body firstIn( _node _n) {
-        return firstIn(_n.ast());
-    }
-
-    @Override
-    public _body firstIn(Node astRootNode) {
-        Optional<Node> on = astRootNode.findFirst(Node.class, n-> { 
-            if(n instanceof NodeWithBlockStmt){
-                Select sel = select( (NodeWithBlockStmt)n );
-                return sel != null;
-            }
-            if(n instanceof NodeWithOptionalBlockStmt){
-                Select sel = select( (NodeWithOptionalBlockStmt)n );
-                return sel != null;
-            }
-            return false;
-            });
-        if( on.isPresent() ){
-            Node node = on.get();
-            if( node instanceof NodeWithBlockStmt ){
-                return _body.of( (NodeWithBlockStmt)node );
-            }
-            return _body.of( (NodeWithOptionalBlockStmt)node );            
-        }
-        return null;
-    }
-    */
     
     @Override
     public _body firstIn(Node astRootNode, Predicate<_body> _bodyMatchFn) {
@@ -528,15 +497,6 @@ public class $body implements Template<_body>, $proto<_body>, $constructor.$part
         }
         return null;
     }
-
-    /*
-    @Override
-    public List<_body> listIn(Node astRootNode, Predicate<_body> _bodyMatchFn) {
-        List<_body> found = new ArrayList<>();
-        forEachIn(astRootNode, _bodyMatchFn, b-> found.add(b));
-        return found;
-    }
-    */
 
     @Override
     public List<Select> listSelectedIn(Node astRootNode) {
@@ -660,16 +620,6 @@ public class $body implements Template<_body>, $proto<_body>, $constructor.$part
         });
         return astRootNode;
     }
-
-    /*
-    @Override
-    public <N extends Node> N removeIn(N astRootNode) {
-        forEachIn(astRootNode, _b->{
-            _b.clear(); 
-        });
-        return astRootNode;
-    }
-    */
     
     /**
      * 

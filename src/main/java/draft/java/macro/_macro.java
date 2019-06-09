@@ -110,7 +110,7 @@ public interface _macro<M extends _anno._hasAnnos>
      * @return the modified _model (with all {@link _macro}s applied)
      */
     static <T extends _anno._hasAnnos> T applyAllAnnotationMacros(T _model, AnnotatedElement ae ) {
-        Arrays.stream(ae.getAnnotations()).forEach( a-> System.out.println( a ) );
+        //Arrays.stream(ae.getAnnotations()).forEach( a-> System.out.println( a ) );
         //System.out.println( "Applying macros to "+ae.getAnnotations());
         Annotation[] anns = ae.getAnnotations();
         for (int i = 0; i < anns.length; i++) {
@@ -125,38 +125,11 @@ public interface _macro<M extends _anno._hasAnnos>
                     // annotation is removed after the _macro processes
                     _model = (T)_model.removeAnnos(anns[i].annotationType());
                 }
-                System.out.println( "After "+_ma+" "+_model);
+                //System.out.println( "After "+_ma+" "+_model);
             }
         }
         return _model;
     }
-
-    /**
-     * Given Class clazz, _1_build the {@link _class} model and update it with all {@link _macro} ANNOTATIONS
-     * @param clazz
-     * @return
-     
-    static _class _class(Class clazz ){
-        return (_class)to( clazz );
-    }
-
-    static _enum _enum(Class clazz ){
-        return (_enum)to(clazz );
-    }
-
-    static _interface _interface(Class clazz ){
-        return (_interface)to(clazz );
-    }
-
-    static _annotation _annotation(Class clazz ){
-        return (_annotation)to(clazz );
-    }
-    */ 
-/*
-    static <T extends _type> T to(Class clazz ){
-        return (T)to( clazz, _type.of(clazz));
-    }
-    */
 
     static Object _new( Class clazz, Object...ctorArgs ){
         return _new.of(_type.of(clazz), ctorArgs);

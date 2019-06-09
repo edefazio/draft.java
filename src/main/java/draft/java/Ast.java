@@ -34,8 +34,6 @@ import java.util.function.Consumer;
 import java.util.function.Predicate;
 
 import static com.github.javaparser.utils.Utils.normalizeEolInTextBlock;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import java.util.regex.Pattern;
 
 /**
@@ -197,7 +195,7 @@ public enum Ast {
     public static final Class<VariableDeclarator> VARIABLE_DECLARATOR = VariableDeclarator.class;
 
     /*-----------------------COMMENTS-----------------------------------------*/
- /* ( in com.github.javaparser.ast.comments ) */
+    /* ( in com.github.javaparser.ast.comments ) */
     public static final Class<Comment> COMMENT = Comment.class;
     public static final Class<BlockComment> BLOCK_COMMENT = BlockComment.class;
     public static final Class<JavadocComment> JAVADOC_COMMENT = JavadocComment.class;
@@ -517,6 +515,18 @@ public enum Ast {
      */
     public static final Class<WhileStmt> WHILE_STMT = WhileStmt.class;
 
+    public static final Class<SwitchEntry> SWITCH_CASE = SwitchEntry.class;
+    
+    /**
+     * <h2>Java 12-</h2>
+     * Like {@link com.github.javaparser.ast.stmt.SwitchStmt},
+     * but can also be used as an expression.
+     * <br/>
+     * <br/><code>int a = switch(x) { case 5,6 -> 20; case 9 -> 30; default -> 40; };</code>
+     * <br/><code>int a = switch(x) { case 5,6: break 20; default: break 5+5; };</code>
+     */
+    public static final Class<SwitchExpr> SWITCH_EXPR = SwitchExpr.class;
+    
     /**
      *
      * NOTE: this IS NOT an implementer of Statement

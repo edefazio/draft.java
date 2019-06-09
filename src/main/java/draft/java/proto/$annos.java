@@ -383,51 +383,7 @@ public class $annos
             return select( (NodeWithAnnotations)f.get());
         }
         return null;
-    }
-    
-    /*
-    @Override
-    public _annos firstIn( _node _n ){
-        return firstIn( _n.ast() );
-    }
-    */
-    
-    /*
-    @Override
-    public List<_annos> listIn(_node _n) {
-        List<_annos> found = new ArrayList<>();
-        Walk.in(_n, _hasAnnos.class, _ha-> {
-            Select sel = select(_ha);
-            if( sel != null ){
-                found.add( sel._anns );
-            }
-        });
-        return found;
-    }
-
-    @Override
-    public List<_annos> listIn(Node astRootNode) {        
-        return listIn( (_node)_java.of(astRootNode) );        
-    }
-    */
-    
-    
-    /*
-    @Override
-    public List<_annos> listIn(Node astRootNode, Predicate<_annos> _annosMatchFn ){
-        List<_annos> found = new ArrayList<>();
-        Walk.in(astRootNode, Node.class, n-> {
-            if( n instanceof NodeWithAnnotations ){
-                Select sel = select( (NodeWithAnnotations)n);
-                if( sel != null && _annosMatchFn.test(sel._anns)){
-                    found.add( sel._anns );
-                }
-            }            
-        });
-        return found;
-    }
-
-    */
+    }    
     
     @Override
     public List<Select> listSelectedIn(Node astRootNode) {         
@@ -473,32 +429,6 @@ public class $annos
         return found;
     }
 
-    /*
-    @Override
-    public <N extends Node> N removeIn(N astRootNode) {
-        removeIn( (_node)_java.of(astRootNode) );         
-        return astRootNode;
-    }
-
-    @Override
-    public <N extends _node> N removeIn(N _n) {
-        return Walk.in(_n, _hasAnnos.class, _ha-> {
-            Select sel = select(_ha);
-            if( sel != null ){
-                _ha.removeAnnos(h->true);//remove all annos
-            }
-        });        
-    }
-    */
-
-    /*
-    @Override
-    public <N extends Node> N forEachIn(N astRootNode, Consumer<_annos> _annosActionFn) {
-        forEachIn( (_node)_java.of(astRootNode), _annosActionFn );         
-        return astRootNode;
-    }
-    */
-
     @Override
     public <N extends Node> N forEachIn(N astRootNode, Predicate<_annos> _annosMatchFn, Consumer<_annos> _annosActionFn) {
         return Walk.in(astRootNode, Node.class, n-> {
@@ -514,17 +444,6 @@ public class $annos
         //return astRootNode;
     }
     
-    /*
-    @Override
-    public <N extends _node> N forEachIn(N _n, Predicate<_annos> _annosMatchFn, Consumer<_annos> _annosActionFn) {
-        return Walk.in(_n, _hasAnnos.class, _ha-> {
-            Select sel = select(_ha);
-            if( sel != null && _annosMatchFn.test(sel._anns)){
-                _annosActionFn.accept(sel._anns);
-            }
-        });
-    }
-    */
     /**
      * 
      * @param <N>

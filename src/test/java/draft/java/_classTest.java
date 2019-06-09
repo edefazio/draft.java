@@ -6,6 +6,7 @@ import java.util.*;
 
 import com.github.javaparser.ast.comments.*;
 import com.github.javaparser.ast.type.ClassOrInterfaceType;
+import com.github.javaparser.printer.lexicalpreservation.LexicalPreservingPrinter;
 import draft.java.macro.*;
 import draft.java.runtime.*;
 import junit.framework.TestCase;
@@ -26,6 +27,8 @@ import java.util.concurrent.atomic.AtomicBoolean;
  */
 public class _classTest extends TestCase {
     
+    
+    
     public void testHeader(){
         _class _a = _class.of("/* License */",
                 "package aaaa.bbbb;",
@@ -35,11 +38,11 @@ public class _classTest extends TestCase {
                 "public class FFF{ }" );
         assertNotNull( _a.getHeaderComment() );
         assertNotNull( _a.getJavadoc() );
-        assertEquals( _a.getJavadoc().toString(), 
+        assertEquals( _a.getJavadoc().toString().trim(), 
             Ast.javadocComment(
                 "/**", 
                 " * JavaDoc", 
-                " */").toString() );
+                " */").toString().trim() );
         assertEquals( Ast.blockComment("/* License */").toString(), _a.getHeaderComment().toString() );
         System.out.println( _a.getHeaderComment() );
     }

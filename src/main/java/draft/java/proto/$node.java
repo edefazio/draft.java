@@ -30,187 +30,6 @@ import java.util.function.Predicate;
  */
 public class $node implements $proto<Node> {
     
-    /**
-     * 
-     * @param <N>
-     * @param astRootNode
-     * @param pattern
-     * @param selectConsumer
-     * @return 
-     
-    public static <N extends Node> N forEach(N astRootNode, String pattern, Consumer<Node> selectConsumer){
-        return $node.of(pattern)
-            .forEachIn(astRootNode, selectConsumer);
-    }
-    
-    /**
-     * 
-     * @param <N>
-     * @param _n
-     * @param pattern
-     * @param selectConsumer
-     * @return 
-     
-    public static <N extends _node> N forEach(N _n, String pattern, Consumer<Node> selectConsumer){
-        return $node.of(pattern)
-            .forEachIn(_n, selectConsumer);
-    }
-    
-    /**
-     * 
-     * @param <N>
-     * @param astRootNode
-     * @param pattern
-     * @param selectConsumer
-     * @return 
-     
-    public static <N extends Node> N forSelected(N astRootNode, String pattern, Consumer<Select> selectConsumer){
-        return $node.of(pattern).forSelectedIn(astRootNode, selectConsumer);
-    }
-    
-    /**
-     * 
-     * @param <N>
-     * @param _n
-     * @param pattern
-     * @param selectConsumer
-     * @return 
-     
-    public static <N extends _node> N forSelected(N _n, String pattern, Consumer<Select> selectConsumer){
-        return $node.of(pattern).forSelectedIn(_n, selectConsumer);
-    }
-    
-    /**
-     * 
-     * @param <N>
-     * @param astRootNode
-     * @param matchPattern
-     * @param targetPattern
-     * @return 
-     
-    public static <N extends Node> N replace( N astRootNode, String matchPattern, String targetPattern ){
-        return $node.of(matchPattern).replaceIn(astRootNode, targetPattern);
-    }
-    
-    /**
-     * 
-     * @param <N>
-     * @param _n
-     * @param matchPattern
-     * @param targetPattern
-     * @return 
-     
-    public static <N extends _node> N replace( N _n, String matchPattern, String targetPattern ){
-        return $node.of(matchPattern).replaceIn(_n, targetPattern);
-    }
-
-    /**
-     * 
-     * @param clazz the runtime Class 
-     * @param matchPattern
-     * @param targetPattern
-     * @return 
-     
-    public static _type replace( Class clazz, String matchPattern, String targetPattern ){
-        return $node.of(matchPattern).replaceIn(_type.of(clazz), targetPattern);
-    }
-    
-    /**
-     * 
-     * @param <N>
-     * @param astRootNode
-     * @param pattern
-     * @return 
-     
-    public static <N extends Node> N remove( N astRootNode, String pattern ){
-        return $node.of(pattern).removeIn(astRootNode );
-    }
-    
-    /**
-     * 
-     * @param <N>
-     * @param _n
-     * @param pattern
-     * @return 
-     
-    public static <N extends _node> N remove( N _n, String pattern ){
-        return $node.of(pattern).removeIn(_n);
-    }
-
-    /**
-     * 
-     * @param clazz the runtime Class 
-     * @param pattern
-     * @return 
-     
-    public static _type remove( Class clazz, String pattern ){
-        return $node.of(pattern).removeIn(_type.of(clazz));
-    }
-    
-    /**
-     * 
-     * @param clazz
-     * @param pattern
-     * @return 
-     
-    public static List<Node> list( Class clazz, String pattern ){
-        return list(_type.of(clazz), pattern);
-    }
-    
-    /**
-     * 
-     * @param <N>
-     * @param astRootNode
-     * @param pattern
-     * @return 
-     
-    public static <N extends Node> List<Node> list( N astRootNode, String pattern ){
-        return $node.of(pattern).listIn(astRootNode );
-    }
-    
-    /**
-     * 
-     * @param <N>
-     * @param _n
-     * @param pattern
-     * @return 
-     
-    public static <N extends _node> List<Node> list( N _n, String pattern ){
-        return $node.of(pattern).listIn(_n );
-    }
-    
-    /**
-     * 
-     * @param clazz
-     * @param pattern
-     * @return 
-     
-    public static List<Select> listSelected( Class clazz, String pattern ){
-        return listSelected(_type.of(clazz), pattern);
-    }
-    
-    /**
-     * 
-     * @param <N>
-     * @param astRootNode
-     * @param pattern
-     * @return 
-     
-    public static <N extends Node> List<Select> listSelected( N astRootNode, String pattern ){
-        return $node.of(pattern).listSelectedIn(astRootNode );
-    }
-    
-    /**
-     * 
-     * @param <N>
-     * @param astRootNode
-     * @param pattern
-     * @return 
-     
-    public static <N extends _node> List<Select> listSelected( N astRootNode, String pattern ){
-        return $node.of(pattern).listSelectedIn(astRootNode );
-    }
-    */ 
     
     /**
      * 
@@ -243,17 +62,6 @@ public class $node implements $proto<Node> {
         this.pattern = pattern;
         this.constraint = t-> true;
     }
-    
-    /**
-     * 
-     * @param constraint
-     * @return 
-     
-    public $node constraint( Predicate<Node> constraint ){
-        this.constraint = constraint;
-        return this;
-    }
-    */ 
     
     /**
      * ADDS an additional matching constraint to the prototype
@@ -341,33 +149,6 @@ public class $node implements $proto<Node> {
         return null;
     }
     
-    /*
-    @Override
-    public Node firstIn( _node _n ){
-        return firstIn( _n.ast() );
-    }
-    
-    @Override
-    public List<Node> listIn(_node _n) {
-        if( _n instanceof _type && ((_type)_n).isTopLevel()){
-            return listIn( ((_type)_n).astCompilationUnit() );
-        }
-        return listIn(_n.ast());
-    }
-
-    @Override
-    public List<Node> listIn(Node astRootNode) {
-        List<Node> found = new ArrayList<>();
-        astRootNode.walk(n -> {
-            Select select = select(n);
-            if( select != null ){
-                found.add(n);
-            }            
-        });
-        return found;
-    }
-    */
-    
     @Override
     public List<Select> listSelectedIn(Node astRootNode) {
         List<Select> found = new ArrayList<>();
@@ -417,30 +198,6 @@ public class $node implements $proto<Node> {
         }
         return selectListIn(_n.ast(), selectConstraint);
     }
-    
-    /*
-    @Override
-    public <N extends Node> N removeIn(N astRootNode) {
-        astRootNode.walk(n -> {
-            Select select = select( n );
-            if( select != null ){
-                n.removeForced();
-            }            
-        });
-        return astRootNode;
-    }
-    */
-    /*
-    @Override
-    public <N extends _node> N removeIn(N _n) {
-        if( _n instanceof _type && ((_type)_n).isTopLevel()){
-            removeIn( ((_type)_n).astCompilationUnit() );
-            return _n;
-        }
-        removeIn(_n.ast());
-        return _n;
-    }
-    */
     
     private static boolean replaceNode( Node target, Node replacement ){
         boolean isRep = false;
@@ -543,7 +300,7 @@ public class $node implements $proto<Node> {
                 String st = n.toString(Ast.PRINT_NO_COMMENTS);
                 Tokens ts = this.pattern.deconstruct( st );
                 if( ts != null ){
-                    System.out.println( "replacing "+ n +" of "+n.getClass()+" with "+ replacement );
+                    //System.out.println( "replacing "+ n +" of "+n.getClass()+" with "+ replacement );
                     boolean isRep = replaceNode( n, replacement );                    
                     if( !isRep ){
                     }
@@ -667,18 +424,6 @@ public class $node implements $proto<Node> {
         return astRootNode;
     }
 
-    /*
-    @Override
-    public <N extends _node> N forEachIn(N _n, Consumer<Node> nodeActionFn) {
-        if( _n instanceof _type && ((_type)_n).isTopLevel()){
-            forEachIn( ((_type)_n).astCompilationUnit(), nodeActionFn);
-            return _n;
-        }
-        forEachIn(_n.ast(), nodeActionFn);
-        return _n;
-    }
-    */
-    
     /**
      * Singleton that compares the start position of Select entities 
      * (based on the Ast node that was selected )

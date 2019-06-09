@@ -31,12 +31,6 @@ import java.util.stream.Collectors;
  */
 public class $case 
     implements $proto<SwitchEntry>, Template<SwitchEntry> {
-    
-    //there seems to only ever be STATEMENT GROUPS
-    //public static final SwitchEntry.Type STATEMENT_GROUP = SwitchEntry.Type.STATEMENT_GROUP;
-    //public static final SwitchEntry.Type EXPRESSION = SwitchEntry.Type.EXPRESSION;
-    //public static final SwitchEntry.Type BLOCK = SwitchEntry.Type.BLOCK;
-    //public static final SwitchEntry.Type THROWS_STATEMENT = SwitchEntry.Type.THROWS_STATEMENT;
 
     public static $case of( Predicate<SwitchEntry> constraint ){
         return any().addConstraint(constraint);
@@ -221,15 +215,6 @@ public class $case
         }
         return null;                
     }
-    
-    /*
-    @Override
-    public List<SwitchEntry> listIn(Node astRootNode) {
-        List<SwitchEntry> found = new ArrayList<>();
-        forEachIn( astRootNode, s-> found.add(s));
-        return found;        
-    }
-    */
 
     @Override
     public List<Select> listSelectedIn(Node astRootNode) {
@@ -368,13 +353,6 @@ public class $case
         return astRootNode;
     }
     
-    /*
-    @Override
-    public <N extends Node> N removeIn(N astRootNode) {
-        return forEachIn(astRootNode, n -> n.remove() );
-    }
-    */
-
     @Override
     public SwitchEntry construct(Translator translator, Map<String, Object> keyValues) {
         SwitchEntry se = new SwitchEntry();
@@ -489,7 +467,5 @@ public class $case
         public boolean isDefaultCase(){
             return astCase.getLabels().isEmpty();
         }
-        
-        
     }     
 }

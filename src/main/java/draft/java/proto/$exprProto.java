@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package draft.java.proto;
 
 import com.github.javaparser.ast.Node;
@@ -55,84 +50,6 @@ public interface $exprProto<T extends Expression>
 
     T fill(Object... values);
 
-    /**
-     *
-     * @param clazz
-     * @return
-     */
-    //T firstIn(Class clazz);
-
-    /**
-     * Returns the first Expression that matches the pattern and constraint
-     * @param _n the _java node
-     * @return  the first Expression that matches (or null if none found)
-     */
-    //T firstIn(_node _n);
-
-    /**
-     * Returns the first Expression that matches the pattern and constraint
-     * @param astNode the node to look through
-     * @return  the first Expression that matches (or null if none found)
-     */
-    //T firstIn(Node astNode);
-
-    /**
-     *
-     * @param <E>
-     * @param clazz
-     * @param exprClass
-     * @param expressionActionFn
-     * @return
-     */
-    //<E extends Expression> _type forEach(Class clazz, Class<E> exprClass, Consumer<E> expressionActionFn);
-
-    /**
-     *
-     * @param <N>
-     * @param <E>
-     * @param _n
-     * @param exprClass
-     * @param expressionActionFn
-     * @return
-     */
-    //<N extends _node, E extends Expression> N forEach(N _n, Class<E> exprClass, Consumer<E> expressionActionFn);
-
-    /**
-     *
-     * @param <E>
-     * @param clazz
-     * @param exprProto
-     * @param expressionActionFn
-     * @return
-     */
-    //<E extends Expression> _type forEach(Class clazz, E exprProto, Consumer<E> expressionActionFn);
-
-    /**
-     *
-     * @param <N>
-     * @param <E>
-     * @param _n
-     * @param exprProto
-     * @param expressionActionFn
-     * @return
-     */
-    //<N extends _node, E extends Expression> N forEach(N _n, E exprProto, Consumer<E> expressionActionFn);
-
-    /**
-     *
-     * @param <N>
-     * @param <E>
-     * @param _n
-     * @param exprProto
-     * @param constraint
-     * @param expressionActionFn
-     * @return
-     */
-    //<N extends _node, E extends Expression> N forEach(N _n, E exprProto, Predicate<E> constraint, Consumer<E> expressionActionFn);
-
-    //<N extends Node> N forEachIn(N astNode, Consumer<T> expressionActionFn);
-
-    //<N extends _node> N forEachIn(N _n, Consumer<T> expressionActionFn);
 
     /**
      *
@@ -284,22 +201,6 @@ public interface $exprProto<T extends Expression>
     boolean matches(Expression astExpr);
 
     /**
-     * 
-     * @param <N>
-     * @param astNode
-     * @return 
-     */
-    //<N extends Node> N removeIn(N astNode);
-
-    /**
-     * 
-     * @param <N>
-     * @param _n
-     * @return 
-     */
-    //<N extends _node> N removeIn(N _n);
-
-    /**
      *
      * @param clazz
      * @param astExprReplace
@@ -355,29 +256,6 @@ public interface $exprProto<T extends Expression>
      * @return 
      */
     Select<T> select(String... expr);
-
-    /**
-     *
-     * @param clazz
-     * @return
-     */
-    //@Override
-    //Select<T> selectFirstIn(Class clazz);
-
-    /**
-     * Returns the first Expression that matches the pattern and constraint
-     * @param _n the _java node
-     * @return  the first Expression that matches (or null if none found)
-     */
-    //Select<T> selectFirstIn(_model._node _n);
-
-    /**
-     * Returns the first Expression that matches the pattern and constraint
-     * @param astNode the node to look through
-     * @return  the first Expression that matches (or null if none found)
-     */
-    //Select<T> selectFirstIn(Node astNode);
-
     /**
      *
      * @param clazz

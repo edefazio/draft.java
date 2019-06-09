@@ -28,9 +28,6 @@ import java.util.stream.Collectors;
 public class $typeParameter 
     implements Template<_typeParameter>, $proto<_typeParameter>, $method.$part, $constructor.$part {
 
-    
-
-    
     /** */
     public interface $part { }
     
@@ -309,15 +306,6 @@ public class $typeParameter
         return null;
     }
     
-    /*
-    @Override
-    public List<_typeParameter> listIn(Node astRootNode) {
-        List<_typeParameter>found = new ArrayList<>();
-        forEachIn( astRootNode, tp-> found.add(tp) );
-        return found;
-    }
-    */
-
     @Override
     public List<Select> listSelectedIn(Node astRootNode) {
         List<Select> selected = new ArrayList<>();
@@ -371,13 +359,6 @@ public class $typeParameter
         });
         return astRootNode;
     }
-    
-    /*
-    @Override
-    public <N extends Node> _typeParameter firstIn( N astRootNode, Predicate<_typeParameter> _typeparamMatchFn){
-        
-    }
-    */
     
     @Override
     public <N extends Node> N forEachIn(N astRootNode, Predicate<_typeParameter> _typeParamMatchFn, Consumer<_typeParameter> _typeParameterActionFn) {

@@ -121,15 +121,6 @@ public class $catch implements $proto<CatchClause> {
         return null;
     }
 
-    /*
-    @Override
-    public List<CatchClause> listIn(Node astRootNode) {
-        List<CatchClause> found = new ArrayList<>();
-        forEachIn( astRootNode, c-> found.add(c) );
-        return found;
-    }
-    */
-
     @Override
     public List<Select> listSelectedIn(Node astRootNode) {
         List<Select> sels = new ArrayList<>();
@@ -260,14 +251,7 @@ public class $catch implements $proto<CatchClause> {
                 }
             });
         return astRootNode;
-    }    
-
-    /*
-    @Override
-    public <N extends Node> N removeIn(N astRootNode) {
-        return forEachIn( astRootNode, n -> n.removeForced());
     }
-    */
     
     public boolean matches(String...catchClause){
         return select(catchClause) != null;

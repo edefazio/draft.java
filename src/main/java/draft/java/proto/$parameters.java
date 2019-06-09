@@ -235,23 +235,6 @@ public class $parameters implements Template<_parameters>, $proto<_parameters>,
         return null;
     }
     
-    /*
-    @Override
-    public List<_parameters> listIn( _node _n) {
-        List<_parameters> found = new ArrayList<>();
-        forEachIn(_n, n-> found.add(n) );
-        return found;
-    }
-
-    @Override
-    public List<_parameters> listIn(Node astRootNode) {
-        List<_parameters> found = new ArrayList<>();
-        forEachIn(astRootNode, n-> found.add(n) );
-        return found;
-    }
-
-     */
-    
     @Override
     public List<Select> listSelectedIn(Node astRootNode) {
         List<Select> found = new ArrayList<>();
@@ -265,18 +248,6 @@ public class $parameters implements Template<_parameters>, $proto<_parameters>,
         forSelectedIn( _n, s-> found.add(s));
         return found;
     }
-
-    /*
-    @Override
-    public <N extends Node> N removeIn(N astRootNode) {
-        return forEachIn( astRootNode, n-> n.forEach( p-> p.ast().remove() ) );
-    }
-
-    @Override
-    public <N extends _node> N removeIn(N _n) {
-        return forEachIn( _n, n-> n.forEach( p-> p.ast().remove() ) );
-    }
-    */
 
     /**
      * 
@@ -342,19 +313,6 @@ public class $parameters implements Template<_parameters>, $proto<_parameters>,
         return astRootNode;        
     }
 
-    /*
-    @Override
-    public <N extends _node> N forEachIn(N _n, Consumer<_parameters> _parametersActionFn) {
-        Walk.in(_n, _parameters.class, n-> {            
-            Select sel = select( n );
-            if( sel != null ){
-                _parametersActionFn.accept(sel._params);            
-            }
-        });        
-        return _n;        
-    }
-    */
-    
     /**
      * 
      * @param <N>

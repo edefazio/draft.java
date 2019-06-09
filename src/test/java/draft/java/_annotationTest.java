@@ -25,11 +25,11 @@ public class _annotationTest extends TestCase  {
                 "public @interface FFF{ }" );
         assertNotNull( _a.getHeaderComment() );
         assertNotNull( _a.getJavadoc() );
-        assertEquals( _a.getJavadoc().toString(), 
+        assertEquals( _a.getJavadoc().toString().trim(), 
             Ast.javadocComment(
                 "/**", 
                 " * JavaDoc", 
-                " */").toString() );
+                " */").toString().trim() );
         assertEquals( Ast.blockComment("/* License */").toString(), _a.getHeaderComment().toString() );
         System.out.println( _a.getHeaderComment() );
     }

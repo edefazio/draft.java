@@ -38,11 +38,11 @@ public class _enumTest extends TestCase {
                 "public enum FFF{  ; }" );
         assertNotNull( _e.getHeaderComment() );
         assertNotNull( _e.getJavadoc() );
-        assertEquals( _e.getJavadoc().toString(), 
+        assertEquals( _e.getJavadoc().toString().trim(), 
             Ast.javadocComment(
                 "/**", 
                 " * JavaDoc", 
-                " */").toString() );
+                " */").toString().trim() );
         assertEquals( Ast.blockComment("/* License */").toString(), _e.getHeaderComment().toString() );
         System.out.println( _e.getHeaderComment() );
     }

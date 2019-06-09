@@ -1,6 +1,7 @@
 package draft.java.proto;
 
 import com.github.javaparser.ast.body.BodyDeclaration;
+import com.github.javaparser.ast.body.MethodDeclaration;
 import draft.java.*;
 import draft.java.macro._remove;
 import draft.java.macro._static;
@@ -267,10 +268,46 @@ public class SmethodTest extends TestCase {
         
         $set.listSelectedIn(_c).get(0).is("type", int.class);
         // call replace with a setFluent prototype
+        assertEquals(2, $set.count(_c));
         $set.replaceIn(_c, $setFleunt.hardcode$("className", "Loc") );
         
         //verify there are no simple sets left 
         assertEquals(0, $set.listIn(_c).size());
+        
+        System.out.println( _c );
+        
+        assertTrue( $setFleunt.matches("public Loc setX(int x) {",
+            "this.x = x;",
+            "return this;",
+            "}") );
+        
+        MethodDeclaration astMd = Ast.method("public Loc setX(int x) {",
+            "this.x = x;",
+            "return this;",
+            "}");
+        
+        assertTrue($setFleunt.matches(astMd));
+        
+        _method _m = _method.of(astMd);
+        
+        assertTrue($setFleunt.matches(_m));
+        
+        //assertNotNull( $setFleunt.firstIn(Loc.class));
+        
+
+        System.out.println( $setFleunt );
+        _method _me = $setFleunt.construct("name", "x", "type", int.class);
+        System.out.println( _me);
+        
+        System.out.println( _c );
+        String strs = _c.getMethod("setX").toString();
+        System.out.println( strs );
+        assertNotNull( $setFleunt.select(strs) );
+        
+        System.out.println( "METHOD TYPE " + _c.getMethod("setX").getType() );
+        
+        assertNotNull( $setFleunt.select(_c.getMethod("setX") ) );
+        assertNotNull( $setFleunt.firstIn(_c));
         
         //verify there are (2) setFluents
         assertEquals(2, $setFleunt.listIn(_c).size());        

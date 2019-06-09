@@ -64,19 +64,7 @@ public class $id implements $constructor.$part, $method.$part, $field.$part,
         this.pattern = Stencil.of(pattern);
         this.constraint = constraint;
     }
-
-    /**
-     * SETS or OVERRIDES the constraint
-     *
-     * @param constraint
-     * @return
-     
-    public $id constraint(Predicate<String> constraint) {
-        this.constraint = constraint;
-        return this;
-    }
-    */ 
-
+    
     /**
      *
      * @param constraint

@@ -154,11 +154,11 @@ public class _javaTest extends TestCase {
     public void testAutoCtor(){
         @_promote("aaaa")
         @_autoConstructor
-        class C{
+        class AC{
             //@_final
             int x,y,z;
         }
-        _class _c = _class.of(C.class);
+        _class _c = _class.of(AC.class);
 
         System.out.println(_c);
     }
@@ -166,10 +166,10 @@ public class _javaTest extends TestCase {
     public void testFinal(){
         @_promote
         @_final
-        class C{
+        class FF{
             int x,y,z;
         }
-        _class _c = _class.of(C.class);
+        _class _c = _class.of(FF.class);
         System.out.println(_c);
     }
 
@@ -178,16 +178,25 @@ public class _javaTest extends TestCase {
      *  so I need to write some one off code that deals with it
      */
     public void testAnnoOnMultipleFields(){
-        class C{
+        class G{
             @_public int x,y,z;
         }
-        _class _c = _class.of(C.class);
+        _class _c = _class.of(G.class);
         System.out.println(_c);
     }
 
+    public void testJJJ(){
+        //@_final
+        @_implement(Serializable.class)        
+        @_extend(BaseClass.class)        
+        class R{}
+        _class _cc = _class.of(R.class);
+        System.out.println(_cc);
+    }
+    
     public void testF( ) {
 
-        @_promote("aaaa.bbbb")
+        @_package("aaaa.bbbb")
         @_final
         @_implement(Serializable.class)
         @_extend(BaseClass.class)
@@ -207,11 +216,13 @@ public class _javaTest extends TestCase {
         
         _class _c2 = _class.of( Ast.type(C.class) );
 
-        assertTrue( _c2.hasAnno(_promote.class));
+        System.out.println( _c2);
+        assertTrue( _c2.hasAnno(_package.class));
         assertTrue( _c2.hasAnno(_final.class));
         
+        System.out.println( _c );
         //I Process the annotations
-        assertFalse( _c.hasAnno(_promote.class));
+        assertFalse( _c.hasAnno(_package.class));
         assertFalse( _c.hasAnno(_final.class));
         //assertTrue( _c.getAnnos().contains(_static.class));
 

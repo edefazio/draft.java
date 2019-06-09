@@ -42,11 +42,11 @@ public class _interfaceTest extends TestCase {
                 "public interface FFF{   }" );
         assertNotNull( _i.getHeaderComment() );
         assertNotNull( _i.getJavadoc() );
-        assertEquals( _i.getJavadoc().toString(), 
+        assertEquals( _i.getJavadoc().toString().trim(), 
             Ast.javadocComment(
                 "/**", 
                 " * JavaDoc", 
-                " */").toString() );
+                " */").toString().trim() );
         assertEquals( Ast.blockComment("/* License */").toString(), _i.getHeaderComment().toString() );
         System.out.println( _i.getHeaderComment() );
     }

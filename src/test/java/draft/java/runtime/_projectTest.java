@@ -112,6 +112,9 @@ public class _projectTest extends TestCase {
                 return a + x + y + z;
             }
         }
+        _class _cc = _class.of(L.class);
+        System.out.println( "AST COMP UNIT "+ _cc.astCompilationUnit().toString() +" <><><><><><><<>");
+        System.out.println( _cc );
         _project _p = _project.of(_class.of( L.class));
 
         _proxy _pr = _p._proxy("aaaa.gggg.L");
