@@ -2,7 +2,6 @@ package draft.java.file;
 
 import javax.tools.FileObject;
 import javax.tools.JavaFileManager;
-import java.net.URL;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.*;
@@ -37,7 +36,6 @@ public final class _files implements JavaFileManager.Location {
                 }
             };
 
-
     public static _files of( _file..._fs ){
         _files _ffs = new _files();
         _ffs.add(_fs );
@@ -67,12 +65,6 @@ public final class _files implements JavaFileManager.Location {
         List<String> names = new ArrayList<>();
         this.files.forEach( f -> names.add( f.getName() ) );
         return names;
-    }
-
-    public List<URL> listUrls(){
-        List<URL> urls = new ArrayList<>();
-        this.files.forEach( f -> urls.add( f.url ) );
-        return urls;
     }
 
     public boolean isEmpty() {
@@ -108,8 +100,7 @@ public final class _files implements JavaFileManager.Location {
         }
         for( int i = 0; i < files.size(); i++ ) {
             _file _f = this.files.get( i );
-            if( _f.filePath.equals(filePath)
-                    && _f.relativeName.equals(relativeName ) ) {
+            if( _f.filePath.equals(filePath) && _f.relativeName.equals(relativeName)) {
                 return this.files.get( i );
             }
         }
@@ -140,7 +131,6 @@ public final class _files implements JavaFileManager.Location {
      */
     public _files add(String filePath, String relativeName, byte[] data ) {
 
-        //add( _file.of( filePath, relativeName, data ) );
         add( _file.of( Paths.get(filePath), relativeName, data ) );
         return this;
     }

@@ -1,6 +1,7 @@
 package draft.java.file;
 
 import draft.DraftException;
+import draft.java.io._ioException;
 
 import javax.tools.FileObject;
 import java.io.*;
@@ -22,7 +23,6 @@ import java.util.concurrent.atomic.AtomicBoolean;
 public final class _file implements FileObject {
 
     /** "virtual" path to the file i.e. "META-INF/" empty string "" is root path */
-    //public final String filePath;
     public final Path filePath;
 
     /** relative NAME of the file after the path i.e. "index.html", "data.json"*/
@@ -30,9 +30,6 @@ public final class _file implements FileObject {
 
     /** it COULD be binary... could be text... dunno, it's bytes **/
     public byte[] data;
-
-    /** url to the file */
-    public final URL url;
 
     /** update timestamp in millis when the file was last changed*/
     public long lastUpdateTimeMills;
@@ -44,7 +41,6 @@ public final class _file implements FileObject {
      * @param data
      * @return
      */
-//    public static _file of(String filePath, String relativeName, String... data ){
     public static _file of(Path filePath, String relativeName, String... data ){    
         StringBuilder fileData = new StringBuilder();
         for( int i=0; i<data.length; i++ ){
@@ -62,13 +58,16 @@ public final class _file implements FileObject {
      * @param data
      * @return
      */
-//    public static _file of(String filePath, String relativeName, byte[] data ){
     public static _file of(Path filePath, String relativeName, byte[] data ){    
         return new _file( filePath, relativeName, data );
     }
 
     public URL getURL(){
-        return url;
+        try{
+            return new URL( "file:\\\\" + this.filePath);
+        }catch(Exception e){
+            throw new _ioException("Invalid file path "+ filePath);
+        }
     }
 
     @Override
@@ -85,42 +84,34 @@ public final class _file implements FileObject {
      *
      * will change the filePath "temp" to "temp\"
      *
-     * @param relativeName relative file NAME (i.e. "data.txt")
+     * @param filePath relative file NAME (i.e. "data.txt")
      * @param data the bytes of data (could be textual or binary encoded)
      */
-//    public _file( String filePath, String relativeName, byte[] data ){
-/* if( filePath == null ){
-            filePath = "";
+    public _file(Path filePath, byte[] data ){
+        if( filePath == null ){
+            filePath = Paths.get("/");
         }
-        if( filePath.length() > 0 ){
-            if( !filePath.endsWith( "/" ) ){
-                filePath = filePath + "/";
-            }
-        }    */
+        this.filePath = filePath;
+
+        this.relativeName = "";        
+        this.data = data;        
+    }
+    
     public _file( Path filePath, String relativeName, byte[] data ){    
         if( filePath == null ){
             filePath = Paths.get("/");
         }
-        /*
-        if( filePath.length() > 0 ){
-            if( !filePath.endsWith( "/" ) ){
-                filePath = filePath + "/";
-            }
-        }
-        */
         this.filePath = filePath;
 
         this.relativeName = relativeName;
-        this.data = data;
-        try {
-            this.url = new URL( "file:\\\\" + this.filePath + this.relativeName );
-        }
-        catch( MalformedURLException ex ) {
-            throw new DraftException("Bad URL for \""+this.filePath + this.relativeName+"\"" );
-        }
+        this.data = data;       
     }
 
-    /** is this file name the same as the file name provided */
+    /** 
+     * is this file name the same as the file name provided
+     * @param fileName
+     * @return 
+     */
     public boolean is( String fileName ){
         return (filePath + relativeName).equals( fileName );
     }

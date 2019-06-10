@@ -1,6 +1,7 @@
 package draft.java.runtime;
 
 import draft.DraftException;
+import draft.Text;
 import draft.java.file.*;
 
 import javax.tools.*;
@@ -248,7 +249,25 @@ public final class _fileManager
         return this.generatedJavaFiles;
     }
 
+    public _fileManager addResourceFile(String filePath, String... linesOfText ) {
 
+        //resourceFiles.add( _file.of( filePath, relativeName, linesOfText ) );
+//        resourceFiles.add( _file.of( Paths.get(filePath), linesOfText ) );
+        resourceFiles.add( new _file( Paths.get(filePath), Text.combine(linesOfText).getBytes() ) );
+        return this;
+    }
+
+    //public _fileManager addResourceFile(
+    //        String filePath, String relativeName, byte[] data ) {
+    public _fileManager addResourceFile(String filePath, byte[] data ) {    
+
+        //resourceFiles.add( _file.of( filePath, relativeName, data ) );
+        //resourceFiles.add( _file.of( Paths.get( filePath), relativeName, data ) );
+        resourceFiles.add( new _file( Paths.get(filePath), data ) );
+        return this;
+    }
+
+    /*
     public _fileManager addResourceFile(
         String filePath, String relativeName, String... linesOfText ) {
 
@@ -264,6 +283,7 @@ public final class _fileManager
         resourceFiles.add( _file.of( Paths.get( filePath), relativeName, data ) );
         return this;
     }
+    */
 
     public _fileManager setLocation(Location loc, Iterable<? extends File> path )
             throws IOException {

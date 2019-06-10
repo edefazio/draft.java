@@ -562,7 +562,7 @@ public final class _classLoader
             _file _resourceFile
                     = ancestry.get( i )._fileMan.resourceFiles.get( name );
             if( _resourceFile != null ) {
-                found.add( _resourceFile.url );
+                found.add( _resourceFile.getURL() );
             }
         }
         return Collections.enumeration( found );
@@ -763,10 +763,12 @@ public final class _classLoader
         }
     }
 
+    @Override
     public _class get_class( Class clazz ){
         return (_class) get_type(clazz);
     }
 
+    @Override
     public _enum get_enum( Class clazz ){
         return (_enum) get_type(clazz);
     }
@@ -775,6 +777,7 @@ public final class _classLoader
         return (_interface) get_type(clazz);
     }
 
+    @Override
     public _annotation get_annotation( Class clazz ){
         return (_annotation) get_type(clazz);
     }

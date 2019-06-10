@@ -7,7 +7,6 @@ import com.github.javaparser.ast.expr.MethodCallExpr;
 import draft.DraftException;
 import draft.java.*;
 import draft.java._method;
-import draft.java._method._hasMethods;
 import draft.java.file.*;
 
 import javax.annotation.processing.Processor;
@@ -48,14 +47,11 @@ public final class _project {
     }
 
     public static _project of( Class...classes ){
-        //List<_type> ts = new ArrayList<>();
         _javaFiles _jfs = _javaFiles.of( );
         for(int i=0;i<classes.length;i++){
-            //System.out.println(" adding "+ classes[i]);
             _type _t = _type.of(classes[i]);
             _jfs.add( _t );
         }
-        //Arrays.stream(classes).forEach(c-> _jfs.add( $$.to(c) ) );
         return of((_classLoader)null,null,null,_jfs,null,null);
     }
 
@@ -136,6 +132,12 @@ public final class _project {
         return _project.of( (_classLoader)null, null, annProc, _types, null, null );
     }
 
+    /**
+     * 
+     * @param annotationProcessor
+     * @param types
+     * @return 
+     */
     public static _project of(Processor annotationProcessor, _type... types) {
         _javaFiles javaFiles = _javaFiles.of( types );
         List<Processor> annProc = new ArrayList<>();
@@ -192,6 +194,16 @@ public final class _project {
         return of( parent, compilerOpts, annotationProcessors, _javaFiles.of( _ts ), null, null );
     }
 
+    /**
+     * 
+     * @param _parentClassLoader
+     * @param compilerOpts
+     * @param annotationProcessors
+     * @param _types
+     * @param diagnostics
+     * @param errOutput
+     * @return 
+     */
     public static _project of( _classLoader _parentClassLoader,
                                _javacOptions compilerOpts,
                                List<Processor> annotationProcessors,
@@ -568,18 +580,16 @@ public final class _project {
         throw new DraftException( "No class for \"" + className + "\"" );
     }
 
-    public _project addResourceFile(String filePath, String relativeName, String... linesOfText ) {
-
-        this._cl._fileMan.getResourceFiles().add( filePath, relativeName, linesOfText );
+    public _project addResourceFile(String filePath, String... linesOfText ) {
+        this._cl._fileMan.addResourceFile(filePath, linesOfText);
         return this;
     }
-
-    public _project addResourceFile(String filePath, String relativeName, byte[] data ) {
-
-        this._cl._fileMan.getResourceFiles().add( filePath, relativeName, data );
+    
+    public _project addResourceFile(String filePath, byte[] data ) {
+        this._cl._fileMan.addResourceFile( filePath,  data );
         return this;
     }
-
+    
     public URL getResourceUrl(String name ) {
         return this._cl.getResource( name );
     }
@@ -626,7 +636,6 @@ public final class _project {
             throw new DraftException("Could not access field \""+ fieldName+"\" on class \""+clazz+"\"");
         }
     }
-
 
     public boolean isEmpty() {
         return this._cl.isEmpty();
@@ -715,7 +724,6 @@ public final class _project {
     public List<_type> list_types(boolean includeAncestorProjects ) {
         return this._cl.list_types( includeAncestorProjects );
     }
-
 
     public List<_type> list_types(Predicate<? super _type> _typeMatchFn ) {
         return this._cl.list_types( _typeMatchFn );
