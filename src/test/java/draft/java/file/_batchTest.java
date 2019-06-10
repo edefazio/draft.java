@@ -1,6 +1,7 @@
 package draft.java.file;
 
 import draft.DraftException;
+import draft.java._class;
 import java.net.URI;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -10,6 +11,7 @@ import java.util.List;
 import junit.framework.TestCase;
 import draft.java._java._code;
 import draft.java._java;
+import draft.java.runtime._javac;
 
 /**
  *
@@ -100,6 +102,46 @@ public class _batchTest extends TestCase {
         assertEquals(3, cus.size() );
         //verify that we modified 
         cus.forEach(c-> assertTrue(c.hasImport(URI.class)));        
+    }
+    
+    //verify that the batch can read in _classFiles
+    public void testBatchClassFiles(){
+        
+        String tmp = System.getProperty("java.io.tmpdir");
+        
+        Path basePath = Paths.get( tmp, "batchtest", "target", "classes"); 
+        Path filePath = Paths.get( tmp, "batchtest", "target", "classes", "aaaa", "bbbb", "C.class");
+        
+        byte[] classFile = _javac.of(_class.of("aaaa.bbbb.C") )
+            .get("aaaa.bbbb.C").getBytes();
+        
+        try{           
+            filePath.getParent().toFile().mkdirs();                        
+            Files.write( filePath, classFile);            
+            Files.write(Paths.get( tmp, "batchtest", "target", "classes", "A.class"), 
+                _javac.of(_class.of("A") ).get("A").getBytes() );
+        }
+        catch(Exception e ){
+            throw new DraftException ("unable to write file @"+filePath, e);
+        }
+        
+        _batch batch = _batch.of(basePath);
+        assertEquals(2, batch.files.size());
+        
+        List<_classFile> cfs = new ArrayList<>();
+        batch.forClassFiles(c-> cfs.add(c));
+        assertEquals( 2, cfs.size());
+        
+        batch.forClassFiles(c-> System.out.println(c.toUri()));
+        batch.forClassFiles(c-> System.out.println(c.getSimpleName()));
+        
+        cfs.clear();
+        batch.forClassFiles(c-> c.getSimpleName().equals("C"), c-> cfs.add(c));
+        assertEquals( 1, cfs.size());
+        cfs.clear();
+        
+        batch.forClassFiles(c-> c.getSimpleName().equals("A"), c-> cfs.add(c));
+        assertEquals( 1, cfs.size());        
     }
    
 }

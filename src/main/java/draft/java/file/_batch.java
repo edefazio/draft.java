@@ -209,6 +209,33 @@ public class _batch {
     }
     
     /**
+     * 
+     * @param _classFileActionFn
+     * @return 
+     */
+    public _batch forClassFiles( Consumer<_classFile> _classFileActionFn){
+        return forClassFiles(f->true, _classFileActionFn);
+    }
+    
+    /**
+     * 
+     * @param _classFileMatchFn
+     * @param _classFileActionFn
+     * @return 
+     */
+    public _batch forClassFiles( Predicate<_classFile> _classFileMatchFn, Consumer<_classFile> _classFileActionFn){
+        this.files.forEach(f -> {
+            if( f instanceof _classFile ){
+                _classFile _cf = (_classFile)f;                
+                if( _classFileMatchFn.test(_cf)){
+                    _classFileActionFn.accept(_cf);                  
+                }
+            }           
+        });
+        return this;       
+    }
+    
+    /**
      * @see #forCodeUnits(java.util.function.Consumer) to include {@link draft.java._packageInfo} and {@link draft.java._moduleInfo}
      * 
      * @param _typeMatchFn
