@@ -305,9 +305,18 @@ public final class _classFile extends SimpleJavaFileObject  {
     }
     
     /**
-     * 
-     * @param bytecode
-     * @return 
+     * Looks into the bytes of the bytecode to read the fully qualified className 
+     * @param _cf the classFile
+     * @return the fully qualified className of the class represented in the bytecode
+     */
+    public static String resolveClassNameFromBytecode(_classFile _cf){
+        return resolveClassNameFromBytecode(_cf.getBytes());
+    }
+    
+    /**
+     * Looks into the bytes of the bytecode to read the fully qualified className 
+     * @param bytecode the class' bytecode
+     * @return the fully qualified className of the class represented in the bytecode
      */
     public static String resolveClassNameFromBytecode(byte[] bytecode) {
         return resolveClassNameFromBytecode( new ByteArrayInputStream(bytecode));
@@ -320,7 +329,7 @@ public final class _classFile extends SimpleJavaFileObject  {
      * <A HREF="https://stackoverflow.com/questions/1649674/resolve-class-name-from-bytecode">
      * Resolve the class name from bytecode</A>
      * @param byteCodeInputStream an input stream to 
-     * @return 
+     * @return the fully qualified class name
      */
     public static String resolveClassNameFromBytecode(InputStream byteCodeInputStream) {
         
