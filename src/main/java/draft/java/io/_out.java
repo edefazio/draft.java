@@ -251,7 +251,7 @@ public interface _out {
         }
 
         private static Path pathToClass( String baseDir, _classFile _cf ){
-            return Paths.get(baseDir, _cf.getFullName().replace('.', '\\')+".class");
+            return Paths.get(baseDir, _cf.getFullyQualifiedTypeName().replace('.', '\\')+".class");
         }
 
         @Override

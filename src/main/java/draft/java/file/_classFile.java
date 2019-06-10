@@ -1,10 +1,12 @@
 package draft.java.file;
 
 import draft.java.file._file.CacheBytesOutputStream;
+import draft.java.io._ioException;
 
 import javax.tools.SimpleJavaFileObject;
 import java.io.*;
 import java.net.*;
+import java.nio.file.Path;
 import java.util.*;
 
 /**
@@ -18,27 +20,90 @@ import java.util.*;
  */
 public final class _classFile extends SimpleJavaFileObject  {
 
-    /** allows the classFile to be created and written ONCE, then cached as an
-     * array of bytes to be read multiple times*/
+    /**
+     * Create an EMPTY classFile which will house a class with a specific fully 
+     * qualified type name
+     * @param fullyQualifiedTypeName
+     * @return 
+     */
+    public static final _classFile of(String fullyQualifiedTypeName){
+        try{
+            return new _classFile(fullyQualifiedTypeName);
+        }catch(Exception e){
+            throw new _ioException("Unable to create class file at \""+ fullyQualifiedTypeName+"\"", e);
+        }
+    }
+    
+    /**
+     * 
+     * @param fullyQualifiedTypeName
+     * @param byteCodes
+     * @return 
+     */
+    public static final _classFile of(String fullyQualifiedTypeName, byte[] byteCodes ){
+        try{
+            return new _classFile(fullyQualifiedTypeName, byteCodes);
+        }catch(IOException | IllegalArgumentException | URISyntaxException e){
+            throw new _ioException("Unable to create class file at \""+ fullyQualifiedTypeName+"\"", e);
+        }
+    }
+    
+    /**
+     * Represents a classFile that is read in from the file system
+     * 
+     * @param basePath the base path from where the class file is read (i.e. "C:\temp\Myproj\target\classes")
+     * @param fullyQualifiedTypeName the full class name (i.e. "aaaa.bbbb.C")
+     * @param byteCodes
+     * @return 
+     */
+    public static final _classFile of( Path basePath, String fullyQualifiedTypeName, byte[] byteCodes){
+        try{
+            return new _classFile(basePath, fullyQualifiedTypeName, byteCodes);
+        }catch(Exception e){
+            throw new _ioException("Unable to create class file at \""+ fullyQualifiedTypeName+"\"", e);
+        }
+    }
+    
+    /**
+     * allows the classFile to be created and written ONCE, then cached as an
+     * array of bytes to be read multiple times
+     */
     private CacheBytesOutputStream cacheBytesOutputStream;
 
-    /** the NAME of the Class */
+    /** the NAME of the package */
     private final String packageName;
 
+    /** the name of the top level class */
     private final String className;
 
-    @Override
-    public String getName() {
-        if( packageName != null){
-            return packageName+"."+className;
-        }
-        return className;
-    }
+    /** 
+     * Optional/ Nullable field used when the classFile is read in from the file 
+     * system (for traceability) as opposed to generated in memory by the ad hoc 
+     * javac compiler
+     */
+    public Path basePath;
+    
+     /**
+     * Note: a classFile must retain "file"-path based syntax
+     * i.e. "./com/path/ClassFile.class"
+     * and also understand "java runtime" syntax
+     * i.e. "com.path/ClassFile"
+     *
+     * @param _proto
+     * @throws URISyntaxException
+     */
+    public _classFile( _classFile _proto ) throws URISyntaxException{
+        super( _proto.toUri(), Kind.CLASS );
+        
+        this.packageName = _proto.packageName;
+        this.className = _proto.className;
+        this.basePath = _proto.basePath;
 
-    public String getPackageName(){
-        return this.packageName;
+        //..call the copy constructor
+        this.cacheBytesOutputStream = new CacheBytesOutputStream(
+                _proto.cacheBytesOutputStream );
     }
-
+    
     /**
      * Initialize an in memory Java Class for a given class Name
      *
@@ -46,7 +111,7 @@ public final class _classFile extends SimpleJavaFileObject  {
      * @throws IllegalArgumentException
      * @throws URISyntaxException
      */
-    public _classFile( String className )
+    private _classFile( String className )
             throws IllegalArgumentException, URISyntaxException {
         super( new URI( className.replace('.', '/') ), Kind.CLASS );
         int idx = className.lastIndexOf('.');
@@ -61,6 +126,34 @@ public final class _classFile extends SimpleJavaFileObject  {
     }
 
     /**
+     * Build and return a _classFile that represents a class loaded from the file system
+     *
+     * @param basePath the base directory that contains the file (i.e. "C:\temp\MyProj\src\main\java") 
+     * @param className the NAME of the _class (i.e. "java.util.Map")
+     * @param byteCodes the bytecodes
+     * @throws java.net.URISyntaxException
+     * @throws java.io.IOException
+     */
+    private _classFile( Path basePath, String className, byte[] byteCodes )
+            throws IllegalArgumentException, URISyntaxException, IOException {
+
+        super( new URI( "file:///" + basePath.toString().replace("\\", "/")+"/"+className.replace('.', '/')+".class" ), Kind.CLASS );
+        this.basePath = basePath;
+        int idx = className.lastIndexOf('.');
+        if( idx > 0 ){
+            this.packageName = className.substring(0, idx );
+            this.className = className.substring(idx+1);
+        } else{
+            this.packageName = null;
+            this.className = className;
+        }
+        this.cacheBytesOutputStream = new CacheBytesOutputStream( uri );
+        this.cacheBytesOutputStream.write( byteCodes );
+        this.cacheBytesOutputStream.flush();
+        this.cacheBytesOutputStream.close();
+    }
+    
+    /**
      * Build and return a pre-_1_build _classFile
      *
      * @param className the NAME of the _class
@@ -68,7 +161,7 @@ public final class _classFile extends SimpleJavaFileObject  {
      * @throws java.net.URISyntaxException
      * @throws java.io.IOException
      */
-    public _classFile( String className, byte[] byteCodes )
+    private _classFile( String className, byte[] byteCodes )
             throws IllegalArgumentException, URISyntaxException, IOException {
 
         super( new URI( className.replace('.', '/') ), Kind.CLASS );
@@ -85,6 +178,13 @@ public final class _classFile extends SimpleJavaFileObject  {
         this.cacheBytesOutputStream.flush();
         this.cacheBytesOutputStream.close();
     }
+    
+    /** 
+     * @return gets the package name, (i.e. "java.util") for the _type) 
+     */
+    public String getPackageName(){
+        return this.packageName;
+    }
 
     @Override
     public boolean equals( Object o ){
@@ -97,6 +197,9 @@ public final class _classFile extends SimpleJavaFileObject  {
             return false;
         }
         if( !Objects.equals( _cf.className, this.className )){
+            return false;
+        }
+        if( ! Objects.equals(_cf.basePath, this.basePath)){
             return false;
         }
         if( _cf.cacheBytesOutputStream.lastModifiedMillis
@@ -116,34 +219,15 @@ public final class _classFile extends SimpleJavaFileObject  {
         hash = 53 * hash + Objects.hashCode( new Object[]{
                 this.packageName,
                 this.className,
+                this.basePath,
                 this.cacheBytesOutputStream.lastModifiedMillis,
                 this.cacheBytesOutputStream.bytes } );
         return hash;
     }
 
-    /**
-     * Note: a classFile must retain "file"-path based syntax
-     * i.e. "./com/path/ClassFile.class"
-     * and also understand "java runtime" syntax
-     * i.e. "com.path/ClassFile"
-     *
-     * @param _proto
-     * @throws URISyntaxException
-     */
-    public _classFile( _classFile _proto ) throws URISyntaxException{
-        super( new URI( _proto.getFullName().replace( '.', '/' ) ), Kind.CLASS );
-
-        this.packageName = _proto.packageName;
-        this.className = _proto.className;
-
-        //..call the copy constructor
-        this.cacheBytesOutputStream = new CacheBytesOutputStream(
-                _proto.cacheBytesOutputStream );
-    }
-
     @Override
     public String toString() {
-        return "_classFile(" + getFullName()+"):" + Integer.toHexString( hashCode() );
+        return "_classFile[" + toUri()+"]:" + Integer.toHexString( hashCode() );
     }
 
     /**
@@ -161,7 +245,7 @@ public final class _classFile extends SimpleJavaFileObject  {
         if( this.cacheBytesOutputStream.isWritten.get() ){
             //create a new outputStream to write to
             this.cacheBytesOutputStream =
-                    new CacheBytesOutputStream( this.cacheBytesOutputStream.uri );
+                new CacheBytesOutputStream( this.cacheBytesOutputStream.uri );
         }
         return cacheBytesOutputStream;
     }
@@ -176,11 +260,11 @@ public final class _classFile extends SimpleJavaFileObject  {
             throws IOException{
         if( this.cacheBytesOutputStream.isWritten.get() ){
             return new ByteArrayInputStream(
-                    this.cacheBytesOutputStream.toByteArray() );
+                this.cacheBytesOutputStream.toByteArray() );
         }
         //if the stream is still open, or hasnt been created yet by the compiler
         // then throw an exception
-        throw new IOException("_classFile "+getFullName()+" hasnt been written yet");
+        throw new IOException("_classFile ["+toUri()+"] hasnt been written yet");
     }
 
     /**
@@ -201,7 +285,22 @@ public final class _classFile extends SimpleJavaFileObject  {
         return getName() + ".class";
     }
 
-    public String getFullName() { return getName(); }
+    /**
+     * 
+     * @return 
+     */
+    public String getFullyQualifiedTypeName() { 
+        if( packageName != null){
+            return packageName+"."+className;
+        }
+        return className;
+    }
 
-    public String getSimpleName(){ return this.className; }
+    /**
+     * 
+     * @return 
+     */
+    public String getSimpleName(){ 
+        return this.className; 
+    }
 }

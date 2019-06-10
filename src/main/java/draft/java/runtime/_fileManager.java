@@ -199,7 +199,7 @@ public final class _fileManager
         if( file instanceof _classFile) {
             _classFile _cf = (_classFile)file;
             //System.out.println( "**** Inferring binary NAME for _classByteCode to : " + _classFile.getFullName());
-            return _cf.getFullName();
+            return _cf.getFullyQualifiedTypeName();
         }
         else {
             return  fileManager.inferBinaryName( location, file );

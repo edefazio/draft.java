@@ -97,14 +97,13 @@ public final class _classFiles{
 
     public _classFiles add(_classFile _clf ){
         if( !isOpen.get() ){
-            throw new DraftException(
-                    "CLOSED, Cannot accept/load class files ");
+            throw new DraftException("CLOSED, Cannot accept/load class files ");
         }
-        _classFile _found = this.nameTo_classFile.get( _clf.getFullName() );
+        _classFile _found = this.nameTo_classFile.get( _clf.getFullyQualifiedTypeName() );
         if( _found != null ){
             //LOG.info( "replacing _classFile \"" + _found.getFullName() + "\"");
         }
-        this.nameTo_classFile.put( _clf.getFullName(), _clf );
+        this.nameTo_classFile.put( _clf.getFullyQualifiedTypeName(), _clf );
         return this;
     }
 
@@ -128,22 +127,23 @@ public final class _classFiles{
         }
         try {
             //System.out.println( "create and bind "+ fullClassName + " from "+this.nameTo_classFile);
-            _classFile _clf = new _classFile( fullClassName );
+            _classFile _clf = _classFile.of(fullClassName);
+            //_classFile _clf = new _classFile( fullClassName );
 
             // AT THIS TIME, I AM ADDING THIS BEFORE THE FILE IS WRITTEN,
             // I SHOULD (INSTEAD) WAIT UNTIL THE OUTPUTSTREAM IS CLOSED
             // AND THEN ADD IT
-            this.nameTo_classFile.put( _clf.getFullName(), _clf );
+            this.nameTo_classFile.put( _clf.getFullyQualifiedTypeName(), _clf );
             return _clf;
         }
         catch( IllegalArgumentException ex ) {
             throw new DraftException(
                     "Can't create _classFile \""+fullClassName+"\" ", ex);
         }
-        catch( URISyntaxException ex ) {
-            throw new DraftException(
-                    "Can't create _classFile \""+fullClassName+"\" ", ex);
-        }
+        //catch( URISyntaxException ex ) {
+        //    throw new DraftException(
+        //            "Can't create _classFile \""+fullClassName+"\" ", ex);
+        //}
     }
 
     /**

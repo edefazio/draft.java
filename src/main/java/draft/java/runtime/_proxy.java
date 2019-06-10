@@ -172,7 +172,7 @@ public final class _proxy extends _new {
     /** gets all classFiles that are created by this class and all nested classes */
     public _classFile _classFile(){
         _classLoader _cl = (_classLoader)instance.getClass().getClassLoader();
-        return _cl._fileMan.classFiles.list( cf->  cf.getFullName().equals(this._class().getFullName()) ).get(0);
+        return _cl._fileMan.classFiles.list( cf->  cf.getFullyQualifiedTypeName().equals(this._class().getFullName()) ).get(0);
     }
 
     public Object set( Field F, Object value ){

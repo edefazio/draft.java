@@ -263,6 +263,17 @@ public class _batch {
                         filesRead.add(_javaFile.of( basePath, _type.of(cu) ));
                     }                    
                 }
+                else if( pathString.endsWith(".class")){
+                    
+                    //relPath will be like "java\\util\\Map.class"
+                    String fullyQualifiedClassName = basePath.relativize(path).toString(); 
+                    
+                    //remove .class
+                    fullyQualifiedClassName = fullyQualifiedClassName.substring(0, fullyQualifiedClassName.lastIndexOf(".class") );
+                    //replace "\\" with "."
+                    fullyQualifiedClassName = fullyQualifiedClassName.replace("\\", ".");
+                    filesRead.add(_classFile.of(basePath, fullyQualifiedClassName, bytes) );
+                }
             } catch (IOException e) {
                 throw new _ioException("Unable to read file " + e);
             }

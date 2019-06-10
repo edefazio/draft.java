@@ -33,15 +33,16 @@ public final class _javaFile implements JavaFileObject {
      * a filePath... 
      * i.e. "file:///C:/dev/projects/MyProject/src/main/java/com/myproj/MyJavaFile.java"
      * 
-     * Note: we have to "chop this" down to:
+     * Note: we have a root path of:
      * "file:///C:/dev/projects/MyProject/src/main/java/"
      * on initialization because it is possible that the package/path "com.myproj"
      * or the type name "MyJavaFile.java" could change
      */
-    public Path sourceRootPath;
+    public Path basePath;
     
     /**
      * the model the class and file contents export be compiled
+     * NOTE: the package/path is derived from the _types package
      */
     public _type type;
 
@@ -51,8 +52,8 @@ public final class _javaFile implements JavaFileObject {
      */
     protected long lastUpdateTimeMillis = -1L;
     
-    public static _javaFile of( Path sourceRootPath, _type _t ){
-        return new _javaFile( sourceRootPath, _t);
+    public static _javaFile of( Path basePath, _type _t ){
+        return new _javaFile( basePath, _t);
     }
     
     /**
@@ -64,8 +65,8 @@ public final class _javaFile implements JavaFileObject {
         return new _javaFile( _type );
     }
     
-    private _javaFile(Path sourceRootPath, _type _t){
-        this.sourceRootPath = sourceRootPath;
+    private _javaFile(Path basePath, _type _t){
+        this.basePath = basePath;
         this.type = _t;
     }
     
@@ -99,7 +100,7 @@ public final class _javaFile implements JavaFileObject {
     public _javaFile( _javaFile prototype ){
         this.lastUpdateTimeMillis = prototype.lastUpdateTimeMillis;
         this.type = (_type)_java.of( prototype.type.astCompilationUnit().clone());
-        this.sourceRootPath = prototype.sourceRootPath;
+        this.basePath = prototype.basePath;
     }
 
     /**
@@ -169,12 +170,12 @@ public final class _javaFile implements JavaFileObject {
 
     @Override
     public URI toUri() {
-        if( this.sourceRootPath == null ){
+        if( this.basePath == null ){
             return URI.create("file:///" + this.type.getFullName().replace('.','/')
                 + Kind.SOURCE.extension );
         }
-        URI uri = URI.create( this.sourceRootPath.toUri().toString() + this.type.getFullName().replace('.','/')+ Kind.SOURCE.extension);
-        return uri;
+        return URI.create(this.basePath.toUri().toString() 
+                + this.type.getFullName().replace('.','/')+ Kind.SOURCE.extension);
     }
 
     @Override
@@ -184,9 +185,12 @@ public final class _javaFile implements JavaFileObject {
 
     /**
      * returns the file name for the type (packages separated by / instead of .)
-     * and with the ".java" file extension
-     * 
+     * and prefixed by the base path if present with the ".java" file extension
+     * <PRE>
      * i.e. "java.util.Map" returns "java/util/Map.java"
+     * i.e. "aaaa.bbbb.C" might be "C:/Users/Eric/Tmp/aaaa/bbbb/C.java" if the
+     * basePath is "C:/Users/Eric/Tmp"
+     * </PRE>
      */
     @Override
     public String getName() {
@@ -196,11 +200,11 @@ public final class _javaFile implements JavaFileObject {
     @Override
     public InputStream openInputStream()
             throws IOException {
-        //you cant read from a _sourceFile that is initialized but no TYPE exists yet
+        //you cant read from a _javaFile that is initialized but no TYPE exists yet
         if( type == null ){
             throw new IOException("_javaFile \""
-                    +this.type.getFullName()
-                    +"\" is an AdHoc _class, and has not been written yet" );
+                +this.type.getFullName()
+                +"\" _type and has not been written" );
         }
         return new ByteArrayInputStream( this.type.toString().getBytes() );        
     }
