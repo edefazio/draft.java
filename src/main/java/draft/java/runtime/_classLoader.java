@@ -80,30 +80,30 @@ public final class _classLoader
         return this._fileMan.resourceFiles.listNames();
     }
 
-    public List<_file> listResourceFiles() {
+    public List<_f> listResourceFiles() {
         return listResourceFiles( false );
     }
 
-    public List<_file> listResourceFiles(boolean includeAncestorClassLoaders ) {
+    public List<_f> listResourceFiles(boolean includeAncestorClassLoaders ) {
         if( includeAncestorClassLoaders ) {
             List<_classLoader> _ancestry = listAncestry( this );
-            Map<URL, _file> resources = new HashMap<URL, _file>();
+            Map<URL, _f> resources = new HashMap<URL, _f>();
             for( int i = 0; i < _ancestry.size(); i++ ) {
                 resources.putAll(
                         _ancestry.get( i ).mapURLToResource_file(false ) );
             }
-            List<_file> allResources = new ArrayList<_file>();
+            List<_f> allResources = new ArrayList<>();
             allResources.addAll( resources.values() );
             return allResources;
         }
         return this._fileMan.resourceFiles.list();
     }
 
-    public List<_file> listResourceFiles(
-            Predicate<? super _file> _fileMatchFn,
+    public List<_f> listResourceFiles(
+            Predicate<_f> _fileMatchFn,
             boolean includeAncestorClassLoaders ) {
 
-        List<_file> rfs = listResourceFiles( includeAncestorClassLoaders );
+        List<_f> rfs = listResourceFiles( includeAncestorClassLoaders );
         return rfs.stream().filter( _fileMatchFn ).collect( Collectors.toList() );
     }
 
@@ -336,9 +336,9 @@ public final class _classLoader
         return classes;
     }
 
-    protected Map<URL, _file> mapURLToResource_file(boolean includeAncestorClassLoaders ) {
+    protected Map<URL, _f> mapURLToResource_file(boolean includeAncestorClassLoaders ) {
 
-        Map<URL, _file> nameToResource = new HashMap<>();
+        Map<URL, _f> nameToResource = new HashMap<>();
         if( includeAncestorClassLoaders ) {
             List<_classLoader> ancestry = listAncestry( this );
             for( int i = 0; i < ancestry.size(); i++ ) {
@@ -530,7 +530,7 @@ public final class _classLoader
         //System.out.println( "Getting resource "+ filePath+ relativeName );
         List<_classLoader> ancestry = listAncestry( this );
         for( int i = 0; i < ancestry.size(); i++ ) {
-            _file _f = ancestry.get( i )._fileMan.resourceFiles.getFile( filePath, relativeName );
+            _f _f = ancestry.get( i )._fileMan.resourceFiles.getFile( filePath, relativeName );
             if( _f != null ) {
                 return _f.getURL();
             }
@@ -541,7 +541,7 @@ public final class _classLoader
     @Override
     public URL getResource( String name ) {
         //FIRST try local resources
-        _file _f = _fileMan.resourceFiles.get( name );
+        _f _f = _fileMan.resourceFiles.get( name );
         if( _f != null ) {
             return _f.getURL();
         }
@@ -559,7 +559,7 @@ public final class _classLoader
         List<_classLoader> ancestry = listAncestry( this );
         ArrayList<URL> found = new ArrayList<>();
         for( int i = 0; i < ancestry.size(); i++ ) {
-            _file _resourceFile
+            _f _resourceFile
                     = ancestry.get( i )._fileMan.resourceFiles.get( name );
             if( _resourceFile != null ) {
                 found.add( _resourceFile.getURL() );
@@ -571,7 +571,7 @@ public final class _classLoader
     @Override
     public InputStream getResourceAsStream( String name ) {
         //FIRST try local resources
-        _file _f = this._fileMan.resourceFiles.get( name );
+        _f _f = this._fileMan.resourceFiles.get( name );
         if( _f != null ) {
             return  new ByteArrayInputStream( _f.data );
         }
@@ -610,7 +610,6 @@ public final class _classLoader
     @Override
     public Class<?> findClass( String qualifiedClassName )
             throws ClassNotFoundException {
-
 
         qualifiedClassName = qualifiedClassName.replace( '/', '.' );
 

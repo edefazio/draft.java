@@ -1,8 +1,7 @@
 package draft.java.file;
 
-import com.github.javaparser.ast.CompilationUnit;
-import draft.java.Ast;
-import draft.java._type;
+import draft.java.io._ioException;
+
 import java.io.IOException;
 import java.nio.file.FileVisitResult;
 import static java.nio.file.FileVisitResult.CONTINUE;
@@ -10,15 +9,10 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.SimpleFileVisitor;
 import java.nio.file.attribute.BasicFileAttributes;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
-import draft.java.io._ioException;
+import java.util.*;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
-import draft.java._java;
 import java.nio.file.Paths;
-import javax.tools.FileObject;
 
 /**
  * Given a root directory, (and optional Predicate) will recursively read in a 
@@ -37,7 +31,7 @@ public class _batch {
      * (i.e. .java file, .yml
      * file, .pom file)
      */     
-    public List<FileObject> files;
+    public List<_memoryFile> files;
     
     /** 
      * Collect the paths to all files that were skipped based on the 
@@ -104,146 +98,26 @@ public class _batch {
         }
         throw new _ioException("Failure: expected rootPath to be a directory");
     }
-    
+            
     /**
      * 
      * @param _fileActionFn
      * @return 
      */
-    public _batch forFiles( Consumer<FileObject> _fileActionFn ){
+    public _batch forFiles( Consumer<_memoryFile> _fileActionFn ){
         this.files.forEach(_fileActionFn);
         return this;
     }
     
     /**
      * 
-     * @param _codeActionFn
+     * @param _fileMatchFn
+     * @param _fileActionFn
      * @return 
      */
-    public List<_java._code> forJavaCode(Consumer<_java._code> _codeActionFn ){
-        return forJavaCode( t-> true, _codeActionFn );
-    }
-    
-    /**
-     * Apply a consumer to all code units of the batch
-     * (_codeUnits are {@draft.java._type}s, like: 
-     * <UL>
-     *   <LI>{@link draft.java._type} 
-     *   <UL>
-     *     <LI>{@link draft.java._class} 
-     *     <LI>{@link draft.java._interface}
-     *     <LI>{@link draft.java._enum} 
-     *     <LI>{@link draft.java._annotation}
-     *   <UL> 
-     *   <LI>{@link draft.java._java._packageInfo} 
-     *   <LI>{@link draft.java._java._moduleInfo}
-     * </UL>
-     * 
-     * @param _codeMatchFn
-     * @see #forTypes(java.util.function.Consumer) 
-     * @param _codeActionFn
-     * @return 
-     */
-    public List<_java._code> forJavaCode(Predicate<_java._code> _codeMatchFn, Consumer<_java._code> _codeActionFn ){
-        List<_java._code> _cus = new ArrayList<>();
-        this.files.forEach(f -> {
-            if(f.getName().endsWith(".java") ){                          
-                if( f instanceof _javaFile ){
-                    _type _t = ((_javaFile)f).get_type();
-                    if(_codeMatchFn.test(_t)){
-                        _codeActionFn.accept(_t);
-                        _cus.add( _t);
-                    }
-                } else {
-                    //module-info, package-info
-                    _java._code _c = null;
-                    try{
-                        _c = (_java._code)_java.of( Ast.compilationUnit( f.getCharContent(true).toString()) );
-                        _c.astCompilationUnit().setStorage( Paths.get( f.toUri() ));
-                    }catch(IOException ioe){
-                        throw new _ioException("unable to read file \""+ f.getName()+"\"");
-                    }                    
-                    if(_codeMatchFn.test(_c)){
-                        
-                        _codeActionFn.accept(_c);
-                    }
-                    try{
-                        f.openOutputStream().write(_c.toString().getBytes());                    
-                        _cus.add( _c);
-                    } catch(Exception e){
-                        throw new _ioException("unable to save code back to file \""+ f.getName()+"\"");
-                    }
-                }                
-            } 
-        });
-        return _cus;                
-    }
-    
-    /**
-     * 
-     * @param <T>
-     * @param _typeActionFn
-     * @return 
-     */
-    public <T extends _type> _batch forJavaTypes( Consumer<_type> _typeActionFn){
-        return forJavaTypes(_type.class, t->true, _typeActionFn);
-    }
-    
-    /**
-     * 
-     * @param <T>
-     * @param classType
-     * @param _typeMatchFn
-     * @param _typeActionFn
-     * @return 
-     */
-    public <T extends _type> _batch forJavaTypes( Class<T> classType, Predicate<T> _typeMatchFn, Consumer<_type> _typeActionFn){
-        this.files.forEach(f -> {
-            if( f instanceof _javaFile ){
-                _javaFile _jf = (_javaFile)f;
-                _type _t = _jf.get_type();
-                _typeActionFn.accept(_t);                  
-            }           
-        });
-        return this;       
-    }
-    
-    /**
-     * 
-     * @param _classFileActionFn
-     * @return 
-     */
-    public _batch forClassFiles( Consumer<_classFile> _classFileActionFn){
-        return forClassFiles(f->true, _classFileActionFn);
-    }
-    
-    /**
-     * 
-     * @param _classFileMatchFn
-     * @param _classFileActionFn
-     * @return 
-     */
-    public _batch forClassFiles( Predicate<_classFile> _classFileMatchFn, Consumer<_classFile> _classFileActionFn){
-        this.files.forEach(f -> {
-            if( f instanceof _classFile ){
-                _classFile _cf = (_classFile)f;                
-                if( _classFileMatchFn.test(_cf)){
-                    _classFileActionFn.accept(_cf);                  
-                }
-            }           
-        });
-        return this;       
-    }
-    
-    /**
-     * @see #forCodeUnits(java.util.function.Consumer) to include {@link draft.java._packageInfo} and {@link draft.java._moduleInfo}
-     * 
-     * @param _typeMatchFn
-     * @param _typeActionFn     
-     * @return 
-     */ 
-    public _batch forJavaTypes( Predicate<_type> _typeMatchFn, Consumer<_type> _typeActionFn ) {
-        return forJavaTypes(_type.class, _typeMatchFn, _typeActionFn);        
+    public _batch forFiles(Predicate<_memoryFile> _fileMatchFn, Consumer<_memoryFile> _fileActionFn){
+        this.files.stream().filter(_fileMatchFn).forEach(_fileActionFn);
+        return this;
     }
     
     /**
@@ -254,7 +128,7 @@ public class _batch {
     public static class _fileReader extends SimpleFileVisitor<Path> {
 
         public Path basePath;
-        public List<FileObject> filesRead = new ArrayList<>();
+        public List<_memoryFile> filesRead = new ArrayList<>();
         public List<Path> filesSkipped = new ArrayList<>();
 
         public Predicate<String> skipFiles;
@@ -277,32 +151,10 @@ public class _batch {
             }
             try {
                 byte[] bytes = Files.readAllBytes(path);
-                if( pathString.endsWith(".java")){
-                    if( path.endsWith("package-info.java") ){
-                        filesRead.add(_file.of( path, "", new String(bytes)));
-                    } 
-                    else if (path.endsWith("module-info.java") ){                        
-                        filesRead.add(_file.of( path, "", new String(bytes)));
-                    } 
-                    else{
-                        CompilationUnit cu = Ast.compilationUnit(new String(bytes));
-                        cu.setStorage(path);
-                        filesRead.add(_javaFile.of( basePath, _type.of(cu) ));
-                    }                    
-                }
-                else if( pathString.endsWith(".class")){
-                    
-                    //relPath will be like "java\\util\\Map.class"
-                    String fullyQualifiedClassName = basePath.relativize(path).toString(); 
-                    
-                    //remove .class
-                    fullyQualifiedClassName = fullyQualifiedClassName.substring(0, fullyQualifiedClassName.lastIndexOf(".class") );
-                    //replace "\\" with "."
-                    fullyQualifiedClassName = fullyQualifiedClassName.replace("\\", ".");
-                    filesRead.add(_classFile.of(basePath, fullyQualifiedClassName, bytes) );
-                }
+                //filesRead.add( _file.of(path, "", bytes) );      
+                filesRead.add( _f.of(basePath, path, bytes));
             } catch (IOException e) {
-                throw new _ioException("Unable to read file " + e);
+                throw new _ioException("Unable to read file : " + path, e);
             }
             return CONTINUE;
         }

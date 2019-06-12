@@ -1,17 +1,7 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package draft.java.file;
 
-import com.github.javaparser.ast.CompilationUnit;
-import com.github.javaparser.ast.ImportDeclaration;
 import draft.DraftException;
-import draft.java.Ast;
 import draft.java._class;
-import draft.java._java;
-import draft.java.runtime._javac;
 import java.net.URI;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -19,37 +9,17 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 import junit.framework.TestCase;
-import static junit.framework.TestCase.assertEquals;
-import static junit.framework.TestCase.assertTrue;
+import draft.java._java._code;
+import draft.java._java;
+import draft.java.runtime._javac;
 
 /**
  *
  * @author Eric
  */
-public class _batchTest extends TestCase {
+public class _batchOldTest extends TestCase {
+
     
-    
-    public void testRelativize(){
-        Path basePath = Paths.get("C:\\ren");
-        Path path = Paths.get("C:\\ren\\javaparser\\javaparser-core");
-        Path rel = path.relativize(basePath);
-        assertEquals( "javaparser\\javaparser-core", basePath.relativize(path).toString());
-    }
-    
-     public void testBP(){
-        Path base = Paths.get("C:/temp/MyProject/src/test/java");
-        Path sub = Paths.get("C:/temp/MyProject/src/test/java", "aaaa", "bbbb", "C.java");
-        Path other = Paths.get("blah/blorg");
-        Path rel1 = sub.relativize(base);
-        
-        Path rel2 = base.relativize(sub);
-        
-        System.out.println( rel1);
-        System.out.println( rel2);
-        
-        //System.out.println( base.relativize(other));
-    }
-     
     /**
      * Verify that I can read a batch from a source directory, then modify the 
      * paths selectively and then write them out
@@ -109,30 +79,23 @@ public class _batchTest extends TestCase {
     public void testBatchLocal(){
         buildExampleFiles();
         
-        _batch batch = _batch.of(srcRoot);        
+        _batchOld batch = _batchOld.of(srcRoot);        
         assertEquals( srcRoot, batch.rootPath);
         
         assertEquals(3, batch.files.size());
         batch.files.forEach(f -> System.out.println( f.toUri() ));
         
+        
         //add an import to every codeunit
-        
-        //TODO forJavaASTFiles
-        List<CompilationUnit> asts = new ArrayList<>();
-        batch.forFiles(f-> f.isFileExtension(".java"), f -> {
-            CompilationUnit ast = Ast.compilationUnit(f.asString());
-            ast.setStorage( Paths.get( f.toUri() ) );
-            ast.addImport(java.net.URI.class);
-            asts.add( ast );             
-        });
-        
-        System.out.println(asts);
-        assertEquals(3, asts.size() );
-        
-        //verify that we modified all of the asts        
-        asts.forEach(a-> assertTrue( a.getImports().contains(
-            new ImportDeclaration(URI.class.getCanonicalName(), false, false)) )
-        );        
+        List<_java._code> cus = new ArrayList<>();
+        batch.forJavaCode( c -> {
+            cus.add( c ); 
+            c.imports(java.net.URI.class);} 
+        );
+        System.out.println( cus );
+        assertEquals(3, cus.size() );
+        //verify that we modified 
+        cus.forEach(c-> assertTrue(c.hasImport(URI.class)));        
     }
     
     //verify that the batch can read in _classFiles
@@ -156,17 +119,15 @@ public class _batchTest extends TestCase {
             throw new DraftException ("unable to write file @"+filePath, e);
         }
         
-        _batch batch = _batch.of(basePath);
+        _batchOld batch = _batchOld.of(basePath);
         assertEquals(2, batch.files.size());
         
-        
-        List<_memoryFile> cfs = new ArrayList<>();
-        batch.forFiles(f-> f.isFileExtension(".class"), f-> cfs.add(f));
+        List<_classFile> cfs = new ArrayList<>();
+        batch.forClassFiles(c-> cfs.add(c));
         assertEquals( 2, cfs.size());
         
-        batch.forFiles(c-> System.out.println(c.toUri()));
-        /*
-        batch.forFiles(c-> System.out.println(c.getSimpleName()));
+        batch.forClassFiles(c-> System.out.println(c.toUri()));
+        batch.forClassFiles(c-> System.out.println(c.getSimpleName()));
         
         cfs.clear();
         batch.forClassFiles(c-> c.getSimpleName().equals("C"), c-> cfs.add(c));
@@ -175,7 +136,6 @@ public class _batchTest extends TestCase {
         
         batch.forClassFiles(c-> c.getSimpleName().equals("A"), c-> cfs.add(c));
         assertEquals( 1, cfs.size());        
-        */
     }
-    
+   
 }

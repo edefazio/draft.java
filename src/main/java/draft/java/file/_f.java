@@ -19,13 +19,44 @@ import javax.tools.JavaFileObject;
  *
  * @author M. Eric DeFazio
  */
-public final class _file implements _memoryFile<_file>, JavaFileObject {
+public final class _f implements _memoryFile<_f>, JavaFileObject {
 
-    /** "virtual" path to the file i.e. "META-INF/" empty string "" is root path */
-    public final Path filePath;
-
-    /** relative NAME of the file after the path i.e. "index.html", "data.json"*/
-    public final String relativeName;
+    /**
+     * If the _f  is associated/ read in from the file system, it can have 
+     * a basePath... 
+     * <PRE>
+     * i.e. if we read this _f from a file:
+     * "file:///C:/dev/projects/MyProject/src/main/java/com/myproj/MyJavaFile.java"
+     * 
+     * we have a base path of:
+     * "file:///C:/dev/projects/MyProject/src/main/java/"
+     * 
+     * and a relative path of:
+     * "com/myproj/MyJavaFile.java"
+     * </PRE>
+     * 
+     * NOTE: basePath CAN BE NULL
+     * if the _f is created in memory as apposed to
+     * read in from a local file, we may only have a relativePath:
+     * "com/myproj/MyJavaFile.java"
+     * </PRE>
+     */
+    public Path basePath;
+    
+    /**
+     * A Non Null path relative to the base path where the file is located
+     *  <PRE>
+     * i.e. if we read this _f from a file:
+     * "file:///C:/dev/projects/MyProject/src/main/java/com/myproj/MyJavaFile.java"
+     * 
+     * we have a base path of:
+     * "file:///C:/dev/projects/MyProject/src/main/java/"
+     * 
+     * and a relative path of:
+     * "com/myproj/MyJavaFile.java"
+     * </PRE>
+     */
+    public Path relativePath;
 
     /** it COULD be binary... could be text... dunno, it's bytes **/
     public byte[] data;
@@ -35,12 +66,12 @@ public final class _file implements _memoryFile<_file>, JavaFileObject {
 
     /**
      * Create and return a "textual" _file at the filePath with the data provided
-     * @param filePath
-     * @param relativeName
+     * @param basePath
+     * @param relativePath
      * @param data
      * @return
      */
-    public static _file of(Path filePath, String relativeName, String... data ){    
+    public static _f of(Path basePath, Path relativePath, String... data ){    
         StringBuilder fileData = new StringBuilder();
         for( int i=0; i<data.length; i++ ){
             if( i > 0 ){
@@ -48,30 +79,44 @@ public final class _file implements _memoryFile<_file>, JavaFileObject {
             }
             fileData.append( data[i]);
         }
-        return new _file( filePath, relativeName, fileData.toString().getBytes() );
+        return new _f( basePath, relativePath, fileData.toString().getBytes() );
     }
 
+    public static _f of(Path relativePath, byte[] data ){    
+        return new _f( null, relativePath, data );
+    }
+    
     /** Create and return a path containing the bytes
      * @param filePath
      * @param relativeName
      * @param data
      * @return
      */
-    public static _file of(Path filePath, String relativeName, byte[] data ){    
-        return new _file( filePath, relativeName, data );
+    public static _f of(Path basePath, Path relativePath, byte[] data ){    
+        return new _f( basePath, relativePath, data );
     }
 
     public URL getURL(){
-        try{
-            return new URL( "file:\\\\" + this.filePath);
+        if( this.basePath == null ){
+            try{
+                return new URL( "file:\\\\" + this.relativePath);
+            }catch(Exception e){
+                throw new _ioException( "Invalid relative path "+ relativePath);
+            }    
+        }        
+        try {
+            return new URL("file:\\\\" + Paths.get(basePath.toString(), this.relativePath.toString()) );
         }catch(Exception e){
-            throw new _ioException("Invalid file path "+ filePath);
+            throw new _ioException( "Invalid relative path "+ relativePath);
         }
     }
 
     @Override
     public String getName(){
-        return filePath + relativeName;
+        if( basePath == null ){
+            return this.relativePath.toString();
+        }
+        return Paths.get(basePath.toString(), this.relativePath.toString()).toString();
     }
 
     @Override
@@ -88,48 +133,48 @@ public final class _file implements _memoryFile<_file>, JavaFileObject {
      *
      * will change the filePath "temp" to "temp\"
      *
-     * @param filePath relative file NAME (i.e. "data.txt")
+     * @param basePath the base directory path where the file was read (NULLABLE) i.e. 
+     * "C://temp//Myproj//src//main//java"
+     * @param relativePath relative path to the file (NOT NULL) i.e. "/java/util/Map.java")
      * @param data the bytes of data (could be textual or binary encoded)
      */
-    public _file(Path filePath, byte[] data ){
-        if( filePath == null ){
-            filePath = Paths.get("/");
-        }
-        this.filePath = filePath;
-
-        this.relativeName = "";        
+    public _f(Path basePath, Path relativePath, byte[] data ){
+        
+        this.basePath = basePath;    
+        if( basePath != null ){
+            try{
+                this.relativePath = basePath.relativize(relativePath);
+            } catch(Exception e){
+                this.relativePath = relativePath;
+            }
+        } else{
+            this.relativePath = relativePath;
+        }      
         this.data = data;        
     }
     
-    public _file( Path filePath, String relativeName, byte[] data ){    
-        if( filePath == null ){
-            filePath = Paths.get("/");
-        }
-        this.filePath = filePath;
-
-        this.relativeName = relativeName;
-        this.data = data;       
-    }
-
     /** 
      * is this file name the same as the file name provided
      * @param fileName
      * @return 
      */
     public boolean is( String fileName ){
-        return (filePath + relativeName).equals( fileName );
+        /** TODO CHERCK THIS   **/
+        return Paths.get(fileName).equals( this.relativePath)
+                || Paths.get( getName() ).equals( Paths.get(fileName));
+        //return (filePath + relativeName).equals( fileName );
     }
 
     @Override
     public String toString(){
-        return "_file \"" + filePath + relativeName + "\" ("+hashCode()+")";
+        return "_file \"" + toUri() + "\" ("+hashCode()+")";
     }
 
     @Override
     public int hashCode() {
         int hash = 5;
-        hash = 83 * hash + Objects.hashCode( this.filePath );
-        hash = 83 * hash + Objects.hashCode( this.relativeName );
+        hash = 83 * hash + Objects.hashCode( this.basePath );
+        hash = 83 * hash + Objects.hashCode( this.relativePath );
         hash = 83 * hash + Arrays.hashCode( this.data );
         return hash;
     }
@@ -145,11 +190,11 @@ public final class _file implements _memoryFile<_file>, JavaFileObject {
         if( getClass() != obj.getClass() ) {
             return false;
         }
-        final _file other = (_file)obj;
-        if( !Objects.equals( this.filePath, other.filePath ) ) {
+        final _f other = (_f)obj;
+        if( !Objects.equals( this.basePath, other.basePath ) ) {
             return false;
         }
-        if( !Objects.equals( this.relativeName, other.relativeName ) ) {
+        if( !Objects.equals( this.relativePath, other.relativePath ) ) {
             return false;
         }
         if( !Arrays.equals( this.data, other.data ) ) {
@@ -160,7 +205,7 @@ public final class _file implements _memoryFile<_file>, JavaFileObject {
 
     @Override
     public URI toUri() {
-        return this.filePath.toUri();
+        return Paths.get( this.getName()).toUri();
     }
 
     @Override
@@ -241,9 +286,9 @@ public final class _file implements _memoryFile<_file>, JavaFileObject {
     public static final class _fileAfterCloseOutputStream
             extends ActionAfterCloseOutputStream{
 
-        private final _file _targetFile;
+        private final _f _targetFile;
 
-        public _fileAfterCloseOutputStream(_file _targetFile ){
+        public _fileAfterCloseOutputStream(_f _targetFile ){
             this._targetFile = _targetFile;
         }
 
@@ -257,9 +302,9 @@ public final class _file implements _memoryFile<_file>, JavaFileObject {
     public static final class _fileAfterCloseWriter
             extends ActionAfterCloseWriter{
 
-        private final _file _targetFile;
+        private final _f _targetFile;
 
-        public _fileAfterCloseWriter( _file _targetFile ){
+        public _fileAfterCloseWriter( _f _targetFile ){
             this._targetFile = _targetFile;
         }
 

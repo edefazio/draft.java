@@ -1,7 +1,6 @@
 package draft.java.file;
 
 import draft.java.*;
-import draft.java.file._file.ActionAfterCloseWriter;
 
 import javax.lang.model.element.Modifier;
 import javax.lang.model.element.NestingKind;
@@ -26,7 +25,7 @@ import java.util.Objects;
  *
  * @author Eric
  */
-public final class _javaFile implements JavaFileObject {
+public final class _javaFile implements JavaFileObject, _memoryFile<_javaFile> {
 
     /**
      * If the _javaFile is associated/ read in from the file system, it can have 
@@ -68,6 +67,11 @@ public final class _javaFile implements JavaFileObject {
     private _javaFile(Path basePath, _type _t){
         this.basePath = basePath;
         this.type = _t;
+    }
+    
+    @Override
+    public int sizeInBytes(){
+        return this.toString().getBytes().length;
     }
     
     /**
@@ -262,7 +266,7 @@ public final class _javaFile implements JavaFileObject {
      *
      */
     public static final class _typeAfterCloseOutputStream
-            extends _file.ActionAfterCloseOutputStream{
+            extends ActionAfterCloseOutputStream{
 
         private draft.java.file._javaFile _javaFile;
 

@@ -253,7 +253,9 @@ public final class _fileManager
 
         //resourceFiles.add( _file.of( filePath, relativeName, linesOfText ) );
 //        resourceFiles.add( _file.of( Paths.get(filePath), linesOfText ) );
-        resourceFiles.add( new _file( Paths.get(filePath), Text.combine(linesOfText).getBytes() ) );
+        //resourceFiles.add( new _file( Paths.get(filePath), Text.combine(linesOfText).getBytes() ) );
+        resourceFiles.add( _f.of( Paths.get(filePath), Text.combine(linesOfText).getBytes() ) );
+        
         return this;
     }
 
@@ -263,7 +265,8 @@ public final class _fileManager
 
         //resourceFiles.add( _file.of( filePath, relativeName, data ) );
         //resourceFiles.add( _file.of( Paths.get( filePath), relativeName, data ) );
-        resourceFiles.add( new _file( Paths.get(filePath), data ) );
+        //resourceFiles.add( new _file( Paths.get(filePath), data ) );
+        resourceFiles.add( _f.of( Paths.get(filePath), data ) );
         return this;
     }
 
@@ -495,11 +498,11 @@ public final class _fileManager
 
         //the compiler wants to write new resource file in the
         //in memory resourceOutput
-        if( location == null ) {
-            return this.resourceFiles.reserveFile( packageName, relativeName );
+        if( location == null ) {            
+            return this.resourceFiles.reserveFile( Paths.get( packageName, relativeName) );
         }
         if( location.equals( _files.LOCATION ) ) {
-            return this.resourceFiles.reserveFile( packageName, relativeName );
+            return this.resourceFiles.reserveFile( Paths.get(packageName, relativeName) );
         }
         return fileManager.getFileForOutput(location, packageName, relativeName, sibling );
     }

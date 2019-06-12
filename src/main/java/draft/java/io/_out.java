@@ -39,6 +39,7 @@ public interface _out {
         _filesReceipt _cr = _out.to(oc.outClassesDir).export(_p.getClassLoader().classFiles() );
         _filesReceipt _rf = _out.to(oc.outResourcesDir).export( _p.getClassLoader()._fileMan.resourceFiles );
 
+        
         _tr.fileNames.addAll(_cr.fileNames);
         _tr.fileNames.addAll( _rf.fileNames);
         return _tr;
@@ -91,14 +92,14 @@ public interface _out {
      * @param files
      * @return a {@link _receipt}
      */
-    _receipt export(_file...files);
+    _receipt export(_memoryFile...files);
 
     /**
      * use the _out instance to export the {@link _files} and
      * @param _fs
      * @return a {@link _receipt}
      */
-    _receipt export(_files _fs);
+    _receipt export(_files _fs);       
 
     /**
      * use the _out instance to export the {@link _type}s and
@@ -306,33 +307,36 @@ public interface _out {
         }
 
         @Override
-        public _filesReceipt export(_file... files){
+        public _filesReceipt export(_memoryFile... files){
             _filesReceipt _fr = new _filesReceipt();
             Arrays.stream(files).forEach(f -> _fr.fileNames.add(export_file(f)));
             return _fr;
         }
 
+        
         @Override
         public _filesReceipt export(_files _fs) {
             _filesReceipt _fr = new _filesReceipt();
             _fs.list().forEach(f -> _fr.fileNames.add( export_file(f)));
             return _fr;
-        }
+        }        
 
-        public String export_file(_file _f){
-            String fileName = this.baseDir + _f.getName();
+        public String export_file(_memoryFile _f){
+            //String fileName = this.baseDir + _f.getName();
+            String fileName = _f.getName();
             File outFile = new File(fileName);
 
             outFile.getParentFile().mkdirs();
             try{
                 FileOutputStream fos = new FileOutputStream(outFile);
-                fos.write(_f.data);
+                
+                fos.write(_f.asByteArray() );
                 fos.flush();
                 fos.close();
                 return fileName;
             } catch(IOException ioe){
                 throw new _ioException(
-                        "failure writing file \""+ fileName+"\"", ioe);
+                      "failure writing file \""+ fileName+"\"", ioe);
             }
         }
     }

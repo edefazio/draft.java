@@ -1,6 +1,5 @@
 package draft.java.file;
 
-import draft.java.file._file.CacheBytesOutputStream;
 import draft.java.io._ioException;
 
 import javax.tools.SimpleJavaFileObject;
@@ -18,7 +17,8 @@ import java.util.*;
  *
  * @author M. Eric DeFazio
  */
-public final class _classFile extends SimpleJavaFileObject  {
+public final class _classFile extends SimpleJavaFileObject 
+    implements _memoryFile<_classFile>  {
 
     /**
      * Create an EMPTY classFile which will house a class with a specific fully 
@@ -177,6 +177,14 @@ public final class _classFile extends SimpleJavaFileObject  {
         this.cacheBytesOutputStream.write( byteCodes );
         this.cacheBytesOutputStream.flush();
         this.cacheBytesOutputStream.close();
+    }
+    
+    @Override
+    public int sizeInBytes(){
+        if( this.cacheBytesOutputStream.isWritten.get()){
+            return this.cacheBytesOutputStream.bytes.length;
+        }
+        return 0;
     }
     
     /** 

@@ -36,7 +36,7 @@ public final class _files implements JavaFileManager.Location {
                 }
             };
 
-    public static _files of( _file..._fs ){
+    public static _files of( _f..._fs ){
         _files _ffs = new _files();
         _ffs.add(_fs );
         return _ffs;
@@ -52,11 +52,11 @@ public final class _files implements JavaFileManager.Location {
         return true;
     }
 
-    public List<_file> list() {
+    public List<_f> list() {
         return this.files;
     }
 
-    public List<_file> list(Predicate<? super _file>_fileMatchFn ){
+    public List<_f> list(Predicate<_f>_fileMatchFn ){
         return this.files.stream()
                 .filter( _fileMatchFn ).collect( Collectors.toList() );
     }
@@ -75,12 +75,12 @@ public final class _files implements JavaFileManager.Location {
         return files.size();
     }
 
-    public _files forEach(Consumer<_file> _fileConsumer ){
+    public _files forEach(Consumer<_f> _fileConsumer ){
         this.files.forEach(_fileConsumer);
         return this;
     }
 
-    public _file get(String fileName ) {
+    public _f get(String fileName ) {
         for( int i = 0; i < files.size(); i++ ) {
             if( this.files.get( i ).is( fileName ) ) {
                 return this.files.get( i );
@@ -89,7 +89,9 @@ public final class _files implements JavaFileManager.Location {
         return null;
     }
 
-    public _file getFile(String filePath, String relativeName ){
+    public _f getFile(String filePath, String relativeName ){
+        Path p = Paths.get(filePath, relativeName);
+        String fname = p.toString();
         if( filePath == null ){
             filePath ="";
         }
@@ -99,21 +101,26 @@ public final class _files implements JavaFileManager.Location {
             }
         }
         for( int i = 0; i < files.size(); i++ ) {
-            _file _f = this.files.get( i );
+            _f _f = this.files.get( i );
+            if( _f.getName().equals(fname) ){
+                return this.files.get( i );
+            }
+            /*
             if( _f.filePath.equals(filePath) && _f.relativeName.equals(relativeName)) {
                 return this.files.get( i );
             }
+            */
         }
         return null;
     }
 
-    public List<_file> files = new ArrayList<>();
+    public List<_f> files = new ArrayList<>();
 
     public _files() {
     }
 
     public _files add(Path filePath, byte[] data ) {
-        add( _file.of( filePath, "", data ) );
+        add( _f.of( filePath, data ) );
         return this;
     }
     
@@ -131,7 +138,7 @@ public final class _files implements JavaFileManager.Location {
      */
     public _files add(String filePath, String relativeName, byte[] data ) {
 
-        add( _file.of( Paths.get(filePath), relativeName, data ) );
+        add( _f.of( Paths.get(filePath), Paths.get(relativeName), data ) );
         return this;
     }
 
@@ -162,11 +169,12 @@ public final class _files implements JavaFileManager.Location {
      */
     public _files add(String filePath, String relativeName, String... linesOfText ) {
         //add( _file.of( filePath, relativeName, linesOfText ) );
-        add( _file.of( Paths.get( filePath), relativeName, linesOfText ) );
+        
+        add( _f.of( Paths.get( filePath), Paths.get( relativeName), linesOfText ) );
         return this;
     }
 
-    public _files add(_file... _fs ) {
+    public _files add(_f... _fs ) {
         this.files.addAll( Arrays.asList( _fs ) );
         return this;
     }
@@ -184,12 +192,24 @@ public final class _files implements JavaFileManager.Location {
      * "META-INF\")
      * @param relativeName the relative NAME ("services.xml")
      * @return a FileObject to use for writing to
-     */
+     
     public FileObject reserveFile( String filePath, String relativeName ) {
 
         //_file _f = new _file( filePath, relativeName, new byte[0] );
-        _file _f = new _file( Paths.get(filePath), relativeName, new byte[0] );
+        //_file _f = new _file( Paths.get(filePath), relativeName, new byte[0] );
+        _f _f = new _f(Paths.get(filePath), Paths.get(relativeName), new byte[0]);
         this.add( _f  );
         return _f;
+    }
+    */ 
+    
+    public FileObject reserveFile( String relativePath ){
+        return reserveFile( Paths.get(relativePath));
+    }
+    
+    public FileObject reserveFile( Path relativePath ){
+        _f _fi = _f.of(relativePath, new byte[0]);
+        this.add( _fi  );
+        return _fi;
     }
 }

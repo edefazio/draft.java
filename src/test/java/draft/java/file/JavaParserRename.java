@@ -44,7 +44,7 @@ public class JavaParserRename {
     public static void bacthModificationApply(){
         System.out.println( "writing Mods");
         //_load _l = _batch.read(Paths.get("C:\\mod"));
-        _batch _l = _batch.of(Paths.get(modPath));
+        _batchOld _l = _batchOld.of(Paths.get(modPath));
         _l.files.forEach(f -> writeToTarget(f) );
         
     }
@@ -58,7 +58,7 @@ public class JavaParserRename {
             || p.contains(".gitignore");             
             //|| p.contains("target\\classes") 
             //|| p.endsWith(".class");
-        _batch _l = _batch.of(Paths.get(sourcePath), skipFiles );
+        _batchOld _l = _batchOld.of(Paths.get(sourcePath), skipFiles );
         AtomicInteger ai = new AtomicInteger(0);
         List<URI>filesChanged = new ArrayList<>();
         Set<String> fileExtensions = new HashSet<>();
