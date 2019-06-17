@@ -2,6 +2,7 @@ package draft.java;
 
 import com.github.javaparser.StaticJavaParser;
 import com.github.javaparser.ast.*;
+import com.github.javaparser.ast.CompilationUnit.Storage;
 import com.github.javaparser.ast.body.*;
 import com.github.javaparser.ast.comments.*;
 import com.github.javaparser.ast.nodeTypes.*;
@@ -16,6 +17,8 @@ import draft.java.macro._macro;
 import draft.java.macro._remove;
 
 import java.io.InputStream;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.*;
 import java.util.function.*;
 import java.util.stream.Collectors;
@@ -943,6 +946,24 @@ public interface _type<AST extends TypeDeclaration & NodeWithJavadoc & NodeWithM
     }
 
     /**
+     * Build an abstraction that adapts the _types Ast as a FileObject
+     * to be passed in / used by the javac compiler (as if it were a file
+     * of source code read in from the file system)
+     * @return 
+     */
+    @Override
+    default _java.JavaAstFileObject asFileObject(){
+        if( this.isTopLevel() ){
+            if( this.getPackage() != null && this.getPackage().length() > 0 ){
+                Path p = Paths.get( this.getPackage().replace(".", "/"), getName()+".java");                
+                return new _java.JavaAstFileObject( p, this.astCompilationUnit());
+            }
+            return new _java.JavaAstFileObject(Paths.get( getName()+".java"), this.astCompilationUnit());
+        }
+        throw new UnsupportedOperationException("FileObject MUST be top level type"+this.getFullName());   
+    }
+    
+    /**
      * does this type extend this specific class 
      * (Note: this does not handle generic base classes... for that use 
      * {@link #isExtends(com.github.javaparser.ast.type.ClassOrInterfaceType)}
@@ -1295,13 +1316,54 @@ public interface _type<AST extends TypeDeclaration & NodeWithJavadoc & NodeWithM
      * @return the _model _type
      */
     static _type of( CompilationUnit astRoot ){
+        //if only 1 type, it's the top type
         if( astRoot.getTypes().size() == 1 ){
             return of( astRoot, astRoot.getType( 0 ));
         }
-        if( !astRoot.getPrimaryType().isPresent()){
-            throw new DraftException("Unable to locate the primary TYPE");
+        //if multiple types find the first public type
+        Optional<TypeDeclaration<?>> otd = 
+            astRoot.getTypes().stream().filter( t -> t.isPublic() ).findFirst();
+        if( otd.isPresent() ){
+            return of( astRoot, otd.get());    
         }
-        return of( astRoot, astRoot.getPrimaryType().get());
+        //if there is marked a primary type (via storage) then it's that
+        if( astRoot.getPrimaryType().isPresent()){
+            return of( astRoot, astRoot.getPrimaryType().get());
+        }
+        if( astRoot.getTypes().isEmpty() ){
+            throw new DraftException("cannot create _type from CompilationUnit with no TypeDeclaration");
+        }
+        //if we have the storage (and potentially multiple package private types)
+        //check the storage to determine if one of them is the right one
+        if( astRoot.getStorage().isPresent() ){
+            Storage st = astRoot.getStorage().get();
+            Path p = st.getPath();
+            
+            //the storage says it was saved before
+            Optional<TypeDeclaration<?>> ott = 
+                astRoot.getTypes().stream().filter(t-> p.endsWith( t.getNameAsString()+".java") ).findFirst();
+            if( ott.isPresent()){
+                return of( astRoot, ott.get());
+            }
+            
+            if( p.endsWith("package-info.java")){
+                throw new DraftException("cannot create a _type out of a package-info.java");
+            }
+            if( p.endsWith("module-info.java")){
+                throw new DraftException("cannot create a _type out of a module-info.java");
+            }
+            
+            //ok, well, this is dangerous, but shouldnt be a common occurrence
+            // basically we have a compilationUnit with > 1 TypeDeclaration, but
+            // none of the TypeDeclarations are public, and a PrimaryType is not 
+            //defined in the storage, so we just choose the first typeDeclaration
+            return of( astRoot, astRoot.getType(0));
+        }
+        return of( astRoot, astRoot.getType(0));
+        //if( !astRoot.getPrimaryType().isPresent()){
+        //    throw new DraftException("Unable to locate the primary TYPE");
+        //}
+        //return of( astRoot, astRoot.getPrimaryType().get());
     }
 
     /**

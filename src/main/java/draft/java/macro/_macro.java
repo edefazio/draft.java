@@ -3,7 +3,7 @@ package draft.java.macro;
 import com.github.javaparser.ast.body.FieldDeclaration;
 import draft.DraftException;
 import draft.java.*;
-import draft.java.runtime._new;
+//import draft.java.runtime._new;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.*;
@@ -131,9 +131,11 @@ public interface _macro<M extends _anno._hasAnnos>
         return _model;
     }
 
+    /*
     static Object _new( Class clazz, Object...ctorArgs ){
         return _new.of(_type.of(clazz), ctorArgs);
     }
+    */
 
     /**
      * Apply Annotation Macros to the _field based on the RuntimeAnnotations on the field in the Clazz

@@ -2,6 +2,7 @@ package draft.java;
 
 import com.github.javaparser.StaticJavaParser;
 import com.github.javaparser.ast.*;
+import com.github.javaparser.ast.CompilationUnit.Storage;
 import com.github.javaparser.ast.body.*;
 import com.github.javaparser.ast.comments.*;
 import com.github.javaparser.ast.expr.*;
@@ -42,10 +43,25 @@ import draft.java._throws._hasThrows;
 import draft.java._type._hasExtends;
 import draft.java._type._hasImplements;
 import draft.java._typeParameter._typeParameters;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.CharArrayReader;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.io.OutputStreamWriter;
+import java.io.Reader;
+import java.io.StringReader;
+import java.io.Writer;
+import java.net.URI;
+import java.nio.CharBuffer;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
-
+import javax.lang.model.element.NestingKind;
+import javax.tools.JavaFileObject;
+import javax.tools.SimpleJavaFileObject;
 
 /**
  * Translates between AST {@link Node} entities to {@link _model} runtime
@@ -212,12 +228,14 @@ public enum _java {
         AST_NODE_TO_JAVA_CLASSES.put(AnnotationDeclaration.class, _annotation.class);
     }
 
+    /*
     private static _node getLogicalParentNode(Node node) {
         if (_JAVA_TO_AST_NODE_CLASSES.containsValue(node.getClass())) {
             return (_node) of(node);
         }
         return getLogicalParentNode(node.getParentNode().get());
     }
+    */
 
     /**
      * Parse and return the appropriate node based on the Node class (the Node
@@ -938,394 +956,531 @@ public enum _java {
                     && Objects.equals(this.idPath, other.idPath);
         }
     }
-    
-    
-    
-/**
- * Common model for all source code units of a Java codebase (a "code unit" is a
- * model of the contents contained within a source file) i.e.<UL>
- <LI> a model (AST, etc.) of a regular XXX.java files
- <LI> a model of the contents  <B>package-info.java</B> files
- <LI> <B>module-info.java</B> files
- </UL>
-
- (i.e.{@link _type}
- * {@link _class} {@link _enum} {@link _interface} {@link _annotation},
- * {@link _packageInfo}, {@link _moduleInfo}
- *
- * @author Eric
- * @param <T>
- */
-public interface _code<T> extends _model {
 
     /**
-     * @return the compilationUnit (NOTE: could be null for nested _types)
-     */
-    public CompilationUnit astCompilationUnit();
-
-    /**
-     * A top level source code unit is the top level type, a "module-info.java"
-     * file or a "package-info.java" file
+     * Common model for all source code units of a Java codebase (a "code unit"
+     * is a model of the contents contained within a source file) i.e.<UL>
+     * <LI> a model (AST, etc.) of a regular XXX.java files
+     * <LI> a model of the contents  <B>package-info.java</B> files
+     * <LI> <B>module-info.java</B> files
+     * </UL>
      *
-     * @return
-     */
-    public boolean isTopLevel();
-
-    /**
-     * Gets the "Header comment" (usually the License) from the compilationUnit
-     * (NOTE: returns null if there are no header comments or this is nested _code)
+     * (i.e.{@link _type}
+     * {@link _class} {@link _enum} {@link _interface} {@link _annotation},
+     * {@link _packageInfo}, {@link _moduleInfo}
      *
-     * @return the Comment implementation of the Header comment
+     * @author Eric
+     * @param <T>
      */
-    default Comment getHeaderComment() {
-        if(this.isTopLevel() ){
+    public interface _code<T> extends _model  {
+
+        /**
+         * @return the compilationUnit (NOTE: could be null for nested _types)
+         */
+        public CompilationUnit astCompilationUnit();
+
+        /**
+         * A top level source code unit is the top level type, a
+         * "module-info.java" file or a "package-info.java" file
+         *
+         * @return
+         */
+        public boolean isTopLevel();
+
+        /**
+         * Gets the "Header comment" (usually the License) from the
+         * compilationUnit (NOTE: returns null if there are no header comments
+         * or this is nested _code)
+         *
+         * @return the Comment implementation of the Header comment
+         */
+        default Comment getHeaderComment() {
+            if (this.isTopLevel()) {
+                CompilationUnit cu = astCompilationUnit();
+                if (cu.getComment().isPresent()) {
+                    return astCompilationUnit().getComment().get();
+                }
+            }
+            return null;
+        }
+
+        /**
+         * sets the header comment (i.e.the license copyright, etc.) at the top
+         * of the _compilationUnit
+         *
+         * @param astBlockComment
+         * @return the Comment a JavaDoc comment or BlockComment or null
+         */
+        default T setHeaderComment(BlockComment astBlockComment) {
+            astCompilationUnit().setComment(astBlockComment);
+            return (T) this;
+        }
+
+        /**
+         * Sets the header comment (i.e. the copywrite)
+         *
+         * @param commentLines the lines in the header comment
+         * @return the modified T
+         */
+        default T setHeaderComment(String... commentLines) {
+            return setHeaderComment(Ast.blockComment(commentLines));
+        }
+
+        /**
+         * gets the imports from the CompilationUnit
+         *
+         * @return the _imports
+         */
+        default _imports getImports() {
             CompilationUnit cu = astCompilationUnit();
-            if (cu.getComment().isPresent()) {
-                return astCompilationUnit().getComment().get();
+            if (cu != null) {
+                return _imports.of(cu);
             }
-        }        
-        return null;
-    }
-
-    /**
-     * sets the header comment (i.e.the license copyright, etc.) at the top of
-     * the _compilationUnit
-     *
-     * @param astBlockComment
-     * @return the Comment a JavaDoc comment or BlockComment or null
-     */
-    default T setHeaderComment(BlockComment astBlockComment) {
-        astCompilationUnit().setComment(astBlockComment);
-        return (T) this;
-    }
-
-    /**
-     * Sets the header comment (i.e. the copywrite)
-     *
-     * @param commentLines the lines in the header comment
-     * @return the modified T
-     */
-    default T setHeaderComment(String... commentLines) {
-        return setHeaderComment(Ast.blockComment(commentLines));
-    }
-
-    /**
-     * gets the imports from the CompilationUnit
-     *
-     * @return the _imports
-     */
-    default _imports getImports() {
-        CompilationUnit cu = astCompilationUnit();
-        if (cu != null) {
-            return _imports.of(cu);
+            return new _imports(new CompilationUnit()); //better of all the evils
         }
-        return new _imports(new CompilationUnit()); //better of all the evils
-    }
 
-    /**
-     * remove imports based on predicate
-     *
-     * @param _importMatchFn filter for deciding which imports to removeIn
-     * @return the modified TYPE
-     */
-    default T removeImports(Predicate<_import> _importMatchFn) {
-        getImports().remove(_importMatchFn);
-        return (T) this;
-    }
-
-    /**
-     * removeIn imports by classes
-     *
-     * @param clazzes
-     * @return
-     */
-    default T removeImports(Class... clazzes) {
-        _imports.of(astCompilationUnit()).remove(clazzes);
-        return (T) this;
-    }
-
-    /**
-     *
-     * @param toRemove
-     * @return
-     */
-    default T removeImports(_import... toRemove) {
-        _imports.of(astCompilationUnit()).remove(toRemove);
-        return (T) this;
-    }
-
-    /**
-     *
-     * @param _typesToRemove
-     * @return
-     */
-    default T removeImports(_type... _typesToRemove) {
-        getImports().remove(_typesToRemove);
-        return (T) this;
-    }
-
-    /**
-     *
-     * @param toRemove the ImportDeclarations to removeIn
-     * @return the modified _type
-     */
-    default T removeImports(ImportDeclaration... toRemove) {
-        CompilationUnit cu = astCompilationUnit();
-        if (cu != null) {
-            for (int i = 0; i < toRemove.length; i++) {
-                cu.getImports().remove(toRemove[i]);
-            }
+        /**
+         * remove imports based on predicate
+         *
+         * @param _importMatchFn filter for deciding which imports to removeIn
+         * @return the modified TYPE
+         */
+        default T removeImports(Predicate<_import> _importMatchFn) {
+            getImports().remove(_importMatchFn);
+            return (T) this;
         }
-        return (T) this;
-    }
 
-    /**
-     *
-     * @param toRemove
-     * @return
-     */
-    default T removeImports(List<ImportDeclaration> toRemove) {
-        CompilationUnit cu = astCompilationUnit();
-        if (cu != null) {
-            for (int i = 0; i < toRemove.size(); i++) {
-                cu.getImports().remove(toRemove.get(i));
-            }
+        /**
+         * removeIn imports by classes
+         *
+         * @param clazzes
+         * @return
+         */
+        default T removeImports(Class... clazzes) {
+            _imports.of(astCompilationUnit()).remove(clazzes);
+            return (T) this;
         }
-        return (T) this;
-    }
 
-    /**
-     * Select some imports based on the astImportPredicate and apply the
-     * astImportActionFn on the selected Imports
-     *
-     * @param _importActionFn function to apply to the imports
-     * @return the T
-     */
-    default T forImports(Consumer<_import> _importActionFn) {
-        getImports().forEach(_importActionFn);
-        return (T) this;
-    }
-
-    /**
-     * Select some imports based on the astImportPredicate and apply the
-     * astImportActionFn on the selected Imports
-     *
-     * @param _importMatchFn selects the Imports to act on
-     * @param _importActionFn function to apply to the imports
-     * @return the T
-     */
-    default T forImports(Predicate<_import> _importMatchFn, Consumer<_import> _importActionFn) {
-        getImports().forEach(_importMatchFn, _importActionFn);
-        return (T) this;
-    }
-
-    /**
-     *
-     * @return
-     */
-    default List<_import> listImports() {
-        return getImports().list();
-    }
-
-    /**
-     * Does this compilationUnit import (explicitly or *) import this _type
-     *
-     * @param _t a top level _type
-     * @return true if the CompilationUnit imports this type, false otherwise
-     */
-    default boolean hasImport(_type _t) {
-        return hasImport(_t.getFullName());
-    }
-
-    /**
-     * Does this class statically import this class i.e.
-     * <PRE>
-     * _class _c = _class.of("A").imports("import static draft.java.Ast.*;");
-     * assertTrue( _c.hasImportStatic(Ast.class));
-     * </PRE>
-     *
-     * @param clazz
-     * @return
-     */
-    default boolean hasImportStatic(Class clazz) {
-        return !listImports(i -> i.isStatic() && i.isWildcard() && i.hasImport(clazz)).isEmpty();
-    }
-
-    /**
-     * class or method name
-     * <PRE>
-     *
-     * </PRE>
-     *
-     * @param className
-     * @return
-     */
-    default boolean hasImport(String className) {
-        return _imports.of(astCompilationUnit()).hasImport(className);
-    }
-
-    default boolean hasImports(Class... clazzes) {
-        return _imports.of(astCompilationUnit()).hasImports(clazzes);
-    }
-
-    default boolean hasImport(Class clazz) {
-        return _imports.of(astCompilationUnit()).hasImport(clazz);
-    }
-
-    default boolean hasImport(Predicate<_import> _importMatchFn) {
-        return !listImports(_importMatchFn).isEmpty();
-    }
-
-    default boolean hasImport(_import _i) {
-        return listImports(i -> i.equals(_i)).size() > 0;
-    }
-
-    default List<_import> listImports(Predicate<_import> _importMatchFn) {
-        return this.getImports().list().stream().filter(_importMatchFn).collect(Collectors.toList());
-    }
-
-    /**
-     * Adds static wildcard imports for all Classes
-     *
-     * @param wildcardStaticImports a list of classes that will WildcardImports
-     * @return the T
-     */
-    default T importStatic(Class... wildcardStaticImports) {
-        CompilationUnit cu = astCompilationUnit();
-        if (cu != null) {
-            Arrays.stream(wildcardStaticImports).forEach(i -> {
-                ImportDeclaration id = Ast.importDeclaration(i);
-                id.setAsterisk(true);
-                id.setStatic(true);
-                cu.addImport(id);
-            });
+        /**
+         *
+         * @param toRemove
+         * @return
+         */
+        default T removeImports(_import... toRemove) {
+            _imports.of(astCompilationUnit()).remove(toRemove);
+            return (T) this;
         }
-        return (T) this;
-    }
 
-    /**
-     *
-     * @param staticWildcardImports
-     * @return
-     */
-    default T importStatic(String... staticWildcardImports) {
-        CompilationUnit cu = astCompilationUnit();
-        if (cu != null) {
-            Arrays.stream(staticWildcardImports).forEach(i -> {
-                ImportDeclaration id = Ast.importDeclaration(i);
-                id.setStatic(true);
-                id.setAsterisk(true);
-                cu.addImport(id);
-            });
+        /**
+         *
+         * @param _typesToRemove
+         * @return
+         */
+        default T removeImports(_type... _typesToRemove) {
+            getImports().remove(_typesToRemove);
+            return (T) this;
         }
-        return (T) this;
-    }
 
-    /**
-     * Statically import all of the
-     *
-     * @param wildcardTypeStaticImport
-     * @return
-     */
-    default T importStatic(_type... wildcardTypeStaticImport) {
-        CompilationUnit cu = astCompilationUnit();
-        if (cu != null) {
-            Arrays.stream(wildcardTypeStaticImport).forEach(i -> {
-                cu.addImport(new ImportDeclaration(i.getFullName(), true, true));
-            });
-        }
-        return (T) this;
-    }
-
-    /**
-     *
-     * @param _ts
-     * @return
-     */
-    default T imports(_type... _ts) {
-        Arrays.stream(_ts).forEach(_t -> imports(_t.getFullName()));
-        return (T) this;
-    }
-
-    /**
-     * Add a single class import to the compilationUnit
-     *
-     * @param singleClass
-     * @return the modified compilationUnit
-     */
-    default T imports(Class singleClass) {
-        return imports(new Class[]{singleClass});
-    }
-
-    /**
-     * Regularly import a class
-     *
-     * @param classesToImport
-     * @return
-     */
-    default T imports(Class... classesToImport) {
-        CompilationUnit cu = astCompilationUnit();
-        if (cu != null) {
-            for (int i = 0; i < classesToImport.length; i++) {
-                if (classesToImport[i].isArray()) {
-                    //System.out.println("CT " + classesToImport[i].getComponentType() );
-                    imports(classesToImport[i].getComponentType());
-                } else {
-                    //dont import primitives or primitive arrays
-                    if (classesToImport[i] == null
-                            || classesToImport[i].isPrimitive()
-                            || classesToImport[i].isArray() && classesToImport[i].getComponentType().isPrimitive()
-                            || classesToImport[i].getPackageName().equals("java.lang")) {
-                        break;
-                    }
-                    String cn = classesToImport[i].getCanonicalName();
-                    //fix a minor bug in JavaParser API where anything in "java.lang.**.*" is not imported
-                    // so java.lang.annotation.* classes are not imported when they should be
-                    if (classesToImport[i].getPackage() != Integer.class.getPackage()
-                            && classesToImport[i].getCanonicalName().startsWith("java.lang")) {
-                        //System.out.println( "manually adding "+ classesToImport[i].getCanonicalName());
-                        cu.addImport(classesToImport[i].getCanonicalName());
-                    } else {
-                        cu.addImport(cn);
-                    }
+        /**
+         *
+         * @param toRemove the ImportDeclarations to removeIn
+         * @return the modified _type
+         */
+        default T removeImports(ImportDeclaration... toRemove) {
+            CompilationUnit cu = astCompilationUnit();
+            if (cu != null) {
+                for (int i = 0; i < toRemove.length; i++) {
+                    cu.getImports().remove(toRemove[i]);
                 }
             }
             return (T) this;
         }
-        throw new DraftException("No AST CompilationUnit to add imports");
+
+        /**
+         *
+         * @param toRemove
+         * @return
+         */
+        default T removeImports(List<ImportDeclaration> toRemove) {
+            CompilationUnit cu = astCompilationUnit();
+            if (cu != null) {
+                for (int i = 0; i < toRemove.size(); i++) {
+                    cu.getImports().remove(toRemove.get(i));
+                }
+            }
+            return (T) this;
+        }
+
+        /**
+         * Select some imports based on the astImportPredicate and apply the
+         * astImportActionFn on the selected Imports
+         *
+         * @param _importActionFn function to apply to the imports
+         * @return the T
+         */
+        default T forImports(Consumer<_import> _importActionFn) {
+            getImports().forEach(_importActionFn);
+            return (T) this;
+        }
+
+        /**
+         * Select some imports based on the astImportPredicate and apply the
+         * astImportActionFn on the selected Imports
+         *
+         * @param _importMatchFn selects the Imports to act on
+         * @param _importActionFn function to apply to the imports
+         * @return the T
+         */
+        default T forImports(Predicate<_import> _importMatchFn, Consumer<_import> _importActionFn) {
+            getImports().forEach(_importMatchFn, _importActionFn);
+            return (T) this;
+        }
+
+        /**
+         *
+         * @return
+         */
+        default List<_import> listImports() {
+            return getImports().list();
+        }
+
+        /**
+         * Does this compilationUnit import (explicitly or *) import this _type
+         *
+         * @param _t a top level _type
+         * @return true if the CompilationUnit imports this type, false
+         * otherwise
+         */
+        default boolean hasImport(_type _t) {
+            return hasImport(_t.getFullName());
+        }
+
+        /**
+         * Does this class statically import this class i.e.
+         * <PRE>
+         * _class _c = _class.of("A").imports("import static draft.java.Ast.*;");
+         * assertTrue( _c.hasImportStatic(Ast.class));
+         * </PRE>
+         *
+         * @param clazz
+         * @return
+         */
+        default boolean hasImportStatic(Class clazz) {
+            return !listImports(i -> i.isStatic() && i.isWildcard() && i.hasImport(clazz)).isEmpty();
+        }
+
+        /**
+         * class or method name
+         * <PRE>
+         *
+         * </PRE>
+         *
+         * @param className
+         * @return
+         */
+        default boolean hasImport(String className) {
+            return _imports.of(astCompilationUnit()).hasImport(className);
+        }
+
+        default boolean hasImports(Class... clazzes) {
+            return _imports.of(astCompilationUnit()).hasImports(clazzes);
+        }
+
+        default boolean hasImport(Class clazz) {
+            return _imports.of(astCompilationUnit()).hasImport(clazz);
+        }
+
+        default boolean hasImport(Predicate<_import> _importMatchFn) {
+            return !listImports(_importMatchFn).isEmpty();
+        }
+
+        default boolean hasImport(_import _i) {
+            return listImports(i -> i.equals(_i)).size() > 0;
+        }
+
+        default List<_import> listImports(Predicate<_import> _importMatchFn) {
+            return this.getImports().list().stream().filter(_importMatchFn).collect(Collectors.toList());
+        }
+
+        /**
+         * Adds static wildcard imports for all Classes
+         *
+         * @param wildcardStaticImports a list of classes that will
+         * WildcardImports
+         * @return the T
+         */
+        default T importStatic(Class... wildcardStaticImports) {
+            CompilationUnit cu = astCompilationUnit();
+            if (cu != null) {
+                Arrays.stream(wildcardStaticImports).forEach(i -> {
+                    ImportDeclaration id = Ast.importDeclaration(i);
+                    id.setAsterisk(true);
+                    id.setStatic(true);
+                    cu.addImport(id);
+                });
+            }
+            return (T) this;
+        }
+
+        /**
+         *
+         * @param staticWildcardImports
+         * @return
+         */
+        default T importStatic(String... staticWildcardImports) {
+            CompilationUnit cu = astCompilationUnit();
+            if (cu != null) {
+                Arrays.stream(staticWildcardImports).forEach(i -> {
+                    ImportDeclaration id = Ast.importDeclaration(i);
+                    id.setStatic(true);
+                    id.setAsterisk(true);
+                    cu.addImport(id);
+                });
+            }
+            return (T) this;
+        }
+
+        /**
+         * Statically import all of the
+         *
+         * @param wildcardTypeStaticImport
+         * @return
+         */
+        default T importStatic(_type... wildcardTypeStaticImport) {
+            CompilationUnit cu = astCompilationUnit();
+            if (cu != null) {
+                Arrays.stream(wildcardTypeStaticImport).forEach(i -> {
+                    cu.addImport(new ImportDeclaration(i.getFullName(), true, true));
+                });
+            }
+            return (T) this;
+        }
+
+        /**
+         *
+         * @param _ts
+         * @return
+         */
+        default T imports(_type... _ts) {
+            Arrays.stream(_ts).forEach(_t -> imports(_t.getFullName()));
+            return (T) this;
+        }
+
+        /**
+         * Add a single class import to the compilationUnit
+         *
+         * @param singleClass
+         * @return the modified compilationUnit
+         */
+        default T imports(Class singleClass) {
+            return imports(new Class[]{singleClass});
+        }
+
+        /**
+         * Regularly import a class
+         *
+         * @param classesToImport
+         * @return
+         */
+        default T imports(Class... classesToImport) {
+            CompilationUnit cu = astCompilationUnit();
+            if (cu != null) {
+                for (int i = 0; i < classesToImport.length; i++) {
+                    if (classesToImport[i].isArray()) {
+                        //System.out.println("CT " + classesToImport[i].getComponentType() );
+                        imports(classesToImport[i].getComponentType());
+                    } else {
+                        //dont import primitives or primitive arrays
+                        if (classesToImport[i] == null
+                                || classesToImport[i].isPrimitive()
+                                || classesToImport[i].isArray() && classesToImport[i].getComponentType().isPrimitive()
+                                || classesToImport[i].getPackageName().equals("java.lang")) {
+                            break;
+                        }
+                        String cn = classesToImport[i].getCanonicalName();
+                        //fix a minor bug in JavaParser API where anything in "java.lang.**.*" is not imported
+                        // so java.lang.annotation.* classes are not imported when they should be
+                        if (classesToImport[i].getPackage() != Integer.class.getPackage()
+                                && classesToImport[i].getCanonicalName().startsWith("java.lang")) {
+                            //System.out.println( "manually adding "+ classesToImport[i].getCanonicalName());
+                            cu.addImport(classesToImport[i].getCanonicalName());
+                        } else {
+                            cu.addImport(cn);
+                        }
+                    }
+                }
+                return (T) this;
+            }
+            throw new DraftException("No AST CompilationUnit to add imports");
+        }
+
+        /**
+         * Adds these importDeclarations
+         *
+         * @param astImportDecls
+         * @return
+         */
+        default T imports(ImportDeclaration... astImportDecls) {
+            CompilationUnit cu = astCompilationUnit();
+            if (cu != null) {
+                Arrays.stream(astImportDecls).forEach(c -> cu.addImport(c));
+                return (T) this;
+            }
+            //return (T) this;
+            throw new DraftException("No AST CompilationUnit of class to add imports");
+        }
+
+        default T imports(String anImport) {
+            return imports(new String[]{anImport});
+        }
+
+        default T imports(String... importStatements) {
+            CompilationUnit cu = astCompilationUnit();
+            if (cu != null) {
+                Arrays.stream(importStatements).forEach(c -> cu.addImport(Ast.importDeclaration(c)));
+                return (T) this;
+            }
+            throw new DraftException("No AST CompilationUnit of to add imports");
+        }
+        
+        /**
+         * 
+         * @return 
+         */
+        public JavaAstFileObject asFileObject();
     }
 
+    public static class JavaAstFileObject 
+        implements JavaFileObject {
+        
+        private Path path;
+        private CompilationUnit ast;
+        
+        public JavaAstFileObject(Path path, CompilationUnit ast){
+            this.path = path;
+            this.ast = ast;
+        }
+        
+        public javax.lang.model.element.Modifier getAccessLevel(){
+            return null;
+        }
+        
+        @Override
+        public NestingKind getNestingKind(){
+            return NestingKind.TOP_LEVEL;
+        }
+        
+        @Override
+        public boolean isNameCompatible( String simpleName, Kind kind ){
+            String baseName = simpleName + kind.extension;
+            return kind.equals(getKind())
+            && (baseName.equals(toUri().getPath())
+                || toUri().getPath().endsWith("/" + baseName));        
+        }
+        
+        @Override
+        public Kind getKind(){
+            return Kind.SOURCE;
+        }
+        
+        @Override
+        public boolean delete(){
+            return false;
+        }
+        
+        @Override
+        public long getLastModified(){
+            return 0L;
+        }
+        
+        @Override
+        public Writer openWriter(){
+            return new OutputStreamWriter(openOutputStream());
+        }
+        
+        public Reader openReader(boolean ignoreEncodingErrors){
+            CharSequence charContent = getCharContent(ignoreEncodingErrors);
+            if (charContent == null)
+                throw new UnsupportedOperationException();
+            if (charContent instanceof CharBuffer) {
+                CharBuffer buffer = (CharBuffer)charContent;
+                if (buffer.hasArray())
+                    return new CharArrayReader(buffer.array());
+            }
+            return new StringReader(charContent.toString());
+        }
+        
+        public CharSequence getCharContent(boolean ignoreEncodingErrors){
+            return ast.toString();
+        }
+        
+        public OutputStream openOutputStream(){
+            throw new UnsupportedOperationException();
+            
+        }
+        
+        public InputStream openInputStream(){
+             throw new UnsupportedOperationException();
+        }
+        
+        public String getName() {
+            return toUri().getPath();
+        }
+        
+        public String getFullName(){
+            
+            String packageName = "";
+            if( ast.getPackageDeclaration().isPresent()) {
+                packageName = ast.getPackageDeclaration().get().getNameAsString();
+                if( path.endsWith("package-info.java") ){
+                    return packageName+"."+"package-info.java";
+                }
+                if( ast.getPrimaryTypeName().isPresent() ){
+                    return packageName+"."+ast.getPrimaryTypeName().get();
+                }
+                if( ast.getTypes().size() == 1 ){
+                    return packageName+"."+ast.getType(0).getNameAsString();
+                }
+                Optional<TypeDeclaration<?>> otd = 
+                    ast.getTypes().stream().filter(t-> t.isPublic()).findFirst();
+                if( otd.isPresent() ){
+                    return packageName+"."+otd.get().getNameAsString();
+                }
+                //oyyyy veh... it could be multiple package private types
+                // only thing left to do is check path
+                Path namePath = path.getName(path.getNameCount()-1);
+                String np = namePath.toString().replace(".java", "");                
+                return packageName +"."+ np;
+            }
+            if( path.endsWith("package-info.java") ){
+                return "package-info.java";
+            }
+            if( ast.getPrimaryTypeName().isPresent() ){
+                return ast.getPrimaryTypeName().get();
+            }
+            if( ast.getTypes().size() == 1 ){
+                return ast.getType(0).getNameAsString();
+            }
+            Optional<TypeDeclaration<?>> otd = 
+                ast.getTypes().stream().filter(t-> t.isPublic()).findFirst();
+            if( otd.isPresent() ){
+                return otd.get().getNameAsString();
+            }
+            //oyyyy veh... it could be multiple package private types
+            // only thing left to do is check path
+            Path namePath = path.getName(path.getNameCount()-1);
+            String np = namePath.toString().replace(".java", "");                
+            return np;            
+        }
+        
+        public URI toUri(){
+            String fullName = getFullName();
+            //System.out.println("FULL NAME IS "+ fullName );
+            return URI.create("string:///" + fullName.replace('.', '/')+".java");
+        }
+    } 
+    
     /**
-     * Adds these importDeclarations
-     *
-     * @param astImportDecls
-     * @return
-     */
-    default T imports(ImportDeclaration... astImportDecls) {
-        CompilationUnit cu = astCompilationUnit();
-        if (cu != null) {
-            Arrays.stream(astImportDecls).forEach(c -> cu.addImport(c));
-            return (T) this;
-        }
-        //return (T) this;
-        throw new DraftException("No AST CompilationUnit of class to add imports");
-    }
-
-    default T imports(String anImport) {
-        return imports(new String[]{anImport});
-    }
-
-    default T imports(String... importStatements) {
-        CompilationUnit cu = astCompilationUnit();
-        if (cu != null) {
-            Arrays.stream(importStatements).forEach(c -> cu.addImport(Ast.importDeclaration(c)));
-            return (T) this;
-        }
-        throw new DraftException("No AST CompilationUnit of to add imports");
-    }
-}
-
-/**
      * a module-info.java file it is it's own
      *
      */
@@ -1376,10 +1531,10 @@ public interface _code<T> extends _model {
         }
 
         @Override
-        public int hashCode(){
+        public int hashCode() {
             return this.astCompUnit.hashCode();
         }
-        
+
         /**
          * Is the AST node representation equal to the underlying entity
          *
@@ -1398,30 +1553,30 @@ public interface _code<T> extends _model {
          */
         @Override
         public Map<_java.Component, Object> componentsMap() {
-            
+
             Map m = new HashMap();
             m.put(_java.Component.HEADER_COMMENT, getHeaderComment());
-            m.put(_java.Component.NAME, getModuleAst().getNameAsString() );
+            m.put(_java.Component.NAME, getModuleAst().getNameAsString());
             m.put(_java.Component.MODULE_DECLARATION, getModuleAst());
             m.put(_java.Component.ANNOS, _anno._annos.of(getModuleAst()));
             m.put(_java.Component.IMPORTS, _imports.of(astCompUnit));
             m.put(_java.Component.JAVADOC, this.javadocHolder.getJavadoc());
-            
+
             return m;
         }
 
         @Override
-        public String toString(){
+        public String toString() {
             return this.astCompUnit.toString();
         }
-        
+
         @Override
         public CompilationUnit ast() {
             return astCompUnit;
         }
 
         public static _moduleInfo of(String... input) {
-            return new _moduleInfo( Ast.parse(Text.combine(input)));
+            return new _moduleInfo(Ast.parse(Text.combine(input)));
         }
 
         public static _moduleInfo of(CompilationUnit astCu) {
@@ -1444,9 +1599,12 @@ public interface _code<T> extends _model {
             }
             return null;
         }
+        
+        public JavaAstFileObject asFileObject(){
+            return new JavaAstFileObject(Paths.get( this.getModuleAst().getNameAsString(), "module-info.java"), this.astCompUnit);
+        }
     }
-    
-    
+
     /**
      * model of a package-info
      *
@@ -1466,13 +1624,21 @@ public interface _code<T> extends _model {
         private final _javadoc.JavadocHolderAdapter javadocHolder;
 
         @Override
+        public JavaAstFileObject asFileObject(){
+            if( this.getPackage()!= null && this.getPackage().length() > 0 ){
+                return new JavaAstFileObject(Paths.get( this.getPackage(), "package-info.java"), this.astCompUnit);
+            }
+            return new JavaAstFileObject(Paths.get( "package-info.java"), this.astCompUnit);
+        }
+        
+        @Override
         public CompilationUnit astCompilationUnit() {
             return astCompUnit;
         }
 
         public _packageInfo(CompilationUnit astCu) {
             this.astCompUnit = astCu;
-            this.javadocHolder = new _javadoc.JavadocHolderAdapter( astCu );
+            this.javadocHolder = new _javadoc.JavadocHolderAdapter(astCu);
         }
 
         @Override
@@ -1504,16 +1670,16 @@ public interface _code<T> extends _model {
         }
 
         @Override
-        public int hashCode(){
+        public int hashCode() {
             return this.astCompUnit.hashCode();
         }
-        
+
         public String getPackage() {
             if (astCompilationUnit().getPackageDeclaration().isPresent()) {
                 return astCompilationUnit().getPackageDeclaration().get().getNameAsString();
             }
             return "";
-        }        
+        }
 
         /**
          * Sets the package this TYPE is in
@@ -1589,10 +1755,10 @@ public interface _code<T> extends _model {
         }
 
         @Override
-        public String toString(){
+        public String toString() {
             return this.astCompUnit.toString();
         }
-        
+
         /**
          * Decompose the entity into key-VALUE pairs
          *
@@ -1600,15 +1766,14 @@ public interface _code<T> extends _model {
          */
         @Override
         public Map<_java.Component, Object> componentsMap() {
-            Map m = new HashMap();            
-            m.put( _java.Component.HEADER_COMMENT, this.getHeaderComment() );
-            m.put( _java.Component.JAVADOC, this.javadocHolder.getJavadoc() );            
-            m.put( _java.Component.PACKAGE_NAME, getPackage() );
-            m.put( _java.Component.ANNOS, getAnnos());
-            m.put( _java.Component.IMPORTS, _imports.of(astCompUnit));
+            Map m = new HashMap();
+            m.put(_java.Component.HEADER_COMMENT, this.getHeaderComment());
+            m.put(_java.Component.JAVADOC, this.javadocHolder.getJavadoc());
+            m.put(_java.Component.PACKAGE_NAME, getPackage());
+            m.put(_java.Component.ANNOS, getAnnos());
+            m.put(_java.Component.IMPORTS, _imports.of(astCompUnit));
             return m;
         }
     }
 
-    
 }

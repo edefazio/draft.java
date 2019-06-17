@@ -2,9 +2,6 @@ package draft.java.io;
 
 import draft.Text;
 import draft.java._type;
-import draft.java.file._classFile;
-import draft.java.file._classFiles;
-import draft.java.runtime._project;
 
 //import java.io.IOException;
 import java.nio.file.Path;
@@ -394,17 +391,18 @@ public class _io{
         Arrays.stream(types).forEach( t-> System.out.println( t ) );
     }
 
-    
+    /*
     public static _out._filesReceipt out( Collection<_type> types){
         return _out.of( types.toArray(new _type[0]));
     }
+    */
     
     /**
      * Using the OUT_DIR (or defaulting to the user.dir)
      * write the _types to .java files in the appropriate directories
      * @param _types the types to write out
      * @return a receipt of the files written
-     */
+     
     public static _out._filesReceipt out(_type..._types){
          return _out.of(_types);
     }
@@ -416,29 +414,27 @@ public class _io{
     public static _out._filesReceipt out( String baseDir, _type..._types ){
         return _out.to(baseDir, _types);
     }
-
+    * */
+    
+    /*
     public static _out._filesReceipt out( _config cfg, _project _p){
         return _out.of(cfg.out, _p);
     }
-
-    public static _out._filesReceipt out( _config cfg, Collection<_type> types ){
-        return _out.of(cfg.out, types.toArray(new _type[0]));
-    }
-    
-    public static _out._filesReceipt out( _config cfg, _type...types ){
-        return _out.of(cfg.out, types);
-    }
-
+    */
+/*
     public static _out._filesReceipt out( String baseDir, _project _p){
         return _out.to(baseDir, _p);
     }
+    */
+    
+    
 
 
     /**
      * Write the classFiles to the appropriate place
      * @param _cfs classFiles the types to write out
      * @return a receipt of the files written and where to
-     */
+     
     public static _out._receipt out(_classFiles _cfs){
         return _out.of(_cfs );
     }
@@ -448,7 +444,7 @@ public class _io{
      * @param baseDir
      * @param _cfs
      * @return
-     */
+     
     public static _out._filesReceipt out(String baseDir, _classFiles _cfs){
         return _out.to(baseDir, _cfs);
     }
@@ -457,14 +453,26 @@ public class _io{
     public static _out._filesReceipt out(String baseDir, _classFile _cf){
         return _out.to(baseDir, _cf);
     }
+    */ 
     /**
      *
      * @param _p the project to write out
      * @return a receipt of the files written and where to
-     */
+     
     public static _out._filesReceipt out( _project _p ){
         return _out.of(_p);
     }
+    */
+    /*
+    public static _out._filesReceipt out( _config cfg, Collection<_type> types ){
+        return _out.of(cfg.out, types.toArray(new _type[0]));
+    }
+    
+    public static _out._filesReceipt out( _config cfg, _type...types ){
+        return _out.of(cfg.out, types);
+    }
+    */
+ 
 
     /**
      * Build a new mutable config
