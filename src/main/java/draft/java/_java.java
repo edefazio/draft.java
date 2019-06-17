@@ -2,7 +2,6 @@ package draft.java;
 
 import com.github.javaparser.StaticJavaParser;
 import com.github.javaparser.ast.*;
-import com.github.javaparser.ast.CompilationUnit.Storage;
 import com.github.javaparser.ast.body.*;
 import com.github.javaparser.ast.comments.*;
 import com.github.javaparser.ast.expr.*;
@@ -43,25 +42,9 @@ import draft.java._throws._hasThrows;
 import draft.java._type._hasExtends;
 import draft.java._type._hasImplements;
 import draft.java._typeParameter._typeParameters;
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.CharArrayReader;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.io.OutputStreamWriter;
-import java.io.Reader;
-import java.io.StringReader;
-import java.io.Writer;
-import java.net.URI;
-import java.nio.CharBuffer;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
-import javax.lang.model.element.NestingKind;
-import javax.tools.JavaFileObject;
-import javax.tools.SimpleJavaFileObject;
 
 /**
  * Translates between AST {@link Node} entities to {@link _model} runtime
@@ -228,15 +211,29 @@ public enum _java {
         AST_NODE_TO_JAVA_CLASSES.put(AnnotationDeclaration.class, _annotation.class);
     }
 
-    /*
-    private static _node getLogicalParentNode(Node node) {
-        if (_JAVA_TO_AST_NODE_CLASSES.containsValue(node.getClass())) {
-            return (_node) of(node);
+    public static _code _codeOf( CompilationUnit astRoot ){
+        if (astRoot.getModule().isPresent()) {
+            return _moduleInfo.of(astRoot);
         }
-        return getLogicalParentNode(node.getParentNode().get());
+        if (astRoot.getTypes().isEmpty()) {
+            return _packageInfo.of(astRoot);
+        }
+        if( astRoot.getTypes().size() == 1 ){ //only one type
+            return _type.of(astRoot, astRoot.getTypes().get(0));
+        }        
+        //the first public type
+        Optional<TypeDeclaration<?>> otd = 
+            astRoot.getTypes().stream().filter(t-> t.isPublic()).findFirst();
+        if( otd.isPresent() ){
+            return _type.of( astRoot, otd.get());
+        }
+        //the primary type
+        if (astRoot.getPrimaryType().isPresent()) {
+            return _type.of(astRoot, astRoot.getPrimaryType().get());
+        }
+        return _type.of(astRoot, astRoot.getType(0));
     }
-    */
-
+    
     /**
      * Parse and return the appropriate node based on the Node class (the Node
      * class can be a _model, or Ast Node class
@@ -352,7 +349,8 @@ public enum _java {
         if (node instanceof FieldDeclaration) {
             FieldDeclaration fd = (FieldDeclaration) node;
             if (fd.getVariables().size() > 1) {
-                throw new DraftException("Ambiguious node for FieldDeclaration " + fd + "pass in VariableDeclarator instead " + fd);
+                throw new DraftException(
+                    "Ambiguious node for FieldDeclaration " + fd + "pass in VariableDeclarator instead " + fd);
             }
             return _field.of(fd.getVariable(0));
         }
@@ -398,21 +396,7 @@ public enum _java {
             return _typeRef.of((Type) node);
         }
         if (node instanceof CompilationUnit) {
-            CompilationUnit astRoot = (CompilationUnit) node;
-            if (astRoot.getPrimaryType().isPresent()) {
-                return _type.of(astRoot);
-            }
-            if (astRoot.getModule().isPresent()) {
-                return _moduleInfo.of(astRoot);
-            }
-            if (astRoot.getTypes().isEmpty()) {
-                return _packageInfo.of(astRoot);
-            }
-            return _type.of(astRoot);
-            /**
-             * Here I need to create an entity that "acts" like multiple types
-             */
-            //throw new DraftException("Exceptional case... need to model multiple package level types");            
+            return _codeOf( (CompilationUnit)node);                     
         }
         throw new DraftException("Unable to create logical entity from " + node);
     }
@@ -1341,145 +1325,9 @@ public enum _java {
                 return (T) this;
             }
             throw new DraftException("No AST CompilationUnit of to add imports");
-        }
-        
-        /**
-         * 
-         * @return 
-         */
-        public JavaAstFileObject asFileObject();
+        }        
     }
 
-    public static class JavaAstFileObject 
-        implements JavaFileObject {
-        
-        private Path path;
-        private CompilationUnit ast;
-        
-        public JavaAstFileObject(Path path, CompilationUnit ast){
-            this.path = path;
-            this.ast = ast;
-        }
-        
-        public javax.lang.model.element.Modifier getAccessLevel(){
-            return null;
-        }
-        
-        @Override
-        public NestingKind getNestingKind(){
-            return NestingKind.TOP_LEVEL;
-        }
-        
-        @Override
-        public boolean isNameCompatible( String simpleName, Kind kind ){
-            String baseName = simpleName + kind.extension;
-            return kind.equals(getKind())
-            && (baseName.equals(toUri().getPath())
-                || toUri().getPath().endsWith("/" + baseName));        
-        }
-        
-        @Override
-        public Kind getKind(){
-            return Kind.SOURCE;
-        }
-        
-        @Override
-        public boolean delete(){
-            return false;
-        }
-        
-        @Override
-        public long getLastModified(){
-            return 0L;
-        }
-        
-        @Override
-        public Writer openWriter(){
-            return new OutputStreamWriter(openOutputStream());
-        }
-        
-        public Reader openReader(boolean ignoreEncodingErrors){
-            CharSequence charContent = getCharContent(ignoreEncodingErrors);
-            if (charContent == null)
-                throw new UnsupportedOperationException();
-            if (charContent instanceof CharBuffer) {
-                CharBuffer buffer = (CharBuffer)charContent;
-                if (buffer.hasArray())
-                    return new CharArrayReader(buffer.array());
-            }
-            return new StringReader(charContent.toString());
-        }
-        
-        public CharSequence getCharContent(boolean ignoreEncodingErrors){
-            return ast.toString();
-        }
-        
-        public OutputStream openOutputStream(){
-            throw new UnsupportedOperationException();
-            
-        }
-        
-        public InputStream openInputStream(){
-             throw new UnsupportedOperationException();
-        }
-        
-        public String getName() {
-            return toUri().getPath();
-        }
-        
-        public String getFullName(){
-            
-            String packageName = "";
-            if( ast.getPackageDeclaration().isPresent()) {
-                packageName = ast.getPackageDeclaration().get().getNameAsString();
-                if( path.endsWith("package-info.java") ){
-                    return packageName+"."+"package-info.java";
-                }
-                if( ast.getPrimaryTypeName().isPresent() ){
-                    return packageName+"."+ast.getPrimaryTypeName().get();
-                }
-                if( ast.getTypes().size() == 1 ){
-                    return packageName+"."+ast.getType(0).getNameAsString();
-                }
-                Optional<TypeDeclaration<?>> otd = 
-                    ast.getTypes().stream().filter(t-> t.isPublic()).findFirst();
-                if( otd.isPresent() ){
-                    return packageName+"."+otd.get().getNameAsString();
-                }
-                //oyyyy veh... it could be multiple package private types
-                // only thing left to do is check path
-                Path namePath = path.getName(path.getNameCount()-1);
-                String np = namePath.toString().replace(".java", "");                
-                return packageName +"."+ np;
-            }
-            if( path.endsWith("package-info.java") ){
-                return "package-info.java";
-            }
-            if( ast.getPrimaryTypeName().isPresent() ){
-                return ast.getPrimaryTypeName().get();
-            }
-            if( ast.getTypes().size() == 1 ){
-                return ast.getType(0).getNameAsString();
-            }
-            Optional<TypeDeclaration<?>> otd = 
-                ast.getTypes().stream().filter(t-> t.isPublic()).findFirst();
-            if( otd.isPresent() ){
-                return otd.get().getNameAsString();
-            }
-            //oyyyy veh... it could be multiple package private types
-            // only thing left to do is check path
-            Path namePath = path.getName(path.getNameCount()-1);
-            String np = namePath.toString().replace(".java", "");                
-            return np;            
-        }
-        
-        public URI toUri(){
-            String fullName = getFullName();
-            //System.out.println("FULL NAME IS "+ fullName );
-            return URI.create("string:///" + fullName.replace('.', '/')+".java");
-        }
-    } 
-    
     /**
      * a module-info.java file it is it's own
      *
@@ -1599,10 +1447,6 @@ public enum _java {
             }
             return null;
         }
-        
-        public JavaAstFileObject asFileObject(){
-            return new JavaAstFileObject(Paths.get( this.getModuleAst().getNameAsString(), "module-info.java"), this.astCompUnit);
-        }
     }
 
     /**
@@ -1622,14 +1466,6 @@ public enum _java {
 
         public CompilationUnit astCompUnit;
         private final _javadoc.JavadocHolderAdapter javadocHolder;
-
-        @Override
-        public JavaAstFileObject asFileObject(){
-            if( this.getPackage()!= null && this.getPackage().length() > 0 ){
-                return new JavaAstFileObject(Paths.get( this.getPackage(), "package-info.java"), this.astCompUnit);
-            }
-            return new JavaAstFileObject(Paths.get( "package-info.java"), this.astCompUnit);
-        }
         
         @Override
         public CompilationUnit astCompilationUnit() {
@@ -1775,5 +1611,4 @@ public enum _java {
             return m;
         }
     }
-
 }

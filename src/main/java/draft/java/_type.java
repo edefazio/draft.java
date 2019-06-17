@@ -944,24 +944,6 @@ public interface _type<AST extends TypeDeclaration & NodeWithJavadoc & NodeWithM
         }
         return false;
     }
-
-    /**
-     * Build an abstraction that adapts the _types Ast as a FileObject
-     * to be passed in / used by the javac compiler (as if it were a file
-     * of source code read in from the file system)
-     * @return 
-     */
-    @Override
-    default _java.JavaAstFileObject asFileObject(){
-        if( this.isTopLevel() ){
-            if( this.getPackage() != null && this.getPackage().length() > 0 ){
-                Path p = Paths.get( this.getPackage().replace(".", "/"), getName()+".java");                
-                return new _java.JavaAstFileObject( p, this.astCompilationUnit());
-            }
-            return new _java.JavaAstFileObject(Paths.get( getName()+".java"), this.astCompilationUnit());
-        }
-        throw new UnsupportedOperationException("FileObject MUST be top level type"+this.getFullName());   
-    }
     
     /**
      * does this type extend this specific class 

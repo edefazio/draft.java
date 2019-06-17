@@ -74,12 +74,15 @@ public final class _class implements _type<ClassOrInterfaceDeclaration, _class>,
             }
             return _c;
         } else if( n instanceof LocalClassDeclarationStmt){
+            //System.out.println("Local Class");
+            //TODO I need to break the reference to the "old" AST
             LocalClassDeclarationStmt loc = (LocalClassDeclarationStmt)n;
+            
             _class _c = of(  ((LocalClassDeclarationStmt)n).getClassDeclaration());
             if( loc.getComment().isPresent() ){
                 _c.ast().setComment( loc.getComment().get());
             }
-            Set<Class> importClasses = _type.inferImportsFrom(clazz);
+            Set<Class> importClasses = _type.inferImportsFrom(clazz);            
             _c.imports(importClasses.toArray(new Class[0]));
             _c = _macro.to(clazz, _c);
             for(int i=0; i< typeFns.length; i++){
