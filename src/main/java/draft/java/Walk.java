@@ -930,7 +930,7 @@ public enum Walk {
                 }
                 return astRootNode;
             }else {
-                walk(tt,
+                in(tt,
                     astRootNode,
                     (Class<N>) targetClass,
                     e -> targetClass.isAssignableFrom(e.getClass())
@@ -946,11 +946,12 @@ public enum Walk {
     
     /**
      * Walks the Ast using the
-     * {@link com.github.javaparser.ast.Node.TreeTraversal} strategy provided      {@link Ast#WALK_PRE_ORDER}
-     * {@link Ast#WALK_POST_ORDER}
-     * {@link Ast#WALK_BREADTH_FIRST}
-     * {@link Ast#WALK_PARENTS}
-     * {@link Ast#WALK_DIRECT_CHILDREN} starting from the astRootNode, searching
+     * {@link com.github.javaparser.ast.Node.TreeTraversal} strategy provided      
+     * {@link Walk#PRE_ORDER}
+     * {@link Walk#POST_ORDER}
+     * {@link Walk#BREADTH_FIRST}
+     * {@link Walk#PARENTS}
+     * {@link Walk#DIRECT_CHILDREN} starting from the astRootNode, searching
      * for matching targetNodeClass and selecting those who pass the
      * nodeMatchFn, to call the nodeActionFn
      *
@@ -966,7 +967,7 @@ public enum Walk {
      * @param <R> the root node type
      * @return the modified root AST node
      */
-    public static <R extends Node, N extends Node> R walk(
+    public static <R extends Node, N extends Node> R in(
             Node.TreeTraversal traversal,
             R astRootNode,
             Class<N> targetNodeClass,
@@ -985,11 +986,13 @@ public enum Walk {
     }
         
     /**
-     * A Walk that resolves {@link _model} classes (as apposed to AST {@link Node} implementation
-     * this requires "special work" building temporary ad-hoc models (i.e. _field, _class, _parameter)
-     * to test against predicates
+     * A Walk that resolves {@link _model} classes (as apposed to AST {@link Node} 
+     * implementation
+     * this requires "special work" building temporary ad-hoc models 
+     * (i.e. _field, _class, _parameter) to test against predicates
      *
-     * NOTE: this ALSO works with {@link _model} interfaces like {@link _model}, {@link _method._hasMethods}
+     * NOTE: this ALSO works with {@link _model} interfaces like 
+     * {@link _model}, {@link _method._hasMethods}
      * {@link _parameter._hasParameters} etc.
      *
      * @param tt the traversal TYPE
@@ -1022,8 +1025,8 @@ public enum Walk {
             // _interface ClassOrInterfaceDeclaration.class
             // _annotation AnnotationDeclaration.class
             //class switch would be nice here
-            walk(tt,
-                    astRootNode,
+            in(tt, 
+                astRootNode,
                     _java._JAVA_TO_AST_NODE_CLASSES.get( _modelClass ),
                     t ->true,
                     a -> {
@@ -1035,7 +1038,7 @@ public enum Walk {
             return astRootNode;
         }
         else if( _modelClass == _model._member.class ) {
-            walk( tt,
+            in( tt,
                     astRootNode,
                     BodyDeclaration.class,
                     t-> !t.isInitializerDeclaration(), //static Blocks are not members
@@ -1049,7 +1052,7 @@ public enum Walk {
             return astRootNode;
         }
         else if( _modelClass == _node.class ) {
-            walk( tt,
+            in( tt,
                     astRootNode,
                     BodyDeclaration.class,
                     t-> true,
@@ -1063,7 +1066,7 @@ public enum Walk {
             return astRootNode;
         }
         else if( _modelClass == _body.class ) {
-            walk( tt,
+            in( tt,
                     astRootNode,
                     Node.class,
                     n-> n instanceof NodeWithBlockStmt || n instanceof NodeWithOptionalBlockStmt,
@@ -1081,7 +1084,7 @@ public enum Walk {
             return astRootNode;
         }
         else if( _modelClass == _body._hasBody.class ) {
-            walk( tt,
+            in( tt,
                     astRootNode,
                     Node.class,
                     n-> n instanceof NodeWithBlockStmt || n instanceof NodeWithOptionalBlockStmt,
@@ -1095,7 +1098,7 @@ public enum Walk {
             return astRootNode;
         }
         else if( _modelClass == _anno._hasAnnos.class ) {
-            walk(tt,
+            in(tt,
                     astRootNode,
                     Node.class,
                     //NOTE: we DONT use NodeWithAnnotations because Annotations CAN be applied in interesting ways
@@ -1111,7 +1114,7 @@ public enum Walk {
             return astRootNode;
         }
         else if( _modelClass == _constructor._hasConstructors.class ) {
-            walk( tt,
+            in( tt,
                     astRootNode,
                     Node.class,
                     n-> n instanceof NodeWithConstructors,
@@ -1125,7 +1128,7 @@ public enum Walk {
             return astRootNode;
         }
         else if( _modelClass == _field._hasFields.class ) {
-            walk( tt,
+            in( tt,
                     astRootNode,
                     Node.class,
                     n-> n instanceof TypeDeclaration || n instanceof EnumConstantDeclaration,
@@ -1139,7 +1142,7 @@ public enum Walk {
             return astRootNode;
         }
         else if( _modelClass == _javadoc._hasJavadoc.class ) {
-            walk( tt,
+            in( tt,
                     astRootNode,
                     Node.class,
                     n-> n instanceof NodeWithJavadoc,
@@ -1153,7 +1156,7 @@ public enum Walk {
             return astRootNode;
         }
         else if( _modelClass == _method._hasMethods.class ) {
-            walk( tt,
+            in( tt,
                     astRootNode,
                     Node.class,
                     n-> n instanceof EnumConstantDeclaration || n instanceof ClassOrInterfaceDeclaration || n instanceof EnumDeclaration,
@@ -1167,7 +1170,7 @@ public enum Walk {
             return astRootNode;
         }
         else if( _modelClass == _modifiers._hasModifiers.class ) {
-            walk( tt,
+            in( tt,
                     astRootNode,
                     Node.class,
                     n-> n instanceof NodeWithModifiers,
@@ -1181,7 +1184,7 @@ public enum Walk {
             return astRootNode;
         }
         else if( _modelClass == _parameter._hasParameters.class ) {
-            walk( tt,
+            in( tt,
                     astRootNode,
                     Node.class,
                     n-> n instanceof NodeWithParameters,
@@ -1195,7 +1198,7 @@ public enum Walk {
             return astRootNode;
         }
         else if( _modelClass == _parameter._parameters.class ) {
-            walk( tt,
+            in( tt,
                     astRootNode,
                     Node.class,
                     n-> n instanceof NodeWithParameters,
@@ -1210,7 +1213,7 @@ public enum Walk {
             return astRootNode;
         }
         else if( _modelClass == _receiverParameter._hasReceiverParameter.class ) {
-            walk( tt,
+            in( tt,
                     astRootNode,
                     Node.class,
                     n-> n instanceof MethodDeclaration || n instanceof ConstructorDeclaration,
@@ -1224,7 +1227,7 @@ public enum Walk {
             return astRootNode;
         }
         else if( _modelClass == _staticBlock._hasStaticBlocks.class ) {
-            walk( tt,
+            in( tt,
                     astRootNode,
                     Node.class,
                     n-> n instanceof ClassOrInterfaceDeclaration || n instanceof EnumDeclaration,
@@ -1245,7 +1248,7 @@ public enum Walk {
             return astRootNode;
         }
         else if( _modelClass == _throws._hasThrows.class ) {
-            walk( tt,
+            in( tt,
                     astRootNode,
                     Node.class,
                     n-> n instanceof NodeWithThrownExceptions,
@@ -1259,7 +1262,7 @@ public enum Walk {
             return astRootNode;
         }
         else if( _modelClass == _typeParameter._hasTypeParameters.class ) {
-            walk( tt,
+            in( tt,
                     astRootNode,
                     Node.class,
                     n-> n instanceof NodeWithTypeParameters,
@@ -1273,7 +1276,7 @@ public enum Walk {
             return astRootNode;
         }
         else if( _modelClass == _throws.class ) {
-            walk( tt,
+            in( tt,
                     astRootNode,
                     Node.class,
                     n -> n instanceof MethodDeclaration || n instanceof ConstructorDeclaration,
@@ -1287,7 +1290,7 @@ public enum Walk {
             return astRootNode;
         }
         else if( _modelClass == _typeParameter._typeParameters.class ) {
-            walk( tt,
+            in( tt,
                     astRootNode,
                     Node.class,
                     n -> n instanceof MethodDeclaration || n instanceof ConstructorDeclaration,
@@ -1303,8 +1306,7 @@ public enum Walk {
         throw new DraftException( "Could not convert Node of TYPE " + _modelClass + " to _model TYPE" );
     }
 
-    
-        /**
+    /**
      * Traverse up the AST to find the first Node that matches the nodeMatchFn
      * <PRE>
      *             A
@@ -1560,7 +1562,7 @@ public enum Walk {
      * @param commentMatchFn
      * @param commentActionFn 
      */
-    public static <N extends _node> void  comments(N _n, Predicate<Comment> commentMatchFn, Consumer<Comment> commentActionFn ){
+    public static <N extends _node> void comments(N _n, Predicate<Comment> commentMatchFn, Consumer<Comment> commentActionFn ){
         if( _n instanceof _type && ((_type)_n).isTopLevel() ){
             comments( ((_type)_n).astCompilationUnit(), commentMatchFn, commentActionFn );            
         } else{
