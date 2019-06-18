@@ -1,8 +1,6 @@
 package draft;
 
-import java.lang.reflect.AnnotatedType;
-import java.lang.reflect.Array;
-import java.lang.reflect.Type;
+import java.lang.reflect.*;
 import java.util.Collection;
 
 /**

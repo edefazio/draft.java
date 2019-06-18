@@ -7,12 +7,9 @@ import com.github.javaparser.ast.expr.AnnotationExpr;
 import com.github.javaparser.ast.nodeTypes.NodeWithJavadoc;
 import com.github.javaparser.ast.type.Type;
 import com.github.javaparser.printer.PrettyPrinterConfiguration;
-import draft.Named;
 import draft.Text;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Objects;
+import java.util.*;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
 
@@ -205,7 +202,7 @@ public interface _model {
      * @author Eric
      * @param <T>
      */
-    interface _named <T extends _named> extends _model, Named {
+    interface _named <T extends _named> extends _model  {
 
         /**
          * @param name set the name on the entity and return the modified entity
@@ -217,7 +214,6 @@ public interface _model {
          * gets the name of the entity
          * @return the name of the entity
          */
-        @Override
         String getName();
         
         /**

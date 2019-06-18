@@ -1,8 +1,6 @@
 package draft;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Dynamically create a T where accepting Key-Value Data Parameters

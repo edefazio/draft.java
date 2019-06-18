@@ -10,7 +10,6 @@ import com.github.javaparser.ast.nodeTypes.*;
 import com.github.javaparser.ast.stmt.BlockStmt;
 import com.github.javaparser.ast.type.*;
 import draft.DraftException;
-import draft.Named;
 import draft.Text;
 import draft.java._model.*;
 import java.util.*;
@@ -398,7 +397,7 @@ public enum _java {
      * like (by componentizing things out and comparing or matching on a part by
      * part basis)
      */
-    public enum Component implements Named {
+    public enum Component {
         MODULE_DECLARATION("moduleDeclaration", ModuleDeclaration.class),
         /**
          * i.e. @Deprecated @NotNull
@@ -491,7 +490,6 @@ public enum _java {
             return name;
         }
 
-        @Override
         public String getName() {
             return name;
         }
