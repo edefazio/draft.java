@@ -18,7 +18,6 @@ import draft.java.macro._remove;
 
 import java.io.InputStream;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.*;
 import java.util.function.*;
 import java.util.stream.Collectors;
@@ -81,7 +80,7 @@ import java.util.stream.Collectors;
  */
 public interface _type<AST extends TypeDeclaration & NodeWithJavadoc & NodeWithModifiers & NodeWithAnnotations, T extends _type>
     extends _javadoc._hasJavadoc<T>, _anno._hasAnnos<T>, _modifiers._hasModifiers<T>,
-        _field._hasFields<T>, _member<AST, T>, _java._code<T>, _node<AST> {
+        _field._hasFields<T>, _member<AST, T>, _code<T>, _node<AST> {
 
     static _type of( InputStream is ){
         return of(StaticJavaParser.parse(is));
