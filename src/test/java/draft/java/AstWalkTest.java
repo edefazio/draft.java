@@ -70,7 +70,7 @@ public class AstWalkTest extends TestCase {
         //Walk.list(_a, StringLiteralExpr.class);
         List<StringLiteralExpr> l = new ArrayList<>();
         //Ast.walk(Node.TreeTraversal.POSTORDER, ast, Ast.STRING_LITERAL_EXPR, n->true, n-> l.add(n));
-        Ast.walk(Ast.WALK_POST_ORDER, ast, Ast.STRING_LITERAL_EXPR, n-> true, n-> l.add(n));
+        Walk.walk(Walk.POST_ORDER, ast, Ast.STRING_LITERAL_EXPR, n-> true, n-> l.add(n));
         assertEquals(6, l.size());
         assertEquals( "class", l.get(0).asString());
         assertEquals( "field", l.get(1).asString());

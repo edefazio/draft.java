@@ -56,6 +56,73 @@ import java.util.function.Predicate;
 public enum Walk {
     ;
 
+    
+    /**
+     * <PRE>
+     *            (A)
+     *           /  \
+     *          B    C
+     *         / \
+     *        D   E
+     * Preorder (Parent, then children) from (A) : A,B,D,E,C
+     * </PRE>
+     */
+    public static final Node.TreeTraversal PRE_ORDER = Node.TreeTraversal.PREORDER;
+
+    /**
+     * <PRE>
+     *            (A)
+     *           /  \
+     *          B    C
+     *         / \
+     *        D   E
+     * PostOrder ("leaves first", or children, then parents) from (A) : D,E,B,C,A
+     * </PRE>
+     */
+    public static final Node.TreeTraversal POST_ORDER = Node.TreeTraversal.POSTORDER;
+
+    /**
+     * <PRE>
+     *             A
+     *           /  \
+     *          B    C
+     *         / \
+     *        D   E
+     * Parents:
+     *    from D: B, A
+     *    from E: B, A
+     *    from C: A
+     *    from B: A
+     * </PRE>
+     */
+    public static final Node.TreeTraversal PARENTS = Node.TreeTraversal.PARENTS;
+
+    /**
+     * <PRE>
+     *            (A)
+     *           /  \
+     *          B    C
+     *         / \
+     *        D   E
+     * Breadth-First (or Level Order) from (A): A,B,C,D,E
+     * </PRE>
+     */
+    public static final Node.TreeTraversal BREADTH_FIRST = Node.TreeTraversal.BREADTHFIRST;
+
+    /**
+     * <PRE>
+     *            (A)
+     *           /  \
+     *         (B)   C
+     *         / \
+     *        D   E
+     * Direct Children
+     *     From A: B, C
+     *     From B: D, E
+     * </PRE>
+     */
+    public static final Node.TreeTraversal DIRECT_CHILDREN = Node.TreeTraversal.DIRECT_CHILDREN;
+    
     /**
      * <PRE>
      *             A
@@ -79,7 +146,7 @@ public enum Walk {
      */
     public static <T, N extends Node> N parents(
             N astRootNode, Class<T> targetClass, Predicate<T> matchFn, Consumer<T> action ) {
-         return of( Node.TreeTraversal.PARENTS, astRootNode, targetClass, matchFn, action );
+         return of( PARENTS, astRootNode, targetClass, matchFn, action );
     }
 
     /**
@@ -104,7 +171,7 @@ public enum Walk {
      */
     public static <T, N extends Node> N directChildren(
             N astRootNode, Class<T> targetClass, Predicate<T> matchFn, Consumer<T> action ) {
-        return of( Node.TreeTraversal.DIRECT_CHILDREN, astRootNode, targetClass, matchFn, action );
+        return of( DIRECT_CHILDREN, astRootNode, targetClass, matchFn, action );
     }
 
     /**
@@ -127,7 +194,7 @@ public enum Walk {
      */
     public static <T, N extends Node> N breadthFirst(
             N astRootNode, Class<T> targetClass, Predicate<T> matchFn, Consumer<T> action ) {
-        return of( Node.TreeTraversal.BREADTHFIRST, astRootNode, targetClass, matchFn, action );
+        return of( BREADTH_FIRST, astRootNode, targetClass, matchFn, action );
     }
 
     /**
@@ -150,7 +217,7 @@ public enum Walk {
      */
     public static <T, N extends Node> N postOrder(
             N astRootNode, Class<T> targetClass, Predicate<T> matchFn, Consumer<T> action ) {
-        return of( Node.TreeTraversal.POSTORDER, astRootNode, targetClass, matchFn, action );
+        return of( POST_ORDER, astRootNode, targetClass, matchFn, action );
     }
 
     /**
@@ -173,7 +240,7 @@ public enum Walk {
      */
     public static <T, N extends Node> N preOrder(
             N astRootNode, Class<T> targetClass, Predicate<T> matchFn, Consumer<T> action ) {
-        return of( Node.TreeTraversal.PREORDER, astRootNode, targetClass, matchFn, action );
+        return of( PRE_ORDER, astRootNode, targetClass, matchFn, action );
     }
 
     /**
@@ -195,7 +262,7 @@ public enum Walk {
      * @return
      */
     public static <T, N extends Node> N in(N astRootNode, Class<T> targetClass, Predicate<T> matchFn, Consumer<T> action ) {
-        return of( Node.TreeTraversal.PREORDER, astRootNode, targetClass, matchFn, action );
+        return of( PRE_ORDER, astRootNode, targetClass, matchFn, action );
     }
 
     /**
@@ -217,7 +284,8 @@ public enum Walk {
      * @return the modified root astNode
      */
     public static <RN extends Node, N extends Node> RN in( RN astRootNode, Class<N> targetNodeClass, Consumer<N> nodeActionFn) {
-        Ast.walk(astRootNode, targetNodeClass, t -> true, nodeActionFn);
+        //Ast.walk(astRootNode, targetNodeClass, t -> true, nodeActionFn);
+        Walk.in(astRootNode, targetNodeClass, t -> true, nodeActionFn);
         return astRootNode;
     }
 
@@ -244,7 +312,7 @@ public enum Walk {
      */
     public static <T, N extends _node> N parents(
             N _n, Class<T> targetClass, Predicate<T> matchFn, Consumer<T> action ) {
-        of(Node.TreeTraversal.PARENTS, _n.ast(), targetClass, matchFn, action );
+        of(PARENTS, _n.ast(), targetClass, matchFn, action );
         return _n;
     }
 
@@ -269,7 +337,7 @@ public enum Walk {
      */
     public static <T, _N extends _node> _N directChildren(
             _N _n, Class<T> targetClass, Predicate<T> matchFn, Consumer<T> action ) {
-        of(Node.TreeTraversal.DIRECT_CHILDREN, _n.ast(), targetClass, matchFn, action );
+        of(DIRECT_CHILDREN, _n.ast(), targetClass, matchFn, action );
         return _n;
     }
 
@@ -293,7 +361,7 @@ public enum Walk {
      */
     public static <T, _N extends _node> _N breadthFirst(
             _N _n, Class<T> targetClass, Predicate<T> matchFn, Consumer<T> action ) {
-        of(Node.TreeTraversal.BREADTHFIRST, _n.ast(), targetClass, matchFn, action );
+        of(BREADTH_FIRST, _n.ast(), targetClass, matchFn, action );
         return _n;
     }
 
@@ -317,7 +385,7 @@ public enum Walk {
      */
     public static <T, _N extends _node> _N postOrder(
             _N _n, Class<T> targetClass, Predicate<T> matchFn, Consumer<T> action ) {
-        of(Node.TreeTraversal.POSTORDER, _n.ast(), targetClass, matchFn, action );
+        of(POST_ORDER, _n.ast(), targetClass, matchFn, action );
         return _n;
     }
 
@@ -341,7 +409,7 @@ public enum Walk {
      */
     public static <T, _N extends _node> _N preOrder(
             _N _n, Class<T> targetClass, Predicate<T> matchFn, Consumer<T> action ) {
-        of(Node.TreeTraversal.PREORDER, _n.ast(), targetClass, matchFn, action );
+        of(PRE_ORDER, _n.ast(), targetClass, matchFn, action );
         return _n;
     }
 
@@ -365,7 +433,7 @@ public enum Walk {
      */
     public static <T, _N extends _node> _N in(
             _N _n, Class<T> targetClass, Predicate<T> matchFn, Consumer<T> action ) {
-        of(Node.TreeTraversal.PREORDER, _n.ast(), targetClass, matchFn, action );
+        of(PRE_ORDER, _n.ast(), targetClass, matchFn, action );
         return _n;
     }
 
@@ -391,7 +459,7 @@ public enum Walk {
      */
     public static <T, _N extends _node> _N parents(
             _N _n, Class<T> targetClass, Consumer<T> action ) {
-        of(Node.TreeTraversal.PARENTS, _n.ast(), targetClass, t->true, action );
+        of(PARENTS, _n.ast(), targetClass, t->true, action );
         return _n;
     }
 
@@ -416,7 +484,7 @@ public enum Walk {
      */
     public static <T, _N extends _node> _N directChildren(
             _N _n, Class<T> targetClass, Consumer<T> action ) {
-        of(Node.TreeTraversal.DIRECT_CHILDREN, _n.ast(), targetClass, t->true, action );
+        of(DIRECT_CHILDREN, _n.ast(), targetClass, t->true, action );
         return _n;
     }
 
@@ -438,7 +506,7 @@ public enum Walk {
      */
     public static <T, _N extends _node> _N breadthFirst(
             _N _n, Class<T> targetClass, Consumer<T> action ) {
-        of(Node.TreeTraversal.BREADTHFIRST, _n.ast(), targetClass, t->true, action );
+        of(BREADTH_FIRST, _n.ast(), targetClass, t->true, action );
         return _n;
     }
 
@@ -460,7 +528,7 @@ public enum Walk {
      */
     public static <T, N extends _node> N postOrder(
             N _n, Class<T> targetClass, Consumer<T> action ) {
-        of(Node.TreeTraversal.POSTORDER, _n.ast(), targetClass, t->true, action );
+        of(POST_ORDER, _n.ast(), targetClass, t->true, action );
         return _n;
     }
 
@@ -482,7 +550,7 @@ public enum Walk {
      */
     public static <T, _N extends _node> _N preOrder(
             _N _n, Class<T> targetClass, Consumer<T> action ) {
-        of(Node.TreeTraversal.PREORDER, _n.ast(), targetClass, t->true, action );
+        of(PRE_ORDER, _n.ast(), targetClass, t->true, action );
         return _n;
     }
 
@@ -507,9 +575,9 @@ public enum Walk {
     public static <T, _N extends _node> _N in(
             _N _n, Class<T> targetClass, Consumer<T> action ) {
         if( _n instanceof _type && ((_type)_n).isTopLevel() ){
-            of(Node.TreeTraversal.PREORDER, ((_type)_n).astCompilationUnit(), targetClass, t->true, action );
+            of(PRE_ORDER, ((_type)_n).astCompilationUnit(), targetClass, t->true, action );
         } else{
-            of(Node.TreeTraversal.PREORDER, _n.ast(), targetClass, t->true, action );
+            of(PRE_ORDER, _n.ast(), targetClass, t->true, action );
         }
         return _n;
     }
@@ -533,7 +601,7 @@ public enum Walk {
      * @return
      */
     public static <_N extends _node> _N parents(_N _n, Consumer<Node> action ) {
-        of(Node.TreeTraversal.PARENTS, _n.ast(), Node.class, t->true, action );
+        of(PARENTS, _n.ast(), Node.class, t->true, action );
         return _n;
     }
 
@@ -555,7 +623,7 @@ public enum Walk {
      * @return
      */
     public static <_N extends _node> _N directChildren(_N _n, Consumer<Node> action ) {
-        of(Node.TreeTraversal.DIRECT_CHILDREN, _n.ast(), Node.class, t->true, action );
+        of(DIRECT_CHILDREN, _n.ast(), Node.class, t->true, action );
         return _n;
     }
 
@@ -574,7 +642,7 @@ public enum Walk {
      * @return
      */
     public static <_N extends _node> _N breadthFirst(_N _n, Consumer<Node> action ) {
-        of(Node.TreeTraversal.BREADTHFIRST, _n.ast(), Node.class, t->true, action );
+        of(BREADTH_FIRST, _n.ast(), Node.class, t->true, action );
         return _n;
     }
 
@@ -593,7 +661,7 @@ public enum Walk {
      * @return
      */
     public static <_N extends _node> _N postOrder(_N _n, Consumer<Node> action ) {
-        of(Node.TreeTraversal.POSTORDER, _n.ast(), Node.class, t->true, action );
+        of(POST_ORDER, _n.ast(), Node.class, t->true, action );
         return _n;
     }
 
@@ -612,7 +680,7 @@ public enum Walk {
      * @return
      */
     public static <_N extends _node> _N preOrder(_N _n, Consumer<Node> action ) {
-        of(Node.TreeTraversal.PREORDER, _n.ast(), Node.class, t->true, action );
+        of(PRE_ORDER, _n.ast(), Node.class, t->true, action );
         return _n;
     }
 
@@ -632,7 +700,7 @@ public enum Walk {
      * @return
      */
     public static <_N extends _node> _N in(_N _n, Consumer<Node> action ) {
-        of(Node.TreeTraversal.PREORDER, _n.ast(), Node.class, t->true, action );
+        of(PRE_ORDER, _n.ast(), Node.class, t->true, action );
         return _n;
     }
 
@@ -653,7 +721,7 @@ public enum Walk {
      * @return the (modified)
      */
     public static <_N extends _node> _N in(_N _n, Predicate<Node> nodeMatchFn, Consumer<Node> action ) {
-        of(Node.TreeTraversal.PREORDER, _n.ast(), Node.class, nodeMatchFn, action );
+        of(PRE_ORDER, _n.ast(), Node.class, nodeMatchFn, action );
         return _n;
     }
 
@@ -674,7 +742,7 @@ public enum Walk {
      */
     public static <_N extends _node> List<Node> list(_N _n, Predicate<Node> predicate ) {
         List<Node> found = new ArrayList<>();
-        of(Node.TreeTraversal.PREORDER, _n.ast(), Node.class, predicate, f -> found.add(f) );
+        of(PRE_ORDER, _n.ast(), Node.class, predicate, f -> found.add(f) );
         return found;
     }
 
@@ -698,7 +766,7 @@ public enum Walk {
      */
     public static <T, _N extends _node> List<T> list(_N _n, Class<T> targetClass ) {
         List<T> found = new ArrayList<>();
-        of(Node.TreeTraversal.PREORDER, _n.ast(), targetClass, t->true, f -> found.add(f) );
+        of(PRE_ORDER, _n.ast(), targetClass, t->true, f -> found.add(f) );
         return found;
     }
 
@@ -723,7 +791,7 @@ public enum Walk {
     public static <T, N extends Node> List<T> list(N astRootNode, Class<T> targetClass ) {
 
         List<T> found = new ArrayList<>();
-        of( Node.TreeTraversal.PREORDER, astRootNode, targetClass, t->true, f -> found.add(f) );
+        of( PRE_ORDER, astRootNode, targetClass, t->true, f -> found.add(f) );
         return found;
     }
 
@@ -749,7 +817,7 @@ public enum Walk {
             _N _n, Class<T> targetClass, Predicate<T> matchFn ) {
 
         List<T> found = new ArrayList<>();
-        of(Node.TreeTraversal.PREORDER, _n.ast(), targetClass, matchFn, f -> found.add(f) );
+        of(PRE_ORDER, _n.ast(), targetClass, matchFn, f -> found.add(f) );
         return found;
     }
 
@@ -775,7 +843,7 @@ public enum Walk {
             N astRootNode, Class<T> targetClass, Predicate<T> matchFn ) {
 
         List<T> found = new ArrayList<>();
-        of( Node.TreeTraversal.PREORDER, astRootNode, targetClass, matchFn, f -> found.add(f) );
+        of( PRE_ORDER, astRootNode, targetClass, matchFn, f -> found.add(f) );
         return found;
     }
 
@@ -862,7 +930,7 @@ public enum Walk {
                 }
                 return astRootNode;
             }else {
-                Ast.walk(tt,
+                walk(tt,
                     astRootNode,
                     (Class<N>) targetClass,
                     e -> targetClass.isAssignableFrom(e.getClass())
@@ -874,6 +942,46 @@ public enum Walk {
         else{
             return model(tt, astRootNode, (Class<_NM>)targetClass, (Predicate<_NM>)matchFn, (Consumer<_NM>)action);
         }
+    }
+    
+    /**
+     * Walks the Ast using the
+     * {@link com.github.javaparser.ast.Node.TreeTraversal} strategy provided      {@link Ast#WALK_PRE_ORDER}
+     * {@link Ast#WALK_POST_ORDER}
+     * {@link Ast#WALK_BREADTH_FIRST}
+     * {@link Ast#WALK_PARENTS}
+     * {@link Ast#WALK_DIRECT_CHILDREN} starting from the astRootNode, searching
+     * for matching targetNodeClass and selecting those who pass the
+     * nodeMatchFn, to call the nodeActionFn
+     *
+     * @param traversal the nodeTraversal strategy
+     * @param astRootNode the starting node to start the walk
+     * @param targetNodeClass a particular node class (or interface) to
+     * intercept when on the walk
+     * @param nodeMatchFn a predicate for matching particular nodes of the
+     * nodeClass when on the walk
+     * @param nodeActionFn the action to take on the selected nodes
+     * @param <N> the target node type (i.e.
+     * {@link Expression},{@link TypeDeclaration}, {@link NodeWithOptionalBlockStmt}
+     * @param <R> the root node type
+     * @return the modified root AST node
+     */
+    public static <R extends Node, N extends Node> R walk(
+            Node.TreeTraversal traversal,
+            R astRootNode,
+            Class<N> targetNodeClass,
+            Predicate<N> nodeMatchFn,
+            Consumer<N> nodeActionFn) {
+
+        astRootNode.walk(traversal, 
+            n -> {
+                if( targetNodeClass.isAssignableFrom(n.getClass())) {
+                    if (nodeMatchFn.test((N) n)) {
+                        nodeActionFn.accept((N) n);
+                    }
+                }
+            });        
+        return astRootNode;
     }
         
     /**
@@ -914,7 +1022,7 @@ public enum Walk {
             // _interface ClassOrInterfaceDeclaration.class
             // _annotation AnnotationDeclaration.class
             //class switch would be nice here
-            Ast.walk(tt,
+            walk(tt,
                     astRootNode,
                     _java._JAVA_TO_AST_NODE_CLASSES.get( _modelClass ),
                     t ->true,
@@ -927,7 +1035,7 @@ public enum Walk {
             return astRootNode;
         }
         else if( _modelClass == _model._member.class ) {
-            Ast.walk( tt,
+            walk( tt,
                     astRootNode,
                     BodyDeclaration.class,
                     t-> !t.isInitializerDeclaration(), //static Blocks are not members
@@ -941,7 +1049,7 @@ public enum Walk {
             return astRootNode;
         }
         else if( _modelClass == _node.class ) {
-            Ast.walk( tt,
+            walk( tt,
                     astRootNode,
                     BodyDeclaration.class,
                     t-> true,
@@ -955,7 +1063,7 @@ public enum Walk {
             return astRootNode;
         }
         else if( _modelClass == _body.class ) {
-            Ast.walk( tt,
+            walk( tt,
                     astRootNode,
                     Node.class,
                     n-> n instanceof NodeWithBlockStmt || n instanceof NodeWithOptionalBlockStmt,
@@ -973,7 +1081,7 @@ public enum Walk {
             return astRootNode;
         }
         else if( _modelClass == _body._hasBody.class ) {
-            Ast.walk( tt,
+            walk( tt,
                     astRootNode,
                     Node.class,
                     n-> n instanceof NodeWithBlockStmt || n instanceof NodeWithOptionalBlockStmt,
@@ -987,7 +1095,7 @@ public enum Walk {
             return astRootNode;
         }
         else if( _modelClass == _anno._hasAnnos.class ) {
-            Ast.walk(tt,
+            walk(tt,
                     astRootNode,
                     Node.class,
                     //NOTE: we DONT use NodeWithAnnotations because Annotations CAN be applied in interesting ways
@@ -1003,7 +1111,7 @@ public enum Walk {
             return astRootNode;
         }
         else if( _modelClass == _constructor._hasConstructors.class ) {
-            Ast.walk( tt,
+            walk( tt,
                     astRootNode,
                     Node.class,
                     n-> n instanceof NodeWithConstructors,
@@ -1017,7 +1125,7 @@ public enum Walk {
             return astRootNode;
         }
         else if( _modelClass == _field._hasFields.class ) {
-            Ast.walk( tt,
+            walk( tt,
                     astRootNode,
                     Node.class,
                     n-> n instanceof TypeDeclaration || n instanceof EnumConstantDeclaration,
@@ -1031,7 +1139,7 @@ public enum Walk {
             return astRootNode;
         }
         else if( _modelClass == _javadoc._hasJavadoc.class ) {
-            Ast.walk( tt,
+            walk( tt,
                     astRootNode,
                     Node.class,
                     n-> n instanceof NodeWithJavadoc,
@@ -1045,7 +1153,7 @@ public enum Walk {
             return astRootNode;
         }
         else if( _modelClass == _method._hasMethods.class ) {
-            Ast.walk( tt,
+            walk( tt,
                     astRootNode,
                     Node.class,
                     n-> n instanceof EnumConstantDeclaration || n instanceof ClassOrInterfaceDeclaration || n instanceof EnumDeclaration,
@@ -1059,7 +1167,7 @@ public enum Walk {
             return astRootNode;
         }
         else if( _modelClass == _modifiers._hasModifiers.class ) {
-            Ast.walk( tt,
+            walk( tt,
                     astRootNode,
                     Node.class,
                     n-> n instanceof NodeWithModifiers,
@@ -1073,7 +1181,7 @@ public enum Walk {
             return astRootNode;
         }
         else if( _modelClass == _parameter._hasParameters.class ) {
-            Ast.walk( tt,
+            walk( tt,
                     astRootNode,
                     Node.class,
                     n-> n instanceof NodeWithParameters,
@@ -1087,7 +1195,7 @@ public enum Walk {
             return astRootNode;
         }
         else if( _modelClass == _parameter._parameters.class ) {
-            Ast.walk( tt,
+            walk( tt,
                     astRootNode,
                     Node.class,
                     n-> n instanceof NodeWithParameters,
@@ -1102,7 +1210,7 @@ public enum Walk {
             return astRootNode;
         }
         else if( _modelClass == _receiverParameter._hasReceiverParameter.class ) {
-            Ast.walk( tt,
+            walk( tt,
                     astRootNode,
                     Node.class,
                     n-> n instanceof MethodDeclaration || n instanceof ConstructorDeclaration,
@@ -1116,7 +1224,7 @@ public enum Walk {
             return astRootNode;
         }
         else if( _modelClass == _staticBlock._hasStaticBlocks.class ) {
-            Ast.walk( tt,
+            walk( tt,
                     astRootNode,
                     Node.class,
                     n-> n instanceof ClassOrInterfaceDeclaration || n instanceof EnumDeclaration,
@@ -1137,7 +1245,7 @@ public enum Walk {
             return astRootNode;
         }
         else if( _modelClass == _throws._hasThrows.class ) {
-            Ast.walk( tt,
+            walk( tt,
                     astRootNode,
                     Node.class,
                     n-> n instanceof NodeWithThrownExceptions,
@@ -1151,7 +1259,7 @@ public enum Walk {
             return astRootNode;
         }
         else if( _modelClass == _typeParameter._hasTypeParameters.class ) {
-            Ast.walk( tt,
+            walk( tt,
                     astRootNode,
                     Node.class,
                     n-> n instanceof NodeWithTypeParameters,
@@ -1165,7 +1273,7 @@ public enum Walk {
             return astRootNode;
         }
         else if( _modelClass == _throws.class ) {
-            Ast.walk( tt,
+            walk( tt,
                     astRootNode,
                     Node.class,
                     n -> n instanceof MethodDeclaration || n instanceof ConstructorDeclaration,
@@ -1179,7 +1287,7 @@ public enum Walk {
             return astRootNode;
         }
         else if( _modelClass == _typeParameter._typeParameters.class ) {
-            Ast.walk( tt,
+            walk( tt,
                     astRootNode,
                     Node.class,
                     n -> n instanceof MethodDeclaration || n instanceof ConstructorDeclaration,
@@ -1195,6 +1303,185 @@ public enum Walk {
         throw new DraftException( "Could not convert Node of TYPE " + _modelClass + " to _model TYPE" );
     }
 
+    
+        /**
+     * Traverse up the AST to find the first Node that matches the nodeMatchFn
+     * <PRE>
+     *             A
+     *           /  \
+     *          B    C
+     *         / \
+     *        D   E
+     * Parents:
+     *    from D: B, A
+     *    from E: B, A
+     *    from C: A
+     *    from B: A
+     * </PRE>
+     *
+     * @param astNode the root AST node to find the first node instance matching
+     * the criteria
+     * @param nodeMatchFn function for matching a particular node
+     * @return the first node that matches the criteria, else null
+     */
+    public static Node firstParent(Node astNode, Predicate<Node> nodeMatchFn) {
+        return firstParent(astNode, Node.class, nodeMatchFn);
+    }
+
+    /**
+     * Traverse up the AST to find the first Node that is a nodeTargetClass (or
+     * returns null)
+     * <PRE>
+     *             A
+     *           /  \
+     *          B    C
+     *         / \
+     *        D   E
+     * Parents:
+     *    from D: B, A
+     *    from E: B, A
+     *    from C: A
+     *    from B: A
+     * </PRE>
+     *
+     * @param astRootNode the root AST node to find the first node instance
+     * matching the criteria
+     * @param nodeTargetClass the target node class (could be a interface
+     * (Ast#NNodeWithAnnotations)
+     * @param <N> the node type
+     * @return the first node that matches the criteria, else null
+     */
+    public static <N extends Node> N firstParent(Node astRootNode, Class<N> nodeTargetClass) {
+        return first(Node.TreeTraversal.PARENTS, astRootNode, nodeTargetClass, n -> true);
+    }
+
+    /**
+     * Walk through the parent nodes from the astRootNode and finds the first
+     * Node of nodeTargetClass and nodeMatchFn (or returns null)
+     * <PRE>
+     *             A
+     *           /  \
+     *          B    C
+     *         / \
+     *        D   E
+     * Parents:
+     *    from D: B, A
+     *    from E: B, A
+     *    from C: A
+     *    from B: A
+     * </PRE>
+     *
+     * @param astRootNode the root AST node to find the first node instance
+     * matching the criteria
+     * @param nodeTargetClass the target node class (could be a interface
+     * (Ast#NNodeWithAnnotations)
+     * @param nodeMatchFn function for matching a particular node
+     * @param <N> the node type
+     * @return the first node that matches the criteria, else null
+     */
+    public static <N extends Node> N firstParent(Node astRootNode, Class<N> nodeTargetClass, Predicate<N> nodeMatchFn) {
+        return first(Node.TreeTraversal.PARENTS, astRootNode, nodeTargetClass, nodeMatchFn);
+    }
+
+    /**
+     * Walk the nodes in PreOrder fashion starting at astRootNode finding the
+     * first instance of the nodeTargetClass and returning it (or return null if
+     * not found)
+     * <PRE>
+     *            (A)
+     *           /  \
+     *          B    C
+     *         / \
+     *        D   E
+     * Preorder (Parent, then children) from (A): A,B,D,E,C
+     * </PRE>
+     *
+     * @param astRootNode
+     * @param nodeTargetClass
+     * @param <N>
+     * @return
+     */
+    public static <N extends Node> N first(Node astRootNode, Class<N> nodeTargetClass) {
+        return first(astRootNode, nodeTargetClass, n -> true);
+    }
+
+    /**
+     * Traverse the tree in PreOrder fashion looking for the first instance
+     * matching the nodeMatchFn
+     * <PRE>
+     *            (A)
+     *           /  \
+     *          B    C
+     *         / \
+     *        D   E
+     * Preorder (Parent, then children) from (A): A,B,D,E,C
+     * </PRE>
+     *
+     * @param astRootNode
+     * @param nodeMatchFn
+     * @return
+     */
+    public static Node first(Node astRootNode, Predicate<Node> nodeMatchFn) {
+        return first(astRootNode, Node.class, nodeMatchFn);
+    }
+
+    /**
+     * Traverse the tree in preorder fashion looking for the first instance of
+     * nodeTargetClass, and matching the nodeMatchFn
+     * <PRE>
+     *            (A)
+     *           /  \
+     *          B    C
+     *         / \
+     *        D   E
+     * Preorder (Parent, then children) from (A): A,B,D,E,C
+     * </PRE>
+     *
+     * @param astRootNode the root AST node to find the first node instance
+     * matching the criteria
+     * @param nodeTargetClass the target node class (could be a interface
+     * (Ast#NNodeWithAnnotations)
+     * @param nodeMatchFn function for matching a particular node
+     * @param <N> the node type
+     * @return the first node that matches the criteria, else null
+     */
+    public static <N extends Node> N first(Node astRootNode, Class<N> nodeTargetClass, Predicate<N> nodeMatchFn) {
+        return first(Node.TreeTraversal.PREORDER, astRootNode, nodeTargetClass, nodeMatchFn);
+    }
+
+    /**
+     * Walks the Ast using the
+     * {@link com.github.javaparser.ast.Node.TreeTraversal} strategy      {@link Ast#WALK_PRE_ORDER}
+     * {@link Ast#WALK_POST_ORDER}
+     * {@link Ast#WALK_BREADTH_FIRST}
+     * {@link Ast#WALK_PARENTS}
+     * {@link Ast#WALK_DIRECT_CHILDREN} starting at the astStartNode walk the
+     * Nodes intercepting all nodes that are of the nodeTargetClass and satisfy
+     * the nodeMatchFn and returing the first instance found (or null if none
+     * found)
+     *
+     * @param <N> the node type
+     * @param tt the walk traversal strategy
+     * @param astStartNode the starting AST node to start the walk from
+     * @param nodeTargetClass the target node class (could be a interface
+     * (Ast#NNodeWithAnnotations)
+     * @param nodeMatchFn function for matching a particular node
+     * @return the first node that matches the criteria, else null
+     */
+    public static <N extends Node> N first(
+            Node.TreeTraversal tt, Node astStartNode, Class<N> nodeTargetClass, Predicate<N> nodeMatchFn) {
+        Optional<Node> on = astStartNode.stream(tt).filter(n -> {
+            if (nodeTargetClass.isAssignableFrom(n.getClass())) {
+                return nodeMatchFn.test((N) n);
+            }
+            return false;
+        }).findFirst();
+        if (on.isPresent()) {
+            return (N) on.get();
+        }
+        return null;
+    }
+    
     /**
      * 
      * @param _n

@@ -777,7 +777,8 @@ public final class _body implements _model {
             if( !isImplemented() ){
                 return (T)this;
             }
-            Ast.walk((BlockStmt)this.getBody().ast(), Expression.class, exprActionFn );            
+            //Ast.walk((BlockStmt)this.getBody().ast(), Expression.class, exprActionFn );   
+            Walk.in((BlockStmt)this.getBody().ast(), Expression.class, exprActionFn );   
             return (T)this;
         }
 
@@ -797,7 +798,9 @@ public final class _body implements _model {
             if( !isImplemented() ){
                 return (T)this;
             }
-            Ast.walk((BlockStmt)this.getBody().ast(), exprClass, exprActionFn );            
+            
+            //Ast.walk((BlockStmt)this.getBody().ast(), exprClass, exprActionFn );            
+            Walk.in((BlockStmt)this.getBody().ast(), exprClass, exprActionFn );            
             return (T)this;
         }
         
@@ -819,7 +822,8 @@ public final class _body implements _model {
             if( !isImplemented() ){
                 return (T)this;
             }
-            Ast.walk((BlockStmt)this.getBody().ast(), exprClass, exprMatchFn, exprActionFn );            
+            Walk.in((BlockStmt)this.getBody().ast(), exprClass, exprMatchFn, exprActionFn );            
+            //Ast.walk((BlockStmt)this.getBody().ast(), exprClass, exprMatchFn, exprActionFn );            
             return (T)this;
         }
         
@@ -834,7 +838,8 @@ public final class _body implements _model {
             if( !isImplemented() ){
                 return (T)this;
             }
-            Ast.walk((BlockStmt)this.getBody().ast(), Statement.class, stmtActionFn );            
+            //Ast.walk((BlockStmt)this.getBody().ast(), Statement.class, stmtActionFn );  
+            Walk.in((BlockStmt)this.getBody().ast(), Statement.class, stmtActionFn );  
             return (T)this;
         }
         
@@ -851,7 +856,8 @@ public final class _body implements _model {
             if( !isImplemented() ){
                 return (T)this;
             }
-            Ast.walk((BlockStmt)this.getBody().ast(), statementClass, stmtActionFn );            
+            //Ast.walk((BlockStmt)this.getBody().ast(), statementClass, stmtActionFn );    
+            Walk.in((BlockStmt)this.getBody().ast(), statementClass, stmtActionFn );    
             return (T)this;
         }
         
@@ -869,7 +875,8 @@ public final class _body implements _model {
             if( !isImplemented() ){
                 return (T)this;
             }
-            Ast.walk((BlockStmt)this.getBody().ast(), statementClass, stmtMatchFn, stmtActionFn );            
+            Walk.in((BlockStmt)this.getBody().ast(), statementClass, stmtMatchFn, stmtActionFn );            
+            //Ast.walk((BlockStmt)this.getBody().ast(), statementClass, stmtMatchFn, stmtActionFn );            
             return (T)this;
         }
         

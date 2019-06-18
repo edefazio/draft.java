@@ -1,11 +1,7 @@
 package draft.java;
 
-import com.github.javaparser.JavaParser;
-import com.github.javaparser.ParseResult;
-import com.github.javaparser.ParserConfiguration;
+import com.github.javaparser.*;
 import com.github.javaparser.ParserConfiguration.LanguageLevel;
-import com.github.javaparser.Position;
-import com.github.javaparser.StaticJavaParser;
 import com.github.javaparser.ast.*;
 import com.github.javaparser.ast.body.*;
 import com.github.javaparser.ast.comments.*;
@@ -18,9 +14,7 @@ import com.github.javaparser.printer.PrettyPrintVisitor;
 import com.github.javaparser.printer.PrettyPrinterConfiguration;
 import draft.DraftException;
 import draft.Text;
-import draft.java.io._in;
-import draft.java.io._io;
-import draft.java.io._ioException;
+import draft.java.io.*;
 
 import java.io.*;
 import java.lang.annotation.*;
@@ -30,8 +24,6 @@ import java.lang.reflect.Method;
 import java.nio.file.Path;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.function.Consumer;
-import java.util.function.Predicate;
 
 import static com.github.javaparser.utils.Utils.normalizeEolInTextBlock;
 import java.util.regex.Pattern;
@@ -98,71 +90,6 @@ public enum Ast {
        ...which will have less completions to weed through
      */
 
-    /**
-     * <PRE>
-     *            (A)
-     *           /  \
-     *          B    C
-     *         / \
-     *        D   E
-     * Preorder (Parent, then children) from (A) : A,B,D,E,C
-     * </PRE>
-     */
-    public static final Node.TreeTraversal WALK_PRE_ORDER = Node.TreeTraversal.PREORDER;
-
-    /**
-     * <PRE>
-     *            (A)
-     *           /  \
-     *          B    C
-     *         / \
-     *        D   E
-     * PostOrder ("leaves first", or children, then parents) from (A) : D,E,B,C,A
-     * </PRE>
-     */
-    public static final Node.TreeTraversal WALK_POST_ORDER = Node.TreeTraversal.POSTORDER;
-
-    /**
-     * <PRE>
-     *             A
-     *           /  \
-     *          B    C
-     *         / \
-     *        D   E
-     * Parents:
-     *    from D: B, A
-     *    from E: B, A
-     *    from C: A
-     *    from B: A
-     * </PRE>
-     */
-    public static final Node.TreeTraversal WALK_PARENTS = Node.TreeTraversal.PARENTS;
-
-    /**
-     * <PRE>
-     *            (A)
-     *           /  \
-     *          B    C
-     *         / \
-     *        D   E
-     * Breadth-First (or Level Order) from (A): A,B,C,D,E
-     * </PRE>
-     */
-    public static final Node.TreeTraversal WALK_BREADTH_FIRST = Node.TreeTraversal.BREADTHFIRST;
-
-    /**
-     * <PRE>
-     *            (A)
-     *           /  \
-     *         (B)   C
-     *         / \
-     *        D   E
-     * Direct Children
-     *     From A: B, C
-     *     From B: D, E
-     * </PRE>
-     */
-    public static final Node.TreeTraversal WALK_DIRECT_CHILDREN = Node.TreeTraversal.DIRECT_CHILDREN;
 
     /* ------------------NODES----------------------------*/
  /* ( in com.github.javaparser.ast ) */
@@ -844,7 +771,8 @@ public enum Ast {
         CompilationUnit cu = parse(_i.getInputStream());
         cu.setStorage(_i.getPath());
         List<TypeDeclaration> tds
-                = Ast.listAll(cu, TypeDeclaration.class, td -> td.getNameAsString().equals(clazz.getSimpleName())
+                //Ast.listAll
+                = Walk.list(cu, TypeDeclaration.class, td -> td.getNameAsString().equals(clazz.getSimpleName())
                 && td.getParentNode().isPresent()
                 && !(td.getParentNode().get() instanceof LocalClassDeclarationStmt));//dont miz inner with Local classes
         if (tds.size() == 1) {
@@ -1129,7 +1057,8 @@ public enum Ast {
             return cu.getPrimaryType().get();
         }
         //System.out.println("No primary Type present");
-        List<TypeDeclaration> tds = listAll(cu, TypeDeclaration.class);
+        //List<TypeDeclaration> tds = listAll(cu, TypeDeclaration.class);
+        List<TypeDeclaration> tds = Walk.list(cu, TypeDeclaration.class);
         if (tds.size() == 1) {
             return tds.get(0);
         } else if (tds.isEmpty()) {
@@ -1905,383 +1834,6 @@ public enum Ast {
     public static final PrettyPrinterConfiguration PRINT_NO_ANNOTATIONS_OR_COMMENTS
             = new PrettyPrinterConfiguration()
                     .setPrintComments(false).setPrintJavadoc(false).setVisitorFactory(PrintNoAnnotations::new);
-
-    /**
-     * Walk the nodes starting at astRootNode in PreOrder fashion and collecting
-     * all those that are of targetNodeClass
-     * <PRE>
-     *            (A)
-     *           /  \
-     *          B    C
-     *         / \
-     *        D   E
-     * Preorder (Parent, then children) from (A): A,B,D,E,C
-     * </PRE>
-     *
-     * @param <N> the target node type
-     * @param astRootNode the root AST node to start looking for nodes
-     * @param targetNodeClass the Class of nodes to intercept and add to the
-     * list
-     * @return a list of matching nodes
-     */
-    public static <N extends Node> List<N> listAll(Node astRootNode, Class<N> targetNodeClass) {
-        return listAll(astRootNode, targetNodeClass, n -> true);
-    }
-
-    /**
-     * Walk the Nodes starting at astRootNode in PreOrder fashion, and
-     * collecting those of targetNodeClass and matching nodeMatchFn and return
-     * the collected list
-     *
-     * <PRE>
-     *            (A)
-     *           /  \
-     *          B    C
-     *         / \
-     *        D   E
-     * Preorder (Parent, then children) from (A): A,B,D,E,C
-     * </PRE>
-     *
-     * @param <N>
-     * @param astRootNode
-     * @param targetNodeClass
-     * @param nodeMatchFn
-     * @return
-     */
-    public static <N extends Node> List<N> listAll(Node astRootNode, Class<N> targetNodeClass, Predicate<N> nodeMatchFn) {
-        List<N> found = new ArrayList<>();
-        walk(astRootNode, targetNodeClass, nodeMatchFn, n -> found.add((N) n));
-        return found;
-    }
-
-    /**
-     * Walk the Nodes starting at astRootNode and using the Traversal strategy
-     * passed in:      {@link Ast#WALK_PRE_ORDER}
-     * {@link Ast#WALK_POST_ORDER}
-     * {@link Ast#WALK_BREADTH_FIRST}
-     * {@link Ast#WALK_PARENTS}
-     * {@link Ast#WALK_DIRECT_CHILDREN}
-     *
-     * collecting those of targetNodeClass and matching nodeMatchFn and return
-     * the collected list
-     *
-     * @param <N>
-     * @param tt the traversal strategy for walking & collecting nodes in the
-     * list
-     * @param astRootNode the starting node where the walk starts
-     * @param targetNodeClass target class to intercept during the walk
-     * @param nodeMatchFn predicate for matching Nodes to collect in the List
-     * @return a List of matching nodes, in the order they were encountered
-     * during the walk
-     */
-    public static <N extends Node> List<N> listAll(Node.TreeTraversal tt, Node astRootNode, Class<N> targetNodeClass, Predicate<N> nodeMatchFn) {
-        List<N> found = new ArrayList<>();
-        walk(tt, astRootNode, targetNodeClass, nodeMatchFn, n -> found.add((N) n));
-        return found;
-    }
-
-    /**
-     * Recursively walk the AST Nodes starting at the root node, and
-     * intercepting nodes of class {@code nodeClass} that match the
-     * {@code nodeMatchFn} and for each matching node calls the
-     * {@code nodeActionFn}
-     *
-     * <PRE>
-     *            (A)
-     *           /  \
-     *          B    C
-     *         / \
-     *        D   E
-     * Preorder (Parent, then children) from (A): A,B,D,E,C
-     * </PRE>
-     *
-     * @param <R> the root node TYPE
-     * @param astRootNode the starting root node to walk
-     * @param nodeActionFn action to take place on matching nodes
-     * @return the (potentially modified) R
-     */
-    public static <R extends Node> R walk(R astRootNode, Consumer<Node> nodeActionFn) {
-        walk(astRootNode, Node.class, t -> true, nodeActionFn);
-        return astRootNode;
-    }
-
-    /**
-     * Recursively walk the AST Nodes starting at the astRootNode in PreOrder
-     * fashion, and intercepting nodes of class {@code nodeClass} that match the
-     * {@code nodeMatchFn} and for each matching node calls the
-     * {@code nodeActionFn}
-     *
-     * <PRE>
-     *            (A)
-     *           /  \
-     *          B    C
-     *         / \
-     *        D   E
-     * Preorder (Parent, then children) from (A): A,B,D,E,C
-     * </PRE>
-     *
-     * @param <R> the root node object TYPE
-     * @param <N> the node class TYPE to search on
-     * @param astRootNode the starting root node to walk
-     * @param targetNodeClass the node class implementation to intercept
-     * @param nodeActionFn action to take place on matching nodes
-     * @return the (potentially modified) root node
-     */
-    public static <R extends Node, N extends Node> R walk(R astRootNode, Class<N> targetNodeClass, Consumer<N> nodeActionFn) {
-        walk(astRootNode, targetNodeClass, t -> true, nodeActionFn);
-        return astRootNode;
-    }
-
-    /**
-     * Recursively walk the AST Nodes in preorder fashion starting at the root
-     * node, and intercepting nodes of class {@code nodeClass} that match the
-     * {@code nodeMatchFn} and for each matching node calls the
-     * {@code nodeActionFn}
-     *
-     * <PRE>
-     *            (A)
-     *           /  \
-     *          B    C
-     *         / \
-     *        D   E
-     * Preorder (Parent, then children) from (A): A,B,D,E,C
-     * </PRE>
-     *
-     * @param <R> the root node object TYPE
-     * @param <N> the node class TYPE
-     * @param astRootNode the starting root node to walk
-     * @param targetNodeClass the node class implementation to intercept
-     * @param nodeMatchFn function for matching candidate nodes to act on
-     * @param nodeActionFn action to take place on matching nodes
-     */
-    public static <R extends Node, N extends Node> R walk(
-            R astRootNode, Class<N> targetNodeClass, Predicate<N> nodeMatchFn, Consumer<N> nodeActionFn) {
-
-        astRootNode.walk(targetNodeClass, n -> {
-            if (nodeMatchFn.test(n)) {
-                nodeActionFn.accept(n);
-            }
-        });
-        return astRootNode;
-    }
-
-    /**
-     * Walks the Ast using the
-     * {@link com.github.javaparser.ast.Node.TreeTraversal} strategy provided      {@link Ast#WALK_PRE_ORDER}
-     * {@link Ast#WALK_POST_ORDER}
-     * {@link Ast#WALK_BREADTH_FIRST}
-     * {@link Ast#WALK_PARENTS}
-     * {@link Ast#WALK_DIRECT_CHILDREN} starting from the astRootNode, searching
-     * for matching targetNodeClass and selecting those who pass the
-     * nodeMatchFn, to call the nodeActionFn
-     *
-     * @param traversal the nodeTraversal strategy
-     * @param astRootNode the starting node to start the walk
-     * @param targetNodeClass a particular node class (or interface) to
-     * intercept when on the walk
-     * @param nodeMatchFn a predicate for matching particular nodes of the
-     * nodeClass when on the walk
-     * @param nodeActionFn the action to take on the selected nodes
-     * @param <N> the target node type (i.e.
-     * {@link Expression},{@link TypeDeclaration}, {@link NodeWithOptionalBlockStmt}
-     * @param <R> the root node type
-     * @return the modified root AST node
-     */
-    public static <R extends Node, N extends Node> R walk(
-            Node.TreeTraversal traversal,
-            R astRootNode,
-            Class<N> targetNodeClass,
-            Predicate<N> nodeMatchFn,
-            Consumer<N> nodeActionFn) {
-
-        astRootNode.walk(traversal, 
-            n -> {
-                if( targetNodeClass.isAssignableFrom(n.getClass())) {
-                    if (nodeMatchFn.test((N) n)) {
-                        nodeActionFn.accept((N) n);
-                    }
-                }
-            });        
-        return astRootNode;
-    }
-
-    /**
-     * Traverse up the AST to find the first Node that matches the nodeMatchFn
-     * <PRE>
-     *             A
-     *           /  \
-     *          B    C
-     *         / \
-     *        D   E
-     * Parents:
-     *    from D: B, A
-     *    from E: B, A
-     *    from C: A
-     *    from B: A
-     * </PRE>
-     *
-     * @param astNode the root AST node to find the first node instance matching
-     * the criteria
-     * @param nodeMatchFn function for matching a particular node
-     * @return the first node that matches the criteria, else null
-     */
-    public static Node firstParent(Node astNode, Predicate<Node> nodeMatchFn) {
-        return firstParent(astNode, Node.class, nodeMatchFn);
-    }
-
-    /**
-     * Traverse up the AST to find the first Node that is a nodeTargetClass (or
-     * returns null)
-     * <PRE>
-     *             A
-     *           /  \
-     *          B    C
-     *         / \
-     *        D   E
-     * Parents:
-     *    from D: B, A
-     *    from E: B, A
-     *    from C: A
-     *    from B: A
-     * </PRE>
-     *
-     * @param astRootNode the root AST node to find the first node instance
-     * matching the criteria
-     * @param nodeTargetClass the target node class (could be a interface
-     * (Ast#NNodeWithAnnotations)
-     * @param <N> the node type
-     * @return the first node that matches the criteria, else null
-     */
-    public static <N extends Node> N firstParent(Node astRootNode, Class<N> nodeTargetClass) {
-        return first(Node.TreeTraversal.PARENTS, astRootNode, nodeTargetClass, n -> true);
-    }
-
-    /**
-     * Walk through the parent nodes from the astRootNode and finds the first
-     * Node of nodeTargetClass and nodeMatchFn (or returns null)
-     * <PRE>
-     *             A
-     *           /  \
-     *          B    C
-     *         / \
-     *        D   E
-     * Parents:
-     *    from D: B, A
-     *    from E: B, A
-     *    from C: A
-     *    from B: A
-     * </PRE>
-     *
-     * @param astRootNode the root AST node to find the first node instance
-     * matching the criteria
-     * @param nodeTargetClass the target node class (could be a interface
-     * (Ast#NNodeWithAnnotations)
-     * @param nodeMatchFn function for matching a particular node
-     * @param <N> the node type
-     * @return the first node that matches the criteria, else null
-     */
-    public static <N extends Node> N firstParent(Node astRootNode, Class<N> nodeTargetClass, Predicate<N> nodeMatchFn) {
-        return first(Node.TreeTraversal.PARENTS, astRootNode, nodeTargetClass, nodeMatchFn);
-    }
-
-    /**
-     * Walk the nodes in PreOrder fashion starting at astRootNode finding the
-     * first instance of the nodeTargetClass and returning it (or return null if
-     * not found)
-     * <PRE>
-     *            (A)
-     *           /  \
-     *          B    C
-     *         / \
-     *        D   E
-     * Preorder (Parent, then children) from (A): A,B,D,E,C
-     * </PRE>
-     *
-     * @param astRootNode
-     * @param nodeTargetClass
-     * @param <N>
-     * @return
-     */
-    public static <N extends Node> N first(Node astRootNode, Class<N> nodeTargetClass) {
-        return first(astRootNode, nodeTargetClass, n -> true);
-    }
-
-    /**
-     * Traverse the tree in PreOrder fashion looking for the first instance
-     * matching the nodeMatchFn
-     * <PRE>
-     *            (A)
-     *           /  \
-     *          B    C
-     *         / \
-     *        D   E
-     * Preorder (Parent, then children) from (A): A,B,D,E,C
-     * </PRE>
-     *
-     * @param astRootNode
-     * @param nodeMatchFn
-     * @return
-     */
-    public static Node first(Node astRootNode, Predicate<Node> nodeMatchFn) {
-        return first(astRootNode, Node.class, nodeMatchFn);
-    }
-
-    /**
-     * Traverse the tree in preorder fashion looking for the first instance of
-     * nodeTargetClass, and matching the nodeMatchFn
-     * <PRE>
-     *            (A)
-     *           /  \
-     *          B    C
-     *         / \
-     *        D   E
-     * Preorder (Parent, then children) from (A): A,B,D,E,C
-     * </PRE>
-     *
-     * @param astRootNode the root AST node to find the first node instance
-     * matching the criteria
-     * @param nodeTargetClass the target node class (could be a interface
-     * (Ast#NNodeWithAnnotations)
-     * @param nodeMatchFn function for matching a particular node
-     * @param <N> the node type
-     * @return the first node that matches the criteria, else null
-     */
-    public static <N extends Node> N first(Node astRootNode, Class<N> nodeTargetClass, Predicate<N> nodeMatchFn) {
-        return first(Node.TreeTraversal.PREORDER, astRootNode, nodeTargetClass, nodeMatchFn);
-    }
-
-    /**
-     * Walks the Ast using the
-     * {@link com.github.javaparser.ast.Node.TreeTraversal} strategy      {@link Ast#WALK_PRE_ORDER}
-     * {@link Ast#WALK_POST_ORDER}
-     * {@link Ast#WALK_BREADTH_FIRST}
-     * {@link Ast#WALK_PARENTS}
-     * {@link Ast#WALK_DIRECT_CHILDREN} starting at the astStartNode walk the
-     * Nodes intercepting all nodes that are of the nodeTargetClass and satisfy
-     * the nodeMatchFn and returing the first instance found (or null if none
-     * found)
-     *
-     * @param <N> the node type
-     * @param tt the walk traversal strategy
-     * @param astStartNode the starting AST node to start the walk from
-     * @param nodeTargetClass the target node class (could be a interface
-     * (Ast#NNodeWithAnnotations)
-     * @param nodeMatchFn function for matching a particular node
-     * @return the first node that matches the criteria, else null
-     */
-    public static <N extends Node> N first(
-            Node.TreeTraversal tt, Node astStartNode, Class<N> nodeTargetClass, Predicate<N> nodeMatchFn) {
-        Optional<Node> on = astStartNode.stream(tt).filter(n -> {
-            if (nodeTargetClass.isAssignableFrom(n.getClass())) {
-                return nodeMatchFn.test((N) n);
-            }
-            return false;
-        }).findFirst();
-        if (on.isPresent()) {
-            return (N) on.get();
-        }
-        return null;
-    }
 
     /**
      * Get the content inside the comments... meaning no prefixes // line

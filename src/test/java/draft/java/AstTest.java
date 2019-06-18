@@ -23,8 +23,6 @@ import com.github.javaparser.ast.stmt.Statement;
 import com.github.javaparser.ast.stmt.SwitchEntry;
 import com.github.javaparser.ast.type.Type;
 import com.github.javaparser.ast.type.TypeParameter;
-import com.github.javaparser.ast.visitor.VoidVisitorAdapter;
-import static draft.java.Ast.switchEntry;
 import junit.framework.TestCase;
 
 import java.util.List;
@@ -165,7 +163,7 @@ public class AstTest extends TestCase {
         }
         CompilationUnit cu = Ast.compilationUnit(P.class);
 
-        LambdaExpr le = Ast.first(cu,
+        LambdaExpr le = Walk.first(cu,
                 LambdaExpr.class,
                 (n) -> n.getRange().isPresent() && n.getRange().get().begin.line == 47 );
 
@@ -238,7 +236,8 @@ public class AstTest extends TestCase {
     public void testAstWalkList(){
         System.out.println( Walk.listComments( Ast.type( Ex.class) ));
 
-        Ast.walk( Ast.type( Ex.class ), Comment.class, c-> System.out.println(c.getClass()) );
+        Walk.in(Ast.type( Ex.class ), Comment.class, c-> System.out.println(c.getClass()) );
+        //Ast.walk( Ast.type( Ex.class ), Comment.class, c-> System.out.println(c.getClass()) );
 
     }
 
