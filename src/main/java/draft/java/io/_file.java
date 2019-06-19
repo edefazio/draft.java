@@ -70,7 +70,11 @@ public interface _file extends FileObject {
         
         public SimpleFile(Path path, byte[] data){
             this.path = path;
-            this.baos.writeBytes(data);
+            try{
+                this.baos.write(data);
+            }catch(IOException ioe){
+                throw new _ioException("unabel to write bytes", ioe);
+            }
         }
         
         @Override
