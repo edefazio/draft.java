@@ -21,6 +21,23 @@
         and compile/run/test source code at runtime.
     </description>
     
+    <build>
+        <plugins>    
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-source-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>attach-sources</id>
+                        <goals>
+                            <goal>jar</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
+    
     <developers>
         <developer>
             <id>Eric</id>
@@ -31,7 +48,7 @@
         </developer>
     </developers>
     
-     <scm>
+    <scm>
         <url>http://github.com/edefazio/draft.java</url>
         <connection>scm:git:https://github.com/edefazio/draft.java</connection>
         <developerConnection>scm:git:https://github.com/edefazio/draft.java</developerConnection>
@@ -51,14 +68,6 @@
             <groupId>com.github.javaparser</groupId>
             <artifactId>javaparser-core</artifactId>
             <version>${javaparser.version}</version> <!--3.13.5 + -->
-        </dependency>
-        <!--
-        <dependency>
-            <groupId>org.macrobot</groupId>
-            <artifactId>draft-java-adhoc</artifactId>
-            <version>1.0-SNAPSHOT</version>
-            <scope>test</scope>
-        </dependency>            
-        -->        
+        </dependency>       
     </dependencies>    
 </project>
