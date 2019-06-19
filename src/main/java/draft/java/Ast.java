@@ -1006,6 +1006,10 @@ public enum Ast {
         String str = Text.combine(code);
         return parse(str);
     }
+    
+    public static CompilationUnit compilationUnit(InputStream is){
+        return parse( is);
+    }
 
     /**
      * Creates an AST {@link CompilationUnit} from the source code of the

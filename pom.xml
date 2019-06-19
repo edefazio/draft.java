@@ -52,11 +52,13 @@
             <artifactId>javaparser-core</artifactId>
             <version>${javaparser.version}</version> <!--3.13.5 + -->
         </dependency>
+        <!--
         <dependency>
             <groupId>org.macrobot</groupId>
             <artifactId>draft-java-adhoc</artifactId>
             <version>1.0-SNAPSHOT</version>
             <scope>test</scope>
         </dependency>            
+        -->        
     </dependencies>    
 </project>

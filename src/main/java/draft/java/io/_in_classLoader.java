@@ -1,11 +1,9 @@
 package draft.java.io;
 
-import draft.java._annotation;
-import draft.java._class;
-import draft.java._enum;
 import draft.java._type;
 import java.io.ByteArrayInputStream;
-import java.lang.annotation.Annotation;
+import java.net.URL;
+import java.nio.file.Paths;
 
 /**
  * Since we maintain the {@link _type}s in memory when we compile and load a new
@@ -43,11 +41,53 @@ public final class _in_classLoader implements _in._resolver {
 
     @Override
     public _in resolve( String sourceId ) {
+        /*
+        Class topLevelClass = runtimeClass;
+        if( runtimeClass.isMemberClass() ){
+            topLevelClass = runtimeClass.getDeclaringClass();
+        }
+        String sourceId = runtimeClass.getCanonicalName()+".java";
+
+        String fileName = "/" + topLevelClass.getCanonicalName()
+                .replace( ".", "/" ) + ".java";
+
+        URL url = runtimeClass.getResource( fileName );
+
+        if( url != null ){
+            return _in._source.of(
+                    Paths.get(fileName),
+                    sourceId,
+                    "classpath:"+url.toString(),
+                    getClass().getResourceAsStream( fileName ));
+        }
+        return null;
+        */
+        //So... technically we should be able to "get resource As Stream
         return null; /*can't help you if you don't have the Class*/
     }
 
     @Override
-    public _in resolve( Class clazz ) {
+    public _in resolve( Class runtimeClass ) {
+        Class topLevelClass = runtimeClass;
+        if( runtimeClass.isMemberClass() ){
+            topLevelClass = runtimeClass.getDeclaringClass();
+        }
+        String sourceId = runtimeClass.getCanonicalName()+".java";
+
+        String fileName = "/" + topLevelClass.getCanonicalName()
+                .replace( ".", "/" ) + ".java";
+
+        URL url = runtimeClass.getResource( fileName );
+
+        if( url != null ){
+            return _in._source.of(
+                    Paths.get(fileName),
+                    sourceId,
+                    "classpath:"+url.toString(),
+                    runtimeClass.getResourceAsStream( fileName ));
+        }
+        return null;
+        /*
         if( clazz.getClassLoader() instanceof _typeCacheClassLoader ){
             _typeCacheClassLoader _cl = (_typeCacheClassLoader)clazz.getClassLoader();
             _type _t = _cl.get_type( clazz );
@@ -60,6 +100,7 @@ public final class _in_classLoader implements _in._resolver {
             }
         }
         return null;
+        */
     }
 
     @Override
@@ -75,11 +116,5 @@ public final class _in_classLoader implements _in._resolver {
     public interface _typeCacheClassLoader {
 
         <T extends _type> T get_type( Class clazz );
-
-        _class get_class(Class clazz );
-
-        _annotation get_annotation(Class<? extends Annotation> clazz );
-
-        _enum get_enum(Class<? extends Enum> clazz );
     }
 }

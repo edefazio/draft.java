@@ -52,9 +52,7 @@ public class _io{
         return _inMaster.resolve(ic, clazz);
     }
 
-    /**
-     * Returns the _in.resolver from ThreadLocal storage
-     */
+    /** @return the _in.resolver from ThreadLocal storage*/
     public static _in._resolver getThreadLocalInResolver() {
         return _inMaster.getThreadLocalInResolver();
     }
@@ -406,7 +404,8 @@ public class _io{
     public static _out._filesReceipt out(_type..._types){
          return _out.of(_types);
     }
-
+    */
+    /*
     public static _out._filesReceipt out( String baseDir, Collection<_type> _types ){
         return _out.to(baseDir, _types.toArray(new _type[0]));
     }
@@ -414,7 +413,8 @@ public class _io{
     public static _out._filesReceipt out( String baseDir, _type..._types ){
         return _out.to(baseDir, _types);
     }
-    * */
+    */
+    
     
     /*
     public static _out._filesReceipt out( _config cfg, _project _p){
@@ -554,6 +554,7 @@ public class _io{
             return this;
         }
 
+        @Override
         public String toString(){
             return "Draft I/O config" +  System.lineSeparator() +
                     Text.indent( in +System.lineSeparator()
@@ -569,6 +570,7 @@ public class _io{
             this.inFilesPath = _io.getInFilesPath();
             this.inProjectsPath = _io.getInProjectsPath();
         }
+        @Override
         public String toString(){
             return "Draft input config"+ System.lineSeparator()+
                     "  System property "+ System.lineSeparator()+
