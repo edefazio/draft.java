@@ -3,13 +3,9 @@ package draft.java.proto;
 import com.github.javaparser.ast.Node;
 import com.github.javaparser.ast.stmt.CatchClause;
 import draft.Tokens;
-import draft.java.Ast;
-import draft.java.Walk;
+import draft.java.*;
 import draft.java._model._node;
-import draft.java._type;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
 
@@ -57,6 +53,16 @@ public class $catch implements $proto<CatchClause> {
 
     public $catch addConstraint( Predicate<CatchClause> constraint){
         this.constraint = this.constraint.and(constraint);
+        return this;
+    }
+    
+    public $catch $parameter(){
+        this.$param = $parameter.any();
+        return this;
+    }
+    
+    public $catch $body(){
+        this.$bd = $body.any();
         return this;
     }
     

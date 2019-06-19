@@ -1,24 +1,11 @@
 package draft.java.proto;
 
 import com.github.javaparser.ast.Node;
-import com.github.javaparser.ast.comments.BlockComment;
-import com.github.javaparser.ast.comments.Comment;
-import com.github.javaparser.ast.comments.JavadocComment;
-import com.github.javaparser.ast.comments.LineComment;
-import draft.Stencil;
-import draft.Template;
-import draft.Tokens;
-import draft.Translator;
-import draft.java.Ast;
-import draft.java.Walk;
-import draft.java._javadoc;
+import com.github.javaparser.ast.comments.*;
+import draft.*;
+import draft.java.*;
 import draft.java._model._node;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
 

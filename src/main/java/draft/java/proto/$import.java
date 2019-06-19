@@ -401,6 +401,7 @@ public final class $import
      * @param clazz
      * @return 
      */
+    @Override
     public List<Select> listSelectedIn(Class clazz){
         return listSelectedIn(_type.of(clazz));
     }

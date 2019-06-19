@@ -4,19 +4,11 @@ import com.github.javaparser.ast.Node;
 import com.github.javaparser.ast.NodeList;
 import com.github.javaparser.ast.type.ClassOrInterfaceType;
 import com.github.javaparser.ast.type.TypeParameter;
-import draft.Stencil;
-import draft.Template;
-import draft.Tokens;
-import draft.Translator;
+import draft.*;
 import draft.java._anno._annos;
 import draft.java._typeParameter;
 import draft.java._typeRef;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
@@ -97,7 +89,6 @@ public class $typeParameter
     public $annos $anns = $annos.of();
     
     public $id $name = $id.of("$name$");
-    
     
     /**
      * The (optional) lower bound on a type parameter (i.e. extends)
@@ -397,7 +388,7 @@ public class $typeParameter
         return "($typeParmeter):" + ans + $name.toString()+tb;
     }
     
-    public boolean matches(String  typeParameter){
+    public boolean matches(String typeParameter){
         return select(typeParameter)!= null;
     }
     

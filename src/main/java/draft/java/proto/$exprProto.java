@@ -2,9 +2,7 @@ package draft.java.proto;
 
 import com.github.javaparser.ast.Node;
 import com.github.javaparser.ast.expr.Expression;
-import draft.Template;
-import draft.Tokens;
-import draft.Translator;
+import draft.*;
 import draft.java._model;
 import draft.java._model._node;
 import draft.java._type;

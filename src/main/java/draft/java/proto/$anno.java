@@ -112,6 +112,11 @@ public class $anno
         }
     }
 
+    public $anno $name(){
+        this.name = $id.any();
+        return this;
+    }
+    
     /**
      * updates the name of the prototype for matching and constructing
      * @param name

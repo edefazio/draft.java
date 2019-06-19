@@ -66,7 +66,6 @@ public interface $proto<Q> {
         return firstIn(_n.ast(), _nodeMatchFn);
     }
     
-        
     /**
      * 
      * @param astRootNode

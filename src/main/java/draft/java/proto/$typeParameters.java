@@ -1,7 +1,6 @@
 package draft.java.proto;
 
 import com.github.javaparser.ast.Node;
-import com.github.javaparser.ast.NodeList;
 import com.github.javaparser.ast.body.CallableDeclaration;
 import com.github.javaparser.ast.nodeTypes.NodeWithTypeParameters;
 import draft.*;
@@ -126,12 +125,18 @@ public final class $typeParameters
     
     /**
      * 
+     * @param typeParams
      * @return 
      */
     public boolean matches( String... typeParams ){
         return matches(_typeParameters.of(typeParams) );
     }
     
+    /**
+     * 
+     * @param astCallable
+     * @return 
+     */
     public boolean matches( CallableDeclaration astCallable ){
         return select(astCallable) != null;
     }

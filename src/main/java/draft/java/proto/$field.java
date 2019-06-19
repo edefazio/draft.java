@@ -191,7 +191,37 @@ public class $field implements Template<_field>, $proto<_field> {
     public $field $javadoc( _javadoc _jd ){
         this.javadoc.contentsPattern = Stencil.of(_jd.getContent() );
         return this;
-    }    
+    }  
+    
+     public $field $annos(){
+        this.annos = $annos.of();
+        return this;
+    }
+    
+    public $field $annos( Predicate<_anno._annos> as ){
+        this.annos.addConstraint(as);
+        return this;
+    }
+    
+    public $field $annos(String...annoPatterns ){
+        this.annos.add(annoPatterns);
+        return this;
+    }
+    
+    public $field $annos($annos $as ){
+        this.annos = $as;
+        return this;
+    }
+    
+    public $field $anno( Class clazz){
+        this.annos.$annosList.add($anno.of(clazz) );
+        return this;
+    }
+    
+    public $field $anno( _anno _an){
+        this.annos.$annosList.add($anno.of(_an) );
+        return this;
+    }
     /**
      * set a constraint on the 
      * @param javadocConstraint

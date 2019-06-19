@@ -3,24 +3,12 @@ package draft.java.proto;
 import com.github.javaparser.ast.Node;
 import com.github.javaparser.ast.NodeList;
 import com.github.javaparser.ast.expr.Expression;
-import com.github.javaparser.ast.stmt.BlockStmt;
-import com.github.javaparser.ast.stmt.Statement;
-import com.github.javaparser.ast.stmt.SwitchEntry;
-import draft.Template;
-import draft.Tokens;
-import draft.Translator;
-import draft.java.Ast;
-import draft.java.Walk;
+import com.github.javaparser.ast.stmt.*;
+import draft.*;
+import draft.java.*;
 import draft.java._model._node;
-import draft.java._type;
 import draft.java.proto.$proto.$args;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
@@ -79,6 +67,11 @@ public class $case
         for(int i=0;i<se.getStatements().size(); i++){
             this.statements.add($stmt.of(se.getStatements().get(i))); 
         }
+    }
+    
+    public $case $label(){
+        this.label = $expr.any();
+        return this;
     }
     
     public boolean matches( String... switchCase ){

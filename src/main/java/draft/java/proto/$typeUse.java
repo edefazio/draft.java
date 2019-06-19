@@ -4,14 +4,10 @@ import com.github.javaparser.ast.Node;
 import com.github.javaparser.ast.expr.Name;
 import com.github.javaparser.ast.expr.SimpleName;
 import com.github.javaparser.ast.type.ClassOrInterfaceType;
-import draft.java._model;
+import draft.java.*;
 import draft.java._model._node;
-import draft.java._type;
 import draft.java.proto.$node.Select;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
@@ -116,8 +112,7 @@ public class $typeUse {
         return new $typeUse("", $node.of("$classUse$").addConstraint(n -> n.toString().contains(".")), 
             Collections.EMPTY_LIST, 
             $node.of("$classUse$").addConstraint(n -> !n.toString().contains(".") ) ).addConstraint(IS_EXPECTED_NODE_TYPE);
-    }
-    
+    }    
     
     /**
      * This is for any()
@@ -244,7 +239,7 @@ public class $typeUse {
         return astRootNode;
     }
 
-    public <N extends _model._node> N replaceIn(N _n, Node replacement) {
+    public <N extends _node> N replaceIn(N _n, Node replacement) {
         if( _n instanceof _type && ((_type)_n).isTopLevel()){
             replaceIn( ((_type)_n).astCompilationUnit(), replacement);
             return _n;
@@ -261,7 +256,7 @@ public class $typeUse {
         return removeIn(_type.of(clazz) );
     }
     
-    public <N extends _model._node> N removeIn(N _n ) {
+    public <N extends _node> N removeIn(N _n ) {
         if( _n instanceof _type && ((_type)_n).isTopLevel()){
             removeIn( ((_type)_n).astCompilationUnit() );
             return _n;

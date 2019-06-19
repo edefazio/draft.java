@@ -4,11 +4,8 @@ import com.github.javaparser.ast.Node;
 import com.github.javaparser.ast.expr.*;
 import com.github.javaparser.ast.type.Type;
 import draft.*;
-import draft.java.Ast;
-import draft.java.Walk;
+import draft.java.*;
 import draft.java._model._node;
-import draft.java._type;
-import draft.java._typeRef;
 
 import java.util.*;
 import java.util.function.Consumer;

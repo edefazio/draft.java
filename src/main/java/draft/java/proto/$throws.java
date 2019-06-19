@@ -62,6 +62,7 @@ public final class $throws
     public static $throws of( Class<? extends Throwable>...throwsClasses ){
         return new $throws( _throws.of(throwsClasses ) );
     }
+    
     /**
      * 
      * @param constraint
@@ -135,17 +136,6 @@ public final class $throws
         this.constraint = this.constraint.and(constraint);
         return this;
     }
-    
-    /**
-     * SETs a constraint
-     * @param constraint
-     * @return 
-     
-    public $throws constraint( Predicate<_throws> constraint ){
-        this.constraint = this.constraint.and(constraint);
-        return this;
-    }
-    */ 
     
     /**
      * 
@@ -341,22 +331,6 @@ public final class $throws
 
     /**
      * Returns the first _import that matches the pattern and constraint
-     * @param _n the _java node
-     * @return  the first _import that matches (or null if none found)
-     
-    public _throws firstIn( _node _n ){
-        if( _n.ast().findCompilationUnit().isPresent() ){
-            Optional<CallableDeclaration> f = _n.ast().findCompilationUnit().get().findFirst(CallableDeclaration.class, s -> this.matches(s) );         
-            if( f.isPresent()){
-                return _throws.of(f.get());
-            }
-        }        
-        return null;
-    }
-    */ 
-
-    /**
-     * Returns the first _import that matches the pattern and constraint
      * @param astNode the node to look through
      * @param throwsMatchFn
      * @return  the first _import that matches (or null if none found)
@@ -450,27 +424,6 @@ public final class $throws
         return null;
     }
     
-    /*
-    @Override
-    public List<_throws> listIn( _node _n ){
-        return listIn( _n.ast() );
-    }
-
-    @Override
-    public List<_throws> listIn(Node astNode ){
-        if( astNode.findCompilationUnit().isPresent()){
-            List<_throws> l = new ArrayList<>();
-            astNode.findCompilationUnit().get().walk(CallableDeclaration.class, t->{
-                if( this.matches(t) ){
-                    l.add(_throws.of(t));
-                }
-            } );
-            return l;
-        }
-        return Collections.EMPTY_LIST;
-    }
-    */
-
     @Override
     public List<Select> listSelectedIn( Node astNode ){
         List<Select>sts = new ArrayList<>();
@@ -490,6 +443,7 @@ public final class $throws
      * @param clazz
      * @return 
      */
+    @Override
     public List<Select> listSelectedIn(Class clazz){
         return listSelectedIn(_type.of(clazz));
     }

@@ -5,16 +5,11 @@ import com.github.javaparser.ast.body.VariableDeclarator;
 import com.github.javaparser.ast.expr.Name;
 import com.github.javaparser.ast.expr.SimpleName;
 import com.github.javaparser.ast.type.ClassOrInterfaceType;
-import draft.Stencil;
-import draft.Text;
-import draft.Tokens;
+import draft.*;
 import draft.java.Ast;
 import draft.java._model._node;
 import draft.java._type;
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
 
@@ -29,7 +24,6 @@ import java.util.function.Predicate;
  * @author Eric
  */
 public class $node implements $proto<Node> {
-    
     
     /**
      * 

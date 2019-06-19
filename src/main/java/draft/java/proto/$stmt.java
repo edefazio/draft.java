@@ -60,7 +60,7 @@ public final class $stmt<T extends Statement>
 
     /**
      * 
-     * @param <T>
+     * @param <S>
      * @param proto
      * @return 
      */
@@ -72,6 +72,7 @@ public final class $stmt<T extends Statement>
     /**
      * 
      * @param <T>
+     * @param <S>
      * @param proto
      * @return 
      */
@@ -84,6 +85,7 @@ public final class $stmt<T extends Statement>
      * 
      * @param <T>
      * @param <U>
+     * @param <S>
      * @param proto
      * @return 
      */
@@ -97,6 +99,7 @@ public final class $stmt<T extends Statement>
      * @param <T>
      * @param <U>
      * @param <V>
+     * @param <S>
      * @param proto
      * @return 
      */
@@ -111,6 +114,7 @@ public final class $stmt<T extends Statement>
      * @param <U>
      * @param <V>
      * @param <X>
+     * @param <S>
      * @param proto
      * @return 
      */
@@ -127,13 +131,18 @@ public final class $stmt<T extends Statement>
         return of();
     }
     
-    /** Will match ANY statement, or empty statement*/
+    /** 
+     * Will match ANY statement, or empty statemen
+     * @param <S>
+     * @return 
+     */
     public static <S extends Statement> $stmt<S> of(){
         return new $stmt( Statement.class, t-> true );
     }
         
     /**
      * 
+     * @param <S>
      * @param pattern
      * @return 
      */
@@ -144,13 +153,13 @@ public final class $stmt<T extends Statement>
     
     /**
      * 
+     * @param <S>
      * @param astProto
      * @return 
      */ 
     public static <S extends Statement> $stmt of(Statement astProto ){
         return new $stmt<>(astProto);
     }
-     
     
     /**
      * Returns a prototype that matches ANY assertStmt
