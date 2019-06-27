@@ -1035,11 +1035,12 @@ public enum Ast {
      *
      * @param path
      * @return
-     * @throws IOException
+     * @throws DraftException
      */
-    public static CompilationUnit compilationUnit(Path path)
-            throws IOException {
-        return parse(path);
+    public static CompilationUnit compilationUnit(Path path) throws DraftException {
+        CompilationUnit cu = parse(path);
+        cu.setStorage(path);
+        return cu;        
     }
 
     public static TypeDeclaration type(_in in ){
