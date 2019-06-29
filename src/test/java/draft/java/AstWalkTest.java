@@ -52,7 +52,7 @@ public class AstWalkTest extends TestCase {
 
         List<_model>parentNodes = new ArrayList<>();
         //_m.walkParents(n -> parentNodes.add( _java.of( n ) ));
-        Walk.parents(_m, n -> parentNodes.add( _java.of( n ) ));
+        Walk.parents(_m, n -> parentNodes.add( _java._modelOf( n ) ));
         assertTrue( parentNodes.get(0) instanceof _enum._constant);
         assertTrue( parentNodes.get(1) instanceof _enum);
         assertTrue( parentNodes.get(2) instanceof _class);

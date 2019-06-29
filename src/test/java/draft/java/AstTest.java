@@ -161,7 +161,7 @@ public class AstTest extends TestCase {
 
             }
         }
-        CompilationUnit cu = Ast.compilationUnit(P.class);
+        CompilationUnit cu = Ast.of(P.class);
 
         LambdaExpr le = Walk.first(cu,
                 LambdaExpr.class,
@@ -665,14 +665,14 @@ public class AstTest extends TestCase {
         assertEquals( Ast.typeDeclaration("class c{}"), Ast.classDeclaration("class c", "{", "}"));
         assertEquals( Ast.typeDeclaration("@interface at{}"), Ast.annotationDeclaration("@interface at", "{", "}"));
 
-        assertEquals( Ast.compilationUnit( "package h;", "import java.util.*;", "public class V{", "}"),
-                Ast.compilationUnit("package h;", "import java.util.*;", "", "public class V", "{}" ) );
+        assertEquals( Ast.of( "package h;", "import java.util.*;", "public class V{", "}"),
+                Ast.of("package h;", "import java.util.*;", "", "public class V", "{}" ) );
 
         Ast.typeRef("String" );
         Ast.typeRef("List<String>" );
         assertEquals( Ast.typeRef("Map< Integer,List< String >>"), Ast.typeRef("Map<Integer, List<String>>" ));
-        assertEquals( Ast.compilationUnit("public class MyClass<T> extends BaseClass implements IClass{} "),
-                Ast.compilationUnit("public class MyClass<T>","    extends BaseClass","     implements IClass","{", "}"));
+        assertEquals( Ast.of("public class MyClass<T> extends BaseClass implements IClass{} "),
+                Ast.of("public class MyClass<T>","    extends BaseClass","     implements IClass","{", "}"));
 
         assertEquals( Ast.method("void b(){}"), Ast.method("void b ()", "{", "}"));
         assertEquals( Ast.ctor("@ann", "public Ctor()", "{", "System.out.println(1);", "}" ),

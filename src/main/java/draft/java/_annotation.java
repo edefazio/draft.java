@@ -199,16 +199,16 @@ public final class _annotation
                     if(!shortcutClass.endsWith("}")){
                         shortcutClass = shortcutClass + "{}";
                     }
-                    return of( Ast.compilationUnit( "package "+packageName+";"+System.lineSeparator()+
+                    return of( Ast.of( "package "+packageName+";"+System.lineSeparator()+
                             "public @interface "+shortcutClass));
                 }
                 if(!shortcutClass.endsWith("}")){
                     shortcutClass = shortcutClass + "{}";
                 }
-                return of( Ast.compilationUnit("public @interface "+shortcutClass));
+                return of( Ast.of("public @interface "+shortcutClass));
             }
         }
-        return of( Ast.compilationUnit( classDef ));
+        return of( Ast.of( classDef ));
     }
 
     public static _annotation of( CompilationUnit cu ){

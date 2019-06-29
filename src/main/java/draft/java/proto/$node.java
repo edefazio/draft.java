@@ -223,7 +223,7 @@ public class $node implements $proto<Node> {
             ((VariableDeclarator)target).setName(replacement);
             return true;
         }  
-        Node n = Ast.of(target.getClass(), replacement);        
+        Node n = Ast.nodeOf(target.getClass(), replacement);        
         return replaceNode( target, n);                        
     }
      

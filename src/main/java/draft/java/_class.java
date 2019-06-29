@@ -214,13 +214,13 @@ public final class _class implements _type<ClassOrInterfaceDeclaration, _class>,
                     if(!shortcutClass.endsWith("}")){
                         shortcutClass = shortcutClass + "{}";
                     }
-                    return of( Ast.compilationUnit( "package "+packageName+";"+System.lineSeparator()+
+                    return of( Ast.of( "package "+packageName+";"+System.lineSeparator()+
                         "public class "+shortcutClass));
                 }
                 if(!shortcutClass.endsWith("}")){
                     shortcutClass = shortcutClass + "{}";
                 }
-                return of( Ast.compilationUnit("public class "+shortcutClass));
+                return of( Ast.of("public class "+shortcutClass));
             }
             else{
                 if( !classDef[0].trim().endsWith("}" ) ){
@@ -228,7 +228,7 @@ public final class _class implements _type<ClassOrInterfaceDeclaration, _class>,
                 }
             }
         }
-        return of( Ast.compilationUnit( classDef ));
+        return of( Ast.of( classDef ));
     }
 
     /**

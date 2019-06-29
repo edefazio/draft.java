@@ -387,7 +387,7 @@ public class $annos
     
     @Override
     public List<Select> listSelectedIn(Node astRootNode) {         
-        return listSelectedIn( (_node)_java.of(astRootNode) );        
+        return listSelectedIn( (_node)_java._modelOf(astRootNode) );        
     }
 
     @Override

@@ -135,7 +135,7 @@ public class _packageInfo
     @Override
     public boolean is(String... stringRep) {
         try {
-            return is(Ast.compilationUnit(stringRep));
+            return is(Ast.of(stringRep));
         } catch (Exception e) {
             return false;
         }

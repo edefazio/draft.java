@@ -32,7 +32,7 @@ public class _moduleInfo implements _code<_moduleInfo>, _model._node<Compilation
     @Override
     public boolean is(String... stringRep) {
         try {
-            return is(Ast.compilationUnit(stringRep));
+            return is(Ast.of(stringRep));
         } catch (Exception e) {
             return false;
         }

@@ -21,25 +21,25 @@ import junit.framework.TestCase;
 public class SprotoCodeTest extends TestCase {
     
     public void testAstTypes(){
-        CompilationUnit classAst = Ast.compilationUnit( 
+        CompilationUnit classAst = Ast.of( 
             "package com.github.javaparser.ast;"+System.lineSeparator()+"public class A{}");
             
-        CompilationUnit packageInfoAst = Ast.compilationUnit(
+        CompilationUnit packageInfoAst = Ast.of(
             "/* License Erics 101 */"+ System.lineSeparator() +    
             "package com.github.javaparser.ast;"+System.lineSeparator()+ 
             "import java.util.*;"+System.lineSeparator()+         
             "/** Javadoc Comment */");
         
-        CompilationUnit modAst = Ast.compilationUnit(
+        CompilationUnit modAst = Ast.of(
             "/* License 101 */"    + System.lineSeparator()+
             "import java.util.Map;" + System.lineSeparator()+
             "module aaaa {" + System.lineSeparator()+
             "    requires bbbb;" + System.lineSeparator()+
             "    requires static cccc;" + System.lineSeparator()+
             "}"); 
-        _code _c = (_code)_java.of(classAst);
-        _code _pI = (_code)_java.of(packageInfoAst);
-        _code _mI = (_code)_java.of(modAst);
+        _code _c = (_code)_java._modelOf(classAst);
+        _code _pI = (_code)_java._modelOf(packageInfoAst);
+        _code _mI = (_code)_java._modelOf(modAst);
         
         
         assertTrue( _c instanceof _type);

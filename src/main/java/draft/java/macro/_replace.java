@@ -69,7 +69,7 @@ public @interface _replace {
                 throw new DraftException(
                         "Unable to replaceIn "+oldNode+" with "+newNode+" in Macro at AST level");
             }
-            return (_anno._hasAnnos) _java.of(newNode);
+            return (_anno._hasAnnos) _java._modelOf(newNode);
         }
     }
 }  

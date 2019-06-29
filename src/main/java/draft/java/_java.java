@@ -1,6 +1,5 @@
 package draft.java;
 
-import com.github.javaparser.StaticJavaParser;
 import com.github.javaparser.ast.*;
 import com.github.javaparser.ast.body.*;
 import com.github.javaparser.ast.comments.*;
@@ -31,6 +30,10 @@ import draft.java._throws._hasThrows;
 import draft.java._type._hasExtends;
 import draft.java._type._hasImplements;
 import draft.java._typeParameter._typeParameters;
+import java.io.File;
+import java.io.InputStream;
+import java.io.Reader;
+import java.nio.file.Path;
 
 /**
  * Translates between AST {@link Node} entities to {@link _model} runtime
@@ -197,7 +200,53 @@ public enum _java {
         AST_NODE_TO_JAVA_CLASSES.put(AnnotationDeclaration.class, _annotation.class);
     }
 
-    public static _code _codeOf( CompilationUnit astRoot ){
+    /**
+     * Read and return a _code from the .java source code file at javaSourceFilePath
+     * @param javaSourceFilePath the path to the local Java source code
+     * @return the _code instance
+     */
+    public static _code of(Path javaSourceFilePath) throws DraftException{
+        return of( Ast.of(javaSourceFilePath) );
+    }
+    
+    /**
+     * Read and return the appropriate _code model based on the .java source
+     * within the javaSourceInputStream
+     * @param javaSourceInputStream
+     * @return 
+     */
+    public static _code of(InputStream javaSourceInputStream) throws DraftException {
+        return of(Ast.of(javaSourceInputStream));
+    }
+    
+    /**
+     * Read and return the appropriate _code model based on the .java source
+     * within the javaSourceFile
+     * @param javaSourceFile
+     * @return
+     * @throws DraftException 
+     */
+    public static _code of(File javaSourceFile) throws DraftException {
+        return of( Ast.of(javaSourceFile) );
+    }
+    
+    /**
+     * build and return the _code wrapper to encapsulate the AST representation
+     * of the .java source code stored in the javaSourceReader
+     * @param javaSourceReader reader containing .java source code
+     * @return the _code model instance representing the source
+     */
+    public static _code of( Reader javaSourceReader ) throws DraftException {
+        return of(Ast.of(javaSourceReader) );
+    }
+    
+    /**
+     * build the appropriate draft wrapper object to encapsulate the AST 
+     * compilationUnit
+     * @param astRoot the AST
+     * @return a _code wrapper implementation that wraps the AST
+     */
+    public static _code of( CompilationUnit astRoot ){
         if (astRoot.getModule().isPresent()) {
             return _moduleInfo.of(astRoot);
         }
@@ -230,7 +279,7 @@ public enum _java {
      */
     public static Node nodeOf(Class nodeClass, String... code) {
         if (!_model.class.isAssignableFrom(nodeClass)) {
-            return Ast.of(nodeClass, code);
+            return Ast.nodeOf(nodeClass, code);
         }
         if (_anno.class == nodeClass) {
             return anno(code);
@@ -276,7 +325,7 @@ public enum _java {
      * since there are no logical entities for
      * {@link com.github.javaparser.ast.expr.Expression}, or
      * {@link com.github.javaparser.ast.stmt.Statement} Node implementations,
-     * this will fail
+     * this will fail if these are passed in the input
      * <PRE>
      * handles:
      * all {@link _type}s:
@@ -298,7 +347,7 @@ public enum _java {
      * @param node the ast node
      * @return the _model entity
      */
-    public static _model of(Node node) {
+    public static _model _modelOf(Node node) {
         if (node instanceof AnnotationExpr) {
             return _anno.of((AnnotationExpr) node);
         }
@@ -382,7 +431,7 @@ public enum _java {
             return _typeRef.of((Type) node);
         }
         if (node instanceof CompilationUnit) {
-            return _codeOf( (CompilationUnit)node);                     
+            return of( (CompilationUnit)node);                     
         }
         throw new DraftException("Unable to create logical entity from " + node);
     }
@@ -526,6 +575,4 @@ public enum _java {
             return Component.ANNOTATION;
         }
     }
-
-    
 }

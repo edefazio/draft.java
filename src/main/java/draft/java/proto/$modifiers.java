@@ -242,12 +242,12 @@ public class $modifiers
     }
 
     public <N extends Node> N forSelectedIn(N astRootNode, Consumer<Select> selectActionFn) {
-        forSelectedIn( (_node)_java.of(astRootNode), selectActionFn );
+        forSelectedIn( (_node)_java._modelOf(astRootNode), selectActionFn );
         return astRootNode;
     }
     
     public <N extends Node> N forSelectedIn(N astRootNode, Predicate<Select> selectConstraint, Consumer<Select> selectActionFn) {
-        forSelectedIn( (_node)_java.of(astRootNode), selectConstraint, selectActionFn );
+        forSelectedIn( (_node)_java._modelOf(astRootNode), selectConstraint, selectActionFn );
         return astRootNode;
     }
     

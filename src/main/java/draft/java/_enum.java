@@ -57,16 +57,16 @@ public final class _enum implements _type<EnumDeclaration, _enum>,_method._hasMe
                     if(!shortcutClass.endsWith("}")){
                         shortcutClass = shortcutClass + "{}";
                     }
-                    return of( Ast.compilationUnit( "package "+packageName+";"+System.lineSeparator()+
+                    return of( Ast.of( "package "+packageName+";"+System.lineSeparator()+
                             "public enum "+shortcutClass));
                 }
                 if(!shortcutClass.endsWith("}")){
                     shortcutClass = shortcutClass + "{}";
                 }
-                return of( Ast.compilationUnit("public enum "+shortcutClass));
+                return of( Ast.of("public enum "+shortcutClass));
             }
         }
-        return of( Ast.compilationUnit( classDef ));
+        return of( Ast.of( classDef ));
     }
 
     public static _enum of( CompilationUnit cu ){
@@ -139,7 +139,7 @@ public final class _enum implements _type<EnumDeclaration, _enum>,_method._hasMe
     @Override
     public boolean is(String...stringRep){
         try{
-            return equals(of(Ast.compilationUnit(stringRep)));
+            return equals(of(Ast.of(stringRep)));
         } catch(Exception e){
             return false;
         }

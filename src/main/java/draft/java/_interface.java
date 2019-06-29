@@ -67,16 +67,16 @@ public final class _interface implements _type<ClassOrInterfaceDeclaration, _int
                     if(!shortcutClass.endsWith("}")){
                         shortcutClass = shortcutClass + "{}";
                     }
-                    return of( Ast.compilationUnit( "package "+packageName+";"+System.lineSeparator()+
+                    return of( Ast.of( "package "+packageName+";"+System.lineSeparator()+
                             "public interface "+shortcutClass));
                 }
                 if(!shortcutClass.endsWith("}")){
                     shortcutClass = shortcutClass + "{}";
                 }
-                return of( Ast.compilationUnit("public interface "+shortcutClass));
+                return of( Ast.of("public interface "+shortcutClass));
             }
         }
-        return of( Ast.compilationUnit( interfaceDef ));
+        return of( Ast.of( interfaceDef ));
     }
 
     public static _interface of( String signature, Object anonymousBody, _macro<_type>...typeMacros) {
