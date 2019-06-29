@@ -617,7 +617,7 @@ public final class _method
         }
 
         /**
-         * Adds a method (with source declared in an anonymous class) to the 
+         * Adds a Draft method (with source declared in an anonymous class) to the 
          * type and returns the modified type
          * NOTE: ALSO adds any imports that exist on the public API to the type
          * 
