@@ -343,21 +343,21 @@ public interface _code<T> extends _model {
                     if (classesToImport[i] == null
                             || classesToImport[i].isPrimitive()
                             || classesToImport[i].isArray() && classesToImport[i].getComponentType().isPrimitive()
-                            || classesToImport[i].getPackageName().equals("java.lang")) {
-                        break;
+                            || classesToImport[i].getPackageName().equals("java.lang")) {                        
+                    } else{
+                        String cn = classesToImport[i].getCanonicalName();
+                        //fix a minor bug in JavaParser API where anything in "java.lang.**.*" is not imported
+                        // so java.lang.annotation.* classes are not imported when they should be
+                        if (classesToImport[i].getPackage() != Integer.class.getPackage()
+                                && classesToImport[i].getCanonicalName().startsWith("java.lang")) {
+                            //System.out.println( "manually adding "+ classesToImport[i].getCanonicalName());
+                            cu.addImport(classesToImport[i].getCanonicalName());
+                        } else {
+                            cu.addImport(cn);
+                        }
                     }
-                    String cn = classesToImport[i].getCanonicalName();
-                    //fix a minor bug in JavaParser API where anything in "java.lang.**.*" is not imported
-                    // so java.lang.annotation.* classes are not imported when they should be
-                    if (classesToImport[i].getPackage() != Integer.class.getPackage()
-                            && classesToImport[i].getCanonicalName().startsWith("java.lang")) {
-                        //System.out.println( "manually adding "+ classesToImport[i].getCanonicalName());
-                        cu.addImport(classesToImport[i].getCanonicalName());
-                    } else {
-                        cu.addImport(cn);
-                    }
-                }
-            }
+                }                
+            }            
             return (T) this;
         }
         throw new DraftException("No AST CompilationUnit to add imports");
