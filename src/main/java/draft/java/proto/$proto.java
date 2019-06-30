@@ -262,6 +262,7 @@ public interface $proto<Q> {
      * @return the (potentially modified) _type 
      */
     default _type forEachIn(Class clazz, Consumer<Q>_nodeActionFn ){
+        
         return forEachIn(_type.of(clazz), _nodeActionFn);
     }
     
@@ -274,9 +275,22 @@ public interface $proto<Q> {
      * @param _nodeActionFn the function to run on all matching entities
      * @return the modified _java node
      */
-    default <N extends _node> N forEachIn(N _n, Consumer<Q> _nodeActionFn){
-        forEachIn(_n.ast(), _nodeActionFn);
-        return _n;
+    default <N extends _model> N forEachIn(N _m, Consumer<Q> _nodeActionFn){
+        return forEachIn(_m, t->true, _nodeActionFn);
+        /*
+        if( _m instanceof _code ){
+            _code _c = (_code)_m;
+            if( _c.isTopLevel() ){
+                return listSelectedIn(_c.astCompilationUnit());
+            }
+            _type _t = (_type)_m; //only possible 
+            return listSelectedIn(_t.ast()); //return the TypeDeclaration, not the CompilationUnit
+        } else{
+            return forEachIn( ((_node)_m).ast(), _nodeActionFn); 
+        }
+        */
+        //forEachIn(_n.ast(), _nodeActionFn);
+        //return _n;
     }
     
     /**
@@ -290,9 +304,24 @@ public interface $proto<Q> {
      * matching node
      * @return the modified astRootNode
      */
-    default <N extends _node> N forEachIn(N _n, Predicate<Q> _nodeMatchFn, Consumer<Q> _nodeActionFn){
-        forEachIn(_n.ast(), _nodeMatchFn, _nodeActionFn);
-        return _n;
+    default <N extends _model> N forEachIn(N _m, Predicate<Q> _nodeMatchFn, Consumer<Q> _nodeActionFn){
+        if( _m instanceof _code ){
+            _code _c = (_code)_m;
+            if( _c.isTopLevel() ){
+                forEachIn(_c.astCompilationUnit(), _nodeMatchFn, _nodeActionFn);
+                return _m;
+            }
+            _type _t = (_type)_m; //only possible 
+            forEachIn(_t.ast(), _nodeMatchFn, _nodeActionFn); //return the TypeDeclaration, not the CompilationUnit
+            return _m;
+        }
+        forEachIn( ((_node)_m).ast(), _nodeMatchFn, _nodeActionFn);
+        return _m;
+         
+        //return listSelectedIn( ((_node)_m).ast()); 
+        
+        //forEachIn(_n.ast(), _nodeMatchFn, _nodeActionFn);
+        //return _n;
     }
     
     /**
@@ -352,7 +381,7 @@ public interface $proto<Q> {
      * @param _n
      * @return 
      */
-    default <N extends _node> int count(N _n ){
+    default <N extends _model> int count(N _n ){
         AtomicInteger ai = new AtomicInteger(0);
         forEachIn( _n, e -> ai.incrementAndGet() );
         return ai.get();
@@ -383,8 +412,8 @@ public interface $proto<Q> {
      * @param <N> the TYPE of model node
      * @return the modified model node
      */
-    default <N extends _node> N removeIn(N _n){
-        removeIn(_n.ast());
+    default <N extends _model> N removeIn(N _n){
+        removeIn(_n, t->true);
         return _n;
     }
     
@@ -395,9 +424,20 @@ public interface $proto<Q> {
      * @param _nodeMatchFn
      * @return the modified model node
      */
-    default <N extends _node> N removeIn(N _n, Predicate<Q> _nodeMatchFn){
-        removeIn(_n.ast(), _nodeMatchFn);
-        return _n;
+    default <N extends _model> N removeIn(N _m, Predicate<Q> _nodeMatchFn){
+        //removeIn(_n.ast(), _nodeMatchFn);
+        if( _m instanceof _code ){
+            _code _c = (_code)_m;
+            if( _c.isTopLevel() ){
+                removeIn(_c.astCompilationUnit(), _nodeMatchFn);
+                return _m;
+            }
+            _type _t = (_type)_m; //only possible 
+            removeIn(_t.ast(), _nodeMatchFn); //return the TypeDeclaration, not the CompilationUnit
+            return _m;
+        }
+        removeIn( ((_node)_m).ast(), _nodeMatchFn); 
+        return _m;
     }
     
     /**

@@ -489,8 +489,9 @@ public final class $snip implements Template<List<Statement>>, $proto<List<State
         return astNode;
     }
 
+    
     @Override
-    public <N extends _node> N removeIn( N _n ){
+    public <N extends _model> N removeIn( N _n ){
         List<Select> sels= (List<Select>)listSelectedIn(_n);
         sels.forEach(s -> s.statements.forEach(st-> st.removeForced()));
         return _n;

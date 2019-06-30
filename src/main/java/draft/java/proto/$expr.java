@@ -1903,11 +1903,12 @@ public class $expr <T extends Expression>
         } );
         return typesList;
     }
-    
+    /*
     @Override
     public <N extends _node> N forEachIn(N _n, Consumer<T> expressionActionFn){
         return forEachIn(_n, t->true, expressionActionFn);
     }
+    */
     
     @Override
     public <N extends Node> N forEachIn(N astNode, Consumer<T> expressionActionFn){
@@ -2026,6 +2027,7 @@ public class $expr <T extends Expression>
         return removeIn(astNode, t->true);
     }
     
+    /*
     @Override
     public <N extends _node> N removeIn(N _n){
         Walk.in(_n, this.expressionClass, e-> {
@@ -2036,6 +2038,7 @@ public class $expr <T extends Expression>
         });
         return _n;
     }
+    */
 
     /**
      * 
