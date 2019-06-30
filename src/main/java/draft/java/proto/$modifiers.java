@@ -187,16 +187,6 @@ public class $modifiers
         return null;
     }
     
-    /**
-     * 
-     * @param _n
-     * @return 
-     */
-    @Override
-    public Select selectFirstIn( _node _n ){
-        return selectFirstIn( _n.ast() );
-    }
-    
     @Override
     public List<Select> listSelectedIn(Node astRootNode) {
         List<Select> found = new ArrayList<>();

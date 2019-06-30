@@ -413,16 +413,6 @@ public final class $snip implements Template<List<Statement>>, $proto<List<State
     
     /**
      * 
-     * @param _n
-     * @return 
-     */
-    @Override
-    public Select selectFirstIn( _node _n){
-        return selectFirstIn( _n.ast());
-    }
-    
-    /**
-     * 
      * @param astNode the top ast node to run
      * @return the Select
      */

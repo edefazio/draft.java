@@ -352,23 +352,6 @@ public final class $throws
     
     /**
      * Returns the first _import that matches the pattern and constraint
-     * @param _n the _java node
-     * @return  the first _import that matches (or null if none found)
-     */
-    @Override
-    public Select selectFirstIn( _node _n ){
-        if( _n.ast().findCompilationUnit().isPresent() ){
-            Optional<CallableDeclaration> f = _n.ast().findCompilationUnit().get()
-                    .findFirst(CallableDeclaration.class, s -> this.matches(s) );         
-            if( f.isPresent()){
-                return select(f.get());
-            }
-        }
-        return null;
-    }
-
-    /**
-     * Returns the first _import that matches the pattern and constraint
      * @param astNode the node to look through
      * @return  the first _import that matches (or null if none found)
      */

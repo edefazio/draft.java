@@ -32,7 +32,7 @@ public interface _code<T> extends _model {
 
     /**
      * A top level source code unit is the top level type, a "module-info.java"
-     * file or a "package-info.java" file
+     * file or a "package-info.java" file 
      *
      * @return
      */

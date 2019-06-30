@@ -1170,17 +1170,22 @@ public final class $stmt<T extends Statement>
 
     /**
      * Returns the first Statement that matches the 
-     * @param _n
+     * @param _m
      * @return 
      */
     @Override
-    public Select<T> selectFirstIn( _node _n ){
-        Optional<T> f = _n.ast().findFirst(this.statementClass, s -> this.matches(s) );         
-        if( f.isPresent()){
-            return select( f.get() );
+    public Select<T> selectFirstIn( _model _m ){
+        if( _m instanceof _code ){
+            _code _c = (_code)_m;
+            if( _c.isTopLevel() ){
+                return selectFirstIn(_c.astCompilationUnit());
+            }
+            _type _t = (_type)_m; //only possible 
+            return selectFirstIn(_t.ast());
         }
-        return null;
+        return selectFirstIn( ((_node)_m).ast() ); 
     }
+     
 
     /**
      * Returns the first Statement that matches the 

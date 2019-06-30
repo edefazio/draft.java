@@ -488,16 +488,6 @@ public class $anno
         }
         return null;        
     }
-
-    /**
-     * 
-     * @param _n
-     * @return 
-     */
-    @Override
-    public Select selectFirstIn( _node _n) {
-        return $anno.this.selectFirstIn( _n.ast() );        
-    }
     
     /**
      * 

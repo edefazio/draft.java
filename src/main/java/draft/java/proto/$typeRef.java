@@ -343,20 +343,6 @@ public final class $typeRef
         }
         return null;
     }
-    
-    /**
-     * Returns the first Type that matches the pattern and constraint
-     * @param _n the _java node
-     * @return  the first Type that matches (or null if none found)
-     */
-    @Override
-    public Select selectFirstIn( _node _n ){
-        Optional<Type> f = _n.ast().findFirst(Type.class, s -> this.matches(s) );         
-        if( f.isPresent()){
-            return select(f.get());
-        }
-        return null;
-    }
 
     /**
      * Returns the first Type that matches the pattern and constraint

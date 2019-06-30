@@ -1810,17 +1810,22 @@ public class $expr <T extends Expression>
     
     /**
      * Returns the first Expression that matches the pattern and constraint
-     * @param _n the _java node
+     * @param _m the _java model node
      * @return  the first Expression that matches (or null if none found)
      */
     @Override
-    public Select<T> selectFirstIn( _node _n ){
-        Optional<T> f = _n.ast().findFirst(this.expressionClass, s -> this.matches(s) );         
-        if( f.isPresent()){
-            return select(f.get());
+    public Select<T> selectFirstIn( _model _m ){
+        if( _m instanceof _code ){
+            _code _c = (_code)_m;
+            if( _c.isTopLevel() ){
+                return selectFirstIn(_c.astCompilationUnit());
+            }
+            _type _t = (_type)_m; //only possible 
+            return selectFirstIn(_t.ast());
         }
-        return null;
+        return selectFirstIn( ((_node)_m).ast() );         
     }
+    
 
     /**
      * Returns the first Expression that matches the pattern and constraint

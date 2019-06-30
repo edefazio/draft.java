@@ -39,7 +39,6 @@ public class BugFixAndSourceStatisticsTest extends TestCase {
      * Here's the discussion of errorprone (this specific case matches when someone throws null)
      * https://youtu.be/sPW2Pz2dI9E?list=PLX8CzqL3ArzVnxC6PYxMlngEMv3W1pIkn&t=998
      */
-    //public static final $stmt $THROW_NULL = $stmt.of("throw null;");
     public static final $stmt<ThrowStmt> $THROW_NULL = $stmt.throwStmt("throw null;");
     
     /** This is the suggested "fix" instead of throwing null*/

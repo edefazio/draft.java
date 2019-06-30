@@ -667,30 +667,6 @@ public class $parameter implements Template<_parameter>, $proto<_parameter> {
     }
     
     /**
-     * 
-     * @param clazz
-     * @return 
-     */
-    @Override
-    public Select selectFirstIn( Class clazz ){
-        return selectFirstIn( _type.of(clazz));
-    }
-    
-    /**
-     * Returns the first _field that matches the pattern and constraint
-     * @param _n the _java node
-     * @return  the first _field that matches (or null if none found)
-     */
-    @Override
-    public Select selectFirstIn( _node _n ){
-        Optional<Parameter> p = _n.ast().findFirst(Parameter.class, s -> this.matches(s) );         
-        if( p.isPresent()){
-            return select(p.get());
-        }
-        return null;
-    }
-    
-    /**
      * Returns the first _field that matches the pattern and constraint
      * @param astNode the AST Node
      * @return  the first _field that matches (or null if none found)

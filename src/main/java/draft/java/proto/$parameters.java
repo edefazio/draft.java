@@ -209,11 +209,6 @@ public class $parameters implements Template<_parameters>, $proto<_parameters>,
         return null;
     }    
     
-    @Override
-    public _parameters firstIn( _node _n ){
-        return firstIn( _n.ast() );
-    }
-    
     
     @Override
     public Select selectFirstIn( Node astNode ){

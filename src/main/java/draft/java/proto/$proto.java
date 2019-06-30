@@ -49,21 +49,37 @@ public interface $proto<Q> {
     
     /**
      * Find the first instance matching the prototype instance within the node
-     * @param _n the "top" draft node
+     * @param _m the the _model node
      * @return  the first matching instance or null if none is found
      */
-    default Q firstIn(_node _n){
-        return firstIn(_n.ast());
+    default Q firstIn(_model _m){
+        if( _m instanceof _code ){
+            _code _c = (_code)_m;
+            if( _c.isTopLevel() ){
+                return firstIn(_c.astCompilationUnit());
+            }
+            _type _t = (_type)_m;
+            return firstIn(_t.ast());
+        }
+        return firstIn( ((_node)_m).ast());
     }
     
     /**
      * 
-     * @param _n
+     * @param _m
      * @param _nodeMatchFn
      * @return 
      */
-    default Q firstIn(_node _n, Predicate<Q> _nodeMatchFn){
-        return firstIn(_n.ast(), _nodeMatchFn);
+    default Q firstIn(_model _m, Predicate<Q> _nodeMatchFn){
+        if( _m instanceof _code ){
+            _code _c = (_code)_m;
+            if( _c.isTopLevel() ){
+                return firstIn(_c.astCompilationUnit(), _nodeMatchFn);
+            }
+            _type _t = (_type)_m; //only possible 
+            return firstIn(_t.ast(), _nodeMatchFn);
+        }
+        return firstIn( ((_node)_m).ast(), _nodeMatchFn);        
     }
     
     /**
@@ -96,11 +112,19 @@ public interface $proto<Q> {
     /**
      * 
      * @param <S>
-     * @param _n
+     * @param _m
      * @return 
      */
-    default <S extends selected<Q>> S selectFirstIn( _node _n ){
-        return selectFirstIn( _n.ast() );    
+    default <S extends selected<Q>> S selectFirstIn( _model _m ){
+         if( _m instanceof _code ){
+            _code _c = (_code)_m;
+            if( _c.isTopLevel() ){
+                return selectFirstIn(_c.astCompilationUnit());
+            }
+            _type _t = (_type)_m; //only possible 
+            return selectFirstIn(_t.ast());
+        }
+        return selectFirstIn( ((_node)_m).ast() );       
     }
     
     /**

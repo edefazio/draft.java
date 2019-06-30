@@ -489,20 +489,6 @@ public class $var
     public Select selectFirstIn( Class clazz){
         return selectFirstIn(_type.of(clazz));
     }
-    
-    /**
-     * Returns the first VaribleDeclarator that matches the pattern and constraint
-     * @param _n the _java node
-     * @return  the first VaribleDeclarator that matches (or null if none found)
-     */
-    @Override
-    public Select selectFirstIn( _node _n ){
-        Optional<VariableDeclarator> f = _n.ast().findFirst(VariableDeclarator.class, s -> this.matches(s) );         
-        if( f.isPresent()){
-            return select(f.get());
-        }
-        return null;
-    }
 
     /**
      * Returns the first Select VaribleDeclarator that matches the pattern and constraint
