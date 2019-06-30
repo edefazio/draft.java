@@ -447,7 +447,7 @@ public class $parameter implements Template<_parameter>, $proto<_parameter> {
      */
     @Override
     public List<Select>listSelectedIn( Class clazz){
-        return listSelectedIn(_type.of(clazz));
+        return (List<Select>)listSelectedIn(_type.of(clazz));
     }
     
     @Override
@@ -462,6 +462,7 @@ public class $parameter implements Template<_parameter>, $proto<_parameter> {
         return found;
     }
 
+    /*
     @Override
     public List<Select> listSelectedIn(_node _n) {
         List<Select> found = new ArrayList<>();
@@ -473,6 +474,7 @@ public class $parameter implements Template<_parameter>, $proto<_parameter> {
         });
         return found;
     }
+    */
     
     /**
      * 

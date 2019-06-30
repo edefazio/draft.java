@@ -1369,7 +1369,7 @@ public final class $stmt<T extends Statement>
      */
     @Override
     public List<Select<T>> listSelectedIn(Class clazz){
-        return listSelectedIn(_type.of(clazz));
+        return (List<Select<T>>)listSelectedIn(_type.of(clazz));
     }
     
     @Override
@@ -1385,6 +1385,7 @@ public final class $stmt<T extends Statement>
         return sts;
     }
     
+    /*
     @Override
     public List<Select<T>> listSelectedIn(_node _n ){
         List<Select<T>>sts = new ArrayList<>();
@@ -1397,6 +1398,7 @@ public final class $stmt<T extends Statement>
         });
         return sts;
     }
+    */
 
     /**
      * 

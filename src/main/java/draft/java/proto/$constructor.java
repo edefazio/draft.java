@@ -832,26 +832,28 @@ public class $constructor
     }
     
     @Override
-    public List<Select> listSelectedIn(_node _n){
-        List<Select>sts = new ArrayList<>();
-        Walk.in(_n, ConstructorDeclaration.class, m -> {
-            Select sel = select( m );
-            if( sel != null ){
-                sts.add(sel);
+    public List<Select> listSelectedIn(_model _m){
+        if( _m instanceof _code ){
+            _code _c = (_code)_m;
+            if( _c.isTopLevel() ){
+                return listSelectedIn(_c.astCompilationUnit());
             }
-        });
-        return sts;
+            _type _t = (_type)_m; //only possible 
+            return listSelectedIn(_t.ast()); //return the TypeDeclaration, not the CompilationUnit
+        }
+        return listSelectedIn( ((_node)_m).ast());         
     }
     
     /**
      * 
      * @param clazz
      * @return 
-     */
+     
     @Override
     public List<Select> listSelectedIn(Class clazz){
-        return listSelectedIn( _type.of(clazz));        
+        return (List<Select>)listSelectedIn( _type.of(clazz));        
     }
+    */ 
     
     /**
      * 

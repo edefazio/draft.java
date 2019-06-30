@@ -425,16 +425,19 @@ public final class $throws
      * 
      * @param clazz
      * @return 
-     */
+     
     @Override
     public List<Select> listSelectedIn(Class clazz){
         return listSelectedIn(_type.of(clazz));
     }
+    */ 
     
+    /*
     @Override
     public List<Select> listSelectedIn( _node _n ){
         return listSelectedIn( _n.ast() );        
     }
+    */
     
     /**
      * 

@@ -311,7 +311,7 @@ public class $typeUse {
     
     public <N extends Node> List<$node.Select> listSelectedIn( N astRootNode, Predicate<$node.Select> selectConstraint){
         List<$node.Select> sels = new ArrayList<>();
-        sels.addAll( $fullName.selectListIn(astRootNode, selectConstraint) );
+        sels.addAll( $fullName.listSelectedIn(astRootNode, selectConstraint) );
         $memberNames.forEach( e-> sels.addAll( e.listSelectedIn(astRootNode) ) );
         sels.addAll( $simpleName.listSelectedIn(astRootNode) );
         
@@ -359,7 +359,7 @@ public class $typeUse {
     
     public <N extends _node> List<$node.Select> listSelectedIn( N _n, Predicate<$node.Select> selectConstraint){
         List<$node.Select> sels = new ArrayList<>();
-        sels.addAll( $fullName.selectListIn(_n, selectConstraint) );
+        sels.addAll( $fullName.listSelectedIn(_n, selectConstraint) );
         $memberNames.forEach( e-> sels.addAll( e.listSelectedIn(_n) ) );
         sels.addAll( $simpleName.listSelectedIn(_n) );
         

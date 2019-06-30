@@ -383,16 +383,19 @@ public final class $import
      * 
      * @param clazz
      * @return 
-     */
+     
     @Override
     public List<Select> listSelectedIn(Class clazz){
-        return listSelectedIn(_type.of(clazz));
+        return (List<Select>)listSelectedIn(_type.of(clazz));
     }
+    */ 
     
+    /*
     @Override
     public List<Select> listSelectedIn( _node _n ){
         return $import.this.listSelectedIn( _n.ast() );        
     }
+    */
     
     /**
      * 

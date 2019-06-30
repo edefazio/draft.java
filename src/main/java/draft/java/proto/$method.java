@@ -836,6 +836,7 @@ public class $method
         return sts;
     }
 
+    /*
     @Override
     public List<Select> listSelectedIn(_node _n){
         List<Select>sts = new ArrayList<>();
@@ -847,16 +848,18 @@ public class $method
         });
         return sts;
     }
+    */
     
     /**
      * 
      * @param clazz
      * @return 
-     */
+     
     @Override
     public List<Select> listSelectedIn(Class clazz){
-        return $method.this.listSelectedIn( _type.of(clazz));        
+        return listSelectedIn( _type.of(clazz));        
     }
+    */ 
     
     /**
      * 

@@ -566,15 +566,16 @@ public class $var
     }
 
     @Override
-    public List<Select> listSelectedIn(_node _n ){
-        List<Select>sts = new ArrayList<>();
-        Walk.in(_n, VariableDeclarator.class, e -> {
-            Select s = select( e );
-            if( s != null ){
-                sts.add( s);
+    public List<Select> listSelectedIn(_model _m ){
+        if( _m instanceof _code ){
+            _code _c = (_code)_m;
+            if( _c.isTopLevel() ){
+                return listSelectedIn(_c.astCompilationUnit());
             }
-        });
-        return sts;
+            _type _t = (_type)_m; //only possible 
+            return listSelectedIn(_t.ast()); //return the TypeDeclaration, not the CompilationUnit
+        }
+        return listSelectedIn( ((_node)_m).ast());         
     }
     
     /**

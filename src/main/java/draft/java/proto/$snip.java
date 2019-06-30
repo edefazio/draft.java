@@ -458,16 +458,18 @@ public final class $snip implements Template<List<Statement>>, $proto<List<State
     }
     
     @Override
-    public List<Select> listSelectedIn(_node _n ){
-        List<Select>sts = new ArrayList<>();
-        Walk.in(_n, this.$sts.get(0).statementClass, st -> {
-            Select sel = select( (Statement)st );
-            if( sel != null ){
-                sts.add( sel );
+    public List<Select> listSelectedIn(_model _m ){
+        if( _m instanceof _code ){
+            _code _c = (_code)_m;
+            if( _c.isTopLevel() ){
+                return listSelectedIn(_c.astCompilationUnit());
             }
-        });
-        return sts;
+            _type _t = (_type)_m; //only possible 
+            return listSelectedIn(_t.ast()); //return the TypeDeclaration, not the CompilationUnit
+        }
+        return listSelectedIn( ((_node)_m).ast());         
     }
+    
 
     @Override
     public List<Select> listSelectedIn(Node astNode ){
@@ -489,7 +491,8 @@ public final class $snip implements Template<List<Statement>>, $proto<List<State
 
     @Override
     public <N extends _node> N removeIn( N _n ){
-        listSelectedIn(_n ).forEach(s -> s.statements.forEach(st-> st.removeForced()));
+        List<Select> sels= (List<Select>)listSelectedIn(_n);
+        sels.forEach(s -> s.statements.forEach(st-> st.removeForced()));
         return _n;
     }
     

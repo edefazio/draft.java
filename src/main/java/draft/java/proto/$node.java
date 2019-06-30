@@ -7,6 +7,8 @@ import com.github.javaparser.ast.expr.SimpleName;
 import com.github.javaparser.ast.type.ClassOrInterfaceType;
 import draft.*;
 import draft.java.Ast;
+import draft.java._code;
+import draft.java._model;
 import draft.java._model._node;
 import draft.java._type;
 import java.util.*;
@@ -156,12 +158,23 @@ public class $node implements $proto<Node> {
     }
 
     @Override
-    public List<Select> listSelectedIn(_node _n) {
-        if( _n instanceof _type && ((_type)_n).isTopLevel()){
-            return listSelectedIn( ((_type)_n).astCompilationUnit() );
+    public List<Select> listSelectedIn(_model _m) {
+        if( _m instanceof _code ){
+            _code _c = (_code)_m;
+            if( _c.isTopLevel() ){
+                return listSelectedIn(_c.astCompilationUnit());
+            }
+            _type _t = (_type)_m; //only possible 
+            return listSelectedIn(_t.ast()); //return the TypeDeclaration, not the CompilationUnit
         }
-        return listSelectedIn(_n.ast());
+        return listSelectedIn( ((_node)_m).ast()); 
+        
+        //if( _n instanceof _type && ((_type)_n).isTopLevel()){
+        //    return listSelectedIn( ((_type)_n).astCompilationUnit() );
+        //}
+       // return listSelectedIn(_n.ast());
     }
+
 
     /**
      * 
@@ -169,7 +182,7 @@ public class $node implements $proto<Node> {
      * @param selectConstraint
      * @return 
      */
-    public List<Select> selectListIn(Node astRootNode, Predicate<Select> selectConstraint) {
+    public List<Select> listSelectedIn(Node astRootNode, Predicate<Select> selectConstraint) {
         List<Select> found = new ArrayList<>();
         astRootNode.walk(n -> {
             Select select = select(n);
@@ -186,11 +199,11 @@ public class $node implements $proto<Node> {
      * @param selectConstraint
      * @return 
      */
-    public List<Select> selectListIn(_node _n, Predicate<Select> selectConstraint) {
+    public List<Select> listSelectedIn(_node _n, Predicate<Select> selectConstraint) {
         if( _n instanceof _type && ((_type)_n).isTopLevel()){
-            return selectListIn( ((_type)_n).astCompilationUnit(), selectConstraint );
+            return $node.this.listSelectedIn( ((_type)_n).astCompilationUnit(), selectConstraint );
         }
-        return selectListIn(_n.ast(), selectConstraint);
+        return $node.this.listSelectedIn(_n.ast(), selectConstraint);
     }
     
     private static boolean replaceNode( Node target, Node replacement ){

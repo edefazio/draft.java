@@ -388,8 +388,16 @@ public final class $typeRef
     }
 
     @Override
-    public List<Select> listSelectedIn(_node _n ){
-        return listSelectedIn(_n.ast() );
+    public List<Select> listSelectedIn(_model _m ){
+        if( _m instanceof _code ){
+            _code _c = (_code)_m;
+            if( _c.isTopLevel() ){
+                return listSelectedIn(_c.astCompilationUnit());
+            }
+            _type _t = (_type)_m; //only possible 
+            return listSelectedIn(_t.ast()); //return the TypeDeclaration, not the CompilationUnit
+        }
+        return listSelectedIn( ((_node)_m).ast()); 
     }
 
     /**

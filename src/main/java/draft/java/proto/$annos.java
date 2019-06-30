@@ -387,9 +387,20 @@ public class $annos
     
     @Override
     public List<Select> listSelectedIn(Node astRootNode) {         
-        return listSelectedIn( (_node)_java._modelOf(astRootNode) );        
+        //return listSelectedIn( (_node)_java._modelOf(astRootNode) );   
+        List<Select> found = new ArrayList<>();
+        Walk.in(astRootNode, Node.class, _ha-> {
+            if( _ha instanceof NodeWithAnnotations ){
+                Select sel = select( (NodeWithAnnotations)_ha);
+                if( sel != null ){
+                    found.add( sel );
+                }
+            }
+        });
+        return found;
     }
 
+    /*
     @Override
     public List<Select> listSelectedIn( _node _n) {
         List<Select> found = new ArrayList<>();
@@ -401,6 +412,7 @@ public class $annos
         });
         return found;
     }
+    */
     
     /**
      * 

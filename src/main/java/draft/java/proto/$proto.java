@@ -116,7 +116,7 @@ public interface $proto<Q> {
      * @return 
      */
     default <S extends selected<Q>> S selectFirstIn( _model _m ){
-         if( _m instanceof _code ){
+        if( _m instanceof _code ){
             _code _c = (_code)_m;
             if( _c.isTopLevel() ){
                 return selectFirstIn(_c.astCompilationUnit());
@@ -158,22 +158,38 @@ public interface $proto<Q> {
     /**
      * Find and return a List of all matching node types within _n
      *
-     * @param _n the root _java model node to start the search (i.e. _class,
-     * _method, _
+     * @param _m the root _java model node to start the search (i.e. _class,
+     * _method, _packageInfo)
      * @return a List of Q that match the query
      */
-    default List<Q> listIn(_node _n) {
-        return listIn(_n.ast());
+    default List<Q> listIn(_model _m) {
+        if( _m instanceof _code ){
+            _code _c = (_code)_m;
+            if( _c.isTopLevel() ){
+                return listIn(_c.astCompilationUnit());
+            }
+            _type _t = (_type)_m; //only possible 
+            return listIn(_t.ast()); //return the TypeDeclaration, not the CompilationUnit
+        }
+        return listIn( ((_node)_m).ast() );               
     }
     
     /**
      * 
-     * @param _n
+     * @param _m the _java model
      * @param _nodeMatchFn
      * @return 
      */
-    default List<Q> listIn(_node _n, Predicate<Q>_nodeMatchFn){
-        return listIn(_n.ast(), _nodeMatchFn);
+    default List<Q> listIn(_model _m, Predicate<Q>_nodeMatchFn){
+        if( _m instanceof _code ){
+            _code _c = (_code)_m;
+            if( _c.isTopLevel() ){
+                return listIn(_c.astCompilationUnit(), _nodeMatchFn);
+            }
+            _type _t = (_type)_m; //only possible 
+            return listIn(_t.ast(), _nodeMatchFn); //return the TypeDeclaration, not the CompilationUnit
+        }
+        return listIn( ((_node)_m).ast(),_nodeMatchFn);              
     }
     
     /**
@@ -212,12 +228,21 @@ public interface $proto<Q> {
      * return the selections (containing the node and deconstructed parts) of
      * all matching entities within the _j
      *
-     * @param _n the java entity (_type, _method, etc.) where to start the
+     * @param _m the java entity (_type, _method, etc.) where to start the
      * search
      * @return a list of the selected
      */
-    default List<? extends selected> listSelectedIn(_node _n){
-        return listSelectedIn(_n.ast());
+    default List<? extends selected> listSelectedIn(_model _m){
+        if( _m instanceof _code ){
+            _code _c = (_code)_m;
+            if( _c.isTopLevel() ){
+                return listSelectedIn(_c.astCompilationUnit());
+            }
+            _type _t = (_type)_m; //only possible 
+            return listSelectedIn(_t.ast()); //return the TypeDeclaration, not the CompilationUnit
+        }
+        return listSelectedIn( ((_node)_m).ast()); 
+        //return listSelectedIn(_n.ast());
     }
     
     /**
