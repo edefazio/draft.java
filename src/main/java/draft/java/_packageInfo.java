@@ -1,13 +1,9 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package draft.java;
 
 import com.github.javaparser.StaticJavaParser;
 import com.github.javaparser.ast.CompilationUnit;
 import draft.Text;
+import draft.java._java.*;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
@@ -17,7 +13,7 @@ import java.util.Objects;
  *
  */
 public class _packageInfo
-        implements _code<_packageInfo>, _anno._hasAnnos<_packageInfo>, _model._node<CompilationUnit> {
+        implements _code<_packageInfo>, _anno._hasAnnos<_packageInfo>, _node<CompilationUnit> {
 
     public static _packageInfo of(String... pkgInfo) {
         return new _packageInfo(StaticJavaParser.parse(Text.combine(pkgInfo)));

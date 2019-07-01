@@ -19,7 +19,7 @@ public class _typeTest extends TestCase {
      * Here we play around with a CompilationUnit that has (2) package private classes
      */
     public void testGetPrimaryType(){
-        _type _t = _type.of( TwoPackagePrivateClasses.class );
+        _type _t = _java.type( TwoPackagePrivateClasses.class );
         assertEquals( 2, _t.listCompanionTypes().size());
         assertNotNull( _t.getCompanionType("AnotherPackagePrivateClass") );
         assertNotNull( _t.getCompanionType(_class.class, "AnotherPackagePrivateClass") );
@@ -39,7 +39,7 @@ public class _typeTest extends TestCase {
         List<TypeDeclaration<?>> astTypes = _t.astCompilationUnit().getTypes();        
         assertNotNull(_t.astCompilationUnit().getPrimaryType().get() );
         
-        _t = _type.of( PackagePrivateMultiClass.class );
+        _t = _java.type( PackagePrivateMultiClass.class );
         assertEquals( PackagePrivateMultiClass.class.getSimpleName(), _t.getName());
         assertEquals( PackagePrivateMultiClass.class.getCanonicalName(), _t.getFullName());
         
@@ -75,7 +75,7 @@ public class _typeTest extends TestCase {
      * Here is a single "PrimaryClass"
      */
     public void testPublicClassWithPackagePrivateTypes(){
-        _type _t = _type.of(test.PublicTypeWithPackagePrivateTypes.class);
+        _type _t = _java.type(test.PublicTypeWithPackagePrivateTypes.class);
         
         System.out.println( _t.getPrimaryType().getName() );
         
@@ -87,7 +87,7 @@ public class _typeTest extends TestCase {
     }
     /*
     public void testHasImports(){
-        _type _t = _type.of(_typeTest.class);
+        _type _t = _java.type(_typeTest.class);
         assertTrue( _t.hasImport(_javac.class) );
         assertTrue( _t.hasImport(TestCase.class) );
         

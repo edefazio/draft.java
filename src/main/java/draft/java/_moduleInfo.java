@@ -3,6 +3,7 @@ package draft.java;
 import com.github.javaparser.ast.CompilationUnit;
 import com.github.javaparser.ast.modules.ModuleDeclaration;
 import draft.Text;
+import draft.java._java.*;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
@@ -11,7 +12,7 @@ import java.util.Objects;
  * a module-info.java file it is it's own
  *
  */
-public class _moduleInfo implements _code<_moduleInfo>, _model._node<CompilationUnit> {
+public class _moduleInfo implements _code<_moduleInfo>, _node<CompilationUnit> {
 
     public CompilationUnit astCompUnit;
     private final _javadoc.JavadocHolderAdapter javadocHolder;

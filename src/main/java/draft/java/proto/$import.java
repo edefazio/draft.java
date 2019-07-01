@@ -4,7 +4,7 @@ import com.github.javaparser.ast.ImportDeclaration;
 import com.github.javaparser.ast.Node;
 import draft.*;
 import draft.java.*;
-import draft.java._model._node;
+import draft.java._java._node;
 
 import java.util.*;
 import java.util.function.Consumer;
@@ -386,7 +386,7 @@ public final class $import
      
     @Override
     public List<Select> listSelectedIn(Class clazz){
-        return (List<Select>)listSelectedIn(_type.of(clazz));
+        return (List<Select>)listSelectedIn(_java.type(clazz));
     }
     */ 
     
@@ -404,7 +404,7 @@ public final class $import
      * @return 
      */
     public List<Select> listSelectedIn( Class clazz, Predicate<Select> selectConstraint ){
-        return listSelectedIn(_type.of(clazz), selectConstraint);
+        return listSelectedIn(_java.type(clazz), selectConstraint);
     }
     
     /**
@@ -443,7 +443,7 @@ public final class $import
      * @return 
      */
     public _type replaceIn(Class clazz, Class importClass){
-        return replaceIn( _type.of(clazz), importClass);
+        return replaceIn( _java.type(clazz), importClass);
     }
     
     /**
@@ -464,7 +464,7 @@ public final class $import
      * @return 
      */
     public _type replaceIn(Class clazz, String importDecl){
-        return replaceIn( _type.of(clazz), importDecl);
+        return replaceIn( _java.type(clazz), importDecl);
     }
     
     /**
@@ -485,7 +485,7 @@ public final class $import
      * @return 
      */
     public _type replaceIn(Class clazz, _import _i){
-        return replaceIn( _type.of(clazz), _i);
+        return replaceIn( _java.type(clazz), _i);
     }
     
     /**
@@ -515,7 +515,7 @@ public final class $import
      * @return 
      */
     public _type replaceIn(Class clazz, $import $i ){
-        return replaceIn(_type.of(clazz), $i);
+        return replaceIn(_java.type(clazz), $i);
     }
     
         
@@ -570,7 +570,7 @@ public final class $import
      * @return 
      */
     public _type forSelectedIn( Class clazz, Consumer<Select> selectConsumer){
-        return forSelectedIn(_type.of(clazz), selectConsumer);
+        return forSelectedIn(_java.type(clazz), selectConsumer);
     }
     
     /**
@@ -612,7 +612,7 @@ public final class $import
      * @return 
      */
     public _type forSelectedIn(Class clazz, Predicate<Select> selectConstraint, Consumer<Select> selectConsumer ){
-        return forSelectedIn(_type.of(clazz), selectConstraint, selectConsumer );
+        return forSelectedIn(_java.type(clazz), selectConstraint, selectConsumer );
     }
     
     /**

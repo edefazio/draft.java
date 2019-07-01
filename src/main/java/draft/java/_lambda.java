@@ -21,7 +21,7 @@ import java.util.function.Function;
  * @author Eric
  */
 public class _lambda 
-    implements _model, _hasParameters<_lambda> {
+    implements _java, _hasParameters<_lambda> {
 
       /**
      * Builds a lambda expression from the *CODE* passed in...i,.e.<PRE>

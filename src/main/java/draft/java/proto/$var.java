@@ -8,7 +8,7 @@ import com.github.javaparser.ast.type.Type;
 import com.github.javaparser.printer.PrettyPrinterConfiguration;
 import draft.*;
 import draft.java.*;
-import draft.java._model._node;
+import draft.java._java._node;
 
 import java.util.*;
 import java.util.function.Consumer;
@@ -487,7 +487,7 @@ public class $var
      */
     @Override
     public Select selectFirstIn( Class clazz){
-        return selectFirstIn(_type.of(clazz));
+        return selectFirstIn(_java.type(clazz));
     }
 
     /**
@@ -511,7 +511,7 @@ public class $var
      * @return 
      */
     public Select selectFirstIn( Class clazz, Predicate<Select> selectConstraint){
-       return selectFirstIn(_type.of(clazz), selectConstraint); 
+       return selectFirstIn(_java.type(clazz), selectConstraint); 
     }
     
     /**
@@ -550,7 +550,7 @@ public class $var
 
     @Override
     public List<Select> listSelectedIn(Class clazz){
-        return $var.this.listSelectedIn(_type.of(clazz));
+        return listSelectedIn(_java.type(clazz));
     }
     
     @Override
@@ -566,7 +566,7 @@ public class $var
     }
 
     @Override
-    public List<Select> listSelectedIn(_model _m ){
+    public List<Select> listSelectedIn(_java _m ){
         if( _m instanceof _code ){
             _code _c = (_code)_m;
             if( _c.isTopLevel() ){
@@ -585,7 +585,7 @@ public class $var
      * @return 
      */
     public List<Select> listSelectedIn(Class clazz, Predicate<Select> selectConstraint){
-        return listSelectedIn(_type.of(clazz), selectConstraint);
+        return listSelectedIn(_java.type(clazz), selectConstraint);
     }
     
     /**
@@ -629,7 +629,7 @@ public class $var
      * @return 
      */
     public _type replaceIn(Class clazz, $var $replaceProto ){
-        return replaceIn( _type.of(clazz), $replaceProto);    
+        return replaceIn( _java.type(clazz), $replaceProto);    
     }
     
     /**
@@ -673,7 +673,7 @@ public class $var
      * @return 
      */
     public _type forSelectedIn( Class clazz, Consumer<Select> selectConsumer){
-        return forSelectedIn( _type.of(clazz), selectConsumer);
+        return forSelectedIn( _java.type(clazz), selectConsumer);
     }
     
     /**
@@ -718,7 +718,7 @@ public class $var
      * @return 
      */
     public _type forSelectedIn( Class clazz, Predicate<Select> selectConstraint, Consumer<Select> selectConsumer){
-        return forSelectedIn( _type.of(clazz), selectConstraint, selectConsumer);
+        return forSelectedIn( _java.type(clazz), selectConstraint, selectConsumer);
     }
     
     /**

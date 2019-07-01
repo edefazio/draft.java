@@ -4,7 +4,7 @@ import com.github.javaparser.ast.Node;
 import com.github.javaparser.ast.comments.*;
 import draft.*;
 import draft.java.*;
-import draft.java._model._node;
+import draft.java._java._node;
 import java.util.*;
 import java.util.function.Consumer;
 import java.util.function.Predicate;

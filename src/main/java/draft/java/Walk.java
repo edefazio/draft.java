@@ -6,7 +6,8 @@ import com.github.javaparser.ast.comments.*;
 import com.github.javaparser.ast.nodeTypes.*;
 import com.github.javaparser.ast.nodeTypes.modifiers.NodeWithAbstractModifier;
 import draft.DraftException;
-import draft.java._model._node;
+import draft.java._java._member;
+import draft.java._java._node;
 
 import java.util.*;
 import java.util.function.Consumer;
@@ -907,7 +908,7 @@ public enum Walk {
      * @param matchFn the predicate for testing the intercepted Nodes/logical entities
      * @param action the action to take on nodes that match the matchFn
      */
-    public static <T, N extends Node, _NM extends _model, RN extends Node> RN of(
+    public static <T, N extends Node, _NM extends _java, RN extends Node> RN of(
         Node.TreeTraversal tt, RN astRootNode, Class<T> targetClass, Predicate<T> matchFn, Consumer<T> action ) {
 
         if( Node.class.isAssignableFrom( targetClass ) //Stmts and Expressions
@@ -1004,9 +1005,9 @@ public enum Walk {
      * @param <N> the Root node type
      * @return
      */
-    public static <_NM extends _model, N extends Node> N model(
+    public static <_NM extends _java, N extends Node> N model(
             Node.TreeTraversal tt, N astRootNode, Class<_NM> _modelClass, Predicate<_NM> _modelMatchFn, Consumer<_NM> _modelAction ){
-        if( _java._JAVA_TO_AST_NODE_CLASSES.containsKey( _modelClass ) ) {
+        if( _java.ModelMap._JAVA_TO_AST_NODE_CLASSES.containsKey( _modelClass ) ) {
             //System.out.println("Node Classes ");
             // _anno.class, AnnotationExpr.class
             // _annotation._element.class, AnnotationMemberDeclaration.class
@@ -1027,7 +1028,7 @@ public enum Walk {
             //class switch would be nice here
             in(tt, 
                 astRootNode,
-                    _java._JAVA_TO_AST_NODE_CLASSES.get( _modelClass ),
+                    _java.ModelMap._JAVA_TO_AST_NODE_CLASSES.get( _modelClass ),
                     t ->true,
                     a -> {
                         _NM logical = (_NM)_java._modelOf( a );
@@ -1037,16 +1038,16 @@ public enum Walk {
                     } );
             return astRootNode;
         }
-        else if( _modelClass == _model._member.class ) {
+        else if( _modelClass == _member.class ) {
             in( tt,
                     astRootNode,
                     BodyDeclaration.class,
                     t-> !t.isInitializerDeclaration(), //static Blocks are not members
                     n-> {
-                        _model._member _n = (_model._member)_java._modelOf(n);
+                        _member _n = (_member)_java._modelOf(n);
 
-                        if( ((Predicate<_model._member>)_modelMatchFn).test( _n) ){
-                            ((Consumer<_model._member>)_modelAction).accept( _n);
+                        if( ((Predicate<_member>)_modelMatchFn).test( _n) ){
+                            ((Consumer<_member>)_modelAction).accept( _n);
                         }
                     });
             return astRootNode;

@@ -13,7 +13,7 @@ import java.util.function.Predicate;
  * @param <T> the implementation class of the type aggregate
  */
 public interface _types <T extends _types>
-    extends _type._hasTypes, _model {
+    extends _type._hasTypes, _java {
     
     /**
      * Build and return an implementation given this collection of {@link _type}s

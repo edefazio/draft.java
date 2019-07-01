@@ -48,7 +48,7 @@ public @interface _remove {
                 }
                 return _model;
             }
-            Node n = ((draft.java._model._node)_model).ast();
+            Node n = ((draft.java._java._node)_model).ast();
             boolean removed = n.remove();
             if( ! removed ){
                 throw new DraftException("Unable to removeIn entity via annotation Macro "+_model);

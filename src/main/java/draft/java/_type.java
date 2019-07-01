@@ -10,14 +10,12 @@ import com.github.javaparser.ast.stmt.LocalClassDeclarationStmt;
 import com.github.javaparser.ast.type.ClassOrInterfaceType;
 import draft.DraftException;
 import draft.Text;
-import draft.java._model.*;
+import draft.java._java.*;
 import draft.java.io._in;
 import draft.java.io._io;
 import draft.java.macro._macro;
 import draft.java.macro._remove;
 
-import java.io.InputStream;
-import java.nio.file.Path;
 import java.util.*;
 import java.util.function.*;
 import java.util.stream.Collectors;
@@ -82,18 +80,7 @@ public interface _type<AST extends TypeDeclaration & NodeWithJavadoc & NodeWithM
     extends _javadoc._hasJavadoc<T>, _anno._hasAnnos<T>, _modifiers._hasModifiers<T>,
         _field._hasFields<T>, _member<AST, T>, _code<T>, _node<AST> {
 
-    static _type of( InputStream is ){
-        return of(StaticJavaParser.parse(is));
-    }
-
-    /**
-     *
-     * @param clazz
-     * @return
-     */
-    static _type of(Class clazz){
-        return of( clazz, _io.IN_DEFAULT );
-    }
+    
 
     /**
      * List the members (_fields, _methods, _constructors,...) of the _type
@@ -340,7 +327,7 @@ public interface _type<AST extends TypeDeclaration & NodeWithJavadoc & NodeWithM
             List<_type> _ts = new ArrayList<>();
             List<TypeDeclaration<?>> tds = 
                 this.astCompilationUnit().getTypes();
-            tds.stream().filter(t-> !t.isPublic()).forEach(t ->_ts.add(_type.of(t) ) );                    
+            tds.stream().filter(t-> !t.isPublic()).forEach(t ->_ts.add(_java.type(t) ) );                    
             return _ts;
         }
         return Collections.EMPTY_LIST;
@@ -402,12 +389,12 @@ public interface _type<AST extends TypeDeclaration & NodeWithJavadoc & NodeWithM
     default _type getPrimaryType(){
         if( this.isTopLevel() ){
             if (this.astCompilationUnit().getPrimaryType().isPresent()) {
-                return _type.of( this.astCompilationUnit().getPrimaryType().get() );
+                return _java.type( this.astCompilationUnit().getPrimaryType().get() );
             }            
             Optional<TypeDeclaration<?>> ot = 
                 this.astCompilationUnit().getTypes().stream().filter(t -> t.isPublic() ).findFirst();
             if( ot.isPresent() ){
-                return _type.of(ot.get());
+                return _java.type(ot.get());
             }            
         }        
         return null;
@@ -554,7 +541,7 @@ public interface _type<AST extends TypeDeclaration & NodeWithJavadoc & NodeWithM
      * @param _members
      * @return
      */
-    default T add( _model._member..._members ){
+    default T add( _member..._members ){
         Arrays.stream(_members).forEach( _m -> {
             if(_m instanceof _field){
                 this.ast().addMember( ((_field)_m).getFieldDeclaration() );
@@ -1235,7 +1222,7 @@ public interface _type<AST extends TypeDeclaration & NodeWithJavadoc & NodeWithM
      * @return 
      */
     default T removeNest( TypeDeclaration nestToRemove ){
-        return removeNest( _type.of(nestToRemove ) );        
+        return removeNest( _java.type(nestToRemove ) );        
     }
     
     /**
@@ -1281,116 +1268,7 @@ public interface _type<AST extends TypeDeclaration & NodeWithJavadoc & NodeWithM
         return nests;
     }
 
-    /**
-     * _1_build and return a new _type based on the code provided
-     * @param code the code for the _type
-     * @return the _type {@link _class} {@link _enum} {@link _interface}, {@link _annotation}
-     */
-    static _type of ( String... code ){
-        return of( Ast.typeDeclaration(code));
-    }
-
-    /**
-     * Build and return the appropriate _type based on the
-     * CompilationUnit (whichever the primary TYPE is)
-     * @param astRoot the root AST node containing the top level TYPE
-     * @return the _model _type
-     */
-    static _type of( CompilationUnit astRoot ){
-        //if only 1 type, it's the top type
-        if( astRoot.getTypes().size() == 1 ){
-            return of( astRoot, astRoot.getType( 0 ));
-        }
-        //if multiple types find the first public type
-        Optional<TypeDeclaration<?>> otd = 
-            astRoot.getTypes().stream().filter( t -> t.isPublic() ).findFirst();
-        if( otd.isPresent() ){
-            return of( astRoot, otd.get());    
-        }
-        //if there is marked a primary type (via storage) then it's that
-        if( astRoot.getPrimaryType().isPresent()){
-            return of( astRoot, astRoot.getPrimaryType().get());
-        }
-        if( astRoot.getTypes().isEmpty() ){
-            throw new DraftException("cannot create _type from CompilationUnit with no TypeDeclaration");
-        }
-        //if we have the storage (and potentially multiple package private types)
-        //check the storage to determine if one of them is the right one
-        if( astRoot.getStorage().isPresent() ){
-            Storage st = astRoot.getStorage().get();
-            Path p = st.getPath();
-            
-            //the storage says it was saved before
-            Optional<TypeDeclaration<?>> ott = 
-                astRoot.getTypes().stream().filter(t-> p.endsWith( t.getNameAsString()+".java") ).findFirst();
-            if( ott.isPresent()){
-                return of( astRoot, ott.get());
-            }
-            
-            if( p.endsWith("package-info.java")){
-                throw new DraftException("cannot create a _type out of a package-info.java");
-            }
-            if( p.endsWith("module-info.java")){
-                throw new DraftException("cannot create a _type out of a module-info.java");
-            }
-            
-            //ok, well, this is dangerous, but shouldnt be a common occurrence
-            // basically we have a compilationUnit with > 1 TypeDeclaration, but
-            // none of the TypeDeclarations are public, and a PrimaryType is not 
-            //defined in the storage, so we just choose the first typeDeclaration
-            return of( astRoot, astRoot.getType(0));
-        }
-        return of( astRoot, astRoot.getType(0));
-        //if( !astRoot.getPrimaryType().isPresent()){
-        //    throw new DraftException("Unable to locate the primary TYPE");
-        //}
-        //return of( astRoot, astRoot.getPrimaryType().get());
-    }
-
-    /**
-     * Return the appropriate _type given the AST TypeDeclaration
-     * (also, insure that if it is a Top Level _type,
-     * @param td
-     * @return
-     */
-    static _type of( TypeDeclaration td ){
-        if( td.isTopLevelType() ){
-            return of( td.findCompilationUnit().get(), td);
-        }
-        if( td instanceof ClassOrInterfaceDeclaration ){
-            ClassOrInterfaceDeclaration coid = (ClassOrInterfaceDeclaration)td;
-            if( coid.isInterface() ){
-                return _interface.of( coid );
-            }
-            return _class.of(  coid );
-        }
-        if( td instanceof EnumDeclaration ){
-            return _enum.of( (EnumDeclaration)td);
-        }
-        return _annotation.of( (AnnotationDeclaration)td);
-    }
-
-    /**
-     * Builds the appropriate _model _type ({@link _class}, {@link _enum},
-     * {@link _interface}, {@link _annotation})
-     *
-     * @param astRoot the compilationUnit
-     * @param td the primary TYPE declaration within the CompilationUnit
-     * @return the appropriate _model _type (_class, _enum, _interface, _annotation)
-     */
-    static _type of(CompilationUnit astRoot, TypeDeclaration td){
-        if( td instanceof ClassOrInterfaceDeclaration ){
-            ClassOrInterfaceDeclaration coid = (ClassOrInterfaceDeclaration)td;
-            if( coid.isInterface() ){
-                return _interface.of( coid );
-            }
-            return _class.of( coid );
-        }
-        if( td instanceof EnumDeclaration ){
-            return _enum.of( (EnumDeclaration)td);
-        }
-        return _annotation.of( (AnnotationDeclaration)td);
-    }
+    
 
     /**
      * 
@@ -1493,7 +1371,7 @@ public interface _type<AST extends TypeDeclaration & NodeWithJavadoc & NodeWithM
     /**
      * A container for {@link _type}s
      */
-    interface _hasTypes extends _model{
+    interface _hasTypes extends _java{
 
         /** @return list all of the {@link _type}s */
         List<_type> list();

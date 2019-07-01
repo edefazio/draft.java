@@ -16,7 +16,7 @@ import java.util.stream.Collectors;
  * @author Eric
  */
 public final class _throws
-        implements _model {
+        implements _java {
 
     public static _throws of( NodeWithThrownExceptions nte ) {
         return new _throws( nte );
@@ -251,7 +251,7 @@ public final class _throws
      * @author Eric
      * @param <T> the hasThrows container {@link _method} {@link _constructor}
      */
-    public interface _hasThrows<T extends _hasThrows> extends _model {
+    public interface _hasThrows<T extends _hasThrows> extends _java {
 
         _throws getThrows();
 

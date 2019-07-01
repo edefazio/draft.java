@@ -7,7 +7,7 @@ import com.github.javaparser.ast.nodeTypes.NodeWithThrownExceptions;
 import com.github.javaparser.ast.type.ReferenceType;
 import draft.*;
 import draft.java.*;
-import draft.java._model._node;
+import draft.java._java._node;
 
 import java.util.*;
 import java.util.function.Consumer;
@@ -428,7 +428,7 @@ public final class $throws
      
     @Override
     public List<Select> listSelectedIn(Class clazz){
-        return listSelectedIn(_type.of(clazz));
+        return listSelectedIn(_java.type(clazz));
     }
     */ 
     
@@ -446,7 +446,7 @@ public final class $throws
      * @return 
      */
     public List<Select> listSelectedIn( Class clazz, Predicate<Select> selectConstraint ){
-        return listSelectedIn(_type.of(clazz), selectConstraint);
+        return listSelectedIn(_java.type(clazz), selectConstraint);
     }
     
     /**
@@ -485,7 +485,7 @@ public final class $throws
      
     @Override
     public _type removeIn( Class clazz){
-        return removeIn( _type.of(clazz));
+        return removeIn( _java.type(clazz));
     }
     */ 
     
@@ -532,7 +532,7 @@ public final class $throws
      * @return 
      */
     public _type replaceIn(Class clazz, Class<? extends Throwable>... throwClasses){
-        return replaceIn(_type.of(clazz), _throws.of(throwClasses));
+        return replaceIn(_java.type(clazz), _throws.of(throwClasses));
     }
     
     /**
@@ -553,7 +553,7 @@ public final class $throws
      * @return 
      */
     public _type replaceIn(Class clazz, String importDecl){
-        return replaceIn( _type.of(clazz), importDecl);
+        return replaceIn( _java.type(clazz), importDecl);
     }
     
     /**
@@ -574,7 +574,7 @@ public final class $throws
      * @return 
      */
     public _type replaceIn(Class clazz, _throws _i){
-        return replaceIn( _type.of(clazz), _i);
+        return replaceIn( _java.type(clazz), _i);
     }
     
     /**
@@ -612,7 +612,7 @@ public final class $throws
      * @return 
      */
     public _type replaceIn(Class clazz, $throws $i ){
-        return replaceIn(_type.of(clazz), $i);
+        return replaceIn(_java.type(clazz), $i);
     }
     
         
@@ -663,7 +663,7 @@ public final class $throws
      * @return 
      */
     public _type forSelectedIn( Class clazz, Consumer<Select> selectConsumer){
-        return forSelectedIn(_type.of(clazz), selectConsumer);
+        return forSelectedIn(_java.type(clazz), selectConsumer);
     }
     
     /**
@@ -705,7 +705,7 @@ public final class $throws
      * @return 
      */
     public _type forSelectedIn( Class clazz, Predicate<Select> selectConstraint, Consumer<Select> selectConsumer){
-        return forSelectedIn(_type.of(clazz), selectConstraint, selectConsumer);
+        return forSelectedIn(_java.type(clazz), selectConstraint, selectConsumer);
     }
     
     /**

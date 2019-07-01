@@ -12,7 +12,7 @@ import java.util.Map;
 import java.util.Objects;
 
 import draft.java._anno.*;
-import draft.java._model.*;
+import draft.java._java.*;
 
 /**
  *
@@ -147,7 +147,7 @@ public final class _receiverParameter
      * @param <T>
      */
     public interface _hasReceiverParameter<T extends _hasReceiverParameter>
-            extends _model {
+            extends _java {
 
         default boolean hasReceiverParameter() {      
             return getAstReceiverParameter() != null;            

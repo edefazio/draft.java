@@ -55,8 +55,8 @@ public @interface _replace {
                 oldNode = ((_type) _model).ast();
                 newNode = _java.nodeOf(((_type) _model).ast().getClass(), str);
             }else {
-                oldNode = ((draft.java._model._node) _model).ast();
-                newNode = _java.nodeOf(((draft.java._model._node) _model).ast().getClass(), str);
+                oldNode = ((draft.java._java._node) _model).ast();
+                newNode = _java.nodeOf(((draft.java._java._node) _model).ast().getClass(), str);
             }
             //System.out.println( oldNode.getClass() + " "+ newNode.getClass() );
             boolean isReplaced = oldNode.replace(newNode);

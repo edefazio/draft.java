@@ -7,7 +7,7 @@ import com.github.javaparser.ast.type.ClassOrInterfaceType;
 import com.github.javaparser.ast.type.TypeParameter;
 import draft.Text;
 import draft.java._anno._annos;
-import draft.java._model.*;
+import draft.java._java.*;
 
 import java.util.*;
 import java.util.function.Consumer;
@@ -130,7 +130,7 @@ public final class _typeParameter
      * @author Eric
      */
     public static final class _typeParameters
-        implements _model {
+        implements _java {
 
         public static _typeParameters of(){
             return of( Ast.classDeclaration("class Dummy{}" ));
@@ -311,7 +311,7 @@ public final class _typeParameter
      * @param <T>
      */
     public interface _hasTypeParameters<T extends _hasTypeParameters>
-        extends _model {
+        extends _java {
         
         default _typeParameters getTypeParameters(){
             _member _m = (_member) this;

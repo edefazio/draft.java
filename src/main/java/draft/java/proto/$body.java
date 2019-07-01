@@ -7,7 +7,7 @@ import com.github.javaparser.ast.nodeTypes.NodeWithOptionalBlockStmt;
 import com.github.javaparser.ast.stmt.Statement;
 import draft.*;
 import draft.java.*;
-import draft.java._model._node;
+import draft.java._java._node;
 import draft.java.proto.$proto.$args;
 import draft.java.proto.$proto.selected;
 import java.util.*;
@@ -434,7 +434,7 @@ public class $body implements Template<_body>, $proto<_body>, $constructor.$part
      * @return 
      */
     public Select selectFirstIn( Class clazz, Predicate<Select>selectConstraint){
-        return selectFirstIn(_type.of(clazz), selectConstraint);
+        return selectFirstIn(_java.type(clazz), selectConstraint);
     }
     
     /**
@@ -512,7 +512,7 @@ public class $body implements Template<_body>, $proto<_body>, $constructor.$part
      * @return 
      */
     public _type forSelectedIn( Class clazz, Consumer<Select>selectActionFn){
-        return forSelectedIn(_type.of(clazz), selectActionFn);
+        return forSelectedIn(_java.type(clazz), selectActionFn);
     }
     
     /**
@@ -523,7 +523,7 @@ public class $body implements Template<_body>, $proto<_body>, $constructor.$part
      * @return 
      */
     public _type forSelectedIn( Class clazz, Predicate<Select>selectConstraint,  Consumer<Select>selectActionFn){
-        return forSelectedIn(_type.of(clazz), selectConstraint, selectActionFn);
+        return forSelectedIn(_java.type(clazz), selectConstraint, selectActionFn);
     }
     
     /**

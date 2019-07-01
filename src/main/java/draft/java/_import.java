@@ -13,7 +13,7 @@ import java.util.stream.Collectors;
  *
  * @author Eric
  */
-public class _import implements _model {
+public class _import implements _java {
 
     /**
      * create a new _import over the ImportDeclaration
@@ -276,7 +276,7 @@ public class _import implements _model {
      * mutable grouping of ImportDeclarations applied to an Ast CompilationUnit
      * 
      */
-    public static class _imports implements _model {
+    public static class _imports implements _java {
 
         public static _imports of( CompilationUnit cu ){
             return new _imports(cu);

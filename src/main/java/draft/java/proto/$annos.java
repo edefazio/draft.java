@@ -8,7 +8,7 @@ import draft.java._anno;
 import draft.java._anno._annos;
 import draft.java._anno._hasAnnos;
 import draft.java._java;
-import draft.java._model._node;
+import draft.java._java._node;
 import draft.java._type;
 import java.util.*;
 import java.util.function.Consumer;
@@ -327,7 +327,7 @@ public class $annos
      * @return 
      */
     public Select selectFirstIn( Class clazz, Predicate<Select>selectConstraint ){
-        return selectFirstIn(_type.of(clazz), selectConstraint);
+        return selectFirstIn(_java.type(clazz), selectConstraint);
     }
     
     /**
@@ -421,7 +421,7 @@ public class $annos
      * @return 
      */
     public List<Select> listSelectedIn( Class clazz, Predicate<Select> selectConstraint) {
-        return listSelectedIn(_type.of(clazz), selectConstraint);
+        return listSelectedIn(_java.type(clazz), selectConstraint);
     }
     
     /**
@@ -504,7 +504,7 @@ public class $annos
      * @return 
      */
     public _type forSelectedIn(Class clazz, Consumer<Select> selectActionFn) {
-        return forSelectedIn(_type.of(clazz), selectActionFn);
+        return forSelectedIn(_java.type(clazz), selectActionFn);
     }
     
     /**
@@ -515,7 +515,7 @@ public class $annos
      * @return 
      */
     public _type forSelectedIn(Class clazz, Predicate<Select> selectConstraint, Consumer<Select> selectActionFn) {
-        return forSelectedIn( _type.of(clazz), selectConstraint, selectActionFn);
+        return forSelectedIn( _java.type(clazz), selectConstraint, selectActionFn);
     }
     
     /**

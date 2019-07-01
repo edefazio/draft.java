@@ -6,7 +6,7 @@ import com.github.javaparser.ast.nodeTypes.NodeWithModifiers;
 import draft.Tokens;
 import draft.Translator;
 import draft.java.*;
-import draft.java._model._node;
+import draft.java._java._node;
 import draft.java._modifiers;
 import draft.java._modifiers._hasModifiers;
 import java.util.*;
@@ -246,7 +246,7 @@ public class $modifiers
     }
     
     public _type forSelectedIn(Class clazz, Predicate<Select> selectConstraint, Consumer<Select> selectActionFn) {
-        return forSelectedIn(_type.of(clazz), selectConstraint, selectActionFn);
+        return forSelectedIn(_java.type(clazz), selectConstraint, selectActionFn);
     }
     
     public <N extends _node> N forSelectedIn(N _n, Predicate<Select> selectConstraint, Consumer<Select> selectActionFn) {
@@ -267,7 +267,7 @@ public class $modifiers
      * @return 
      */
     public _type forSelectedIn(Class clazz, Consumer<Select> selectActionFn) {
-        return forSelectedIn(_type.of(clazz), selectActionFn);
+        return forSelectedIn(_java.type(clazz), selectActionFn);
     }
     
     /**

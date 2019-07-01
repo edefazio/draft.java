@@ -8,7 +8,7 @@ import com.github.javaparser.ast.type.Type;
 import draft.Text;
 import draft.java._modifiers._hasFinal;
 import draft.java._anno.*;
-import draft.java._model.*;
+import draft.java._java.*;
 import java.util.*;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
@@ -230,7 +230,7 @@ public final class _parameter
      * @param <T>
      */
     public interface _hasParameters<T extends _hasParameters>
-        extends _model {
+        extends _java {
 
         _parameters getParameters();
         
@@ -357,7 +357,7 @@ public final class _parameter
      * @author Eric
      */
     public static final class _parameters
-            implements _model {
+            implements _java {
 
         
         public static _parameters of( String... strs ) {

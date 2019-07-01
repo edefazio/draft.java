@@ -8,8 +8,8 @@ import com.github.javaparser.ast.type.ClassOrInterfaceType;
 import draft.*;
 import draft.java.Ast;
 import draft.java._code;
-import draft.java._model;
-import draft.java._model._node;
+import draft.java._java;
+import draft.java._java._node;
 import draft.java._type;
 import java.util.*;
 import java.util.function.Consumer;
@@ -158,7 +158,7 @@ public class $node implements $proto<Node> {
     }
 
     @Override
-    public List<Select> listSelectedIn(_model _m) {
+    public List<Select> listSelectedIn(_java _m) {
         if( _m instanceof _code ){
             _code _c = (_code)_m;
             if( _c.isTopLevel() ){

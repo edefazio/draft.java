@@ -9,9 +9,8 @@ import com.github.javaparser.ast.nodeTypes.NodeWithAnnotations;
 import com.github.javaparser.ast.type.Type;
 import com.github.javaparser.ast.type.TypeParameter;
 import draft.DraftException;
-import draft.Stencil;
 import draft.Text;
-import draft.java._model.*;
+import draft.java._java.*;
 import static draft.java.Ast.field;
 import draft.java._java.Component;
 import java.lang.annotation.Annotation;
@@ -718,7 +717,7 @@ public final class _anno
      * @param <T> the container TYPE
      */
     public interface _hasAnnos<T extends _hasAnnos>
-        extends _model {
+        extends _java {
         
         /**
          * @return the annos
@@ -993,7 +992,7 @@ public final class _anno
      *
      */
     public static class _annos
-        implements _model { //_propertyList<NodeWithAnnotations, AnnotationExpr, _anno, _annos> {
+        implements _java { //_propertyList<NodeWithAnnotations, AnnotationExpr, _anno, _annos> {
 
         /** A reference to the container entity that is being annotated*/
         public final NodeWithAnnotations astAnnNode;

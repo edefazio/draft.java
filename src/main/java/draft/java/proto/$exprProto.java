@@ -3,8 +3,7 @@ package draft.java.proto;
 import com.github.javaparser.ast.Node;
 import com.github.javaparser.ast.expr.Expression;
 import draft.*;
-import draft.java._model;
-import draft.java._model._node;
+import draft.java._java._node;
 import draft.java._type;
 import draft.java.proto.$expr.Select;
 import java.util.List;
@@ -268,7 +267,7 @@ public interface $exprProto<T extends Expression>
      * @param selectConstraint
      * @return  the first Expression that matches (or null if none found)
      */
-    Select<T> selectFirstIn(_model._node _n, Predicate<Select<T>> selectConstraint);
+    Select<T> selectFirstIn(_node _n, Predicate<Select<T>> selectConstraint);
 
     /**
      * Returns the first Expression that matches the pattern and constraint

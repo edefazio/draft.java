@@ -4,7 +4,7 @@ import com.github.javaparser.ast.expr.AnnotationExpr;
 import com.github.javaparser.ast.type.Type;
 import draft.Text;
 import draft.java._anno._annos;
-import draft.java._model.*;
+import draft.java._java.*;
 
 import java.util.*;
 

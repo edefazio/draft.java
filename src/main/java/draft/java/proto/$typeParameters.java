@@ -5,7 +5,7 @@ import com.github.javaparser.ast.body.CallableDeclaration;
 import com.github.javaparser.ast.nodeTypes.NodeWithTypeParameters;
 import draft.*;
 import draft.java.*;
-import draft.java._model._node;
+import draft.java._java._node;
 import draft.java._typeParameter._typeParameters;
 
 import java.util.*;
@@ -413,11 +413,11 @@ public final class $typeParameters
      */
     @Override
     public List<Select> listSelectedIn(Class clazz){
-        return listSelectedIn(_type.of(clazz));
+        return listSelectedIn(_java.type(clazz));
     }
     
     @Override
-    public List<Select> listSelectedIn( _model _m ){
+    public List<Select> listSelectedIn( _java _m ){
         if( _m instanceof _code ){
             _code _c = (_code)_m;
             if( _c.isTopLevel() ){
@@ -436,7 +436,7 @@ public final class $typeParameters
      * @return 
      */
     public List<Select> listSelectedIn( Class clazz, Predicate<Select> selectConstraint ){
-        return listSelectedIn(_type.of(clazz), selectConstraint);
+        return listSelectedIn(_java.type(clazz), selectConstraint);
     }
     
     /**
@@ -475,7 +475,7 @@ public final class $typeParameters
      * @return 
      */
     public _type replaceIn(Class clazz, String importDecl){
-        return replaceIn( _type.of(clazz), importDecl);
+        return replaceIn( _java.type(clazz), importDecl);
     }
     
     /**
@@ -496,7 +496,7 @@ public final class $typeParameters
      * @return 
      */
     public _type replaceIn(Class clazz, _typeParameters _i){
-        return replaceIn( _type.of(clazz), _i);
+        return replaceIn( _java.type(clazz), _i);
     }
     
     /**
@@ -527,7 +527,7 @@ public final class $typeParameters
      * @return 
      */
     public _type replaceIn(Class clazz, $typeParameters $i ){
-        return replaceIn(_type.of(clazz), $i);
+        return replaceIn(_java.type(clazz), $i);
     }
     
     /**
@@ -571,7 +571,7 @@ public final class $typeParameters
      * @return 
      */
     public _type forSelectedIn( Class clazz, Consumer<Select> selectConsumer){
-        return forSelectedIn(_type.of(clazz), selectConsumer);
+        return forSelectedIn(_java.type(clazz), selectConsumer);
     }
     
     /**
@@ -613,7 +613,7 @@ public final class $typeParameters
      * @return 
      */
     public _type forSelectedIn(Class clazz, Predicate<Select> selectConstraint, Consumer<Select> selectConsumer ){
-       return forSelectedIn(_type.of(clazz), selectConstraint, selectConsumer); 
+       return forSelectedIn(_java.type(clazz), selectConstraint, selectConsumer); 
     }
     
     /**

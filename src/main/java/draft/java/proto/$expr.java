@@ -4,7 +4,7 @@ import com.github.javaparser.ast.Node;
 import com.github.javaparser.ast.expr.*;
 import draft.*;
 import draft.java.*;
-import draft.java._model._node;
+import draft.java._java._node;
 
 import java.util.*;
 import java.util.function.BiConsumer;
@@ -1805,7 +1805,7 @@ public class $expr <T extends Expression>
      */
     @Override
     public Select<T> selectFirstIn( Class clazz ){
-        return selectFirstIn(_type.of(clazz));
+        return selectFirstIn(_java.type(clazz));
     }
     
     /**
@@ -1814,7 +1814,7 @@ public class $expr <T extends Expression>
      * @return  the first Expression that matches (or null if none found)
      */
     @Override
-    public Select<T> selectFirstIn( _model _m ){
+    public Select<T> selectFirstIn( _java _m ){
         if( _m instanceof _code ){
             _code _c = (_code)_m;
             if( _c.isTopLevel() ){
@@ -1849,7 +1849,7 @@ public class $expr <T extends Expression>
      */
     @Override
     public Select<T> selectFirstIn( Class clazz, Predicate<Select<T>> selectConstraint ){
-        return selectFirstIn(_type.of(clazz), selectConstraint);
+        return selectFirstIn(_java.type(clazz), selectConstraint);
     }
     
     /**
@@ -1954,7 +1954,7 @@ public class $expr <T extends Expression>
     @Override
     public List<Select<T>> listSelectedIn(Class clazz){
         List<Select<T>>sts = new ArrayList<>();
-        Walk.in(_type.of(clazz), this.expressionClass, e -> {
+        Walk.in(_java.type(clazz), this.expressionClass, e -> {
             Select s = select( e );
             if( s != null ){
                 sts.add( s);
@@ -1971,7 +1971,7 @@ public class $expr <T extends Expression>
      */
     @Override
     public List<Select<T>> listSelectedIn(Class clazz, Predicate<Select<T>> selectConstraint ){
-        return listSelectedIn(_type.of(clazz), selectConstraint);
+        return listSelectedIn(_java.type(clazz), selectConstraint);
     }
     
     /**
@@ -2048,7 +2048,7 @@ public class $expr <T extends Expression>
      */
     @Override
     public _type replaceIn( Class clazz, Node astExprReplace ){
-        return replaceIn(_type.of(clazz), astExprReplace);
+        return replaceIn(_java.type(clazz), astExprReplace);
     }
     
     /**
@@ -2089,7 +2089,7 @@ public class $expr <T extends Expression>
      */
     @Override
     public _type replaceIn(Class clazz, $expr $repl ){
-        return replaceIn(_type.of(clazz), $repl );
+        return replaceIn(_java.type(clazz), $repl );
     }
     
     /**
@@ -2119,7 +2119,7 @@ public class $expr <T extends Expression>
      */
     @Override
     public _type forSelectedIn(Class clazz, Consumer<Select<T>> selectConsumer ){
-        return forSelectedIn( _type.of(clazz), selectConsumer);
+        return forSelectedIn(_java.type(clazz), selectConsumer);
     }
     
     /**
@@ -2167,7 +2167,7 @@ public class $expr <T extends Expression>
      */
     @Override
     public _type forSelectedIn( Class clazz, Predicate<Select<T>> selectConstraint, Consumer<Select<T>> selectConsumer ){
-        return forSelectedIn( _type.of(clazz), selectConstraint, selectConsumer );
+        return forSelectedIn(_java.type(clazz), selectConstraint, selectConsumer );
     }
     
     /**

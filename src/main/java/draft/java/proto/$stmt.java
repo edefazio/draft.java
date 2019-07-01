@@ -8,7 +8,7 @@ import draft.*;
 import draft.java.*;
 import draft.java.Expr.QuadConsumer;
 import draft.java.Expr.TriConsumer;
-import draft.java._model._node;
+import draft.java._java._node;
 
 import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -1174,7 +1174,7 @@ public final class $stmt<T extends Statement>
      * @return 
      */
     @Override
-    public Select<T> selectFirstIn( _model _m ){
+    public Select<T> selectFirstIn( _java _m ){
         if( _m instanceof _code ){
             _code _c = (_code)_m;
             if( _c.isTopLevel() ){
@@ -1290,7 +1290,7 @@ public final class $stmt<T extends Statement>
      * @return 
      */
     public _type forSelectedIn(Class clazz, Consumer<Select<T>> selectedActionFn){
-        return forSelectedIn(_type.of(clazz), selectedActionFn);
+        return forSelectedIn(_java.type(clazz), selectedActionFn);
     }
     
     /**
@@ -1336,7 +1336,7 @@ public final class $stmt<T extends Statement>
      * @return 
      */
     public _type forSelectedIn(Class clazz, Predicate<Select<T>> selectConstraint, Consumer<Select<T>> selectedActionFn){
-        return forSelectedIn(_type.of(clazz), selectConstraint, selectedActionFn);
+        return forSelectedIn(_java.type(clazz), selectConstraint, selectedActionFn);
     }
     
     /**
@@ -1369,7 +1369,7 @@ public final class $stmt<T extends Statement>
      */
     @Override
     public List<Select<T>> listSelectedIn(Class clazz){
-        return (List<Select<T>>)listSelectedIn(_type.of(clazz));
+        return (List<Select<T>>)listSelectedIn(_java.type(clazz));
     }
     
     @Override
@@ -1407,7 +1407,7 @@ public final class $stmt<T extends Statement>
      * @return 
      */
     public List<Select<T>> listSelectedIn(Class clazz, Predicate<Select<T>> selectConstraint ){
-        return listSelectedIn(_type.of(clazz), selectConstraint);
+        return listSelectedIn(_java.type(clazz), selectConstraint);
     }
     
     /**
@@ -1453,7 +1453,7 @@ public final class $stmt<T extends Statement>
      * @return 
      */
     public _type replaceIn( Class clazz, $stmt $repl){
-        return replaceIn(_type.of(clazz), $repl);
+        return replaceIn(_java.type(clazz), $repl);
     }
     
     /**
@@ -1463,7 +1463,7 @@ public final class $stmt<T extends Statement>
      * @return 
      */
     public _type replaceIn( Class clazz, String...replacement){
-        return replaceIn(_type.of(clazz), replacement);
+        return replaceIn(_java.type(clazz), replacement);
     }
     
     /**

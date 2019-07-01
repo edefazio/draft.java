@@ -13,7 +13,7 @@ import java.util.Optional;
  * @author Eric
  */
 public final class _javadoc
-    implements _model {
+    implements _java {
 
     public static _javadoc of( NodeWithJavadoc jdnode ) {
         return new _javadoc( jdnode );
@@ -118,7 +118,7 @@ public final class _javadoc
      * @param <T>
      */
     public interface _hasJavadoc<T extends _hasJavadoc>
-            extends _model {
+            extends _java {
 
         /** @return the JAVADOC for this element (or returns null) */
         _javadoc getJavadoc();

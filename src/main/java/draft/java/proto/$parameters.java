@@ -4,8 +4,8 @@ import com.github.javaparser.ast.Node;
 import com.github.javaparser.ast.nodeTypes.NodeWithParameters;
 import draft.*;
 import draft.java.Walk;
-import draft.java._model;
-import draft.java._model._node;
+import draft.java._java;
+import draft.java._java._node;
 import draft.java._parameter._parameters;
 import draft.java._type;
 import java.util.*;
@@ -352,7 +352,7 @@ public class $parameters implements Template<_parameters>, $proto<_parameters>,
      * @return 
      */
     public _type forSelectedIn(Class clazz, Consumer<Select> _parametersActionFn) {
-        return forSelectedIn(_type.of(clazz), _parametersActionFn);
+        return forSelectedIn(_java.type(clazz), _parametersActionFn);
     }
     
     /**
@@ -380,7 +380,7 @@ public class $parameters implements Template<_parameters>, $proto<_parameters>,
      * @return 
      */
     public _type forSelectedIn(Class clazz, Predicate<Select> selectConstraint, Consumer<Select> _parametersActionFn) {
-        return forSelectedIn(_type.of(clazz), selectConstraint, _parametersActionFn);
+        return forSelectedIn(_java.type(clazz), selectConstraint, _parametersActionFn);
     }
     
     /**

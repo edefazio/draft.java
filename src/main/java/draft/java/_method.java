@@ -7,7 +7,7 @@ import com.github.javaparser.ast.expr.ObjectCreationExpr;
 import com.github.javaparser.ast.stmt.*;
 import com.github.javaparser.ast.type.*;
 import draft.DraftException;
-import draft.java._model.*;
+import draft.java._java.*;
 import draft.Text;
 import draft.java._parameter.*;
 import draft.java._anno.*;
@@ -488,7 +488,7 @@ public final class _method
      * @param <T>
      */
     public interface _hasMethods<T extends _hasMethods>
-            extends _model {
+            extends _java {
 
         List<_method> listMethods();
 

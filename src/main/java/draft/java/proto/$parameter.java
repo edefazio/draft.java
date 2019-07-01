@@ -5,7 +5,7 @@ import com.github.javaparser.ast.body.Parameter;
 import draft.*;
 import draft.java.Walk;
 import draft.java._anno._annos;
-import draft.java._model._node;
+import draft.java._java._node;
 import draft.java.*;
 import java.lang.annotation.Annotation;
 import java.util.*;
@@ -447,7 +447,7 @@ public class $parameter implements Template<_parameter>, $proto<_parameter> {
      */
     @Override
     public List<Select>listSelectedIn( Class clazz){
-        return (List<Select>)listSelectedIn(_type.of(clazz));
+        return (List<Select>)listSelectedIn(_java.type(clazz));
     }
     
     @Override
@@ -483,7 +483,7 @@ public class $parameter implements Template<_parameter>, $proto<_parameter> {
      * @return 
      */
     public List<Select> listSelectedIn(Class clazz, Predicate<Select> selectConstraint) {
-        return listSelectedIn(_type.of(clazz), selectConstraint);
+        return listSelectedIn(_java.type(clazz), selectConstraint);
     }
     
     /**
@@ -546,7 +546,7 @@ public class $parameter implements Template<_parameter>, $proto<_parameter> {
      * @return 
      */
     public _type forSelectedIn(Class clazz, Consumer<Select> selectActionFn) {
-        return forSelectedIn(_type.of(clazz), selectActionFn);
+        return forSelectedIn(_java.type(clazz), selectActionFn);
     }
     
     /**
@@ -590,7 +590,7 @@ public class $parameter implements Template<_parameter>, $proto<_parameter> {
      * @return 
      */
     public _type forSelectedIn(Class clazz, Predicate<Select> selectConstraint, Consumer<Select> selectActionFn) {
-        return forSelectedIn(_type.of(clazz), selectConstraint, selectActionFn);
+        return forSelectedIn(_java.type(clazz), selectConstraint, selectActionFn);
     }
     
     /**
@@ -634,7 +634,7 @@ public class $parameter implements Template<_parameter>, $proto<_parameter> {
      * @return 
      */
     public _parameter firstIn( Class clazz ){
-        return firstIn(_type.of(clazz));
+        return firstIn(_java.type(clazz));
     }
     
     /**
@@ -689,7 +689,7 @@ public class $parameter implements Template<_parameter>, $proto<_parameter> {
      * @return  the first _field that matches (or null if none found)
      */
     public Select selectFirstIn( Class clazz, Predicate<Select>selectConstraint ){
-        return selectFirstIn(_type.of(clazz), selectConstraint);
+        return selectFirstIn(_java.type(clazz), selectConstraint);
     }
     
     /**

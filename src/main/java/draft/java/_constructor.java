@@ -10,7 +10,7 @@ import com.github.javaparser.ast.stmt.BlockStmt;
 import com.github.javaparser.ast.stmt.Statement;
 
 import draft.Text;
-import draft.java._model.*;
+import draft.java._java.*;
 import draft.java._anno.*;
 import draft.java._parameter.*;
 import draft.java._typeParameter.*;
@@ -416,7 +416,7 @@ public final class _constructor implements _anno._hasAnnos<_constructor>,
      * @param <N> the AST node type (must implement NodeWithConstructors)
      */
     public interface _hasConstructors<T extends _hasConstructors & _type, N extends Node & NodeWithConstructors>
-        extends _model {
+        extends _java {
 
         /** 
          * Gets the node that is the nodeWithConstructors (i.e._class, _enum)

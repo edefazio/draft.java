@@ -12,7 +12,7 @@ import java.util.*;
  *
  * @author Eric
  */
-public final class _modifiers implements _model {
+public final class _modifiers implements _java {
 
     /** Making the internal AST modifiers more accessible */
     public static final Modifier PUBLIC = Modifier.publicModifier();
@@ -509,7 +509,7 @@ public final class _modifiers implements _model {
      * @param <T> the target TYPE
      */
     public interface _hasModifiers<T extends _hasModifiers>
-        extends _model {
+        extends _java {
         
         /**
          * gets the explicitly set modifiers for the node

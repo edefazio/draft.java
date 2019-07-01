@@ -9,7 +9,7 @@ import com.github.javaparser.ast.nodeTypes.NodeWithMembers;
 import com.github.javaparser.ast.stmt.BlockStmt;
 import com.github.javaparser.ast.stmt.Statement;
 import draft.Text;
-import draft.java._model.*;
+import draft.java._java.*;
 
 import java.util.*;
 import java.util.function.BiConsumer;
@@ -183,7 +183,7 @@ public final class _staticBlock
      * @param <T>
      */
     public interface _hasStaticBlocks<T extends _hasStaticBlocks & _type>
-            extends _model {
+            extends _java {
 
         /** 
          * returns the static Blocks on the _type (ordered by when they are declared) 

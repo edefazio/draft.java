@@ -10,7 +10,7 @@ import com.github.javaparser.ast.type.Type;
 import draft.*;
 import draft.java.*;
 import draft.java._anno._annos;
-import draft.java._model._node;
+import draft.java._java._node;
 import draft.java._parameter._parameters;
 import draft.java._typeParameter._typeParameters;
 import draft.java.macro._macro;
@@ -92,7 +92,7 @@ public class $method
      * @return 
      */
     public static $method of( Class clazz, String name ){
-        _method._hasMethods  _hm = (_method._hasMethods)_type.of(clazz);
+        _method._hasMethods  _hm = (_method._hasMethods)_java.type(clazz);
         return of( _hm.getMethod(name) );
     }       
     
@@ -763,7 +763,7 @@ public class $method
      */
     @Override
     public Select selectFirstIn( Class clazz){
-        return selectFirstIn( _type.of(clazz));
+        return selectFirstIn( _java.type(clazz));
     }
     
     /**
@@ -773,7 +773,7 @@ public class $method
      * @return  the first _method that matches (or null if none found)
      */
     public Select selectFirstIn( Class clazz, Predicate<Select> selectConstraint){
-        return selectFirstIn( _type.of(clazz), selectConstraint);
+        return selectFirstIn( _java.type(clazz), selectConstraint);
     }
     
     /**
@@ -857,7 +857,7 @@ public class $method
      
     @Override
     public List<Select> listSelectedIn(Class clazz){
-        return listSelectedIn( _type.of(clazz));        
+        return listSelectedIn( _java.type(clazz));        
     }
     */ 
     
@@ -868,7 +868,7 @@ public class $method
      * @return 
      */
     public List<Select> listSelectedIn(Class clazz, Predicate<Select> selectConstraint){
-        return listSelectedIn( _type.of(clazz), selectConstraint);        
+        return listSelectedIn( _java.type(clazz), selectConstraint);        
     }
     
     /**
@@ -929,7 +929,7 @@ public class $method
      * @return 
      */
     public _type forSelectedIn(Class clazz, Consumer<Select> selectedActionFn ){
-        return forSelectedIn( _type.of(clazz), selectedActionFn);
+        return forSelectedIn( _java.type(clazz), selectedActionFn);
     }    
     
     /**
@@ -975,7 +975,7 @@ public class $method
      * @return 
      */
     public _type forSelectedIn(Class clazz, Predicate<Select> selectConstraint, Consumer<Select> selectedActionFn ){
-        return forSelectedIn(_type.of(clazz), selectConstraint, selectedActionFn);
+        return forSelectedIn(_java.type(clazz), selectConstraint, selectedActionFn);
     }
     
     /**
@@ -1003,7 +1003,7 @@ public class $method
      * @return 
      */
     public _type replaceIn(Class clazz,  $method $replace ){
-        return forSelectedIn(_type.of(clazz), s -> {
+        return forSelectedIn(_java.type(clazz), s -> {
             _method repl = $replace.construct(Translator.DEFAULT_TRANSLATOR, s.args);
             s._m.ast().replace(repl.ast());
         });
@@ -1016,7 +1016,7 @@ public class $method
      * @return 
      */
     public _type replaceIn(Class clazz,  String... replacementProto ){
-        return replaceIn(_type.of(clazz), $method.of(replacementProto));        
+        return replaceIn(_java.type(clazz), $method.of(replacementProto));        
     }
     
     /**
@@ -1026,7 +1026,7 @@ public class $method
      * @return 
      */
     public _type replaceIn(Class clazz,  _method method ){
-        return replaceIn(_type.of(clazz), $method.of(method));        
+        return replaceIn(_java.type(clazz), $method.of(method));        
     }
     
     /**
@@ -1036,7 +1036,7 @@ public class $method
      * @return 
      */
     public _type replaceIn(Class clazz, MethodDeclaration astMethod ){
-        return replaceIn(_type.of(clazz), $method.of(astMethod));        
+        return replaceIn(_java.type(clazz), $method.of(astMethod));        
     }
     
     /**

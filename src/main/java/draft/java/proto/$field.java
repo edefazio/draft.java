@@ -10,7 +10,7 @@ import com.github.javaparser.ast.type.Type;
 import draft.*;
 import draft.java.Expr;
 import draft.java.*;
-import draft.java._model._node;
+import draft.java._java._node;
 import draft.java.macro._macro;
 import draft.java.macro._remove;
 import java.lang.annotation.Annotation;
@@ -353,7 +353,7 @@ public class $field implements Template<_field>, $proto<_field> {
      * @return 
      */
     public Select selectFirstIn( Class clazz, Predicate<Select>selectConstraint ){
-       return selectFirstIn(_type.of(clazz), selectConstraint); 
+       return selectFirstIn(_java.type(clazz), selectConstraint); 
     }
     
     /**
@@ -427,7 +427,7 @@ public class $field implements Template<_field>, $proto<_field> {
      * @return 
      */
     public List<Select> listSelectedIn(Class clazz, Predicate<Select> selectConstraint){
-        return listSelectedIn(_type.of(clazz), selectConstraint);    
+        return listSelectedIn(_java.type(clazz), selectConstraint);    
     }
     
     /**
@@ -447,7 +447,7 @@ public class $field implements Template<_field>, $proto<_field> {
      * @return 
      */
     public _type replaceIn(Class clazz, $field $replaceProto ){
-        return replaceIn( _type.of(clazz), $replaceProto);
+        return replaceIn(_java.type(clazz), $replaceProto);
     }
     
     /**
@@ -491,7 +491,7 @@ public class $field implements Template<_field>, $proto<_field> {
      * @return 
      */
     public _type forSelectedIn(Class clazz, Consumer<Select> selectConsumer ){
-       return forSelectedIn( _type.of(clazz), selectConsumer ); 
+       return forSelectedIn(_java.type(clazz), selectConsumer ); 
     }
     
     /**
@@ -536,7 +536,7 @@ public class $field implements Template<_field>, $proto<_field> {
      * @return 
      */
     public _type forSelectedIn(Class clazz, Predicate<Select> selectConstraint, Consumer<Select> selectConsumer ){
-        return forSelectedIn(_type.of(clazz), selectConstraint, selectConsumer);
+        return forSelectedIn(_java.type(clazz), selectConstraint, selectConsumer);
     }
     
     /**

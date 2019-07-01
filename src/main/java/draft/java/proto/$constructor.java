@@ -12,7 +12,7 @@ import com.github.javaparser.ast.stmt.*;
 import draft.*;
 import draft.java.*;
 import draft.java._anno._annos;
-import draft.java._model._node;
+import draft.java._java._node;
 import draft.java._parameter._parameters;
 import draft.java._typeParameter._typeParameters;
 import draft.java.macro._ctor;
@@ -714,7 +714,7 @@ public class $constructor
      */ 
     @Override
     public Select selectFirstIn( Class clazz){
-        return selectFirstIn( _type.of(clazz));
+        return selectFirstIn( _java.type(clazz));
     }
      
     /**
@@ -724,7 +724,7 @@ public class $constructor
      * @return  the first _constructor that matches (or null if none found)
      */
     public Select selectFirstIn( Class clazz, Predicate<Select> selectConstraint){
-        return selectFirstIn( _type.of(clazz), selectConstraint);
+        return selectFirstIn( _java.type(clazz), selectConstraint);
     }
     
     /**
@@ -782,7 +782,7 @@ public class $constructor
      * @return 
      */
     public List<Select> listSelectedIn(Class clazz, Predicate<Select> selectConstraint){
-        return $constructor.this.listSelectedIn(_type.of(clazz), selectConstraint);
+        return listSelectedIn(_java.type(clazz), selectConstraint);
     }
     
     /**
@@ -832,7 +832,7 @@ public class $constructor
     }
     
     @Override
-    public List<Select> listSelectedIn(_model _m){
+    public List<Select> listSelectedIn(_java _m){
         if( _m instanceof _code ){
             _code _c = (_code)_m;
             if( _c.isTopLevel() ){
@@ -862,7 +862,7 @@ public class $constructor
      * @return 
      */
     public _type forSelectedIn(Class clazz, Consumer<Select> selectActionFn ){
-        return forSelectedIn(_type.of(clazz), selectActionFn );
+        return forSelectedIn(_java.type(clazz), selectActionFn );
     }
     
     /**
@@ -873,7 +873,7 @@ public class $constructor
      * @return 
      */
     public _type forSelectedIn(Class clazz, Predicate<Select>selectConstraint, Consumer<Select> selectActionFn ){
-        return forSelectedIn(_type.of(clazz), selectConstraint, selectActionFn );
+        return forSelectedIn(_java.type(clazz), selectConstraint, selectActionFn );
     }
     
     /**
@@ -955,7 +955,7 @@ public class $constructor
      * @return 
      */
     public _type replaceIn(Class clazz, $constructor $replace ){
-        return forSelectedIn(_type.of(clazz), s -> {
+        return forSelectedIn(_java.type(clazz), s -> {
             _constructor repl = $replace.construct(Translator.DEFAULT_TRANSLATOR, s.args);
             s._ct.ast().replace(repl.ast());
         });
@@ -968,7 +968,7 @@ public class $constructor
      * @return 
      */
     public _type replaceIn(Class clazz,  String... replacementProto ){
-        return replaceIn(_type.of(clazz), $constructor.of(replacementProto));        
+        return replaceIn(_java.type(clazz), $constructor.of(replacementProto));        
     }
     
     /**
@@ -978,7 +978,7 @@ public class $constructor
      * @return 
      */
     public _type replaceIn(Class clazz,  _constructor _ct ){
-        return replaceIn(_type.of(clazz), $constructor.of(_ct));        
+        return replaceIn(_java.type(clazz), $constructor.of(_ct));        
     }
     
     /**
@@ -988,7 +988,7 @@ public class $constructor
      * @return 
      */
     public _type replaceIn(Class clazz, ConstructorDeclaration astCtor ){
-        return replaceIn(_type.of(clazz), $constructor.of(astCtor));        
+        return replaceIn(_java.type(clazz), $constructor.of(astCtor));        
     }
     
     /**

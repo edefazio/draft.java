@@ -8,7 +8,8 @@ import com.github.javaparser.ast.nodeTypes.NodeWithStatements;
 import com.github.javaparser.ast.stmt.*;
 import draft.*;
 import draft.java.*;
-import draft.java._model._node;
+import draft.java._java;
+import draft.java._java._node;
 import draft.java.macro._remove;
 
 import java.util.*;
@@ -408,7 +409,7 @@ public final class $snip implements Template<List<Statement>>, $proto<List<State
     
     @Override
     public Select selectFirstIn( Class clazz){
-        return selectFirstIn(_type.of(clazz));
+        return selectFirstIn(_java.type(clazz));
     }
     
     /**
@@ -454,11 +455,11 @@ public final class $snip implements Template<List<Statement>>, $proto<List<State
      */
     @Override
     public List<Select> listSelectedIn(Class clazz){
-        return listSelectedIn(_type.of(clazz));
+        return listSelectedIn(_java.type(clazz));
     }
     
     @Override
-    public List<Select> listSelectedIn(_model _m ){
+    public List<Select> listSelectedIn(_java _m ){
         if( _m instanceof _code ){
             _code _c = (_code)_m;
             if( _c.isTopLevel() ){
@@ -491,7 +492,7 @@ public final class $snip implements Template<List<Statement>>, $proto<List<State
 
     
     @Override
-    public <N extends _model> N removeIn( N _n ){
+    public <N extends _java> N removeIn( N _n ){
         List<Select> sels= (List<Select>)listSelectedIn(_n);
         sels.forEach(s -> s.statements.forEach(st-> st.removeForced()));
         return _n;
@@ -504,11 +505,11 @@ public final class $snip implements Template<List<Statement>>, $proto<List<State
      * @return 
      */
     public _type replaceIn( Class clazz, $stmt $repl ){
-        return replaceIn(_type.of(clazz), $repl);
+        return replaceIn(_java.type(clazz), $repl);
     }
     
     public _type replaceIn( Class clazz, String... repl ){
-        return replaceIn(_type.of(clazz), $snip.of(repl));
+        return replaceIn(_java.type(clazz), $snip.of(repl));
     }
     
     public <N extends Node> N replaceIn(N astNode, String...repl ){        
@@ -534,7 +535,7 @@ public final class $snip implements Template<List<Statement>>, $proto<List<State
      * @return 
      */
     public _type replaceIn( Class clazz, $snip $repl ){
-        return replaceIn(_type.of(clazz), $repl);
+        return replaceIn(_java.type(clazz), $repl);
     }
     
     /**
@@ -665,7 +666,7 @@ public final class $snip implements Template<List<Statement>>, $proto<List<State
      * @return 
      */
     public _type forSelectedIn( Class clazz, Consumer<Select>selectedAction ){
-        return forSelectedIn(_type.of(clazz), selectedAction ); 
+        return forSelectedIn(_java.type(clazz), selectedAction ); 
     }
     
     /**

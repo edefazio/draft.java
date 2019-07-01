@@ -1,11 +1,9 @@
 package draft.java.macro;
 
 import draft.java._anno;
-import draft.java._model._named;
-import draft.java._type;
+import draft.java._java._named;
 
 import java.lang.annotation.*;
-import java.util.Arrays;
 
 /**
  * Annotation Macro to add imports to a _type

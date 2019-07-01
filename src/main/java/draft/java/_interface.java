@@ -5,7 +5,6 @@ import com.github.javaparser.ast.*;
 import com.github.javaparser.ast.body.*;
 import com.github.javaparser.ast.expr.ObjectCreationExpr;
 import com.github.javaparser.ast.type.*;
-import com.github.javaparser.printer.lexicalpreservation.LexicalPreservingPrinter;
 import draft.DraftException;
 import draft.java._anno.*;
 import draft.java.io._in;

@@ -6,7 +6,7 @@ import com.github.javaparser.ast.comments.JavadocComment;
 import com.github.javaparser.ast.expr.*;
 import com.github.javaparser.ast.type.*;
 
-import draft.java._model.*;
+import draft.java._java.*;
 import draft.DraftException;
 import draft.Text;
 import draft.java._anno.*;
@@ -600,7 +600,7 @@ public final class _field
      * @param <T>
      */
     public interface _hasFields<T extends _hasFields>
-            extends _model {
+            extends _java {
 
         List<_field> listFields();
 

@@ -4,7 +4,7 @@ import com.github.javaparser.ast.Node;
 import com.github.javaparser.ast.stmt.CatchClause;
 import draft.Tokens;
 import draft.java.*;
-import draft.java._model._node;
+import draft.java._java._node;
 import java.util.*;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
@@ -96,7 +96,7 @@ public class $catch implements $proto<CatchClause> {
      * @return 
      */
     public Select selectFirstIn(Class clazz, Predicate<Select> selectConstraint) {
-        return selectFirstIn(_type.of(clazz), selectConstraint);
+        return selectFirstIn(_java.type(clazz), selectConstraint);
     }
     
     /**
@@ -140,7 +140,7 @@ public class $catch implements $proto<CatchClause> {
     }
     
     public List<Select> listSelectedIn(Class clazz, Predicate<Select> selectConstraint) {
-        return listSelectedIn( _type.of(clazz), selectConstraint);
+        return listSelectedIn( _java.type(clazz), selectConstraint);
     }
     
     public <N extends _node> List<Select> listSelectedIn(N _n, Predicate<Select> selectConstraint) {
@@ -192,7 +192,7 @@ public class $catch implements $proto<CatchClause> {
      * @return 
      */
     public _type forSelectedIn(Class clazz, Consumer<Select> nodeActionFn) {
-        return forSelectedIn(_type.of(clazz), nodeActionFn);
+        return forSelectedIn(_java.type(clazz), nodeActionFn);
     }
     
     /**
@@ -203,7 +203,7 @@ public class $catch implements $proto<CatchClause> {
      * @return 
      */
     public _type forSelectedIn(Class clazz, Predicate<Select> selectConstraint, Consumer<Select> selectActionFn) {
-        return forSelectedIn(_type.of(clazz), selectConstraint, selectActionFn);
+        return forSelectedIn(_java.type(clazz), selectConstraint, selectActionFn);
     }
     
     /**

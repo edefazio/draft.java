@@ -5,7 +5,7 @@ import com.github.javaparser.ast.expr.*;
 import com.github.javaparser.ast.type.Type;
 import draft.*;
 import draft.java.*;
-import draft.java._model._node;
+import draft.java._java._node;
 
 import java.util.*;
 import java.util.function.Consumer;
@@ -388,7 +388,7 @@ public final class $typeRef
     }
 
     @Override
-    public List<Select> listSelectedIn(_model _m ){
+    public List<Select> listSelectedIn(_java _m ){
         if( _m instanceof _code ){
             _code _c = (_code)_m;
             if( _c.isTopLevel() ){
@@ -417,7 +417,7 @@ public final class $typeRef
      * @return 
      */
     public _type forSelectedIn( Class clazz, Consumer<Select> selectConsumer ){
-        return forSelectedIn(_type.of(clazz), selectConsumer);
+        return forSelectedIn(_java.type(clazz), selectConsumer);
     }
     
     /**
@@ -445,7 +445,7 @@ public final class $typeRef
      * @return 
      */
     public _type forSelectedIn(Class clazz, Predicate<Select> selectConstraint, Consumer<Select> selectConsumer ){
-        return forSelectedIn( _type.of(clazz), selectConstraint, selectConsumer);
+        return forSelectedIn( _java.type(clazz), selectConstraint, selectConsumer);
     }
     /**
      * 
@@ -507,7 +507,7 @@ public final class $typeRef
      * @return 
      */
     public _type replaceIn(Class clazz, Class replacementType){
-        return replaceIn(_type.of(clazz), replacementType);
+        return replaceIn(_java.type(clazz), replacementType);
     }
     
     /**
@@ -528,7 +528,7 @@ public final class $typeRef
      * @return 
      */
     public _type replaceIn( Class clazz, _typeRef replacementType ){
-        return replaceIn(_type.of(clazz), replacementType);
+        return replaceIn(_java.type(clazz), replacementType);
     }
     
     /**

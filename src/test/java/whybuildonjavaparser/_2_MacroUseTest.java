@@ -8,7 +8,7 @@ package whybuildonjavaparser;
 import draft.java.Walk;
 import draft.java._anno;
 import draft.java._class;
-import draft.java._model;
+import draft.java._java;
 import draft.java.macro._macro;
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
@@ -53,7 +53,7 @@ public class _2_MacroUseTest extends TestCase {
                 // _node draft classes, here we intercept all _hasAnnos 
                 // (nodes which may have _annos) and remove the Deprecated _anno
                 return (_anno._hasAnnos)Walk.in( 
-                    (_model._node)t, _anno._hasAnnos.class, ha->ha.removeAnnos(Deprecated.class));
+                    (_java._node)t, _anno._hasAnnos.class, ha->ha.removeAnnos(Deprecated.class));
             }            
         }
     }

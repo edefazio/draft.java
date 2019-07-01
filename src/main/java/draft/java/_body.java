@@ -27,7 +27,7 @@ import java.util.function.Predicate;
  *
  * @author Eric
  */
-public final class _body implements _model {
+public final class _body implements _java {
 
     /**
      * NOTE: this is an Object, because it can EITHER be a {@link NodeWithBlockStmt}
@@ -386,7 +386,7 @@ public final class _body implements _model {
      * @param <T> enclosing TYPE (to access this)
      */
     public interface _hasBody<T extends _hasBody>
-        extends _model {
+        extends _java {
         
         /**
          * @return gets the body

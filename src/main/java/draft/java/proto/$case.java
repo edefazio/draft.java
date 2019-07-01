@@ -6,7 +6,7 @@ import com.github.javaparser.ast.expr.Expression;
 import com.github.javaparser.ast.stmt.*;
 import draft.*;
 import draft.java.*;
-import draft.java._model._node;
+import draft.java._java._node;
 import draft.java.proto.$proto.$args;
 import java.util.*;
 import java.util.function.Consumer;
@@ -178,7 +178,7 @@ public class $case
      * @return 
      */
     public Select selectFirstIn(Class clazz, Predicate<Select>selectConstraint ){
-        return selectFirstIn( _type.of(clazz), selectConstraint);
+        return selectFirstIn( _java.type(clazz), selectConstraint);
     }
     
     /**
@@ -262,7 +262,7 @@ public class $case
      * @return 
      */
     public _type forSelectedIn(Class clazz, Consumer<Select> selectActionFn) {
-        return forSelectedIn(_type.of(clazz), selectActionFn);
+        return forSelectedIn(_java.type(clazz), selectActionFn);
     }
     
     /**
@@ -273,7 +273,7 @@ public class $case
      * @return 
      */
     public _type forSelectedIn(Class clazz, Predicate<Select> selectConstraint, Consumer<Select> selectActionFn) {
-        return forSelectedIn(_type.of(clazz), selectConstraint, selectActionFn);
+        return forSelectedIn(_java.type(clazz), selectConstraint, selectActionFn);
     }
     
     /**

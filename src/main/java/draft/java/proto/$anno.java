@@ -7,7 +7,7 @@ import com.github.javaparser.ast.body.BodyDeclaration;
 import com.github.javaparser.ast.expr.*;
 import draft.*;
 import draft.java.*;
-import draft.java._model._node;
+import draft.java._java._node;
 import java.lang.annotation.Annotation;
 import java.util.*;
 import java.util.function.Consumer;
@@ -399,7 +399,7 @@ public class $anno
      * @return
      */
     public _type replaceIn(Class clazz, $anno a ){
-        return replaceIn(_type.of(clazz), a);
+        return replaceIn(_java.type(clazz), a);
     }
     
     public <N extends _node> N replaceIn(N _n, Class<? extends Annotation> annoType ){
@@ -496,7 +496,7 @@ public class $anno
      */
     @Override
     public Select selectFirstIn( Class clazz){
-        return selectFirstIn( _type.of(clazz));
+        return selectFirstIn( _java.type(clazz));
     } 
     
     /**
@@ -506,7 +506,7 @@ public class $anno
      * @return 
      */
     public Select selectFirstIn( Class clazz, Predicate<Select> selectConstraint ){
-        return selectFirstIn(_type.of(clazz), selectConstraint );
+        return selectFirstIn(_java.type(clazz), selectConstraint );
     }
     
     /**
@@ -592,7 +592,7 @@ public class $anno
      * @return 
      */
     public List<Select> listSelectedIn(Class clazz, Predicate<Select> selectConstraint) {
-        return listSelectedIn(_type.of(clazz), selectConstraint);
+        return listSelectedIn(_java.type(clazz), selectConstraint);
     }
     
     /**
@@ -698,7 +698,7 @@ public class $anno
      * @return 
      */
     public _type forSelectedIn(Class clazz, Consumer<Select> selectActionFn) {
-        return forSelectedIn(_type.of(clazz), selectActionFn);         
+        return forSelectedIn(_java.type(clazz), selectActionFn);         
     }
 
     /**
@@ -709,7 +709,7 @@ public class $anno
      * @return 
      */
     public _type forSelectedIn(Class clazz, Predicate<Select> selectConstraint, Consumer<Select> selectActionFn) {
-        return forSelectedIn(_type.of(clazz), selectConstraint, selectActionFn);         
+        return forSelectedIn(_java.type (clazz), selectConstraint, selectActionFn);         
     }
     
     /**

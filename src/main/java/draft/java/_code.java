@@ -23,7 +23,7 @@ import java.util.stream.*;
  * @author Eric
  * @param <T>
  */
-public interface _code<T> extends _model {
+public interface _code<T> extends _java {
 
     /**
      * @return the compilationUnit (NOTE: could be null for nested _types)

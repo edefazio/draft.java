@@ -5,7 +5,7 @@ import com.github.javaparser.ast.expr.Name;
 import com.github.javaparser.ast.expr.SimpleName;
 import com.github.javaparser.ast.type.ClassOrInterfaceType;
 import draft.java.*;
-import draft.java._model._node;
+import draft.java._java._node;
 import draft.java.proto.$node.Select;
 import java.util.*;
 import java.util.function.Consumer;
@@ -220,7 +220,7 @@ public class $typeUse {
     }
 
     public _type replaceIn(Class clazz, String replacement){
-        return replaceIn( _type.of(clazz), replacement);
+        return replaceIn( _java.type(clazz), replacement);
     }
     
     public <N extends _node> N replaceIn(N _n, String replacement) {
@@ -249,11 +249,11 @@ public class $typeUse {
     }
     
     public _type replaceIn(Class clazz, Node replacement){
-        return replaceIn(_type.of(clazz), replacement);
+        return replaceIn(_java.type(clazz), replacement);
     }
     
     public _type removeIn(Class clazz){
-        return removeIn(_type.of(clazz) );
+        return removeIn(_java.type(clazz) );
     }
     
     public <N extends _node> N removeIn(N _n ) {
@@ -374,22 +374,22 @@ public class $typeUse {
     }
     
     public _type forEachIn(Class clazz, Consumer<Node> nodeActionFn ) {
-        return forEachIn( _type.of(clazz), nodeActionFn);
+        return forEachIn( _java.type(clazz), nodeActionFn);
     }
     
     public _type forSelectedIn(Class clazz, Consumer<$node.Select> selectActionFn ) {
-        return forSelectedIn( _type.of(clazz), selectActionFn);
+        return forSelectedIn( _java.type(clazz), selectActionFn);
     }
      
     public _type forSelectedIn(Class clazz, Predicate<$node.Select> selectConstraint, Consumer<$node.Select> selectActionFn ) {
-        return forSelectedIn(_type.of(clazz), selectConstraint, selectActionFn);
+        return forSelectedIn(_java.type(clazz), selectConstraint, selectActionFn);
     }
     
     public List<$node.Select> listSelectedIn( Class clazz ){        
-        return listSelectedIn( _type.of(clazz));
+        return listSelectedIn( _java.type(clazz));
     }
     
     public List<$node.Select> listSelectedIn( Class clazz, Predicate<$node.Select> selectConstraint){
-        return listSelectedIn( _type.of(clazz));        
+        return listSelectedIn( _java.type(clazz));        
     }    
 }

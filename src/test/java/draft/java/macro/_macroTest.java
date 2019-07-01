@@ -92,7 +92,7 @@ public class _macroTest extends TestCase {
             public Macro( removePrintlns rp ){}
             @Override
             public _hasAnnos apply(_hasAnnos _model) {
-                $println.removeIn( (draft.java._model._node)_model);
+                $println.removeIn( (draft.java._java._node)_model);
                 return _model;
             }
         }
