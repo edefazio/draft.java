@@ -67,7 +67,7 @@ public final class _class implements _type<ClassOrInterfaceDeclaration, _class>,
             _class _c = of( (ClassOrInterfaceDeclaration)n);
             
             _c = _macro.to(clazz, _c); //run annotation macros on the class
-            Set<Class> importClasses = _type.inferImportsFrom(clazz);
+            Set<Class> importClasses = _import.inferImportsFrom(clazz);
             _c.imports(importClasses.toArray(new Class[0]));
             for(int i=0; i< typeFns.length; i++){
                 _c = (_class)typeFns[i].apply(_c);
@@ -82,7 +82,7 @@ public final class _class implements _type<ClassOrInterfaceDeclaration, _class>,
             if( loc.getComment().isPresent() ){
                 _c.ast().setComment( loc.getComment().get());
             }
-            Set<Class> importClasses = _type.inferImportsFrom(clazz);            
+            Set<Class> importClasses = _import.inferImportsFrom(clazz);            
             _c.imports(importClasses.toArray(new Class[0]));
             _c = _macro.to(clazz, _c);
             for(int i=0; i< typeFns.length; i++){
@@ -167,7 +167,7 @@ public final class _class implements _type<ClassOrInterfaceDeclaration, _class>,
                 _c = (_class)macroFunctions[i].apply(_c);
             }
 
-            Class[] toImport = _type.inferImportsFrom(clazz).toArray(new Class[0]);
+            Class[] toImport = _import.inferImportsFrom(clazz).toArray(new Class[0]);
             for(int i=0;i<toImport.length;i++){
                 _c.imports(toImport[i]);
             }
@@ -328,7 +328,7 @@ public final class _class implements _type<ClassOrInterfaceDeclaration, _class>,
             }
         }
         //add imports from methods return types parameter types
-        Set<Class>toImport = _type.inferImportsFrom(anonymousClassBody);
+        Set<Class>toImport = _import.inferImportsFrom(anonymousClassBody);
 
         _c.imports(toImport.toArray(new Class[0]));
         
@@ -385,7 +385,7 @@ public final class _class implements _type<ClassOrInterfaceDeclaration, _class>,
         if( oce.getAnonymousClassBody().isPresent()){
             oce.getAnonymousClassBody().get().forEach( m->this.ast().addMember(m) );
         }
-        Set<Class> ims = _type.inferImportsFrom(anonymousImplementation);
+        Set<Class> ims = _import.inferImportsFrom(anonymousImplementation);
         ims.forEach( i -> imports(i) );
         return this;
     }
@@ -463,7 +463,7 @@ public final class _class implements _type<ClassOrInterfaceDeclaration, _class>,
         if( oce.getAnonymousClassBody().isPresent()){
             oce.getAnonymousClassBody().get().forEach( m->this.ast().addMember(m) );
         }
-        _type.inferImportsFrom(anonymousImplementationBody).forEach( i -> imports(i) );
+        _import.inferImportsFrom(anonymousImplementationBody).forEach( i -> imports(i) );
         return this;
     }
 
@@ -516,7 +516,7 @@ public final class _class implements _type<ClassOrInterfaceDeclaration, _class>,
         
         //create the approrpriate imports based on the signature of the 
         // added fields and methods, throws, etc.
-        _type.inferImportsFrom(anonymousClassBody).forEach( i -> imports(i) );
+        _import.inferImportsFrom(anonymousClassBody).forEach( i -> imports(i) );
         
         Class[] ints = anonymousClassBody.getClass().getInterfaces();
         Arrays.stream(ints).forEach( i -> implement(i) );

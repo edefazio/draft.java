@@ -1031,7 +1031,7 @@ public enum Walk {
                     _java.ModelMap._JAVA_TO_AST_NODE_CLASSES.get( _modelClass ),
                     t ->true,
                     a -> {
-                        _NM logical = (_NM)_java._modelOf( a );
+                        _NM logical = (_NM)_java.of( a );
                         if( _modelMatchFn.test( logical ) ) {
                             _modelAction.accept( logical );
                         }
@@ -1044,7 +1044,7 @@ public enum Walk {
                     BodyDeclaration.class,
                     t-> !t.isInitializerDeclaration(), //static Blocks are not members
                     n-> {
-                        _member _n = (_member)_java._modelOf(n);
+                        _member _n = (_member)_java.of(n);
 
                         if( ((Predicate<_member>)_modelMatchFn).test( _n) ){
                             ((Consumer<_member>)_modelAction).accept( _n);
@@ -1058,7 +1058,7 @@ public enum Walk {
                     BodyDeclaration.class,
                     t-> true,
                     n-> {
-                        _node _n = (_node)_java._modelOf(n);
+                        _node _n = (_node)_java.of(n);
 
                         if( ((Predicate<_node>)_modelMatchFn).test( _n) ){
                             ((Consumer<_node>)_modelAction).accept( _n);
@@ -1090,7 +1090,7 @@ public enum Walk {
                     Node.class,
                     n-> n instanceof NodeWithBlockStmt || n instanceof NodeWithOptionalBlockStmt,
                     n-> {
-                        _body._hasBody _hb = (_body._hasBody)_java._modelOf(n);
+                        _body._hasBody _hb = (_body._hasBody)_java.of(n);
 
                         if( ((Predicate<_body._hasBody>)_modelMatchFn).test( _hb) ){
                             ((Consumer<_body._hasBody>)_modelAction).accept( _hb);
@@ -1107,7 +1107,7 @@ public enum Walk {
                     // do so with the AST BODY
                     n -> n instanceof BodyDeclaration || n instanceof Parameter || n instanceof ReceiverParameter,
                     n ->{
-                        _anno._hasAnnos ha = (_anno._hasAnnos)_java._modelOf( n );
+                        _anno._hasAnnos ha = (_anno._hasAnnos)_java.of( n );
                         if( ((Predicate<_anno._hasAnnos>)_modelMatchFn).test( ha ) ){
                             ((Consumer<_anno._hasAnnos>)_modelAction).accept(ha);
                         }
@@ -1120,7 +1120,7 @@ public enum Walk {
                     Node.class,
                     n-> n instanceof NodeWithConstructors,
                     n-> {
-                        _constructor._hasConstructors hc = (_constructor._hasConstructors)_java._modelOf( n );
+                        _constructor._hasConstructors hc = (_constructor._hasConstructors)_java.of( n );
 
                         if( ((Predicate<_constructor._hasConstructors>)_modelMatchFn).test( hc) ){
                             ((Consumer<_constructor._hasConstructors>)_modelAction).accept( hc );
@@ -1134,7 +1134,7 @@ public enum Walk {
                     Node.class,
                     n-> n instanceof TypeDeclaration || n instanceof EnumConstantDeclaration,
                     n-> {
-                        _field._hasFields hf = (_field._hasFields)_java._modelOf( n );
+                        _field._hasFields hf = (_field._hasFields)_java.of( n );
 
                         if( ((Predicate<_field._hasFields>)_modelMatchFn).test( hf) ){
                             ((Consumer<_field._hasFields>)_modelAction).accept( hf );
@@ -1148,7 +1148,7 @@ public enum Walk {
                     Node.class,
                     n-> n instanceof NodeWithJavadoc,
                     n-> {
-                        _javadoc._hasJavadoc hf = (_javadoc._hasJavadoc)_java._modelOf( n );
+                        _javadoc._hasJavadoc hf = (_javadoc._hasJavadoc)_java.of( n );
 
                         if( ((Predicate<_javadoc._hasJavadoc>)_modelMatchFn).test( hf) ){
                             ((Consumer<_javadoc._hasJavadoc>)_modelAction).accept( hf );
@@ -1162,7 +1162,7 @@ public enum Walk {
                     Node.class,
                     n-> n instanceof EnumConstantDeclaration || n instanceof ClassOrInterfaceDeclaration || n instanceof EnumDeclaration,
                     n-> {
-                        _method._hasMethods hm = (_method._hasMethods)_java._modelOf( n );
+                        _method._hasMethods hm = (_method._hasMethods)_java.of( n );
 
                         if( ((Predicate<_method._hasMethods>)_modelMatchFn).test( hm) ){
                             ((Consumer<_method._hasMethods>)_modelAction).accept( hm );
@@ -1176,7 +1176,7 @@ public enum Walk {
                     Node.class,
                     n-> n instanceof NodeWithModifiers,
                     n-> {
-                        _modifiers._hasModifiers  hm = (_modifiers._hasModifiers)_java._modelOf( n );
+                        _modifiers._hasModifiers  hm = (_modifiers._hasModifiers)_java.of( n );
 
                         if( ((Predicate<_modifiers._hasModifiers>)_modelMatchFn).test( hm) ){
                             ((Consumer<_modifiers._hasModifiers>)_modelAction).accept( hm );
@@ -1190,7 +1190,7 @@ public enum Walk {
                     Node.class,
                     n-> n instanceof NodeWithParameters,
                     n-> {
-                        _parameter._hasParameters  hm = (_parameter._hasParameters)_java._modelOf( n );
+                        _parameter._hasParameters  hm = (_parameter._hasParameters)_java.of( n );
 
                         if( ((Predicate<_parameter._hasParameters>)_modelMatchFn).test( hm) ){
                             ((Consumer<_parameter._hasParameters>)_modelAction).accept( hm );
@@ -1205,7 +1205,7 @@ public enum Walk {
                     n-> n instanceof NodeWithParameters,
                     n-> {
                         //need a lambda...
-                        _parameter._hasParameters hp = (_parameter._hasParameters)_java._modelOf( n );
+                        _parameter._hasParameters hp = (_parameter._hasParameters)_java.of( n );
                             
                         if( ((Predicate<_parameter._parameters>)_modelMatchFn).test( hp.getParameters() ) ){
                             ((Consumer<_parameter._parameters>)_modelAction).accept( hp.getParameters() );
@@ -1219,7 +1219,7 @@ public enum Walk {
                     Node.class,
                     n-> n instanceof MethodDeclaration || n instanceof ConstructorDeclaration,
                     n-> {
-                        _receiverParameter._hasReceiverParameter hm = (_receiverParameter._hasReceiverParameter)_java._modelOf( n );
+                        _receiverParameter._hasReceiverParameter hm = (_receiverParameter._hasReceiverParameter)_java.of( n );
 
                         if( ((Predicate<_receiverParameter._hasReceiverParameter>)_modelMatchFn).test( hm) ){
                             ((Consumer<_receiverParameter._hasReceiverParameter>)_modelAction).accept( hm );
@@ -1254,7 +1254,7 @@ public enum Walk {
                     Node.class,
                     n-> n instanceof NodeWithThrownExceptions,
                     n-> {
-                        _throws._hasThrows ht = (_throws._hasThrows)_java._modelOf(n);
+                        _throws._hasThrows ht = (_throws._hasThrows)_java.of(n);
 
                         if( ((Predicate<_throws._hasThrows>)_modelMatchFn).test( ht) ){
                             ((Consumer<_throws._hasThrows>)_modelAction).accept( ht );
@@ -1268,7 +1268,7 @@ public enum Walk {
                     Node.class,
                     n-> n instanceof NodeWithTypeParameters,
                     n-> {
-                        _typeParameter._hasTypeParameters ht = (_typeParameter._hasTypeParameters)_java._modelOf(n);
+                        _typeParameter._hasTypeParameters ht = (_typeParameter._hasTypeParameters)_java.of(n);
 
                         if( ((Predicate<_typeParameter._hasTypeParameters>)_modelMatchFn).test( ht) ){
                             ((Consumer<_typeParameter._hasTypeParameters>)_modelAction).accept( ht );

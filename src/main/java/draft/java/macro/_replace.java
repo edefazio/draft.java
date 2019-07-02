@@ -53,10 +53,10 @@ public @interface _replace {
             Node newNode = null;
             if( _model instanceof _type ) {
                 oldNode = ((_type) _model).ast();
-                newNode = _java.nodeOf(((_type) _model).ast().getClass(), str);
+                newNode = _java.of(((_type) _model).ast().getClass(), str);
             }else {
                 oldNode = ((draft.java._java._node) _model).ast();
-                newNode = _java.nodeOf(((draft.java._java._node) _model).ast().getClass(), str);
+                newNode = _java.of(((draft.java._java._node) _model).ast().getClass(), str);
             }
             //System.out.println( oldNode.getClass() + " "+ newNode.getClass() );
             boolean isReplaced = oldNode.replace(newNode);
@@ -69,7 +69,7 @@ public @interface _replace {
                 throw new DraftException(
                         "Unable to replaceIn "+oldNode+" with "+newNode+" in Macro at AST level");
             }
-            return (_anno._hasAnnos) _java._modelOf(newNode);
+            return (_anno._hasAnnos) _java.of(newNode);
         }
     }
 }  

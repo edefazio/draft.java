@@ -2,6 +2,7 @@ package draft.java;
 
 import com.github.javaparser.ast.CompilationUnit;
 import com.github.javaparser.ast.modules.ModuleDeclaration;
+import draft.DraftException;
 import draft.Text;
 import draft.java._java.*;
 import java.util.HashMap;
@@ -9,8 +10,8 @@ import java.util.Map;
 import java.util.Objects;
 
 /**
- * a module-info.java file it is it's own
- *
+ * "module-info.java" file describing the module dependencies
+ * 
  */
 public class _moduleInfo implements _code<_moduleInfo>, _node<CompilationUnit> {
 
@@ -34,11 +35,21 @@ public class _moduleInfo implements _code<_moduleInfo>, _node<CompilationUnit> {
     public boolean is(String... stringRep) {
         try {
             return is(Ast.of(stringRep));
-        } catch (Exception e) {
+        } catch (DraftException e) {
             return false;
         }
     }
 
+    @Override
+    public String getSimpleName(){
+        return "module-info";
+    }
+    
+    @Override
+    public String getFullName(){
+        return "module-info";
+    }
+    
     @Override
     public boolean equals(Object obj) {
         if (this == obj) {

@@ -11,7 +11,7 @@ import java.util.stream.*;
 /**
  * Common model for all source code units of a Java codebase (a "code unit" is a
  * model of the contents contained within a source file) i.e.<UL>
- * <LI> a model (AST, etc.) of a regular XXX.java files
+ * <LI> a model (AST, etc.) of a regular XXX.java files ({@link _type})
  * <LI> a model of the contents  <B>package-info.java</B> files
  * <LI> <B>module-info.java</B> files
  * </UL>
@@ -38,6 +38,24 @@ public interface _code<T> extends _java {
      */
     public boolean isTopLevel();
 
+    /**
+     * Gets the simple name of the _code
+     * (i.e. "Map" for "java.util.Map.java")
+     * (i.e. "package-info" for "aaaa.bbbb.package-info.java")
+     * (i.e. "module-info" for "aaaa.bbbb.module-info.java")
+     * @return 
+     */
+    public String getSimpleName();
+    
+    /**
+     * returns the full name of the entity
+     * for a _type, the fully qualified name (i.e. "java.util.Map" for Map.class)
+     * for a package-info the fully qualified name (i.e. "my.project.package-info")
+     * for a module-info (always just "module-info")
+     * @return the full name
+     */
+    public String getFullName();
+    
     /**
      * Gets the "Header comment" (usually the License) from the compilationUnit
      * (NOTE: returns null if there are no header comments or this is nested

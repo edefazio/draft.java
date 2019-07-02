@@ -2,8 +2,13 @@ package draft.java.io;
 
 import draft.java._type;
 import java.io.ByteArrayInputStream;
+import java.io.InputStream;
 import java.net.URL;
 import java.nio.file.Paths;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Optional;
 
 /**
  * Since we maintain the {@link _type}s in memory when we compile and load a new
@@ -39,33 +44,57 @@ public final class _in_classLoader implements _in._resolver {
 
     public static final _in_classLoader INSTANCE = new _in_classLoader();
 
+    /**Specific classLoaders to look through */
+    private List<ClassLoader>classLoaders = new ArrayList<>();
+    
+    public static final _in_classLoader of( ClassLoader...classLoaders ){
+        return new _in_classLoader(classLoaders);
+    }
+    
+    public _in_classLoader( ClassLoader... classLoaders ){
+        Arrays.stream(classLoaders).forEach( cl -> this.classLoaders.add( cl ));
+    }
+    
     @Override
     public _in resolve( String sourceId ) {
-        /*
-        Class topLevelClass = runtimeClass;
-        if( runtimeClass.isMemberClass() ){
-            topLevelClass = runtimeClass.getDeclaringClass();
-        }
-        String sourceId = runtimeClass.getCanonicalName()+".java";
+        
+        String fileName = "/" + sourceId
+            .replace( ".", "/" ) + ".java";
+        
+        List<InputStream> iss = new ArrayList<>();
+        
+        Optional<ClassLoader> ocl = this.classLoaders.stream().filter( (ClassLoader cl) -> {
+            try{
+                InputStream is = cl.getResourceAsStream(fileName);
+                if( is != null ){
+                    iss.add(is);
+                    System.out.println( "FOUND CLASSLOADER "+ cl +" "+cl.getClass());
+                    return true;
+                }
+                return false;
+            } catch(Exception ex){
+                //ignore
+                return false;
+            }
+        }).findFirst();
+        
+        
+        //URL url = runtimeClass.getResource( fileName );
 
-        String fileName = "/" + topLevelClass.getCanonicalName()
-                .replace( ".", "/" ) + ".java";
-
-        URL url = runtimeClass.getResource( fileName );
-
-        if( url != null ){
+        if( ocl.isPresent() ){
+            System.out.println( "Found OCL ");
+            URL url = ocl.get().getResource( fileName );
+            System.out.println( "URL "+ url);
+            
             return _in._source.of(
                     Paths.get(fileName),
                     sourceId,
                     "classpath:"+url.toString(),
-                    getClass().getResourceAsStream( fileName ));
-        }
-        return null;
-        */
-        //So... technically we should be able to "get resource As Stream
+                    iss.get(0));
+        }                
         return null; /*can't help you if you don't have the Class*/
     }
-
+    
     @Override
     public _in resolve( Class runtimeClass ) {
         Class topLevelClass = runtimeClass;

@@ -26,6 +26,7 @@ import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
 import static com.github.javaparser.utils.Utils.normalizeEolInTextBlock;
+import java.nio.charset.Charset;
 import java.nio.file.Paths;
 import java.util.regex.Pattern;
 
@@ -64,6 +65,15 @@ public enum Ast {
      */    
     public static final JavaParser JAVAPARSER = 
         new JavaParser( new ParserConfiguration().setLanguageLevel(LanguageLevel.BLEEDING_EDGE) );
+    
+    /**
+     * Sometimes (infrequently) the Java source contains Unicode escapes
+     * and we have to use this variant to process it
+     
+    public static final JavaParser UNICODE_JAVAPARSER = 
+        new JavaParser( new ParserConfiguration().setLanguageLevel(LanguageLevel.BLEEDING_EDGE).setPreprocessUnicodeEscapes(true) 
+                .setCharacterEncoding(Charset.forName("ISO8859_1")) );    
+    */
     
     /*---------------------------------------------------------
        the point of having all of these JavaParser Classes in a
@@ -515,7 +525,10 @@ public enum Ast {
     protected static CompilationUnit parse(Reader javaSourceReader){
         ParseResult<CompilationUnit> pr = JAVAPARSER.parse(javaSourceReader);
         if( !pr.isSuccessful() ){
-            throw new DraftException("Unable to parse reader "+pr.getProblems());
+            //pr = UNICODE_JAVAPARSER.parse(javaSourceReader);
+            //if( ! pr.isSuccessful() ){
+                throw new DraftException("Unable to parse reader "+pr.getProblems());
+            //}
         }
         return pr.getResult().get();
     }
@@ -529,7 +542,10 @@ public enum Ast {
         try{
             ParseResult<CompilationUnit> pr = JAVAPARSER.parse(javaSourceFile);
             if( !pr.isSuccessful() ){
-                throw new DraftException("Unable to parse reader "+pr.getProblems());
+                //pr = UNICODE_JAVAPARSER.parse(javaSourceFile);
+                //if( ! pr.isSuccessful() ){
+                    throw new DraftException("Unable to parse reader "+pr.getProblems());
+                //}                
             }            
             CompilationUnit cu = pr.getResult().get();
             cu.setStorage(Paths.get( javaSourceFile.getAbsolutePath()));
@@ -546,9 +562,13 @@ public enum Ast {
      * @return an AST CompilationUnit
      */
     protected static CompilationUnit parse(String... linesOfJavaSourceCode){
-        ParseResult<CompilationUnit> pr = JAVAPARSER.parse(Text.combine(linesOfJavaSourceCode));
+        String str = Text.combine(linesOfJavaSourceCode);
+        ParseResult<CompilationUnit> pr = JAVAPARSER.parse(str);        
         if( !pr.isSuccessful() ){
-            throw new DraftException("Unable to parse inputStream "+pr.getProblems());
+            //pr = UNICODE_JAVAPARSER.parse(str);
+            //if( ! pr.isSuccessful() ){
+                throw new DraftException("Unable to parse text :"+pr.getProblems());
+            //}    
         }
         return pr.getResult().get();
     }
@@ -566,9 +586,18 @@ public enum Ast {
             throw new _ioException("Unable to read file at \""+pathToJavaSourceCode+"\"", ex);
         }
         if( !pr.isSuccessful() ){
-            throw new DraftException("Unable to parse at \""+pathToJavaSourceCode+"\"" + System.lineSeparator() + pr.getProblems());            
+            //try {
+            //    pr = UNICODE_JAVAPARSER.parse(pathToJavaSourceCode);
+            //} catch (IOException ex) {
+            //    throw new _ioException("Unable to read file at \""+pathToJavaSourceCode+"\"", ex);
+            //}
+            //if( ! pr.isSuccessful() ){
+                throw new DraftException("Unable to parse file at \""+pathToJavaSourceCode+"\""+pr.getProblems());
+           // }
         }
-        return pr.getResult().get();
+        CompilationUnit cu = pr.getResult().get();
+        cu.setStorage(pathToJavaSourceCode);
+        return cu;
     }
     
     /**
@@ -580,7 +609,10 @@ public enum Ast {
     protected static CompilationUnit parse(InputStream javaSourceInputStream){
         ParseResult<CompilationUnit> pr = JAVAPARSER.parse(javaSourceInputStream);
         if( !pr.isSuccessful() ){
-            throw new DraftException("Unable to parse inputStream "+pr.getProblems());
+            //pr = UNICODE_JAVAPARSER.parse(javaSourceInputStream);
+            //if( ! pr.isSuccessful() ){
+                throw new DraftException("Unable to parse text in inputStream :"+pr.getProblems());
+            //}
         }
         return pr.getResult().get();
     }    

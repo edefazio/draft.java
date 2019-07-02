@@ -37,9 +37,9 @@ public class SprotoCodeTest extends TestCase {
             "    requires bbbb;" + System.lineSeparator()+
             "    requires static cccc;" + System.lineSeparator()+
             "}"); 
-        _code _c = (_code)_java._modelOf(classAst);
-        _code _pI = (_code)_java._modelOf(packageInfoAst);
-        _code _mI = (_code)_java._modelOf(modAst);
+        _code _c = (_code)_java.of(classAst);
+        _code _pI = (_code)_java.of(packageInfoAst);
+        _code _mI = (_code)_java.of(modAst);
         
         
         assertTrue( _c instanceof _type);

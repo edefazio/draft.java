@@ -641,7 +641,7 @@ public final class _method
             Optional<CompilationUnit> oc = ((_node)this).ast().findCompilationUnit();
             if( oc.isPresent() ){
                 CompilationUnit cu = oc.get();
-                Set<Class> clazzes = _type.inferImportsFrom(anonymousObjectContainingMethod.getClass());    
+                Set<Class> clazzes = _import.inferImportsFrom(anonymousObjectContainingMethod.getClass());    
                 
                 clazzes.forEach(c -> {
                     if( !c.isArray()){

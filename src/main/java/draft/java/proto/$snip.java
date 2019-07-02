@@ -579,7 +579,7 @@ public final class $snip implements Template<List<Statement>>, $proto<List<State
             }
         });
 
-        _node _le = (_node)_java._modelOf(astNode);
+        _node _le = (_node)_java.of(astNode);
         if( astNode instanceof _body._hasBody){
             for(int i=0;i< ai.get(); i++){
                 ((_body._hasBody)_le).flattenLabel("$replacement$");

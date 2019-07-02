@@ -2,6 +2,7 @@ package draft.java;
 
 import com.github.javaparser.ast.CompilationUnit;
 import com.github.javaparser.ast.ImportDeclaration;
+import draft.java.macro._remove;
 import java.lang.reflect.Method;
 import java.util.*;
 import java.util.function.Consumer;
@@ -527,5 +528,104 @@ public class _import implements _java {
             this.astCompilationUnit.getImports().forEach(i -> sb.append( i.toString() ) );
             return sb.toString();
         }
+    }
+    
+    
+    /**
+     * 
+     * When we initialize or "import" the body of code for a _type... i.e.
+     * <PRE>
+     * //create the _class from the name, and anonymous object body
+     * _class _c = _class.of("aaaa.bbbb.C", new Serializable(){
+     *      Map m;
+     *
+     *      public UUID id(List l) throws IOException {
+     *          return UUID.randomUUID();
+     *      }
+     * });
+     *
+     * there are "inferred imports" that we should use for the _class... in the above case
+     * we need to import:
+     * <UL>
+     *     <LI>java.io.Serializable : the interface the anonymous object implements</LI>
+     *     <LI>java.util.Map : the type of field m</LI>
+     *     <LI>java.util.UUID : the return type of method id</LI>
+     *     <LI>java.util.List : the parameter passed into method id</LI>
+     *     <LI>java.io.IOException : the exception type throws from method id</LI>
+     * </UL>
+     * To do this... we reflectively look at the {@link java.lang.reflect.Field}s,
+     * {@link java.lang.reflect.Method}s, and {@link java.lang.reflect.Constructor}s,
+     * that exist in the anonymous object body, (as well as the declared interfaces and extended classes)
+     * and create a Set of classes that represent these runtime Classes (to add via _import)
+     *    
+     * TODO: ???? What about RuntimeAnnotations? (on each type, method, parameter, etc.
+     * should I include the imports for these things?? and when... 
+     * for right now NO, but possible in the future
+     * 
+     * </PRE>
+     * @param anonymousObjectBody an anonymous Object
+     * @return a Set<Class> containing the surface level classes that should be automatically
+     * inferred to be imported
+     */
+    public static Set<Class>inferImportsFrom(Object anonymousObjectBody){
+        return inferImportsFrom(anonymousObjectBody.getClass());
+    }
+
+    /**
+     * 
+     * @param anonymousClass
+     * @return a Set of Class imports that should be imported
+     */
+    public static Set<Class>inferImportsFrom(Class anonymousClass){
+        Set<Class>classes = new HashSet<>();
+        //implemented interfaces
+        Arrays.stream(anonymousClass.getInterfaces()).forEach(c-> classes.add(c));
+
+        //super class if not Object
+        if( anonymousClass.getSuperclass() != null &&
+            !anonymousClass.getSuperclass().equals(Object.class )){
+            classes.add(anonymousClass.getSuperclass() );
+        }
+        // field types
+        Arrays.stream(anonymousClass.getDeclaredFields()).forEach( f-> {
+            if( !f.isSynthetic() && f.getAnnotation(_remove.class) == null ) {
+                classes.add(f.getType());
+            }
+        } );
+        //constructors
+        Arrays.stream(anonymousClass.getDeclaredConstructors()).forEach( c -> {
+            if( c.getAnnotation(_remove.class) == null ) {
+                Arrays.stream(c.getParameters()).forEach( p -> {
+                    if( p.isSynthetic() ){
+                        classes.add( p.getType() );
+                    }
+                } );
+                Arrays.stream(c.getExceptionTypes()).forEach(p -> classes.add(p));
+            }
+        });
+        //methods
+        Arrays.stream(anonymousClass.getDeclaredMethods()).forEach( m -> {
+            if( m.getAnnotation(_remove.class) == null ) {
+                classes.add(m.getReturnType());
+
+                Arrays.stream(m.getParameters()).forEach( p -> {
+                    if( !p.isSynthetic() ){
+                        classes.add( p.getType() );
+                    }
+                } );
+                Arrays.stream(m.getExceptionTypes()).forEach(p -> classes.add(p));
+            }
+        });
+        //nested declared classes
+        Arrays.stream(anonymousClass.getDeclaredClasses()).forEach( c -> {
+            if( c.getAnnotationsByType(_remove.class).length == 0 ) {
+                classes.addAll(inferImportsFrom(c));
+            }
+        });
+        //lets not try importing java.lang.String or int.class
+        classes.removeIf( c-> c.isPrimitive() || ( c.isArray() && c.getComponentType().isPrimitive() ) 
+                || (c.getCanonicalName() == null)
+                || ( c.getPackage() != null && c.getPackage().getName().equals("java.lang") ));
+        return classes;
     }
 }

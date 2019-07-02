@@ -35,7 +35,7 @@ public final class _annotation
             return _macro.to(clazz, of( (CompilationUnit)n));
         }
         //not a compuilation
-        Set<Class> imps = _type.inferImportsFrom(clazz);
+        Set<Class> imps = _import.inferImportsFrom(clazz);
         _annotation _a = of( (AnnotationDeclaration)n);
         imps.forEach(i -> _a.imports(i) );
         return _macro.to(clazz, _a);        

@@ -90,45 +90,7 @@ public final class _inMaster implements _in._resolver {
 
     @Override
     public _in resolve(String sourceId) {
-        return resolve( new _io._inConfig(), sourceId );
-        /*
-        //1) check thread local in resolver
-        _in._resolver intl = getThreadLocalInResolver();
-        if( intl != null ){
-            //fully delegate the resolver to the thread local version
-            return intl.in(sourceId);
-        }
-        //2) check for System properties for projects IN PROJECTS PATHS
-        String projectsPaths = System.getProperty( _io.IN_PROJECTS_PATH  );
-        if( projectsPaths != null && projectsPaths.length() > 0 ){
-            String[] projs = projectsPaths.split(";");
-            for(int i=0;i<projs.length;i++) {
-                _in in = new _inProject(projs[i]).in(sourceId);
-                if (in != null) {
-                    return in;
-                }
-            }
-        }
-        //3) check for System properties for projects IN FILES PATH
-        String filePaths = System.getProperty( _io.IN_FILES_PATH );
-        if( filePaths != null && filePaths.length() > 0 ){
-            String[] fps = filePaths.split(";");
-            for(int i=0;i<fps.length;i++) {
-                _in in = _inFilePath.of(fps[i]).in(sourceId);
-                if (in != null) {
-                    return in;
-                }
-            }
-        }
-        // 4) check if it's in the current classPath
-        _in in = _inClassPath.INSTANCE.in(sourceId);
-        if( in != null ){
-            return in;
-        }
-
-        // 5) check if it's in the current Project
-        return IN_CURRENT_PROJECT.in(sourceId);
-        */
+        return resolve( new _io._inConfig(), sourceId );        
     }
 
     @Override

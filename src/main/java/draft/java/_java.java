@@ -30,7 +30,9 @@ import draft.java._throws._hasThrows;
 import draft.java._type._hasExtends;
 import draft.java._type._hasImplements;
 import draft.java._typeParameter._typeParameters;
+import draft.java.io._in;
 import draft.java.io._io;
+import draft.java.macro._macro;
 import java.io.File;
 import java.io.InputStream;
 import java.io.Reader;
@@ -448,14 +450,10 @@ public interface _java {
     public static final Class<_field> FIELD = _field.class;
     public static final Class<_constructor> CONSTRUCTOR = _constructor.class;
 
-    /**
-     * ENUM constant i.e. enum E { CONSTANT; }
-     */
+    /** ENUM constant i.e. enum E { CONSTANT; }*/
     public static final Class<_constant> CONSTANT = _constant.class;
 
-    /**
-     * Annotation Element i.e. @interface A{ int element(); }
-     */
+    /** Annotation Element i.e. @interface A{ int element(); }*/
     public static final Class<_element> ELEMENT = _element.class;
 
     public static final Class<_body> BODY = _body.class;
@@ -503,7 +501,6 @@ public interface _java {
     public static final Class<_hasSynchronized> HAS_SYNCHRONIZED = _hasSynchronized.class;
     public static final Class<_hasTransient> HAS_TRANSIENT = _hasTransient.class;
     public static final Class<_hasVolatile> HAS_VOLATILE = _hasVolatile.class;
-
 
     /**
      *
@@ -643,12 +640,44 @@ public interface _java {
     }
 
     /**
+     * given a Class, return the draft model of the source
+     * @param clazz
+     * @param resolver
+     * @return
+     */
+    public static _type type( Class clazz, _in._resolver resolver ){
+        Node n = Ast.type( clazz, resolver );
+        TypeDeclaration td = null;
+        if( n instanceof CompilationUnit) { //top level TYPE
+            CompilationUnit cu = (CompilationUnit) n;
+            if (cu.getTypes().size() == 1) {
+                td = cu.getType(0);
+            } else {                
+                td = cu.getPrimaryType().get();
+                //System.out.println( "Getting primary type"+td);
+            }            
+        }else {
+            td = (TypeDeclaration) n;
+        }
+        if( td instanceof ClassOrInterfaceDeclaration ){
+            ClassOrInterfaceDeclaration coid = (ClassOrInterfaceDeclaration)td;
+            if( coid.isInterface() ){
+                return _macro.to(clazz, _interface.of(coid));
+            }
+            return _macro.to(clazz,  _class.of(coid) );
+        }else if( td instanceof EnumDeclaration){
+            return _macro.to(clazz, _enum.of( (EnumDeclaration)td));
+        }
+        return _macro.to(clazz, _annotation.of( (AnnotationDeclaration)td));
+    }
+    
+    /**
      *
      * @param clazz
      * @return
      */
     public static _type type(Class clazz) {
-        return _type.of(clazz, _io.IN_DEFAULT);
+        return type(clazz, _io.IN_DEFAULT);
     }
 
     /**
@@ -662,6 +691,7 @@ public interface _java {
         return of(Ast.of(javaSourceFilePath));
     }
 
+    
     /**
      * Read and return the appropriate _code model based on the .java source
      * within the javaSourceInputStream
@@ -731,10 +761,11 @@ public interface _java {
      * class can be a _model, or Ast Node class
      *
      * @param nodeClass the class of the node (implementation class)
-     * @param code the code for the AST to _1_build
+     * must extend {@link _java} or {@link Node}
+     * @param code the java source code representation
      * @return the node implementation of the code
      */
-    public static Node nodeOf(Class nodeClass, String... code) {
+    public static Node of(Class nodeClass, String... code) {
         if (!_java.class.isAssignableFrom(nodeClass)) {
             return Ast.nodeOf(nodeClass, code);
         }
@@ -804,7 +835,7 @@ public interface _java {
      * @param node the ast node
      * @return the _model entity
      */
-    public static _java _modelOf(Node node) {
+    public static _java of(Node node) {
         if (node instanceof AnnotationExpr) {
             return _anno.of((AnnotationExpr) node);
         }
@@ -890,7 +921,7 @@ public interface _java {
         if (node instanceof CompilationUnit) {
             return of((CompilationUnit) node);
         }
-        throw new DraftException("Unable to create logical entity from " + node);
+        throw new DraftException("Unable to create _java entity from " + node);
     }
 
     /**
@@ -902,13 +933,9 @@ public interface _java {
      */
     public enum Component {
         MODULE_DECLARATION("moduleDeclaration", ModuleDeclaration.class),
-        /**
-         * i.e. @Deprecated @NotNull
-         */
+        /** i.e. @Deprecated @NotNull */
         ANNOS("annos", _anno._annos.class),
-        /**
-         * i.e. @Deprecated
-         */
+        /** i.e. @Deprecated */
         ANNO("anno", _anno.class),
         CLASS("class", _class.class),
         ENUM("enum", _enum.class),

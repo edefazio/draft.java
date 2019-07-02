@@ -42,6 +42,20 @@ public class _packageInfo
     }
 
     @Override
+    public String getSimpleName(){
+        return "package-info";
+    }
+    
+    @Override
+    public String getFullName(){
+        String pkg = this.getPackage();
+        if( pkg != null ){
+            return pkg+"."+"package-info";
+        }
+        return "package-info";
+    }
+    
+    @Override
     public CompilationUnit ast() {
         return astCompUnit;
     }
