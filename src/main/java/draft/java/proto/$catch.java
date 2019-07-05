@@ -214,7 +214,7 @@ public class $catch implements $proto<CatchClause> {
      * @return 
      */
     public <N extends _node> N forSelectedIn(N _n, Consumer<Select> nodeActionFn) {
-        W.in(_n, CatchClause.class, cc-> {
+        Walk.in(_n, CatchClause.class, cc-> {
                 Select sel = select(cc);
                 if( sel != null ){
                     nodeActionFn.accept(sel);
@@ -232,7 +232,7 @@ public class $catch implements $proto<CatchClause> {
      * @return 
      */
     public <N extends _node> N forSelectedIn(N _n, Predicate<Select> selectConstraint, Consumer<Select> nodeActionFn) {
-        W.in(_n, CatchClause.class, cc-> {
+        Walk.in(_n, CatchClause.class, cc-> {
                 Select sel = select(cc);
                 if( sel != null && selectConstraint.test(sel)){
                     nodeActionFn.accept(sel);

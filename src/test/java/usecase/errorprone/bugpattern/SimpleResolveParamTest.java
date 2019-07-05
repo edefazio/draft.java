@@ -11,7 +11,7 @@ import com.github.javaparser.ast.body.CallableDeclaration;
 import com.github.javaparser.ast.body.InitializerDeclaration;
 import com.github.javaparser.ast.type.Type;
 import draft.java.Ast;
-import draft.java.W;
+import draft.java.Walk;
 import draft.java._type;
 import draft.java.proto.$;
 import draft.java.proto.$expr;
@@ -67,7 +67,7 @@ public class SimpleResolveParamTest extends TestCase {
         $parameter $p = $parameter.of().$name(name);
         
         //lets walk up
-        n.walk(W.PARENTS, p -> {
+        n.walk(Walk.PARENTS, p -> {
             if( p instanceof CallableDeclaration ){
                 //I've reached the callable declaration
                 System.out.println( "Reached top Callable "+ p );

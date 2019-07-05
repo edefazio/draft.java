@@ -778,7 +778,7 @@ public final class _body implements _java {
                 return (T)this;
             }
             //Ast.walk((BlockStmt)this.getBody().ast(), Expression.class, exprActionFn );   
-            W.in((BlockStmt)this.getBody().ast(), Expression.class, exprActionFn );   
+            Walk.in((BlockStmt)this.getBody().ast(), Expression.class, exprActionFn );   
             return (T)this;
         }
 
@@ -800,7 +800,7 @@ public final class _body implements _java {
             }
             
             //Ast.walk((BlockStmt)this.getBody().ast(), exprClass, exprActionFn );            
-            W.in((BlockStmt)this.getBody().ast(), exprClass, exprActionFn );            
+            Walk.in((BlockStmt)this.getBody().ast(), exprClass, exprActionFn );            
             return (T)this;
         }
         
@@ -822,7 +822,7 @@ public final class _body implements _java {
             if( !isImplemented() ){
                 return (T)this;
             }
-            W.in((BlockStmt)this.getBody().ast(), exprClass, exprMatchFn, exprActionFn );            
+            Walk.in((BlockStmt)this.getBody().ast(), exprClass, exprMatchFn, exprActionFn );            
             //Ast.walk((BlockStmt)this.getBody().ast(), exprClass, exprMatchFn, exprActionFn );            
             return (T)this;
         }
@@ -839,7 +839,7 @@ public final class _body implements _java {
                 return (T)this;
             }
             //Ast.walk((BlockStmt)this.getBody().ast(), Statement.class, stmtActionFn );  
-            W.in((BlockStmt)this.getBody().ast(), Statement.class, stmtActionFn );  
+            Walk.in((BlockStmt)this.getBody().ast(), Statement.class, stmtActionFn );  
             return (T)this;
         }
         
@@ -857,7 +857,7 @@ public final class _body implements _java {
                 return (T)this;
             }
             //Ast.walk((BlockStmt)this.getBody().ast(), statementClass, stmtActionFn );    
-            W.in((BlockStmt)this.getBody().ast(), statementClass, stmtActionFn );    
+            Walk.in((BlockStmt)this.getBody().ast(), statementClass, stmtActionFn );    
             return (T)this;
         }
         
@@ -875,7 +875,7 @@ public final class _body implements _java {
             if( !isImplemented() ){
                 return (T)this;
             }
-            W.in((BlockStmt)this.getBody().ast(), statementClass, stmtMatchFn, stmtActionFn );            
+            Walk.in((BlockStmt)this.getBody().ast(), statementClass, stmtMatchFn, stmtActionFn );            
             //Ast.walk((BlockStmt)this.getBody().ast(), statementClass, stmtMatchFn, stmtActionFn );            
             return (T)this;
         }

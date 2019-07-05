@@ -998,7 +998,7 @@ public interface _type<AST extends TypeDeclaration & NodeWithJavadoc & NodeWithM
      * @return 
      */
     default List<String> listTypeNames(){
-        List<_type> _ts = W.list(this, _type.class);
+        List<_type> _ts = Walk.list(this, _type.class);
         List<String>names = new ArrayList<>();
         _ts.forEach(t-> names.add(t.getFullName()));
         return names;
@@ -1094,7 +1094,7 @@ public interface _type<AST extends TypeDeclaration & NodeWithJavadoc & NodeWithM
      * @return
      */
     default T flattenLabel( String labelName ){
-        W.in(this, _body._hasBody.class, _hb-> _hb.hasLabel(labelName), _hb -> _hb.flattenLabel(labelName) );
+        Walk.in(this, _body._hasBody.class, _hb-> _hb.hasLabel(labelName), _hb -> _hb.flattenLabel(labelName) );
         return (T) this;
     }
 

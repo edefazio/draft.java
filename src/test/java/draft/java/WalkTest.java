@@ -18,14 +18,14 @@ public class WalkTest extends TestCase {
         
         //these arent TOO interesting, just some simple tests
         //do some stuff with ASTs...
-        assertEquals(3, W.list(_c, Ast.FIELD_DECLARATION).size());
-        assertEquals(2, W.list(_c, Ast.FIELD_DECLARATION, fd->fd.getVariable(0).getType().isPrimitiveType() ).size());
+        assertEquals(3, Walk.list(_c, Ast.FIELD_DECLARATION).size());
+        assertEquals(2, Walk.list(_c, Ast.FIELD_DECLARATION, fd->fd.getVariable(0).getType().isPrimitiveType() ).size());
         
         //using draft classes can also walk, a little more concise IMHO
-        assertEquals(3, W.list(_c, _field.class).size());
-        assertEquals(3, W.list(_c, _java.FIELD).size());
-        assertEquals(2, W.list(_c, _field.class, fd->fd.isPrimitive()).size());
-        assertEquals(1, W.list(_c, _field.class, fd->fd.isInit(2)).size());
+        assertEquals(3, Walk.list(_c, _field.class).size());
+        assertEquals(3, Walk.list(_c, _java.FIELD).size());
+        assertEquals(2, Walk.list(_c, _field.class, fd->fd.isPrimitive()).size());
+        assertEquals(1, Walk.list(_c, _field.class, fd->fd.isInit(2)).size());
         
         
     }
@@ -37,12 +37,12 @@ public class WalkTest extends TestCase {
 
         //Walk.in(_c, _class.class, c-> System.out.println(c));
         AtomicInteger at = new AtomicInteger(0);
-        W.in(_c, TypeDeclaration.class, td->at.incrementAndGet() );
+        Walk.in(_c, TypeDeclaration.class, td->at.incrementAndGet() );
         assertTrue(at.intValue() ==1);
         
-        assertTrue( W.list(_c, Ast.ENUM_DECLARATION).isEmpty());
-        W.in(_c, Ast.NODE_WITH_ABSTRACT_MOD, td->System.out.println(td) );
-        W.in(_c, Ast.IMPORT_DECLARATION, td->System.out.println(td) );
+        assertTrue( Walk.list(_c, Ast.ENUM_DECLARATION).isEmpty());
+        Walk.in(_c, Ast.NODE_WITH_ABSTRACT_MOD, td->System.out.println(td) );
+        Walk.in(_c, Ast.IMPORT_DECLARATION, td->System.out.println(td) );
 
     }
     

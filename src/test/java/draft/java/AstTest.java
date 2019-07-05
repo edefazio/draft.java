@@ -163,7 +163,7 @@ public class AstTest extends TestCase {
         }
         CompilationUnit cu = Ast.of(P.class);
 
-        LambdaExpr le = W.first(cu,
+        LambdaExpr le = Walk.first(cu,
                 LambdaExpr.class,
                 (n) -> n.getRange().isPresent() && n.getRange().get().begin.line == 47 );
 
@@ -234,9 +234,9 @@ public class AstTest extends TestCase {
         assertFalse(Ast.AST_CACHE_MAP.containsKey(L.class));
     }
     public void testAstWalkList(){
-        System.out.println( W.listComments( Ast.type( Ex.class) ));
+        System.out.println( Walk.listComments( Ast.type( Ex.class) ));
 
-        W.in(Ast.type( Ex.class ), Comment.class, c-> System.out.println(c.getClass()) );
+        Walk.in(Ast.type( Ex.class ), Comment.class, c-> System.out.println(c.getClass()) );
         //Ast.walk( Ast.type( Ex.class ), Comment.class, c-> System.out.println(c.getClass()) );
 
     }
@@ -546,21 +546,21 @@ public class AstTest extends TestCase {
         //                jdc -> System.out.println( ((JavadocComment)jdc).getContent() )));
 
         System.out.println(
-               W.list( _class.of(L.class),
+               Walk.list( _class.of(L.class),
                     _javadoc._hasJavadoc.class,
                     jd -> jd.hasJavadoc() && jd.getJavadoc().getContent().startsWith("TODO")));
 
         //List all entities that have TODO tags within the Javadocs
         System.out.println(
-                W.list(_class.of(L.class),
+                Walk.list(_class.of(L.class),
                 _javadoc._hasJavadoc.class,
                 jd -> jd.hasJavadoc() && jd.getJavadoc().getContent().startsWith("TODO") ) );
 
         //find any TODO tags within the code
-        W.in( _class.of(L.class),
+        Walk.in( _class.of(L.class),
         //_class.of(L.class).walk(
                 _body._hasBody.class,
-                m -> W.in(m.getBody().ast(),
+                m -> Walk.in(m.getBody().ast(),
                         Comment.class,
                         c-> c.getContent().trim().startsWith("TODO"),
                         jdc -> System.out.println( jdc.getContent() )) );

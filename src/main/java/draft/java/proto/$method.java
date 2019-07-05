@@ -896,7 +896,7 @@ public class $method
      */
     public List<Select> listSelectedIn(_node _n, Predicate<Select> selectConstraint){
         List<Select>sts = new ArrayList<>();
-        W.in(_n, MethodDeclaration.class, m -> {
+        Walk.in(_n, MethodDeclaration.class, m -> {
             Select sel = select( m );
             if( sel != null && selectConstraint.test(sel)){
                 sts.add(sel);
@@ -940,7 +940,7 @@ public class $method
      * @return 
      */
     public <N extends _node> N forSelectedIn(N _n, Consumer<Select> selectedActionFn ){
-        W.in(_n, _method.class, m ->{
+        Walk.in(_n, _method.class, m ->{
             Select s = select( m );
             if( s != null ){
                 selectedActionFn.accept( s );
@@ -987,7 +987,7 @@ public class $method
      * @return 
      */
     public <N extends _node> N forSelectedIn(N _n, Predicate<Select> selectConstraint, Consumer<Select> selectedActionFn ){
-        W.in(_n, _method.class, m ->{
+        Walk.in(_n, _method.class, m ->{
             Select s = select( m );
             if( s != null && selectConstraint.test(s)){
                 selectedActionFn.accept( s );

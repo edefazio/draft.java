@@ -5,7 +5,7 @@
  */
 package draft.java.proto;
 
-import draft.java.W;
+import draft.java.Walk;
 import draft.java._class;
 import java.io.IOException;
 import java.net.BindException;
@@ -24,7 +24,7 @@ public class throwsTest extends TestCase {
             }
         }
         _class _c = _class.of(C.class);
-        W.in(_c, n-> System.out.println(n.getClass()+ " "+ n ) );
+        Walk.in(_c, n-> System.out.println(n.getClass()+ " "+ n ) );
         
         $typeRef.of(IOException.class).removeIn(_c);
         System.out.println( _c );

@@ -617,7 +617,7 @@ public final class $snip implements Template<List<Statement>>, $proto<List<State
     public <N extends _node> N replaceIn(N _n, $snip $repl ){
         AtomicInteger ai = new AtomicInteger(0);
 
-        W.in(_n, this.$sts.get(0).statementClass, st-> {
+        Walk.in(_n, this.$sts.get(0).statementClass, st-> {
         //_le.walk( this.$sts.get(0).statementClass, st-> {
             Select sel = select( (Statement)st );
             if( sel != null ){
@@ -694,7 +694,7 @@ public final class $snip implements Template<List<Statement>>, $proto<List<State
      * @return 
      */
     public <N extends _node> N forSelectedIn(N _n, Consumer<Select>selectedAction ){
-        W.in(_n, this.$sts.get(0).statementClass, st-> {
+        Walk.in(_n, this.$sts.get(0).statementClass, st-> {
             Select sel = select( (Statement)st );
             if( sel != null ){
                 selectedAction.accept(sel);

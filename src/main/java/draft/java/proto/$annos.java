@@ -3,7 +3,7 @@ package draft.java.proto;
 import com.github.javaparser.ast.Node;
 import com.github.javaparser.ast.nodeTypes.NodeWithAnnotations;
 import draft.*;
-import draft.java.W;
+import draft.java.Walk;
 import draft.java._anno;
 import draft.java._anno._annos;
 import draft.java._anno._hasAnnos;
@@ -397,7 +397,7 @@ public class $annos
     @Override
     public List<Select> listSelectedIn(Node astRootNode) {          
         List<Select> found = new ArrayList<>();
-        W.in(astRootNode, Node.class, _ha-> {
+        Walk.in(astRootNode, Node.class, _ha-> {
             if( _ha instanceof NodeWithAnnotations ){
                 Select sel = select( (NodeWithAnnotations)_ha);
                 if( sel != null ){
@@ -469,7 +469,7 @@ public class $annos
 
     @Override
     public <N extends Node> N forEachIn(N astRootNode, Predicate<_annos> _annosMatchFn, Consumer<_annos> _annosActionFn) {
-        return W.in(astRootNode, Node.class, n-> {
+        return Walk.in(astRootNode, Node.class, n-> {
             if( n instanceof NodeWithAnnotations ){
                 Select sel = select( (NodeWithAnnotations)n );
                 if( sel != null && _annosMatchFn.test(sel._anns)){

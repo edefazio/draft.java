@@ -428,7 +428,7 @@ public final class $typeRef
      * @return 
      */
     public <N extends _node> N forSelectedIn(N _n, Consumer<Select> selectConsumer ){
-        W.in(_n, Type.class, e-> {
+        Walk.in(_n, Type.class, e-> {
             Select sel = select( e );
             if( sel != null ){
                 selectConsumer.accept( sel );
@@ -456,7 +456,7 @@ public final class $typeRef
      * @return 
      */
     public <N extends _node> N forSelectedIn(N _n, Predicate<Select> selectConstraint, Consumer<Select> selectConsumer ){
-        W.in(_n, Type.class, e-> {
+        Walk.in(_n, Type.class, e-> {
             Select sel = select( e );
             if( sel != null && selectConstraint.test(sel) ){
                 selectConsumer.accept( sel );
@@ -569,7 +569,7 @@ public final class $typeRef
      * @return
      */
     public <N extends _node> N replaceIn(N _n, $typeRef $replacementType){
-        W.in(_n, Type.class, e -> {
+        Walk.in(_n, Type.class, e -> {
             Select select = select(e);
             if( select != null ){
                 if( !e.replace($replacementType.construct(select.args).ast() )){
