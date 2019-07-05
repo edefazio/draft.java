@@ -1301,7 +1301,7 @@ public final class $stmt<T extends Statement>
      * @return 
      */
     public <N extends _node> N forSelectedIn(N _n, Consumer<Select<T>> selectedActionFn){
-        Walk.in(_n, this.statementClass, e->{
+        W.in(_n, this.statementClass, e->{
             Select<T> sel = select( e );
             if( sel != null ){
                 selectedActionFn.accept( sel );
@@ -1348,7 +1348,7 @@ public final class $stmt<T extends Statement>
      * @return 
      */
     public <N extends _node> N forSelectedIn(N _n, Predicate<Select<T>> selectConstraint, Consumer<Select<T>> selectedActionFn){
-        Walk.in(_n, this.statementClass, e->{
+        W.in(_n, this.statementClass, e->{
             Select<T> sel = select( e );
             if( sel != null && selectConstraint.test(sel)){
                 selectedActionFn.accept( sel );
@@ -1436,7 +1436,7 @@ public final class $stmt<T extends Statement>
      */
     public List<Select<T>> listSelectedIn(_node _n, Predicate<Select<T>> selectConstraint ){
         List<Select<T>>sts = new ArrayList<>();
-        Walk.in(_n, this.statementClass, st->{
+        W.in(_n, this.statementClass, st->{
             //$args tokens = deconstruct(st);
             Select sel = select(st);
             if (sel != null && selectConstraint.test(sel)){
@@ -1499,7 +1499,7 @@ public final class $stmt<T extends Statement>
      */
     public <N extends _node> N replaceIn(N _n, $snip $protoReplacement ){
         AtomicInteger ai = new AtomicInteger(0);
-        Walk.in(_n, this.statementClass, st->{
+        W.in(_n, this.statementClass, st->{
             $stmt.Select sel = select( st );
             if( sel != null ){
                 //construct the replacement snippet
@@ -1590,7 +1590,7 @@ public final class $stmt<T extends Statement>
      * @return 
      */
     public static <N extends Node> N walkCompose$LabeledStmt(N  node, Map<String,Object> tokens ){
-        Walk.in(node, 
+        W.in(node, 
             LabeledStmt.class, 
             ls-> ls.getLabel().asString().startsWith("$"),
             ls -> {

@@ -22,18 +22,18 @@ import java.util.function.Predicate;
  * $proto objects define a mechanism to walk the AST and query/modify Java code
  * matching against grammar entries via the _node model 
  *
- * @param <Q> the TYPE of the node being queried for (likely a 
+ * @param <P> the TYPE of the node being queried for (likely a 
  * {@link com.github.javaparser.ast.Node} or 
  * {@link draft.java._model._node})
  */
-public interface $proto<Q> {
+public interface $proto<P> {
     
     /**
      * 
      * @param clazz
      * @return 
      */
-    default Q firstIn(Class clazz){
+    default P firstIn(Class clazz){
         return firstIn( _java.type(clazz) );
     }
     
@@ -43,7 +43,7 @@ public interface $proto<Q> {
      * @param nodeMatchFn
      * @return 
      */
-    default Q firstIn( Class clazz, Predicate<Q> nodeMatchFn){
+    default P firstIn( Class clazz, Predicate<P> nodeMatchFn){
         return firstIn(_java.type(clazz).astCompilationUnit(), nodeMatchFn);
     }
     
@@ -52,7 +52,7 @@ public interface $proto<Q> {
      * @param _m the the _model node
      * @return  the first matching instance or null if none is found
      */
-    default Q firstIn(_java _m){
+    default P firstIn(_java _m){
         if( _m instanceof _code ){
             _code _c = (_code)_m;
             if( _c.isTopLevel() ){
@@ -70,7 +70,7 @@ public interface $proto<Q> {
      * @param nodeMatchFn
      * @return 
      */
-    default Q firstIn(_java _m, Predicate<Q> nodeMatchFn){
+    default P firstIn(_java _m, Predicate<P> nodeMatchFn){
         if( _m instanceof _code ){
             _code _c = (_code)_m;
             if( _c.isTopLevel() ){
@@ -87,7 +87,7 @@ public interface $proto<Q> {
      * @param astRootNode
      * @return the first matching instance or null
      */
-    default Q firstIn(Node astRootNode){
+    default P firstIn(Node astRootNode){
         return firstIn(astRootNode, t->true);
     }
     
@@ -97,7 +97,7 @@ public interface $proto<Q> {
      * @param nodeMatchFn
      * @return 
      */
-    Q firstIn(Node astRootNode, Predicate<Q> nodeMatchFn);
+    P firstIn(Node astRootNode, Predicate<P> nodeMatchFn);
     
     /**
      * 
@@ -105,7 +105,7 @@ public interface $proto<Q> {
      * @param clazz
      * @return 
      */
-    default <S extends selected<Q>> S selectFirstIn( Class clazz ){
+    default <S extends selected<P>> S selectFirstIn( Class clazz ){
         return selectFirstIn(_java.type(clazz));
     }
     
@@ -115,7 +115,7 @@ public interface $proto<Q> {
      * @param _m
      * @return 
      */
-    default <S extends selected<Q>> S selectFirstIn( _java _m ){
+    default <S extends selected<P>> S selectFirstIn( _java _m ){
         if( _m instanceof _code ){
             _code _c = (_code)_m;
             if( _c.isTopLevel() ){
@@ -133,7 +133,7 @@ public interface $proto<Q> {
      * @param n
      * @return 
      */
-    <S extends selected<Q>> S selectFirstIn( Node n );
+    <S extends selected<P>> S selectFirstIn( Node n );
         
     /**
      * Find and return a List of all matching the prototype within clazz
@@ -141,7 +141,7 @@ public interface $proto<Q> {
      * @param clazz the runtime class (MUST HAVE JAVA SOURCE AVAILABLE IN CLASSPATH)
      * @return a List of Q that match the query
      */
-    default List<Q> listIn(Class clazz){
+    default List<P> listIn(Class clazz){
         return listIn(_java.type(clazz));
     }
     
@@ -151,7 +151,7 @@ public interface $proto<Q> {
      * @param nodeMatchFn
      * @return 
      */
-    default List<Q> listIn(Class clazz, Predicate<Q> nodeMatchFn){
+    default List<P> listIn(Class clazz, Predicate<P> nodeMatchFn){
         return listIn(_java.type(clazz), nodeMatchFn);
     }
     
@@ -162,7 +162,7 @@ public interface $proto<Q> {
      * _method, _packageInfo)
      * @return a List of Q that match the query
      */
-    default List<Q> listIn(_java _m) {
+    default List<P> listIn(_java _m) {
         if( _m instanceof _code ){
             _code _c = (_code)_m;
             if( _c.isTopLevel() ){
@@ -180,7 +180,7 @@ public interface $proto<Q> {
      * @param nodeMatchFn
      * @return 
      */
-    default List<Q> listIn(_java _m, Predicate<Q>nodeMatchFn){
+    default List<P> listIn(_java _m, Predicate<P>nodeMatchFn){
         if( _m instanceof _code ){
             _code _c = (_code)_m;
             if( _c.isTopLevel() ){
@@ -197,7 +197,7 @@ public interface $proto<Q> {
      * @param astRootNode the root AST node to start the search
      * @return a List of Q matching the query
      */
-    default List<Q> listIn(Node astRootNode){
+    default List<P> listIn(Node astRootNode){
         return listIn( astRootNode, t->true);
     }
     
@@ -207,8 +207,8 @@ public interface $proto<Q> {
      * @param nodeMatchFn
      * @return 
      */
-    default List<Q> listIn(Node astRootNode, Predicate<Q>nodeMatchFn){        
-        List<Q> found = new ArrayList<>();
+    default List<P> listIn(Node astRootNode, Predicate<P>nodeMatchFn){        
+        List<P> found = new ArrayList<>();
         forEachIn(astRootNode, nodeMatchFn, b-> found.add(b));
         return found;    
     }
@@ -261,7 +261,7 @@ public interface $proto<Q> {
      * @param nodeActionFn what to do with each entity matching the prototype
      * @return the (potentially modified) _type 
      */
-    default _type forEachIn(Class clazz, Consumer<Q>nodeActionFn ){
+    default _type forEachIn(Class clazz, Consumer<P>nodeActionFn ){
         
         return forEachIn(_java.type(clazz), nodeActionFn);
     }
@@ -275,22 +275,8 @@ public interface $proto<Q> {
      * @param nodeActionFn the function to run on all matching entities
      * @return the modified _java node
      */
-    default <M extends _java> M forEachIn(M _m, Consumer<Q> nodeActionFn){
-        return forEachIn(_m, t->true, nodeActionFn);
-        /*
-        if( _m instanceof _code ){
-            _code _c = (_code)_m;
-            if( _c.isTopLevel() ){
-                return listSelectedIn(_c.astCompilationUnit());
-            }
-            _type _t = (_type)_m; //only possible 
-            return listSelectedIn(_t.ast()); //return the TypeDeclaration, not the CompilationUnit
-        } else{
-            return forEachIn( ((_node)_m).ast(), _nodeActionFn); 
-        }
-        */
-        //forEachIn(_n.ast(), _nodeActionFn);
-        //return _n;
+    default <M extends _java> M forEachIn(M _m, Consumer<P> nodeActionFn){
+        return forEachIn(_m, t->true, nodeActionFn);       
     }
     
     /**
@@ -304,7 +290,7 @@ public interface $proto<Q> {
      * matching node
      * @return the modified astRootNode
      */
-    default <M extends _java> M forEachIn(M _m, Predicate<Q> nodeMatchFn, Consumer<Q> nodeActionFn){
+    default <M extends _java> M forEachIn(M _m, Predicate<P> nodeMatchFn, Consumer<P> nodeActionFn){
         if( _m instanceof _code ){
             _code _c = (_code)_m;
             if( _c.isTopLevel() ){
@@ -317,11 +303,6 @@ public interface $proto<Q> {
         }
         forEachIn(((_node)_m).ast(), nodeMatchFn, nodeActionFn);
         return _m;
-         
-        //return listSelectedIn( ((_node)_m).ast()); 
-        
-        //forEachIn(_n.ast(), _nodeMatchFn, _nodeActionFn);
-        //return _n;
     }
     
     /**
@@ -335,7 +316,7 @@ public interface $proto<Q> {
      * matching node
      * @return the modified astRootNode
      */
-    default <N extends Node> N forEachIn(N astRootNode, Consumer<Q> _nodeActionFn){
+    default <N extends Node> N forEachIn(N astRootNode, Consumer<P> _nodeActionFn){
         return forEachIn(astRootNode, t->true, _nodeActionFn);
     }
 
@@ -351,7 +332,7 @@ public interface $proto<Q> {
      * matching node
      * @return the modified astRootNode
      */
-    <N extends Node> N forEachIn(N astRootNode, Predicate<Q> nodeMatchFn, Consumer<Q> nodeActionFn);
+    <N extends Node> N forEachIn(N astRootNode, Predicate<P> nodeMatchFn, Consumer<P> nodeActionFn);
     
     /**
      * 
@@ -402,7 +383,7 @@ public interface $proto<Q> {
      * @param nodeMatchFn 
      * @return the _type with all entities matching the prototype (& constraint) removed
      */
-    default _type removeIn(Class clazz, Predicate<Q> nodeMatchFn){
+    default _type removeIn(Class clazz, Predicate<P> nodeMatchFn){
         return removeIn(_java.type(clazz), nodeMatchFn);
     } 
     
@@ -424,8 +405,7 @@ public interface $proto<Q> {
      * @param nodeMatchFn
      * @return the modified model node
      */
-    default <M extends _java> M removeIn(M _m, Predicate<Q> nodeMatchFn){
-        //removeIn(_n.ast(), _nodeMatchFn);
+    default <M extends _java> M removeIn(M _m, Predicate<P> nodeMatchFn){
         if( _m instanceof _code ){
             _code _c = (_code)_m;
             if( _c.isTopLevel() ){
@@ -460,7 +440,7 @@ public interface $proto<Q> {
      * @param nodeMatchFn function to match nodes to remove
      * @return the modified node
      */
-    default <N extends Node> N removeIn(N astRootNode, Predicate<Q> nodeMatchFn){
+    default <N extends Node> N removeIn(N astRootNode, Predicate<P> nodeMatchFn){
         return forEachIn(astRootNode, s-> {
             if( nodeMatchFn.test( s ) ){
                 if( s instanceof Node ){
@@ -763,9 +743,9 @@ public interface $proto<Q> {
     /**
      * a selected entity from a prototype query
      *
-     * @param <T>
+     * @param <P>
      */
-    interface selected<T> {
+    interface selected<P> {
 
         $args args();
 

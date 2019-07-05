@@ -49,7 +49,7 @@ public class _staticBlockTest extends TestCase {
 
         List<_class> localClasses = new ArrayList<_class>();
         //_sb.walkBody( ClassOrInterfaceDeclaration.class, c-> localClasses.add( _class.of(c) ) );
-        Walk.in( _sb.getBody().ast(), ClassOrInterfaceDeclaration.class, c-> localClasses.add( _class.of(c) ) );
+        W.in( _sb.getBody().ast(), ClassOrInterfaceDeclaration.class, c-> localClasses.add( _class.of(c) ) );
         System.out.println( localClasses );
 
     }

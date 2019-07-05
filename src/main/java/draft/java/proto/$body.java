@@ -443,8 +443,16 @@ public class $body implements Template<_body>, $proto<_body>, $constructor.$part
      * @param selectConstraint
      * @return 
      */
-    public Select selectFirstIn(_node _n, Predicate<Select> selectConstraint) {
-        return selectFirstIn( _n.ast(), selectConstraint );
+    public Select selectFirstIn(_java _n, Predicate<Select> selectConstraint) {
+        if( _n instanceof _code ){
+            _code _c = (_code)_n;
+            if( _c.isTopLevel() ){
+                return selectFirstIn(_c.astCompilationUnit(), selectConstraint);
+            }
+            _type _t = (_type)_n; //only possible 
+            return selectFirstIn(_t.ast(), selectConstraint);
+        }
+        return selectFirstIn( ((_node)_n).ast(), selectConstraint);
     }
     
     /**
@@ -558,8 +566,8 @@ public class $body implements Template<_body>, $proto<_body>, $constructor.$part
      * @param selectActionFn
      * @return 
      */
-    public <N extends _node> N forSelectedIn(N _n,  Consumer<Select> selectActionFn) {
-        forSelectedIn(_n.ast(),  selectActionFn);
+    public <N extends _java> N forSelectedIn(N _n,  Consumer<Select> selectActionFn) {
+        forSelectedIn(_n, s->true, selectActionFn);
         return _n;
     }
     
@@ -571,9 +579,19 @@ public class $body implements Template<_body>, $proto<_body>, $constructor.$part
      * @param selectActionFn
      * @return 
      */
-    public <N extends _node> N forSelectedIn(N _n, Predicate<Select>selectConstraint, Consumer<Select> selectActionFn) {
-        forSelectedIn(_n.ast(), selectConstraint, selectActionFn);
-        return _n;
+    public <N extends _java> N forSelectedIn(N _n, Predicate<Select>selectConstraint, Consumer<Select> selectActionFn) {
+        if( _n instanceof _code ){
+            _code _c = (_code)_n;
+            if( _c.isTopLevel() ){
+                forSelectedIn(_c.astCompilationUnit(), selectActionFn);
+                return _n;
+            }
+            _type _t = (_type)_n; //only possible 
+            forSelectedIn(_t.ast(), selectActionFn);
+            return _n;
+        }
+        forSelectedIn((_node)_n, selectActionFn);
+        return _n;        
     }
     
     /**

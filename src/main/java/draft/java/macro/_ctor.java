@@ -4,7 +4,7 @@ import com.github.javaparser.ast.body.ConstructorDeclaration;
 import com.github.javaparser.ast.body.MethodDeclaration;
 import com.github.javaparser.ast.body.TypeDeclaration;
 import draft.DraftException;
-import draft.java.Walk;
+import draft.java.W;
 import draft.java._constructor;
 import draft.java._method;
 
@@ -89,7 +89,7 @@ public @interface _ctor {
         public _method apply(_method _m) {
             _m.removeAnnos(_ctor.class);
             List<TypeDeclaration>tds = new ArrayList<>();
-            Walk.parents( _m, TypeDeclaration.class, t-> tds.add(t) );
+            W.parents( _m, TypeDeclaration.class, t-> tds.add(t) );
             if( ! (tds.size() > 0 )){
                 throw new DraftException("no TypeDeclaration parent for "+_m+" to convert to constructor ");
             }

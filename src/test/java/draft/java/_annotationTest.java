@@ -139,7 +139,7 @@ public class _annotationTest extends TestCase  {
 
         //find every int literal in the code and return it
         List<IntegerLiteralExpr> ls =
-                Walk.list(_an, Expr.INT_LITERAL, i-> i.asInt() > 0 );
+                W.list(_an, Expr.INT_LITERAL, i-> i.asInt() > 0 );
 
         System.out.println( ls );
 

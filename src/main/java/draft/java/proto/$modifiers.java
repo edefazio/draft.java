@@ -220,7 +220,7 @@ public class $modifiers
 
     @Override
     public <N extends Node> N forEachIn(N astRootNode, Predicate<_modifiers> _modifiersMatchFn, Consumer<_modifiers> _nodeActionFn) {
-        return Walk.in( astRootNode,             
+        return W.in( astRootNode,             
             Node.class, 
             n->{
                 if(n instanceof NodeWithModifiers ){
@@ -250,7 +250,7 @@ public class $modifiers
     }
     
     public <N extends _node> N forSelectedIn(N _n, Predicate<Select> selectConstraint, Consumer<Select> selectActionFn) {
-        return Walk.in( _n, 
+        return W.in( _n, 
             NodeWithModifiers.class, 
             nwm->{
                 Select sel = select( nwm );
@@ -278,7 +278,7 @@ public class $modifiers
      * @return 
      */
     public <N extends _node> N forSelectedIn(N _n, Consumer<Select> selectActionFn) {
-        return Walk.in( _n, 
+        return W.in( _n, 
             NodeWithModifiers.class, 
             nwm->{
                 Select sel = select( nwm );

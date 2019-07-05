@@ -5,7 +5,7 @@
  */
 package whybuildonjavaparser;
 
-import draft.java.Walk;
+import draft.java.W;
 import draft.java._anno;
 import draft.java._class;
 import draft.java._java;
@@ -52,7 +52,7 @@ public class _2_MacroUseTest extends TestCase {
                 // Walk does a (preorder) AST.walk including walking via the
                 // _node draft classes, here we intercept all _hasAnnos 
                 // (nodes which may have _annos) and remove the Deprecated _anno
-                return (_anno._hasAnnos)Walk.in( 
+                return (_anno._hasAnnos)W.in( 
                     (_java._node)t, _anno._hasAnnos.class, ha->ha.removeAnnos(Deprecated.class));
             }            
         }
@@ -85,7 +85,7 @@ public class _2_MacroUseTest extends TestCase {
         
         // the above code is boring, let's use Walk INSTEAD to verify there are
         // NO annotated elements within _c that have the Deprecated annotation
-        assertTrue(Walk.list(_c,_anno._hasAnnos.class,ha-> ha.hasAnno(Deprecated.class)).isEmpty());
+        assertTrue(W.list(_c,_anno._hasAnnos.class,ha-> ha.hasAnno(Deprecated.class)).isEmpty());
     }
     
 }

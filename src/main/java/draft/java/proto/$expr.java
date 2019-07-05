@@ -1942,7 +1942,7 @@ public class $expr <T extends Expression>
     @Override
     public List<Select<T>> listSelectedIn(_node _n ){
         List<Select<T>>sts = new ArrayList<>();
-        Walk.in(_n, this.expressionClass, e -> {
+        W.in(_n, this.expressionClass, e -> {
             Select s = select( e );
             if( s != null ){
                 sts.add( s);
@@ -1954,7 +1954,7 @@ public class $expr <T extends Expression>
     @Override
     public List<Select<T>> listSelectedIn(Class clazz){
         List<Select<T>>sts = new ArrayList<>();
-        Walk.in(_java.type(clazz), this.expressionClass, e -> {
+        W.in(_java.type(clazz), this.expressionClass, e -> {
             Select s = select( e );
             if( s != null ){
                 sts.add( s);
@@ -2001,7 +2001,7 @@ public class $expr <T extends Expression>
     @Override
     public List<Select<T>> listSelectedIn(_node _n, Predicate<Select<T>> selectConstraint){
         List<Select<T>>sts = new ArrayList<>();
-        Walk.in(_n, this.expressionClass, e -> {
+        W.in(_n, this.expressionClass, e -> {
             Select s = select( e );
             if( s != null  && selectConstraint.test(s)){
                 sts.add( s);
@@ -2060,7 +2060,7 @@ public class $expr <T extends Expression>
      */
     @Override
     public <N extends _node> N replaceIn(N _n, Node astExprReplace ){
-        Walk.in(_n, this.expressionClass, e-> {
+        W.in(_n, this.expressionClass, e-> {
             Select sel = select( e );
             if( sel != null ){
                 sel.astExpression.replace(astExprReplace );
@@ -2101,7 +2101,7 @@ public class $expr <T extends Expression>
      */
     @Override
     public <N extends _node> N replaceIn(N _n, $expr $repl ){
-        Walk.in(_n, this.expressionClass, e-> {
+        W.in(_n, this.expressionClass, e-> {
             Select sel = select( e );
             if( sel != null ){
                 Expression replaceNode = (Expression)$repl.construct( sel.args.asTokens() );
@@ -2131,7 +2131,7 @@ public class $expr <T extends Expression>
      */
     @Override
     public <N extends _node> N forSelectedIn(N _n, Consumer<Select<T>> selectConsumer ){
-        Walk.in(_n, this.expressionClass, e-> {
+        W.in(_n, this.expressionClass, e-> {
             Select sel = select( e );
             if( sel != null ){
                 selectConsumer.accept( sel );
@@ -2180,7 +2180,7 @@ public class $expr <T extends Expression>
      */
     @Override
     public <N extends _node> N forSelectedIn(N _n, Predicate<Select<T>> selectConstraint, Consumer<Select<T>> selectConsumer ){
-        Walk.in(_n, this.expressionClass, e-> {
+        W.in(_n, this.expressionClass, e-> {
             Select sel = select( e );
             if( sel != null  && selectConstraint.test(sel)){
                 selectConsumer.accept( sel );

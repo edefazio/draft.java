@@ -613,7 +613,7 @@ public class $var
      */
     public List<Select> listSelectedIn(_node _n, Predicate<Select> selectConstraint){
         List<Select>sts = new ArrayList<>();
-        Walk.in(_n, VariableDeclarator.class, e -> {
+        W.in(_n, VariableDeclarator.class, e -> {
             Select s = select( e );
             if( s != null && selectConstraint.test(s)){
                 sts.add( s);
@@ -657,7 +657,7 @@ public class $var
      * @return 
      */
     public <N extends _node> N replaceIn(N _le, $var $replaceProto ){
-        Walk.in(_le, VariableDeclarator.class, e-> {
+        W.in(_le, VariableDeclarator.class, e-> {
             Select sel = select( e );
             if( sel != null ){
                 sel.astVar.replace($replaceProto.construct(sel.args) );
@@ -684,7 +684,7 @@ public class $var
      * @return 
      */
     public <N extends _node> N forSelectedIn(N _n, Consumer<Select> selectConsumer ){
-        Walk.in(_n, VariableDeclarator.class, e-> {
+        W.in(_n, VariableDeclarator.class, e-> {
             Select sel = select( e );
             if( sel != null ){
                 selectConsumer.accept( sel );
@@ -730,7 +730,7 @@ public class $var
      * @return 
      */
     public <N extends _node> N forSelectedIn(N _n, Predicate<Select> selectConstraint, Consumer<Select> selectConsumer ){
-        Walk.in(_n, VariableDeclarator.class, e-> {
+        W.in(_n, VariableDeclarator.class, e-> {
             Select sel = select( e );
             if( sel != null && selectConstraint.test(sel)){
                 selectConsumer.accept( sel );

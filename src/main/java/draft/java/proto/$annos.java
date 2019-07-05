@@ -3,10 +3,11 @@ package draft.java.proto;
 import com.github.javaparser.ast.Node;
 import com.github.javaparser.ast.nodeTypes.NodeWithAnnotations;
 import draft.*;
-import draft.java.Walk;
+import draft.java.W;
 import draft.java._anno;
 import draft.java._anno._annos;
 import draft.java._anno._hasAnnos;
+import draft.java._code;
 import draft.java._java;
 import draft.java._java._node;
 import draft.java._type;
@@ -336,8 +337,16 @@ public class $annos
      * @param selectConstraint
      * @return 
      */
-    public Select selectFirstIn( _node _n, Predicate<Select> selectConstraint){
-        return selectFirstIn(_n.ast(), selectConstraint);
+    public Select selectFirstIn( _java _n, Predicate<Select> selectConstraint){
+         if( _n instanceof _code ){
+            _code _c = (_code)_n;
+            if( _c.isTopLevel() ){
+                return selectFirstIn(_c.astCompilationUnit(), selectConstraint);
+            }
+            _type _t = (_type)_n; //only possible 
+            return selectFirstIn(_t.ast(), selectConstraint); //return the TypeDeclaration, not the CompilationUnit            
+        }
+        return selectFirstIn(((_node)_n).ast(), selectConstraint);
     }
     
     /**
@@ -386,10 +395,9 @@ public class $annos
     }    
     
     @Override
-    public List<Select> listSelectedIn(Node astRootNode) {         
-        //return listSelectedIn( (_node)_java._modelOf(astRootNode) );   
+    public List<Select> listSelectedIn(Node astRootNode) {          
         List<Select> found = new ArrayList<>();
-        Walk.in(astRootNode, Node.class, _ha-> {
+        W.in(astRootNode, Node.class, _ha-> {
             if( _ha instanceof NodeWithAnnotations ){
                 Select sel = select( (NodeWithAnnotations)_ha);
                 if( sel != null ){
@@ -400,19 +408,16 @@ public class $annos
         return found;
     }
 
-    /*
-    @Override
-    public List<Select> listSelectedIn( _node _n) {
+    /**
+     * 
+     * @param _n
+     * @return 
+     */
+    public List<Select> listSelectedIn( _java _n) {
         List<Select> found = new ArrayList<>();
-        Walk.in(_n, _hasAnnos.class, _ha-> {
-            Select sel = select(_ha);
-            if( sel != null ){
-                found.add( sel );
-            }
-        });
-        return found;
+        return listSelectedIn(_n, t->true);
     }
-    */
+
     
     /**
      * 
@@ -424,13 +429,33 @@ public class $annos
         return listSelectedIn(_java.type(clazz), selectConstraint);
     }
     
+    public <N extends Node> List<Select> listSelectedIn( N n, Predicate<Select> selectConstraint ){
+        List<Select> sel = new ArrayList<>();
+        forSelectedIn( n, selectConstraint, s-> sel.add(s));
+        return sel;        
+    }
+    
     /**
      * 
      * @param _n
      * @param selectConstraint
      * @return 
      */
-    public List<Select> listSelectedIn( _node _n, Predicate<Select> selectConstraint) {
+    public List<Select> listSelectedIn( _java _n, Predicate<Select> selectConstraint) {
+         if( _n instanceof _code ){
+            _code _c = (_code)_n;
+            if( _c.isTopLevel() ){
+                return listSelectedIn(_c.astCompilationUnit(), selectConstraint);
+                //return _n;
+            }
+            _type _t = (_type)_n; //only possible 
+            return listSelectedIn(_t.ast(), selectConstraint);
+            //forSelectedIn(_t.ast(), selectActionFn); //return the TypeDeclaration, not the CompilationUnit            
+            //return _n;
+        }
+         
+        return listSelectedIn(((_node)_n).ast(), selectConstraint);
+        /*
         List<Select> found = new ArrayList<>();
         Walk.in(_n, _hasAnnos.class, _ha-> {
             Select sel = select(_ha);
@@ -439,11 +464,12 @@ public class $annos
             }
         });
         return found;
+        */
     }
 
     @Override
     public <N extends Node> N forEachIn(N astRootNode, Predicate<_annos> _annosMatchFn, Consumer<_annos> _annosActionFn) {
-        return Walk.in(astRootNode, Node.class, n-> {
+        return W.in(astRootNode, Node.class, n-> {
             if( n instanceof NodeWithAnnotations ){
                 Select sel = select( (NodeWithAnnotations)n );
                 if( sel != null && _annosMatchFn.test(sel._anns)){
@@ -525,22 +551,51 @@ public class $annos
      * @param selectActionFn
      * @return 
      */
-    public <N extends _node> N forSelectedIn(N _n, Consumer<Select> selectActionFn) {
+    public <N extends _java> N forSelectedIn(N _n, Consumer<Select> selectActionFn) {
+        if( _n instanceof _code ){
+            _code _c = (_code)_n;
+            if( _c.isTopLevel() ){
+                forSelectedIn(_c.astCompilationUnit(), selectActionFn);
+                return _n;
+                //return _n;
+            }
+            _type _t = (_type)_n; //only possible 
+            forSelectedIn(_t.ast(), selectActionFn);
+            return _n;
+        }
+        forSelectedIn((_node)_n, selectActionFn);
+        return _n;
+        /*
         return Walk.in(_n, _hasAnnos.class, _ha-> {
             Select sel = select(_ha);
             if( sel != null ){
                 selectActionFn.accept(sel);
             }
         });
+        */
     }
      
-    public <N extends _node> N forSelectedIn(N _n, Predicate<Select> selectConstraint, Consumer<Select> selectActionFn) {
+    public <N extends _java> N forSelectedIn(N _n, Predicate<Select> selectConstraint, Consumer<Select> selectActionFn) {
+        if( _n instanceof _code ){
+            _code _c = (_code)_n;
+            if( _c.isTopLevel() ){
+                forSelectedIn(_c.astCompilationUnit(), selectConstraint, selectActionFn);
+                return _n;
+            }
+            _type _t = (_type)_n; //only possible 
+            forSelectedIn(_t.ast(), selectConstraint, selectActionFn);
+            return _n;
+        }
+        forSelectedIn( ((_node)_n).ast(), selectConstraint, selectActionFn);
+        return _n;
+        /*
         return Walk.in(_n, _hasAnnos.class, _ha-> {
             Select sel = select(_ha);
             if( sel != null && selectConstraint.test(sel)){
                 selectActionFn.accept(sel);
             }
         });
+        */
     } 
     
     @Override

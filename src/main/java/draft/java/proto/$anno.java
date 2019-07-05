@@ -2,7 +2,6 @@ package draft.java.proto;
 
 import com.github.javaparser.ast.Node;
 import com.github.javaparser.ast.NodeList;
-import com.github.javaparser.ast.body.AnnotationDeclaration;
 import com.github.javaparser.ast.body.BodyDeclaration;
 import com.github.javaparser.ast.expr.*;
 import draft.*;
@@ -402,7 +401,14 @@ public class $anno
         return replaceIn(_java.type(clazz), a);
     }
     
-    public <N extends _node> N replaceIn(N _n, Class<? extends Annotation> annoType ){
+    /**
+     * 
+     * @param <N>
+     * @param _n
+     * @param annoType
+     * @return 
+     */
+    public <N extends _java> N replaceIn(N _n, Class<? extends Annotation> annoType ){
         return replaceIn(_n, $anno.of(annoType) );
     }
      
@@ -415,14 +421,19 @@ public class $anno
      * @param <N> the TYPE of model
      * @return
      */
-    public <N extends _node> N replaceIn(N _n, $anno a ){
-        Walk.in(_n, AnnotationExpr.class, e-> {
-            Select sel = select( e );
-            if( sel != null ){
-                sel._ann.ast().replace(a.construct(sel.args).ast() );
+    public <N extends _java> N replaceIn(N _n, $anno a ){
+        if( _n instanceof _code ){
+            _code _c = (_code)_n;
+            if( _c.isTopLevel() ){
+                replaceIn(_c.astCompilationUnit(), a);
+                return _n;
             }
-        });
-        return _n;
+            _type _t = (_type)_n; //only possible 
+            replaceIn(_t.ast(), a); //return the TypeDeclaration, not the CompilationUnit
+            return _n;
+        }
+        replaceIn(((_node)_n).ast(), a);
+        return _n;       
     }
     
     /**
@@ -538,8 +549,18 @@ public class $anno
      * @param selectConstraint
      * @return 
      */
-    public Select selectFirstIn(_node _n, Predicate<Select>selectConstraint) {
-        return $anno.this.selectFirstIn( _n.ast(), selectConstraint);        
+    public Select selectFirstIn(_java _n, Predicate<Select>selectConstraint) {
+        if( _n instanceof _code ){
+            _code _c = (_code)_n;
+            if( _c.isTopLevel() ){
+                return selectFirstIn(_c.astCompilationUnit(), selectConstraint);
+            }
+            _type _t = (_type)_n; //only possible 
+            return selectFirstIn(_t.ast(), selectConstraint); //return the TypeDeclaration, not the CompilationUnit            
+        }
+        return selectFirstIn(((_node)_n).ast(), selectConstraint);
+        //return _m;
+        //return $anno.this.selectFirstIn( _n.ast(), selectConstraint);        
     }
     
     @Override
@@ -601,7 +622,17 @@ public class $anno
      * @param selectConstraint
      * @return 
      */
-    public List<Select> listSelectedIn(_node _n, Predicate<Select> selectConstraint) {
+    public List<Select> listSelectedIn(_java _n, Predicate<Select> selectConstraint) {
+         if( _n instanceof _code ){
+            _code _c = (_code)_n;
+            if( _c.isTopLevel() ){
+                return listSelectedIn(_c.astCompilationUnit(), selectConstraint);
+            }
+            _type _t = (_type)_n; //only possible 
+            return listSelectedIn(_t.ast(), selectConstraint); //return the TypeDeclaration, not the CompilationUnit            
+        }
+        return listSelectedIn(((_node)_n).ast(), selectConstraint);
+        /*
         List<Select> found = new ArrayList<>();
         Walk.in(_n, _anno.class, a-> {
             Select sel = select(a); 
@@ -610,6 +641,7 @@ public class $anno
             }
         }); 
         return found;
+        */
     }    
     
     @Override
@@ -665,13 +697,26 @@ public class $anno
      * @param selectActionFn
      * @return 
      */
-    public <N extends _node> N forSelectedIn(N _n, Consumer<Select> selectActionFn) {
+    public <N extends _java> N forSelectedIn(N _n, Consumer<Select> selectActionFn) {
+         if( _n instanceof _code ){
+            _code _c = (_code)_n;
+            if( _c.isTopLevel() ){
+                forSelectedIn(_c.astCompilationUnit(), selectActionFn);
+                return _n;
+            }
+            _type _t = (_type)_n; //only possible 
+            forSelectedIn(_t.ast(), selectActionFn); //return the TypeDeclaration, not the CompilationUnit            
+            return _n;
+        }
+        forSelectedIn(((_node)_n).ast(), selectActionFn);
+        return _n;
+        /*
         return Walk.in(_n, _anno.class, a-> {
             Select sel = select(a); 
             if( sel != null ){
                 selectActionFn.accept( sel );
             }
-        }); 
+        }); */
     }
     
     /**
@@ -682,13 +727,27 @@ public class $anno
      * @param selectActionFn
      * @return 
      */
-    public <N extends _node> N forSelectedIn(N _n, Predicate<Select> selectConstraint, Consumer<Select> selectActionFn) {
+    public <N extends _java> N forSelectedIn(N _n, Predicate<Select> selectConstraint, Consumer<Select> selectActionFn) {
+         if( _n instanceof _code ){
+            _code _c = (_code)_n;
+            if( _c.isTopLevel() ){
+                forSelectedIn(_c.astCompilationUnit(), selectConstraint, selectActionFn);
+                return _n;
+            }
+            _type _t = (_type)_n; //only possible 
+            forSelectedIn(_t.ast(), selectConstraint, selectActionFn); //return the TypeDeclaration, not the CompilationUnit            
+            return _n;
+        }
+        forSelectedIn(((_node)_n).ast(), selectActionFn);
+        return _n;
+        /*
         return Walk.in(_n, _anno.class, a-> {
             Select sel = select(a); 
             if( sel != null && selectConstraint.test(sel)){
                 selectActionFn.accept( sel );
             }
-        }); 
+        });
+        */
     }
     
     /**

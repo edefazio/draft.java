@@ -475,7 +475,7 @@ public class $field implements Template<_field>, $proto<_field> {
      * @return 
      */
     public <N extends _node> N replaceIn(N _le, $field $replaceProto ){
-        Walk.in(_le, VariableDeclarator.class, e-> {
+        W.in(_le, VariableDeclarator.class, e-> {
             Select sel = select( e );
             if( sel != null ){
                 sel._f.ast().replace($replaceProto.construct(sel.args).ast() );
@@ -502,7 +502,7 @@ public class $field implements Template<_field>, $proto<_field> {
      * @return 
      */
     public <N extends _node> N forSelectedIn(N _n, Consumer<Select> selectConsumer ){
-        Walk.in(_n, VariableDeclarator.class, e-> {
+        W.in(_n, VariableDeclarator.class, e-> {
             Select sel = select( e );
             if( sel != null ){
                 selectConsumer.accept( sel );
@@ -548,7 +548,7 @@ public class $field implements Template<_field>, $proto<_field> {
      * @return 
      */
     public <N extends _node> N forSelectedIn(N _n, Predicate<Select> selectConstraint, Consumer<Select> selectConsumer ){
-        Walk.in(_n, VariableDeclarator.class, e-> {
+        W.in(_n, VariableDeclarator.class, e-> {
             Select sel = select( e );
             if( sel != null && selectConstraint.test(sel)){
                 selectConsumer.accept( sel );

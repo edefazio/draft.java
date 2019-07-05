@@ -3,7 +3,7 @@ package draft.java.proto;
 import com.github.javaparser.ast.Node;
 import com.github.javaparser.ast.body.Parameter;
 import draft.*;
-import draft.java.Walk;
+import draft.java.W;
 import draft.java._anno._annos;
 import draft.java._java._node;
 import draft.java.*;
@@ -511,7 +511,7 @@ public class $parameter implements Template<_parameter>, $proto<_parameter> {
      */
     public List<Select> listSelectedIn(_node _n, Predicate<Select> selectConstraint) {
         List<Select> found = new ArrayList<>();
-        Walk.in(_n, _parameter.class, p-> {
+        W.in(_n, _parameter.class, p-> {
             Select sel = select(p);
             if( sel != null && selectConstraint.test(sel)){
                 found.add(sel);
@@ -574,7 +574,7 @@ public class $parameter implements Template<_parameter>, $proto<_parameter> {
      * @return 
      */
     public <N extends _node> N forSelectedIn(N _n, Consumer<Select> selectActionFn) {    
-        return Walk.in(_n, _parameter.class, p->{
+        return W.in(_n, _parameter.class, p->{
             Select sel = select(p);
             if( sel != null ){
                 selectActionFn.accept(sel);
@@ -620,7 +620,7 @@ public class $parameter implements Template<_parameter>, $proto<_parameter> {
      * @return 
      */
     public <N extends _node> N forSelectedIn(N _n, Predicate<Select> selectConstraint, Consumer<Select> selectActionFn) {    
-        return Walk.in(_n, _parameter.class, p->{
+        return W.in(_n, _parameter.class, p->{
             Select sel = select(p);
             if( sel != null && selectConstraint.test(sel)){
                 selectActionFn.accept(sel);

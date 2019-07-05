@@ -187,8 +187,16 @@ public class $case
      * @param selectConstraint
      * @return 
      */
-    public Select selectFirstIn(_node _n, Predicate<Select>selectConstraint ){
-        return selectFirstIn(_n.ast(), selectConstraint );
+    public Select selectFirstIn(_java _n, Predicate<Select>selectConstraint ){
+        if( _n instanceof _code ){
+            _code _c = (_code)_n;
+            if( _c.isTopLevel() ){
+                return selectFirstIn(_c.astCompilationUnit(), selectConstraint);
+            }
+            _type _t = (_type)_n; //only possible 
+            return selectFirstIn(_t.ast(), selectConstraint);
+        }
+        return selectFirstIn((_node)_n, selectConstraint);        
     }
     
     /**
@@ -223,8 +231,16 @@ public class $case
      * @param selectConstraint
      * @return 
      */
-    public <N extends _node> List<Select> listSelectedIn(N _n, Predicate<Select> selectConstraint) {
-        return listSelectedIn( _n.ast() );        
+    public <N extends _java> List<Select> listSelectedIn(N _n, Predicate<Select> selectConstraint) {
+        if( _n instanceof _code ){
+            _code _c = (_code)_n;
+            if( _c.isTopLevel() ){
+                return listSelectedIn(_c.astCompilationUnit(), selectConstraint);
+            }
+            _type _t = (_type)_n; //only possible 
+            return listSelectedIn(_t.ast(), selectConstraint);
+        }
+        return listSelectedIn((_node)_n, selectConstraint);
     }
     
     /**
@@ -283,31 +299,41 @@ public class $case
      * @param selectActionFn
      * @return 
      */
-    public <N extends _node> N forSelectedIn(N _n, Consumer<Select> selectActionFn) {
-        Walk.in(_n, SwitchEntry.class, se-> {
-            Select sel = select(se);
-            if( sel != null ) {
-                selectActionFn.accept(sel);
+    public <N extends _java> N forSelectedIn(N _n, Consumer<Select> selectActionFn) {
+        if( _n instanceof _code ){
+            _code _c = (_code)_n;
+            if( _c.isTopLevel() ){
+                forSelectedIn(_c.astCompilationUnit(), selectActionFn);
+                return _n;
             }
-        });
-        return _n;
+            _type _t = (_type)_n; //only possible 
+            forSelectedIn(_t.ast(), selectActionFn); //return the TypeDeclaration, not the CompilationUnit            
+            return _n;
+        }
+        forSelectedIn(((_node)_n).ast(), selectActionFn);
+        return _n;        
     }
     
     /**
      * 
      * @param <N>
      * @param _n
-     * @param selectConsumer
+     * @param selectMatchFn
      * @param selectActionFn
      * @return 
      */
-    public <N extends _node> N forSelectedIn(N _n, Predicate<Select> selectConsumer, Consumer<Select> selectActionFn) {
-        Walk.in(_n, SwitchEntry.class, se-> {
-            Select sel = select(se);
-            if( sel != null && selectConsumer.test(sel) ) {
-                selectActionFn.accept(sel);
+    public <N extends _java> N forSelectedIn(N _n, Predicate<Select> selectMatchFn, Consumer<Select> selectActionFn) {
+        if( _n instanceof _code ){
+            _code _c = (_code)_n;
+            if( _c.isTopLevel() ){
+                forSelectedIn(_c.astCompilationUnit(), selectMatchFn, selectActionFn);
+                return _n;
             }
-        });
+            _type _t = (_type)_n; //only possible 
+            forSelectedIn(_t.ast(), selectMatchFn, selectActionFn); //return the TypeDeclaration, not the CompilationUnit            
+            return _n;
+        }
+        forSelectedIn(((_node)_n).ast(), selectMatchFn, selectActionFn);
         return _n;
     }
     
@@ -332,14 +358,14 @@ public class $case
      * 
      * @param <N>
      * @param astRootNode
-     * @param selectConsumer
+     * @param selectMatchFn
      * @param selectActionFn
      * @return 
      */
-    public <N extends Node> N forSelectedIn(N astRootNode, Predicate<Select> selectConsumer, Consumer<Select> selectActionFn) {
+    public <N extends Node> N forSelectedIn(N astRootNode, Predicate<Select> selectMatchFn, Consumer<Select> selectActionFn) {
         astRootNode.walk(SwitchEntry.class, se-> {
             Select sel = select(se);
-            if( sel != null && selectConsumer.test(sel) ) {
+            if( sel != null && selectMatchFn.test(sel) ) {
                 selectActionFn.accept(sel);
             }
         });

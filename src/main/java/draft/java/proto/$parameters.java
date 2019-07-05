@@ -3,7 +3,7 @@ package draft.java.proto;
 import com.github.javaparser.ast.Node;
 import com.github.javaparser.ast.nodeTypes.NodeWithParameters;
 import draft.*;
-import draft.java.Walk;
+import draft.java.W;
 import draft.java._java;
 import draft.java._java._node;
 import draft.java._parameter._parameters;
@@ -363,7 +363,7 @@ public class $parameters implements Template<_parameters>, $proto<_parameters>,
      * @return 
      */
     public <N extends _node> N forSelectedIn(N _n, Consumer<Select> _parametersActionFn) {
-        Walk.in(_n, _parameters.class, n-> {            
+        W.in(_n, _parameters.class, n-> {            
             Select sel = select( n );
             if( sel != null ){
                 _parametersActionFn.accept(sel);            
@@ -392,7 +392,7 @@ public class $parameters implements Template<_parameters>, $proto<_parameters>,
      * @return 
      */
     public <N extends _node> N forSelectedIn(N _n, Predicate<Select> selectConstraint, Consumer<Select> _parametersActionFn) {
-        Walk.in(_n, _parameters.class, n-> {            
+        W.in(_n, _parameters.class, n-> {            
             Select sel = select( n );
             if( sel != null && selectConstraint.test(sel) ){
                 _parametersActionFn.accept(sel);            

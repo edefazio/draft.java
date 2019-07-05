@@ -107,7 +107,7 @@ public class _interfaceTest extends TestCase {
 
         //Walk.directChildren( tp, Node.class, ni -> System.out.println( ni+" " +ni.getClass() ) );
 
-        Walk.directChildren( tp, Node.class, ni -> {
+        W.directChildren( tp, Node.class, ni -> {
             if( ni instanceof Type){
                 System.out.println(ni + " " + Ast.tokenizeType( ni.toString() ) );
             } else {
