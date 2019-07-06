@@ -2,6 +2,8 @@ package draft.java;
 
 import com.github.javaparser.ast.CompilationUnit;
 import com.github.javaparser.ast.ImportDeclaration;
+import draft.Text;
+import draft.java._java._node;
 import draft.java.macro._remove;
 import java.lang.reflect.Method;
 import java.util.*;
@@ -14,7 +16,7 @@ import java.util.stream.Collectors;
  *
  * @author Eric
  */
-public class _import implements _java {
+public class _import implements _node<ImportDeclaration> {
 
     /**
      * create a new _import over the ImportDeclaration
@@ -61,6 +63,7 @@ public class _import implements _java {
      * 
      * @return 
      */
+    @Override
     public ImportDeclaration ast(){
         return astId;
     }
@@ -156,6 +159,7 @@ public class _import implements _java {
      * @param id
      * @return 
      */
+    @Override
     public boolean is(ImportDeclaration id) {
         return this.astId.equals(id);
     }
@@ -271,6 +275,24 @@ public class _import implements _java {
     @Override
     public String toString(){
         return this.astId.toString();
+    }
+
+    @Override
+    public boolean is(String... stringRep) {
+        try{
+            return of( Text.combine(stringRep) ).equals(this);
+        } catch(Exception e){
+            return false;
+        }
+    }
+
+    @Override
+    public Map<Component, Object> componentsMap() {
+        Map<Component,Object>components = new HashMap<>();
+        components.put(Component.NAME, this.astId.getNameAsString());
+        components.put(Component.STATIC, this.astId.isStatic());
+        components.put(Component.WILDCARD, this.astId.isAsterisk());
+        return components;
     }
 
     /**

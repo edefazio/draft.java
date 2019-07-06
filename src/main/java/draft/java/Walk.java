@@ -984,7 +984,7 @@ public enum Walk {
                 of(PRE_ORDER, ((_type) _n).ast(), targetClass, t->true, f -> found.add(f));
             }
             return (List<T>)found;
-        }
+        }        
         of(PRE_ORDER, ((_node)_n).ast(), targetClass, t->true, f -> found.add(f) );        
         return (List<T>)found;
     }

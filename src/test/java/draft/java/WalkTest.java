@@ -2,12 +2,21 @@ package draft.java;
 
 import com.github.javaparser.ast.ImportDeclaration;
 import com.github.javaparser.ast.body.TypeDeclaration;
+import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 import junit.framework.TestCase;
 
 
 public class WalkTest extends TestCase {
 
+    public void testWalkPackageInfo(){
+        _packageInfo _pi = _packageInfo.of("package aaaa.xxxx.gggg;", "import java.util.*;", "import java.net.URL;");
+        Walk.in(_pi, n -> System.out.println(n)); //walk nodes
+        
+        List<_import> imports = Walk.list(_pi, _import.class);
+        assertEquals(2, imports.size());
+    }
+    
     /**
      * Note: Walk is much different than forMembers because it will walk into
      * nested classes.

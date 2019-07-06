@@ -766,8 +766,12 @@ public interface _java {
      * @return the node implementation of the code
      */
     public static Node of(Class nodeClass, String... code) {
+        
         if (!_java.class.isAssignableFrom(nodeClass)) {
             return Ast.nodeOf(nodeClass, code);
+        }
+        if (_import.class == nodeClass) {
+            return importDeclaration(Text.combine(code) );
         }
         if (_anno.class == nodeClass) {
             return anno(code);
@@ -836,6 +840,9 @@ public interface _java {
      * @return the _model entity
      */
     public static _java of(Node node) {
+        if (node instanceof ImportDeclaration ){
+            return _import.of((ImportDeclaration) node);
+        }
         if (node instanceof AnnotationExpr) {
             return _anno.of((AnnotationExpr) node);
         }
@@ -963,6 +970,8 @@ public interface _java {
         IMPORTS("imports", List.class, _import.class),
         //IMPORT
         IMPORT("import", ImportDeclaration.class),
+        STATIC("static", Boolean.class),
+        WILDCARD("wildcard", Boolean.class),
         ELEMENTS("elements", List.class, _annotation._element.class), //_annotation
         //ELEMENT
         ELEMENT("element", _annotation._element.class), //annotation
@@ -1072,6 +1081,8 @@ public interface _java {
         public static final Map<Class<? extends _node>, Class<? extends Node>> _JAVA_TO_AST_NODE_CLASSES = new HashMap<>();
 
         static {
+            _JAVA_TO_AST_NODE_CLASSES.put(_import.class, ImportDeclaration.class);
+            
             _JAVA_TO_AST_NODE_CLASSES.put(_anno.class, AnnotationExpr.class);
             _JAVA_TO_AST_NODE_CLASSES.put(_annotation._element.class, AnnotationMemberDeclaration.class);
             _JAVA_TO_AST_NODE_CLASSES.put(_enum._constant.class, EnumConstantDeclaration.class);
@@ -1098,6 +1109,8 @@ public interface _java {
         public static final Map<Class<? extends Node>, Class<? extends _node>> AST_NODE_TO_JAVA_CLASSES = new HashMap<>();
 
         static {
+            AST_NODE_TO_JAVA_CLASSES.put(ImportDeclaration.class, _import.class); //base
+            
             AST_NODE_TO_JAVA_CLASSES.put(AnnotationExpr.class, _anno.class); //base
             AST_NODE_TO_JAVA_CLASSES.put(NormalAnnotationExpr.class, _anno.class); //impl
             AST_NODE_TO_JAVA_CLASSES.put(MarkerAnnotationExpr.class, _anno.class);
@@ -1132,6 +1145,27 @@ public interface _java {
             AST_NODE_TO_JAVA_CLASSES.put(EnumDeclaration.class, _enum.class);
             AST_NODE_TO_JAVA_CLASSES.put(AnnotationDeclaration.class, _annotation.class);
         }
+        
+        /**
+         * Given a _java entity, I need to return the appropriate AST node
+         * 
+         * @param _n
+         * @return 
+         
+        public static final Node astNodeOf(_java _n ){
+            if( _n instanceof _code ){
+                if( ((_code) _n).isTopLevel()){
+                    return ((_code) _n).astCompilationUnit();
+                }
+                return ((_type)_n).ast();
+            }
+            if( _n instanceof _node ){
+                return ((_node) _n).ast();
+            }
+            /**... here are node-likes */
+            
+            //return null;
+        //}
     }
 
 }
