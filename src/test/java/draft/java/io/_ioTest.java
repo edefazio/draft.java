@@ -2,12 +2,15 @@ package draft.java.io;
 
 import com.github.javaparser.ast.body.TypeDeclaration;
 import draft.java.Ast;
+import draft.java._class;
 import junit.framework.TestCase;
 
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.List;
 
 /**
  * Verify we can set use read and write files easily using the
@@ -16,6 +19,13 @@ import java.nio.file.Paths;
  */
 public class _ioTest extends TestCase {
 
+    public void testWriteOutCode(){
+        _io.setOutDir( Paths.get( System.getProperty("java.io.tmpdir"), "_ioTest") );
+        Path path = _io.out(_class.of("aaaa.bbbb.C"));
+        assertEquals( Paths.get( System.getProperty("java.io.tmpdir"), "_ioTest", "aaaa", "bbbb", "C.java"), path);
+        System.out.println( path );         
+    }
+    
     public void testConfig(){
         System.out.println( _io.config() );
     }
