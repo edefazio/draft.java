@@ -1603,7 +1603,7 @@ public enum Walk {
      * @return the first node that matches the criteria, else null
      */
     public static Node firstParent(Node astNode, Predicate<Node> nodeMatchFn) {
-        return firstParent(astNode, Node.class, nodeMatchFn);
+        return Walk.first(PARENTS, astNode, Node.class, nodeMatchFn);
     }
 
     /**
@@ -1626,11 +1626,11 @@ public enum Walk {
      * matching the criteria
      * @param nodeTargetClass the target node class (could be a interface
      * (Ast#NNodeWithAnnotations)
-     * @param <N> the node type
+     * @param <T> the target node type
      * @return the first node that matches the criteria, else null
      */
-    public static <N extends Node> N firstParent(Node astRootNode, Class<N> nodeTargetClass) {
-        return first(Node.TreeTraversal.PARENTS, astRootNode, nodeTargetClass, n -> true);
+    public static <T> T firstParent(Node astRootNode, Class<T> nodeTargetClass) {
+        return Walk.first(PARENTS, astRootNode, nodeTargetClass, n -> true);
     }
 
     /**
@@ -1654,11 +1654,11 @@ public enum Walk {
      * @param nodeTargetClass the target node class (could be a interface
      * (Ast#NNodeWithAnnotations)
      * @param nodeMatchFn function for matching a particular node
-     * @param <N> the node type
+     * @param <T> the target node type
      * @return the first node that matches the criteria, else null
      */
-    public static <N extends Node> N firstParent(Node astRootNode, Class<N> nodeTargetClass, Predicate<N> nodeMatchFn) {
-        return first(Node.TreeTraversal.PARENTS, astRootNode, nodeTargetClass, nodeMatchFn);
+    public static <T> T firstParent(Node astRootNode, Class<T> nodeTargetClass, Predicate<T> nodeMatchFn) {
+        return Walk.first(PARENTS, astRootNode, nodeTargetClass, nodeMatchFn);
     }
 
     /**
@@ -1676,11 +1676,33 @@ public enum Walk {
      *
      * @param astRootNode
      * @param nodeTargetClass
-     * @param <N>
+     * @param <T> the target node type
      * @return
      */
-    public static <N extends Node> N first(Node astRootNode, Class<N> nodeTargetClass) {
-        return first(astRootNode, nodeTargetClass, n -> true);
+    public static <T> T first(Node astRootNode, Class<T> nodeTargetClass) {
+        return Walk.first(PRE_ORDER, astRootNode, nodeTargetClass, n -> true);
+    }
+    
+    /**
+     * Walk the nodes in PreOrder fashion starting at astRootNode finding the
+     * first instance of the nodeTargetClass and returning it (or return null if
+     * not found)
+     * <PRE>
+     *            (A)
+     *           /  \
+     *          B    C
+     *         / \
+     *        D   E
+     * Preorder (Parent, then children) from (A): A,B,D,E,C
+     * </PRE>
+     * @param <_N> the _java entity type
+     * @param _n the _java entity to search through
+     * @param nodeTargetClass
+     * @param <T> the target node type
+     * @return
+     */
+    public static <_N extends _java, T> T first(_N _n, Class<T> nodeTargetClass) {
+        return Walk.first(PRE_ORDER, _n, nodeTargetClass, n -> true);
     }
 
     /**
@@ -1700,9 +1722,30 @@ public enum Walk {
      * @return
      */
     public static Node first(Node astRootNode, Predicate<Node> nodeMatchFn) {
-        return first(astRootNode, Node.class, nodeMatchFn);
+        return Walk.first(PRE_ORDER, astRootNode, Node.class, nodeMatchFn);
     }
 
+    /**
+     * Traverse the tree in PreOrder fashion looking for the first instance
+     * matching the nodeMatchFn
+     * <PRE>
+     *            (A)
+     *           /  \
+     *          B    C
+     *         / \
+     *        D   E
+     * Preorder (Parent, then children) from (A): A,B,D,E,C
+     * </PRE>
+     *
+     * @param <_N> the _java entity type
+     * @param _n the _java entity to search through
+     * @param nodeMatchFn
+     * @return
+     */
+    public static <_N extends _java> Node first(_N _n, Predicate<Node> nodeMatchFn) {
+        return Walk.first(PRE_ORDER, _n, Node.class, nodeMatchFn);
+    }
+    
     /**
      * Traverse the tree in preorder fashion looking for the first instance of
      * nodeTargetClass, and matching the nodeMatchFn
@@ -1720,25 +1763,83 @@ public enum Walk {
      * @param nodeTargetClass the target node class (could be a interface
      * (Ast#NNodeWithAnnotations)
      * @param nodeMatchFn function for matching a particular node
-     * @param <N> the node type
+     * @param <T> the target type
      * @return the first node that matches the criteria, else null
      */
-    public static <N extends Node> N first(Node astRootNode, Class<N> nodeTargetClass, Predicate<N> nodeMatchFn) {
-        return first(Node.TreeTraversal.PREORDER, astRootNode, nodeTargetClass, nodeMatchFn);
+    public static <T> T first(Node astRootNode, Class<T> nodeTargetClass, Predicate<T> nodeMatchFn) {
+        return Walk.first(PRE_ORDER, astRootNode, nodeTargetClass, nodeMatchFn);
     }
 
     /**
+     * Traverse the tree in preorder fashion looking for the first instance of
+     * nodeTargetClass, and matching the nodeMatchFn inside any _java entity
+     * <PRE>
+     *            (A)
+     *           /  \
+     *          B    C
+     *         / \
+     *        D   E
+     * Preorder (Parent, then children) from (A): A,B,D,E,C
+     * </PRE>
+     *
+     * @param <_N> the _java entity node
+     * @param <T> the target type
+     * @param _n the _java entity to search through
+     * @param nodeTargetClass the target node class (could be a interface
+     * (Ast#NNodeWithAnnotations)
+     * @param nodeMatchFn function for matching a particular node     
+     * @return the first node that matches the criteria, else null
+     */
+    public static <T, _N extends _java> T first(_N _n, Class<T> nodeTargetClass, Predicate<T> nodeMatchFn) {
+        return Walk.first(PRE_ORDER, _n, nodeTargetClass, nodeMatchFn);
+    }
+        
+    /**
      * Walks the Ast using the
-     * {@link com.github.javaparser.ast.Node.TreeTraversal} strategy      {@link Ast#WALK_PRE_ORDER}
+     * {@link com.github.javaparser.ast.Node.TreeTraversal} strategy      
+     * {@link Ast#WALK_PRE_ORDER}
      * {@link Ast#WALK_POST_ORDER}
      * {@link Ast#WALK_BREADTH_FIRST}
      * {@link Ast#WALK_PARENTS}
      * {@link Ast#WALK_DIRECT_CHILDREN} starting at the astStartNode walk the
      * Nodes intercepting all nodes that are of the nodeTargetClass and satisfy
-     * the nodeMatchFn and returing the first instance found (or null if none
+     * the nodeMatchFn and returning the first instance found (or null if none
      * found)
      *
-     * @param <N> the node type
+     * @param <T> the target node type 
+     * @param tt the walk traversal strategy
+     * @param _n the starting AST node to start the walk from
+     * @param nodeTargetClass the target node class (could be a interface
+     * (Ast#NNodeWithAnnotations)
+     * @param nodeMatchFn function for matching a particular node
+     * @return the first node that matches the criteria, else null
+     */
+    public static <T> T first(
+        Node.TreeTraversal tt, _java _n, Class<T> nodeTargetClass, Predicate<T> nodeMatchFn) {
+        
+        //first order of business, determine the ast start node
+        if(_n instanceof _code ){
+            if( ((_code) _n).isTopLevel()){
+                return Walk.first( tt, ((_code) _n).astCompilationUnit(), nodeTargetClass, nodeMatchFn);
+            }
+            return Walk.first( tt, ((_type) _n).ast(), nodeTargetClass, nodeMatchFn);
+        }
+        return Walk.first( tt, ((_node)_n).ast(), nodeTargetClass, nodeMatchFn);       
+    }
+    
+    /**
+     * Walks the Ast using the
+     * {@link com.github.javaparser.ast.Node.TreeTraversal} strategy      
+     * {@link Ast#WALK_PRE_ORDER}
+     * {@link Ast#WALK_POST_ORDER}
+     * {@link Ast#WALK_BREADTH_FIRST}
+     * {@link Ast#WALK_PARENTS}
+     * {@link Ast#WALK_DIRECT_CHILDREN} starting at the astStartNode walk the
+     * Nodes intercepting all nodes that are of the nodeTargetClass and satisfy
+     * the nodeMatchFn and returning the first instance found (or null if none
+     * found)
+     *
+     * @param <T> the type being looked for
      * @param tt the walk traversal strategy
      * @param astStartNode the starting AST node to start the walk from
      * @param nodeTargetClass the target node class (could be a interface
@@ -1746,16 +1847,36 @@ public enum Walk {
      * @param nodeMatchFn function for matching a particular node
      * @return the first node that matches the criteria, else null
      */
-    public static <N extends Node> N first(
-            Node.TreeTraversal tt, Node astStartNode, Class<N> nodeTargetClass, Predicate<N> nodeMatchFn) {
-        Optional<Node> on = astStartNode.stream(tt).filter(n -> {
-            if (nodeTargetClass.isAssignableFrom(n.getClass())) {
-                return nodeMatchFn.test((N) n);
+    public static <T> T first(
+            Node.TreeTraversal tt, Node astStartNode, Class<T> nodeTargetClass, Predicate<T> nodeMatchFn) {
+        
+        //if T is a node class... thisll work
+        //... if not I need to
+        //  1) find the matching AST class for the _node class
+        //  2) search through those, creating a new instance for each node & testing 
+        if( _java.class.isAssignableFrom(nodeTargetClass) ){
+            //here I'm looking for a _field, _method, etc.
+            Optional<Node> on = astStartNode.stream(tt).filter(n -> {
+                    if( Objects.equals( _java.ModelMap.AST_NODE_TO_JAVA_CLASSES.get(n.getClass()), nodeTargetClass ) ){
+                        return nodeMatchFn.test((T) _java.of(n) );
+                    }                    
+                    return false;
+                }).findFirst();
+            
+            if (on.isPresent()) {
+                return (T) _java.of( on.get() );
             }
-            return false;
-        }).findFirst();
+            return null;
+        }
+        
+        Optional<Node> on = astStartNode.stream(tt).filter(n -> {
+                if (nodeTargetClass.isAssignableFrom(n.getClass())) {
+                    return nodeMatchFn.test((T) n);
+                }
+                return false;}
+            ).findFirst();
         if (on.isPresent()) {
-            return (N) on.get();
+            return (T) on.get();
         }
         return null;
     }

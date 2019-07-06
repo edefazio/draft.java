@@ -11,10 +11,24 @@ public class WalkTest extends TestCase {
 
     public void testWalkPackageInfo(){
         _packageInfo _pi = _packageInfo.of("package aaaa.xxxx.gggg;", "import java.util.*;", "import java.net.URL;");
-        Walk.in(_pi, n -> System.out.println(n)); //walk nodes
+        Walk.in(_pi, n -> System.out.println(n)); //walk nodes & do some action
         
         List<_import> imports = Walk.list(_pi, _import.class);
         assertEquals(2, imports.size());
+        
+        _import _i = Walk.first( Walk.PRE_ORDER, _pi, _import.class, t->true);
+        assertEquals(_import.of("import java.util.*;"), _i);
+        
+        _i = Walk.first( _pi, _import.class );
+        assertEquals(_import.of("import java.util.*;"), _i);
+        
+        
+        ImportDeclaration astI = Walk.first(Walk.PRE_ORDER, _pi, ImportDeclaration.class, t->true);
+        assertEquals(Ast.importDeclaration("import java.util.*;"), astI);
+        
+        astI = Walk.first(_pi, ImportDeclaration.class );
+        assertEquals(Ast.importDeclaration("import java.util.*;"), astI);
+        
     }
     
     /**

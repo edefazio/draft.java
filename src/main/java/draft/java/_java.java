@@ -691,7 +691,6 @@ public interface _java {
         return of(Ast.of(javaSourceFilePath));
     }
 
-    
     /**
      * Read and return the appropriate _code model based on the .java source
      * within the javaSourceInputStream
@@ -846,6 +845,7 @@ public interface _java {
         if (node instanceof AnnotationExpr) {
             return _anno.of((AnnotationExpr) node);
         }
+        
         if (node instanceof AnnotationDeclaration) {
             return _annotation.of((AnnotationDeclaration) node);
         }
@@ -1144,28 +1144,6 @@ public interface _java {
             AST_NODE_TO_JAVA_CLASSES.put(ClassOrInterfaceDeclaration.class, _type.class);
             AST_NODE_TO_JAVA_CLASSES.put(EnumDeclaration.class, _enum.class);
             AST_NODE_TO_JAVA_CLASSES.put(AnnotationDeclaration.class, _annotation.class);
-        }
-        
-        /**
-         * Given a _java entity, I need to return the appropriate AST node
-         * 
-         * @param _n
-         * @return 
-         
-        public static final Node astNodeOf(_java _n ){
-            if( _n instanceof _code ){
-                if( ((_code) _n).isTopLevel()){
-                    return ((_code) _n).astCompilationUnit();
-                }
-                return ((_type)_n).ast();
-            }
-            if( _n instanceof _node ){
-                return ((_node) _n).ast();
-            }
-            /**... here are node-likes */
-            
-            //return null;
-        //}
+        }        
     }
-
 }
