@@ -1,12 +1,16 @@
 package draft.java.io;
 
 import draft.Text;
+import draft.java._code;
 import draft.java._type;
+import java.io.IOException;
+import java.nio.file.Files;
 
-//import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.*;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * Manage the Input/Output configuration for where
@@ -50,6 +54,49 @@ public class _io{
 
     public static _in in(_inConfig ic, Class clazz){
         return _inMaster.resolve(ic, clazz);
+    }
+    
+    /**
+     * write a single .java file out to the 
+     * @param _c
+     * @return 
+     */
+    public static Path out( _code _c ){
+        return out( new _code[]{_c} ).get(0);
+    }
+    
+    /**
+     * This will print out any of these top level entities:
+     * <UL>
+     *    <LI>{@link draft.java._type}
+     *    <UL>
+     *       <LI>{@link draft.java._class}
+     *       <LI>{@link draft.java._enum}
+     *       <LI>{@link draft.java._interface}
+     *       <LI>{@link draft.java._annotation}
+     *    </UL>
+     *    <LI>{@link draft.java._packageInfo}
+     *    <LI>{@link draft.java._moduleInfo}
+     * </UL>
+     * 
+     * @param _c 
+     * @return a list of Paths to the files written
+     */
+    public static List<Path> out( _code... _c ){
+        String outJavaDir = getOutJavaDir();
+        List<Path> writtenFiles = new ArrayList<>();
+        Arrays.stream(_c).forEach(c -> {
+            String fileName = c.getFullName().replace(".", "/")+".java";
+            Path filePath = Paths.get(outJavaDir, fileName);
+            filePath.getParent().toFile().mkdirs();
+            try {
+                Files.write(filePath, c.toString().getBytes() );
+                writtenFiles.add(filePath);
+            } catch (IOException ex) {
+                Logger.getLogger(_io.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        });        
+        return writtenFiles;
     }
 
     /** @return the _in.resolver from ThreadLocal storage*/
@@ -364,6 +411,10 @@ public class _io{
      */
     public static void setOutDir(String outDir){
         System.setProperty(OUT_DIR, outDir);
+    }
+    
+    public static void setOutDir(Path outDirPath ){
+        setOutDir( outDirPath.toString() );
     }
 
     public static void setOutProjectDir( String outProjectDir ){
