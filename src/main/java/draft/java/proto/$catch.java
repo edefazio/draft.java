@@ -105,8 +105,15 @@ public class $catch implements $proto<CatchClause> {
      * @param selectConstraint
      * @return 
      */
-    public Select selectFirstIn(_node _n, Predicate<Select> selectConstraint) {
-        return selectFirstIn(_n.ast(), selectConstraint);
+    public Select selectFirstIn(_java _n, Predicate<Select> selectConstraint) {
+        if( _n instanceof _code ){
+            if( ((_code) _n).isTopLevel()){
+                return selectFirstIn( ((_code)_n).astCompilationUnit(), selectConstraint);
+            } else{                
+                return selectFirstIn( ((_type)_n).ast(), selectConstraint);
+            }
+        }        
+        return selectFirstIn( ((_node)_n).ast(), selectConstraint);
     }
     
     /**
@@ -143,8 +150,17 @@ public class $catch implements $proto<CatchClause> {
         return listSelectedIn( _java.type(clazz), selectConstraint);
     }
     
-    public <N extends _node> List<Select> listSelectedIn(N _n, Predicate<Select> selectConstraint) {
-        return listSelectedIn(_n.ast(), selectConstraint);
+    public <N extends _java> List<Select> listSelectedIn(N _n, Predicate<Select> selectConstraint) {
+        if( _n instanceof _code ){
+            if( ((_code) _n).isTopLevel()){
+                return listSelectedIn( ((_code)_n).astCompilationUnit(), selectConstraint);
+            } else{                
+                return listSelectedIn( ((_type)_n).ast(), selectConstraint);
+            }
+        }        
+        return listSelectedIn( ((_node)_n).ast(), selectConstraint);
+        
+        //return listSelectedIn(_n.ast(), selectConstraint);
     }
     
     public List<Select> listSelectedIn(Node astRootNode, Predicate<Select> selectConstraint) {
@@ -213,7 +229,7 @@ public class $catch implements $proto<CatchClause> {
      * @param nodeActionFn
      * @return 
      */
-    public <N extends _node> N forSelectedIn(N _n, Consumer<Select> nodeActionFn) {
+    public <N extends _java> N forSelectedIn(N _n, Consumer<Select> nodeActionFn) {
         Walk.in(_n, CatchClause.class, cc-> {
                 Select sel = select(cc);
                 if( sel != null ){
@@ -231,7 +247,7 @@ public class $catch implements $proto<CatchClause> {
      * @param nodeActionFn
      * @return 
      */
-    public <N extends _node> N forSelectedIn(N _n, Predicate<Select> selectConstraint, Consumer<Select> nodeActionFn) {
+    public <N extends _java> N forSelectedIn(N _n, Predicate<Select> selectConstraint, Consumer<Select> nodeActionFn) {
         Walk.in(_n, CatchClause.class, cc-> {
                 Select sel = select(cc);
                 if( sel != null && selectConstraint.test(sel)){

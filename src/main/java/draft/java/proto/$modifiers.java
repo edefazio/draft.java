@@ -6,7 +6,6 @@ import com.github.javaparser.ast.nodeTypes.NodeWithModifiers;
 import draft.Tokens;
 import draft.Translator;
 import draft.java.*;
-import draft.java._java._node;
 import draft.java._modifiers;
 import draft.java._modifiers._hasModifiers;
 import java.util.*;
@@ -194,15 +193,6 @@ public class $modifiers
         return found;
     }
 
-    /*
-    @Override
-    public List<? extends selected> listSelectedIn(_node _n) {
-        List<Select> found = new ArrayList<>();
-        forSelectedIn( _n, f-> found.add(f) );
-        return found;
-    }
-    */
-
     @Override
     public <N extends Node> N removeIn(N astRootNode) {
         //"remove" for modifiers is.... interesting... it "should" mean take them 
@@ -210,13 +200,6 @@ public class $modifiers
         //it sorta doesnt make sense
         throw new UnsupportedOperationException("Cant remove modifiers"); 
     }
-
-    /*
-    @Override
-    public <N extends _model._node> N removeIn(N _n) {
-        throw new UnsupportedOperationException("Cant remove modifiers"); 
-    }
-    */
 
     @Override
     public <N extends Node> N forEachIn(N astRootNode, Predicate<_modifiers> _modifiersMatchFn, Consumer<_modifiers> _nodeActionFn) {
@@ -229,27 +212,45 @@ public class $modifiers
                         _nodeActionFn.accept(sel.model());
                     }                
                 }
-            });
-        
-        //forEachIn( (_node)_java.of( astRootNode ), _nodeActionFn );        
-        //return astRootNode;
+            });        
     }
 
     public <N extends Node> N forSelectedIn(N astRootNode, Consumer<Select> selectActionFn) {
-        forSelectedIn( (_node)_java.of(astRootNode), selectActionFn );
-        return astRootNode;
+        return Walk.in( astRootNode, 
+            Node.class, 
+            nwm->{
+                if( nwm instanceof NodeWithModifiers ){
+                    Select sel = select( (NodeWithModifiers)nwm );
+                    if( sel != null ){
+                        selectActionFn.accept(sel);
+                    }                
+                }
+            });
+        
+        //forSelectedIn( (_node)_java.of(astRootNode), selectActionFn );
+        //return astRootNode;
     }
     
     public <N extends Node> N forSelectedIn(N astRootNode, Predicate<Select> selectConstraint, Consumer<Select> selectActionFn) {
-        forSelectedIn( (_node)_java.of(astRootNode), selectConstraint, selectActionFn );
-        return astRootNode;
+        return Walk.in( astRootNode, 
+            Node.class, 
+            nwm->{
+                if( nwm instanceof NodeWithModifiers ){
+                    Select sel = select( (NodeWithModifiers)nwm );
+                    if( sel != null && selectConstraint.test(sel)){
+                        selectActionFn.accept(sel);
+                    }                
+                }
+            });
+        //forSelectedIn( (_java)_java.of(astRootNode), selectConstraint, selectActionFn );
+        //return astRootNode;
     }
     
     public _type forSelectedIn(Class clazz, Predicate<Select> selectConstraint, Consumer<Select> selectActionFn) {
         return forSelectedIn(_java.type(clazz), selectConstraint, selectActionFn);
     }
     
-    public <N extends _node> N forSelectedIn(N _n, Predicate<Select> selectConstraint, Consumer<Select> selectActionFn) {
+    public <N extends _java> N forSelectedIn(N _n, Predicate<Select> selectConstraint, Consumer<Select> selectActionFn) {
         return Walk.in( _n, 
             NodeWithModifiers.class, 
             nwm->{
@@ -277,7 +278,7 @@ public class $modifiers
      * @param selectActionFn
      * @return 
      */
-    public <N extends _node> N forSelectedIn(N _n, Consumer<Select> selectActionFn) {
+    public <N extends _java> N forSelectedIn(N _n, Consumer<Select> selectActionFn) {
         return Walk.in( _n, 
             NodeWithModifiers.class, 
             nwm->{

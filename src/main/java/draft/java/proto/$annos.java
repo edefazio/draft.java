@@ -412,11 +412,13 @@ public class $annos
      * 
      * @param _n
      * @return 
-     */
+     
+    @Override
     public List<Select> listSelectedIn( _java _n) {
         List<Select> found = new ArrayList<>();
         return listSelectedIn(_n, t->true);
     }
+    */ 
 
     
     /**
@@ -429,6 +431,13 @@ public class $annos
         return listSelectedIn(_java.type(clazz), selectConstraint);
     }
     
+    /**
+     * 
+     * @param <N>
+     * @param n
+     * @param selectConstraint
+     * @return 
+     */
     public <N extends Node> List<Select> listSelectedIn( N n, Predicate<Select> selectConstraint ){
         List<Select> sel = new ArrayList<>();
         forSelectedIn( n, selectConstraint, s-> sel.add(s));
@@ -446,25 +455,12 @@ public class $annos
             _code _c = (_code)_n;
             if( _c.isTopLevel() ){
                 return listSelectedIn(_c.astCompilationUnit(), selectConstraint);
-                //return _n;
             }
             _type _t = (_type)_n; //only possible 
             return listSelectedIn(_t.ast(), selectConstraint);
-            //forSelectedIn(_t.ast(), selectActionFn); //return the TypeDeclaration, not the CompilationUnit            
-            //return _n;
         }
          
-        return listSelectedIn(((_node)_n).ast(), selectConstraint);
-        /*
-        List<Select> found = new ArrayList<>();
-        Walk.in(_n, _hasAnnos.class, _ha-> {
-            Select sel = select(_ha);
-            if( sel != null && selectConstraint.test(sel) ){
-                found.add( sel );
-            }
-        });
-        return found;
-        */
+        return listSelectedIn(((_node)_n).ast(), selectConstraint);        
     }
 
     @Override
@@ -476,10 +472,7 @@ public class $annos
                     _annosActionFn.accept(sel._anns);
                 }
             }
-        });
-        
-        //forEachIn( (_node)_java.of(astRootNode), _annosMatchFn, _annosActionFn );         
-        //return astRootNode;
+        });        
     }
     
     /**
@@ -557,7 +550,6 @@ public class $annos
             if( _c.isTopLevel() ){
                 forSelectedIn(_c.astCompilationUnit(), selectActionFn);
                 return _n;
-                //return _n;
             }
             _type _t = (_type)_n; //only possible 
             forSelectedIn(_t.ast(), selectActionFn);
@@ -565,14 +557,6 @@ public class $annos
         }
         forSelectedIn((_node)_n, selectActionFn);
         return _n;
-        /*
-        return Walk.in(_n, _hasAnnos.class, _ha-> {
-            Select sel = select(_ha);
-            if( sel != null ){
-                selectActionFn.accept(sel);
-            }
-        });
-        */
     }
      
     public <N extends _java> N forSelectedIn(N _n, Predicate<Select> selectConstraint, Consumer<Select> selectActionFn) {
@@ -588,14 +572,6 @@ public class $annos
         }
         forSelectedIn( ((_node)_n).ast(), selectConstraint, selectActionFn);
         return _n;
-        /*
-        return Walk.in(_n, _hasAnnos.class, _ha-> {
-            Select sel = select(_ha);
-            if( sel != null && selectConstraint.test(sel)){
-                selectActionFn.accept(sel);
-            }
-        });
-        */
     } 
     
     @Override

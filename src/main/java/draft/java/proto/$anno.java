@@ -577,7 +577,7 @@ public class $anno
 
     /*
     @Override
-    public List<Select> listSelectedIn(_node _n) {
+    public List<Select> listSelectedIn(_java _n) {
         List<Select> found = new ArrayList<>();
         Walk.in(_n, _anno.class, a-> {
             Select sel = select(a); 
@@ -588,6 +588,7 @@ public class $anno
         return found;
     }
     */
+    
     
     /**
      * 
@@ -631,17 +632,7 @@ public class $anno
             _type _t = (_type)_n; //only possible 
             return listSelectedIn(_t.ast(), selectConstraint); //return the TypeDeclaration, not the CompilationUnit            
         }
-        return listSelectedIn(((_node)_n).ast(), selectConstraint);
-        /*
-        List<Select> found = new ArrayList<>();
-        Walk.in(_n, _anno.class, a-> {
-            Select sel = select(a); 
-            if( sel != null && selectConstraint.test(sel)){
-                found.add( sel );
-            }
-        }); 
-        return found;
-        */
+        return listSelectedIn(((_node)_n).ast(), selectConstraint);        
     }    
     
     @Override
@@ -709,14 +700,7 @@ public class $anno
             return _n;
         }
         forSelectedIn(((_node)_n).ast(), selectActionFn);
-        return _n;
-        /*
-        return Walk.in(_n, _anno.class, a-> {
-            Select sel = select(a); 
-            if( sel != null ){
-                selectActionFn.accept( sel );
-            }
-        }); */
+        return _n;        
     }
     
     /**
@@ -739,15 +723,7 @@ public class $anno
             return _n;
         }
         forSelectedIn(((_node)_n).ast(), selectActionFn);
-        return _n;
-        /*
-        return Walk.in(_n, _anno.class, a-> {
-            Select sel = select(a); 
-            if( sel != null && selectConstraint.test(sel)){
-                selectActionFn.accept( sel );
-            }
-        });
-        */
+        return _n;       
     }
     
     /**
@@ -935,9 +911,6 @@ public class $anno
                 if( sel != null ){
                     return new Select(mvp, sel.args.asTokens());
                 }
-                //return null;
-                //Tokens ts = value.decompose(onlyValueExpression.toString());
-                //return new Select(mvp, ts);
             }
             return null;
         }
@@ -962,10 +935,6 @@ public class $anno
                 }
                 ts.putAll(sel.args.asTokens());
                 return new Select(mvp, ts);
-                //ts = value.decomposeTo(mvp.getValue().toString(), ts);
-                //if( ts != null ){
-                //    return new Select(mvp, ts);
-                //}
             }
             return null;
         }

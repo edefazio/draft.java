@@ -358,7 +358,16 @@ public final class $typeParameters
      * @param selectConstraint
      * @return  the first _import that matches (or null if none found)
      */
-    public Select selectFirstIn( _node _n, Predicate<Select> selectConstraint ){
+    public Select selectFirstIn( _java _n, Predicate<Select> selectConstraint ){
+        if( _n instanceof _code ){
+            if( ((_code) _n).isTopLevel()){
+                return selectFirstIn( ((_code) _n).astCompilationUnit(), selectConstraint);
+            }
+            return selectFirstIn( ((_type)_n).ast(), selectConstraint);
+        }
+        return selectFirstIn( ((_node)_n).ast(), selectConstraint);        
+        
+        /*
         if( _n.ast().findCompilationUnit().isPresent() ){
             Optional<CallableDeclaration> f = _n.ast().findCompilationUnit().get()
                     .findFirst(CallableDeclaration.class, s -> {
@@ -370,6 +379,7 @@ public final class $typeParameters
             }
         }
         return null;
+        */
     }
 
     /**
@@ -464,8 +474,14 @@ public final class $typeParameters
      * @param selectConstraint
      * @return 
      */
-    public List<Select> listSelectedIn( _node _n, Predicate<Select> selectConstraint ){
-        return listSelectedIn( _n.ast() );        
+    public List<Select> listSelectedIn( _java _n, Predicate<Select> selectConstraint ){
+        if( _n instanceof _code ){
+            if( ((_code) _n).isTopLevel()){
+                return listSelectedIn( ((_code) _n).astCompilationUnit(), selectConstraint);
+            }
+            return listSelectedIn( ((_type)_n).ast(), selectConstraint);
+        }
+        return listSelectedIn( ((_node)_n).ast(), selectConstraint);
     }
   
     /**
@@ -485,7 +501,7 @@ public final class $typeParameters
      * @param importDecl
      * @return 
      */
-    public <N extends _node> N replaceIn(N _n, String importDecl){
+    public <N extends _java> N replaceIn(N _n, String importDecl){
         return replaceIn(_n, $typeParameters.of(importDecl));
     }
     
@@ -506,7 +522,9 @@ public final class $typeParameters
      * @param _i
      * @return 
      */
-    public <N extends _node> N replaceIn(N _n, _typeParameters _i){
+    public <N extends _java> N replaceIn(N _n, _typeParameters _i){
+        return replaceIn(_n, $typeParameters.of(_i));
+        /*
         Node astNode = _n.ast();
         if( astNode.findCompilationUnit().isPresent() ){
             astNode.findCompilationUnit().get().walk( CallableDeclaration.class, e-> {
@@ -518,6 +536,7 @@ public final class $typeParameters
             });
         }
         return _n;
+        */
     }
     
     /**
@@ -539,8 +558,16 @@ public final class $typeParameters
      * @param <N> the TYPE of model
      * @return
      */
-    public <N extends _node> N replaceIn(N _n, $typeParameters $i ){
-        replaceIn( _n.ast(), $i);        
+    public <N extends _java> N replaceIn(N _n, $typeParameters $i ){
+        if( _n instanceof _code ){
+            if( ((_code) _n).isTopLevel()){
+                replaceIn( ((_code) _n).astCompilationUnit(), $i);
+                return _n;
+            }
+            replaceIn( ((_type)_n).ast(), $i);
+            return _n;
+        }
+        replaceIn( ((_node)_n).ast(), $i);        
         return _n;
     }
     

@@ -591,7 +591,7 @@ public final class $snip implements Template<List<Statement>>, $proto<List<State
         return astNode;
     }
 
-    public <N extends _node> N replaceIn(N _n, String... repl ){
+    public <N extends _java> N replaceIn(N _n, String... repl ){
         return replaceIn(_n, $snip.of(repl));
     }
     
@@ -602,7 +602,7 @@ public final class $snip implements Template<List<Statement>>, $proto<List<State
      * @param $repl
      * @return 
      */
-    public <N extends _node> N replaceIn(N _n, $stmt $repl ){
+    public <N extends _java> N replaceIn(N _n, $stmt $repl ){
         $snip $sn = new $snip($repl);
         return $snip.this.replaceIn(_n, $sn);
     }
@@ -614,7 +614,7 @@ public final class $snip implements Template<List<Statement>>, $proto<List<State
      * @param $repl
      * @return 
      */
-    public <N extends _node> N replaceIn(N _n, $snip $repl ){
+    public <N extends _java> N replaceIn(N _n, $snip $repl ){
         AtomicInteger ai = new AtomicInteger(0);
 
         Walk.in(_n, this.$sts.get(0).statementClass, st-> {
@@ -693,7 +693,7 @@ public final class $snip implements Template<List<Statement>>, $proto<List<State
      * @param selectedAction
      * @return 
      */
-    public <N extends _node> N forSelectedIn(N _n, Consumer<Select>selectedAction ){
+    public <N extends _java> N forSelectedIn(N _n, Consumer<Select>selectedAction ){
         Walk.in(_n, this.$sts.get(0).statementClass, st-> {
             Select sel = select( (Statement)st );
             if( sel != null ){

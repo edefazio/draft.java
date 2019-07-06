@@ -5,7 +5,6 @@ import com.github.javaparser.ast.nodeTypes.NodeWithParameters;
 import draft.*;
 import draft.java.Walk;
 import draft.java._java;
-import draft.java._java._node;
 import draft.java._parameter._parameters;
 import draft.java._type;
 import java.util.*;
@@ -112,12 +111,6 @@ public class $parameters implements Template<_parameters>, $proto<_parameters>,
             if( this.$params.isEmpty() ){
                 return new Select(_ps, Tokens.of("parameters", _ps.toString() ));
             }
-            /*
-            if( this.$params.size() == 1 && 
-                this.$params.get(0).isMatchAny() ){
-                return new Select(_ps, Tokens.of("parameters", _ps.toString() ));
-            } 
-            */
             if( _ps.size() != this.$params.size() ){
                 return null;
             }
@@ -151,7 +144,6 @@ public class $parameters implements Template<_parameters>, $proto<_parameters>,
         return null;        
     }
     
-     
     public $parameters hardcode$(Object...keyValues){
         this.$params.forEach(p -> p.hardcode$(keyValues));
         return this;
@@ -231,15 +223,6 @@ public class $parameters implements Template<_parameters>, $proto<_parameters>,
         return found;
     }
 
-    /*
-    @Override
-    public List<Select> listSelectedIn(_model._node _n) {
-        List<Select> found = new ArrayList<>();
-        forSelectedIn( _n, s-> found.add(s));
-        return found;
-    }
-    */
-
     /**
      * 
      * @param <N>
@@ -273,7 +256,7 @@ public class $parameters implements Template<_parameters>, $proto<_parameters>,
      * @param parametersPattern
      * @return 
      */
-    public <N extends _node> N replaceIn(N _n, String...parametersPattern ) {     
+    public <N extends _java> N replaceIn(N _n, String...parametersPattern ) {     
         return replaceIn(_n, $parameters.of(parametersPattern));    
     }
 
@@ -284,7 +267,7 @@ public class $parameters implements Template<_parameters>, $proto<_parameters>,
      * @param $replacementProto
      * @return 
      */
-    public <N extends _node> N replaceIn(N _n, $parameters $replacementProto) {
+    public <N extends _java> N replaceIn(N _n, $parameters $replacementProto) {
         return forSelectedIn( _n, s->{            
             _parameters _replaceParams = $replacementProto.construct(s.args);
             s._params.astHolder().setParameters(_replaceParams.ast());             
@@ -362,7 +345,7 @@ public class $parameters implements Template<_parameters>, $proto<_parameters>,
      * @param _parametersActionFn
      * @return 
      */
-    public <N extends _node> N forSelectedIn(N _n, Consumer<Select> _parametersActionFn) {
+    public <N extends _java> N forSelectedIn(N _n, Consumer<Select> _parametersActionFn) {
         Walk.in(_n, _parameters.class, n-> {            
             Select sel = select( n );
             if( sel != null ){
@@ -391,7 +374,7 @@ public class $parameters implements Template<_parameters>, $proto<_parameters>,
      * @param _parametersActionFn
      * @return 
      */
-    public <N extends _node> N forSelectedIn(N _n, Predicate<Select> selectConstraint, Consumer<Select> _parametersActionFn) {
+    public <N extends _java> N forSelectedIn(N _n, Predicate<Select> selectConstraint, Consumer<Select> _parametersActionFn) {
         Walk.in(_n, _parameters.class, n-> {            
             Select sel = select( n );
             if( sel != null && selectConstraint.test(sel) ){

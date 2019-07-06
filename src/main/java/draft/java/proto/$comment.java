@@ -4,7 +4,6 @@ import com.github.javaparser.ast.Node;
 import com.github.javaparser.ast.comments.*;
 import draft.*;
 import draft.java.*;
-import draft.java._java._node;
 import java.util.*;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
@@ -243,22 +242,12 @@ public class $comment <C extends Comment>
             return null;
         }
         return found.get(0);
-        
-        /** this wont work for orphan comments
-        Optional<Comment> oc = 
-            astRootNode.findFirst(Comment.class, c-> matches(c) );
-        if( oc.isPresent() ){
-            return oc.get();
-        }
-        return null;
-        */ 
     }
 
     @Override
     public Select selectFirstIn(Node n) {
         List<C> found = listIn(n );
         Ast.sortNodesByPosition(found);
-        //Collections.sort( found, Ast.COMPARE_NODE_BY_LOCATION);
         if( found.isEmpty() ){
             return null;
         }
@@ -298,7 +287,7 @@ public class $comment <C extends Comment>
         return astRootNode;
     }
 
-    public <N extends _node> N forSelectedIn(_node _n, Consumer<Select> selectActionFn) {
+    public <N extends _java> N forSelectedIn(_java _n, Consumer<Select> selectActionFn) {
         Walk.comments(_n, c->{
             Select s = select(c);
             if( s != null ){
@@ -319,7 +308,7 @@ public class $comment <C extends Comment>
         return astRootNode;
     }
     
-    public <N extends _node> N forSelectedIn(_node _n, Predicate<Select> selectConstraint, Consumer<Select> selectActionFn) {
+    public <N extends _java> N forSelectedIn(_java _n, Predicate<Select> selectConstraint, Consumer<Select> selectActionFn) {
         Walk.comments(_n, c->{
             Select s = select(c);
             if( s != null && selectConstraint.test(s)){

@@ -888,18 +888,12 @@ public final class $stmt<T extends Statement>
     
     @Override
     public T fill(Object...values){
-        //if( this.commentPattern != null ){
-        //    return (T)Stmt.of(Stencil.of(commentPattern, this.stmtPattern ).fill(Translator.DEFAULT_TRANSLATOR, values) );
-        //}
         String str = stmtPattern.fill(Translator.DEFAULT_TRANSLATOR, values);
         return (T)Stmt.of( str);
     }
 
     @Override
     public $stmt $(String target, String $name ) {
-        //if( this.commentPattern != null ) {
-        //    this.commentPattern = this.commentPattern.$(target, $name);
-        //}
         this.stmtPattern = this.stmtPattern.$(target, $name);
         return this;
     }
@@ -993,39 +987,23 @@ public final class $stmt<T extends Statement>
         for(int i=0;i<values.length;i++){
             kvs.put( keys.get(i), values[i]);
         }
-        return construct( t, kvs );
-        
-        //stmtPattern.fill(values)
-        //return (T)Stmt.of(stmtPattern.fill(t, values));
-        
+        return construct( t, kvs );                
     }
 
     @Override
     public T construct( Object...keyValues ){
-        //if( this.commentPattern != null ){
-        //   return (T)Stmt.of(Stencil.of(commentPattern, stmtPattern).construct( keyValues) );
-        //}
-//        return (T)Stmt.of(stmtPattern.construct( Tokens.of(keyValues)));
         Tokens tokens = Tokens.of(keyValues);
         return (T)walkCompose$LabeledStmt( Stmt.of(stmtPattern.construct( tokens )), tokens );
     }
     
     @Override
     public T construct( Translator t, Object...keyValues ){
-        //if( this.commentPattern != null ){
-        //    return (T)Stmt.of(Stencil.of(commentPattern, stmtPattern).construct(t, Tokens.of(keyValues) ) );
-        //}
-        //return (T)Stmt.of(stmtPattern.construct( t, Tokens.of(keyValues) ));
         Tokens tokens = Tokens.of(keyValues);
         return (T)walkCompose$LabeledStmt( Stmt.of(stmtPattern.construct( t, tokens )), tokens );
     }
 
     @Override
     public T construct( Map<String,Object> tokens ){
-        //if( this.commentPattern != null ){
-        //    return (T)Stmt.of(Stencil.of(commentPattern, stmtPattern).construct( Translator.DEFAULT_TRANSLATOR, tokens ));
-        //}
-        //return (T) Stmt.of(stmtPattern.construct( Translator.DEFAULT_TRANSLATOR, tokens ));
         return (T)walkCompose$LabeledStmt( Stmt.of(stmtPattern.construct( tokens )), tokens );
     }
     
@@ -1035,12 +1013,8 @@ public final class $stmt<T extends Statement>
      * @return 
      */
     public T construct( _node _n ){
-        //if( this.commentPattern != null ){
-        // //   return (T)Stmt.of(Stencil.of(commentPattern, stmtPattern).construct(_n.deconstruct()) );
-        //}
         Map<String,Object> decons = _n.deconstruct();
         return (T)construct( decons );
-        //return (T)$stmt.this.construct(_n.deconstruct());
     }
 
     @Override
@@ -1208,7 +1182,15 @@ public final class $stmt<T extends Statement>
      * @param selectConstraint
      * @return 
      */
-    public Select<T> selectFirstIn( _node _n, Predicate<Select<T>> selectConstraint ){
+    public Select<T> selectFirstIn( _java _n, Predicate<Select<T>> selectConstraint ){
+        if( _n instanceof _code ){
+            if( ((_code) _n).isTopLevel()){
+                return selectFirstIn( ((_code) _n).astCompilationUnit(), selectConstraint );
+            }
+            return selectFirstIn( ((_type)_n).ast(), selectConstraint);
+        }
+        return selectFirstIn( ((_node)_n).ast(), selectConstraint );        
+        /*
         Optional<T> f = _n.ast().findFirst(this.statementClass, s -> {
             Select<T> sel = this.select(s); 
             return sel != null && selectConstraint.test(sel);
@@ -1217,6 +1199,7 @@ public final class $stmt<T extends Statement>
             return select( f.get() );
         }
         return null;
+        */
     }
 
     /**
@@ -1300,7 +1283,7 @@ public final class $stmt<T extends Statement>
      * @param selectedActionFn
      * @return 
      */
-    public <N extends _node> N forSelectedIn(N _n, Consumer<Select<T>> selectedActionFn){
+    public <N extends _java> N forSelectedIn(N _n, Consumer<Select<T>> selectedActionFn){
         Walk.in(_n, this.statementClass, e->{
             Select<T> sel = select( e );
             if( sel != null ){
@@ -1347,7 +1330,7 @@ public final class $stmt<T extends Statement>
      * @param selectedActionFn
      * @return 
      */
-    public <N extends _node> N forSelectedIn(N _n, Predicate<Select<T>> selectConstraint, Consumer<Select<T>> selectedActionFn){
+    public <N extends _java> N forSelectedIn(N _n, Predicate<Select<T>> selectConstraint, Consumer<Select<T>> selectedActionFn){
         Walk.in(_n, this.statementClass, e->{
             Select<T> sel = select( e );
             if( sel != null && selectConstraint.test(sel)){
@@ -1434,7 +1417,7 @@ public final class $stmt<T extends Statement>
      * @param selectConstraint
      * @return 
      */
-    public List<Select<T>> listSelectedIn(_node _n, Predicate<Select<T>> selectConstraint ){
+    public List<Select<T>> listSelectedIn(_java _n, Predicate<Select<T>> selectConstraint ){
         List<Select<T>>sts = new ArrayList<>();
         Walk.in(_n, this.statementClass, st->{
             //$args tokens = deconstruct(st);
@@ -1473,7 +1456,7 @@ public final class $stmt<T extends Statement>
      * @param $repl
      * @return 
      */
-    public <N extends _node> N replaceIn(N _n, $stmt $repl ){
+    public <N extends _java> N replaceIn(N _n, $stmt $repl ){
         $snip $sn = new $snip($repl);
         return replaceIn(_n, $sn);
     }
@@ -1485,7 +1468,7 @@ public final class $stmt<T extends Statement>
      * @param statment_s
      * @return 
      */
-    public <N extends _node> N replaceIn(N _n, String... statment_s ){
+    public <N extends _java> N replaceIn(N _n, String... statment_s ){
         $snip $sn = $snip.of(statment_s);
         return replaceIn(_n, $sn);
     }    
@@ -1497,7 +1480,7 @@ public final class $stmt<T extends Statement>
      * @param $protoReplacement
      * @return 
      */
-    public <N extends _node> N replaceIn(N _n, $snip $protoReplacement ){
+    public <N extends _java> N replaceIn(N _n, $snip $protoReplacement ){
         AtomicInteger ai = new AtomicInteger(0);
         Walk.in(_n, this.statementClass, st->{
             $stmt.Select sel = select( st );

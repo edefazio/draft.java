@@ -406,8 +406,14 @@ public final class $typeRef
      * @param selectConstraint
      * @return 
      */
-    public List<Select> listSelectedIn(_node _n,Predicate<Select> selectConstraint){
-        return listSelectedIn(_n.ast(), selectConstraint);
+    public List<Select> listSelectedIn(_java _n,Predicate<Select> selectConstraint){
+        if( _n instanceof _code ){
+            if( ((_code) _n).isTopLevel()){
+                return listSelectedIn( ((_code) _n).astCompilationUnit(), selectConstraint);
+            }
+            return listSelectedIn( ((_type)_n).ast(), selectConstraint);
+        }
+        return listSelectedIn( ((_node)_n).ast(), selectConstraint);                
     }
     
     /**
@@ -427,7 +433,7 @@ public final class $typeRef
      * @param selectConsumer
      * @return 
      */
-    public <N extends _node> N forSelectedIn(N _n, Consumer<Select> selectConsumer ){
+    public <N extends _java> N forSelectedIn(N _n, Consumer<Select> selectConsumer ){
         Walk.in(_n, Type.class, e-> {
             Select sel = select( e );
             if( sel != null ){
@@ -455,7 +461,7 @@ public final class $typeRef
      * @param selectConsumer
      * @return 
      */
-    public <N extends _node> N forSelectedIn(N _n, Predicate<Select> selectConstraint, Consumer<Select> selectConsumer ){
+    public <N extends _java> N forSelectedIn(N _n, Predicate<Select> selectConstraint, Consumer<Select> selectConsumer ){
         Walk.in(_n, Type.class, e-> {
             Select sel = select( e );
             if( sel != null && selectConstraint.test(sel) ){
@@ -517,7 +523,7 @@ public final class $typeRef
      * @param replacementType
      * @return 
      */
-    public <N extends _node> N replaceIn(N _n, Class replacementType){
+    public <N extends _java> N replaceIn(N _n, Class replacementType){
         return replaceIn(_n, $typeRef.of(replacementType));
     }
     
@@ -538,7 +544,7 @@ public final class $typeRef
      * @param replacementType
      * @return 
      */
-    public <N extends _node> N replaceIn(N _n, _typeRef replacementType){
+    public <N extends _java> N replaceIn(N _n, _typeRef replacementType){
         return replaceIn(_n, $typeRef.of(replacementType));
     }
 
@@ -549,7 +555,7 @@ public final class $typeRef
      * @param <N>
      * @return
      */
-    public <N extends _node> N replaceIn(N _n, Type astReplacementType){
+    public <N extends _java> N replaceIn(N _n, Type astReplacementType){
         return replaceIn(_n, $typeRef.of(astReplacementType));
     }
 
@@ -568,7 +574,7 @@ public final class $typeRef
      * @param <N>
      * @return
      */
-    public <N extends _node> N replaceIn(N _n, $typeRef $replacementType){
+    public <N extends _java> N replaceIn(N _n, $typeRef $replacementType){
         Walk.in(_n, Type.class, e -> {
             Select select = select(e);
             if( select != null ){
@@ -587,7 +593,7 @@ public final class $typeRef
      * @param replacementPattern
      * @return 
      */
-    public <N extends _node> N replaceIn(N _n, String...replacementPattern){
+    public <N extends _java> N replaceIn(N _n, String...replacementPattern){
         return replaceIn(_n, $typeRef.of( Text.combine(replacementPattern)) );
     }
 

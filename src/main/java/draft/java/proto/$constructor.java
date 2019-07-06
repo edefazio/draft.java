@@ -176,7 +176,6 @@ public class $constructor
     
     public Predicate<_constructor> constraint = t -> true;
     
-    //public $component<_javadoc> javadoc = new $component( "$javadoc$", t->true);
     public $comment<JavadocComment> javadoc = $comment.javadocComment();
     public $annos annos = new $annos();
     public $modifiers modifiers = $modifiers.of();
@@ -248,7 +247,6 @@ public class $constructor
         
         if( _ct.hasJavadoc() ){
             javadoc = $comment.javadocComment(_ct.getJavadoc());
-            //javadoc.pattern(_ct.getJavadoc().toString() );
         }        
         if( _ct.hasAnnos() ){
             annos = $annos.of(_ct.getAnnos() );
@@ -257,19 +255,12 @@ public class $constructor
         if( !_ct.hasTypeParameters() ){
             final _typeParameters etps = _ct.getTypeParameters();
             typeParameters = $typeParameters.of(etps);
-            //typeParameters = new $component(
-            //    "$typeParameters$", 
-            //    (tps)-> tps.equals(etps) );
         }
         name = $id.of(_ct.getName() );
         if( _ct.hasParameters() ){
             parameters = $parameters.of(_ct.getParameters());
         }        
-        thrown = $throws.of( _ct.getThrows() );
-        //if( _ct.hasThrows() ){
-        //    final _throws ths = _ct.getThrows();
-        //    thrown = new $component( "$throws$", (t)-> t.equals(ths) );
-        //}
+        thrown = $throws.of( _ct.getThrows() );        
         if( _ct.hasBody() ){            
             body = $body.of(_ct.ast());    
         }
@@ -747,15 +738,42 @@ public class $constructor
      * @param selectConstraint
      * @return  the first _constructor that matches (or null if none found)
      */
-    public Select selectFirstIn( _node _n, Predicate<Select> selectConstraint){
-        Optional<ConstructorDeclaration> f = _n.ast().findFirst(ConstructorDeclaration.class, s -> {
-            Select sel = this.select(s);
-            return sel != null && selectConstraint.test(sel);
-            });               
-        if( f.isPresent()){
-            return select(f.get());
+    public Select selectFirstIn( _java _n, Predicate<Select> selectConstraint){
+        if( _n instanceof _code){
+            if( ((_code) _n).isTopLevel()){
+                Optional<ConstructorDeclaration> f = (((_code) _n).astCompilationUnit().findFirst(
+                    ConstructorDeclaration.class, s -> {
+                        Select sel = this.select(s);
+                        return sel != null && selectConstraint.test(sel);
+                    }));               
+                if( f.isPresent()){
+                    return select(f.get());
+                }
+                return null;
+            }
+            else{
+                _type _t = (_type)_n;
+                Optional<ConstructorDeclaration> f = (_t.ast().findFirst(
+                    ConstructorDeclaration.class, s -> {
+                        Select sel = this.select(s);
+                        return sel != null && selectConstraint.test(sel);
+                    }));               
+                if( f.isPresent()){
+                    return select(f.get());
+                }
+                return null;
+            }
+        } else{
+            Optional<ConstructorDeclaration> f = ((_node)_n).ast().findFirst(
+                ConstructorDeclaration.class, s -> {
+                    Select sel = this.select(s);
+                    return sel != null && selectConstraint.test(sel);
+                });               
+            if( f.isPresent()){
+                return select(f.get());
+            }
+            return null;
         }
-        return null;
     }
 
     /**
@@ -820,7 +838,7 @@ public class $constructor
      * @param selectConstraint
      * @return 
      */
-    public List<Select> listSelectedIn(_node _n, Predicate<Select> selectConstraint){
+    public List<Select> listSelectedIn(_java _n, Predicate<Select> selectConstraint){
         List<Select>sts = new ArrayList<>();
         Walk.in(_n, ConstructorDeclaration.class, m -> {
             Select sel = select( m );
@@ -900,7 +918,7 @@ public class $constructor
      * @param selectedActionFn
      * @return 
      */
-    public <N extends _node> N forSelectedIn(N _n, Consumer<Select> selectedActionFn ){
+    public <N extends _java> N forSelectedIn(N _n, Consumer<Select> selectedActionFn ){
         Walk.in(_n, _constructor.class, c ->{
             Select s = select(c );
             if( s != null ){
@@ -938,7 +956,7 @@ public class $constructor
      * @param selectedActionFn
      * @return 
      */
-    public <N extends _node> N forSelectedIn(N _n, Predicate<Select> selectConstraint, Consumer<Select> selectedActionFn ){
+    public <N extends _java> N forSelectedIn(N _n, Predicate<Select> selectConstraint, Consumer<Select> selectedActionFn ){
         Walk.in(_n, _constructor.class, c ->{
             Select s = select(c );
             if( s != null && selectConstraint.test(s)){
@@ -998,7 +1016,7 @@ public class $constructor
      * @param $replace
      * @return 
      */
-    public <N extends _node> N replaceIn( N _n, $constructor $replace ){
+    public <N extends _java> N replaceIn( N _n, $constructor $replace ){
         return forSelectedIn(_n, s -> {
             _constructor repl = $replace.construct(Translator.DEFAULT_TRANSLATOR, s.args.asTokens());
             s._ct.ast().replace(repl.ast());
@@ -1012,7 +1030,7 @@ public class $constructor
      * @param replacementProto
      * @return 
      */
-    public <N extends _node> N replaceIn( N _n, String... replacementProto ){
+    public <N extends _java> N replaceIn( N _n, String... replacementProto ){
         return replaceIn(_n, $constructor.of(replacementProto));        
     }
     
@@ -1023,7 +1041,7 @@ public class $constructor
      * @param _ct
      * @return 
      */
-    public <N extends _node> N replaceIn( N _n, _constructor _ct ){
+    public <N extends _java> N replaceIn( N _n, _constructor _ct ){
         return replaceIn(_n, $constructor.of(_ct));        
     }
     
@@ -1034,7 +1052,7 @@ public class $constructor
      * @param astCtor
      * @return 
      */
-    public <N extends _node> N replaceIn( N _n, ConstructorDeclaration astCtor ){
+    public <N extends _java> N replaceIn( N _n, ConstructorDeclaration astCtor ){
         return replaceIn(_n, $constructor.of(astCtor));        
     }    
     

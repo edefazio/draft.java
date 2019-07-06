@@ -1859,7 +1859,16 @@ public class $expr <T extends Expression>
      * @return  the first Expression that matches (or null if none found)
      */
     @Override
-    public Select<T> selectFirstIn( _node _n, Predicate<Select<T>> selectConstraint){
+    public Select<T> selectFirstIn( _java _n, Predicate<Select<T>> selectConstraint){
+        if( _n instanceof _code ){
+            if( ((_code) _n).isTopLevel()){
+                return selectFirstIn(((_code) _n).astCompilationUnit(), selectConstraint);
+            } else{
+                return selectFirstIn(((_type) _n).ast(), selectConstraint);
+            }
+        }
+        return selectFirstIn(((_node) _n).ast(), selectConstraint);
+        /*
         Optional<T> f = _n.ast().findFirst(this.expressionClass, s -> {
             Select<T> sel = select(s);
             return sel != null && selectConstraint.test(sel);
@@ -1868,6 +1877,7 @@ public class $expr <T extends Expression>
             return select(f.get());
         }
         return null;
+        */
     }
 
     /**
@@ -1888,10 +1898,17 @@ public class $expr <T extends Expression>
         return null;
     }
     
+    
     @Override
-    public List<T> listIn(_node _n ){
-        return listIn(_n.ast() );
-    }
+    public List<T> listIn(_java _n ){
+        if( _n instanceof _code ){
+            if( ((_code) _n).isTopLevel()){
+                return listIn(((_code) _n).astCompilationUnit());
+            }
+                return listIn(((_type) _n).ast());
+        }
+        return listIn( ((_node)_n).ast() );
+    }    
 
     @Override
     public List<T> listIn(Node astNode ){
@@ -1940,7 +1957,7 @@ public class $expr <T extends Expression>
     }
 
     @Override
-    public List<Select<T>> listSelectedIn(_node _n ){
+    public List<Select<T>> listSelectedIn(_java _n ){
         List<Select<T>>sts = new ArrayList<>();
         Walk.in(_n, this.expressionClass, e -> {
             Select s = select( e );
@@ -1999,7 +2016,7 @@ public class $expr <T extends Expression>
      * @return 
      */
     @Override
-    public List<Select<T>> listSelectedIn(_node _n, Predicate<Select<T>> selectConstraint){
+    public List<Select<T>> listSelectedIn(_java _n, Predicate<Select<T>> selectConstraint){
         List<Select<T>>sts = new ArrayList<>();
         Walk.in(_n, this.expressionClass, e -> {
             Select s = select( e );
@@ -2059,7 +2076,7 @@ public class $expr <T extends Expression>
      * @return 
      */
     @Override
-    public <N extends _node> N replaceIn(N _n, Node astExprReplace ){
+    public <N extends _java> N replaceIn(N _n, Node astExprReplace ){
         Walk.in(_n, this.expressionClass, e-> {
             Select sel = select( e );
             if( sel != null ){
@@ -2077,7 +2094,7 @@ public class $expr <T extends Expression>
      * @return 
      */
     @Override
-    public <N extends _node> N replaceIn(N _n, String protoReplaceExpr ){
+    public <N extends _java> N replaceIn(N _n, String protoReplaceExpr ){
         return replaceIn(_n, $expr.of(protoReplaceExpr) );
     }
     
@@ -2100,7 +2117,7 @@ public class $expr <T extends Expression>
      * @return 
      */
     @Override
-    public <N extends _node> N replaceIn(N _n, $expr $repl ){
+    public <N extends _java> N replaceIn(N _n, $expr $repl ){
         Walk.in(_n, this.expressionClass, e-> {
             Select sel = select( e );
             if( sel != null ){
@@ -2130,7 +2147,7 @@ public class $expr <T extends Expression>
      * @return 
      */
     @Override
-    public <N extends _node> N forSelectedIn(N _n, Consumer<Select<T>> selectConsumer ){
+    public <N extends _java> N forSelectedIn(N _n, Consumer<Select<T>> selectConsumer ){
         Walk.in(_n, this.expressionClass, e-> {
             Select sel = select( e );
             if( sel != null ){
@@ -2179,7 +2196,7 @@ public class $expr <T extends Expression>
      * @return 
      */
     @Override
-    public <N extends _node> N forSelectedIn(N _n, Predicate<Select<T>> selectConstraint, Consumer<Select<T>> selectConsumer ){
+    public <N extends _java> N forSelectedIn(N _n, Predicate<Select<T>> selectConstraint, Consumer<Select<T>> selectConsumer ){
         Walk.in(_n, this.expressionClass, e-> {
             Select sel = select( e );
             if( sel != null  && selectConstraint.test(sel)){

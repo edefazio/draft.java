@@ -246,7 +246,10 @@ public class $var
         return this;
     }
     
-    /** What about NO init?? ...I can put that in the lambda*/    
+    /** What about NO init?? ...I can put that in the lambda
+     * @param expr
+     * @return 
+     */    
     public $var $init( String...expr ){
         this.init = $expr.of(expr);
         return this;
@@ -520,7 +523,15 @@ public class $var
      * @param selectConstraint
      * @return  the first VaribleDeclarator that matches (or null if none found)
      */
-    public Select selectFirstIn( _node _n, Predicate<Select> selectConstraint ){
+    public Select selectFirstIn( _java _n, Predicate<Select> selectConstraint ){
+        if( _n instanceof _code ){
+            if( ((_code) _n).isTopLevel()){
+                return selectFirstIn( ((_code) _n).astCompilationUnit(), selectConstraint);
+            }
+            return selectFirstIn( ((_type)_n).ast(), selectConstraint);
+        }
+        return selectFirstIn( ((_node)_n).ast(), selectConstraint);        
+        /*
         Optional<VariableDeclarator> f = _n.ast().findFirst(VariableDeclarator.class, s -> this.matches(s) );         
         if( f.isPresent()){
             Select sel = select(f.get());
@@ -529,6 +540,7 @@ public class $var
             }
         }
         return null;
+        */
     }
 
     /**
@@ -611,8 +623,18 @@ public class $var
      * @param selectConstraint
      * @return 
      */
-    public List<Select> listSelectedIn(_node _n, Predicate<Select> selectConstraint){
+    public List<Select> listSelectedIn(_java _n, Predicate<Select> selectConstraint){
         List<Select>sts = new ArrayList<>();
+        if( _n instanceof _code ){
+            if( ((_code) _n).isTopLevel()){
+                return listSelectedIn( ((_code) _n).astCompilationUnit(), selectConstraint);
+            }
+            return listSelectedIn( ((_type)_n).ast(), selectConstraint);
+        }
+        return listSelectedIn( ((_node)_n).ast(), selectConstraint);        
+        
+        /*
+        
         Walk.in(_n, VariableDeclarator.class, e -> {
             Select s = select( e );
             if( s != null && selectConstraint.test(s)){
@@ -620,6 +642,7 @@ public class $var
             }
         });
         return sts;
+        */
     }
 
     /**
@@ -656,7 +679,7 @@ public class $var
      * @param $replaceProto
      * @return 
      */
-    public <N extends _node> N replaceIn(N _le, $var $replaceProto ){
+    public <N extends _java> N replaceIn(N _le, $var $replaceProto ){
         Walk.in(_le, VariableDeclarator.class, e-> {
             Select sel = select( e );
             if( sel != null ){
@@ -683,7 +706,7 @@ public class $var
      * @param selectConsumer
      * @return 
      */
-    public <N extends _node> N forSelectedIn(N _n, Consumer<Select> selectConsumer ){
+    public <N extends _java> N forSelectedIn(N _n, Consumer<Select> selectConsumer ){
         Walk.in(_n, VariableDeclarator.class, e-> {
             Select sel = select( e );
             if( sel != null ){
@@ -729,7 +752,7 @@ public class $var
      * @param selectConsumer
      * @return 
      */
-    public <N extends _node> N forSelectedIn(N _n, Predicate<Select> selectConstraint, Consumer<Select> selectConsumer ){
+    public <N extends _java> N forSelectedIn(N _n, Predicate<Select> selectConstraint, Consumer<Select> selectConsumer ){
         Walk.in(_n, VariableDeclarator.class, e-> {
             Select sel = select( e );
             if( sel != null && selectConstraint.test(sel)){

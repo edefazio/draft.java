@@ -3,6 +3,7 @@ package draft.java.proto;
 import com.github.javaparser.ast.Node;
 import com.github.javaparser.ast.expr.Expression;
 import draft.*;
+import draft.java._java;
 import draft.java._java._node;
 import draft.java._type;
 import draft.java.proto.$expr.Select;
@@ -63,7 +64,7 @@ public interface $exprProto<T extends Expression>
      * @param selectConsumer
      * @return
      */
-    <N extends _node> N forSelectedIn(N _n, Consumer<Select<T>> selectConsumer);
+    <N extends _java> N forSelectedIn(N _n, Consumer<Select<T>> selectConsumer);
 
     /**
      *
@@ -91,7 +92,7 @@ public interface $exprProto<T extends Expression>
      * @param selectConsumer
      * @return
      */
-    <N extends _node> N forSelectedIn(N _n, Predicate<Select<T>> selectConstraint, Consumer<Select<T>> selectConsumer);
+    <N extends _java> N forSelectedIn(N _n, Predicate<Select<T>> selectConstraint, Consumer<Select<T>> selectConsumer);
 
     /**
      *
@@ -149,13 +150,13 @@ public interface $exprProto<T extends Expression>
 
     List<String> list$Normalized();
 
-    List<T> listIn(_node _n);
+    List<T> listIn(_java _n);
 
     List<T> listIn(Node astNode);
 
     List<Select<T>> listSelectedIn(Node astNode);
 
-    List<Select<T>> listSelectedIn(_node _n);
+    List<Select<T>> listSelectedIn(_java _n);
 
     List<Select<T>> listSelectedIn(Class clazz);
 
@@ -181,7 +182,7 @@ public interface $exprProto<T extends Expression>
      * @param selectConstraint
      * @return
      */
-    List<Select<T>> listSelectedIn(_node _n, Predicate<Select<T>> selectConstraint);
+    List<Select<T>> listSelectedIn(_java _n, Predicate<Select<T>> selectConstraint);
 
     /**
      *
@@ -212,7 +213,7 @@ public interface $exprProto<T extends Expression>
      * @param astExprReplace
      * @return
      */
-    <N extends _node> N replaceIn(N _n, Node astExprReplace);
+    <N extends _java> N replaceIn(N _n, Node astExprReplace);
 
     /**
      *
@@ -221,7 +222,7 @@ public interface $exprProto<T extends Expression>
      * @param protoReplaceExpr
      * @return
      */
-    <N extends _node> N replaceIn(N _n, String protoReplaceExpr);
+    <N extends _java> N replaceIn(N _n, String protoReplaceExpr);
 
     /**
      *
@@ -238,7 +239,7 @@ public interface $exprProto<T extends Expression>
      * @param $repl
      * @return
      */
-    <N extends _node> N replaceIn(N _n, $expr $repl);
+    <N extends _java> N replaceIn(N _n, $expr $repl);
 
     /**
      *
@@ -267,7 +268,7 @@ public interface $exprProto<T extends Expression>
      * @param selectConstraint
      * @return  the first Expression that matches (or null if none found)
      */
-    Select<T> selectFirstIn(_node _n, Predicate<Select<T>> selectConstraint);
+    Select<T> selectFirstIn(_java _n, Predicate<Select<T>> selectConstraint);
 
     /**
      * Returns the first Expression that matches the pattern and constraint

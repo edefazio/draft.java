@@ -331,7 +331,16 @@ public final class $import
      * @param selectConstraint
      * @return  the first _import that matches (or null if none found)
      */
-    public Select selectFirstIn( _node _n, Predicate<Select> selectConstraint ){
+    public Select selectFirstIn( _java _n, Predicate<Select> selectConstraint ){
+        if( _n instanceof _code ){
+            if( ((_code) _n).isTopLevel()){
+                return selectFirstIn(((_code) _n).astCompilationUnit(), selectConstraint);
+            } else{
+                return selectFirstIn(((_type) _n).ast(), selectConstraint);
+            }
+        }
+        return selectFirstIn(((_node) _n).ast(), selectConstraint);
+        /*
         if( _n.ast().findCompilationUnit().isPresent() ){
             Optional<ImportDeclaration> f = _n.ast().findCompilationUnit().get()
                     .findFirst(ImportDeclaration.class, s -> {
@@ -343,6 +352,7 @@ public final class $import
             }
         }
         return null;
+        */
     }
 
     /**
@@ -432,8 +442,16 @@ public final class $import
      * @param selectConstraint
      * @return 
      */
-    public List<Select> listSelectedIn( _node _n, Predicate<Select> selectConstraint ){
-        return $import.this.listSelectedIn( _n.ast() );        
+    public List<Select> listSelectedIn( _java _n, Predicate<Select> selectConstraint ){
+        if( _n instanceof _code ){
+            if( ((_code) _n).isTopLevel()){
+                return listSelectedIn(((_code) _n).astCompilationUnit(), selectConstraint);
+            } else{
+                return listSelectedIn(((_type) _n).ast(), selectConstraint);
+            }
+        }
+        return listSelectedIn(((_node) _n).ast(), selectConstraint);
+            
     }
     
     /**
@@ -453,8 +471,18 @@ public final class $import
      * @param importClass
      * @return 
      */
-    public <N extends _node> N replaceIn(N _n, Class importClass){
-        return replaceIn(_n, $import.of(importClass));
+    public <N extends _java> N replaceIn(N _n, Class importClass){
+        if( _n instanceof _code ){
+            if( ((_code) _n).isTopLevel()){
+                replaceIn( ((_code) _n).astCompilationUnit(), importClass);
+                return _n;
+            } else{
+                replaceIn(((_type) _n).ast(), importClass);
+                return _n;
+            }
+        }
+        replaceIn(((_node) _n).ast(), importClass);
+        return _n;
     }
     
     /**
@@ -474,8 +502,20 @@ public final class $import
      * @param importDecl
      * @return 
      */
-    public <N extends _node> N replaceIn(N _n, String importDecl){
-        return replaceIn(_n, $import.of(importDecl));
+    public <N extends _java> N replaceIn(N _n, String importDecl){
+        if( _n instanceof _code ){
+            if( ((_code) _n).isTopLevel()){
+                replaceIn( ((_code) _n).astCompilationUnit(), $import.of(importDecl));
+                return _n;
+            } else{
+                replaceIn(((_type) _n).ast(), $import.of(importDecl));
+                return _n;
+            }
+        }
+        replaceIn(((_node) _n).ast(), $import.of(importDecl));
+        return _n;
+        
+        //return replaceIn(_n, $import.of(importDecl));
     }
     
     /**
@@ -495,7 +535,19 @@ public final class $import
      * @param _i
      * @return 
      */
-    public <N extends _node> N replaceIn(N _n, _import _i){
+    public <N extends _java> N replaceIn(N _n, _import _i){
+         if( _n instanceof _code ){
+            if( ((_code) _n).isTopLevel()){
+                replaceIn( ((_code) _n).astCompilationUnit(), $import.of(_i));
+                return _n;
+            } else{
+                replaceIn(((_type) _n).ast(), $import.of(_i));
+                return _n;
+            }
+        }
+        replaceIn(((_node) _n).ast(), $import.of(_i));
+        return _n;
+        /*
         Node astNode = _n.ast();
         if( astNode.findCompilationUnit().isPresent() ){
             astNode.findCompilationUnit().get().walk(ImportDeclaration.class, e-> {
@@ -506,6 +558,7 @@ public final class $import
             });
         }
         return _n;
+        */
     }
     
     /**
@@ -528,9 +581,20 @@ public final class $import
      * @param <N> the TYPE of model
      * @return
      */
-    public <N extends _node> N replaceIn(N _n, $import $i ){
-        replaceIn( _n.ast(), $i);        
+    public <N extends _java> N replaceIn(N _n, $import $i ){
+         if( _n instanceof _code ){
+            if( ((_code) _n).isTopLevel()){
+                replaceIn( ((_code) _n).astCompilationUnit(), $i);
+                return _n;
+            } else{
+                replaceIn(((_type) _n).ast(), $i);
+                return _n;
+            }
+        }
+        replaceIn(((_node) _n).ast(), $i);
         return _n;
+        //replaceIn( _n.ast(), $i);        
+        //return _n;
     }
     
     /**
@@ -580,7 +644,7 @@ public final class $import
      * @param selectConsumer
      * @return 
      */
-    public <T extends _type> T forSelectedIn( T _t, Consumer<Select> selectConsumer ){
+    public <T extends _code> T forSelectedIn( T _t, Consumer<Select> selectConsumer ){
         forSelectedIn(_t.astCompilationUnit(), selectConsumer);
         return _t;
     }
@@ -623,7 +687,7 @@ public final class $import
      * @param selectConsumer
      * @return 
      */
-    public <T extends _type> T forSelectedIn(T _t, Predicate<Select> selectConstraint, Consumer<Select> selectConsumer ){
+    public <T extends _code> T forSelectedIn(T _t, Predicate<Select> selectConstraint, Consumer<Select> selectConsumer ){
         forSelectedIn(_t.astCompilationUnit(), selectConstraint, selectConsumer);
         return _t;
     }

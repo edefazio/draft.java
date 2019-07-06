@@ -586,11 +586,14 @@ public class $method
 
     public static final BlockStmt EMPTY = Stmt.block("{}");
 
-    
+    /**
+     * 
+     * @param method
+     * @return 
+     */ 
     public Select select( String...method){
         return select(_method.of(method));
     }
-    
     
     /**
      * 
@@ -712,10 +715,20 @@ public class $method
         return $(exprString, $name);
     }
 
+    /**
+     * 
+     * @param method
+     * @return 
+     */
     public boolean matches( String method ){
         return select(_method.of(method)) != null;
     }
     
+    /**
+     * 
+     * @param method
+     * @return 
+     */
     public boolean matches( String... method ){
         return select(_method.of(method)) != null;
     }
@@ -796,7 +809,16 @@ public class $method
      * @param selectConstraint
      * @return  the first _method that matches (or null if none found)
      */
-    public Select selectFirstIn( _node _n, Predicate<Select> selectConstraint){
+    public Select selectFirstIn( _java _n, Predicate<Select> selectConstraint){
+         if( _n instanceof _code ){
+            if( ((_code) _n).isTopLevel()){
+                return selectFirstIn( ((_code) _n).astCompilationUnit(), selectConstraint);
+            } else{
+                return selectFirstIn(((_type) _n).ast(), selectConstraint);
+            }
+        }
+        return selectFirstIn(((_node) _n).ast(), selectConstraint);
+        /*
         Optional<MethodDeclaration> f = _n.ast().findFirst(MethodDeclaration.class, s -> {
             Select sel = this.select(s);
             return sel != null && selectConstraint.test(sel);
@@ -805,6 +827,7 @@ public class $method
             return select(f.get());
         }
         return null;
+        */
     }
 
     /**
@@ -894,7 +917,7 @@ public class $method
      * @param selectConstraint
      * @return 
      */
-    public List<Select> listSelectedIn(_node _n, Predicate<Select> selectConstraint){
+    public List<Select> listSelectedIn(_java _n, Predicate<Select> selectConstraint){
         List<Select>sts = new ArrayList<>();
         Walk.in(_n, MethodDeclaration.class, m -> {
             Select sel = select( m );
@@ -939,7 +962,7 @@ public class $method
      * @param selectedActionFn
      * @return 
      */
-    public <N extends _node> N forSelectedIn(N _n, Consumer<Select> selectedActionFn ){
+    public <N extends _java> N forSelectedIn(N _n, Consumer<Select> selectedActionFn ){
         Walk.in(_n, _method.class, m ->{
             Select s = select( m );
             if( s != null ){
@@ -986,7 +1009,7 @@ public class $method
      * @param selectedActionFn
      * @return 
      */
-    public <N extends _node> N forSelectedIn(N _n, Predicate<Select> selectConstraint, Consumer<Select> selectedActionFn ){
+    public <N extends _java> N forSelectedIn(N _n, Predicate<Select> selectConstraint, Consumer<Select> selectedActionFn ){
         Walk.in(_n, _method.class, m ->{
             Select s = select( m );
             if( s != null && selectConstraint.test(s)){
@@ -1046,7 +1069,7 @@ public class $method
      * @param $replace
      * @return 
      */
-    public <N extends _node> N replaceIn( N _n, $method $replace ){
+    public <N extends _java> N replaceIn( N _n, $method $replace ){
         return forSelectedIn(_n, s -> {
             _method repl = $replace.construct(Translator.DEFAULT_TRANSLATOR, s.args.asTokens());
             s._m.ast().replace(repl.ast());
@@ -1060,7 +1083,7 @@ public class $method
      * @param replacementProto
      * @return 
      */
-    public <N extends _node> N replaceIn( N _n, String... replacementProto ){
+    public <N extends _java> N replaceIn( N _n, String... replacementProto ){
         return replaceIn(_n, $method.of(replacementProto));        
     }
     
@@ -1071,7 +1094,7 @@ public class $method
      * @param method
      * @return 
      */
-    public <N extends _node> N replaceIn( N _n, _method method ){
+    public <N extends _java> N replaceIn( N _n, _method method ){
         return replaceIn(_n, $method.of(method));        
     }
     
@@ -1082,7 +1105,7 @@ public class $method
      * @param astMethod
      * @return 
      */
-    public <N extends _node> N replaceIn( N _n, MethodDeclaration astMethod ){
+    public <N extends _java> N replaceIn( N _n, MethodDeclaration astMethod ){
         return replaceIn(_n, $method.of(astMethod));        
     }
     

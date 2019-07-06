@@ -509,7 +509,7 @@ public class $parameter implements Template<_parameter>, $proto<_parameter> {
      * @param selectConstraint
      * @return 
      */
-    public List<Select> listSelectedIn(_node _n, Predicate<Select> selectConstraint) {
+    public List<Select> listSelectedIn(_java _n, Predicate<Select> selectConstraint) {
         List<Select> found = new ArrayList<>();
         Walk.in(_n, _parameter.class, p-> {
             Select sel = select(p);
@@ -573,7 +573,7 @@ public class $parameter implements Template<_parameter>, $proto<_parameter> {
      * @param selectActionFn
      * @return 
      */
-    public <N extends _node> N forSelectedIn(N _n, Consumer<Select> selectActionFn) {    
+    public <N extends _java> N forSelectedIn(N _n, Consumer<Select> selectActionFn) {    
         return Walk.in(_n, _parameter.class, p->{
             Select sel = select(p);
             if( sel != null ){
@@ -619,7 +619,7 @@ public class $parameter implements Template<_parameter>, $proto<_parameter> {
      * @param selectConstraint
      * @return 
      */
-    public <N extends _node> N forSelectedIn(N _n, Predicate<Select> selectConstraint, Consumer<Select> selectActionFn) {    
+    public <N extends _java> N forSelectedIn(N _n, Predicate<Select> selectConstraint, Consumer<Select> selectActionFn) {    
         return Walk.in(_n, _parameter.class, p->{
             Select sel = select(p);
             if( sel != null && selectConstraint.test(sel)){
@@ -642,12 +642,21 @@ public class $parameter implements Template<_parameter>, $proto<_parameter> {
      * @param _n the _java node
      * @return  the first _field that matches (or null if none found)
      */
-    public _parameter firstIn( _node _n ){
+    @Override
+    public _parameter firstIn( _java _n ){
+        if( _n instanceof _code ){
+            if( ((_code) _n).isTopLevel()){
+                return firstIn( ((_code) _n).astCompilationUnit() );
+            }
+            return firstIn( ((_type)_n).ast() );
+        }
+        return firstIn( ((_node)_n).ast() );        
+        /*
         Optional<Parameter> p = _n.ast().findFirst(Parameter.class, s -> this.matches(s) );         
         if( p.isPresent()){
             return _parameter.of(p.get());
         }
-        return null;
+        return null;*/
     }
     
     /**
@@ -698,7 +707,16 @@ public class $parameter implements Template<_parameter>, $proto<_parameter> {
      * @param selectConstraint
      * @return  the first _field that matches (or null if none found)
      */
-    public Select selectFirstIn( _node _n, Predicate<Select>selectConstraint ){
+    public Select selectFirstIn( _java _n, Predicate<Select>selectConstraint ){
+
+        if( _n instanceof _code ){
+            if( ((_code) _n).isTopLevel()){
+                return selectFirstIn( ((_code) _n).astCompilationUnit(), selectConstraint );
+            }
+            return selectFirstIn( ((_type)_n).ast(), selectConstraint);
+        }
+        return selectFirstIn( ((_node)_n).ast(), selectConstraint);        
+        /*
         Optional<Parameter> p = _n.ast().findFirst(Parameter.class, 
             pa -> {
                 Select s = this.select(pa); 
@@ -708,6 +726,7 @@ public class $parameter implements Template<_parameter>, $proto<_parameter> {
             return select(p.get());
         }
         return null;
+        */
     }
     
     /**
