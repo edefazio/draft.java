@@ -57,6 +57,23 @@ public interface _code<T> extends _java {
     public String getFullName();
     
     /**
+     * Default for getting the package name for all types
+     * (should also work for module-info)
+     * 
+     * @return 
+     */
+    public default String getPackageName(){
+        String simpleName = getSimpleName();
+        String fullName = getFullName();
+        if( simpleName.equals(fullName)){
+            return "";
+        }
+        else{
+            return fullName.substring(0, fullName.indexOf(simpleName) -1 );
+        }
+    }
+    
+    /**
      * Gets the "Header comment" (usually the License) from the compilationUnit
      * (NOTE: returns null if there are no header comments or this is nested
      * _code)
