@@ -58,15 +58,32 @@ public class _io{
     
     /**
      * write a single .java file out to the 
-     * @param _c
-     * @return 
+     * gets the root directory to write to from : {@link #getOutJavaDir()}
+     * 
+     * @param _c a single _code to write to file
+     * @return the Path written to
      */
     public static Path out( _code _c ){
         return out( new _code[]{_c} ).get(0);
     }
     
     /**
-     * This will print out any of these top level entities:
+     * write a single .java file out to the 
+     * gets the root directory to write to from : {@link #getOutJavaDir()}
+     * 
+     * @param sourceRootPath the root path where to write files
+     * (i.e. if my _code is _class.of("aaaa.bbbb.C"), and my sourceRootPath is
+     * "C:\\temp", the file will be written to C:\\temp\\aaaa\\bbbb\\C.java")
+     * @param _c a single _code to write to .java file
+     * @return the Path written to
+     */
+    public static Path out( Path sourceRootPath, _code _c ){
+        return out( sourceRootPath, new _code[]{_c} ).get(0);
+    }
+    
+    /**
+     * Write a .java files out to the for these top level entities:
+     * (gets the root directory to write to from : {@link #getOutJavaDir()} )
      * <UL>
      *    <LI>{@link draft.java._type}
      *    <UL>
@@ -84,10 +101,36 @@ public class _io{
      */
     public static List<Path> out( _code... _c ){
         String outJavaDir = getOutJavaDir();
+        return out( Paths.get(outJavaDir ), _c);        
+    }
+    
+    /**
+     * Write a .java files out to the for these top level entities:
+     * (gets the root directory to write to from : {@link #getOutJavaDir()} )
+     * <UL>
+     *    <LI>{@link draft.java._type}
+     *    <UL>
+     *       <LI>{@link draft.java._class}
+     *       <LI>{@link draft.java._enum}
+     *       <LI>{@link draft.java._interface}
+     *       <LI>{@link draft.java._annotation}
+     *    </UL>
+     *    <LI>{@link draft.java._packageInfo}
+     *    <LI>{@link draft.java._moduleInfo}
+     * </UL>
+     * 
+     * ...based on the sourceRootPath
+     * (i.e. if my _code is _class.of("aaaa.bbbb.C"), and my sourceRootPath is
+     * "C:\\temp", the file will be written to C:\\temp\\aaaa\\bbbb\\C.java")
+     * @param sourceRootPath the root directory of the source code
+     * @param _c the _code entity (_type, _packageInfo, _moduleInfo) to be written
+     * @return a list of Paths to the files written
+     */
+    public static List<Path> out(Path sourceRootPath, _code..._c){
         List<Path> writtenFiles = new ArrayList<>();
         Arrays.stream(_c).forEach(c -> {
             String fileName = c.getFullName().replace(".", "/")+".java";
-            Path filePath = Paths.get(outJavaDir, fileName);
+            Path filePath = Paths.get(sourceRootPath.toString(), fileName);
             filePath.getParent().toFile().mkdirs();
             try {
                 Files.write(filePath, c.toString().getBytes() );
