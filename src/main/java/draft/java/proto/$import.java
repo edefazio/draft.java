@@ -74,6 +74,18 @@ public final class $import
     }
     
     /**
+     *      
+     * @param clazz
+     * @param isStatic is this a static import
+     * @param isWildcard is a Wildcard import
+     * @return 
+     */
+    public static $import of( Class clazz, boolean isStatic, boolean isWildcard){
+        _import _i = _import.of( clazz ).setStatic(isStatic).setWildcard(isWildcard);
+        return new $import( _i  );
+    }
+    
+    /**
      * 
      * @param clazz
      * @param constraint
@@ -111,16 +123,20 @@ public final class $import
      * Only match on static imports & compose a static import 
      * NOTE: if isStatic is False, this will still match static imports
      */
-    public Boolean isStatic = false;
+    public final Boolean isStatic;
     
     /** 
      * Only match on wildcard (.*) imports & compose a wildcard (.*) import 
      * NOTE: if isWildcard is false, this will still match wildcard imports
      */
-    public Boolean isWildcard = false;
+    public final Boolean isWildcard;
     
     private $import(_import proto ){
-        this.importPattern = Stencil.of( proto.getName() );
+        if( proto.isWildcard() ){
+            this.importPattern = Stencil.of( proto.getName()+".*" );
+        } else{
+            this.importPattern = Stencil.of( proto.getName() );
+        }
         this.isStatic = proto.isStatic();
         this.isWildcard = proto.isWildcard();        
     }
@@ -128,6 +144,8 @@ public final class $import
     private $import( Predicate<_import> constraint ){
         this.importPattern = Stencil.of("$any$");
         this.constraint = constraint;
+        this.isStatic = false;
+        this.isWildcard = false;   
     }
     
     /**
@@ -139,25 +157,6 @@ public final class $import
         this.constraint = this.constraint.and(constraint);
         return this;
     }
-    
-    public $import setStatic(){
-        return setStatic(true);        
-    }
-    
-    public $import setStatic(boolean toSet){
-        this.isStatic = toSet;
-        return this;
-    }
-    
-    public $import setWildcard(){
-        return setWildcard(true);        
-    }
-    
-    public $import setWildcard(boolean toSet){
-        this.isWildcard = toSet;
-        return this;
-    }
-    
     
     /**
      * 
@@ -193,13 +192,18 @@ public final class $import
      */
     public Select select(_import _i){
         if( this.constraint.test(_i)){
+            //if this $import EXPECTS static or WIlcard imports and the             
             if( this.isStatic && !_i.isStatic() || this.isWildcard && ! _i.isWildcard() ){
                 return null;
-            }             
-            Tokens ts = importPattern.deconstruct( _i.getName().replace(".*", "").trim() );
+            }                        
+            String name = _i.getName(); 
+            if( _i.isWildcard() ){
+                name += ".*";
+            }            
+            Tokens ts = importPattern.deconstruct( name );
             if( ts != null ){
                 return new Select(_i, $args.of(ts) );
-            }
+            }            
         }
         return null;
     }
@@ -339,20 +343,7 @@ public final class $import
                 return selectFirstIn(((_type) _n).ast(), selectConstraint);
             }
         }
-        return selectFirstIn(((_node) _n).ast(), selectConstraint);
-        /*
-        if( _n.ast().findCompilationUnit().isPresent() ){
-            Optional<ImportDeclaration> f = _n.ast().findCompilationUnit().get()
-                    .findFirst(ImportDeclaration.class, s -> {
-                        Select sel = this.select(s); 
-                        return sel != null && selectConstraint.test(sel);
-                    });                
-            if( f.isPresent()){
-                return select(f.get());
-            }
-        }
-        return null;
-        */
+        return selectFirstIn(((_node) _n).ast(), selectConstraint);       
     }
 
     /**
@@ -388,24 +379,6 @@ public final class $import
         }
         return sts;
     }
-
-    /**
-     * 
-     * @param clazz
-     * @return 
-     
-    @Override
-    public List<Select> listSelectedIn(Class clazz){
-        return (List<Select>)listSelectedIn(_java.type(clazz));
-    }
-    */ 
-    
-    /*
-    @Override
-    public List<Select> listSelectedIn( _node _n ){
-        return $import.this.listSelectedIn( _n.ast() );        
-    }
-    */
     
     /**
      * 
@@ -514,8 +487,6 @@ public final class $import
         }
         replaceIn(((_node) _n).ast(), $import.of(importDecl));
         return _n;
-        
-        //return replaceIn(_n, $import.of(importDecl));
     }
     
     /**
@@ -546,19 +517,7 @@ public final class $import
             }
         }
         replaceIn(((_node) _n).ast(), $import.of(_i));
-        return _n;
-        /*
-        Node astNode = _n.ast();
-        if( astNode.findCompilationUnit().isPresent() ){
-            astNode.findCompilationUnit().get().walk(ImportDeclaration.class, e-> {
-                Select sel = select( e );
-                if( sel != null ){
-                    sel.ast().replace(_i.ast() );
-                }
-            });
-        }
-        return _n;
-        */
+        return _n;       
     }
     
     /**
@@ -571,7 +530,6 @@ public final class $import
         return replaceIn(_java.type(clazz), $i);
     }
     
-        
     /**
      * Replace all occurrences of the template in the code with the replacement
      * (composing the replacement from the constructed tokens in the source)
@@ -593,8 +551,6 @@ public final class $import
         }
         replaceIn(((_node) _n).ast(), $i);
         return _n;
-        //replaceIn( _n.ast(), $i);        
-        //return _n;
     }
     
     /**
@@ -620,7 +576,14 @@ public final class $import
             astNode.findCompilationUnit().get().walk(ImportDeclaration.class, e-> {
                 Select sel = select( e );
                 if( sel != null ){
-                    sel.ast().replace($i.construct(sel.args).ast() );
+                    ImportDeclaration id = sel.ast();
+                    id.replace($i.construct(sel.args).ast() );
+                    if( $i.isWildcard ){
+                        id.setAsterisk($i.isWildcard);
+                    }
+                    if( $i.isStatic ){
+                        id.setStatic($i.isStatic);
+                    }
                 }
             });
         }
@@ -715,7 +678,6 @@ public final class $import
     @Override
     public <N extends Node> N forEachIn(N astNode, Predicate<_import> _importMatchFn, Consumer<_import> _importActionFn){
         astNode.walk(ImportDeclaration.class, e-> {
-            //$args tokens = deconstruct( e );
             Select sel = select(e);
             if( sel != null && _importMatchFn.test(sel._i) ) {
                 _importActionFn.accept( sel._i );

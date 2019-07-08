@@ -298,7 +298,7 @@ public interface _code<T> extends _java {
         if (cu != null) {
             Arrays.stream(wildcardStaticImports).forEach(i -> {
                 ImportDeclaration id = Ast.importDeclaration(i);
-                id.setAsterisk(true);
+                id.setAsterisk(false);
                 id.setStatic(true);
                 cu.addImport(id);
             });
@@ -317,7 +317,7 @@ public interface _code<T> extends _java {
             Arrays.stream(staticWildcardImports).forEach(i -> {
                 ImportDeclaration id = Ast.importDeclaration(i);
                 id.setStatic(true);
-                id.setAsterisk(true);
+                id.setAsterisk(false);
                 cu.addImport(id);
             });
         }
@@ -334,7 +334,7 @@ public interface _code<T> extends _java {
         CompilationUnit cu = astCompilationUnit();
         if (cu != null) {
             Arrays.stream(wildcardTypeStaticImport).forEach(i -> {
-                cu.addImport(new ImportDeclaration(i.getFullName(), true, true));
+                cu.addImport(new ImportDeclaration(i.getFullName(), true, false));
             });
         }
         return (T) this;
@@ -410,7 +410,6 @@ public interface _code<T> extends _java {
             Arrays.stream(astImportDecls).forEach(c -> cu.addImport(c));
             return (T) this;
         }
-        //return (T) this;
         throw new DraftException("No AST CompilationUnit of class to add imports");
     }
 
