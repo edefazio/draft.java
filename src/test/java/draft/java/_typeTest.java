@@ -138,7 +138,8 @@ public class _typeTest extends TestCase {
         assertFalse( _c.hasImport(_c2.getFullName()) );
         
         //test import static on a single 
-        _c.importStatic(_c2);
+        _c.imports( _import.of(_c2.getFullName(),true, true) );
+        
         assertTrue( _c.hasImport(_c2) );
         assertTrue( _c.hasImport(_c2.getFullName()) );
         assertTrue( _c.hasImport(_c2.getFullName()+".SomeNestedClass") );

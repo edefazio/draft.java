@@ -351,6 +351,20 @@ public interface _code<T> extends _java {
     }
 
     /**
+     * Add imports 
+     * @param _is
+     * @return 
+     */
+    default T imports( _import..._is){
+        CompilationUnit cu = astCompilationUnit();
+        if (cu != null) {
+            Arrays.stream(_is).forEach(i -> cu.addImport(i.astId));
+            return (T) this;
+        }
+        return (T) this;
+    }
+    
+    /**
      * Add a single class import to the compilationUnit
      *
      * @param singleClass

@@ -36,6 +36,10 @@ public class _import implements _node<ImportDeclaration> {
         return new _import(Ast.importDeclaration(importDecl));
     }
 
+    public static _import of(String importDecl, boolean isStatic, boolean isWildcard){
+        return new _import(Ast.importDeclaration(importDecl)).setStatic(isStatic).setWildcard(isWildcard);
+    }
+    
     /**
      * statically import a static method
      *
