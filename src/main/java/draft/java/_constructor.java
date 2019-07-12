@@ -14,13 +14,13 @@ import draft.java._java.*;
 import draft.java._anno.*;
 import draft.java._parameter.*;
 import draft.java._typeParameter.*;
-import draft.java.macro._ctor;
 import draft.java.macro._macro;
 import draft.java.macro._remove;
 
 import java.util.*;
 import java.util.function.*;
 import java.util.stream.Collectors;
+import draft.java.macro._toCtor;
 
 /**
  * Model of a java constructor
@@ -81,7 +81,7 @@ public final class _constructor implements _anno._hasAnnos<_constructor>,
         //System.out.println( "Setting throws");
         _ct.setThrows( theMethod.getThrownExceptions() );
         _ct.annotate( theMethod.getAnnotations()); //add annos
-        _ct.removeAnnos(_ctor.class); //remove the _ctor anno if it exists
+        _ct.removeAnnos(_toCtor.class); //remove the _ctor anno if it exists
         _ct.setBody( theMethod.getBody().get() ); //BODY
         
         return _ct;

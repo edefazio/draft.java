@@ -392,7 +392,7 @@ public interface _code<T> extends _java {
                     if (classesToImport[i] == null
                             || classesToImport[i].isPrimitive()
                             || classesToImport[i].isArray() && classesToImport[i].getComponentType().isPrimitive()
-                            || classesToImport[i].getPackageName().equals("java.lang")) {                        
+                            || classesToImport[i].getPackage().getName().equals("java.lang")) {                        
                     } else{
                         String cn = classesToImport[i].getCanonicalName();
                         //fix a minor bug in JavaParser API where anything in "java.lang.**.*" is not imported

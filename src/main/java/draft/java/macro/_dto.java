@@ -21,7 +21,7 @@ import java.util.Arrays;
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ElementType.TYPE, ElementType.TYPE_USE})
-public @interface _autoDto {
+public @interface _dto {
 
     Macro $ = new Macro();
 
@@ -38,14 +38,14 @@ public @interface _autoDto {
         }
 
         public static <T extends _type> T to(T t) {
-            t = _autoGet.Macro.to(t);
-            t = _autoSetFluent.Macro.to(t);
-            t = _autoEquals.Macro.to(t);
-            t = _autoHashCode.Macro.to(t);
-            t = _autoToString.Macro.to(t);
+            t = _getters.Macro.to(t);
+            t = _settersFluent.Macro.to(t);
+            t = _equals.Macro.to(t);
+            t = _hashCode.Macro.to(t);
+            t = _toString.Macro.to(t);
             t = _autoConstructor.Macro.to(t);
 
-            t.removeAnnos(_autoDto.class);
+            t.removeAnnos(_dto.class);
             return t;
         }
 

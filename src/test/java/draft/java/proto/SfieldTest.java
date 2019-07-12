@@ -2,8 +2,8 @@ package draft.java.proto;
 
 import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
 import draft.java._class;
-import draft.java.macro._autoDto;
 import junit.framework.TestCase;
+import draft.java.macro._dto;
 
 /**
  *

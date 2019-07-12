@@ -6,45 +6,45 @@ import junit.framework.TestCase;
 public class _autoSetTest extends TestCase {
 
     public void testSetNone(){
-        @_autoSet
+        @_setters
         class C{
 
         }
         _class _c = _class.of(C.class);
-        assertTrue( _c.listAnnos(_autoSet.class).isEmpty());
+        assertTrue( _c.listAnnos(_setters.class).isEmpty());
         assertTrue(_c.listMethods().isEmpty());
 
-        @_autoSet
+        @_setters
         class D{
             final int f = 100;
         }
         _c = _class.of(D.class);
-        assertTrue( _c.listAnnos(_autoSet.class).isEmpty());
+        assertTrue( _c.listAnnos(_setters.class).isEmpty());
         assertTrue(_c.listMethods().isEmpty());
     }
 
     public void testSetOne(){
 
-        @_autoSet
+        @_setters
         class G{
             int a;
         }
         _class _c = _class.of(G.class);
-        assertTrue( _c.listAnnos(_autoSet.class).isEmpty());
+        assertTrue( _c.listAnnos(_setters.class).isEmpty());
         assertTrue( _c.getMethod("setA").isVoid());
         assertTrue( _c.getMethod("setA").getParameter(0).isType(int.class));
     }
 
     public void testSetMulti(){
 
-        @_autoSet
+        @_setters
         class G{
             int a,b,c;
             final String name = "Blah";
         }
 
         _class _c = _class.of(G.class);
-        assertTrue( _c.listAnnos(_autoSet.class).isEmpty());
+        assertTrue( _c.listAnnos(_setters.class).isEmpty());
         assertTrue( _c.getMethod("setA").isVoid());
         assertTrue( _c.getMethod("setA").getParameter(0).isType(int.class));
         assertTrue( _c.getMethod("setB").isVoid());

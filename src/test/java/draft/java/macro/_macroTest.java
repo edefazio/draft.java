@@ -36,13 +36,13 @@ public class _macroTest extends TestCase {
 
         //_class _r = $$.to(_c, _autoToString.INSTANCE, _autoConstructor.INSTANCE, _autoEquals.INSTANCE, _autoHashCode.INSTANCE);
         //_c = _class.of("C").FIELDS("int x, y, z;");
-        _class _s = _autoHashCode.Macro.to( _autoEquals.Macro.to(_autoConstructor.Macro.to( _autoToString.Macro.to(_c))));
+        _class _s = _hashCode.Macro.to( _equals.Macro.to(_autoConstructor.Macro.to( _toString.Macro.to(_c))));
 
        // assertEquals( _r, _s );
-        @_autoHashCode
-        @_autoEquals
+        @_hashCode
+        @_equals
         @_autoConstructor
-        @_autoToString
+        @_toString
         class C{
             int x,y,z;
         }

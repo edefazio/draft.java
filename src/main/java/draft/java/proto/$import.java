@@ -577,13 +577,26 @@ public final class $import
                 Select sel = select( e );
                 if( sel != null ){
                     ImportDeclaration id = sel.ast();
-                    id.replace($i.construct(sel.args).ast() );
-                    if( $i.isWildcard ){
+                    boolean isS = id.isStatic();
+                    boolean isW = id.isAsterisk();
+                    ImportDeclaration rep = $i.construct(sel.args).ast();
+                    if( isS){
+                        rep.setStatic(true);
+                    }
+                    if( isW ){
+                        rep.setAsterisk(true);
+                    }
+                    System.out.println( "REPLACEMENT "+ rep);
+                    id.replace( rep );
+                    
+                    /*
+                    if( $i.isWildcard || ){
                         id.setAsterisk($i.isWildcard);
                     }
                     if( $i.isStatic ){
                         id.setStatic($i.isStatic);
                     }
+                    */
                 }
             });
         }

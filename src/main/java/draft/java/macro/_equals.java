@@ -16,7 +16,7 @@ import java.util.function.Predicate;
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ElementType.TYPE})
-public @interface _autoEquals {
+public @interface _equals {
 
     Macro $ = new Macro();
 

@@ -15,7 +15,6 @@ import draft.java._anno._annos;
 import draft.java._java._node;
 import draft.java._parameter._parameters;
 import draft.java._typeParameter._typeParameters;
-import draft.java.macro._ctor;
 import draft.java.macro._macro;
 import draft.java.macro._remove;
 import java.lang.annotation.Annotation;
@@ -23,6 +22,7 @@ import java.lang.annotation.Annotation;
 import java.util.*;
 import java.util.function.*;
 import java.util.stream.Collectors;
+import draft.java.macro._toCtor;
 
 /**
  * prototype/template for a Java {@link _constructor}
@@ -94,7 +94,7 @@ public class $constructor
         }
         _ct.setThrows( theMethod.getThrownExceptions() );
         _ct.annotate( theMethod.getAnnotations()); //add annos
-        _ct.removeAnnos(_ctor.class); //remove the _ctor anno if it exists
+        _ct.removeAnnos(_toCtor.class); //remove the _ctor anno if it exists
         _ct.setBody( theMethod.getBody().get() ); //BODY
         
         return of(_ct);        

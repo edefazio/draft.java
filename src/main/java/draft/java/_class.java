@@ -9,13 +9,13 @@ import com.github.javaparser.ast.type.ClassOrInterfaceType;
 import draft.java._anno.*;
 import draft.DraftException;
 import draft.java.io._in;
-import draft.java.macro._ctor;
 import draft.java.macro._macro;
 import draft.java.macro._remove;
 
 import java.io.InputStream;
 import java.util.*;
 import java.util.function.*;
+import draft.java.macro._toCtor;
 
 /**
  * Top-Level draft object representing a Java class, and implementation of a {@link _type}<BR/>
@@ -318,7 +318,7 @@ public final class _class implements _type<ClassOrInterfaceDeclaration, _class>,
                     //if( _method.of(md).hasAnno(_ctor.class) ){
                         //this is REALLY a method that is a constructor
                         //_c.ast().addMember( _ctor.Macro.fromMethod(md) );
-                        _c.constructor(_constructor.of(_ctor.Macro.fromMethod(md)));
+                        _c.constructor(_constructor.of(_toCtor.Macro.fromMethod(md)));
                     } else{
                         _c.ast().addMember( bd );    
                     }

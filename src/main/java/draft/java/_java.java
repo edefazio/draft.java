@@ -531,7 +531,7 @@ public interface _java {
      * {@link _class} {@link _enum} {@link _interface}, {@link _annotation}
      */
     public static _type type(String... code) {
-        return type(Ast.typeDeclaration(code));
+        return type(Ast.type(code));
     }
 
     /**
@@ -788,7 +788,7 @@ public interface _java {
             return staticBlock(code);
         }
         if (_type.class.isAssignableFrom(nodeClass)) {
-            return typeDeclaration(code);
+            return Ast.type(code);
         }
         if (_parameter.class == nodeClass) {
             return parameter(code);

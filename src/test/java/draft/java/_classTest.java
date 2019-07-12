@@ -1,14 +1,8 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package draft.java;
 
 import com.github.javaparser.ast.comments.BlockComment;
 import com.github.javaparser.ast.comments.Comment;
 import com.github.javaparser.ast.type.ClassOrInterfaceType;
-import draft.java.macro._autoDto;
 import draft.java.macro._final;
 import draft.java.macro._remove;
 import draft.java.macro._static;
@@ -34,6 +28,7 @@ import static junit.framework.TestCase.assertNull;
 import static junit.framework.TestCase.assertTrue;
 import test.ComplexClass;
 import test.NativeMethod;
+import draft.java.macro._dto;
 
 /**
  *
@@ -41,6 +36,10 @@ import test.NativeMethod;
  */
 public class _classTest extends TestCase {
     
+    public void testStaticClass(){
+        _class _c = _class.of("public static class G{}");
+        assertTrue( _c.isStatic() );
+    }
     
     public void testHeader(){
         _class _a = _class.of("/* License */",
@@ -441,14 +440,14 @@ public class _classTest extends TestCase {
      *
      */
     public static final _class _c = //_autoDto.Macro.to(
-        _class.of( "aaaa.bbbb.Local",
+_class.of("aaaa.bbbb.Local",
             new Object(){
                 public int a,b,c;
                 @_final String name;
                 @_static public void main(String[] args){
                     System.out.println("Some Print Statement");
                 }
-            }, _autoDto.$);
+            }, _dto.$);
 
     @interface _annotat{
 

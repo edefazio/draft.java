@@ -55,6 +55,11 @@ public class AstTest extends TestCase {
     }
     */
     
+    public void testParseStaticClass(){
+        TypeDeclaration td = Ast.type("public static class F{}");
+        assertTrue( td.isStatic() );        
+    }
+    
     public void testCC(){
         class C{
             
@@ -660,10 +665,10 @@ public class AstTest extends TestCase {
 
         assertEquals( Ast.blockStmt("{", "assert(true); assert(false);", "}"), Ast.blockStmt("{assert(true); assert(false);}"));
 
-        assertEquals( Ast.typeDeclaration("interface i{}"), Ast.interfaceDeclaration("interface i", "{", "}"));
-        assertEquals( Ast.typeDeclaration("enum e{}"), Ast.enumDeclaration("enum e", "{", "}"));
-        assertEquals( Ast.typeDeclaration("class c{}"), Ast.classDeclaration("class c", "{", "}"));
-        assertEquals( Ast.typeDeclaration("@interface at{}"), Ast.annotationDeclaration("@interface at", "{", "}"));
+        assertEquals( Ast.type("interface i{}"), Ast.interfaceDeclaration("interface i", "{", "}"));
+        assertEquals( Ast.type("enum e{}"), Ast.enumDeclaration("enum e", "{", "}"));
+        assertEquals( Ast.type("class c{}"), Ast.classDeclaration("class c", "{", "}"));
+        assertEquals( Ast.type("@interface at{}"), Ast.annotationDeclaration("@interface at", "{", "}"));
 
         assertEquals( Ast.of( "package h;", "import java.util.*;", "public class V{", "}"),
                 Ast.of("package h;", "import java.util.*;", "", "public class V", "{}" ) );

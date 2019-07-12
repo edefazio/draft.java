@@ -4,10 +4,10 @@ import draft.java.Stmt;
 import draft.java._class;
 import draft.java._constructor;
 import draft.java._modifiers;
-import draft.java.macro._ctor;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import junit.framework.TestCase;
+import draft.java.macro._toCtor;
 
 
 public class SconstructorTest extends TestCase {
@@ -33,9 +33,9 @@ public class SconstructorTest extends TestCase {
         
         assertEquals( 1, $ct.count(TT.class));
         
-        $ct = $constructor.of( new Object(){
+        $ct = $constructor.of(new Object(){
             @Deprecated
-            @_ctor private void TT(int name) throws IOException{}
+            @_toCtor private void TT(int name) throws IOException{}
         });
         
         assertEquals( 1, $ct.count(TT.class));
@@ -70,9 +70,9 @@ public class SconstructorTest extends TestCase {
     public void testConsistentManyProto(){
         
         //a "consistent" arg $name$ that appears in the $parameters & $body 
-        $constructor $ct = $constructor.of( new Object(){            
+        $constructor $ct = $constructor.of(new Object(){            
             @Deprecated
-            @_ctor private void RR(int $name$) throws IOException{ this.$name$ = $name$; }            
+            @_toCtor private void RR(int $name$) throws IOException{ this.$name$ = $name$; }            
             int $name$;
         });
         
@@ -231,10 +231,10 @@ public class SconstructorTest extends TestCase {
     */
 
     public void testBuildViaAnonymousClass(){
-        $constructor $ct = $constructor.of( new Object() {
+        $constructor $ct = $constructor.of(new Object() {
             int a; String name;
 
-            @_ctor public void ct(int a, String name ){
+            @_toCtor public void ct(int a, String name ){
                 this.a = a;
                 this.name = name;
             }

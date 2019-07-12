@@ -13,7 +13,7 @@ import java.util.function.Predicate;
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.TYPE)
-public @interface _autoSet {
+public @interface _setters {
 
     Macro $ = new Macro();
 

@@ -565,10 +565,30 @@ public enum Ast {
         String str = Text.combine(linesOfJavaSourceCode);
         ParseResult<CompilationUnit> pr = JAVAPARSER.parse(str);        
         if( !pr.isSuccessful() ){
-            //pr = UNICODE_JAVAPARSER.parse(str);
-            //if( ! pr.isSuccessful() ){
-                throw new DraftException("Unable to parse text :"+pr.getProblems());
-            //}    
+            if( pr.getProblem(0).getMessage().contains("'static'") ){
+                Problem prb = pr.getProblem(0);
+                
+                //prb.getCause()
+                //we have a disagreement over whether we can 
+                if( prb.getLocation().isPresent() ){
+                    //System.out.println("Location"+ prb.getLocation().get());     
+                    TokenRange tr = prb.getLocation().get();
+                    String withStatic = tr.toString();
+                    String withoutStatic = tr.toString().replace(" static ", " ");
+                    str = str.replace(withStatic, withoutStatic);
+                    pr = JAVAPARSER.parse(str);      
+                    if( pr.isSuccessful() ){
+                        CompilationUnit cu = pr.getResult().get();
+                        //now I have to 
+                        cu.getType(0).setStatic(true);
+                        return cu;
+                    }
+                }
+                if( prb.getCause().isPresent() ){
+                    System.out.println("Cause"+ prb.getCause().get());                    
+                }
+            }
+            throw new DraftException("ErrorParsing :"+pr.getProblems());            
         }
         return pr.getResult().get();
     }
@@ -651,7 +671,7 @@ public enum Ast {
             return staticBlock(code);
         }
         if (TypeDeclaration.class.isAssignableFrom(nodeClass)) {
-            return typeDeclaration(code);
+            return type(code);
         }
         if (Parameter.class == nodeClass) {
             return parameter(code);
@@ -1556,8 +1576,9 @@ public enum Ast {
      * @param code
      * @return
      */
-    public static TypeDeclaration typeDeclaration(String... code) {
+    public static TypeDeclaration type(String... code) {
         CompilationUnit cu = Ast.of(code);
+        
         List<Comment> jdc = new ArrayList<>();
 
         if (cu.getTypes().size() == 1) {
@@ -1600,7 +1621,7 @@ public enum Ast {
     }
 
     public static EnumDeclaration enumDeclaration(String... code) {
-        return (EnumDeclaration) typeDeclaration(code);
+        return (EnumDeclaration) type(code);
     }
 
     public static ClassOrInterfaceDeclaration classDeclaration(Class clazz) {
@@ -1608,7 +1629,7 @@ public enum Ast {
     }
 
     public static ClassOrInterfaceDeclaration classDeclaration(String... code) {
-        return (ClassOrInterfaceDeclaration) typeDeclaration(code);
+        return (ClassOrInterfaceDeclaration) type(code);
     }
 
     public static ClassOrInterfaceDeclaration interfaceDeclaration(Class clazz) {
@@ -1616,7 +1637,7 @@ public enum Ast {
     }
 
     public static ClassOrInterfaceDeclaration interfaceDeclaration(String... code) {
-        return (ClassOrInterfaceDeclaration) typeDeclaration(code);
+        return (ClassOrInterfaceDeclaration) type(code);
     }
 
     public static AnnotationDeclaration annotationDeclaration(Class clazz) {
@@ -1624,7 +1645,7 @@ public enum Ast {
     }
 
     public static AnnotationDeclaration annotationDeclaration(String... code) {
-        return (AnnotationDeclaration) typeDeclaration(code);
+        return (AnnotationDeclaration) type(code);
     }
 
     /**

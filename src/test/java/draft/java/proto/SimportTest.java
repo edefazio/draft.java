@@ -16,6 +16,14 @@ import org.junit.Assert;
  */
 public class SimportTest extends TestCase {
     
+    public void testImportSwitch(){
+        _class _c = _class.of("C").imports( _import.of("import draft.java.io.*;"));
+        $import.of("import draft.java.$any$;").replaceIn(_c, "import org.jdraft.$any$;");
+        System.out.println( _c ); 
+        assertTrue( _c.hasImport(_i-> _i.is("import org.jdraft.io.*;") ));
+        
+    }
+    
     public void testAnyWildcardReplace(){
         
         _class _c = _class.of("aaaa.F").imports(Map.class);

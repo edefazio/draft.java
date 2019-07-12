@@ -12,7 +12,7 @@ import java.util.List;
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ElementType.TYPE})
-public @interface _autoGet {
+public @interface _getters {
 
     Macro $ = new Macro();
 

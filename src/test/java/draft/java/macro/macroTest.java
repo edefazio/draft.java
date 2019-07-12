@@ -52,7 +52,7 @@ public class macroTest extends TestCase {
         _c = _macro.to(C.class, _c);
         assertTrue(_c.getConstructor(0).getParameters().isEmpty());
 
-        @_autoDto
+        @_dto
         class D {
             @_final
             int i;
@@ -68,7 +68,7 @@ public class macroTest extends TestCase {
         assertNotNull(_c.getMethod("setZ").getParameter(0).isType(int.class));
     }
     public void testAutoEquals(){
-        @_autoEquals
+        @_equals
         class E{
             int a;
             float f;
@@ -80,16 +80,16 @@ public class macroTest extends TestCase {
         _class _c = _class.of(E.class);
         assertNotNull( _c.getMethod("equals") );
         System.out.println( "EEEEEEEEEEEEEEEEEEEEEEEEE " + _c.getMethod("equals"));
-        assertEquals(1, _autoEquals.Macro.$primitive.listSelectedIn(_c).size());  //int a;
-        assertEquals(1, _autoEquals.Macro.$float.listSelectedIn(_c).size());      //float f
-        assertEquals(1, _autoEquals.Macro.$double.listSelectedIn(_c).size());     // double d
-        assertEquals(1, _autoEquals.Macro.$default.listSelectedIn(_c).size());    // String s
-        assertEquals(1, _autoEquals.Macro.$arrayOfPrimitives.listSelectedIn(_c).size()); //boolean ba
-        assertEquals(1, _autoEquals.Macro.$arrayOfObject.listSelectedIn(_c).size()); //UUID uuids
+        assertEquals(1, _equals.Macro.$primitive.listSelectedIn(_c).size());  //int a;
+        assertEquals(1, _equals.Macro.$float.listSelectedIn(_c).size());      //float f
+        assertEquals(1, _equals.Macro.$double.listSelectedIn(_c).size());     // double d
+        assertEquals(1, _equals.Macro.$default.listSelectedIn(_c).size());    // String s
+        assertEquals(1, _equals.Macro.$arrayOfPrimitives.listSelectedIn(_c).size()); //boolean ba
+        assertEquals(1, _equals.Macro.$arrayOfObject.listSelectedIn(_c).size()); //UUID uuids
     }
 
     public void testAutoGet(){
-        @_autoGet
+        @_getters
         class A{
             int x;
             String g;
@@ -102,7 +102,7 @@ public class macroTest extends TestCase {
     }
 
     public void testAutoSet(){
-        @_autoSet
+        @_setters
         class A{
             int x;
             @_final int fin; //no setter
@@ -118,7 +118,7 @@ public class macroTest extends TestCase {
     }
 
     public void testAutoSetFluent(){
-        @_autoSetFluent
+        @_settersFluent
         class C{
             int x;
             @_final int fin; //no setter
@@ -135,7 +135,7 @@ public class macroTest extends TestCase {
     }
 
     public void testAutoToString(){
-        @_autoToString
+        @_toString
         class E{
             String s;
             boolean[] ba;
@@ -144,9 +144,9 @@ public class macroTest extends TestCase {
         _class _c = _class.of(E.class);
         assertNotNull( _c.getMethod("toString") );
         System.out.println( _c );
-        assertEquals(1, _autoToString.Macro.$simple.listSelectedIn(_c).size());  //String s;
-        assertEquals(1, _autoToString.Macro.$arrayOfObjects.listSelectedIn(_c).size());      //uuids f
-        assertEquals(1, _autoToString.Macro.$arrayOfPrimitives.listSelectedIn(_c).size());   //boolean[] ba
+        assertEquals(1, _toString.Macro.$simple.listSelectedIn(_c).size());  //String s;
+        assertEquals(1, _toString.Macro.$arrayOfObjects.listSelectedIn(_c).size());      //uuids f
+        assertEquals(1, _toString.Macro.$arrayOfPrimitives.listSelectedIn(_c).size());   //boolean[] ba
     }
 
     interface A{

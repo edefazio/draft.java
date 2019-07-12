@@ -42,7 +42,7 @@ import java.util.List;
  */
 @Target(ElementType.METHOD)
 @Retention(RetentionPolicy.RUNTIME)
-public @interface _ctor {
+public @interface _toCtor {
 
     public static final Macro $ = new Macro();
     
@@ -87,7 +87,7 @@ public @interface _ctor {
         
         @Override
         public _method apply(_method _m) {
-            _m.removeAnnos(_ctor.class);
+            _m.removeAnnos(_toCtor.class);
             List<TypeDeclaration>tds = new ArrayList<>();
             Walk.parents( _m, TypeDeclaration.class, t-> tds.add(t) );
             if( ! (tds.size() > 0 )){

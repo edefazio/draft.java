@@ -37,7 +37,7 @@ import java.util.function.Predicate;
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ElementType.TYPE})
-public @interface _autoHashCode {
+public @interface _hashCode {
 
     /** Static Instance */
      Macro $ = new Macro();
